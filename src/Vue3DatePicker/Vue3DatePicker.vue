@@ -173,7 +173,7 @@
                 emit('update:modelValue', singleModelValue.value);
 
                 if (props.autoApply) {
-                    closeMenu();
+                    // closeMenu();
                 }
             };
 
@@ -188,7 +188,7 @@
                     emit('update:modelValue', rangeModelValue.value);
 
                     if (props.autoApply) {
-                        closeMenu();
+                        // closeMenu();
                     }
                 }
             };

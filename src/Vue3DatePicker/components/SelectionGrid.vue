@@ -13,7 +13,6 @@
                     {{ col.text }}
                 </div>
             </div>
-            <div style="width: 100%; height: 30px; display: flex; position: relative">c</div>
             <div :class="actionButtonClass" @click="$emit('toggle')"><slot name="button-icon" /></div>
         </div>
     </div>
