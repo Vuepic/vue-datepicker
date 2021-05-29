@@ -1,0 +1,30 @@
+.dp__menu {
+  position: absolute;
+  background:$dp__background;
+  border-radius: $dp__border_radius;
+  min-width: 260px;
+  font-family: $dp__font_family;
+  user-select: none;
+}
+
+.dp__menu_elevate {
+  box-shadow: $dp__menu_shadow;
+}
+
+.dp__arrow {
+  position: relative;
+  background: #d5c0c0;
+}
+
+.dp__arrow:after {
+  bottom: 100%;
+  left: 50%;
+  content: '';
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+  border: 10px solid rgba(213, 192, 192, 0);
+  border-bottom-color: #d0d0d0;
+  margin-left: -10px;
+}

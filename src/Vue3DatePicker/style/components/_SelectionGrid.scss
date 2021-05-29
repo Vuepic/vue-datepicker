@@ -1,0 +1,88 @@
+.dp__overlay {
+  position: absolute;
+  overflow-y: auto;
+  width: 100%;
+  height: 100%;
+  background: $dp__background;
+  top: 0;
+  left: 0;
+  transition: opacity 1s ease-out;
+  z-index: 1;
+  font-family: $dp__font_family;
+}
+
+.dp__overlay::-webkit-scrollbar-track
+{
+  -webkit-box-shadow: $dp__scroll_bar_background;
+  background-color: $dp__scroll_bar_background;
+}
+
+.dp__overlay::-webkit-scrollbar
+{
+  width: 5px;
+  background-color: $dp__scroll_bar_background;
+}
+
+.dp__overlay::-webkit-scrollbar-thumb
+{
+  background-color: $dp__scroll_bar_color;
+  border-radius: 10px;
+}
+
+.dp__overlay_container {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
+
+.dp__overlay_container > .dp__overlay_row {
+  flex: 1;
+}
+
+.dp__overlay_row {
+  padding: 0 10px;
+  box-sizing: border-box;
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  flex-wrap: wrap;
+  max-width: 100%;
+  width: 100%;
+  align-items: center;
+}
+
+.dp__overlay_col {
+  box-sizing: border-box;
+  width: 33%;
+}
+
+
+.dp__overlay_cell_active {
+  padding: 10px;
+  cursor: pointer;
+  border-radius: $dp__border_radius;
+  text-align: center;
+  background:$dp__primary_color;
+  color: $dp__primary_text_color;
+}
+
+.dp__overlay_cell {
+  padding: 10px;
+  cursor: pointer;
+  border-radius: $dp__border_radius;
+  text-align: center;
+  &:hover {
+    background: $dp__default_hover;
+  }
+}
+
+.dp__overlay_action {
+  position: fixed;
+  bottom: 0;
+  background: #fff;
+}
+
+.dp__over_action_scroll {
+  right: 5px;
+  box-sizing: border-box;
+}
