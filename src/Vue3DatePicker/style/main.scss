@@ -1,50 +1,49 @@
-@import "variables";
-@import "components/DatepickerInput";
-@import "components/DatepickerMenu";
-@import "components/Calendar";
-@import "components/MonthYearInput";
-@import "components/SelectionGrid";
-@import "components/TimeInput";
-
+@import 'variables';
+@import 'components/DatepickerInput';
+@import 'components/DatepickerMenu';
+@import 'components/Calendar';
+@import 'components/MonthYearInput';
+@import 'components/SelectionGrid';
+@import 'components/TimeInput';
 
 .dp__main {
-  font-family: $dp__font_family;
-  user-select: none;
+    font-family: $dp__font_family;
+    user-select: none;
 }
 
 .dp__pointer {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 // Allow control of color property on icons
 .dp__icon {
-  stroke: currentColor;
-  fill: currentColor;
+    stroke: currentColor;
+    fill: currentColor;
 }
 
 // Div style that is displayed on the bottom of the menu for switching layouts
 .dp__button {
-  width: 100%;
-  text-align: center;
-  color: $dp__icon_color;
-  background:$dp__background;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  align-content: center;
-  justify-content: center;
-  font-size: 1rem;
-  padding: 5px;
-  box-sizing: border-box;
-  border-top: 1px solid #b6b6b6;
+    width: 100%;
+    text-align: center;
+    color: $dp__icon_color;
+    background: $dp__background;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    font-size: 1rem;
+    padding: 5px;
+    box-sizing: border-box;
+    border-top: 1px solid #b6b6b6;
 
-  &:hover {
-    background:$dp__default_hover;
-  }
+    &:hover {
+        background: $dp__default_hover;
+    }
 
-  // todo - change selector
-  svg {
-    height: 20px;
-    width: auto;
-  }
+    // todo - change selector
+    svg {
+        height: 20px;
+        width: auto;
+    }
 }

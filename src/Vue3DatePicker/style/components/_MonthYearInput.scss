@@ -1,38 +1,37 @@
 .dp__month_year_row {
-  display: flex;
-  align-items: center;
-  height: $dp__month_year_row_height;
+    display: flex;
+    align-items: center;
+    height: $dp__month_year_row_height;
 }
 
 .dp__month_year_col_nav {
-  padding: 5px;
-  display: flex;
-  height: 25px;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  width: 25px;
-  color:$dp__icon_color;
-  text-align: center;
-  border-radius: 50%;
+    padding: 5px;
+    display: flex;
+    height: 25px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 25px;
+    color: $dp__icon_color;
+    text-align: center;
+    border-radius: 50%;
 
-  &:hover {
-    background: $dp__default_hover;
-  }
+    &:hover {
+        background: $dp__default_hover;
+    }
 }
 
 .dp__month_year_select {
-  width: 50%;
-  text-align: center;
-  cursor: pointer;
-  height: $dp__month_year_row_height;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: $dp__border_radius;
+    width: 50%;
+    text-align: center;
+    cursor: pointer;
+    height: $dp__month_year_row_height;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: $dp__border_radius;
 
-  &:hover {
-    background: $dp__primary_text_color;
-  }
+    &:hover {
+        background: $dp__primary_text_color;
+    }
 }
-

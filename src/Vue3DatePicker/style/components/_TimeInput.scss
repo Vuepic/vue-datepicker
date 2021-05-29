@@ -1,38 +1,38 @@
 .dp__time_input {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  user-select: none;
-  font-family: $dp__font_family;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    font-family: $dp__font_family;
 }
 
 .dp__time_col {
-  padding: 0 20px;
-  font-size: 2rem;
-  text-align: center;
+    padding: 0 20px;
+    font-size: 2rem;
+    text-align: center;
 }
 
 .dp__time_display {
-  cursor: pointer;
-  color: $dp__text_color_def;
-  border-radius: $dp__border_radius;
+    cursor: pointer;
+    color: $dp__text_color_def;
+    border-radius: $dp__border_radius;
 
-  &:hover {
-    background: $dp__default_hover;
-  }
+    &:hover {
+        background: $dp__default_hover;
+    }
 }
 
 .dp__inc_dec_button {
-  padding: 5px 5px;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  border-radius: 50%;
-  color: $dp__icon_color;
+    padding: 5px 5px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 50%;
+    color: $dp__icon_color;
 
-  &:hover {
-    background: $dp__default_hover;
-    color:$dp__primary_color;
-  }
+    &:hover {
+        background: $dp__default_hover;
+        color: $dp__primary_color;
+    }
 }

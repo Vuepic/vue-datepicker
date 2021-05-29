@@ -1,53 +1,52 @@
 .dp__calendar_tb {
-  font-family: $dp__font_family;
+    font-family: $dp__font_family;
 }
 
 .dp__calendar {
-  position: relative;
+    position: relative;
 }
 
-
 .dp__calendar_days {
-  color: $dp__text_color_def;
+    color: $dp__text_color_def;
 }
 
 .dp__cell {
-  text-align: center;
-  height: 40px;
-  width: 40px;
-  border-radius: $dp__border_radius;
-  position: relative;
+    text-align: center;
+    height: 40px;
+    width: 40px;
+    border-radius: $dp__border_radius;
+    position: relative;
 }
 
 .r__date_hover {
-  &:hover {
-    background: $dp__default_hover;
-  }
+    &:hover {
+        background: $dp__default_hover;
+    }
 }
 
 .dp__cell_offset {
-  color: $dp__secondary_color;
+    color: $dp__secondary_color;
 }
 
 .dp__active_date {
-  background:$dp__primary_color;
-  color: $dp__primary_text_color;
+    background: $dp__primary_color;
+    color: $dp__primary_text_color;
 }
 
 .dp__date_hover {
-  &:hover {
-    background: $dp__default_hover;
-  }
+    &:hover {
+        background: $dp__default_hover;
+    }
 }
 
 .dp__range_between {
-  background: $dp__default_hover;
+    background: $dp__default_hover;
 }
 
 .dp__today {
-  border: 1px solid $dp__primary_color;
+    border: 1px solid $dp__primary_color;
 }
 
 .dp__week_num {
-  color: $dp__secondary_color;
+    color: $dp__secondary_color;
 }
