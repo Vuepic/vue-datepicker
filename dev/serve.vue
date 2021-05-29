@@ -19,6 +19,7 @@
 </script>
 
 <style lang="scss">
+    @import 'src/Vue3DatePicker/style/main';
     .wrapper {
         padding: 200px;
     }

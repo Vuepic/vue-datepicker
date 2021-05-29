@@ -1,8 +1,6 @@
 // rollup.config.js
 import fs from 'fs';
-import path from 'path';
 import vue from 'rollup-plugin-vue';
-import alias from '@rollup/plugin-alias';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
@@ -19,29 +17,16 @@ const esbrowserslist = fs
     .filter((entry) => entry && entry.substring(0, 2) !== 'ie');
 
 // Extract babel preset-env config, to combine with esbrowserslist
-const babelPresetEnvConfig = require('../babel.config').presets.filter(
-    (entry) => entry[0] === '@babel/preset-env',
-)[0][1];
+const babelPresetEnvConfig = {};
 
 const argv = minimist(process.argv.slice(2));
-
-const projectRoot = path.resolve(__dirname, '..');
 
 const baseConfig = {
     input: 'src/entry.ts',
     plugins: {
-        preVue: [
-            alias({
-                entries: [
-                    {
-                        find: '@',
-                        replacement: `${path.resolve(projectRoot, 'src')}`,
-                    },
-                ],
-            }),
-        ],
         replace: {
             'process.env.NODE_ENV': JSON.stringify('production'),
+            preventAssignment: true,
         },
         vue: {},
         postVue: [
@@ -97,7 +82,7 @@ if (!argv.format || argv.format === 'es') {
         },
         plugins: [
             replace(baseConfig.plugins.replace),
-            ...baseConfig.plugins.preVue,
+            // ...baseConfig.plugins.preVue,
             vue(baseConfig.plugins.vue),
             ...baseConfig.plugins.postVue,
             babel({
@@ -111,6 +96,11 @@ if (!argv.format || argv.format === 'es') {
                         },
                     ],
                 ],
+            }),
+            terser({
+                output: {
+                    ecma: 5,
+                },
             }),
         ],
     };
@@ -131,10 +121,15 @@ if (!argv.format || argv.format === 'cjs') {
         },
         plugins: [
             replace(baseConfig.plugins.replace),
-            ...baseConfig.plugins.preVue,
+            // ...baseConfig.plugins.preVue,
             vue(baseConfig.plugins.vue),
             ...baseConfig.plugins.postVue,
             babel(baseConfig.plugins.babel),
+            terser({
+                output: {
+                    ecma: 5,
+                },
+            }),
         ],
     };
     buildFormats.push(umdConfig);
@@ -154,7 +149,7 @@ if (!argv.format || argv.format === 'iife') {
         },
         plugins: [
             replace(baseConfig.plugins.replace),
-            ...baseConfig.plugins.preVue,
+            // ...baseConfig.plugins.preVue,
             vue(baseConfig.plugins.vue),
             ...baseConfig.plugins.postVue,
             babel(baseConfig.plugins.babel),

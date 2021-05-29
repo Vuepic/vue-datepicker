@@ -1,5 +1,5 @@
 import { App, DefineComponent, Plugin } from 'vue';
-import component from '@/Vue3DatePicker/Vue3DatePicker.vue';
+import component from './Vue3DatePicker/Vue3DatePicker.vue';
 
 type InstallableComponent = DefineComponent<Record<string, unknown>, Record<string, unknown>, any> & {
     install: Exclude<Plugin['install'], undefined>;
