@@ -1,6 +1,8 @@
 import { FormatOptions, ICalendarDate, ICalendarDay, IDefaultSelect } from '../interfaces';
 
-// On start of the month based on the first date and week start get the date week starts with
+/**
+ * Depending on a week start get starting date of the current calendar
+ */
 const getFirstDayOfTheFirstWeek = (firstDate: Date, start: number): Date => {
     const startDate = new Date(JSON.parse(JSON.stringify(firstDate)));
     const monthStart = startDate.getDay();
@@ -33,12 +35,11 @@ const getWeekDays = (startDay: Date, month: number): ICalendarDay[] => {
     return dates;
 };
 
-// Returns the number of weeks in a month
-const getNumberOfWeeksInAMonth = (start: number, firstDate: Date, lastDate: Date): number => {
-    if (start === 1) {
-        return Math.ceil((firstDate.getDay() + lastDate.getDate() - 1) / 7);
-    }
-    return Math.ceil((firstDate.getDay() % 7) + 1 + lastDate.getDate());
+/**
+ * Returns the number of weeks in a month, each week must have current month date in
+ */
+const getNumberOfWeeksInAMonth = (firstDate: Date, lastDate: Date): number => {
+    return Math.ceil((firstDate.getDay() + lastDate.getDate() - 1) / 7);
 };
 
 // Get days for the calendar to be displayed in a table grouped by weeks
@@ -48,8 +49,7 @@ export const getCalendarDays = (month: number, year: number, start: number): ICa
     const lastDate = new Date(year, month + 1, 0);
 
     let firstDateInCalendar = getFirstDayOfTheFirstWeek(firstDate, start);
-    const weeksInMonth = getNumberOfWeeksInAMonth(start, firstDate, lastDate);
-
+    const weeksInMonth = getNumberOfWeeksInAMonth(firstDate, lastDate);
     for (let week = 0; week < weeksInMonth; week++) {
         if (week !== 0) {
             firstDateInCalendar = getSevenDaysOffset(firstDateInCalendar);
@@ -106,15 +106,23 @@ export const getArrayInArray = <T>(list: T[], increment = 3): T[][] => {
 };
 
 /**
- * Generate week day names based on locale
+ * Generate week day names based on locale and in order specified in week start
  */
 export const getDayNames = (locale: string, weekStart: number): string[] => {
-    const formatter = new Intl.DateTimeFormat(locale, { weekday: 'short', timeZone: 'UTC' });
+    // Get list in order from sun ... sat
     const days = [1, 2, 3, 4, 5, 6, 7].map((day) => {
-        const dd = day < 10 ? `0${day}` : day;
-        return weekStart === 0 ? new Date(`2017-01-${dd}T00:00:00+00:00`) : new Date(`2021-03-${dd}T00:00:00+00:00`);
+        return new Intl.DateTimeFormat(locale, { weekday: 'short', timeZone: 'UTC' })
+            .format(new Date(`2017-01-0${day}T00:00:00+00:00`))
+            .slice(0, 2);
     });
-    return days.map((date) => formatter.format(date).slice(0, 2));
+
+    // Get days tha are in order before specified week start
+    const beforeWeekStart = days.slice(0, weekStart);
+    // Get days tha are in order after specified week start
+    const afterWeekStart = days.slice(weekStart + 1, days.length);
+
+    // return them in correct order
+    return [days[weekStart]].concat(...afterWeekStart).concat(...beforeWeekStart);
 };
 
 /**
