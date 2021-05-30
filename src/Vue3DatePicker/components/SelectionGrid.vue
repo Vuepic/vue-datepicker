@@ -8,9 +8,10 @@
                     :key="col.value"
                     @click="onClick(col.value)"
                     :id="col.value === modelValue ? 'selection-active' : null"
-                    :class="col.value === modelValue ? 'dp__overlay_cell_active' : 'dp__overlay_cell'"
                 >
-                    {{ col.text }}
+                    <div :class="col.value === modelValue ? 'dp__overlay_cell_active' : 'dp__overlay_cell'">
+                        {{ col.text }}
+                    </div>
                 </div>
             </div>
             <div :class="actionButtonClass" @click="$emit('toggle')"><slot name="button-icon" /></div>

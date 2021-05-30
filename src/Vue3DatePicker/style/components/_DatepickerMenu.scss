@@ -5,6 +5,7 @@
     min-width: 260px;
     font-family: $dp__font_family;
     user-select: none;
+    border: 1px solid $dp__in_border_color;
 }
 
 .dp__menu_elevate {
@@ -12,19 +13,14 @@
 }
 
 .dp__arrow {
-    position: relative;
-    background: #d5c0c0;
-}
-
-.dp__arrow:after {
-    bottom: 100%;
     left: 50%;
-    content: '';
-    height: 0;
-    width: 0;
+    top: -1px;
+    height: 12px;
+    width: 12px;
+
+    background-color: #fff;
     position: absolute;
-    pointer-events: none;
-    border: 10px solid rgba(213, 192, 192, 0);
-    border-bottom-color: #d0d0d0;
-    margin-left: -10px;
+    border-left: 1px solid $dp__in_border_color;
+    border-top: 1px solid $dp__in_border_color;
+    transform: translate(-50%, -50%) rotate(45deg);
 }

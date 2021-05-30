@@ -1,5 +1,6 @@
 .dp__calendar_tb {
     font-family: $dp__font_family;
+    border-collapse: collapse;
 }
 
 .dp__calendar {
@@ -10,12 +11,25 @@
     color: $dp__text_color_def;
 }
 
+.dp__calendar_header_cell {
+    border-bottom: thin solid $dp__in_border_color;
+    padding: 0.5rem;
+}
+
 .dp__cell {
-    text-align: center;
-    height: 40px;
-    width: 40px;
-    border-radius: $dp__border_radius;
     position: relative;
+}
+
+.dp__cell_inner {
+    vertical-align: middle;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    border-radius: $dp_cell_border_radius;
+    height: 30px;
+    padding: $dp__cell_padding;
+    width: 30px;
 }
 
 .r__date_hover {

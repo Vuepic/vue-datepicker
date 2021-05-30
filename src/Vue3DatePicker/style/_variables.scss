@@ -35,3 +35,12 @@ $dp__scroll_bar_color: #959595;
 
 // Height of the row where month and year are selected
 $dp__month_year_row_height: 38px;
+
+// Border color for menu, arrow
+$dp__in_border_color: #ddd;
+
+// Control size of the datepicker overall
+$dp__cell_padding: 5px !default;
+
+// Set to 50% for rounded and 0 for flat date selection
+$dp_cell_border_radius: $dp__border_radius !default;

@@ -10,8 +10,8 @@
         <table class="dp__calendar_tb">
             <thead>
                 <tr class="dp__calendar_days">
-                    <th v-if="weekNumbers">{{ language.weekNumber }}</th>
-                    <th v-for="(day, i) in language.days" :key="i">{{ day }}</th>
+                    <th class="dp__calendar_header_cell" v-if="weekNumbers">{{ language.weekNumber }}</th>
+                    <th class="dp__calendar_header_cell" v-for="(day, i) in language.days" :key="i">{{ day }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -20,12 +20,11 @@
                     <td
                         class="dp__cell"
                         v-for="(day, dayInd) in week.days"
-                        :class="day.classData"
                         :key="dayInd + weekInd"
                         @click="selectDate(day)"
                         @mouseover="setHoverDate(day)"
                     >
-                        {{ day.text }}
+                        <div class="dp__cell_inner" :class="day.classData">{{ day.text }}</div>
                     </td>
                 </tr>
             </tbody>
