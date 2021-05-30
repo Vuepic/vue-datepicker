@@ -3,7 +3,6 @@
         <div class="dp__arrow"></div>
         <Calendar
             :months="mappedMonths"
-            :language="language"
             :week-numbers="weekNumbers"
             :week-start="weekStart"
             :disable-month-year-select="disableMonthYearSelect"
@@ -20,6 +19,7 @@
             :minutes-grid-increment="minutesGridIncrement"
             :auto-apply="autoApply"
             :locale="locale"
+            :week-num-name="weekNumName"
             @selectRangeDate="$emit('update:rangeModelValue', $event)"
             @closePicker="$emit('closePicker')"
             @selectDate="$emit('selectDate')"
@@ -33,15 +33,15 @@
     import { computed, defineComponent, PropType } from 'vue';
     import Calendar from './Calendar.vue';
 
-    import { DatepickerMenuProps, ILanguage, IMonth, DynamicClass, FormatOptions } from '../interfaces';
+    import { DatepickerMenuProps, IMonth, DynamicClass, FormatOptions } from '../interfaces';
     import { useBindValue } from '../utils/hooks';
+    import { getMonthNames } from '../utils/util';
 
     export default defineComponent({
         name: 'DatepickerMenu',
         components: { Calendar },
         emits: ['update:singleModelValue', 'update:rangeModelValue', 'closePicker', 'selectDate'],
         props: {
-            language: { type: Object as PropType<ILanguage>, default: null },
             weekNumbers: { type: Boolean as PropType<boolean>, default: false },
             weekStart: { type: [Number, String] as PropType<number | string>, default: 1 },
             disableMonthYearSelect: { type: Boolean as PropType<boolean>, default: false },
@@ -66,10 +66,11 @@
                 default: () => ({}),
             }, // connected on single calendar
             locale: { type: String as PropType<string>, default: 'en-US' },
+            weekNumName: { type: String as PropType<string>, default: 'W' },
         },
         setup(props: DatepickerMenuProps, { emit }) {
             const mappedMonths = computed((): IMonth[] =>
-                props.language.months.map((month: string, i: number) => ({ text: month, value: i })),
+                getMonthNames(props.locale).map((month: string, i: number) => ({ text: month, value: i })),
             );
 
             const dpMenuClass = computed(

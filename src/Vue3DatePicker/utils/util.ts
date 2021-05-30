@@ -104,3 +104,27 @@ export const getArrayInArray = <T>(list: T[], increment = 3): T[][] => {
 
     return items;
 };
+
+/**
+ * Generate week day names based on locale
+ */
+export const getDayNames = (locale: string, weekStart: number): string[] => {
+    const formatter = new Intl.DateTimeFormat(locale, { weekday: 'short', timeZone: 'UTC' });
+    const days = [1, 2, 3, 4, 5, 6, 7].map((day) => {
+        const dd = day < 10 ? `0${day}` : day;
+        return weekStart === 0 ? new Date(`2017-01-${dd}T00:00:00+00:00`) : new Date(`2021-03-${dd}T00:00:00+00:00`);
+    });
+    return days.map((date) => formatter.format(date).slice(0, 2));
+};
+
+/**
+ * Generate month names based on locale
+ */
+export const getMonthNames = (locale: string): string[] => {
+    const formatter = new Intl.DateTimeFormat(locale, { month: 'short', timeZone: 'UTC' });
+    const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((month) => {
+        const mm = month < 10 ? `0${month}` : month;
+        return new Date(`2017-${mm}-01T00:00:00+00:00`);
+    });
+    return months.map((date) => formatter.format(date).slice(0, 3));
+};

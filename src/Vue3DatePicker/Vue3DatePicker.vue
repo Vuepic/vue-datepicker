@@ -26,7 +26,6 @@
         <teleport to="body">
             <DatepickerMenu
                 :enable-time-picker="enableTimePicker"
-                :language="language"
                 :week-numbers="weekNumbers"
                 :week-start="weekStart"
                 :disable-month-year-select="disableMonthYearSelect"
@@ -41,6 +40,8 @@
                 :style="menuPosition"
                 :range="range"
                 :auto-apply="autoApply"
+                :locale="locale"
+                :week-num-name="weekNumName"
                 v-model:singleModelValue="singleModelValue"
                 v-model:rangeModelValue="rangeModelValue"
                 @closePicker="closeMenu"
@@ -53,8 +54,7 @@
 
 <script lang="ts">
     import { computed, defineComponent, onMounted, onUnmounted, PropType, ref, toRef, watch } from 'vue';
-    import { FormatOptions, IDateFilter, ILanguage, OpenPosition, RDatepickerProps } from './interfaces';
-    import { language } from './utils/language';
+    import { FormatOptions, IDateFilter, OpenPosition, RDatepickerProps } from './interfaces';
     import DatepickerInput from './components/DatepickerInput.vue';
     import DatepickerMenu from './components/DatepickerMenu.vue';
     import { formatRangeDate, formatSingleDate } from './utils/util';
@@ -86,13 +86,14 @@
             weekStart: { type: [String, Number] as PropType<string | number>, default: 1 }, // connected
             disabled: { type: Boolean as PropType<boolean>, default: false }, // connected
             readonly: { type: Boolean as PropType<boolean>, default: false }, // connected
+            weekNumName: { type: String as PropType<string>, default: 'W' },
             format: {
                 type: [Object, Function] as PropType<FormatOptions | ((date: Date | Date[]) => string)>,
                 default: () => ({}),
             }, // connected
-            language: {
-                type: Object as PropType<ILanguage>,
-                default: () => language,
+            previewFormat: {
+                type: [Object, Function] as PropType<FormatOptions | ((date: Date | Date[]) => string)>,
+                default: () => ({}),
             }, // connected
             inputClassName: { type: String as PropType<string>, default: null }, // connected
             menuClassName: { type: String as PropType<string>, default: null }, // connected
@@ -112,10 +113,6 @@
             inline: { type: Boolean as PropType<boolean>, default: false }, // connected
             selectText: { type: String as PropType<string>, default: 'Select' }, // connected
             cancelText: { type: String as PropType<string>, default: 'Cancel' }, // connected
-            previewFormat: {
-                type: [Object, Function] as PropType<FormatOptions | ((date: Date | Date[]) => string)>,
-                default: () => ({}),
-            }, // connected
         },
         setup(props: RDatepickerProps, { emit }) {
             const isOpen = ref(false);

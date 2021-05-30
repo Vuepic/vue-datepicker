@@ -10,8 +10,8 @@
         <table class="dp__calendar_tb">
             <thead>
                 <tr class="dp__calendar_days">
-                    <th class="dp__calendar_header_cell" v-if="weekNumbers">{{ language.weekNumber }}</th>
-                    <th class="dp__calendar_header_cell" v-for="(day, i) in language.days" :key="i">{{ day }}</th>
+                    <th class="dp__calendar_header_cell" v-if="weekNumbers">{{ weekNumName }}</th>
+                    <th class="dp__calendar_header_cell" v-for="(day, i) in weekDays" :key="i">{{ day }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -61,13 +61,13 @@
         CalendarProps,
         ICalendarDate,
         ICalendarDay,
-        ILanguage,
         IMonth,
         DynamicClass,
         IDefaultSelect,
         FormatOptions,
     } from '../interfaces';
     import { useDpDaysGen } from '../utils/hooks';
+    import { getDayNames } from '@/Vue3DatePicker/utils/util';
 
     export default defineComponent({
         name: 'Calendar',
@@ -80,7 +80,6 @@
         props: {
             months: { type: Array as PropType<IMonth[]>, default: () => [] },
             weekStart: { type: [Number, String] as PropType<number | string>, default: 1 },
-            language: { type: Object as PropType<ILanguage>, default: null },
             weekNumbers: { type: Boolean as PropType<boolean>, default: false },
             disableMonthYearSelect: { type: Boolean as PropType<boolean>, default: false },
             calendarClassName: { type: String as PropType<string>, default: null },
@@ -104,8 +103,10 @@
                 default: () => ({}),
             }, // connected on single calendar
             locale: { type: String as PropType<string>, default: 'en-US' },
+            weekNumName: { type: String as PropType<string>, default: 'W' },
         },
         setup(props: CalendarProps, { emit }) {
+            const weekDays = ref();
             const month = ref(0);
             const year = ref(0);
             const day = ref(0);
@@ -127,6 +128,8 @@
                 } else {
                     setStartDate(new Date());
                 }
+
+                weekDays.value = getDayNames(props.locale, +props.weekStart);
             });
 
             const dates = useDpDaysGen(month, year, +props.weekStart);
@@ -261,6 +264,7 @@
                 mappedDates,
                 years,
                 calendarClass,
+                weekDays,
                 selectDate,
                 getWeekDay,
                 setHoverDate,

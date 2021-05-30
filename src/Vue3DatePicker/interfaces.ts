@@ -8,12 +8,6 @@ export interface IDefaultSelect {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type VueEmit = (event: any, ...args: any[]) => void;
 
-export interface ILanguage {
-    days: string[];
-    months: string[];
-    weekNumber: string;
-}
-
 export enum OpenPosition {
     center = 'center',
     left = 'left',
@@ -47,7 +41,6 @@ export interface RDatepickerProps {
     disabled: boolean;
     readonly: boolean;
     format: FormatOptions | ((date: Date | Date[]) => string);
-    language: ILanguage;
     inputClassName: string;
     menuClassName: string;
     calendarClassName: string;
@@ -66,6 +59,7 @@ export interface RDatepickerProps {
     inline: boolean;
     selectText: string;
     cancelText: string;
+    weekNumName: string;
 }
 
 export interface DatepickerInputProps {
@@ -91,7 +85,7 @@ export interface IYear {
 }
 
 export interface DatepickerMenuProps {
-    language: ILanguage;
+    weekNumName: string;
     weekNumbers: boolean;
     weekStart: number | string;
     disableMonthYearSelect: boolean;
@@ -118,7 +112,7 @@ export interface DatepickerMenuProps {
 export interface CalendarProps {
     weekStart: number | string;
     weekNumbers: boolean;
-    language: ILanguage;
+    weekNumName: string;
     months: IMonth[];
     disableMonthYearSelect: boolean;
     calendarClassName: string;
