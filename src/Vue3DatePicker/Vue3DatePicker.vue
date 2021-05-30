@@ -164,8 +164,8 @@
             const clearValue = (): void => {
                 valueCleared.value = true;
                 internalValue.value = '';
-                singleModelValue.value = null;
-                rangeModelValue.value = null;
+                clearInternalValues();
+                emit('update:modelValue', null);
             };
 
             const formatSingleDateValue = (formatInternal = false): void => {
@@ -252,14 +252,24 @@
                 if (!valueCleared.value) {
                     setMenuPosition();
                     isOpen.value = !isOpen.value;
+
+                    if (!isOpen.value) {
+                        clearInternalValues();
+                    }
                 }
                 valueCleared.value = false;
+            };
+
+            const clearInternalValues = (): void => {
+                singleModelValue.value = null;
+                rangeModelValue.value = null;
             };
 
             const closeMenu = (): void => {
                 if (isOpen.value) {
                     isOpen.value = false;
                 }
+                clearInternalValues();
             };
 
             return {
