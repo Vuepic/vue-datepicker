@@ -18,7 +18,11 @@
             :minutes-increment="minutesIncrement"
             :hours-grid-increment="hoursGridIncrement"
             :minutes-grid-increment="minutesGridIncrement"
+            :auto-apply="autoApply"
+            :locale="locale"
             @selectRangeDate="$emit('update:rangeModelValue', $event)"
+            @closePicker="$emit('closePicker')"
+            @selectDate="$emit('selectDate')"
             v-model:rangeModelValue="rangeDate"
             v-model:singleModelValue="singleDate"
         ></Calendar>
@@ -29,13 +33,13 @@
     import { computed, defineComponent, PropType } from 'vue';
     import Calendar from './Calendar.vue';
 
-    import { DatepickerMenuProps, ILanguage, IMonth, DynamicClass } from '../interfaces';
+    import { DatepickerMenuProps, ILanguage, IMonth, DynamicClass, FormatOptions } from '../interfaces';
     import { useBindValue } from '../utils/hooks';
 
     export default defineComponent({
         name: 'DatepickerMenu',
         components: { Calendar },
-        emits: ['update:singleModelValue', 'update:rangeModelValue'],
+        emits: ['update:singleModelValue', 'update:rangeModelValue', 'closePicker', 'selectDate'],
         props: {
             language: { type: Object as PropType<ILanguage>, default: null },
             weekNumbers: { type: Boolean as PropType<boolean>, default: false },
@@ -54,6 +58,14 @@
             minutesIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
             hoursGridIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
             minutesGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 },
+            autoApply: { type: Boolean as PropType<boolean>, default: false },
+            selectText: { type: String as PropType<string>, default: 'Select' },
+            cancelText: { type: String as PropType<string>, default: 'Cancel' },
+            previewFormat: {
+                type: [Object, Function] as PropType<FormatOptions | ((date: Date | Date[]) => string)>,
+                default: () => ({}),
+            }, // connected on single calendar
+            locale: { type: String as PropType<string>, default: 'en-US' },
         },
         setup(props: DatepickerMenuProps, { emit }) {
             const mappedMonths = computed((): IMonth[] =>

@@ -32,6 +32,7 @@ export interface RDatepickerProps {
     enableTimePicker: boolean;
     range: boolean;
     modelValue: Date | string;
+    locale: string;
     position: OpenPosition;
     placeholder: string;
     weekNumbers: boolean;
@@ -63,6 +64,8 @@ export interface RDatepickerProps {
     yearRange: number[];
     disabledDaysOfTheWeek: number[];
     inline: boolean;
+    selectText: string;
+    cancelText: string;
 }
 
 export interface DatepickerInputProps {
@@ -105,6 +108,11 @@ export interface DatepickerMenuProps {
     minutesIncrement: number | string;
     hoursGridIncrement: number | string;
     minutesGridIncrement: number | string;
+    autoApply: boolean;
+    selectText: string;
+    cancelText: string;
+    previewFormat: FormatOptions | ((date: Date | Date[]) => string);
+    locale: string;
 }
 
 export interface CalendarProps {
@@ -126,6 +134,11 @@ export interface CalendarProps {
     range: boolean;
     rangeModelValue: [Date?, Date?];
     singleModelValue: Date;
+    autoApply: boolean;
+    selectText: string;
+    cancelText: string;
+    previewFormat: FormatOptions | ((date: Date | Date[]) => string);
+    locale: string;
 }
 
 export interface MonthYearPickerProps {
@@ -151,10 +164,7 @@ export interface IMonthYearHook {
     onPrev(): void;
 }
 
-export interface FormatOptions {
-    locale: string;
-    options: Intl.DateTimeFormatOptions;
-}
+export type FormatOptions = Intl.DateTimeFormatOptions;
 
 export interface TimeInputProps {
     hoursIncrement: number | string;
@@ -182,4 +192,14 @@ export interface SelectionGridProps {
     modelValue: string | number;
     items: IDefaultSelect[][];
     id: string;
+}
+
+export interface ActionRowProps {
+    selectText: string;
+    cancelText: string;
+    range: boolean;
+    singleModelValue: Date;
+    rangeModelValue: Date[];
+    previewFormat: FormatOptions | ((date: Date | Date[]) => string);
+    locale: string;
 }

@@ -61,14 +61,20 @@ export const getCalendarDays = (month: number, year: number, start: number): ICa
     return weeks;
 };
 
-export const formatSingleDate = (date: Date, formatOptions: FormatOptions): string => {
-    return date.toLocaleDateString(formatOptions.locale, formatOptions.options);
+/**
+ * Format Date object into readable format, specified by props
+ */
+export const formatSingleDate = (date: Date, locale: string, formatOptions: FormatOptions): string => {
+    return date.toLocaleDateString(locale, formatOptions);
 };
 
-export const formatRangeDate = (dates: Date[], formatOptions: FormatOptions): string => {
-    return `${dates[0].toLocaleDateString(formatOptions.locale, formatOptions.options)} - ${dates[1].toLocaleDateString(
-        formatOptions.locale,
-        formatOptions.options,
+/**
+ *  Format Date range into readable format, specified by props
+ */
+export const formatRangeDate = (dates: Date[], locale: string, formatOptions: FormatOptions): string => {
+    return `${dates[0].toLocaleDateString(locale, formatOptions)} - ${dates[1].toLocaleDateString(
+        locale,
+        formatOptions,
     )}`;
 };
 

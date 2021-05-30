@@ -37,6 +37,18 @@
             :hours-grid-increment="hoursGridIncrement"
             :minutes-grid-increment="minutesGridIncrement"
         />
+        <ActionRow
+            v-if="!autoApply"
+            :range-model-value="rangeModelValue"
+            :single-model-value="singleModelValue"
+            :range="range"
+            :select-text="selectText"
+            :cancel-text="cancelText"
+            :preview-format="previewFormat"
+            :locale="locale"
+            @closePicker="$emit('closePicker')"
+            @selectDate="$emit('selectDate')"
+        ></ActionRow>
     </div>
 </template>
 
@@ -44,6 +56,7 @@
     import { computed, defineComponent, onMounted, PropType, ref, toRef, watch, UnwrapRef } from 'vue';
     import MonthYearInput from './MonthYearInput.vue';
     import TimeInput from './TimeInput.vue';
+    import ActionRow from './ActionRow.vue';
     import {
         CalendarProps,
         ICalendarDate,
@@ -52,6 +65,7 @@
         IMonth,
         DynamicClass,
         IDefaultSelect,
+        FormatOptions,
     } from '../interfaces';
     import { useDpDaysGen } from '../utils/hooks';
 
@@ -60,8 +74,9 @@
         components: {
             MonthYearInput,
             TimeInput,
+            ActionRow,
         },
-        emits: ['update:rangeModelValue', 'update:singleModelValue'],
+        emits: ['update:rangeModelValue', 'update:singleModelValue', 'closePicker', 'selectDate'],
         props: {
             months: { type: Array as PropType<IMonth[]>, default: () => [] },
             weekStart: { type: [Number, String] as PropType<number | string>, default: 1 },
@@ -81,6 +96,14 @@
             rangeModelValue: { type: Array as unknown as PropType<[Date?, Date?]>, default: () => [] },
             singleModelValue: { type: Date as PropType<Date>, default: null },
             range: { type: Boolean as PropType<boolean>, default: false },
+            autoApply: { type: Boolean as PropType<boolean>, default: false },
+            selectText: { type: String as PropType<string>, default: 'Select' },
+            cancelText: { type: String as PropType<string>, default: 'Cancel' },
+            previewFormat: {
+                type: [Object, Function] as PropType<FormatOptions | ((date: Date | Date[]) => string)>,
+                default: () => ({}),
+            }, // connected on single calendar
+            locale: { type: String as PropType<string>, default: 'en-US' },
         },
         setup(props: CalendarProps, { emit }) {
             const month = ref(0);

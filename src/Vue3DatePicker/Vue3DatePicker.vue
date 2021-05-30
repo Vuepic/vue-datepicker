@@ -40,8 +40,11 @@
                 :minutes-grid-increment="minutesGridIncrement"
                 :style="menuPosition"
                 :range="range"
+                :auto-apply="autoApply"
                 v-model:singleModelValue="singleModelValue"
                 v-model:rangeModelValue="rangeModelValue"
+                @closePicker="closeMenu"
+                @selectDate="selectDate"
                 v-if="isOpen"
             />
         </teleport>
@@ -51,7 +54,7 @@
 <script lang="ts">
     import { computed, defineComponent, onMounted, onUnmounted, PropType, ref, toRef, watch } from 'vue';
     import { FormatOptions, IDateFilter, ILanguage, OpenPosition, RDatepickerProps } from './interfaces';
-    import { defaultFormatOptions, language } from './utils/language';
+    import { language } from './utils/language';
     import DatepickerInput from './components/DatepickerInput.vue';
     import DatepickerMenu from './components/DatepickerMenu.vue';
     import { formatRangeDate, formatSingleDate } from './utils/util';
@@ -67,6 +70,7 @@
             id: { type: String as PropType<string>, default: null }, // connected
             is24: { type: Boolean as PropType<boolean>, default: true }, // connected
             enableTimePicker: { type: Boolean as PropType<boolean>, default: true }, // connected
+            locale: { type: String as PropType<string>, default: 'en-US' }, // partially connected
             range: { type: Boolean as PropType<boolean>, default: false }, // connected
             modelValue: { type: [String, Date, Array] as PropType<string | Date>, default: null }, // connected
             position: { type: String as PropType<OpenPosition>, default: OpenPosition.center }, // connected
@@ -84,8 +88,8 @@
             readonly: { type: Boolean as PropType<boolean>, default: false }, // connected
             format: {
                 type: [Object, Function] as PropType<FormatOptions | ((date: Date | Date[]) => string)>,
-                default: () => defaultFormatOptions,
-            }, // connected on single calendar
+                default: () => ({}),
+            }, // connected
             language: {
                 type: Object as PropType<ILanguage>,
                 default: () => language,
@@ -100,12 +104,18 @@
             clearable: { type: Boolean as PropType<boolean>, default: true }, // connected
             calendarBorder: { type: Boolean as PropType<boolean>, default: false },
             closeOnScroll: { type: Boolean as PropType<boolean>, default: true }, // connected
-            autoApply: { type: Boolean as PropType<boolean>, default: true }, // connected
+            autoApply: { type: Boolean as PropType<boolean>, default: false }, // connected
             filters: { type: Object as PropType<IDateFilter>, default: null },
             disableMonthYearSelect: { type: Boolean as PropType<boolean>, default: false }, // connected
             yearRange: { type: Array as PropType<number[]>, default: () => [2000, 2050] }, // connected, todo - at the end increase range
             disabledDaysOfTheWeek: { type: Array as PropType<number[]>, default: null },
             inline: { type: Boolean as PropType<boolean>, default: false }, // connected
+            selectText: { type: String as PropType<string>, default: 'Select' }, // connected
+            cancelText: { type: String as PropType<string>, default: 'Cancel' }, // connected
+            previewFormat: {
+                type: [Object, Function] as PropType<FormatOptions | ((date: Date | Date[]) => string)>,
+                default: () => ({}),
+            }, // connected
         },
         setup(props: RDatepickerProps, { emit }) {
             const isOpen = ref(false);
@@ -117,11 +127,11 @@
             const modelValue = toRef(props, 'modelValue');
 
             watch(singleModelValue, () => {
-                formatSingleDateValue();
+                formatSingleDateValue(props.autoApply);
             });
 
             watch(rangeModelValue, () => {
-                formatRangeDateValue();
+                formatRangeDateValue(props.autoApply);
             });
 
             watch(modelValue, () => {
@@ -161,34 +171,38 @@
                 rangeModelValue.value = null;
             };
 
-            const formatSingleDateValue = (): void => {
+            const formatSingleDateValue = (formatInternal = false): void => {
                 if (singleModelValue.value) {
-                    const dateValue = new Date(singleModelValue.value);
-                    if (typeof props.format === 'object') {
-                        internalValue.value = formatSingleDate(dateValue, props.format);
-                    } else {
-                        internalValue.value = props.format(dateValue);
+                    if (formatInternal) {
+                        const dateValue = new Date(singleModelValue.value);
+                        if (typeof props.format === 'object') {
+                            internalValue.value = formatSingleDate(dateValue, props.locale, props.format);
+                        } else {
+                            internalValue.value = props.format(dateValue);
+                        }
                     }
                 }
-                emit('update:modelValue', singleModelValue.value);
 
                 if (props.autoApply) {
-                    // closeMenu();
+                    emit('update:modelValue', singleModelValue.value);
+                    closeMenu();
                 }
             };
 
-            const formatRangeDateValue = (): void => {
+            const formatRangeDateValue = (formatInternal = false): void => {
                 if (rangeModelValue.value && rangeModelValue.value.length === 2) {
                     const dateValue = [new Date(rangeModelValue.value[0]), new Date(rangeModelValue.value[1])];
-                    if (typeof props.format === 'object') {
-                        internalValue.value = formatRangeDate(dateValue, props.format);
-                    } else {
-                        internalValue.value = props.format(dateValue);
+                    if (formatInternal) {
+                        if (typeof props.format === 'object') {
+                            internalValue.value = formatRangeDate(dateValue, props.locale, props.format);
+                        } else {
+                            internalValue.value = props.format(dateValue);
+                        }
                     }
-                    emit('update:modelValue', rangeModelValue.value);
 
                     if (props.autoApply) {
-                        // closeMenu();
+                        emit('update:modelValue', rangeModelValue.value);
+                        closeMenu();
                     }
                 }
             };
@@ -199,9 +213,20 @@
                         rangeModelValue.value = props.modelValue.slice();
                     } else {
                         singleModelValue.value = new Date(props.modelValue);
-                        formatSingleDateValue();
+                        formatSingleDateValue(true);
                     }
                 }
+            };
+
+            const selectDate = (): void => {
+                if (props.range) {
+                    formatRangeDateValue(true);
+                    emit('update:modelValue', rangeModelValue.value);
+                } else {
+                    formatSingleDateValue(true);
+                    emit('update:modelValue', singleModelValue.value);
+                }
+                closeMenu();
             };
 
             const setMenuPosition = (): void => {
@@ -250,6 +275,7 @@
                 clearValue,
                 openMenu,
                 closeMenu,
+                selectDate,
             };
         },
     });

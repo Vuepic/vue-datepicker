@@ -1,0 +1,49 @@
+.dp__action_row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+
+    svg {
+        height: 20px;
+        width: auto;
+    }
+}
+
+.dp__selection_preview {
+    width: 50%;
+    color: $dp__text_color_def;
+    font-size: 0.8rem;
+}
+
+.dp__action_buttons {
+    width: 50%;
+    text-align: right;
+}
+
+.dp__action {
+    //text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 2px 5px;
+    border-radius: $dp__border_radius;
+    display: inline-flex;
+    align-items: center;
+}
+
+.dp__select {
+    color: rgba(0, 128, 0, 0.47);
+
+    &:hover {
+        background: rgba(0, 128, 0, 0.1);
+    }
+}
+
+.dp__cancel {
+    color: rgba(0, 0, 0, 0.47);
+
+    &:hover {
+        background: rgba(0, 0, 0, 0.1);
+    }
+}
