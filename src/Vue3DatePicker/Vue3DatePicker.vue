@@ -262,6 +262,7 @@
             const openMenu = (): void => {
                 if (!valueCleared.value) {
                     setMenuPosition();
+                    mapExternalToInternalValue();
                     isOpen.value = !isOpen.value;
 
                     if (!isOpen.value) {
