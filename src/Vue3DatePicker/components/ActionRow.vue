@@ -27,6 +27,8 @@
                 default: () => ({}),
             },
             locale: { type: String as PropType<string>, default: 'en-US' },
+            is24: { type: Boolean as PropType<boolean>, default: true },
+            enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
         },
         setup(props: ActionRowProps) {
             const previewValue = ref('');
@@ -62,6 +64,8 @@
                             props.singleModelValue,
                             props.locale,
                             props.previewFormat,
+                            props.is24,
+                            props.enableTimePicker,
                         );
                     } else {
                         previewValue.value = props.previewFormat(props.singleModelValue);

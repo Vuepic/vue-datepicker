@@ -64,8 +64,18 @@ export const getCalendarDays = (month: number, year: number, start: number): ICa
 /**
  * Format Date object into readable format, specified by props
  */
-export const formatSingleDate = (date: Date, locale: string, formatOptions: FormatOptions): string => {
-    return date.toLocaleDateString(locale, formatOptions);
+export const formatSingleDate = (
+    date: Date,
+    locale: string,
+    formatOptions: FormatOptions,
+    is24: boolean,
+    showTime: boolean,
+): string => {
+    let options = formatOptions;
+    if (showTime) {
+        options = Object.assign(options, { hour: 'numeric', minute: 'numeric', hour12: !is24 });
+    }
+    return date.toLocaleDateString(locale, options);
 };
 
 /**

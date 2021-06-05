@@ -29,13 +29,16 @@
                 </tr>
             </tbody>
         </table>
-        <TimeInput
+        <TimePicker
             v-if="enableTimePicker"
             :is24="is24"
             :hours-increment="hoursIncrement"
             :minutes-increment="minutesIncrement"
             :hours-grid-increment="hoursGridIncrement"
             :minutes-grid-increment="minutesGridIncrement"
+            :range="range"
+            v-model:hoursSingle="hoursSingle"
+            v-model:minutesSingle="minutesSingle"
         />
         <ActionRow
             v-if="!autoApply"
@@ -46,6 +49,8 @@
             :cancel-text="cancelText"
             :preview-format="previewFormat"
             :locale="locale"
+            :is24="is24"
+            :enable-time-picker="enableTimePicker"
             @closePicker="$emit('closePicker')"
             @selectDate="$emit('selectDate')"
         ></ActionRow>
@@ -55,7 +60,7 @@
 <script lang="ts">
     import { computed, defineComponent, onMounted, PropType, ref, toRef, watch, UnwrapRef } from 'vue';
     import MonthYearInput from './MonthYearInput.vue';
-    import TimeInput from './TimeInput.vue';
+    import TimePicker from './TimePicker/TimePicker.vue';
     import ActionRow from './ActionRow.vue';
     import {
         CalendarProps,
@@ -73,7 +78,7 @@
         name: 'Calendar',
         components: {
             MonthYearInput,
-            TimeInput,
+            TimePicker,
             ActionRow,
         },
         emits: ['update:rangeModelValue', 'update:singleModelValue', 'closePicker', 'selectDate'],
@@ -100,13 +105,15 @@
             cancelText: { type: String as PropType<string>, default: 'Cancel' },
             previewFormat: {
                 type: [Object, Function] as PropType<FormatOptions | ((date: Date | Date[]) => string)>,
-                default: () => ({}),
-            }, // connected on single calendar
+                default: null,
+            },
             locale: { type: String as PropType<string>, default: 'en-US' },
             weekNumName: { type: String as PropType<string>, default: 'W' },
         },
         setup(props: CalendarProps, { emit }) {
             const weekDays = ref();
+            const hoursSingle = ref(0);
+            const minutesSingle = ref(0);
             const month = ref(0);
             const year = ref(0);
             const day = ref(0);
@@ -122,6 +129,18 @@
                 }
             });
 
+            watch(hoursSingle, () => {
+                if (props.singleModelValue) {
+                    updateHoursSingle();
+                }
+            });
+
+            watch(minutesSingle, () => {
+                if (props.singleModelValue) {
+                    updateMinutesSingle();
+                }
+            });
+
             onMounted(() => {
                 if (props.startDate) {
                     setStartDate(props.startDate);
@@ -130,6 +149,11 @@
                 }
 
                 weekDays.value = getDayNames(props.locale, +props.weekStart);
+
+                if (singleModelValue.value) {
+                    hoursSingle.value = singleModelValue.value.getHours();
+                    minutesSingle.value = singleModelValue.value.getMinutes();
+                }
             });
 
             const dates = useDpDaysGen(month, year, +props.weekStart);
@@ -226,6 +250,7 @@
 
             const selectDate = (day: UnwrapRef<ICalendarDay>): void => {
                 if (!props.range) {
+                    day.value.setHours(hoursSingle.value);
                     emit('update:singleModelValue', day.value);
                 } else {
                     let rangeDate = rangeModelValue.value.slice();
@@ -260,6 +285,18 @@
                 hoveredDate.value = day.value;
             };
 
+            const updateHoursSingle = (): void => {
+                const newDate = new Date(JSON.parse(JSON.stringify(props.singleModelValue)));
+                newDate.setHours(hoursSingle.value);
+                emit('update:singleModelValue', newDate);
+            };
+
+            const updateMinutesSingle = (): void => {
+                const newDate = new Date(JSON.parse(JSON.stringify(props.singleModelValue)));
+                newDate.setMinutes(minutesSingle.value);
+                emit('update:singleModelValue', newDate);
+            };
+
             return {
                 mappedDates,
                 years,
@@ -272,6 +309,8 @@
                 month,
                 year,
                 day,
+                hoursSingle,
+                minutesSingle,
             };
         },
     });

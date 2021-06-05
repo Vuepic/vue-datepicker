@@ -160,12 +160,15 @@ export interface IMonthYearHook {
 
 export type FormatOptions = Intl.DateTimeFormatOptions;
 
-export interface TimeInputProps {
+export interface TimePickerProps {
     hoursIncrement: number | string;
     minutesIncrement: number | string;
     is24: boolean;
     hoursGridIncrement: number | string;
     minutesGridIncrement: number | string;
+    hoursSingle: number;
+    minutesSingle: number;
+    range: boolean;
 }
 
 export interface IHoursMinutes {
@@ -196,4 +199,14 @@ export interface ActionRowProps {
     rangeModelValue: Date[];
     previewFormat: FormatOptions | ((date: Date | Date[]) => string);
     locale: string;
+    is24: boolean;
+    enableTimePicker: boolean;
+}
+
+export interface TimeInputProps {
+    hourDisplay: string;
+    minuteDisplay: string;
+    hoursGridIncrement: string | number;
+    minutesGridIncrement: string | number;
+    is24: boolean;
 }

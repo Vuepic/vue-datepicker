@@ -42,6 +42,7 @@
                 :auto-apply="autoApply"
                 :locale="locale"
                 :week-num-name="weekNumName"
+                :preview-format="previewFormat"
                 v-model:singleModelValue="singleModelValue"
                 v-model:rangeModelValue="rangeModelValue"
                 @closePicker="closeMenu"
@@ -86,14 +87,18 @@
             weekStart: { type: [String, Number] as PropType<string | number>, default: 1 }, // connected
             disabled: { type: Boolean as PropType<boolean>, default: false }, // connected
             readonly: { type: Boolean as PropType<boolean>, default: false }, // connected
-            weekNumName: { type: String as PropType<string>, default: 'W' },
+            weekNumName: { type: String as PropType<string>, default: 'W' }, // connected
             format: {
                 type: [Object, Function] as PropType<FormatOptions | ((date: Date | Date[]) => string)>,
-                default: () => ({}),
+                default: () => ({
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: false,
+                }),
             }, // connected
             previewFormat: {
                 type: [Object, Function] as PropType<FormatOptions | ((date: Date | Date[]) => string)>,
-                default: () => ({}),
+                default: () => ({ hour: 'numeric', minute: 'numeric', hour12: false }),
             }, // connected
             inputClassName: { type: String as PropType<string>, default: null }, // connected
             menuClassName: { type: String as PropType<string>, default: null }, // connected
@@ -173,7 +178,13 @@
                     if (formatInternal) {
                         const dateValue = new Date(singleModelValue.value);
                         if (typeof props.format === 'object') {
-                            internalValue.value = formatSingleDate(dateValue, props.locale, props.format);
+                            internalValue.value = formatSingleDate(
+                                dateValue,
+                                props.locale,
+                                props.format,
+                                props.is24,
+                                props.enableTimePicker,
+                            );
                         } else {
                             internalValue.value = props.format(dateValue);
                         }

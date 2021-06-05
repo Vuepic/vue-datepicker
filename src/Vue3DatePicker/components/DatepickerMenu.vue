@@ -20,6 +20,7 @@
             :auto-apply="autoApply"
             :locale="locale"
             :week-num-name="weekNumName"
+            :preview-format="previewFormat"
             @selectRangeDate="$emit('update:rangeModelValue', $event)"
             @closePicker="$emit('closePicker')"
             @selectDate="$emit('selectDate')"
@@ -63,8 +64,8 @@
             cancelText: { type: String as PropType<string>, default: 'Cancel' },
             previewFormat: {
                 type: [Object, Function] as PropType<FormatOptions | ((date: Date | Date[]) => string)>,
-                default: () => ({}),
-            }, // connected on single calendar
+                default: null,
+            },
             locale: { type: String as PropType<string>, default: 'en-US' },
             weekNumName: { type: String as PropType<string>, default: 'W' },
         },
