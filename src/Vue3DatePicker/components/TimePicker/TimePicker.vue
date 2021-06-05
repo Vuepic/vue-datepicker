@@ -145,7 +145,6 @@
                     if (minute.value - +props.minutesIncrement < 0) {
                         emitSingleMinutesValue(59);
                     } else {
-                        minute.value -= +props.minutesIncrement;
                         emitSingleMinutesValue(minute.value - +props.minutesIncrement);
                     }
                 }
