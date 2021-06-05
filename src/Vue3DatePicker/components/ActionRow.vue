@@ -1,6 +1,12 @@
 <template>
     <div class="dp__action_row">
-        <div class="dp__selection_preview">{{ previewValue }}</div>
+        <div class="dp__selection_preview">
+            <template v-if="!Array.isArray(previewValue)">{{ previewValue }}</template>
+            <template v-if="Array.isArray(previewValue)">
+                <div>{{ previewValue[0] }}</div>
+                <div>{{ previewValue[1] }}</div>
+            </template>
+        </div>
         <div class="dp__action_buttons">
             <span class="dp__action dp__cancel" @click="$emit('closePicker')">{{ cancelText }}</span>
             <span class="dp__action dp__select" @click="$emit('selectDate')">{{ selectText }}</span>
@@ -31,7 +37,7 @@
             enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
         },
         setup(props: ActionRowProps) {
-            const previewValue = ref('');
+            const previewValue = ref<string | string[]>('');
             const singleModelValue = toRef(props, 'singleModelValue');
             const rangeModelValue = toRef(props, 'rangeModelValue');
 
@@ -76,7 +82,14 @@
             const formatRangePreview = (): void => {
                 if (props.rangeModelValue && props.rangeModelValue.length === 2) {
                     if (typeof props.previewFormat === 'object') {
-                        previewValue.value = formatRangeDate(props.rangeModelValue, props.locale, props.previewFormat);
+                        previewValue.value = formatRangeDate(
+                            props.rangeModelValue,
+                            props.locale,
+                            props.previewFormat,
+                            props.is24,
+                            props.enableTimePicker,
+                            true,
+                        );
                     } else {
                         previewValue.value = props.previewFormat(props.rangeModelValue);
                     }

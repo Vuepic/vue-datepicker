@@ -213,13 +213,13 @@
                 return (
                     compareTwoDates(
                         calendarDay.value,
-                        rangeModelValue.value[0]
+                        rangeModelValue.value && rangeModelValue.value[0]
                             ? new Date(JSON.parse(JSON.stringify(rangeModelValue.value[0])))
                             : null,
                     ) ||
                     compareTwoDates(
                         calendarDay.value,
-                        rangeModelValue.value[1]
+                        rangeModelValue.value && rangeModelValue.value[1]
                             ? new Date(JSON.parse(JSON.stringify(rangeModelValue.value[1])))
                             : null,
                     )
@@ -227,13 +227,13 @@
             };
 
             const rangeActive = (calendarDay: ICalendarDay): boolean => {
-                if (rangeModelValue.value[0] && rangeModelValue.value[1]) {
+                if (rangeModelValue.value && rangeModelValue.value[0] && rangeModelValue.value[1]) {
                     return (
                         calendarDay.value.getTime() > rangeModelValue.value[0].getTime() &&
                         calendarDay.value.getTime() < rangeModelValue.value[1].getTime()
                     );
                 }
-                if (rangeModelValue.value[0] && hoveredDate.value) {
+                if (rangeModelValue.value && rangeModelValue.value[0] && hoveredDate.value) {
                     return (
                         (calendarDay.value.getTime() > rangeModelValue.value[0].getTime() &&
                             calendarDay.value.getTime() < hoveredDate.value.getTime()) ||

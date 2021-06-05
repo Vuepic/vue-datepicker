@@ -81,11 +81,22 @@ export const formatSingleDate = (
 /**
  *  Format Date range into readable format, specified by props
  */
-export const formatRangeDate = (dates: Date[], locale: string, formatOptions: FormatOptions): string => {
-    return `${dates[0].toLocaleDateString(locale, formatOptions)} - ${dates[1].toLocaleDateString(
-        locale,
-        formatOptions,
-    )}`;
+export const formatRangeDate = (
+    dates: Date[],
+    locale: string,
+    formatOptions: FormatOptions,
+    is24: boolean,
+    showTime: boolean,
+    returnArr?: boolean,
+): string | string[] => {
+    let options = formatOptions;
+    if (showTime) {
+        options = Object.assign(options, { hour: 'numeric', minute: 'numeric', hour12: !is24 });
+    }
+    if (returnArr) {
+        return [dates[0].toLocaleDateString(locale, options), dates[1].toLocaleDateString(locale, options)];
+    }
+    return `${dates[0].toLocaleDateString(locale, options)} - ${dates[1].toLocaleDateString(locale, options)}`;
 };
 
 export const generateMinutes = (increment: number): IDefaultSelect[] => {

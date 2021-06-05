@@ -2,7 +2,7 @@
     <div id="app">
         <div class="wrapper">
             {{ selectedDate }}
-            <vue3-date-picker v-model="selectedDate" placeholder="select" />
+            <vue3-date-picker v-model="selectedDate" placeholder="select" range />
         </div>
     </div>
 </template>

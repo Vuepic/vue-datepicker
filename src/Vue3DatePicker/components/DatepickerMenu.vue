@@ -85,7 +85,9 @@
 
             const firstDate = computed((): Date => {
                 if (props.range) {
-                    return props.rangeModelValue[0] ? new Date(props.rangeModelValue[0]) : new Date();
+                    return props.rangeModelValue && props.rangeModelValue[0]
+                        ? new Date(props.rangeModelValue[0])
+                        : new Date();
                 } else {
                     return props.singleModelValue ? new Date(props.singleModelValue) : new Date();
                 }

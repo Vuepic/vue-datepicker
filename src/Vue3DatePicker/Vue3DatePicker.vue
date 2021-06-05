@@ -90,15 +90,11 @@
             weekNumName: { type: String as PropType<string>, default: 'W' }, // connected
             format: {
                 type: [Object, Function] as PropType<FormatOptions | ((date: Date | Date[]) => string)>,
-                default: () => ({
-                    hour: 'numeric',
-                    minute: 'numeric',
-                    hour12: false,
-                }),
+                default: () => ({}),
             }, // connected
             previewFormat: {
                 type: [Object, Function] as PropType<FormatOptions | ((date: Date | Date[]) => string)>,
-                default: () => ({ hour: 'numeric', minute: 'numeric', hour12: false }),
+                default: () => ({}),
             }, // connected
             inputClassName: { type: String as PropType<string>, default: null }, // connected
             menuClassName: { type: String as PropType<string>, default: null }, // connected
@@ -122,7 +118,7 @@
         setup(props: RDatepickerProps, { emit }) {
             const isOpen = ref(false);
             const menuPosition = ref({ top: '0', left: '0', transform: 'none' });
-            const internalValue = ref('');
+            const internalValue = ref<string | string[]>('');
             const singleModelValue = ref();
             const rangeModelValue = ref();
             const valueCleared = ref(false);
@@ -202,7 +198,13 @@
                     const dateValue = [new Date(rangeModelValue.value[0]), new Date(rangeModelValue.value[1])];
                     if (formatInternal) {
                         if (typeof props.format === 'object') {
-                            internalValue.value = formatRangeDate(dateValue, props.locale, props.format);
+                            internalValue.value = formatRangeDate(
+                                dateValue,
+                                props.locale,
+                                props.format,
+                                props.is24,
+                                props.enableTimePicker,
+                            );
                         } else {
                             internalValue.value = props.format(dateValue);
                         }
@@ -217,12 +219,19 @@
 
             const mapExternalToInternalValue = () => {
                 if (props.modelValue) {
-                    if (Array.isArray(props.modelValue)) {
-                        rangeModelValue.value = props.modelValue.slice();
+                    if (props.range) {
+                        if (Array.isArray(props.modelValue)) {
+                            rangeModelValue.value = props.modelValue.slice();
+                        } else {
+                            rangeModelValue.value = [];
+                        }
                     } else {
                         singleModelValue.value = new Date(props.modelValue);
                         formatSingleDateValue(true);
                     }
+                } else {
+                    rangeModelValue.value = [];
+                    singleModelValue.value = null;
                 }
             };
 
@@ -262,7 +271,6 @@
             const openMenu = (): void => {
                 if (!valueCleared.value) {
                     setMenuPosition();
-                    mapExternalToInternalValue();
                     isOpen.value = !isOpen.value;
 
                     if (!isOpen.value) {
@@ -270,11 +278,12 @@
                     }
                 }
                 valueCleared.value = false;
+                mapExternalToInternalValue();
             };
 
             const clearInternalValues = (): void => {
                 singleModelValue.value = null;
-                rangeModelValue.value = null;
+                rangeModelValue.value = [];
             };
 
             const closeMenu = (): void => {
