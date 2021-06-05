@@ -9,6 +9,7 @@
                             @handleHours="handleHours($event)"
                             @handleMinutes="handleMinutes($event)"
                             @setHours="setHours($event)"
+                            @setMinutes="setMinutes($event)"
                             :is24="is24"
                             :hour-display="hourDisplay"
                             :minute-display="minuteDisplay"
@@ -134,6 +135,10 @@
                 }
             };
 
+            const setMinutes = (minutes: number): void => {
+                emitSingleMinutesValue(minutes);
+            };
+
             const handleSingleMinutesValue = (type: string): void => {
                 if (type === 'increment') {
                     if (minute.value + +props.minutesIncrement >= 60) {
@@ -174,6 +179,7 @@
                 handleMinutes,
                 emitSingleHoursValue,
                 setHours,
+                setMinutes,
             };
         },
     });

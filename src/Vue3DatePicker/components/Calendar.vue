@@ -253,6 +253,7 @@
             const selectDate = (day: UnwrapRef<ICalendarDay>): void => {
                 if (!props.range) {
                     day.value.setHours(hoursSingle.value);
+                    day.value.setMinutes(minutesSingle.value);
                     emit('update:singleModelValue', day.value);
                 } else {
                     let rangeDate = rangeModelValue.value.slice();

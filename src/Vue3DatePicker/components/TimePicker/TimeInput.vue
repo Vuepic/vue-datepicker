@@ -34,6 +34,7 @@
         </SelectionGrid>
         <SelectionGrid
             v-if="minuteOverlay"
+            @update:modelValue="$emit('setMinutes', $event)"
             :items="getMinutesGridItems()"
             @selected="toggleMinuteOverlay"
             @toggle="toggleMinuteOverlay"
@@ -54,7 +55,7 @@
 
     export default defineComponent({
         name: 'TimeInput',
-        emits: ['handleHours', 'handleMinutes', 'setHours'],
+        emits: ['handleHours', 'handleMinutes', 'setHours', 'setMinutes'],
         components: {
             ChevronDownIcon,
             ChevronUpIcon,
