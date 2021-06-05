@@ -1,19 +1,27 @@
 <template>
     <div id="app">
         <div class="wrapper">
-            <vue3-date-picker placeholder="select" />
+            {{ selectedDate }}
+            <vue3-date-picker v-model="selectedDate" placeholder="select" />
         </div>
     </div>
 </template>
 
 <script lang="ts">
-    import { defineComponent } from 'vue';
+    import { defineComponent, ref } from 'vue';
     import Vue3DatePicker from '@/Vue3DatePicker/Vue3DatePicker.vue';
 
     export default defineComponent({
         name: 'ServeDev',
         components: {
             Vue3DatePicker,
+        },
+        setup() {
+            const selectedDate = ref();
+
+            return {
+                selectedDate,
+            };
         },
     });
 </script>

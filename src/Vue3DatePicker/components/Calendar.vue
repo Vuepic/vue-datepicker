@@ -1,45 +1,47 @@
 <template>
     <div :class="calendarClass">
-        <MonthYearInput
-            :months="months"
-            v-model:month="month"
-            v-model:year="year"
-            v-if="!disableMonthYearSelect"
-            :years="years"
-        />
-        <table class="dp__calendar_tb">
-            <thead>
-                <tr class="dp__calendar_days">
-                    <th class="dp__calendar_header_cell" v-if="weekNumbers">{{ weekNumName }}</th>
-                    <th class="dp__calendar_header_cell" v-for="(day, i) in weekDays" :key="i">{{ day }}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(week, weekInd) in mappedDates" :key="weekInd">
-                    <td v-if="weekNumbers" class="dp__cell dp__week_num">{{ getWeekDay(week.days) }}</td>
-                    <td
-                        class="dp__cell"
-                        v-for="(day, dayInd) in week.days"
-                        :key="dayInd + weekInd"
-                        @click="selectDate(day)"
-                        @mouseover="setHoverDate(day)"
-                    >
-                        <div class="dp__cell_inner" :class="day.classData">{{ day.text }}</div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <TimePicker
-            v-if="enableTimePicker"
-            :is24="is24"
-            :hours-increment="hoursIncrement"
-            :minutes-increment="minutesIncrement"
-            :hours-grid-increment="hoursGridIncrement"
-            :minutes-grid-increment="minutesGridIncrement"
-            :range="range"
-            v-model:hoursSingle="hoursSingle"
-            v-model:minutesSingle="minutesSingle"
-        />
+        <div class="dp__calendar_content_wrap">
+            <MonthYearInput
+                :months="months"
+                v-model:month="month"
+                v-model:year="year"
+                v-if="!disableMonthYearSelect"
+                :years="years"
+            />
+            <table class="dp__calendar_tb">
+                <thead>
+                    <tr class="dp__calendar_days">
+                        <th class="dp__calendar_header_cell" v-if="weekNumbers">{{ weekNumName }}</th>
+                        <th class="dp__calendar_header_cell" v-for="(day, i) in weekDays" :key="i">{{ day }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(week, weekInd) in mappedDates" :key="weekInd">
+                        <td v-if="weekNumbers" class="dp__cell dp__week_num">{{ getWeekDay(week.days) }}</td>
+                        <td
+                            class="dp__cell"
+                            v-for="(day, dayInd) in week.days"
+                            :key="dayInd + weekInd"
+                            @click="selectDate(day)"
+                            @mouseover="setHoverDate(day)"
+                        >
+                            <div class="dp__cell_inner" :class="day.classData">{{ day.text }}</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <TimePicker
+                v-if="enableTimePicker"
+                :is24="is24"
+                :hours-increment="hoursIncrement"
+                :minutes-increment="minutesIncrement"
+                :hours-grid-increment="hoursGridIncrement"
+                :minutes-grid-increment="minutesGridIncrement"
+                :range="range"
+                v-model:hoursSingle="hoursSingle"
+                v-model:minutesSingle="minutesSingle"
+            />
+        </div>
         <ActionRow
             v-if="!autoApply"
             :range-model-value="rangeModelValue"
