@@ -1,29 +1,29 @@
 <template>
     <div class="dp__time_input">
         <div class="dp__time_col">
-            <div class="dp__inc_dec_button" @click="$emit('handleHours', 'increment')">
+            <div class="dp__inc_dec_button" @click="handleHours('increment')">
                 <ChevronUpIcon />
             </div>
             <div class="dp__time_display" @click="toggleHourOverlay">{{ hourDisplay }}</div>
-            <div class="dp__inc_dec_button" @click="$emit('handleHours', 'decrement')">
+            <div class="dp__inc_dec_button" @click="handleHours('decrement')">
                 <ChevronDownIcon />
             </div>
         </div>
         <div class="dp__time_col">:</div>
         <div class="dp__time_col">
-            <div class="dp__inc_dec_button" @click="$emit('handleMinutes', 'increment')">
+            <div class="dp__inc_dec_button" @click="handleMinutes('increment')">
                 <ChevronUpIcon />
             </div>
             <div class="dp__time_display" @click="toggleMinuteOverlay">
                 {{ minuteDisplay }}
             </div>
-            <div class="dp__inc_dec_button" @click="$emit('handleMinutes', 'decrement')">
+            <div class="dp__inc_dec_button" @click="handleMinutes('decrement')">
                 <ChevronDownIcon />
             </div>
         </div>
         <SelectionGrid
             v-if="hourOverlay"
-            @update:modelValue="$emit('setHours', $event)"
+            @update:modelValue="$emit('update:hours', $event)"
             :items="getHoursGridItems()"
             @selected="toggleHourOverlay"
             @toggle="toggleHourOverlay"
@@ -34,7 +34,7 @@
         </SelectionGrid>
         <SelectionGrid
             v-if="minuteOverlay"
-            @update:modelValue="$emit('setMinutes', $event)"
+            @update:modelValue="$emit('update:minutes', $event)"
             :items="getMinutesGridItems()"
             @selected="toggleMinuteOverlay"
             @toggle="toggleMinuteOverlay"
@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-    import { defineComponent, PropType, ref } from 'vue';
+    import { computed, defineComponent, PropType, ref, toRef } from 'vue';
     import { ChevronUpIcon, ChevronDownIcon, ClockIcon } from '../Icons';
     import { IDefaultSelect, TimeInputProps } from '../../interfaces';
     import { getArrayInArray } from '../../utils/util';
@@ -55,7 +55,7 @@
 
     export default defineComponent({
         name: 'TimeInput',
-        emits: ['handleHours', 'handleMinutes', 'setHours', 'setMinutes'],
+        emits: ['setHours', 'setMinutes', 'update:hours', 'update:minutes'],
         components: {
             ChevronDownIcon,
             ChevronUpIcon,
@@ -63,16 +63,28 @@
             SelectionGrid,
         },
         props: {
-            hourDisplay: { type: String as PropType<string>, default: '' },
-            minuteDisplay: { type: String as PropType<string>, default: '' },
+            hours: { type: Number as PropType<number>, default: 0 },
+            minutes: { type: Number as PropType<number>, default: 0 },
             hoursGridIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
             minutesGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 },
+            hoursIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
+            minutesIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
             is24: { type: Boolean as PropType<boolean>, default: true },
         },
-        setup(props: TimeInputProps) {
+        setup(props: TimeInputProps, { emit }) {
             const showTimePicker = ref(false);
             const hourOverlay = ref(false);
             const minuteOverlay = ref(false);
+            const hours = toRef(props, 'hours');
+            const minutes = toRef(props, 'minutes');
+
+            const hourDisplay = computed((): string => {
+                return hours.value < 10 ? `0${hours.value}` : `${hours.value}`;
+            });
+
+            const minuteDisplay = computed((): string => {
+                return minutes.value < 10 ? `0${minutes.value}` : `${minutes.value}`;
+            });
 
             const generateGridItems = (loopMax: number, increment: number) => {
                 const generatedArray: IDefaultSelect[] = [];
@@ -101,14 +113,53 @@
                 minuteOverlay.value = !minuteOverlay.value;
             };
 
+            const handleHours = (type: string): void => {
+                if (type === 'increment') {
+                    if (
+                        (props.is24 && hours.value + +props.hoursIncrement >= 24) ||
+                        (!props.is24 && hours.value + +props.hoursIncrement >= 12)
+                    ) {
+                        emit('update:hours', 0);
+                    } else {
+                        emit('update:hours', hours.value + +props.hoursIncrement);
+                    }
+                } else {
+                    if (hours.value - +props.hoursIncrement < 0) {
+                        emit('update:hours', props.is24 ? 23 : 11);
+                    } else {
+                        emit('update:hours', hours.value - +props.hoursIncrement);
+                    }
+                }
+            };
+
+            const handleMinutes = (type: string): void => {
+                if (type === 'increment') {
+                    if (minutes.value + +props.minutesIncrement >= 60) {
+                        emit('update:minutes', 0);
+                    } else {
+                        emit('update:minutes', minutes.value + +props.minutesIncrement);
+                    }
+                } else {
+                    if (minutes.value - +props.minutesIncrement < 0) {
+                        emit('update:minutes', 59);
+                    } else {
+                        emit('update:minutes', minutes.value - +props.minutesIncrement);
+                    }
+                }
+            };
+
             return {
                 showTimePicker,
                 hourOverlay,
                 minuteOverlay,
+                hourDisplay,
+                minuteDisplay,
                 toggleHourOverlay,
                 toggleMinuteOverlay,
                 getHoursGridItems,
                 getMinutesGridItems,
+                handleHours,
+                handleMinutes,
             };
         },
     });

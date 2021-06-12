@@ -169,6 +169,8 @@ export interface TimePickerProps {
     hoursSingle: number;
     minutesSingle: number;
     range: boolean;
+    hoursRange: IHoursRange;
+    minutesRange: IMinutesRange;
 }
 
 export interface IHoursMinutes {
@@ -204,9 +206,14 @@ export interface ActionRowProps {
 }
 
 export interface TimeInputProps {
-    hourDisplay: string;
-    minuteDisplay: string;
+    hoursIncrement: number | string;
+    minutesIncrement: number | string;
+    hours: number;
+    minutes: number;
     hoursGridIncrement: string | number;
     minutesGridIncrement: string | number;
     is24: boolean;
 }
+
+export type IHoursRange = [number, number];
+export type IMinutesRange = [number, number];

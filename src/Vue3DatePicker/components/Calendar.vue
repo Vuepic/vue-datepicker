@@ -40,6 +40,8 @@
                 :range="range"
                 v-model:hoursSingle="hoursSingle"
                 v-model:minutesSingle="minutesSingle"
+                v-model:hoursRange="hoursRange"
+                v-model:minutesRange="minutesRange"
             />
         </div>
         <ActionRow
@@ -115,7 +117,9 @@
         setup(props: CalendarProps, { emit }) {
             const weekDays = ref();
             const hoursSingle = ref(0);
+            const hoursRange = ref([0, 0]);
             const minutesSingle = ref(0);
+            const minutesRange = ref([0, 0]);
             const month = ref(0);
             const year = ref(0);
             const day = ref(0);
@@ -143,6 +147,18 @@
                 }
             });
 
+            watch(hoursRange, () => {
+                if (props.rangeModelValue.length === 2) {
+                    updateHoursRange();
+                }
+            });
+
+            watch(minutesRange, () => {
+                if (props.rangeModelValue.length === 2) {
+                    updateMinutesRange();
+                }
+            });
+
             onMounted(() => {
                 if (props.startDate) {
                     setStartDate(props.startDate);
@@ -155,6 +171,11 @@
                 if (singleModelValue.value) {
                     hoursSingle.value = singleModelValue.value.getHours();
                     minutesSingle.value = singleModelValue.value.getMinutes();
+                }
+
+                if (rangeModelValue.value && rangeModelValue.value[0] && rangeModelValue.value[1]) {
+                    hoursRange.value = [rangeModelValue.value[0].getHours(), rangeModelValue.value[1].getHours()];
+                    minutesRange.value = [rangeModelValue.value[0].getMinutes(), rangeModelValue.value[1].getMinutes()];
                 }
             });
 
@@ -269,6 +290,14 @@
                             rangeDate[1] = day.value;
                         }
                     }
+                    if (rangeDate[0]) {
+                        rangeDate[0].setHours(hoursRange.value[0]);
+                        rangeDate[0].setMinutes(minutesRange.value[0]);
+                    }
+                    if (rangeDate[1]) {
+                        rangeDate[1].setHours(hoursRange.value[1]);
+                        rangeDate[1].setMinutes(minutesRange.value[1]);
+                    }
                     emit('update:rangeModelValue', rangeDate);
                 }
             };
@@ -294,10 +323,28 @@
                 emit('update:singleModelValue', newDate);
             };
 
+            const updateHoursRange = (): void => {
+                const copyDates = JSON.parse(JSON.stringify(rangeModelValue.value));
+                const newDate1 = new Date(copyDates[0]);
+                const newDate2 = new Date(copyDates[1]);
+                newDate1.setHours(hoursRange.value[0]);
+                newDate2.setHours(hoursRange.value[1]);
+                emit('update:rangeModelValue', [newDate1, newDate2]);
+            };
+
             const updateMinutesSingle = (): void => {
                 const newDate = new Date(JSON.parse(JSON.stringify(props.singleModelValue)));
                 newDate.setMinutes(minutesSingle.value);
                 emit('update:singleModelValue', newDate);
+            };
+
+            const updateMinutesRange = (): void => {
+                const copyDates = JSON.parse(JSON.stringify(rangeModelValue.value));
+                const newDate1 = new Date(copyDates[0]);
+                const newDate2 = new Date(copyDates[1]);
+                newDate1.setMinutes(minutesRange.value[0]);
+                newDate2.setMinutes(minutesRange.value[1]);
+                emit('update:rangeModelValue', [newDate1, newDate2]);
             };
 
             return {
@@ -314,6 +361,8 @@
                 day,
                 hoursSingle,
                 minutesSingle,
+                hoursRange,
+                minutesRange,
             };
         },
     });
