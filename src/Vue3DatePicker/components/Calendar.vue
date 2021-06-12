@@ -137,25 +137,25 @@
 
             watch(hoursSingle, () => {
                 if (props.singleModelValue) {
-                    updateHoursSingle();
+                    updateSingleDateTime();
                 }
             });
 
             watch(minutesSingle, () => {
                 if (props.singleModelValue) {
-                    updateMinutesSingle();
+                    updateSingleDateTime();
                 }
             });
 
             watch(hoursRange, () => {
                 if (props.rangeModelValue.length === 2) {
-                    updateHoursRange();
+                    updateRangeDateTimes();
                 }
             });
 
             watch(minutesRange, () => {
                 if (props.rangeModelValue.length === 2) {
-                    updateMinutesRange();
+                    updateRangeDateTimes();
                 }
             });
 
@@ -179,8 +179,15 @@
                 }
             });
 
+            /**
+             * Hook call. Gets array of dates in the single month grouped in by week.
+             * It will also get days in the offset from the previous/next month to fill the empty space
+             */
             const dates = useDpDaysGen(month, year, +props.weekStart);
 
+            /**
+             * Generate array of years depending on provided range that will be available for picker
+             */
             const years = computed((): IDefaultSelect[] => {
                 const years: IDefaultSelect[] = [];
                 for (let minYear = props.yearRange[0]; minYear <= props.yearRange[1]; minYear++) {
@@ -189,6 +196,9 @@
                 return years;
             });
 
+            /**
+             * Class object for top most calendar wrapper
+             */
             const calendarClass = computed(
                 (): DynamicClass => ({
                     ['dp__calendar']: true,
@@ -196,6 +206,10 @@
                 }),
             );
 
+            /**
+             * Array of the dates from which calendar is built.
+             * It also sets classes depending on picker modes, active dates, today, v-model.
+             */
             const mappedDates = computed((): ICalendarDate[] => {
                 return dates.value.map((date) => {
                     return {
@@ -216,6 +230,9 @@
                 });
             });
 
+            /**
+             * Compare if 2 dates are the same date by year, month, day
+             */
             const compareTwoDates = (dateOne: Date, dateTwo: Date | null): boolean => {
                 if (dateOne && dateTwo) {
                     const [dateOneDay, dateTwoDay] = [dateOne.getDate(), dateTwo.getDate()];
@@ -227,6 +244,9 @@
                 return false;
             };
 
+            /**
+             * Check if some date is active, in case of range, it will have to dates
+             */
             const isActiveDate = (calendarDay: ICalendarDay): boolean => {
                 if (!props.range) {
                     return compareTwoDates(calendarDay.value, singleModelValue.value);
@@ -247,30 +267,50 @@
                 );
             };
 
+            /**
+             * Used when comparing dates when time is used, so it will reset date to 0, 0 and return timestamp
+             */
+            const getTimestamp = (date: Date): number => {
+                const dateCopy = new Date(date);
+                dateCopy.setHours(0, 0);
+                return dateCopy.getTime();
+            };
+
+            /**
+             * If range mode used, this will check if the calendar day is between 2 active dates
+             */
             const rangeActive = (calendarDay: ICalendarDay): boolean => {
                 if (rangeModelValue.value && rangeModelValue.value[0] && rangeModelValue.value[1]) {
                     return (
-                        calendarDay.value.getTime() > rangeModelValue.value[0].getTime() &&
-                        calendarDay.value.getTime() < rangeModelValue.value[1].getTime()
+                        getTimestamp(calendarDay.value) > getTimestamp(rangeModelValue.value[0]) &&
+                        getTimestamp(calendarDay.value) < getTimestamp(rangeModelValue.value[1])
                     );
                 }
                 if (rangeModelValue.value && rangeModelValue.value[0] && hoveredDate.value) {
                     return (
-                        (calendarDay.value.getTime() > rangeModelValue.value[0].getTime() &&
-                            calendarDay.value.getTime() < hoveredDate.value.getTime()) ||
-                        (calendarDay.value.getTime() < rangeModelValue.value[0].getTime() &&
-                            calendarDay.value.getTime() > hoveredDate.value.getTime())
+                        (getTimestamp(calendarDay.value) > getTimestamp(rangeModelValue.value[0]) &&
+                            getTimestamp(calendarDay.value) < getTimestamp(hoveredDate.value)) ||
+                        (getTimestamp(calendarDay.value) < getTimestamp(rangeModelValue.value[0]) &&
+                            getTimestamp(calendarDay.value) > getTimestamp(hoveredDate.value))
                     );
                 }
                 return false;
             };
 
+            /**
+             * Staring position of the calendar when opened
+             */
             const setStartDate = (date: Date): void => {
                 month.value = date.getMonth();
                 year.value = date.getFullYear();
                 day.value = date.getDate();
             };
 
+            /**
+             * Called when the date in the calendar is clicked, on single just emit date,
+             * on range pick, do a calculation for start and end dates and emit.
+             * Time values are set here also, if they are added before the date selection
+             */
             const selectDate = (day: UnwrapRef<ICalendarDay>): void => {
                 if (!props.range) {
                     day.value.setHours(hoursSingle.value);
@@ -291,17 +331,18 @@
                         }
                     }
                     if (rangeDate[0]) {
-                        rangeDate[0].setHours(hoursRange.value[0]);
-                        rangeDate[0].setMinutes(minutesRange.value[0]);
+                        rangeDate[0].setHours(hoursRange.value[0], minutesRange.value[0]);
                     }
                     if (rangeDate[1]) {
-                        rangeDate[1].setHours(hoursRange.value[1]);
-                        rangeDate[1].setMinutes(minutesRange.value[1]);
+                        rangeDate[1].setHours(hoursRange.value[1], minutesRange.value[1]);
                     }
                     emit('update:rangeModelValue', rangeDate);
                 }
             };
 
+            /**
+             * Get week number if enabled
+             */
             const getWeekDay = (days: UnwrapRef<ICalendarDay[]>): string | number => {
                 const firstCurrentData = days.find((day) => day.current);
                 if (firstCurrentData) {
@@ -313,37 +354,40 @@
                 return '';
             };
 
+            /**
+             * When using range picker keep track of hovered value in the calendar
+             */
             const setHoverDate = (day: UnwrapRef<ICalendarDay>): void => {
                 hoveredDate.value = day.value;
             };
 
-            const updateHoursSingle = (): void => {
+            /**
+             * Set hours and minutes on a single date when they are updated in time picker
+             */
+            const updateSingleDateTime = (): void => {
                 const newDate = new Date(JSON.parse(JSON.stringify(props.singleModelValue)));
-                newDate.setHours(hoursSingle.value);
+                newDate.setHours(hoursSingle.value, minutesSingle.value);
                 emit('update:singleModelValue', newDate);
             };
 
-            const updateHoursRange = (): void => {
+            /**
+             * Hard copy range model values and return them as date objects
+             * For comparing data, set hours and minutes to 0
+             */
+            const getRangeCopy = (): [Date, Date] => {
                 const copyDates = JSON.parse(JSON.stringify(rangeModelValue.value));
                 const newDate1 = new Date(copyDates[0]);
                 const newDate2 = new Date(copyDates[1]);
-                newDate1.setHours(hoursRange.value[0]);
-                newDate2.setHours(hoursRange.value[1]);
-                emit('update:rangeModelValue', [newDate1, newDate2]);
+                return [newDate1, newDate2];
             };
 
-            const updateMinutesSingle = (): void => {
-                const newDate = new Date(JSON.parse(JSON.stringify(props.singleModelValue)));
-                newDate.setMinutes(minutesSingle.value);
-                emit('update:singleModelValue', newDate);
-            };
-
-            const updateMinutesRange = (): void => {
-                const copyDates = JSON.parse(JSON.stringify(rangeModelValue.value));
-                const newDate1 = new Date(copyDates[0]);
-                const newDate2 = new Date(copyDates[1]);
-                newDate1.setMinutes(minutesRange.value[0]);
-                newDate2.setMinutes(minutesRange.value[1]);
+            /**
+             * Set hours and minutes on range date values, when they are updated in time picker
+             */
+            const updateRangeDateTimes = (): void => {
+                const [newDate1, newDate2] = getRangeCopy();
+                newDate1.setHours(hoursRange.value[0], minutesRange.value[0]);
+                newDate2.setHours(hoursRange.value[1], minutesRange.value[1]);
                 emit('update:rangeModelValue', [newDate1, newDate2]);
             };
 
