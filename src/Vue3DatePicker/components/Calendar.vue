@@ -259,7 +259,7 @@
             };
 
             /**
-             * Check if some date is active, in case of range, it will have to dates
+             * Check if some date is active, in case of range, it will have two dates
              */
             const isActiveDate = (calendarDay: ICalendarDay): boolean => {
                 if (!props.range) {
