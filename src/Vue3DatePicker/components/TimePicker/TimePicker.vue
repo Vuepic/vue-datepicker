@@ -18,7 +18,6 @@
                         />
                     </template>
                     <template v-if="range">
-                        {{ hoursRange }}
                         <TimeInput
                             :hours="hoursRange[0]"
                             :minutes="minutesRange[0]"
