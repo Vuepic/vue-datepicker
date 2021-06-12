@@ -37,6 +37,8 @@
                 :calendar-cell-class-name="calendarCellClassName"
                 :hours-grid-increment="hoursGridIncrement"
                 :minutes-grid-increment="minutesGridIncrement"
+                :min-date="minDate"
+                :max-date="maxDate"
                 :style="menuPosition"
                 :range="range"
                 :auto-apply="autoApply"
@@ -81,8 +83,8 @@
             minutesIncrement: { type: [String, Number] as PropType<string | number>, default: 1 }, // connected
             hoursGridIncrement: { type: [String, Number] as PropType<string | number>, default: 1 }, // connected
             minutesGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 }, // connected
-            minDate: { type: [Date, String] as PropType<Date | string>, default: null },
-            maxDate: { type: [Date, String] as PropType<Date | string>, default: null },
+            minDate: { type: [Date, String] as PropType<Date | string>, default: null }, // connected
+            maxDate: { type: [Date, String] as PropType<Date | string>, default: null }, // connected
             timeRange: { type: Array as PropType<number[]>, default: null },
             weekStart: { type: [String, Number] as PropType<string | number>, default: 1 }, // connected
             disabled: { type: Boolean as PropType<boolean>, default: false }, // connected

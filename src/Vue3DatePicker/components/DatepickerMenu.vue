@@ -21,6 +21,8 @@
             :locale="locale"
             :week-num-name="weekNumName"
             :preview-format="previewFormat"
+            :min-date="minDate"
+            :max-date="maxDate"
             @selectRangeDate="$emit('update:rangeModelValue', $event)"
             @closePicker="$emit('closePicker')"
             @selectDate="$emit('selectDate')"
@@ -59,6 +61,8 @@
             minutesIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
             hoursGridIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
             minutesGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 },
+            minDate: { type: [Date, String] as PropType<Date | string>, default: null },
+            maxDate: { type: [Date, String] as PropType<Date | string>, default: null },
             autoApply: { type: Boolean as PropType<boolean>, default: false },
             selectText: { type: String as PropType<string>, default: 'Select' },
             cancelText: { type: String as PropType<string>, default: 'Cancel' },

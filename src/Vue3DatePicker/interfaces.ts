@@ -107,6 +107,8 @@ export interface DatepickerMenuProps {
     cancelText: string;
     previewFormat: FormatOptions | ((date: Date | Date[]) => string);
     locale: string;
+    minDate: Date | string;
+    maxDate: Date | string;
 }
 
 export interface CalendarProps {
@@ -133,6 +135,8 @@ export interface CalendarProps {
     cancelText: string;
     previewFormat: FormatOptions | ((date: Date | Date[]) => string);
     locale: string;
+    minDate: Date | string;
+    maxDate: Date | string;
 }
 
 export interface MonthYearPickerProps {

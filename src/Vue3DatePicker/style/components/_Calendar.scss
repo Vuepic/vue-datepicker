@@ -46,6 +46,11 @@
     color: $dp__secondary_color;
 }
 
+.dp__cell_disabled {
+    color: $dp__secondary_color;
+    cursor: not-allowed;
+}
+
 .dp__active_date {
     background: $dp__primary_color;
     color: $dp__primary_text_color;

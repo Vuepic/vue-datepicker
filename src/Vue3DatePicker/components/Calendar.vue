@@ -113,6 +113,8 @@
             },
             locale: { type: String as PropType<string>, default: 'en-US' },
             weekNumName: { type: String as PropType<string>, default: 'W' },
+            minDate: { type: [Date, String] as PropType<Date | string>, default: null },
+            maxDate: { type: [Date, String] as PropType<Date | string>, default: null },
         },
         setup(props: CalendarProps, { emit }) {
             const weekDays = ref();
@@ -207,6 +209,16 @@
             );
 
             /**
+             * CHeck if date is between max and min date
+             */
+            const isDisabled = (date: Date): boolean => {
+                const aboveMax = props.maxDate ? getTimestamp(date) > getTimestamp(new Date(props.maxDate)) : false;
+                const bellowMin = props.minDate ? getTimestamp(date) < getTimestamp(new Date(props.minDate)) : false;
+
+                return aboveMax || bellowMin;
+            };
+
+            /**
              * Array of the dates from which calendar is built.
              * It also sets classes depending on picker modes, active dates, today, v-model.
              */
@@ -215,13 +227,15 @@
                     return {
                         ...date,
                         days: date.days.map((calendarDay) => {
+                            const disabled = isDisabled(calendarDay.value);
                             calendarDay.classData = {
                                 ['dp__cell_offset']: !calendarDay.current,
-                                ['dp__pointer']: true,
+                                ['dp__pointer']: !disabled,
                                 ['dp__active_date']: isActiveDate(calendarDay),
-                                ['dp__date_hover']: !isActiveDate(calendarDay),
-                                ['dp__range_between']: props.range ? rangeActive(calendarDay) : false,
+                                ['dp__date_hover']: !disabled && !isActiveDate(calendarDay),
+                                ['dp__range_between']: props.range && !disabled ? rangeActive(calendarDay) : false,
                                 ['dp__today']: compareTwoDates(calendarDay.value, today.value),
+                                ['dp__cell_disabled']: disabled,
                                 [props.calendarCellClassName]: !!props.calendarCellClassName,
                             };
                             return calendarDay;
@@ -312,6 +326,9 @@
              * Time values are set here also, if they are added before the date selection
              */
             const selectDate = (day: UnwrapRef<ICalendarDay>): void => {
+                if (isDisabled(day.value)) {
+                    return;
+                }
                 if (!props.range) {
                     day.value.setHours(hoursSingle.value);
                     day.value.setMinutes(minutesSingle.value);
