@@ -45,6 +45,7 @@
                 :locale="locale"
                 :week-num-name="weekNumName"
                 :preview-format="previewFormat"
+                :disabled-dates="disabledDates"
                 v-model:singleModelValue="singleModelValue"
                 v-model:rangeModelValue="rangeModelValue"
                 @closePicker="closeMenu"
@@ -112,7 +113,7 @@
             filters: { type: Object as PropType<IDateFilter>, default: null },
             disableMonthYearSelect: { type: Boolean as PropType<boolean>, default: false }, // connected
             yearRange: { type: Array as PropType<number[]>, default: () => [2000, 2050] }, // connected, todo - at the end increase range
-            disabledDaysOfTheWeek: { type: Array as PropType<number[]>, default: null },
+            disabledDates: { type: Array as PropType<Date[] | string[]>, default: () => [] }, // connected
             inline: { type: Boolean as PropType<boolean>, default: false }, // connected
             selectText: { type: String as PropType<string>, default: 'Select' }, // connected
             cancelText: { type: String as PropType<string>, default: 'Cancel' }, // connected

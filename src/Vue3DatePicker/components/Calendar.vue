@@ -115,6 +115,7 @@
             weekNumName: { type: String as PropType<string>, default: 'W' },
             minDate: { type: [Date, String] as PropType<Date | string>, default: null },
             maxDate: { type: [Date, String] as PropType<Date | string>, default: null },
+            disabledDates: { type: Array as PropType<Date[] | string[]>, default: () => [] },
         },
         setup(props: CalendarProps, { emit }) {
             const weekDays = ref();
@@ -214,8 +215,11 @@
             const isDisabled = (date: Date): boolean => {
                 const aboveMax = props.maxDate ? getTimestamp(date) > getTimestamp(new Date(props.maxDate)) : false;
                 const bellowMin = props.minDate ? getTimestamp(date) < getTimestamp(new Date(props.minDate)) : false;
+                const inDisableArr = props.disabledDates.some(
+                    (disabledDate: Date | string) => getTimestamp(new Date(disabledDate)) === getTimestamp(date),
+                );
 
-                return aboveMax || bellowMin;
+                return aboveMax || bellowMin || inDisableArr;
             };
 
             /**

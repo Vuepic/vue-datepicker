@@ -55,7 +55,7 @@ export interface RDatepickerProps {
     filters: IDateFilter;
     disableMonthYearSelect: boolean;
     yearRange: number[];
-    disabledDaysOfTheWeek: number[];
+    disabledDates: Date[] | string[];
     inline: boolean;
     selectText: string;
     cancelText: string;
@@ -109,6 +109,7 @@ export interface DatepickerMenuProps {
     locale: string;
     minDate: Date | string;
     maxDate: Date | string;
+    disabledDates: Date[] | string[];
 }
 
 export interface CalendarProps {
@@ -137,6 +138,7 @@ export interface CalendarProps {
     locale: string;
     minDate: Date | string;
     maxDate: Date | string;
+    disabledDates: Date[] | string[];
 }
 
 export interface MonthYearPickerProps {

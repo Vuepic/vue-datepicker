@@ -23,6 +23,7 @@
             :preview-format="previewFormat"
             :min-date="minDate"
             :max-date="maxDate"
+            :disabled-dates="disabledDates"
             @selectRangeDate="$emit('update:rangeModelValue', $event)"
             @closePicker="$emit('closePicker')"
             @selectDate="$emit('selectDate')"
@@ -72,6 +73,7 @@
             },
             locale: { type: String as PropType<string>, default: 'en-US' },
             weekNumName: { type: String as PropType<string>, default: 'W' },
+            disabledDates: { type: Array as PropType<Date[] | string[]>, default: () => [] },
         },
         setup(props: DatepickerMenuProps, { emit }) {
             const mappedMonths = computed((): IMonth[] =>
