@@ -25,6 +25,8 @@
             :max-date="maxDate"
             :disabled-dates="disabledDates"
             :filters="assignedFilter"
+            :min-time="minTime"
+            :max-time="maxTime"
             @selectRangeDate="$emit('update:rangeModelValue', $event)"
             @closePicker="$emit('closePicker')"
             @selectDate="$emit('selectDate')"
@@ -38,7 +40,7 @@
     import { computed, defineComponent, onMounted, PropType, ref } from 'vue';
     import Calendar from './Calendar.vue';
 
-    import { DatepickerMenuProps, IMonth, DynamicClass, FormatOptions, IDateFilter } from '../interfaces';
+    import { DatepickerMenuProps, IMonth, DynamicClass, FormatOptions, IDateFilter, ITimeRange } from '../interfaces';
     import { useBindValue } from '../utils/hooks';
     import { getMonthNames } from '../utils/util';
 
@@ -76,6 +78,8 @@
             weekNumName: { type: String as PropType<string>, default: 'W' },
             disabledDates: { type: Array as PropType<Date[] | string[]>, default: () => [] },
             filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
+            minTime: { type: Object as PropType<ITimeRange>, default: () => ({}) },
+            maxTime: { type: Object as PropType<ITimeRange>, default: () => ({}) },
         },
         setup(props: DatepickerMenuProps, { emit }) {
             const assignedFilter = ref({});

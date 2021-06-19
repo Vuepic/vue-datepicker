@@ -21,6 +21,11 @@ export interface IDateFilter {
     times: { hours: number[]; minutes: number[] };
 }
 
+export interface ITimeRange {
+    hours: number | string;
+    minutes: number | string;
+}
+
 export interface RDatepickerProps {
     id: string;
     is24: boolean;
@@ -37,7 +42,8 @@ export interface RDatepickerProps {
     minutesIncrement: number | string;
     minDate: Date | string;
     maxDate: Date | string;
-    timeRange: number[];
+    minTime: ITimeRange;
+    maxTime: ITimeRange;
     weekStart: string | number;
     disabled: boolean;
     readonly: boolean;
@@ -68,7 +74,6 @@ export interface DatepickerInputProps {
     placeholder: string;
     disabled: boolean;
     readonly: boolean;
-    // size: ESizes;
     inputClassName: string;
     hideInputIcon: boolean;
     state: boolean;
@@ -112,6 +117,8 @@ export interface DatepickerMenuProps {
     maxDate: Date | string;
     disabledDates: Date[] | string[];
     filters: IDateFilter;
+    minTime: ITimeRange;
+    maxTime: ITimeRange;
 }
 
 export interface CalendarProps {
@@ -142,6 +149,8 @@ export interface CalendarProps {
     maxDate: Date | string;
     disabledDates: Date[] | string[];
     filters: IDateFilter;
+    minTime: ITimeRange;
+    maxTime: ITimeRange;
 }
 
 export interface MonthYearPickerProps {
@@ -181,6 +190,9 @@ export interface TimePickerProps {
     range: boolean;
     hoursRange: IHoursRange;
     minutesRange: IMinutesRange;
+    filters: IDateFilter;
+    minTime: ITimeRange;
+    maxTime: ITimeRange;
 }
 
 export interface IHoursMinutes {
@@ -202,6 +214,8 @@ export interface SelectionGridProps {
     items: IDefaultSelect[][];
     id: string;
     disabledValues: number[];
+    minValue: number | string;
+    maxValue: number | string;
 }
 
 export interface ActionRowProps {
@@ -225,6 +239,8 @@ export interface TimeInputProps {
     minutesGridIncrement: string | number;
     is24: boolean;
     filters: IDateFilter;
+    minTime: ITimeRange;
+    maxTime: ITimeRange;
 }
 
 export type IHoursRange = [number, number];

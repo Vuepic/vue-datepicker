@@ -48,6 +48,8 @@
                 :preview-format="previewFormat"
                 :disabled-dates="disabledDates"
                 :filters="filters"
+                :min-time="minTime"
+                :max-time="maxTime"
                 v-model:singleModelValue="singleModelValue"
                 v-model:rangeModelValue="rangeModelValue"
                 @closePicker="closeMenu"
@@ -60,7 +62,7 @@
 
 <script lang="ts">
     import { computed, defineComponent, onMounted, onUnmounted, PropType, ref, toRef, watch } from 'vue';
-    import { FormatOptions, IDateFilter, OpenPosition, RDatepickerProps } from './interfaces';
+    import { FormatOptions, IDateFilter, ITimeRange, OpenPosition, RDatepickerProps } from './interfaces';
     import DatepickerInput from './components/DatepickerInput.vue';
     import DatepickerMenu from './components/DatepickerMenu.vue';
     import { formatRangeDate, formatSingleDate } from './utils/util';
@@ -88,7 +90,8 @@
             minutesGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 }, // connected
             minDate: { type: [Date, String] as PropType<Date | string>, default: null }, // connected
             maxDate: { type: [Date, String] as PropType<Date | string>, default: null }, // connected
-            timeRange: { type: Array as PropType<number[]>, default: null },
+            minTime: { type: Object as PropType<ITimeRange>, default: () => ({}) }, // connected
+            maxTime: { type: Object as PropType<ITimeRange>, default: () => ({}) }, // connected
             weekStart: { type: [String, Number] as PropType<string | number>, default: 1 }, // connected
             disabled: { type: Boolean as PropType<boolean>, default: false }, // connected
             readonly: { type: Boolean as PropType<boolean>, default: false }, // connected
@@ -112,7 +115,7 @@
             calendarBorder: { type: Boolean as PropType<boolean>, default: false },
             closeOnScroll: { type: Boolean as PropType<boolean>, default: true }, // connected
             autoApply: { type: Boolean as PropType<boolean>, default: false }, // connected
-            filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
+            filters: { type: Object as PropType<IDateFilter>, default: () => ({}) }, // connected
             disableMonthYearSelect: { type: Boolean as PropType<boolean>, default: false }, // connected
             yearRange: { type: Array as PropType<number[]>, default: () => [2000, 2050] }, // connected, todo - at the end increase range
             disabledDates: { type: Array as PropType<Date[] | string[]>, default: () => [] }, // connected

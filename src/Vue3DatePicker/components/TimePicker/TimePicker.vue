@@ -16,6 +16,8 @@
                             :hours-increment="hoursIncrement"
                             :minutes-increment="minutesIncrement"
                             :filters="filters"
+                            :max-time="maxTime"
+                            :min-time="minTime"
                         />
                     </template>
                     <template v-if="range">
@@ -30,6 +32,8 @@
                             :hours-increment="hoursIncrement"
                             :minutes-increment="minutesIncrement"
                             :filters="filters"
+                            :max-time="maxTime"
+                            :min-time="minTime"
                         />
                         <TimeInput
                             :hours="hoursRange[1]"
@@ -42,6 +46,8 @@
                             :hours-increment="hoursIncrement"
                             :minutes-increment="minutesIncrement"
                             :filters="filters"
+                            :max-time="maxTime"
+                            :min-time="minTime"
                         />
                     </template>
                     <!-- todo - add this -->
@@ -57,7 +63,7 @@
 
 <script lang="ts">
     import { defineComponent, PropType, ref } from 'vue';
-    import { IDateFilter, IHoursRange, IMinutesRange } from '../../interfaces';
+    import { IDateFilter, IHoursRange, IMinutesRange, ITimeRange } from '../../interfaces';
     import { ClockIcon, CalendarIcon } from '../Icons';
     import TimeInput from './TimeInput.vue';
 
@@ -81,6 +87,8 @@
             minutesRange: { type: Array as unknown as PropType<IMinutesRange>, default: () => [0, 0] },
             range: { type: Boolean as PropType<boolean>, default: false },
             filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
+            minTime: { type: Object as PropType<ITimeRange>, default: () => ({}) },
+            maxTime: { type: Object as PropType<ITimeRange>, default: () => ({}) },
         },
         setup() {
             const showTimePicker = ref(false);

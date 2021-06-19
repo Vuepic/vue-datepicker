@@ -39,11 +39,13 @@
                 :hours-grid-increment="hoursGridIncrement"
                 :minutes-grid-increment="minutesGridIncrement"
                 :range="range"
+                :filters="filters"
+                :min-time="minTime"
+                :max-time="maxTime"
                 v-model:hoursSingle="hoursSingle"
                 v-model:minutesSingle="minutesSingle"
                 v-model:hoursRange="hoursRange"
                 v-model:minutesRange="minutesRange"
-                :filters="filters"
             />
         </div>
         <ActionRow
@@ -77,6 +79,7 @@
         IDefaultSelect,
         FormatOptions,
         IDateFilter,
+        ITimeRange,
     } from '../interfaces';
     import { useDpDaysGen } from '../utils/hooks';
     import { getDayNames } from '@/Vue3DatePicker/utils/util';
@@ -120,6 +123,8 @@
             maxDate: { type: [Date, String] as PropType<Date | string>, default: null },
             disabledDates: { type: Array as PropType<Date[] | string[]>, default: () => [] },
             filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
+            minTime: { type: Object as PropType<ITimeRange>, default: () => ({}) },
+            maxTime: { type: Object as PropType<ITimeRange>, default: () => ({}) },
         },
         setup(props: CalendarProps, { emit }) {
             const weekDays = ref();

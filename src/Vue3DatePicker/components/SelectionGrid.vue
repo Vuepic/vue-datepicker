@@ -32,6 +32,8 @@
             modelValue: { type: [String, Number] as PropType<string | number>, default: null },
             id: { type: String as PropType<string>, default: 'dp__overlay' },
             disabledValues: { type: Array as PropType<number[]>, default: () => [] },
+            minValue: { type: [Number, String] as PropType<number | string>, default: null },
+            maxValue: { type: [Number, String] as PropType<number | string>, default: null },
         },
         setup(props: SelectionGridProps, { emit }) {
             const scrollable = ref(false);
@@ -58,6 +60,16 @@
             });
 
             /**
+             * Check if value is within min-max range
+             */
+            const checkMinMaxValue = (value: number | string): boolean => {
+                const isAboveMax = props.maxValue ? +value > +props.maxValue : false;
+                const isBellowMin = props.minValue ? +value < +props.minValue : false;
+
+                return isAboveMax || isBellowMin;
+            };
+
+            /**
              * Simple map for building a grid, just add dynamic classes for each cell
              */
             const mappedItems = computed(() => {
@@ -68,7 +80,9 @@
                             className: {
                                 dp__overlay_cell_active: itemVal.value === props.modelValue,
                                 dp__overlay_cell: itemVal.value !== props.modelValue,
-                                dp__overlay_cell_disabled: props.disabledValues.some((val) => val === itemVal.value),
+                                dp__overlay_cell_disabled:
+                                    props.disabledValues.some((val) => val === itemVal.value) ||
+                                    checkMinMaxValue(itemVal.value),
                             },
                         };
                     });
