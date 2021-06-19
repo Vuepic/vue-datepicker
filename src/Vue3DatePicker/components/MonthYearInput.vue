@@ -11,6 +11,7 @@
             :items="groupedMonths"
             @update:modelValue="onMonthUpdate"
             @toggle="toggleMonthPicker"
+            :disabled-values="filters.months"
             ><template #button-icon><CalendarIcon /></template
         ></SelectionGrid>
         <SelectionGrid
@@ -19,6 +20,7 @@
             :items="groupedYears"
             @update:modelValue="onYearUpdate"
             @toggle="toggleYearPicker"
+            :disabled-values="filters.years"
             ><template #button-icon><CalendarIcon /></template
         ></SelectionGrid>
         <div class="dp__month_year_col_nav" @click="onNext">
@@ -29,7 +31,7 @@
 
 <script lang="ts">
     import { computed, defineComponent, PropType, ref } from 'vue';
-    import { IMonth, IYear, MonthYearPickerProps } from '../interfaces';
+    import { IDateFilter, IMonth, IYear, MonthYearPickerProps } from '../interfaces';
     import { useKey, useMontYearPick } from '../utils/hooks';
     import { ChevronLeftIcon, ChevronRightIcon, CalendarIcon } from './Icons';
     import SelectionGrid from './SelectionGrid.vue';
@@ -48,6 +50,7 @@
             years: { type: Array as PropType<IYear[]>, default: () => [] },
             year: { type: Number as PropType<number>, default: 0 },
             month: { type: Number as PropType<number>, default: 0 },
+            filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
         },
         setup(props: MonthYearPickerProps, { emit }) {
             const showMonthPicker = ref(false);

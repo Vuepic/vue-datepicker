@@ -7,6 +7,7 @@
                 v-model:year="year"
                 v-if="!disableMonthYearSelect"
                 :years="years"
+                :filters="filters"
             />
             <table class="dp__calendar_tb">
                 <thead>
@@ -42,6 +43,7 @@
                 v-model:minutesSingle="minutesSingle"
                 v-model:hoursRange="hoursRange"
                 v-model:minutesRange="minutesRange"
+                :filters="filters"
             />
         </div>
         <ActionRow
@@ -74,6 +76,7 @@
         DynamicClass,
         IDefaultSelect,
         FormatOptions,
+        IDateFilter,
     } from '../interfaces';
     import { useDpDaysGen } from '../utils/hooks';
     import { getDayNames } from '@/Vue3DatePicker/utils/util';
@@ -116,6 +119,7 @@
             minDate: { type: [Date, String] as PropType<Date | string>, default: null },
             maxDate: { type: [Date, String] as PropType<Date | string>, default: null },
             disabledDates: { type: Array as PropType<Date[] | string[]>, default: () => [] },
+            filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
         },
         setup(props: CalendarProps, { emit }) {
             const weekDays = ref();

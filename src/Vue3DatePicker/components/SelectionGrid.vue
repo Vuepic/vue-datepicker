@@ -1,7 +1,7 @@
 <template>
     <div class="dp__overlay" :id="id">
         <div class="dp__overlay_container">
-            <div class="dp__overlay_row" v-for="(row, i) in items" :key="useKey(i)">
+            <div class="dp__overlay_row" v-for="(row, i) in mappedItems" :key="useKey(i)">
                 <div
                     class="dp__overlay_col"
                     v-for="col in row"
@@ -9,7 +9,7 @@
                     @click="onClick(col.value)"
                     :id="col.value === modelValue ? 'selection-active' : null"
                 >
-                    <div :class="col.value === modelValue ? 'dp__overlay_cell_active' : 'dp__overlay_cell'">
+                    <div :class="col.className">
                         {{ col.text }}
                     </div>
                 </div>
@@ -31,14 +31,24 @@
             items: { type: Array as PropType<IDefaultSelect[][]>, default: () => [] },
             modelValue: { type: [String, Number] as PropType<string | number>, default: null },
             id: { type: String as PropType<string>, default: 'dp__overlay' },
+            disabledValues: { type: Array as PropType<number[]>, default: () => [] },
         },
         setup(props: SelectionGridProps, { emit }) {
             const scrollable = ref(false);
+
+            /**
+             * Handle click on cell, if value is enabled (not in filters), emit value back to parent
+             */
             const onClick = (val: string | number): void => {
-                emit('update:modelValue', val);
-                emit('selected');
+                if (!props.disabledValues.some((value) => value === val)) {
+                    emit('update:modelValue', val);
+                    emit('selected');
+                }
             };
 
+            /**
+             * On mounted hook, set the scroll position, if any to a selected value when opening overlay
+             */
             onMounted(() => {
                 useScrollPosition(props.id, 'selection-active');
                 const elm = document.getElementById(props.id);
@@ -47,6 +57,27 @@
                 }
             });
 
+            /**
+             * Simple map for building a grid, just add dynamic classes for each cell
+             */
+            const mappedItems = computed(() => {
+                return props.items.map((item) => {
+                    return item.map((itemVal) => {
+                        return {
+                            ...itemVal,
+                            className: {
+                                dp__overlay_cell_active: itemVal.value === props.modelValue,
+                                dp__overlay_cell: itemVal.value !== props.modelValue,
+                                dp__overlay_cell_disabled: props.disabledValues.some((val) => val === itemVal.value),
+                            },
+                        };
+                    });
+                });
+            });
+
+            /**
+             * Dynamic class for action button
+             */
             const actionButtonClass = computed(
                 (): DynamicClass => ({
                     dp__button: true,
@@ -59,6 +90,7 @@
                 useKey,
                 onClick,
                 actionButtonClass,
+                mappedItems,
             };
         },
     });

@@ -24,6 +24,7 @@
             :min-date="minDate"
             :max-date="maxDate"
             :disabled-dates="disabledDates"
+            :filters="assignedFilter"
             @selectRangeDate="$emit('update:rangeModelValue', $event)"
             @closePicker="$emit('closePicker')"
             @selectDate="$emit('selectDate')"
@@ -34,10 +35,10 @@
 </template>
 
 <script lang="ts">
-    import { computed, defineComponent, PropType } from 'vue';
+    import { computed, defineComponent, onMounted, PropType, ref } from 'vue';
     import Calendar from './Calendar.vue';
 
-    import { DatepickerMenuProps, IMonth, DynamicClass, FormatOptions } from '../interfaces';
+    import { DatepickerMenuProps, IMonth, DynamicClass, FormatOptions, IDateFilter } from '../interfaces';
     import { useBindValue } from '../utils/hooks';
     import { getMonthNames } from '../utils/util';
 
@@ -74,8 +75,18 @@
             locale: { type: String as PropType<string>, default: 'en-US' },
             weekNumName: { type: String as PropType<string>, default: 'W' },
             disabledDates: { type: Array as PropType<Date[] | string[]>, default: () => [] },
+            filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
         },
         setup(props: DatepickerMenuProps, { emit }) {
+            const assignedFilter = ref({});
+
+            onMounted(() => {
+                assignedFilter.value = Object.assign(
+                    { months: [], years: [], times: { hours: [], minutes: [] } },
+                    props.filters,
+                );
+            });
+
             const mappedMonths = computed((): IMonth[] =>
                 getMonthNames(props.locale).map((month: string, i: number) => ({ text: month, value: i })),
             );
@@ -100,6 +111,7 @@
             });
 
             return {
+                assignedFilter,
                 firstDate,
                 rangeDate,
                 singleDate,

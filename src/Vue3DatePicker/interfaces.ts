@@ -3,6 +3,7 @@ export type DynamicClass = Record<string, boolean>;
 export interface IDefaultSelect {
     value: string | number;
     text: string;
+    className?: DynamicClass;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -17,7 +18,7 @@ export enum OpenPosition {
 export interface IDateFilter {
     months: number[];
     years: number[];
-    times: number[];
+    times: { hours: number[]; minutes: number[] };
 }
 
 export interface RDatepickerProps {
@@ -110,6 +111,7 @@ export interface DatepickerMenuProps {
     minDate: Date | string;
     maxDate: Date | string;
     disabledDates: Date[] | string[];
+    filters: IDateFilter;
 }
 
 export interface CalendarProps {
@@ -139,6 +141,7 @@ export interface CalendarProps {
     minDate: Date | string;
     maxDate: Date | string;
     disabledDates: Date[] | string[];
+    filters: IDateFilter;
 }
 
 export interface MonthYearPickerProps {
@@ -146,6 +149,7 @@ export interface MonthYearPickerProps {
     years: IYear[];
     year: number;
     month: number;
+    filters: IDateFilter;
 }
 
 export interface ICalendarDay {
@@ -197,6 +201,7 @@ export interface SelectionGridProps {
     modelValue: string | number;
     items: IDefaultSelect[][];
     id: string;
+    disabledValues: number[];
 }
 
 export interface ActionRowProps {
@@ -219,6 +224,7 @@ export interface TimeInputProps {
     hoursGridIncrement: string | number;
     minutesGridIncrement: string | number;
     is24: boolean;
+    filters: IDateFilter;
 }
 
 export type IHoursRange = [number, number];

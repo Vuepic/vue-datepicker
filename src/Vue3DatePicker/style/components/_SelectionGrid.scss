@@ -83,3 +83,12 @@
     right: 5px;
     box-sizing: border-box;
 }
+
+.dp__overlay_cell_disabled {
+    cursor: not-allowed;
+    background: $dp__disabled_color;
+
+    &:hover {
+        background: $dp__disabled_color;
+    }
+}

@@ -47,6 +47,7 @@
                 :week-num-name="weekNumName"
                 :preview-format="previewFormat"
                 :disabled-dates="disabledDates"
+                :filters="filters"
                 v-model:singleModelValue="singleModelValue"
                 v-model:rangeModelValue="rangeModelValue"
                 @closePicker="closeMenu"
@@ -111,7 +112,7 @@
             calendarBorder: { type: Boolean as PropType<boolean>, default: false },
             closeOnScroll: { type: Boolean as PropType<boolean>, default: true }, // connected
             autoApply: { type: Boolean as PropType<boolean>, default: false }, // connected
-            filters: { type: Object as PropType<IDateFilter>, default: null },
+            filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
             disableMonthYearSelect: { type: Boolean as PropType<boolean>, default: false }, // connected
             yearRange: { type: Array as PropType<number[]>, default: () => [2000, 2050] }, // connected, todo - at the end increase range
             disabledDates: { type: Array as PropType<Date[] | string[]>, default: () => [] }, // connected

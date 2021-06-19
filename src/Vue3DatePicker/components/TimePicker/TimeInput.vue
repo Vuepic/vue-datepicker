@@ -27,6 +27,7 @@
             :items="getHoursGridItems()"
             @selected="toggleHourOverlay"
             @toggle="toggleHourOverlay"
+            :disabled-values="filters.times.hours"
         >
             <template #button-icon>
                 <ClockIcon />
@@ -38,6 +39,7 @@
             :items="getMinutesGridItems()"
             @selected="toggleMinuteOverlay"
             @toggle="toggleMinuteOverlay"
+            :disabled-values="filters.times.minutes"
         >
             <template #button-icon>
                 <ClockIcon />
@@ -49,7 +51,7 @@
 <script lang="ts">
     import { computed, defineComponent, PropType, ref, toRef } from 'vue';
     import { ChevronUpIcon, ChevronDownIcon, ClockIcon } from '../Icons';
-    import { IDefaultSelect, TimeInputProps } from '../../interfaces';
+    import { IDateFilter, IDefaultSelect, TimeInputProps } from '../../interfaces';
     import { getArrayInArray } from '../../utils/util';
     import SelectionGrid from '../SelectionGrid.vue';
 
@@ -70,6 +72,7 @@
             hoursIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
             minutesIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
             is24: { type: Boolean as PropType<boolean>, default: true },
+            filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
         },
         setup(props: TimeInputProps, { emit }) {
             const showTimePicker = ref(false);

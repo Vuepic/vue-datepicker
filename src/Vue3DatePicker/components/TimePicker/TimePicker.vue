@@ -15,6 +15,7 @@
                             :minutes-grid-increment="minutesGridIncrement"
                             :hours-increment="hoursIncrement"
                             :minutes-increment="minutesIncrement"
+                            :filters="filters"
                         />
                     </template>
                     <template v-if="range">
@@ -28,6 +29,7 @@
                             :minutes-grid-increment="minutesGridIncrement"
                             :hours-increment="hoursIncrement"
                             :minutes-increment="minutesIncrement"
+                            :filters="filters"
                         />
                         <TimeInput
                             :hours="hoursRange[1]"
@@ -39,6 +41,7 @@
                             :minutes-grid-increment="minutesGridIncrement"
                             :hours-increment="hoursIncrement"
                             :minutes-increment="minutesIncrement"
+                            :filters="filters"
                         />
                     </template>
                     <!-- todo - add this -->
@@ -54,7 +57,7 @@
 
 <script lang="ts">
     import { defineComponent, PropType, ref } from 'vue';
-    import { IHoursRange, IMinutesRange } from '../../interfaces';
+    import { IDateFilter, IHoursRange, IMinutesRange } from '../../interfaces';
     import { ClockIcon, CalendarIcon } from '../Icons';
     import TimeInput from './TimeInput.vue';
 
@@ -77,6 +80,7 @@
             hoursRange: { type: Array as unknown as PropType<IHoursRange>, default: () => [0, 0] },
             minutesRange: { type: Array as unknown as PropType<IMinutesRange>, default: () => [0, 0] },
             range: { type: Boolean as PropType<boolean>, default: false },
+            filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
         },
         setup() {
             const showTimePicker = ref(false);
