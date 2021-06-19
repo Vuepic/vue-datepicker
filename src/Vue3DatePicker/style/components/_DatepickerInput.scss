@@ -55,3 +55,19 @@
 .dp__input_icon_pad {
     padding-left: 35px;
 }
+
+.dp__input_valid {
+    border-color: #28a745;
+
+    &:hover {
+        border-color: #28a745;
+    }
+}
+
+.dp__input_invalid {
+    border-color: #dc3545;
+
+    &:hover {
+        border-color: #dc3545;
+    }
+}

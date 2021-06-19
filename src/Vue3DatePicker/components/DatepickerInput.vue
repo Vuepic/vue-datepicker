@@ -35,7 +35,7 @@
             disabled: { type: Boolean as PropType<boolean>, default: true },
             readonly: { type: Boolean as PropType<boolean>, default: true },
             clearable: { type: Boolean as PropType<boolean>, default: true },
-            error: { type: Boolean as PropType<boolean>, default: true },
+            state: { type: Boolean as PropType<boolean>, default: null },
             inputClassName: { type: String as PropType<string>, default: null },
         },
         setup(props: DatepickerInputProps) {
@@ -44,6 +44,8 @@
                     ['dp__pointer']: !props.disabled && !props.readonly,
                     ['dp__input']: true,
                     ['dp__input_icon_pad']: !props.hideInputIcon,
+                    ['dp__input_valid']: props.state,
+                    ['dp__input_invalid']: props.state === false,
                     [props.inputClassName]: !!props.inputClassName,
                 }),
             );

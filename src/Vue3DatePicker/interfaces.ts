@@ -47,7 +47,7 @@ export interface RDatepickerProps {
     calendarCellClassName: string;
     dayClass: { day: Date; className: string };
     hideInputIcon: boolean;
-    error: boolean;
+    state: boolean;
     clearable: boolean;
     calendarBorder: boolean;
     closeOnScroll: boolean;
@@ -70,7 +70,7 @@ export interface DatepickerInputProps {
     // size: ESizes;
     inputClassName: string;
     hideInputIcon: boolean;
-    error: boolean;
+    state: boolean;
     clearable: boolean;
 }
 

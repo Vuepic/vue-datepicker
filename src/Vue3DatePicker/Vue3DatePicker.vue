@@ -9,6 +9,7 @@
             :disabled="disabled"
             :input-class-name="inputClassName"
             :clearable="clearable"
+            :state="state"
             @clear="clearValue"
             @open="openMenu"
             id="dp__input"
@@ -105,7 +106,7 @@
             calendarCellClassName: { type: String as PropType<string>, default: null }, // connected
             dayClass: { type: Object as PropType<{ day: Date; className: string }>, default: null },
             hideInputIcon: { type: Boolean as PropType<boolean>, default: false }, // connected
-            error: { type: Boolean as PropType<boolean>, default: null },
+            state: { type: Boolean as PropType<boolean>, default: null }, // connected
             clearable: { type: Boolean as PropType<boolean>, default: true }, // connected
             calendarBorder: { type: Boolean as PropType<boolean>, default: false },
             closeOnScroll: { type: Boolean as PropType<boolean>, default: true }, // connected
