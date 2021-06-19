@@ -19,6 +19,7 @@
 - Zero dependencies
 - SSR support
 - Highly configurable
+- Full TS support
 
 ## Install
 
@@ -43,12 +44,14 @@ Vue.component("Datepicker", Datepicker);
 
 **Local**
 
-```js
-import Datepicker from "vue3-date-picker";
-
-export default {
-    components: { DatePicker }
-}
+```vue
+<script>
+    import Datepicker from "vue3-date-picker";
+    
+    export default {
+        components: { Datepicker }
+    }
+</script>
 ```
 
 ## License
