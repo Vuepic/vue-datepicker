@@ -6,6 +6,7 @@
     font-family: $dp__font_family;
     user-select: none;
     border: 1px solid $dp__in_border_color;
+    z-index: 1;
 }
 
 .dp__menu_elevate {

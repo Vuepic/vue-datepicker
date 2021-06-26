@@ -7,8 +7,9 @@
     top: 0;
     left: 0;
     transition: opacity 1s ease-out;
-    z-index: 1;
+    z-index: 2;
     font-family: $dp__font_family;
+    color: $dp__text_color_def;
 }
 
 .dp__overlay::-webkit-scrollbar-track {

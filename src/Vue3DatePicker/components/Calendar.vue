@@ -82,7 +82,7 @@
         ITimeRange,
     } from '../interfaces';
     import { useDpDaysGen } from '../utils/hooks';
-    import { getDayNames } from '@/Vue3DatePicker/utils/util';
+    import { getDayNames } from '../utils/util';
 
     export default defineComponent({
         name: 'Calendar',
