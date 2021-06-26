@@ -26,6 +26,7 @@
         </DatepickerInput>
         <teleport to="body">
             <DatepickerMenu
+                v-click-outside-directive.dp__menu="closeMenu"
                 :enable-time-picker="enableTimePicker"
                 :week-numbers="weekNumbers"
                 :week-start="weekStart"
@@ -66,10 +67,12 @@
     import DatepickerInput from './components/DatepickerInput.vue';
     import DatepickerMenu from './components/DatepickerMenu.vue';
     import { formatRangeDate, formatSingleDate } from './utils/util';
+    import { clickOutsideDirective } from './directives/clickOutside';
 
     export default /*#__PURE__*/ defineComponent({
         name: 'Vue3DatePicker',
         emits: ['update:modelValue'],
+        directives: { clickOutsideDirective },
         components: {
             DatepickerInput,
             DatepickerMenu,
