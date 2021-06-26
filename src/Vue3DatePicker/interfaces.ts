@@ -27,7 +27,7 @@ export interface ITimeRange {
 }
 
 export interface RDatepickerProps {
-    id: string;
+    uid: string;
     is24: boolean;
     enableTimePicker: boolean;
     range: boolean;

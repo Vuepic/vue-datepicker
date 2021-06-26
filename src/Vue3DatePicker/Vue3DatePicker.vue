@@ -12,7 +12,7 @@
             :state="state"
             @clear="clearValue"
             @open="openMenu"
-            id="dp__input"
+            :id="`dp__input_${uid}`"
         >
             <template #trigger v-if="$slots.trigger">
                 <slot name="trigger"></slot>
@@ -75,7 +75,7 @@
             DatepickerMenu,
         },
         props: {
-            id: { type: String as PropType<string>, default: null }, // connected
+            uid: { type: String as PropType<string>, default: 'dp' }, // connected
             is24: { type: Boolean as PropType<boolean>, default: true }, // connected
             enableTimePicker: { type: Boolean as PropType<boolean>, default: true }, // connected
             locale: { type: String as PropType<string>, default: 'en-US' }, // partially connected
@@ -255,7 +255,7 @@
             };
 
             const setMenuPosition = (): void => {
-                const el = document.getElementById('dp__input');
+                const el = document.getElementById(`dp__input_${props.uid}`);
                 if (el) {
                     const { top, left, width, height } = el.getBoundingClientRect();
                     const position = { top: `${height + top + 10}px`, left: '', transform: 'none' };
