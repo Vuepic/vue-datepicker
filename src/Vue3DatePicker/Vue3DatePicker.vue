@@ -257,8 +257,8 @@
             const setMenuPosition = (): void => {
                 const el = document.getElementById(`dp__input_${props.uid}`);
                 if (el) {
-                    const { top, left, width, height } = el.getBoundingClientRect();
-                    const position = { top: `${height + top + 10}px`, left: '', transform: 'none' };
+                    const { left, width, height } = el.getBoundingClientRect();
+                    const position = { top: `${height + el.offsetTop + 10}px`, left: '', transform: 'none' };
                     if (props.position === OpenPosition.left) {
                         position.left = `${left}px`;
                     }
