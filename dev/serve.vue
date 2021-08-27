@@ -1,8 +1,7 @@
 <template>
     <div id="app">
         <div class="wrapper">
-            {{ selectedDate }}
-            <vue3-date-picker v-model="selectedDate" placeholder="select" range />
+            <vue3-date-picker v-model="selectedDate" placeholder="Select Date" />
         </div>
     </div>
 </template>
