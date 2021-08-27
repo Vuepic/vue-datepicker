@@ -18,7 +18,8 @@
     "build": "cross-env NODE_ENV=production rollup --config build/rollup.config.js",
     "build:ssr": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format cjs",
     "build:es": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format es",
-    "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife"
+    "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife",
+    "build:css": "cross-env NODE_ENV=production sass src/Vue3DatePicker/style/main.scss dist/main.css --style compressed"
   },
   "devDependencies": {
     "@babel/core": "^7.14.3",
