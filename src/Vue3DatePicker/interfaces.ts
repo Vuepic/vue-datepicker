@@ -34,6 +34,7 @@ export interface RDatepickerProps {
     modelValue: Date | string;
     locale: string;
     position: OpenPosition;
+    dark: boolean;
     placeholder: string;
     weekNumbers: boolean;
     hoursIncrement: number | string;

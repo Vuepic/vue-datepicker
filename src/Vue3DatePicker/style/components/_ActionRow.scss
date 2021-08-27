@@ -4,7 +4,8 @@
     width: 100%;
     padding: 10px;
     box-sizing: border-box;
-    color: $dp__text_color_def;
+    color: var(--text-color);
+    background: var(--background-color);
 
     svg {
         height: 20px;
@@ -14,7 +15,7 @@
 
 .dp__selection_preview {
     width: 50%;
-    color: $dp__text_color_def;
+    color: var(--text-color);
     font-size: 0.8rem;
 }
 
@@ -33,17 +34,9 @@
 }
 
 .dp__select {
-    color: rgba(0, 128, 0, 0.47);
-
-    &:hover {
-        background: rgba(0, 128, 0, 0.1);
-    }
+    color: var(--success-color);
 }
 
 .dp__cancel {
-    color: rgba(0, 0, 0, 0.47);
-
-    &:hover {
-        background: rgba(0, 0, 0, 0.1);
-    }
+    color: var(--secondary-color);
 }

@@ -1,7 +1,7 @@
 .dp__calendar_tb {
     font-family: $dp__font_family;
     border-collapse: collapse;
-    color: $dp__text_color_def;
+    color: var(--text-color);
 }
 
 .dp__calendar {
@@ -13,11 +13,11 @@
 }
 
 .dp__calendar_days {
-    color: $dp__text_color_def;
+    color: var(--text-color);
 }
 
 .dp__calendar_header_cell {
-    border-bottom: thin solid $dp__in_border_color;
+    border-bottom: thin solid var(--border-color);
     padding: 0.5rem;
 }
 
@@ -37,40 +37,34 @@
     width: 30px;
 }
 
-.r__date_hover {
-    &:hover {
-        background: $dp__default_hover;
-    }
-}
-
 .dp__cell_offset {
-    color: $dp__secondary_color;
+    color: var(--secondary-color);
 }
 
 .dp__cell_disabled {
-    color: $dp__secondary_color;
+    color: var(--secondary-color);
     cursor: not-allowed;
 }
 
 .dp__active_date {
-    background: $dp__primary_color;
-    color: $dp__primary_text_color;
+    background: var(--primary-color);
+    color: var(--primary-text-color);
 }
 
 .dp__date_hover {
     &:hover {
-        background: $dp__default_hover;
+        background: var(--hover-color);
     }
 }
 
 .dp__range_between {
-    background: $dp__default_hover;
+    background: var(--hover-color);
 }
 
 .dp__today {
-    border: 1px solid $dp__primary_color;
+    border: 1px solid var(--primary-color);
 }
 
 .dp__week_num {
-    color: $dp__secondary_color;
+    color: var(--secondary-color);
 }

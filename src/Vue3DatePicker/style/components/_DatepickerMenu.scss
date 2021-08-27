@@ -1,11 +1,11 @@
 .dp__menu {
     position: absolute;
-    background: $dp__background;
+    background: var(--background-color);
     border-radius: $dp__border_radius;
     min-width: 260px;
     font-family: $dp__font_family;
     user-select: none;
-    border: 1px solid $dp__in_border_color;
+    border: 1px solid var(--border-color);
     z-index: 1;
 }
 
@@ -19,9 +19,9 @@
     height: 12px;
     width: 12px;
 
-    background-color: #fff;
+    background-color: var(--background-color);
     position: absolute;
-    border-left: 1px solid $dp__in_border_color;
-    border-top: 1px solid $dp__in_border_color;
+    border-left: 1px solid var(--border-color);
+    border-top: 1px solid var(--border-color);
     transform: translate(-50%, -50%) rotate(45deg);
 }

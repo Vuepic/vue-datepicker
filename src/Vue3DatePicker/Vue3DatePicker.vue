@@ -1,5 +1,5 @@
 <template>
-    <div class="dp__main">
+    <div class="dp__main" :class="theme">
         <DatepickerInput
             v-if="!inline"
             :internal-value="internalValue"
@@ -26,6 +26,7 @@
         </DatepickerInput>
         <teleport to="body">
             <DatepickerMenu
+                :class="theme"
                 v-click-outside-directive.dp__menu="closeMenu"
                 :enable-time-picker="enableTimePicker"
                 :week-numbers="weekNumbers"
@@ -87,6 +88,7 @@
             position: { type: String as PropType<OpenPosition>, default: OpenPosition.center }, // connected
             placeholder: { type: String as PropType<string>, default: null }, // connected
             weekNumbers: { type: Boolean as PropType<boolean>, default: false }, // connected
+            dark: { type: Boolean as PropType<boolean>, default: false }, // connected
             hoursIncrement: { type: [String, Number] as PropType<string | number>, default: 1 }, // connected
             minutesIncrement: { type: [String, Number] as PropType<string | number>, default: 1 }, // connected
             hoursGridIncrement: { type: [String, Number] as PropType<string | number>, default: 1 }, // connected
@@ -163,6 +165,8 @@
                 }
                 window.removeEventListener('resize', setMenuPosition);
             });
+
+            const theme = computed(() => (props.dark ? 'dp__theme_dark' : 'dp__theme_light'));
 
             const isSingle = computed((): boolean => !props.range);
 
@@ -315,6 +319,7 @@
                 openMenu,
                 closeMenu,
                 selectDate,
+                theme,
             };
         },
     });

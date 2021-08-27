@@ -4,16 +4,16 @@
 }
 
 .dp__input {
-    background-color: $dp__background;
+    background-color: var(--background-color);
     border-radius: $dp__border_radius;
-    border: 1px solid #c0c4cc;
+    border: 1px solid var(--border-color);
     outline: none;
     transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
     width: 100%;
     font-size: 1rem;
     line-height: 1.5rem;
     padding: 6px 12px;
-    color: $dp__text_color_def;
+    color: var(--text-color);
     -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
     -moz-box-sizing: border-box; /* Firefox, other Gecko */
     box-sizing: border-box;
@@ -23,7 +23,7 @@
     }
 
     &:hover {
-        border-color: #aaaeb7;
+        border-color: var(--border-color-hover);
     }
 }
 
@@ -35,6 +35,7 @@
     font-size: 1rem;
     line-height: 1.5rem;
     padding: 6px 12px;
+    color: var(--icon-color);
 }
 
 .dp__input_icon {
@@ -57,17 +58,17 @@
 }
 
 .dp__input_valid {
-    border-color: #28a745;
+    box-shadow: 0 0 4px var(--success-color);
 
     &:hover {
-        border-color: #28a745;
+        border-color: var(--success-color);
     }
 }
 
 .dp__input_invalid {
-    border-color: #dc3545;
+    box-shadow: 0 0 4px var(--danger-color);
 
     &:hover {
-        border-color: #dc3545;
+        border-color: var(--danger-color);
     }
 }

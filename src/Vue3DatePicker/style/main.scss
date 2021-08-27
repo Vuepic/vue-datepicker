@@ -7,6 +7,40 @@
 @import 'components/TimeInput';
 @import 'components/ActionRow';
 
+.dp__theme_dark {
+    --background-color: #212121;
+    --text-color: #ffffff;
+    --hover-color: #484848;
+    --primary-color: #005cb2;
+    --primary-text-color: #ffffff;
+    --secondary-color: #a9a9a9;
+    --border-color: #2d2d2d;
+    --border-color-hover: #aaaeb7;
+    --disabled-color: #737373;
+    --scroll-bar-background: #212121;
+    --scroll-bar-color: #484848;
+    --success-color: #00701a;
+    --icon-color: #959595;
+    --danger-color: #e53935;
+}
+
+.dp__theme_light {
+    --background-color: #ffffff;
+    --text-color: #212121;
+    --hover-color: #f3f3f3;
+    --primary-color: #1976d2;
+    --primary-text-color: #f8f5f5;
+    --secondary-color: #c0c4cc;
+    --border-color: #ddd;
+    --border-color-hover: #aaaeb7;
+    --disabled-color: #f6f6f6;
+    --scroll-bar-background: #f3f3f3;
+    --scroll-bar-color: #959595;
+    --success-color: #76d275;
+    --icon-color: #959595;
+    --danger-color: #ff6f60;
+}
+
 .dp__main {
     font-family: $dp__font_family;
     user-select: none;
@@ -26,8 +60,8 @@
 .dp__button {
     width: 100%;
     text-align: center;
-    color: $dp__icon_color;
-    background: $dp__background;
+    color: var(--icon-color);
+    background: var(--background-color);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -38,7 +72,7 @@
     box-sizing: border-box;
 
     &:hover {
-        background: $dp__default_hover;
+        background: var(--hover-color);
     }
 
     // todo - change selector
