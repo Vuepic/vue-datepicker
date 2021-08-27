@@ -26,7 +26,9 @@
         </DatepickerInput>
         <teleport to="body">
             <DatepickerMenu
+                :id="`dp__menu_${uid}`"
                 :class="theme"
+                :uid="uid"
                 v-click-outside-directive.dp__menu="closeMenu"
                 :enable-time-picker="enableTimePicker"
                 :week-numbers="weekNumbers"
@@ -56,6 +58,7 @@
                 v-model:rangeModelValue="rangeModelValue"
                 @closePicker="closeMenu"
                 @selectDate="selectDate"
+                @openToTop="recalculatePosition"
                 v-if="isOpen"
             />
         </teleport>
@@ -283,6 +286,13 @@
                 }
             };
 
+            const recalculatePosition = (height: number) => {
+                const el = document.getElementById(`dp__input_${props.uid}`);
+                if (el) {
+                    menuPosition.value.top = `${el.offsetTop - height - 12}px`;
+                }
+            };
+
             const openMenu = (): void => {
                 if (!valueCleared.value) {
                     setMenuPosition();
@@ -320,6 +330,7 @@
                 closeMenu,
                 selectDate,
                 theme,
+                recalculatePosition,
             };
         },
     });

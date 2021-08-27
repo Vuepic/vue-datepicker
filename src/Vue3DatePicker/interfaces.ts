@@ -92,6 +92,7 @@ export interface IYear {
 }
 
 export interface DatepickerMenuProps {
+    uid: string;
     weekNumName: string;
     weekNumbers: boolean;
     weekStart: number | string;

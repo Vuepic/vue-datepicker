@@ -1,6 +1,6 @@
 <template>
-    <div class="dp__menu dp__menu_elevate" :class="dpMenuClass">
-        <div class="dp__arrow"></div>
+    <div class="dp__menu" :class="dpMenuClass">
+        <div :class="arrowClass"></div>
         <Calendar
             :months="mappedMonths"
             :week-numbers="weekNumbers"
@@ -47,8 +47,9 @@
     export default defineComponent({
         name: 'DatepickerMenu',
         components: { Calendar },
-        emits: ['update:singleModelValue', 'update:rangeModelValue', 'closePicker', 'selectDate'],
+        emits: ['update:singleModelValue', 'update:rangeModelValue', 'closePicker', 'selectDate', 'openToTop'],
         props: {
+            uid: { type: String as PropType<string>, default: 'dp' },
             weekNumbers: { type: Boolean as PropType<boolean>, default: false },
             weekStart: { type: [Number, String] as PropType<number | string>, default: 1 },
             disableMonthYearSelect: { type: Boolean as PropType<boolean>, default: false },
@@ -83,8 +84,10 @@
         },
         setup(props: DatepickerMenuProps, { emit }) {
             const assignedFilter = ref({});
+            const openOnTop = ref(false);
 
             onMounted(() => {
+                recalculatePosition();
                 assignedFilter.value = Object.assign(
                     { months: [], years: [], times: { hours: [], minutes: [] } },
                     props.filters,
@@ -101,8 +104,26 @@
                 }),
             );
 
+            const arrowClass = computed(() => (!openOnTop.value ? 'dp__arrow_top' : 'dp__arrow_bottom'));
+
             const rangeDate = useBindValue(props, emit, 'rangeModelValue');
             const singleDate = useBindValue(props, emit, 'singleModelValue');
+
+            const recalculatePosition = (): void => {
+                const el = document.getElementById(`dp__input_${props.uid}`);
+                if (el) {
+                    const fullHeight = window.innerHeight * (window.innerHeight / document.body.offsetHeight);
+                    const freeSpace = fullHeight - el.offsetTop;
+                    const menuEl = document.getElementById(`dp__menu_${props.uid}`);
+                    if (menuEl) {
+                        const { height } = menuEl.getBoundingClientRect();
+                        if (height > freeSpace) {
+                            emit('openToTop', height);
+                            openOnTop.value = true;
+                        }
+                    }
+                }
+            };
 
             const firstDate = computed((): Date => {
                 if (props.range) {
@@ -121,6 +142,7 @@
                 singleDate,
                 dpMenuClass,
                 mappedMonths,
+                arrowClass,
             };
         },
     });

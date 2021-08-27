@@ -9,11 +9,7 @@
     z-index: 1;
 }
 
-.dp__menu_elevate {
-    box-shadow: $dp__menu_shadow;
-}
-
-.dp__arrow {
+.dp__arrow_top {
     left: 50%;
     top: -1px;
     height: 12px;
@@ -24,4 +20,17 @@
     border-left: 1px solid var(--border-color);
     border-top: 1px solid var(--border-color);
     transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.dp__arrow_bottom {
+    left: 50%;
+    bottom: -1px;
+    height: 12px;
+    width: 12px;
+
+    background-color: var(--background-color);
+    position: absolute;
+    border-right: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    transform: translate(-50%, 50%) rotate(45deg);
 }
