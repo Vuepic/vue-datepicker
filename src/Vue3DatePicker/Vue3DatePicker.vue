@@ -117,7 +117,6 @@
             menuClassName: { type: String as PropType<string>, default: null }, // connected
             calendarClassName: { type: String as PropType<string>, default: null }, // connected
             calendarCellClassName: { type: String as PropType<string>, default: null }, // connected
-            dayClass: { type: Object as PropType<{ day: Date; className: string }>, default: null },
             hideInputIcon: { type: Boolean as PropType<boolean>, default: false }, // connected
             state: { type: Boolean as PropType<boolean>, default: null }, // connected
             clearable: { type: Boolean as PropType<boolean>, default: true }, // connected

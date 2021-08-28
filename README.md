@@ -7,6 +7,8 @@
     <img src="https://img.shields.io/apm/l/atomic-design-ui.svg" alt="License" />
 </a>
 
+<img src="https://img.shields.io/badge/dependencies-none-brightgreen.svg?style=flat" alt="No Dependencies" data-canonical-src="https://img.shields.io/badge/dependencies-none-brightgreen.svg?style=flat" style="max-width: 100%;">
+
 
 ## Features
 

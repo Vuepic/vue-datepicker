@@ -53,7 +53,6 @@ export interface RDatepickerProps {
     menuClassName: string;
     calendarClassName: string;
     calendarCellClassName: string;
-    dayClass: { day: Date; className: string };
     hideInputIcon: boolean;
     state: boolean;
     clearable: boolean;
