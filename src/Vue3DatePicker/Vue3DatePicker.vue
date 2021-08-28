@@ -53,6 +53,8 @@
                 :filters="filters"
                 :min-time="minTime"
                 :max-time="maxTime"
+                :select-text="selectText"
+                :cancel-text="cancelText"
                 v-model:singleModelValue="singleModelValue"
                 v-model:rangeModelValue="rangeModelValue"
                 @closePicker="closeMenu"

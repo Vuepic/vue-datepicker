@@ -27,6 +27,8 @@
             :filters="assignedFilter"
             :min-time="minTime"
             :max-time="maxTime"
+            :select-text="selectText"
+            :cancel-text="cancelText"
             @selectRangeDate="$emit('update:rangeModelValue', $event)"
             @closePicker="$emit('closePicker')"
             @selectDate="$emit('selectDate')"
