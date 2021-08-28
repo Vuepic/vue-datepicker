@@ -83,53 +83,53 @@
             DatepickerMenu,
         },
         props: {
-            uid: { type: String as PropType<string>, default: 'dp' }, // connected
-            is24: { type: Boolean as PropType<boolean>, default: true }, // connected
-            enableTimePicker: { type: Boolean as PropType<boolean>, default: true }, // connected
-            locale: { type: String as PropType<string>, default: 'en-US' }, // partially connected
-            range: { type: Boolean as PropType<boolean>, default: false }, // connected
-            modelValue: { type: [String, Date, Array] as PropType<string | Date>, default: null }, // connected
-            position: { type: String as PropType<OpenPosition>, default: OpenPosition.center }, // connected
-            placeholder: { type: String as PropType<string>, default: null }, // connected
-            weekNumbers: { type: Boolean as PropType<boolean>, default: false }, // connected
-            dark: { type: Boolean as PropType<boolean>, default: false }, // connected
-            hoursIncrement: { type: [String, Number] as PropType<string | number>, default: 1 }, // connected
-            minutesIncrement: { type: [String, Number] as PropType<string | number>, default: 1 }, // connected
-            hoursGridIncrement: { type: [String, Number] as PropType<string | number>, default: 1 }, // connected
-            minutesGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 }, // connected
-            minDate: { type: [Date, String] as PropType<Date | string>, default: null }, // connected
-            maxDate: { type: [Date, String] as PropType<Date | string>, default: null }, // connected
-            minTime: { type: Object as PropType<ITimeRange>, default: () => ({}) }, // connected
-            maxTime: { type: Object as PropType<ITimeRange>, default: () => ({}) }, // connected
-            weekStart: { type: [String, Number] as PropType<string | number>, default: 1 }, // connected
-            disabled: { type: Boolean as PropType<boolean>, default: false }, // connected
-            readonly: { type: Boolean as PropType<boolean>, default: false }, // connected
-            weekNumName: { type: String as PropType<string>, default: 'W' }, // connected
+            uid: { type: String as PropType<string>, default: 'dp' },
+            is24: { type: Boolean as PropType<boolean>, default: true },
+            enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
+            locale: { type: String as PropType<string>, default: 'en-US' },
+            range: { type: Boolean as PropType<boolean>, default: false },
+            modelValue: { type: [String, Date, Array] as PropType<string | Date>, default: null },
+            position: { type: String as PropType<OpenPosition>, default: OpenPosition.center },
+            placeholder: { type: String as PropType<string>, default: null },
+            weekNumbers: { type: Boolean as PropType<boolean>, default: false },
+            dark: { type: Boolean as PropType<boolean>, default: false },
+            hoursIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
+            minutesIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
+            hoursGridIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
+            minutesGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 },
+            minDate: { type: [Date, String] as PropType<Date | string>, default: null },
+            maxDate: { type: [Date, String] as PropType<Date | string>, default: null },
+            minTime: { type: Object as PropType<ITimeRange>, default: () => ({}) },
+            maxTime: { type: Object as PropType<ITimeRange>, default: () => ({}) },
+            weekStart: { type: [String, Number] as PropType<string | number>, default: 1 },
+            disabled: { type: Boolean as PropType<boolean>, default: false },
+            readonly: { type: Boolean as PropType<boolean>, default: false },
+            weekNumName: { type: String as PropType<string>, default: 'W' },
             format: {
                 type: [Object, Function] as PropType<FormatOptions | ((date: Date | Date[]) => string)>,
                 default: () => ({}),
-            }, // connected
+            },
             previewFormat: {
                 type: [Object, Function] as PropType<FormatOptions | ((date: Date | Date[]) => string)>,
                 default: () => ({}),
-            }, // connected
-            inputClassName: { type: String as PropType<string>, default: null }, // connected
-            menuClassName: { type: String as PropType<string>, default: null }, // connected
-            calendarClassName: { type: String as PropType<string>, default: null }, // connected
-            calendarCellClassName: { type: String as PropType<string>, default: null }, // connected
-            hideInputIcon: { type: Boolean as PropType<boolean>, default: false }, // connected
-            state: { type: Boolean as PropType<boolean>, default: null }, // connected
-            clearable: { type: Boolean as PropType<boolean>, default: true }, // connected
+            },
+            inputClassName: { type: String as PropType<string>, default: null },
+            menuClassName: { type: String as PropType<string>, default: null },
+            calendarClassName: { type: String as PropType<string>, default: null },
+            calendarCellClassName: { type: String as PropType<string>, default: null },
+            hideInputIcon: { type: Boolean as PropType<boolean>, default: false },
+            state: { type: Boolean as PropType<boolean>, default: null },
+            clearable: { type: Boolean as PropType<boolean>, default: true },
             calendarBorder: { type: Boolean as PropType<boolean>, default: false },
-            closeOnScroll: { type: Boolean as PropType<boolean>, default: true }, // connected
-            autoApply: { type: Boolean as PropType<boolean>, default: false }, // connected
-            filters: { type: Object as PropType<IDateFilter>, default: () => ({}) }, // connected
-            disableMonthYearSelect: { type: Boolean as PropType<boolean>, default: false }, // connected
-            yearRange: { type: Array as PropType<number[]>, default: () => [2000, 2050] }, // connected, todo - at the end increase range
-            disabledDates: { type: Array as PropType<Date[] | string[]>, default: () => [] }, // connected
-            inline: { type: Boolean as PropType<boolean>, default: false }, // connected
-            selectText: { type: String as PropType<string>, default: 'Select' }, // connected
-            cancelText: { type: String as PropType<string>, default: 'Cancel' }, // connected
+            closeOnScroll: { type: Boolean as PropType<boolean>, default: true },
+            autoApply: { type: Boolean as PropType<boolean>, default: false },
+            filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
+            disableMonthYearSelect: { type: Boolean as PropType<boolean>, default: false },
+            yearRange: { type: Array as PropType<number[]>, default: () => [1970, 2100] },
+            disabledDates: { type: Array as PropType<Date[] | string[]>, default: () => [] },
+            inline: { type: Boolean as PropType<boolean>, default: false },
+            selectText: { type: String as PropType<string>, default: 'Select' },
+            cancelText: { type: String as PropType<string>, default: 'Cancel' },
         },
         setup(props: RDatepickerProps, { emit }) {
             const isOpen = ref(false);
