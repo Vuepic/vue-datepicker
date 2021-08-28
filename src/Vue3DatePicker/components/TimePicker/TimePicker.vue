@@ -67,7 +67,7 @@
     import { ClockIcon, CalendarIcon } from '../Icons';
     import TimeInput from './TimeInput.vue';
 
-    export default /*#__PURE__*/ defineComponent({
+    export default defineComponent({
         name: 'TimePicker',
         emits: ['update:hoursSingle', 'update:minutesSingle', 'update:hoursRange', 'update:minutesRange'],
         components: {

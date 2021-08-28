@@ -36,7 +36,7 @@
     import { ChevronLeftIcon, ChevronRightIcon, CalendarIcon } from './Icons';
     import SelectionGrid from './SelectionGrid.vue';
 
-    export default /*#__PURE__*/ defineComponent({
+    export default defineComponent({
         name: 'MonthYearPicker',
         emits: ['update:month', 'update:year'],
         components: {

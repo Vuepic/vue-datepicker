@@ -84,7 +84,7 @@
     import { useDpDaysGen } from '../utils/hooks';
     import { getDayNames } from '../utils/util';
 
-    export default /*#__PURE__*/ defineComponent({
+    export default defineComponent({
         name: 'Calendar',
         components: {
             MonthYearInput,

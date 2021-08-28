@@ -19,7 +19,7 @@
     import { ActionRowProps, FormatOptions } from '../interfaces';
     import { formatSingleDate, formatRangeDate } from '../utils/util';
 
-    export default /*#__PURE__*/ defineComponent({
+    export default defineComponent({
         name: 'ActionRow',
         emits: ['closePicker', 'selectDate'],
         props: {
