@@ -2,6 +2,9 @@
   "name": "vue3-date-picker",
   "version": "1.0.0",
   "description": "Datepicker component for Vue 3",
+  "author": "Vueepic",
+  "private": false,
+  "license": "MIT",
   "main": "dist/vue3-date-picker.ssr.js",
   "browser": "dist/vue3-date-picker.esm.js",
   "module": "dist/vue3-date-picker.esm.js",
@@ -67,5 +70,9 @@
   },
   "engines": {
     "node": ">=12"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Vuepic/vue3-date-picker.git"
   }
 }
