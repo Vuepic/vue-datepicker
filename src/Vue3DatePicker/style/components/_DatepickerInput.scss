@@ -4,16 +4,16 @@
 }
 
 .dp__input {
-    background-color: var(--background-color);
+    background-color: var(--dp-background-color);
     border-radius: $dp__border_radius;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--dp-border-color);
     outline: none;
     transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
     width: 100%;
     font-size: 1rem;
     line-height: 1.5rem;
     padding: 6px 12px;
-    color: var(--text-color);
+    color: var(--dp-text-color);
     -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
     -moz-box-sizing: border-box; /* Firefox, other Gecko */
     box-sizing: border-box;
@@ -23,7 +23,7 @@
     }
 
     &:hover {
-        border-color: var(--border-color-hover);
+        border-color: var(--dp-border-color-hover);
     }
 }
 
@@ -35,7 +35,7 @@
     font-size: 1rem;
     line-height: 1.5rem;
     padding: 6px 12px;
-    color: var(--icon-color);
+    color: var(--dp-icon-color);
 }
 
 .dp__input_icon {
@@ -43,6 +43,7 @@
     top: 50%;
     left: 0;
     transform: translateY(-50%);
+    color: var(--dp-icon-color);
 }
 
 .dp__clear_icon {
@@ -51,6 +52,7 @@
     right: 0;
     transform: translateY(-50%);
     cursor: pointer;
+    color: var(--dp-icon-color);
 }
 
 .dp__input_icon_pad {
@@ -58,17 +60,17 @@
 }
 
 .dp__input_valid {
-    box-shadow: 0 0 4px var(--success-color);
+    box-shadow: 0 0 4px var(--dp-success-color);
 
     &:hover {
-        border-color: var(--success-color);
+        border-color: var(--dp-success-color);
     }
 }
 
 .dp__input_invalid {
-    box-shadow: 0 0 4px var(--danger-color);
+    box-shadow: 0 0 4px var(--dp-danger-color);
 
     &:hover {
-        border-color: var(--danger-color);
+        border-color: var(--dp-danger-color);
     }
 }

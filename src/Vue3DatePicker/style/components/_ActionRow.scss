@@ -4,8 +4,8 @@
     width: 100%;
     padding: 10px;
     box-sizing: border-box;
-    color: var(--text-color);
-    background: var(--background-color);
+    color: var(--dp-text-color);
+    background: var(--dp-background-color);
 
     svg {
         height: 20px;
@@ -15,7 +15,7 @@
 
 .dp__selection_preview {
     width: 50%;
-    color: var(--text-color);
+    color: var(--dp-text-color);
     font-size: 0.8rem;
 }
 
@@ -34,9 +34,9 @@
 }
 
 .dp__select {
-    color: var(--success-color);
+    color: var(--dp-success-color);
 }
 
 .dp__cancel {
-    color: var(--secondary-color);
+    color: var(--dp-secondary-color);
 }

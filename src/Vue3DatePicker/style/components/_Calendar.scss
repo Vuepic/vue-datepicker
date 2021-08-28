@@ -1,7 +1,7 @@
 .dp__calendar_tb {
     font-family: $dp__font_family;
     border-collapse: collapse;
-    color: var(--text-color);
+    color: var(--dp-text-color);
 }
 
 .dp__calendar {
@@ -13,11 +13,11 @@
 }
 
 .dp__calendar_days {
-    color: var(--text-color);
+    color: var(--dp-text-color);
 }
 
 .dp__calendar_header_cell {
-    border-bottom: thin solid var(--border-color);
+    border-bottom: thin solid var(--dp-border-color);
     padding: 0.5rem;
 }
 
@@ -38,34 +38,34 @@
 }
 
 .dp__cell_offset {
-    color: var(--secondary-color);
+    color: var(--dp-secondary-color);
 }
 
 .dp__cell_disabled {
-    color: var(--secondary-color);
+    color: var(--dp-secondary-color);
     cursor: not-allowed;
 }
 
 .dp__active_date {
-    background: var(--primary-color);
-    color: var(--primary-text-color);
+    background: var(--dp-primary-color);
+    color: var(--dp-primary-text-color);
 }
 
 .dp__date_hover {
     &:hover {
-        background: var(--hover-color);
+        background: var(--dp-hover-color);
     }
 }
 
 .dp__range_between {
-    background: var(--hover-color);
+    background: var(--dp-hover-color);
 }
 
 .dp__today {
-    border: 1px solid var(--primary-color);
+    border: 1px solid var(--dp-primary-color);
 }
 
 .dp__week_num {
-    color: var(--secondary-color);
+    color: var(--dp-secondary-color);
     text-align: center;
 }

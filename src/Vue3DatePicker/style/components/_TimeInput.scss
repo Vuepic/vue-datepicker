@@ -5,7 +5,7 @@
     justify-content: center;
     user-select: none;
     font-family: $dp__font_family;
-    color: var(--text-color);
+    color: var(--dp-text-color);
 }
 
 .dp__time_col {
@@ -16,11 +16,11 @@
 
 .dp__time_display {
     cursor: pointer;
-    color: var(--text-color);
+    color: var(--dp-text-color);
     border-radius: $dp__border_radius;
 
     &:hover {
-        background: var(--hover-color);
+        background: var(--dp-hover-color);
     }
 }
 
@@ -30,10 +30,10 @@
     align-items: center;
     cursor: pointer;
     border-radius: 50%;
-    color: var(--icon-color);
+    color: var(--dp-icon-color);
 
     &:hover {
-        background: var(--hover-color);
-        color: var(--primary-color);
+        background: var(--dp-hover-color);
+        color: var(--dp-primary-color);
     }
 }

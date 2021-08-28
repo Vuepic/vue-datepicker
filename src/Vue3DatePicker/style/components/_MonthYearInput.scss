@@ -2,7 +2,7 @@
     display: flex;
     align-items: center;
     height: $dp__month_year_row_height;
-    color: var(--text-color);
+    color: var(--dp-text-color);
 }
 
 .dp__month_year_col_nav {
@@ -13,12 +13,12 @@
     justify-content: center;
     cursor: pointer;
     width: 25px;
-    color: var(--icon-color);
+    color: var(--dp-icon-color);
     text-align: center;
     border-radius: 50%;
 
     &:hover {
-        background: var(--hover-color);
+        background: var(--dp-hover-color);
     }
 }
 
@@ -33,6 +33,6 @@
     border-radius: $dp__border_radius;
 
     &:hover {
-        background: var(--hover-color);
+        background: var(--dp-hover-color);
     }
 }
