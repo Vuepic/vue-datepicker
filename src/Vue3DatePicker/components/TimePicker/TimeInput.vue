@@ -59,7 +59,7 @@
     import { getArrayInArray } from '../../utils/util';
     import SelectionGrid from '../SelectionGrid.vue';
 
-    export default defineComponent({
+    export default /*#__PURE__*/ defineComponent({
         name: 'TimeInput',
         emits: ['setHours', 'setMinutes', 'update:hours', 'update:minutes'],
         components: {

@@ -181,21 +181,21 @@ export interface IMonthYearHook {
 
 export type FormatOptions = Intl.DateTimeFormatOptions;
 
-export interface TimePickerProps {
-    hoursIncrement: number | string;
-    minutesIncrement: number | string;
-    is24: boolean;
-    hoursGridIncrement: number | string;
-    minutesGridIncrement: number | string;
-    hoursSingle: number;
-    minutesSingle: number;
-    range: boolean;
-    hoursRange: IHoursRange;
-    minutesRange: IMinutesRange;
-    filters: IDateFilter;
-    minTime: ITimeRange;
-    maxTime: ITimeRange;
-}
+// export interface TimePickerProps {
+//     hoursIncrement: number | string;
+//     minutesIncrement: number | string;
+//     is24: boolean;
+//     hoursGridIncrement: number | string;
+//     minutesGridIncrement: number | string;
+//     hoursSingle: number;
+//     minutesSingle: number;
+//     range: boolean;
+//     hoursRange: IHoursRange;
+//     minutesRange: IMinutesRange;
+//     filters: IDateFilter;
+//     minTime: ITimeRange;
+//     maxTime: ITimeRange;
+// }
 
 export interface IHoursMinutes {
     hours: IDefaultSelect[];

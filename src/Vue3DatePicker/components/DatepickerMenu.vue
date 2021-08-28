@@ -46,7 +46,7 @@
     import { useBindValue } from '../utils/hooks';
     import { getMonthNames } from '../utils/util';
 
-    export default defineComponent({
+    export default /*#__PURE__*/ defineComponent({
         name: 'DatepickerMenu',
         components: { Calendar },
         emits: ['update:singleModelValue', 'update:rangeModelValue', 'closePicker', 'selectDate', 'openToTop'],

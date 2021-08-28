@@ -24,7 +24,7 @@
     import { SelectionGridProps, IDefaultSelect, DynamicClass } from '../interfaces';
     import { useScrollPosition, useKey } from '../utils/hooks';
 
-    export default defineComponent({
+    export default /*#__PURE__*/ defineComponent({
         name: 'SelectionGrid',
         emits: ['update:modelValue', 'selected', 'toggle'],
         props: {

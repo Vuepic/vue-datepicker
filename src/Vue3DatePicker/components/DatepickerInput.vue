@@ -24,7 +24,7 @@
     import { DatepickerInputProps, DynamicClass } from '../interfaces';
     import { CalendarIcon, CancelIcon } from './Icons';
 
-    export default defineComponent({
+    export default /*#__PURE__*/ defineComponent({
         name: 'DatepickerInput',
         emits: ['clear', 'open'],
         components: { CalendarIcon, CancelIcon },
