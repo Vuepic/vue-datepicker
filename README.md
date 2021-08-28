@@ -13,13 +13,13 @@
 - Single date picker
 - Range date picker
 - Time picker
-- Full locale support
+- Locale support
 - Week numbers
-- Full SCSS support
+- Dark and light theme
 - Zero dependencies
 - SSR support
 - Highly configurable
-- Full TS support
+- Written in typescript
 
 ## Install
 
@@ -38,6 +38,7 @@ Import and register component
 ```js
 import Vue from "vue";
 import Datepicker from "vue3-date-picker";
+import 'vue3-date-picker/dist/main.css'
 
 Vue.component("Datepicker", Datepicker);
 ```
@@ -47,6 +48,7 @@ Vue.component("Datepicker", Datepicker);
 ```vue
 <script>
     import Datepicker from "vue3-date-picker";
+    import 'vue3-date-picker/dist/main.css'
     
     export default {
         components: { Datepicker }
