@@ -1,5 +1,5 @@
 <template>
-    <div class="dp__menu" :class="dpMenuClass">
+    <div class="dp__menu" :class="dpMenuClass" :id="`dp__menu_${uid}`">
         <div :class="arrowClass"></div>
         <Calendar
             :months="mappedMonths"
@@ -109,16 +109,27 @@
             const rangeDate = useBindValue(props, emit, 'rangeModelValue');
             const singleDate = useBindValue(props, emit, 'singleModelValue');
 
+            /**
+             * If input is near the bottom position where menu can't fit, it will recalculate and
+             * place it on top
+             */
             const recalculatePosition = (): void => {
                 const el = document.getElementById(`dp__input_${props.uid}`);
                 if (el) {
-                    const fullHeight = window.innerHeight * (window.innerHeight / document.body.offsetHeight);
-                    const freeSpace = fullHeight - el.offsetTop;
+                    const { height: inputHeight } = el.getBoundingClientRect();
+                    const getHeight = (): number => {
+                        const { documentElement, body } = document;
+                        const calcEl = documentElement.offsetHeight ? documentElement : body;
+                        return Math.max(calcEl.scrollHeight, calcEl.offsetHeight);
+                    };
+                    const fullHeight = getHeight();
+                    const freeSpace = fullHeight - el.offsetTop - inputHeight;
                     const menuEl = document.getElementById(`dp__menu_${props.uid}`);
                     if (menuEl) {
                         const { height } = menuEl.getBoundingClientRect();
-                        if (height > freeSpace) {
-                            emit('openToTop', height);
+                        const menuHeight = height + inputHeight;
+                        if (menuHeight > freeSpace) {
+                            emit('openToTop', menuHeight);
                             openOnTop.value = true;
                         }
                     }

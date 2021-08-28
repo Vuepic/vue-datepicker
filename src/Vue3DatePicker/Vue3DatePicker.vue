@@ -26,7 +26,6 @@
         </DatepickerInput>
         <teleport to="body">
             <DatepickerMenu
-                :id="`dp__menu_${uid}`"
                 :class="theme"
                 :uid="uid"
                 v-click-outside-directive.dp__menu="closeMenu"
