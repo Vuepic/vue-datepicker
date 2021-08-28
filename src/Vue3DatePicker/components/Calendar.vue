@@ -246,7 +246,10 @@
                                 ['dp__pointer']: !disabled,
                                 ['dp__active_date']: isActiveDate(calendarDay),
                                 ['dp__date_hover']: !disabled && !isActiveDate(calendarDay),
-                                ['dp__range_between']: props.range && !disabled ? rangeActive(calendarDay) : false,
+                                ['dp__range_between']:
+                                    props.range && !disabled && !isActiveDate(calendarDay)
+                                        ? rangeActive(calendarDay)
+                                        : false,
                                 ['dp__today']: compareTwoDates(calendarDay.value, today.value),
                                 ['dp__cell_disabled']: disabled,
                                 [props.calendarCellClassName]: !!props.calendarCellClassName,

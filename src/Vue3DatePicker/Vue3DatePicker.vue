@@ -240,7 +240,10 @@
                 if (props.modelValue) {
                     if (props.range) {
                         if (Array.isArray(props.modelValue)) {
-                            rangeModelValue.value = props.modelValue.slice();
+                            rangeModelValue.value = JSON.parse(JSON.stringify(props.modelValue)).map(
+                                (date: string) => new Date(date),
+                            );
+                            formatRangeDateValue(true);
                         } else {
                             rangeModelValue.value = [];
                         }
