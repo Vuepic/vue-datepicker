@@ -21,7 +21,7 @@
 - Zero dependencies
 - SSR support
 - Highly configurable
-- Written in typescript
+- Type support
 
 ## Install
 
