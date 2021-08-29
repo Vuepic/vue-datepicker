@@ -13,7 +13,6 @@
   "types": "vue3-date-picker.d.ts",
   "files": [
     "dist/*",
-    "vue3-date-picker.d.ts",
     "src/**/*.vue"
   ],
   "sideEffects": false,
