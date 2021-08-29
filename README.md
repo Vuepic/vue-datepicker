@@ -1,4 +1,4 @@
-## vue3-date-picker
+## vue3-date-time-picker
 
 
 ### The most complete date picker solution for Vue 3
@@ -9,7 +9,7 @@
 
 <img src="https://img.shields.io/badge/dependencies-none-brightgreen.svg?style=flat" alt="No Dependencies" data-canonical-src="https://img.shields.io/badge/dependencies-none-brightgreen.svg?style=flat" style="max-width: 100%;">
 
-[**DOCUMENTATION**](https://vuepic.github.io/vue3-date-picker/)
+[**DOCUMENTATION**](https://vuepic.github.io/vue3-date-time-picker/)
 
 ## Features
 
@@ -27,11 +27,11 @@
 ## Install
 
 ```shell
-yarn add vue3-date-picker
+yarn add vue3-date-time-picker
 
 # or
 
-npm install vue3-date-picker
+npm install vue3-date-time-picker
 ```
 
 Import and register component
@@ -40,8 +40,8 @@ Import and register component
 
 ```js
 import Vue from "vue";
-import Datepicker from "vue3-date-picker";
-import 'vue3-date-picker/dist/main.css'
+import Datepicker from "vue3-date-time-picker";
+import 'vue3-date-time-picker/dist/main.css'
 
 Vue.component("Datepicker", Datepicker);
 ```
@@ -50,8 +50,8 @@ Vue.component("Datepicker", Datepicker);
 
 ```vue
 <script>
-    import Datepicker from "vue3-date-picker";
-    import 'vue3-date-picker/dist/main.css'
+    import Datepicker from "vue3-date-time-picker";
+    import 'vue3-date-time-picker/dist/main.css'
     
     export default {
         components: { Datepicker }
@@ -61,4 +61,4 @@ Vue.component("Datepicker", Datepicker);
 
 ## License
 
-[MIT](https://github.com/Vuepic/vue3-date-picker/blob/master/LICENSE)
+[MIT](https://github.com/Vuepic/vue3-date-time-picker/blob/master/LICENSE)

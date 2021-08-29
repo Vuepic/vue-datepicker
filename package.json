@@ -1,16 +1,15 @@
 {
-  "name": "vue3-date-picker",
+  "name": "vue3-date-time-picker",
   "version": "1.0.0",
   "description": "Datepicker component for Vue 3",
-  "author": "Vueepic",
+  "author": "Vuepic",
   "private": false,
   "license": "MIT",
-  "homepage": "https://vuepic.github.io/vue3-date-picker/",
-  "main": "dist/vue3-date-picker.ssr.js",
-  "browser": "dist/vue3-date-picker.esm.js",
-  "module": "dist/vue3-date-picker.esm.js",
-  "unpkg": "dist/vue3-date-picker.min.js",
-  "types": "vue3-date-picker.d.ts",
+  "homepage": "https://vuepic.github.io/vue3-date-time-picker/",
+  "main": "dist/vue3-date-time-picker.ssr.js",
+  "browser": "dist/vue3-date-time-picker.esm.js",
+  "module": "dist/vue3-date-time-picker.esm.js",
+  "unpkg": "dist/vue3-date-time-picker.min.js",
   "files": [
     "dist/*",
     "src/**/*.vue"
@@ -73,6 +72,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Vuepic/vue3-date-picker.git"
+    "url": "https://github.com/Vuepic/vue3-date-time-picker.git"
   }
 }

@@ -78,7 +78,7 @@ if (!argv.format || argv.format === 'es') {
         input: 'src/entry.esm.ts',
         external,
         output: {
-            file: 'dist/vue3-date-picker.esm.js',
+            file: 'dist/vue3-date-time-picker.esm.js',
             format: 'esm',
             exports: 'named',
         },
@@ -120,7 +120,7 @@ if (!argv.format || argv.format === 'cjs') {
         external,
         output: {
             compact: true,
-            file: 'dist/vue3-date-picker.ssr.js',
+            file: 'dist/vue3-date-time-picker.ssr.js',
             format: 'cjs',
             name: 'Vue3DatePicker',
             exports: 'auto',
@@ -148,7 +148,7 @@ if (!argv.format || argv.format === 'iife') {
         external,
         output: {
             compact: true,
-            file: 'dist/vue3-date-picker.min.js',
+            file: 'dist/vue3-date-time-picker.min.js',
             format: 'iife',
             name: 'Vue3DatePicker',
             exports: 'auto',
