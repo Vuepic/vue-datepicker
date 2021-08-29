@@ -36,11 +36,14 @@ Import and register component
 **Global**
 
 ```js
-import Vue from "vue";
+import { createApp } from "vue";
+import App from './App.vue';
+
 import Datepicker from "vue3-date-time-picker";
 import 'vue3-date-time-picker/dist/main.css'
 
-Vue.component("Datepicker", Datepicker);
+const app = createApp(App);
+app.component("Datepicker", Datepicker);
 ```
 
 **Local**
