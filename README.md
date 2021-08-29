@@ -1,7 +1,7 @@
 ## vue3-date-picker
 
 
-### The Most Complete Date Picker Solution for Vue 3
+### The most complete date picker solution for Vue 3
 
 <a href="https://github.com/roll-ui/roll-ui/blob/main/LICENSE">
     <img src="https://img.shields.io/apm/l/atomic-design-ui.svg" alt="License" />
@@ -9,6 +9,7 @@
 
 <img src="https://img.shields.io/badge/dependencies-none-brightgreen.svg?style=flat" alt="No Dependencies" data-canonical-src="https://img.shields.io/badge/dependencies-none-brightgreen.svg?style=flat" style="max-width: 100%;">
 
+[**DOCUMENTATION**](https://vuepic.github.io/vue3-date-picker/)
 
 ## Features
 
