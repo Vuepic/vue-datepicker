@@ -59,6 +59,7 @@
             :locale="locale"
             :is24="is24"
             :enable-time-picker="enableTimePicker"
+            :inline="inline"
             @closePicker="$emit('closePicker')"
             @selectDate="$emit('selectDate')"
         ></ActionRow>
@@ -125,6 +126,7 @@
             filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
             minTime: { type: Object as PropType<ITimeRange>, default: () => ({}) },
             maxTime: { type: Object as PropType<ITimeRange>, default: () => ({}) },
+            inline: { type: Boolean as PropType<boolean>, default: false },
         },
         setup(props: CalendarProps, { emit }) {
             const weekDays = ref();

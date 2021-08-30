@@ -1,6 +1,6 @@
 <template>
     <div class="dp__menu" :class="dpMenuClass" :id="`dp__menu_${uid}`">
-        <div :class="arrowClass"></div>
+        <div :class="arrowClass" v-if="!inline"></div>
         <Calendar
             :months="mappedMonths"
             :week-numbers="weekNumbers"
@@ -29,6 +29,7 @@
             :max-time="maxTime"
             :select-text="selectText"
             :cancel-text="cancelText"
+            :inline="inline"
             @selectRangeDate="$emit('update:rangeModelValue', $event)"
             @closePicker="$emit('closePicker')"
             @selectDate="$emit('selectDate')"
@@ -83,6 +84,7 @@
             filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
             minTime: { type: Object as PropType<ITimeRange>, default: () => ({}) },
             maxTime: { type: Object as PropType<ITimeRange>, default: () => ({}) },
+            inline: { type: Boolean as PropType<boolean>, default: false },
         },
         setup(props: DatepickerMenuProps, { emit }) {
             const assignedFilter = ref({});

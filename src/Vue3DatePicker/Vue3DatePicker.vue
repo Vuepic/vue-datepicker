@@ -1,7 +1,6 @@
 <template>
     <div class="dp__main" :class="theme">
         <DatepickerInput
-            v-if="!inline"
             :internal-value="internalValue"
             :placeholder="placeholder"
             :hide-input-icon="hideInputIcon"
@@ -10,6 +9,7 @@
             :input-class-name="inputClassName"
             :clearable="clearable"
             :state="state"
+            :inline="inline"
             @clear="clearValue"
             @open="openMenu"
             :id="`dp__input_${uid}`"
@@ -55,6 +55,7 @@
                 :max-time="maxTime"
                 :select-text="selectText"
                 :cancel-text="cancelText"
+                :inline="inline"
                 v-model:singleModelValue="singleModelValue"
                 v-model:rangeModelValue="rangeModelValue"
                 @closePicker="closeMenu"
@@ -120,7 +121,6 @@
             hideInputIcon: { type: Boolean as PropType<boolean>, default: false },
             state: { type: Boolean as PropType<boolean>, default: null },
             clearable: { type: Boolean as PropType<boolean>, default: true },
-            calendarBorder: { type: Boolean as PropType<boolean>, default: false },
             closeOnScroll: { type: Boolean as PropType<boolean>, default: true },
             autoApply: { type: Boolean as PropType<boolean>, default: false },
             filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
@@ -160,6 +160,11 @@
                     window.addEventListener('scroll', closeMenu);
                 }
                 window.addEventListener('resize', setMenuPosition);
+                if (props.inline) {
+                    // // @ts-ignore
+                    // menuPosition.value = { position: 'relative' };
+                    openMenu();
+                }
             });
 
             onUnmounted(() => {
@@ -317,10 +322,12 @@
             };
 
             const closeMenu = (): void => {
-                if (isOpen.value) {
-                    isOpen.value = false;
+                if (!props.inline) {
+                    if (isOpen.value) {
+                        isOpen.value = false;
+                    }
+                    clearInternalValues();
                 }
-                clearInternalValues();
             };
 
             return {

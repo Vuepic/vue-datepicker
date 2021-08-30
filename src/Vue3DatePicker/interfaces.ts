@@ -56,7 +56,6 @@ export interface RDatepickerProps {
     hideInputIcon: boolean;
     state: boolean;
     clearable: boolean;
-    calendarBorder: boolean;
     closeOnScroll: boolean;
     autoApply: boolean;
     filters: IDateFilter;
@@ -78,6 +77,7 @@ export interface DatepickerInputProps {
     hideInputIcon: boolean;
     state: boolean;
     clearable: boolean;
+    inline: boolean;
 }
 
 export interface IMonth {
@@ -120,6 +120,7 @@ export interface DatepickerMenuProps {
     filters: IDateFilter;
     minTime: ITimeRange;
     maxTime: ITimeRange;
+    inline: boolean;
 }
 
 export interface CalendarProps {
@@ -152,6 +153,7 @@ export interface CalendarProps {
     filters: IDateFilter;
     minTime: ITimeRange;
     maxTime: ITimeRange;
+    inline: boolean;
 }
 
 export interface MonthYearPickerProps {
@@ -229,6 +231,7 @@ export interface ActionRowProps {
     locale: string;
     is24: boolean;
     enableTimePicker: boolean;
+    inline: boolean;
 }
 
 export interface TimeInputProps {

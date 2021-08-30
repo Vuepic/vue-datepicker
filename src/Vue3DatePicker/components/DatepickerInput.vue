@@ -1,7 +1,7 @@
 <template>
     <div @click="$emit('open')">
-        <slot v-if="$slots.trigger" name="trigger"></slot>
-        <div v-if="!$slots.trigger" class="dp__input_wrap">
+        <slot v-if="$slots.trigger && !inline" name="trigger"></slot>
+        <div v-if="!$slots.trigger && !inline" class="dp__input_wrap">
             <input
                 :class="datepickerInputClass"
                 :placeholder="placeholder"
@@ -43,6 +43,7 @@
             clearable: { type: Boolean as PropType<boolean>, default: true },
             state: { type: Boolean as PropType<boolean>, default: null },
             inputClassName: { type: String as PropType<string>, default: null },
+            inline: { type: Boolean as PropType<boolean>, default: false },
         },
         setup(props: DatepickerInputProps) {
             const datepickerInputClass = computed(

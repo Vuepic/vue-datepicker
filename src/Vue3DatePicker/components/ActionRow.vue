@@ -8,7 +8,7 @@
             </template>
         </div>
         <div class="dp__action_buttons">
-            <span class="dp__action dp__cancel" @click="$emit('closePicker')">{{ cancelText }}</span>
+            <span v-if="!inline" class="dp__action dp__cancel" @click="$emit('closePicker')">{{ cancelText }}</span>
             <span class="dp__action dp__select" @click="$emit('selectDate')">{{ selectText }}</span>
         </div>
     </div>
@@ -35,6 +35,7 @@
             locale: { type: String as PropType<string>, default: 'en-US' },
             is24: { type: Boolean as PropType<boolean>, default: true },
             enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
+            inline: { type: Boolean as PropType<boolean>, default: false },
         },
         setup(props: ActionRowProps) {
             const previewValue = ref<string | string[]>('');
