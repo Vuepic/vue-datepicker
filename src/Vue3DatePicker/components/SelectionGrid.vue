@@ -74,18 +74,20 @@
              */
             const mappedItems = computed(() => {
                 return props.items.map((item) => {
-                    return item.map((itemVal) => {
-                        return {
-                            ...itemVal,
-                            className: {
-                                dp__overlay_cell_active: itemVal.value === props.modelValue,
-                                dp__overlay_cell: itemVal.value !== props.modelValue,
-                                dp__overlay_cell_disabled:
-                                    props.disabledValues.some((val) => val === itemVal.value) ||
-                                    checkMinMaxValue(itemVal.value),
-                            },
-                        };
-                    });
+                    return item
+                        .filter((exists) => exists)
+                        .map((itemVal) => {
+                            return {
+                                ...itemVal,
+                                className: {
+                                    dp__overlay_cell_active: itemVal.value === props.modelValue,
+                                    dp__overlay_cell: itemVal.value !== props.modelValue,
+                                    dp__overlay_cell_disabled:
+                                        props.disabledValues.some((val) => val === itemVal.value) ||
+                                        checkMinMaxValue(itemVal.value),
+                                },
+                            };
+                        });
                 });
             });
 
