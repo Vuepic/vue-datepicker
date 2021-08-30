@@ -11,7 +11,7 @@
                             :minutes="minutesSingle"
                             @update:hours="$emit('update:hoursSingle', $event)"
                             @update:minutes="$emit('update:minutesSingle', $event)"
-                            :hours-grid-incremen="hoursGridIncrement"
+                            :hours-grid-increment="hoursGridIncrement"
                             :minutes-grid-increment="minutesGridIncrement"
                             :hours-increment="hoursIncrement"
                             :minutes-increment="minutesIncrement"

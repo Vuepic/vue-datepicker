@@ -34,7 +34,7 @@
                 :week-start="weekStart"
                 :disable-month-year-select="disableMonthYearSelect"
                 :hours-increment="hoursIncrement"
-                :minutes-incrementt="minutesIncrement"
+                :minutes-increment="minutesIncrement"
                 :menu-class-name="menuClassName"
                 :year-range="yearRange"
                 :is24="is24"
