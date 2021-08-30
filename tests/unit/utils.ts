@@ -33,6 +33,35 @@ export const formatFunction = (date: Date | Date[]): string => {
 const defaultProps = {
     range: false,
     format: {},
+    is24: true,
+    enableTimePicker: true,
+    locale: 'en-US',
+    placeholder: '',
+    weekNumbers: false,
+    dark: false,
+    hoursIncrement: 1,
+    minutesIncrement: 1,
+    hoursGridIncrement: 1,
+    minutesGridIncrement: 5,
+    minDate: null,
+    maxDate: null,
+    minTime: {},
+    maxTime: {},
+    weekStart: 1,
+    disabled: false,
+    readonly: false,
+    weekNumName: 'W',
+    state: null,
+    clearable: true,
+    filters: {},
+    yearRange: [1970, 2100],
+    disabledDates: [],
+    selectText: 'Select',
+    cancelText: 'Cancel',
+    inline: false,
+    autoApply: true,
+    closeOnScroll: true,
+    hideInputIcon: false,
 };
 
 // Prepare parent component to not repeat in each test case
@@ -52,6 +81,35 @@ export const createParentAndGetChild = (
                   v-model="date"
                   :range="range"
                   :format="format"
+                  :is24="is24"
+                  :enableTimePicker="enableTimePicker"
+                  :locale="locale"
+                  :placeholder="placeholder"
+                  :weekNumbers="weekNumbers"
+                  :dark="dark"
+                  :hoursIncrement="hoursIncrement"
+                  :minutesIncrement="minutesIncrement"
+                  :hoursGridIncrement="hoursGridIncrement"
+                  :minutesGridIncrement="minutesGridIncrement"
+                  :minDate="minDate"
+                  :maxDate="maxDate"
+                  :maxTime="maxTime"
+                  :minTime="minTime"
+                  :weekStart="weekStart"
+                  :disabled="disabled"
+                  :readonly="readonly"
+                  :weekNumName="weekNumName"
+                  :state="state"
+                  :clearable="clearable"
+                  :filters="filters"
+                  :yearRange="yearRange"
+                  :disabledDates="disabledDates"
+                  :selectText="selectText"
+                  :cancelText="cancelText"
+                  :inline="inline"
+                  :autoApply="autoApply"
+                  :closeOnScroll="closeOnScroll"
+                  :hideInputIcon="hideInputIcon"
                 />
               `,
     });
