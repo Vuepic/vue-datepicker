@@ -105,6 +105,7 @@
             const dpMenuClass = computed(
                 (): DynamicClass => ({
                     [props.menuClassName]: !!props.menuClassName,
+                    dp__flex_display: props.inline,
                 }),
             );
 

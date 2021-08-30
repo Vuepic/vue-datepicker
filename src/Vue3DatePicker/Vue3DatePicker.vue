@@ -1,5 +1,5 @@
 <template>
-    <div class="dp__main" :class="theme">
+    <div :class="wrapperClass">
         <DatepickerInput
             :internal-value="internalValue"
             :placeholder="placeholder"
@@ -24,7 +24,7 @@
                 <slot name="clear-icon"></slot>
             </template>
         </DatepickerInput>
-        <teleport to="body">
+        <teleport to="body" :disabled="inline">
             <DatepickerMenu
                 :class="theme"
                 :uid="uid"
@@ -69,7 +69,7 @@
 
 <script lang="ts">
     import { computed, defineComponent, onMounted, onUnmounted, PropType, ref, toRef, watch } from 'vue';
-    import { FormatOptions, IDateFilter, ITimeRange, OpenPosition, RDatepickerProps } from './interfaces';
+    import { FormatOptions, IDateFilter, ITimeRange, OpenPosition, RDatepickerProps, DynamicClass } from './interfaces';
     import DatepickerInput from './components/DatepickerInput.vue';
     import DatepickerMenu from './components/DatepickerMenu.vue';
     import { formatRangeDate, formatSingleDate } from './utils/util';
@@ -161,9 +161,7 @@
                 }
                 window.addEventListener('resize', setMenuPosition);
                 if (props.inline) {
-                    // // @ts-ignore
-                    // menuPosition.value = { position: 'relative' };
-                    openMenu();
+                    isOpen.value = true;
                 }
             });
 
@@ -173,6 +171,15 @@
                 }
                 window.removeEventListener('resize', setMenuPosition);
             });
+
+            const wrapperClass = computed(
+                (): DynamicClass => ({
+                    dp__main: true,
+                    dp__theme_dark: props.dark,
+                    dp__theme_light: !props.dark,
+                    dp__flex_display: props.inline,
+                }),
+            );
 
             const theme = computed(() => (props.dark ? 'dp__theme_dark' : 'dp__theme_light'));
 
@@ -342,6 +349,7 @@
                 closeMenu,
                 selectDate,
                 theme,
+                wrapperClass,
                 recalculatePosition,
             };
         },
