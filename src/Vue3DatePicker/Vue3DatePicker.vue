@@ -297,16 +297,18 @@
             };
 
             const openMenu = (): void => {
-                if (!valueCleared.value) {
-                    setMenuPosition();
-                    isOpen.value = !isOpen.value;
+                if (!props.disabled && !props.readonly) {
+                    if (!valueCleared.value) {
+                        setMenuPosition();
+                        isOpen.value = !isOpen.value;
 
-                    if (!isOpen.value) {
-                        clearInternalValues();
+                        if (!isOpen.value) {
+                            clearInternalValues();
+                        }
                     }
+                    valueCleared.value = false;
+                    mapExternalToInternalValue();
                 }
-                valueCleared.value = false;
-                mapExternalToInternalValue();
             };
 
             const clearInternalValues = (): void => {

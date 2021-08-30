@@ -2,7 +2,13 @@
     <div @click="$emit('open')">
         <slot v-if="$slots.trigger" name="trigger"></slot>
         <div v-if="!$slots.trigger" class="dp__input_wrap">
-            <input :class="datepickerInputClass" :placeholder="placeholder" readonly :value="internalValue" />
+            <input
+                :class="datepickerInputClass"
+                :placeholder="placeholder"
+                :disabled="disabled"
+                readonly
+                :value="internalValue"
+            />
             <span class="dp__input_icon" v-if="$slots['input-icon'] && !hideInputIcon"
                 ><slot name="input-icon"></slot
             ></span>
@@ -42,6 +48,7 @@
             const datepickerInputClass = computed(
                 (): DynamicClass => ({
                     ['dp__pointer']: !props.disabled && !props.readonly,
+                    ['dp__disabled']: props.disabled,
                     ['dp__input']: true,
                     ['dp__input_icon_pad']: !props.hideInputIcon,
                     ['dp__input_valid']: props.state,

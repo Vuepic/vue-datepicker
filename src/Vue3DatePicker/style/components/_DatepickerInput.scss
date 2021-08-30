@@ -27,6 +27,14 @@
     }
 }
 
+.dp__disabled {
+    background: var(--dp-disabled-color);
+
+    &::placeholder {
+        color: var(--dp-disabled-color-text);
+    }
+}
+
 .dp__input_icons {
     display: inline-block;
     width: 1rem;
