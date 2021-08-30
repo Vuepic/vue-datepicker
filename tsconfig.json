@@ -16,7 +16,8 @@
         "baseUrl": ".",
         "types": [
             "node",
-            "vue"
+            "vue",
+            "jest"
         ],
         "paths": {
             "@/*": [

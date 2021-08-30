@@ -21,7 +21,8 @@
     "build:ssr": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format cjs",
     "build:es": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format es",
     "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife",
-    "build:css": "cross-env NODE_ENV=production sass src/Vue3DatePicker/style/main.scss dist/main.css --style compressed"
+    "build:css": "cross-env NODE_ENV=production sass src/Vue3DatePicker/style/main.scss dist/main.css --style compressed",
+    "test": "vue-cli-service test:unit"
   },
   "devDependencies": {
     "@babel/core": "^7.15.0",
@@ -31,21 +32,24 @@
     "@rollup/plugin-commonjs": "^20.0.0",
     "@rollup/plugin-node-resolve": "^13.0.4",
     "@rollup/plugin-replace": "^3.0.0",
+    "@types/jest": "^24.0.19",
     "@typescript-eslint/eslint-plugin": "^4.29.3",
     "@typescript-eslint/parser": "^4.29.3",
-    "@vue/cli-plugin-babel": "^5.0.0-beta.3",
-    "@vue/cli-plugin-typescript": "^5.0.0-beta.3",
-    "@vue/cli-service": "^5.0.0-beta.3",
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-typescript": "~4.5.0",
+    "@vue/cli-plugin-unit-jest": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
     "@vue/compiler-sfc": "^3.2.6",
     "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^7.0.0",
+    "@vue/test-utils": "^2.0.0-0",
     "cross-env": "^7.0.3",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.1",
     "eslint-plugin-vue": "^7.17.0",
     "minimist": "^1.2.5",
-    "node-sass": "^6.0.1",
+    "node-sass": "^5.0.0",
     "postcss": "^8.3.6",
     "prettier": "^2.3.2",
     "rollup": "^2.56.3",
@@ -53,7 +57,7 @@
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript2": "^0.30.0",
     "rollup-plugin-vue": "^6.0.0",
-    "sass-loader": "^12.1.0",
+    "sass-loader": "^10.1.0",
     "stylelint": "^13.13.1",
     "stylelint-config-prettier": "^8.0.2",
     "stylelint-config-recommended": "^5.0.0",
@@ -62,7 +66,8 @@
     "ttypescript": "^1.5.12",
     "typescript": "^4.4.2",
     "vue": "^3.2.6",
-    "vue-eslint-parser": "^7.10.0"
+    "vue-eslint-parser": "^7.10.0",
+    "vue-jest": "^5.0.0-0"
   },
   "peerDependencies": {
     "vue": "^3.0.0"
