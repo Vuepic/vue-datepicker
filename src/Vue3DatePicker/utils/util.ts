@@ -157,3 +157,12 @@ export const getMonthNames = (locale: string): string[] => {
     });
     return months.map((date) => formatter.format(date).slice(0, 3));
 };
+
+/**
+ * Since internally watched values are in 24h mode, this will get am-pm value from set hour
+ */
+export const hoursToAmPmHours = (index: number): number => {
+    const hoursValues = [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+
+    return hoursValues[index];
+};

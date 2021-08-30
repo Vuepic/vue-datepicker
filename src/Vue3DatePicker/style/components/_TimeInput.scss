@@ -37,3 +37,12 @@
         color: var(--dp-primary-color);
     }
 }
+
+.dp__pm_am_button {
+    background: var(--dp-primary-color);
+    color: var(--dp-primary-text-color);
+    border: none;
+    padding: 10px;
+    border-radius: $dp__border_radius;
+    cursor: pointer;
+}

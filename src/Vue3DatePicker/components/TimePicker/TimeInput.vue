@@ -21,6 +21,9 @@
                 <ChevronDownIcon />
             </div>
         </div>
+        <div v-if="!is24">
+            <button class="dp__pm_am_button" @click="setAmPm">{{ amPm }}</button>
+        </div>
         <SelectionGrid
             v-if="hourOverlay"
             @update:modelValue="$emit('update:hours', $event)"
@@ -56,7 +59,7 @@
     import { computed, defineComponent, PropType, ref, toRef } from 'vue';
     import { ChevronUpIcon, ChevronDownIcon, ClockIcon } from '../Icons';
     import { IDateFilter, IDefaultSelect, ITimeRange, TimeInputProps } from '../../interfaces';
-    import { getArrayInArray } from '../../utils/util';
+    import { getArrayInArray, hoursToAmPmHours } from '../../utils/util';
     import SelectionGrid from '../SelectionGrid.vue';
 
     export default defineComponent({
@@ -86,9 +89,11 @@
             const minuteOverlay = ref(false);
             const hours = toRef(props, 'hours');
             const minutes = toRef(props, 'minutes');
+            const amPm = ref('AM');
 
             const hourDisplay = computed((): string => {
-                return hours.value < 10 ? `0${hours.value}` : `${hours.value}`;
+                const hour = convert24ToAmPm(hours.value);
+                return hour < 10 ? `0${hour}` : `${hour}`;
             });
 
             const minuteDisplay = computed((): string => {
@@ -177,6 +182,28 @@
                 }
             };
 
+            const convert24ToAmPm = (time: number): number => {
+                if (props.is24) {
+                    return time;
+                }
+                if (time >= 12) {
+                    amPm.value = 'PM';
+                } else {
+                    amPm.value = 'AM';
+                }
+                return hoursToAmPmHours(time);
+            };
+
+            const setAmPm = () => {
+                if (amPm.value === 'PM') {
+                    amPm.value = 'AM';
+                    emit('update:hours', hours.value - 12);
+                } else {
+                    amPm.value = 'PM';
+                    emit('update:hours', hours.value + 12);
+                }
+            };
+
             return {
                 showTimePicker,
                 hourOverlay,
@@ -189,6 +216,8 @@
                 getMinutesGridItems,
                 handleHours,
                 handleMinutes,
+                setAmPm,
+                amPm,
             };
         },
     });

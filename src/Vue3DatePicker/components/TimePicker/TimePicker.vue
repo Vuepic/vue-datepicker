@@ -50,10 +50,6 @@
                             :min-time="minTime"
                         />
                     </template>
-                    <!-- todo - add this -->
-                    <!--                    <div v-if="!is24" class="dp__pm_am_button">-->
-                    <!--                        <div><button>PM</button></div>-->
-                    <!--                    </div>-->
                 </div>
                 <div class="dp__button" @click="toggleTimePicker(false)"><CalendarIcon /></div>
             </div>
