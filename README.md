@@ -8,6 +8,9 @@
 
 [DOCUMENTATION](https://vuepic.github.io/vue3-date-time-picker/)
 
+
+[JSFiddle DEMO](https://jsfiddle.net/6gn3he1b/)
+
 ## Features
 
 - Single date picker
