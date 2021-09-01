@@ -149,7 +149,7 @@
                         }
                     }
                     if (hours.value - +props.hoursIncrement < 0) {
-                        emit('update:hours', props.is24 ? 23 : 11);
+                        emit('update:hours', props.is24 ? 24 - +props.hoursIncrement : 12 - -+props.hoursIncrement);
                     } else {
                         emit('update:hours', hours.value - +props.hoursIncrement);
                     }
@@ -175,7 +175,7 @@
                         }
                     }
                     if (minutes.value - +props.minutesIncrement < 0) {
-                        emit('update:minutes', 59);
+                        emit('update:minutes', 60 - +props.minutesIncrement);
                     } else {
                         emit('update:minutes', minutes.value - +props.minutesIncrement);
                     }
