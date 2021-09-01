@@ -13,11 +13,14 @@
                 ><slot name="input-icon"></slot
             ></span>
             <CalendarIcon v-if="!$slots['input-icon'] && !hideInputIcon" class="dp__input_icon dp__input_icons" />
-            <span class="dp__clear_icon" v-if="$slots['clear-icon'] && clearable" @click.stop.prevent="$emit('clear')"
+            <span
+                class="dp__clear_icon"
+                v-if="$slots['clear-icon'] && clearable && !disabled && !readonly"
+                @click.stop.prevent="$emit('clear')"
                 ><slot name="clear-icon"></slot
             ></span>
             <CancelIcon
-                v-if="clearable && !$slots['clear-icon'] && internalValue"
+                v-if="clearable && !$slots['clear-icon'] && internalValue && !disabled && !readonly"
                 class="dp__clear_icon dp__input_icons"
                 @click.prevent="$emit('clear')"
             />
