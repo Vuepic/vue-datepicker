@@ -249,3 +249,8 @@ export interface TimeInputProps {
 
 export type IHoursRange = [number, number];
 export type IMinutesRange = [number, number];
+
+export interface IHoursOptions {
+    hourCycle?: string;
+    hour12?: boolean;
+}
