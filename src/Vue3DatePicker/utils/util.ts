@@ -1,4 +1,4 @@
-import { FormatOptions, ICalendarDate, ICalendarDay, IDefaultSelect } from '../interfaces';
+import { FormatOptions, ICalendarDate, ICalendarDay, IDefaultSelect, IHoursOptions } from '../interfaces';
 
 /**
  * Depending on a week start get starting date of the current calendar
@@ -62,6 +62,13 @@ export const getCalendarDays = (month: number, year: number, start: number): ICa
 };
 
 /**
+ * Different config for 24h and 12H
+ */
+const getHoursOptions = (is24: boolean): IHoursOptions => {
+    return is24 ? { hourCycle: 'h23' } : { hour12: true };
+};
+
+/**
  * Format Date object into readable format, specified by props
  */
 export const formatSingleDate = (
@@ -73,7 +80,12 @@ export const formatSingleDate = (
 ): string => {
     let options = formatOptions;
     if (showTime) {
-        options = Object.assign(options, { hour: 'numeric', minute: 'numeric', hour12: !is24 });
+        options = Object.assign(options, {
+            hour: 'numeric',
+            minute: 'numeric',
+            hourCycle: 'h23',
+            ...getHoursOptions(is24),
+        });
     }
     return date.toLocaleDateString(locale, options);
 };
@@ -91,7 +103,7 @@ export const formatRangeDate = (
 ): string | string[] => {
     let options = formatOptions;
     if (showTime) {
-        options = Object.assign(options, { hour: 'numeric', minute: 'numeric', hour12: !is24 });
+        options = Object.assign(options, { hour: 'numeric', minute: 'numeric', ...getHoursOptions(is24) });
     }
     if (returnArr) {
         return [dates[0].toLocaleDateString(locale, options), dates[1].toLocaleDateString(locale, options)];

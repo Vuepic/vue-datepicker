@@ -66,6 +66,7 @@ export interface RDatepickerProps {
     selectText: string;
     cancelText: string;
     weekNumName: string;
+    autoPosition: boolean;
 }
 
 export interface DatepickerInputProps {
@@ -121,6 +122,7 @@ export interface DatepickerMenuProps {
     minTime: ITimeRange;
     maxTime: ITimeRange;
     inline: boolean;
+    openOnTop: boolean;
 }
 
 export interface CalendarProps {
@@ -249,3 +251,8 @@ export interface TimeInputProps {
 
 export type IHoursRange = [number, number];
 export type IMinutesRange = [number, number];
+
+export interface IHoursOptions {
+    hourCycle?: string;
+    hour12?: boolean;
+}

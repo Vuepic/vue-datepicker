@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts">
-    import { computed, defineComponent, onMounted, PropType, ref } from 'vue';
+    import { computed, defineComponent, onMounted, PropType, ref, nextTick } from 'vue';
     import Calendar from './Calendar.vue';
 
     import { DatepickerMenuProps, IMonth, DynamicClass, FormatOptions, IDateFilter, ITimeRange } from '../interfaces';
@@ -50,7 +50,7 @@
     export default defineComponent({
         name: 'DatepickerMenu',
         components: { Calendar },
-        emits: ['update:singleModelValue', 'update:rangeModelValue', 'closePicker', 'selectDate', 'openToTop'],
+        emits: ['update:singleModelValue', 'update:rangeModelValue', 'closePicker', 'selectDate', 'dpOpen'],
         props: {
             uid: { type: String as PropType<string>, default: 'dp' },
             weekNumbers: { type: Boolean as PropType<boolean>, default: false },
@@ -85,17 +85,17 @@
             minTime: { type: Object as PropType<ITimeRange>, default: () => ({}) },
             maxTime: { type: Object as PropType<ITimeRange>, default: () => ({}) },
             inline: { type: Boolean as PropType<boolean>, default: false },
+            openOnTop: { type: Boolean as PropType<boolean>, default: false },
         },
         setup(props: DatepickerMenuProps, { emit }) {
             const assignedFilter = ref({});
-            const openOnTop = ref(false);
 
             onMounted(() => {
-                recalculatePosition();
                 assignedFilter.value = Object.assign(
                     { months: [], years: [], times: { hours: [], minutes: [] } },
                     props.filters,
                 );
+                nextTick(() => emit('dpOpen'));
             });
 
             const mappedMonths = computed((): IMonth[] =>
@@ -109,37 +109,10 @@
                 }),
             );
 
-            const arrowClass = computed(() => (!openOnTop.value ? 'dp__arrow_top' : 'dp__arrow_bottom'));
+            const arrowClass = computed(() => (!props.openOnTop ? 'dp__arrow_top' : 'dp__arrow_bottom'));
 
             const rangeDate = useBindValue(props, emit, 'rangeModelValue');
             const singleDate = useBindValue(props, emit, 'singleModelValue');
-
-            /**
-             * If input is near the bottom position where menu can't fit, it will recalculate and
-             * place it on top
-             */
-            const recalculatePosition = (): void => {
-                const el = document.getElementById(`dp__input_${props.uid}`);
-                if (el) {
-                    const { height: inputHeight } = el.getBoundingClientRect();
-                    const getHeight = (): number => {
-                        const { documentElement, body } = document;
-                        const calcEl = documentElement.offsetHeight ? documentElement : body;
-                        return Math.max(calcEl.scrollHeight, calcEl.offsetHeight);
-                    };
-                    const fullHeight = getHeight();
-                    const freeSpace = fullHeight - el.offsetTop - inputHeight;
-                    const menuEl = document.getElementById(`dp__menu_${props.uid}`);
-                    if (menuEl) {
-                        const { height } = menuEl.getBoundingClientRect();
-                        const menuHeight = height + inputHeight;
-                        if (menuHeight > freeSpace) {
-                            emit('openToTop', menuHeight);
-                            openOnTop.value = true;
-                        }
-                    }
-                }
-            };
 
             const firstDate = computed((): Date => {
                 if (props.range) {
