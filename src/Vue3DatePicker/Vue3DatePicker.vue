@@ -159,16 +159,21 @@
 
             onMounted(() => {
                 mapExternalToInternalValue();
-                window.addEventListener('scroll', onScroll);
-                window.addEventListener('resize', onResize);
+                if (!props.inline) {
+                    window.addEventListener('scroll', onScroll);
+                    window.addEventListener('resize', onResize);
+                }
+
                 if (props.inline) {
                     isOpen.value = true;
                 }
             });
 
             onUnmounted(() => {
-                window.removeEventListener('scroll', onScroll);
-                window.removeEventListener('resize', onResize);
+                if (props.inline) {
+                    window.removeEventListener('scroll', onScroll);
+                    window.removeEventListener('resize', onResize);
+                }
             });
 
             const wrapperClass = computed(
