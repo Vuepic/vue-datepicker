@@ -42,7 +42,11 @@
              * Handle click on cell, if value is enabled (not in filters), emit value back to parent
              */
             const onClick = (val: string | number): void => {
-                if (!props.disabledValues.some((value) => value === val)) {
+                if (
+                    !props.disabledValues.some((value) => value === val) &&
+                    (props.minValue ? +props.minValue < val : true) &&
+                    (props.maxValue ? +props.maxValue > val : true)
+                ) {
                     emit('update:modelValue', val);
                     emit('selected');
                 }
