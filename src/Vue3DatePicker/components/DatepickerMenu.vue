@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts">
-    import { computed, defineComponent, onMounted, PropType, ref, nextTick } from 'vue';
+    import { computed, defineComponent, onMounted, PropType, nextTick } from 'vue';
     import Calendar from './Calendar.vue';
 
     import { DatepickerMenuProps, IMonth, DynamicClass, FormatOptions, IDateFilter, ITimeRange } from '../interfaces';
@@ -88,18 +88,17 @@
             openOnTop: { type: Boolean as PropType<boolean>, default: false },
         },
         setup(props: DatepickerMenuProps, { emit }) {
-            const assignedFilter = ref({});
-
             onMounted(() => {
-                assignedFilter.value = Object.assign(
-                    { months: [], years: [], times: { hours: [], minutes: [] } },
-                    props.filters,
-                );
                 nextTick(() => emit('dpOpen'));
             });
 
             const mappedMonths = computed((): IMonth[] =>
                 getMonthNames(props.locale).map((month: string, i: number) => ({ text: month, value: i })),
+            );
+
+            const assignedFilter = computed(
+                (): IDateFilter =>
+                    Object.assign({ months: [], years: [], times: { hours: [], minutes: [] } }, props.filters),
             );
 
             const dpMenuClass = computed(

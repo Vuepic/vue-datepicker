@@ -7,7 +7,7 @@
                     v-for="col in row"
                     :key="col.value"
                     @click="onClick(col.value)"
-                    :id="col.value === modelValue ? 'selection-active' : null"
+                    :id="col.value === modelValue && !disabledValues.includes(col.value) ? 'selection-active' : null"
                 >
                     <div :class="col.className">
                         {{ col.text }}

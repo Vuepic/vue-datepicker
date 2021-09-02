@@ -3,7 +3,13 @@ import { computed, ComputedRef, Ref } from 'vue';
 import { generateHours, generateMinutes, getCalendarDays } from './util';
 
 export const useMontYearPick = (props: MonthYearPickerProps, emit: VueEmit): IMonthYearHook => {
+    const months = props.months.map((month) => month.value);
+    const years = props.years.map((year) => year.value);
+    const excludedMonths = months.filter((month) => !props.filters.months.some((mon) => mon === month));
+    const excludedYears = years.filter((year) => !props.filters.years.some((yr) => yr === year));
+
     const onNext = (): void => {
+        let tempMonth;
         let month = props.month;
         let year = props.year;
         if (props.month === 11) {
@@ -12,10 +18,29 @@ export const useMontYearPick = (props: MonthYearPickerProps, emit: VueEmit): IMo
         } else {
             month += 1;
         }
+        if (props.filters.months.includes(month)) {
+            if (month === 0) {
+                month = Math.min(...excludedMonths);
+            } else {
+                month = Math.max(...excludedMonths);
+            }
+            tempMonth = month;
+        }
+        if (month === tempMonth) {
+            month = Math.min(...excludedMonths);
+            year = props.year + 1;
+        }
+        if (props.filters.years.includes(year)) {
+            const foundYear = excludedYears.find((availableYear) => availableYear > year);
+            if (foundYear) {
+                year = foundYear;
+            }
+        }
         updateMonthYear(month, year);
     };
 
     const onPrev = (): void => {
+        let tempMonth;
         let month = props.month;
         let year = props.year;
         if (props.month === 0) {
@@ -23,6 +48,24 @@ export const useMontYearPick = (props: MonthYearPickerProps, emit: VueEmit): IMo
             year = props.year - 1;
         } else {
             month -= 1;
+        }
+        if (props.filters.months.includes(month)) {
+            if (month === 11) {
+                month = Math.max(...excludedMonths);
+            } else {
+                month = Math.min(...excludedMonths);
+            }
+            tempMonth = month;
+        }
+        if (month === tempMonth) {
+            month = Math.max(...excludedMonths);
+            year = props.year - 1;
+        }
+        if (props.filters.years.includes(year)) {
+            const foundYear = excludedYears.reverse().find((availableYear) => availableYear < year);
+            if (foundYear) {
+                year = foundYear;
+            }
         }
         updateMonthYear(month, year);
     };
