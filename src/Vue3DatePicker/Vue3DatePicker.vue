@@ -29,6 +29,7 @@
                 :class="theme"
                 :uid="uid"
                 v-click-outside-directive.dp__menu="closeMenu"
+                :open-on-top="openOnTop"
                 :enable-time-picker="enableTimePicker"
                 :week-numbers="weekNumbers"
                 :week-start="weekStart"
@@ -60,7 +61,7 @@
                 v-model:rangeModelValue="rangeModelValue"
                 @closePicker="closeMenu"
                 @selectDate="selectDate"
-                @openToTop="recalculatePosition"
+                @dpOpen="recalculatePosition"
                 v-if="isOpen"
             />
         </teleport>
@@ -121,7 +122,7 @@
             hideInputIcon: { type: Boolean as PropType<boolean>, default: false },
             state: { type: Boolean as PropType<boolean>, default: null },
             clearable: { type: Boolean as PropType<boolean>, default: true },
-            closeOnScroll: { type: Boolean as PropType<boolean>, default: true },
+            closeOnScroll: { type: Boolean as PropType<boolean>, default: false },
             autoApply: { type: Boolean as PropType<boolean>, default: false },
             filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
             disableMonthYearSelect: { type: Boolean as PropType<boolean>, default: false },
@@ -130,6 +131,7 @@
             inline: { type: Boolean as PropType<boolean>, default: false },
             selectText: { type: String as PropType<string>, default: 'Select' },
             cancelText: { type: String as PropType<string>, default: 'Cancel' },
+            autoPosition: { type: Boolean as PropType<boolean>, default: true },
         },
         setup(props: RDatepickerProps, { emit }) {
             const isOpen = ref(false);
@@ -137,6 +139,7 @@
             const internalValue = ref<string | string[]>('');
             const singleModelValue = ref();
             const rangeModelValue = ref();
+            const openOnTop = ref(false);
             const valueCleared = ref(false);
             const modelValue = toRef(props, 'modelValue');
 
@@ -156,20 +159,16 @@
 
             onMounted(() => {
                 mapExternalToInternalValue();
-                if (props.closeOnScroll) {
-                    window.addEventListener('scroll', closeMenu);
-                }
-                window.addEventListener('resize', setMenuPosition);
+                window.addEventListener('scroll', onScroll);
+                window.addEventListener('resize', onResize);
                 if (props.inline) {
                     isOpen.value = true;
                 }
             });
 
             onUnmounted(() => {
-                if (props.closeOnScroll) {
-                    window.removeEventListener('scroll', closeMenu);
-                }
-                window.removeEventListener('resize', setMenuPosition);
+                window.removeEventListener('scroll', onScroll);
+                window.removeEventListener('resize', onResize);
             });
 
             const wrapperClass = computed(
@@ -279,7 +278,21 @@
                 closeMenu();
             };
 
-            const setMenuPosition = (): void => {
+            const onScroll = (): void => {
+                if (props.closeOnScroll) {
+                    closeMenu();
+                } else if (props.autoPosition) {
+                    setMenuPosition();
+                } else {
+                    window.removeEventListener('scroll', onScroll);
+                }
+            };
+
+            const onResize = (): void => {
+                setMenuPosition();
+            };
+
+            const setMenuPosition = (recalculate = true): void => {
                 const el = document.getElementById(`dp__input_${props.uid}`);
                 if (el) {
                     const { left, width, height } = el.getBoundingClientRect();
@@ -298,13 +311,31 @@
                         position.transform = `translateX(-50%)`;
                     }
                     menuPosition.value = position;
+                    if (recalculate) {
+                        recalculatePosition();
+                    }
                 }
             };
 
-            const recalculatePosition = (height: number) => {
+            const recalculatePosition = (): void => {
                 const el = document.getElementById(`dp__input_${props.uid}`);
                 if (el) {
-                    menuPosition.value.top = `${el.offsetTop - height - 12}px`;
+                    const { height: inputHeight, top } = el.getBoundingClientRect();
+                    const fullHeight = window.innerHeight;
+                    const freeSpace = fullHeight - top - inputHeight;
+                    const menuEl = document.getElementById(`dp__menu_${props.uid}`);
+
+                    if (menuEl) {
+                        const { height } = menuEl.getBoundingClientRect();
+                        const menuHeight = height + inputHeight;
+                        if (menuHeight > freeSpace) {
+                            menuPosition.value.top = `${el.offsetTop - height - 12}px`;
+                            openOnTop.value = true;
+                        } else {
+                            setMenuPosition(false);
+                            openOnTop.value = false;
+                        }
+                    }
                 }
             };
 
@@ -344,12 +375,13 @@
                 internalValue,
                 isOpen,
                 isSingle,
+                theme,
+                wrapperClass,
+                openOnTop,
                 clearValue,
                 openMenu,
                 closeMenu,
                 selectDate,
-                theme,
-                wrapperClass,
                 recalculatePosition,
             };
         },
