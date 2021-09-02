@@ -181,15 +181,22 @@
                 }
 
                 weekDays.value = getDayNames(props.locale, +props.weekStart);
+                const date = new Date();
 
                 if (singleModelValue.value) {
                     hoursSingle.value = singleModelValue.value.getHours();
                     minutesSingle.value = singleModelValue.value.getMinutes();
+                } else {
+                    hoursSingle.value = date.getHours();
+                    minutesSingle.value = date.getMinutes();
                 }
 
                 if (rangeModelValue.value && rangeModelValue.value[0] && rangeModelValue.value[1]) {
                     hoursRange.value = [rangeModelValue.value[0].getHours(), rangeModelValue.value[1].getHours()];
                     minutesRange.value = [rangeModelValue.value[0].getMinutes(), rangeModelValue.value[1].getMinutes()];
+                } else {
+                    hoursRange.value = [date.getHours(), date.getHours()];
+                    minutesRange.value = [date.getMinutes(), date.getMinutes()];
                 }
             });
 

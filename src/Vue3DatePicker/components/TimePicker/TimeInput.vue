@@ -56,7 +56,7 @@
 </template>
 
 <script lang="ts">
-    import { computed, defineComponent, PropType, ref, toRef } from 'vue';
+    import { computed, defineComponent, onMounted, PropType, ref, toRef } from 'vue';
     import { ChevronUpIcon, ChevronDownIcon, ClockIcon } from '../Icons';
     import { IDateFilter, IDefaultSelect, ITimeRange, TimeInputProps } from '../../interfaces';
     import { getArrayInArray, hoursToAmPmHours } from '../../utils/util';
@@ -90,6 +90,10 @@
             const hours = toRef(props, 'hours');
             const minutes = toRef(props, 'minutes');
             const amPm = ref('AM');
+
+            onMounted(() => {
+                checkMinMaxHours();
+            });
 
             const hourDisplay = computed((): string => {
                 const hour = convert24ToAmPm(hours.value);
@@ -127,10 +131,34 @@
                 minuteOverlay.value = !minuteOverlay.value;
             };
 
+            const checkMinMaxHours = (): void => {
+                if (Object.keys(props.maxTime).length) {
+                    if (props.maxTime.hours && hours.value > props.maxTime.hours) {
+                        emit('update:hours', +props.maxTime.hours);
+                    }
+                    if (props.maxTime.minutes && minutes.value > props.maxTime.minutes) {
+                        emit('update:minutes', +props.maxTime.minutes);
+                    }
+                }
+                if (Object.keys(props.minTime).length) {
+                    if (props.minTime.hours && hours.value < props.minTime.hours) {
+                        emit('update:hours', +props.minTime.hours);
+                    }
+                    if (props.minTime.minutes && minutes.value < props.minTime.minutes) {
+                        emit('update:minutes', +props.minTime.minutes);
+                    }
+                }
+            };
+
             const handleHours = (type: string): void => {
                 if (type === 'increment') {
                     if (props.maxTime.hours) {
                         if (hours.value + +props.hoursIncrement > +props.maxTime.hours) {
+                            return;
+                        }
+                    }
+                    if (props.minTime.hours) {
+                        if (hours.value + +props.hoursIncrement < +props.minTime.hours) {
                             return;
                         }
                     }
@@ -145,6 +173,11 @@
                 } else {
                     if (props.minTime.hours) {
                         if (hours.value - +props.hoursIncrement < +props.minTime.hours) {
+                            return;
+                        }
+                    }
+                    if (props.maxTime.hours) {
+                        if (hours.value - +props.hoursIncrement > +props.maxTime.hours) {
                             return;
                         }
                     }
@@ -163,6 +196,11 @@
                             return;
                         }
                     }
+                    if (props.minTime.minutes) {
+                        if (minutes.value + +props.minutesIncrement < +props.minTime.minutes) {
+                            return;
+                        }
+                    }
                     if (minutes.value + +props.minutesIncrement >= 60) {
                         emit('update:minutes', 0);
                     } else {
@@ -171,6 +209,11 @@
                 } else {
                     if (props.minTime.minutes) {
                         if (minutes.value - +props.minutesIncrement < +props.minTime.minutes) {
+                            return;
+                        }
+                    }
+                    if (props.maxTime.minutes) {
+                        if (minutes.value + +props.minutesIncrement > +props.maxTime.minutes) {
                             return;
                         }
                     }
