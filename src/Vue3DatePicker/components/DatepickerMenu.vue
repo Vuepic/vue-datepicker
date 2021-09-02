@@ -89,7 +89,9 @@
         },
         setup(props: DatepickerMenuProps, { emit }) {
             onMounted(() => {
-                nextTick(() => emit('dpOpen'));
+                if (!props.inline) {
+                    nextTick(() => emit('dpOpen'));
+                }
             });
 
             const mappedMonths = computed((): IMonth[] =>
