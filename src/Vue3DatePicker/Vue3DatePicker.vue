@@ -327,18 +327,28 @@
                 if (el) {
                     const { height: inputHeight, top } = el.getBoundingClientRect();
                     const fullHeight = window.innerHeight;
-                    const freeSpace = fullHeight - top - inputHeight;
+                    const freeSpaceBottom = fullHeight - top - inputHeight;
+
                     const menuEl = document.getElementById(`dp__menu_${props.uid}`);
 
                     if (menuEl) {
                         const { height } = menuEl.getBoundingClientRect();
                         const menuHeight = height + inputHeight;
-                        if (menuHeight > freeSpace) {
-                            menuPosition.value.top = `${el.offsetTop - height - 12}px`;
-                            openOnTop.value = true;
+                        if (menuHeight > top && menuHeight > freeSpaceBottom) {
+                            if (top > freeSpaceBottom) {
+                                openOnTop.value = true;
+                            } else {
+                                setMenuPosition(false);
+                                openOnTop.value = false;
+                            }
                         } else {
-                            setMenuPosition(false);
-                            openOnTop.value = false;
+                            if (menuHeight > freeSpaceBottom) {
+                                menuPosition.value.top = `${el.offsetTop - height - 12}px`;
+                                openOnTop.value = true;
+                            } else {
+                                setMenuPosition(false);
+                                openOnTop.value = false;
+                            }
                         }
                     }
                 }
