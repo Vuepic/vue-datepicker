@@ -170,7 +170,7 @@
             });
 
             onUnmounted(() => {
-                if (props.inline) {
+                if (!props.inline) {
                     window.removeEventListener('scroll', onScroll);
                     window.removeEventListener('resize', onResize);
                 }
