@@ -1,4 +1,11 @@
-import { FormatOptions, ICalendarDate, ICalendarDay, IDefaultSelect, IHoursOptions } from '../interfaces';
+import {
+    FormatOptions,
+    ICalendarDate,
+    ICalendarDay,
+    IDefaultSelect,
+    IHoursOptions,
+    IModelValueMonthPicker,
+} from '../interfaces';
 
 /**
  * Depending on a week start get starting date of the current calendar
@@ -109,6 +116,17 @@ export const formatRangeDate = (
         return [dates[0].toLocaleDateString(locale, options), dates[1].toLocaleDateString(locale, options)];
     }
     return `${dates[0].toLocaleDateString(locale, options)} - ${dates[1].toLocaleDateString(locale, options)}`;
+};
+
+/**
+ * Format value for month picker
+ */
+export const formatMonthValue = (monthValue: IModelValueMonthPicker): string => {
+    if (monthValue && (monthValue.month || monthValue.month === 0) && monthValue.year) {
+        const month = monthValue.month + 1 < 10 ? `0${monthValue.month + 1}` : monthValue.month + 1;
+        return `${month}/${monthValue.year}`;
+    }
+    return '';
 };
 
 export const generateMinutes = (increment: number): IDefaultSelect[] => {

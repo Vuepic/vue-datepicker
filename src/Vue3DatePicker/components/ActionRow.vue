@@ -16,8 +16,8 @@
 
 <script lang="ts">
     import { defineComponent, onMounted, PropType, ref, toRef, watch } from 'vue';
-    import { ActionRowProps, FormatOptions } from '../interfaces';
-    import { formatSingleDate, formatRangeDate } from '../utils/util';
+    import { ActionRowProps, FormatOptions, IModelValueMonthPicker } from '../interfaces';
+    import { formatSingleDate, formatRangeDate, formatMonthValue } from '../utils/util';
 
     export default defineComponent({
         name: 'ActionRow',
@@ -36,11 +36,14 @@
             is24: { type: Boolean as PropType<boolean>, default: true },
             enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
             inline: { type: Boolean as PropType<boolean>, default: false },
+            monthPicker: { type: Boolean as PropType<boolean>, default: false },
+            monthPickerValue: { type: Object as PropType<IModelValueMonthPicker>, default: null },
         },
         setup(props: ActionRowProps) {
             const previewValue = ref<string | string[]>('');
             const singleModelValue = toRef(props, 'singleModelValue');
             const rangeModelValue = toRef(props, 'rangeModelValue');
+            const monthModelValue = toRef(props, 'monthPickerValue');
 
             watch(singleModelValue, (): void => {
                 formatSinglePreview();
@@ -50,17 +53,25 @@
                 formatRangePreview();
             });
 
+            watch(monthModelValue, (): void => {
+                formatMonthValValue();
+            });
+
             onMounted((): void => {
-                if (props.singleModelValue || props.rangeModelValue) {
+                if (props.singleModelValue || props.rangeModelValue || props.monthPickerValue) {
                     formatPreview();
                 }
             });
 
             const formatPreview = (): void => {
-                if (!props.range) {
-                    formatSinglePreview();
+                if (props.monthPicker) {
+                    formatMonthValValue();
                 } else {
-                    formatRangePreview();
+                    if (!props.range) {
+                        formatSinglePreview();
+                    } else {
+                        formatRangePreview();
+                    }
                 }
             };
 
@@ -94,6 +105,12 @@
                     } else {
                         previewValue.value = props.previewFormat(props.rangeModelValue);
                     }
+                }
+            };
+
+            const formatMonthValValue = (): void => {
+                if (props.monthPicker && props.monthPickerValue) {
+                    previewValue.value = formatMonthValue(props.monthPickerValue);
                 }
             };
 

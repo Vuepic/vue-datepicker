@@ -1,6 +1,7 @@
 <template>
-    <div class="dp__overlay" :id="id">
+    <div class="dp__overlay" :id="id" :class="dpOverlayClass">
         <div class="dp__overlay_container">
+            <div class="dp__selection_grid_header"><slot name="header"></slot></div>
             <div class="dp__overlay_row" v-for="(row, i) in mappedItems" :key="useKey(i)">
                 <div
                     class="dp__overlay_col"
@@ -14,7 +15,9 @@
                     </div>
                 </div>
             </div>
-            <div :class="actionButtonClass" @click="$emit('toggle')"><slot name="button-icon" /></div>
+            <div :class="actionButtonClass" @click="$emit('toggle')" v-if="$slots['button-icon']">
+                <slot name="button-icon" />
+            </div>
         </div>
     </div>
 </template>
@@ -34,6 +37,7 @@
             disabledValues: { type: Array as PropType<number[]>, default: () => [] },
             minValue: { type: [Number, String] as PropType<number | string>, default: null },
             maxValue: { type: [Number, String] as PropType<number | string>, default: null },
+            fixedMode: { type: Boolean as PropType<boolean>, default: true },
         },
         setup(props: SelectionGridProps, { emit }) {
             const scrollable = ref(false);
@@ -62,6 +66,13 @@
                     scrollable.value = elm.clientHeight < elm.scrollHeight;
                 }
             });
+
+            const dpOverlayClass = computed(
+                (): DynamicClass => ({
+                    dp__overlay: true,
+                    dp__overlay_fixed: props.fixedMode,
+                }),
+            );
 
             /**
              * Check if value is within min-max range
@@ -111,6 +122,7 @@
                 onClick,
                 actionButtonClass,
                 mappedItems,
+                dpOverlayClass,
             };
         },
     });

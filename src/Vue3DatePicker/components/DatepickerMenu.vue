@@ -30,11 +30,15 @@
             :select-text="selectText"
             :cancel-text="cancelText"
             :inline="inline"
+            :month-picker="monthPicker"
+            :time-picker="timePicker"
             @selectRangeDate="$emit('update:rangeModelValue', $event)"
             @closePicker="$emit('closePicker')"
             @selectDate="$emit('selectDate')"
+            @selectMonth="$emit('selectMonth', $event)"
             v-model:rangeModelValue="rangeDate"
             v-model:singleModelValue="singleDate"
+            v-model:monthPickerValue="monthValue"
         ></Calendar>
     </div>
 </template>
@@ -43,14 +47,30 @@
     import { computed, defineComponent, onMounted, PropType, nextTick } from 'vue';
     import Calendar from './Calendar.vue';
 
-    import { DatepickerMenuProps, IMonth, DynamicClass, FormatOptions, IDateFilter, ITimeRange } from '../interfaces';
+    import {
+        DatepickerMenuProps,
+        IMonth,
+        DynamicClass,
+        FormatOptions,
+        IDateFilter,
+        ITimeRange,
+        IModelValueMonthPicker,
+    } from '../interfaces';
     import { useBindValue } from '../utils/hooks';
     import { getMonthNames } from '../utils/util';
 
     export default defineComponent({
         name: 'DatepickerMenu',
         components: { Calendar },
-        emits: ['update:singleModelValue', 'update:rangeModelValue', 'closePicker', 'selectDate', 'dpOpen'],
+        emits: [
+            'update:singleModelValue',
+            'update:rangeModelValue',
+            'closePicker',
+            'selectDate',
+            'dpOpen',
+            'update:monthPickerValue',
+            'selectMonth',
+        ],
         props: {
             uid: { type: String as PropType<string>, default: 'dp' },
             weekNumbers: { type: Boolean as PropType<boolean>, default: false },
@@ -86,6 +106,9 @@
             maxTime: { type: Object as PropType<ITimeRange>, default: () => ({}) },
             inline: { type: Boolean as PropType<boolean>, default: false },
             openOnTop: { type: Boolean as PropType<boolean>, default: false },
+            monthPicker: { type: Boolean as PropType<boolean>, default: false },
+            timePicker: { type: Boolean as PropType<boolean>, default: false },
+            monthPickerValue: { type: Object as PropType<IModelValueMonthPicker>, default: null },
         },
         setup(props: DatepickerMenuProps, { emit }) {
             onMounted(() => {
@@ -114,6 +137,7 @@
 
             const rangeDate = useBindValue(props, emit, 'rangeModelValue');
             const singleDate = useBindValue(props, emit, 'singleModelValue');
+            const monthValue = useBindValue(props, emit, 'monthPickerValue');
 
             const firstDate = computed((): Date => {
                 if (props.range) {
@@ -133,6 +157,7 @@
                 dpMenuClass,
                 mappedMonths,
                 arrowClass,
+                monthValue,
             };
         },
     });

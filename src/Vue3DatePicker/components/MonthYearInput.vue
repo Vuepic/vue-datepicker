@@ -1,31 +1,65 @@
 <template>
     <div class="dp__month_year_row">
-        <div class="dp__month_year_col_nav" @click="onPrev">
-            <ChevronLeftIcon />
-        </div>
-        <div class="dp__month_year_select" @click="toggleMonthPicker">{{ getMonthDisplayVal }}</div>
-        <div class="dp__month_year_select" @click="toggleYearPicker">{{ year }}</div>
-        <SelectionGrid
-            v-if="showMonthPicker"
-            :model-value="month"
-            :items="groupedMonths"
-            @update:modelValue="onMonthUpdate"
-            @toggle="toggleMonthPicker"
-            :disabled-values="filters.months"
-            ><template #button-icon><CalendarIcon /></template
-        ></SelectionGrid>
-        <SelectionGrid
-            v-if="showYearPicker"
-            :model-value="year"
-            :items="groupedYears"
-            @update:modelValue="onYearUpdate"
-            @toggle="toggleYearPicker"
-            :disabled-values="filters.years"
-            ><template #button-icon><CalendarIcon /></template
-        ></SelectionGrid>
-        <div class="dp__month_year_col_nav" @click="onNext">
-            <ChevronRightIcon />
-        </div>
+        <template v-if="!monthPicker">
+            <div class="dp__month_year_col_nav" @click="onPrev">
+                <ChevronLeftIcon />
+            </div>
+            <div class="dp__month_year_select" @click="toggleMonthPicker">{{ getMonthDisplayVal }}</div>
+            <div class="dp__month_year_select" @click="toggleYearPicker">{{ year }}</div>
+            <SelectionGrid
+                v-if="showMonthPicker"
+                :model-value="month"
+                :items="groupedMonths"
+                @update:modelValue="onMonthUpdate"
+                @toggle="toggleMonthPicker"
+                :disabled-values="filters.months"
+                ><template #button-icon><CalendarIcon /></template
+            ></SelectionGrid>
+            <SelectionGrid
+                v-if="showYearPicker"
+                :model-value="year"
+                :items="groupedYears"
+                @update:modelValue="onYearUpdate"
+                @toggle="toggleYearPicker"
+                :disabled-values="filters.years"
+                ><template #button-icon><CalendarIcon /></template
+            ></SelectionGrid>
+            <div class="dp__month_year_col_nav" @click="onNext">
+                <ChevronRightIcon />
+            </div>
+        </template>
+        <template v-if="monthPicker">
+            <SelectionGrid
+                :model-value="month"
+                :items="groupedMonths"
+                @update:modelValue="onMonthUpdate"
+                @toggle="toggleMonthPicker"
+                @selected="emitSelect"
+                :disabled-values="filters.months"
+                :fixed-mode="true"
+            >
+                <template #header>
+                    <div class="dp__month_picker_header">
+                        <div class="dp__month_year_col_nav" @click="handleYear">
+                            <ChevronLeftIcon />
+                        </div>
+                        <div @click="toggleYearPicker" class="dp__pointer">{{ year }}</div>
+                        <div class="dp__month_year_col_nav" @click="handleYear(true)">
+                            <ChevronRightIcon />
+                        </div>
+                    </div>
+                    <SelectionGrid
+                        v-if="showYearPicker"
+                        :model-value="year"
+                        :items="groupedYears"
+                        @update:modelValue="onYearUpdate"
+                        @toggle="toggleYearPicker"
+                        :disabled-values="filters.years"
+                        ><template #button-icon><CalendarIcon /></template
+                    ></SelectionGrid>
+                </template>
+            </SelectionGrid>
+        </template>
     </div>
 </template>
 
@@ -38,7 +72,7 @@
 
     export default defineComponent({
         name: 'MonthYearPicker',
-        emits: ['update:month', 'update:year'],
+        emits: ['update:month', 'update:year', 'selectMonth'],
         components: {
             CalendarIcon,
             ChevronLeftIcon,
@@ -51,6 +85,8 @@
             year: { type: Number as PropType<number>, default: 0 },
             month: { type: Number as PropType<number>, default: 0 },
             filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
+            monthPicker: { type: Boolean as PropType<boolean>, default: false },
+            autoApply: { type: Boolean as PropType<boolean>, default: false },
         },
         setup(props: MonthYearPickerProps, { emit }) {
             const showMonthPicker = ref(false);
@@ -98,6 +134,22 @@
                 showYearPicker.value = !showYearPicker.value;
             };
 
+            const handleYear = (increment = false): void => {
+                if (increment) {
+                    const yr = props.year + 1;
+                    emit('update:year', yr);
+                } else {
+                    const yr = props.year - 1;
+                    emit('update:year', yr);
+                }
+            };
+
+            const emitSelect = (): void => {
+                if (props.autoApply && props.monthPicker) {
+                    emit('selectMonth');
+                }
+            };
+
             return {
                 toggleYearPicker,
                 onNext,
@@ -109,8 +161,10 @@
                 groupedMonths,
                 toggleMonthPicker,
                 onMonthUpdate,
+                handleYear,
                 groupedYears,
                 useKey,
+                emitSelect,
             };
         },
     });

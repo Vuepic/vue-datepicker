@@ -1,15 +1,18 @@
 <template>
     <div :class="calendarClass">
-        <div class="dp__calendar_content_wrap">
+        <div :class="contentWrapClass">
             <MonthYearInput
-                :months="months"
-                v-model:month="month"
-                v-model:year="year"
                 v-if="!disableMonthYearSelect"
+                :months="months"
                 :years="years"
                 :filters="filters"
+                :month-picker="monthPicker"
+                :auto-apply="autoApply"
+                v-model:month="month"
+                v-model:year="year"
+                @selectMonth="selectMonth"
             />
-            <table class="dp__calendar_tb">
+            <table class="dp__calendar_tb" v-if="!specificMode">
                 <thead>
                     <tr class="dp__calendar_days">
                         <th class="dp__calendar_header_cell" v-if="weekNumbers">{{ weekNumName }}</th>
@@ -60,6 +63,8 @@
             :is24="is24"
             :enable-time-picker="enableTimePicker"
             :inline="inline"
+            :month-picker="monthPicker"
+            :month-picker-value="monthPickerValue"
             @closePicker="$emit('closePicker')"
             @selectDate="$emit('selectDate')"
         ></ActionRow>
@@ -81,6 +86,7 @@
         FormatOptions,
         IDateFilter,
         ITimeRange,
+        IModelValueMonthPicker,
     } from '../interfaces';
     import { useDpDaysGen } from '../utils/hooks';
     import { getDayNames } from '../utils/util';
@@ -92,7 +98,14 @@
             TimePicker,
             ActionRow,
         },
-        emits: ['update:rangeModelValue', 'update:singleModelValue', 'closePicker', 'selectDate'],
+        emits: [
+            'update:rangeModelValue',
+            'update:singleModelValue',
+            'closePicker',
+            'selectDate',
+            'update:monthPickerValue',
+            'selectMonth',
+        ],
         props: {
             months: { type: Array as PropType<IMonth[]>, default: () => [] },
             weekStart: { type: [Number, String] as PropType<number | string>, default: 1 },
@@ -127,6 +140,9 @@
             minTime: { type: Object as PropType<ITimeRange>, default: () => ({}) },
             maxTime: { type: Object as PropType<ITimeRange>, default: () => ({}) },
             inline: { type: Boolean as PropType<boolean>, default: false },
+            monthPicker: { type: Boolean as PropType<boolean>, default: false },
+            timePicker: { type: Boolean as PropType<boolean>, default: false },
+            monthPickerValue: { type: Object as PropType<IModelValueMonthPicker>, default: null },
         },
         setup(props: CalendarProps, { emit }) {
             const weekDays = ref();
@@ -173,6 +189,18 @@
                 }
             });
 
+            watch(month, () => {
+                if (props.monthPicker) {
+                    updateMonthPicker();
+                }
+            });
+
+            watch(year, () => {
+                if (props.monthPicker) {
+                    updateMonthPicker();
+                }
+            });
+
             onMounted(() => {
                 if (props.startDate) {
                     setStartDate(props.startDate);
@@ -198,6 +226,11 @@
                     hoursRange.value = [date.getHours(), date.getHours()];
                     minutesRange.value = [date.getMinutes(), date.getMinutes()];
                 }
+
+                if (props.monthPickerValue && props.monthPicker) {
+                    month.value = props.monthPickerValue.month;
+                    year.value = props.monthPickerValue.year;
+                }
             });
 
             /**
@@ -205,6 +238,11 @@
              * It will also get days in the offset from the previous/next month to fill the empty space
              */
             const dates = useDpDaysGen(month, year, +props.weekStart);
+
+            /**
+             * If datepicker is using only month or time picker
+             */
+            const specificMode = computed((): boolean => props.monthPicker || props.timePicker);
 
             /**
              * Generate array of years depending on provided range that will be available for picker
@@ -224,6 +262,13 @@
                 (): DynamicClass => ({
                     ['dp__calendar']: true,
                     [props.calendarClassName]: !!props.calendarClassName,
+                }),
+            );
+
+            const contentWrapClass = computed(
+                (): DynamicClass => ({
+                    dp__calendar_content_wrap: true,
+                    dp_calendar_fixed: props.monthPicker,
                 }),
             );
 
@@ -268,6 +313,10 @@
                     };
                 });
             });
+
+            const updateMonthPicker = (): void => {
+                emit('update:monthPickerValue', { month: month.value, year: year.value });
+            };
 
             /**
              * Compare if 2 dates are the same date by year, month, day
@@ -433,6 +482,10 @@
                 emit('update:rangeModelValue', [newDate1, newDate2]);
             };
 
+            const selectMonth = () => {
+                emit('selectMonth', { month: month.value, year: year.value });
+            };
+
             return {
                 mappedDates,
                 years,
@@ -449,6 +502,9 @@
                 minutesSingle,
                 hoursRange,
                 minutesRange,
+                specificMode,
+                contentWrapClass,
+                selectMonth,
             };
         },
     });

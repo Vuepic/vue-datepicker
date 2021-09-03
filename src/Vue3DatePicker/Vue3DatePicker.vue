@@ -57,11 +57,14 @@
                 :select-text="selectText"
                 :cancel-text="cancelText"
                 :inline="inline"
+                :month-picker="monthPicker"
                 v-model:singleModelValue="singleModelValue"
                 v-model:rangeModelValue="rangeModelValue"
+                v-model:monthPickerValue="monthPickerValue"
                 @closePicker="closeMenu"
                 @selectDate="selectDate"
                 @dpOpen="recalculatePosition"
+                @selectMonth="selectMonth"
                 v-if="isOpen"
             />
         </teleport>
@@ -70,10 +73,18 @@
 
 <script lang="ts">
     import { computed, defineComponent, onMounted, onUnmounted, PropType, ref, toRef, watch } from 'vue';
-    import { FormatOptions, IDateFilter, ITimeRange, OpenPosition, RDatepickerProps, DynamicClass } from './interfaces';
+    import {
+        FormatOptions,
+        IDateFilter,
+        ITimeRange,
+        OpenPosition,
+        RDatepickerProps,
+        DynamicClass,
+        IModelValueMonthPicker,
+    } from './interfaces';
     import DatepickerInput from './components/DatepickerInput.vue';
     import DatepickerMenu from './components/DatepickerMenu.vue';
-    import { formatRangeDate, formatSingleDate } from './utils/util';
+    import { formatMonthValue, formatRangeDate, formatSingleDate } from './utils/util';
     import { clickOutsideDirective } from './directives/clickOutside';
 
     export default /*#__PURE__*/ defineComponent({
@@ -90,7 +101,7 @@
             enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
             locale: { type: String as PropType<string>, default: 'en-US' },
             range: { type: Boolean as PropType<boolean>, default: false },
-            modelValue: { type: [String, Date, Array] as PropType<string | Date>, default: null },
+            modelValue: { type: [String, Date, Array, Object], default: null },
             position: { type: String as PropType<OpenPosition>, default: OpenPosition.center },
             placeholder: { type: String as PropType<string>, default: null },
             weekNumbers: { type: Boolean as PropType<boolean>, default: false },
@@ -132,6 +143,8 @@
             selectText: { type: String as PropType<string>, default: 'Select' },
             cancelText: { type: String as PropType<string>, default: 'Cancel' },
             autoPosition: { type: Boolean as PropType<boolean>, default: true },
+            monthPicker: { type: Boolean as PropType<boolean>, default: false },
+            timePicker: { type: Boolean as PropType<boolean>, default: false },
         },
         setup(props: RDatepickerProps, { emit }) {
             const isOpen = ref(false);
@@ -142,6 +155,7 @@
             const openOnTop = ref(false);
             const valueCleared = ref(false);
             const modelValue = toRef(props, 'modelValue');
+            const monthPickerValue = ref();
 
             watch(singleModelValue, () => {
                 formatSingleDateValue(props.autoApply);
@@ -187,12 +201,19 @@
 
             const theme = computed(() => (props.dark ? 'dp__theme_dark' : 'dp__theme_light'));
 
+            const specificMode = computed((): boolean => props.monthPicker || props.timePicker);
+
             const isSingle = computed((): boolean => !props.range);
 
             const externalInternalValueDiff = computed((): boolean => {
-                const dateValue = props.range
-                    ? JSON.stringify(rangeModelValue.value)
-                    : JSON.stringify(singleModelValue.value);
+                let dateValue;
+                if (props.monthPicker) {
+                    dateValue = JSON.stringify(monthPickerValue.value);
+                } else {
+                    dateValue = props.range
+                        ? JSON.stringify(rangeModelValue.value)
+                        : JSON.stringify(singleModelValue.value);
+                }
                 return JSON.stringify(modelValue.value) !== dateValue;
             });
 
@@ -204,31 +225,33 @@
             };
 
             const formatSingleDateValue = (formatInternal = false): void => {
-                if (singleModelValue.value) {
-                    if (formatInternal) {
-                        const dateValue = new Date(singleModelValue.value);
-                        if (typeof props.format === 'object') {
-                            internalValue.value = formatSingleDate(
-                                dateValue,
-                                props.locale,
-                                props.format,
-                                props.is24,
-                                props.enableTimePicker,
-                            );
-                        } else {
-                            internalValue.value = props.format(dateValue);
+                if (!specificMode.value) {
+                    if (singleModelValue.value) {
+                        if (formatInternal) {
+                            const dateValue = new Date(singleModelValue.value);
+                            if (typeof props.format === 'object') {
+                                internalValue.value = formatSingleDate(
+                                    dateValue,
+                                    props.locale,
+                                    props.format,
+                                    props.is24,
+                                    props.enableTimePicker,
+                                );
+                            } else {
+                                internalValue.value = props.format(dateValue);
+                            }
                         }
                     }
-                }
 
-                if (props.autoApply) {
-                    emit('update:modelValue', singleModelValue.value);
-                    closeMenu();
+                    if (props.autoApply) {
+                        emit('update:modelValue', singleModelValue.value);
+                        closeMenu();
+                    }
                 }
             };
 
             const formatRangeDateValue = (formatInternal = false): void => {
-                if (rangeModelValue.value && rangeModelValue.value.length === 2) {
+                if (rangeModelValue.value && rangeModelValue.value.length === 2 && !specificMode.value) {
                     const dateValue = [new Date(rangeModelValue.value[0]), new Date(rangeModelValue.value[1])];
                     if (formatInternal) {
                         if (typeof props.format === 'object') {
@@ -251,36 +274,71 @@
                 }
             };
 
-            const mapExternalToInternalValue = () => {
-                if (props.modelValue) {
-                    if (props.range) {
-                        if (Array.isArray(props.modelValue)) {
-                            rangeModelValue.value = JSON.parse(JSON.stringify(props.modelValue)).map(
-                                (date: string) => new Date(date),
-                            );
-                            formatRangeDateValue(true);
+            const formatMonthPickerValue = (formatInternal = false): void => {
+                if (monthPickerValue.value) {
+                    if (formatInternal) {
+                        if (typeof props.format === 'object') {
+                            internalValue.value = formatMonthValue(monthPickerValue.value);
                         } else {
-                            rangeModelValue.value = [];
+                            internalValue.value = props.format(monthPickerValue.value);
+                        }
+                    }
+                }
+            };
+
+            const mapExternalToInternalValue = () => {
+                if (!props.monthPicker && !props.timePicker) {
+                    if (props.modelValue) {
+                        if (props.range) {
+                            if (Array.isArray(props.modelValue)) {
+                                rangeModelValue.value = JSON.parse(JSON.stringify(props.modelValue)).map(
+                                    (date: string) => new Date(date),
+                                );
+                                formatRangeDateValue(true);
+                            } else {
+                                rangeModelValue.value = [];
+                            }
+                        } else {
+                            singleModelValue.value = new Date(props.modelValue);
+                            formatSingleDateValue(true);
                         }
                     } else {
-                        singleModelValue.value = new Date(props.modelValue);
-                        formatSingleDateValue(true);
+                        rangeModelValue.value = [];
+                        singleModelValue.value = null;
                     }
                 } else {
-                    rangeModelValue.value = [];
-                    singleModelValue.value = null;
+                    if (props.monthPicker) {
+                        if (props.modelValue) {
+                            monthPickerValue.value = { month: +props.modelValue.month, year: +props.modelValue.year };
+                            formatMonthPickerValue(true);
+                        } else {
+                            monthPickerValue.value = null;
+                        }
+                    }
                 }
             };
 
             const selectDate = (): void => {
-                if (props.range) {
-                    formatRangeDateValue(true);
-                    emit('update:modelValue', rangeModelValue.value);
-                } else {
-                    formatSingleDateValue(true);
-                    emit('update:modelValue', singleModelValue.value);
+                if (!props.monthPicker) {
+                    if (props.range) {
+                        formatRangeDateValue(true);
+                        emit('update:modelValue', rangeModelValue.value);
+                    } else {
+                        formatSingleDateValue(true);
+                        emit('update:modelValue', singleModelValue.value);
+                    }
+                } else if (props.monthPicker) {
+                    formatMonthPickerValue(true);
+                    emit('update:modelValue', monthPickerValue.value);
                 }
                 closeMenu();
+            };
+
+            const selectMonth = (monthVal: IModelValueMonthPicker): void => {
+                monthPickerValue.value = monthVal;
+                emit('update:modelValue', monthVal);
+                closeMenu();
+                formatMonthPickerValue(true);
             };
 
             const onScroll = (): void => {
@@ -372,6 +430,7 @@
             const clearInternalValues = (): void => {
                 singleModelValue.value = null;
                 rangeModelValue.value = [];
+                monthPickerValue.value = null;
             };
 
             const closeMenu = (): void => {
@@ -393,11 +452,13 @@
                 theme,
                 wrapperClass,
                 openOnTop,
+                monthPickerValue,
                 clearValue,
                 openMenu,
                 closeMenu,
                 selectDate,
                 recalculatePosition,
+                selectMonth,
             };
         },
     });

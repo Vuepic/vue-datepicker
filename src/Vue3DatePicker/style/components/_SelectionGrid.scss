@@ -93,3 +93,10 @@
         background: var(--dp-disabled-color);
     }
 }
+
+.dp__month_picker_header {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+}

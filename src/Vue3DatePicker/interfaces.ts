@@ -26,12 +26,17 @@ export interface ITimeRange {
     minutes: number | string;
 }
 
+export interface IModelValueMonthPicker {
+    month: number;
+    year: number;
+}
+
 export interface RDatepickerProps {
     uid: string;
     is24: boolean;
     enableTimePicker: boolean;
     range: boolean;
-    modelValue: Date | string;
+    modelValue: any;
     locale: string;
     position: OpenPosition;
     dark: boolean;
@@ -67,6 +72,8 @@ export interface RDatepickerProps {
     cancelText: string;
     weekNumName: string;
     autoPosition: boolean;
+    monthPicker: boolean;
+    timePicker: boolean;
 }
 
 export interface DatepickerInputProps {
@@ -123,6 +130,9 @@ export interface DatepickerMenuProps {
     maxTime: ITimeRange;
     inline: boolean;
     openOnTop: boolean;
+    monthPicker: boolean;
+    timePicker: boolean;
+    monthPickerValue: IModelValueMonthPicker;
 }
 
 export interface CalendarProps {
@@ -156,6 +166,9 @@ export interface CalendarProps {
     minTime: ITimeRange;
     maxTime: ITimeRange;
     inline: boolean;
+    monthPicker: boolean;
+    timePicker: boolean;
+    monthPickerValue: IModelValueMonthPicker;
 }
 
 export interface MonthYearPickerProps {
@@ -164,6 +177,8 @@ export interface MonthYearPickerProps {
     year: number;
     month: number;
     filters: IDateFilter;
+    monthPicker: boolean;
+    autoApply: boolean;
 }
 
 export interface ICalendarDay {
@@ -221,6 +236,7 @@ export interface SelectionGridProps {
     disabledValues: number[];
     minValue: number | string;
     maxValue: number | string;
+    fixedMode: boolean;
 }
 
 export interface ActionRowProps {
@@ -234,6 +250,8 @@ export interface ActionRowProps {
     is24: boolean;
     enableTimePicker: boolean;
     inline: boolean;
+    monthPickerValue: IModelValueMonthPicker;
+    monthPicker: boolean;
 }
 
 export interface TimeInputProps {
