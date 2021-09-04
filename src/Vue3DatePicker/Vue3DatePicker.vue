@@ -207,6 +207,7 @@
                 internalValue.value = '';
                 clearInternalValues();
                 emit('update:modelValue', null);
+                closeMenu();
             };
 
             const formatSingleDateValue = (formatInternal = false): void => {
