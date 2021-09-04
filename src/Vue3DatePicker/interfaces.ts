@@ -139,7 +139,7 @@ export interface DatepickerMenuProps {
     monthPicker: boolean;
     timePicker: boolean;
     monthPickerValue: IModelValueMonthPicker;
-    timePickerValue: IModelValueTimePicker;
+    timePickerValue: IModelValueTimePicker | IModelValueTimePicker[];
 }
 
 export interface CalendarProps {
@@ -259,6 +259,8 @@ export interface ActionRowProps {
     inline: boolean;
     monthPickerValue: IModelValueMonthPicker;
     monthPicker: boolean;
+    timePicker: boolean;
+    timePickerValue: IModelValueTimePicker | IModelValueTimePicker[];
 }
 
 export interface TimeInputProps {

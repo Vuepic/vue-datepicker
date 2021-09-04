@@ -16,8 +16,8 @@
 
 <script lang="ts">
     import { defineComponent, onMounted, PropType, ref, toRef, watch } from 'vue';
-    import { ActionRowProps, FormatOptions, IModelValueMonthPicker } from '../interfaces';
-    import { formatSingleDate, formatRangeDate, formatMonthValue } from '../utils/util';
+    import { ActionRowProps, FormatOptions, IModelValueMonthPicker, IModelValueTimePicker } from '../interfaces';
+    import { formatSingleDate, formatRangeDate, formatMonthValue, formatTimeValue } from '../utils/util';
 
     export default defineComponent({
         name: 'ActionRow',
@@ -38,12 +38,18 @@
             inline: { type: Boolean as PropType<boolean>, default: false },
             monthPicker: { type: Boolean as PropType<boolean>, default: false },
             monthPickerValue: { type: Object as PropType<IModelValueMonthPicker>, default: null },
+            timePicker: { type: Boolean as PropType<boolean>, default: false },
+            timePickerValue: {
+                type: [Object, Array] as PropType<IModelValueTimePicker | IModelValueTimePicker[]>,
+                default: null,
+            },
         },
         setup(props: ActionRowProps) {
             const previewValue = ref<string | string[]>('');
             const singleModelValue = toRef(props, 'singleModelValue');
             const rangeModelValue = toRef(props, 'rangeModelValue');
             const monthModelValue = toRef(props, 'monthPickerValue');
+            const timePickerValue = toRef(props, 'timePickerValue');
 
             watch(singleModelValue, (): void => {
                 formatSinglePreview();
@@ -57,8 +63,17 @@
                 formatMonthValValue();
             });
 
+            watch(timePickerValue, (): void => {
+                formatTimePickerValue();
+            });
+
             onMounted((): void => {
-                if (props.singleModelValue || props.rangeModelValue || props.monthPickerValue) {
+                if (
+                    props.singleModelValue ||
+                    props.rangeModelValue ||
+                    props.monthPickerValue ||
+                    props.timePickerValue
+                ) {
                     formatPreview();
                 }
             });
@@ -111,6 +126,12 @@
             const formatMonthValValue = (): void => {
                 if (props.monthPicker && props.monthPickerValue) {
                     previewValue.value = formatMonthValue(props.monthPickerValue);
+                }
+            };
+
+            const formatTimePickerValue = (): void => {
+                if (props.timePicker && props.timePickerValue) {
+                    previewValue.value = formatTimeValue(props.timePickerValue, props.is24);
                 }
             };
 

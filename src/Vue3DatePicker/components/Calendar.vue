@@ -66,6 +66,8 @@
             :inline="inline"
             :month-picker="monthPicker"
             :month-picker-value="monthPickerValue"
+            :time-picker="timePicker"
+            :time-picker-value="timePickerValue"
             @closePicker="$emit('closePicker')"
             @selectDate="$emit('selectDate')"
         ></ActionRow>
