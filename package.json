@@ -12,16 +12,19 @@
   "unpkg": "dist/vue3-date-time-picker.min.js",
   "files": [
     "dist/*",
-    "src/**/*.vue"
+    "src/**/*"
   ],
   "sideEffects": false,
   "scripts": {
     "serve": "vue-cli-service serve dev/serve.ts",
-    "build": "cross-env NODE_ENV=production rollup --config build/rollup.config.js",
+    "build": "run-s clean build:rollup build:css post:build",
+    "clean": "rimraf ./dist",
+    "build:rollup": "cross-env NODE_ENV=production rollup --config build/rollup.config.js",
     "build:ssr": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format cjs",
     "build:es": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format es",
     "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife",
     "build:css": "cross-env NODE_ENV=production sass src/Vue3DatePicker/style/main.scss dist/main.css --style compressed",
+    "post:build": "rimraf ./dist/dev",
     "test": "vue-cli-service test:unit"
   },
   "devDependencies": {
@@ -50,8 +53,10 @@
     "eslint-plugin-vue": "^7.17.0",
     "minimist": "^1.2.5",
     "node-sass": "^5.0.0",
+    "npm-run-all": "^4.1.5",
     "postcss": "^8.3.6",
     "prettier": "^2.3.2",
+    "rimraf": "^3.0.2",
     "rollup": "^2.56.3",
     "rollup-plugin-postcss": "^4.0.1",
     "rollup-plugin-terser": "^7.0.2",
