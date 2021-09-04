@@ -395,7 +395,7 @@
              */
             const getTimestamp = (date: Date): number => {
                 const dateCopy = new Date(date);
-                dateCopy.setHours(0, 0);
+                dateCopy.setHours(0, 0, 0, 0);
                 return dateCopy.getTime();
             };
 
