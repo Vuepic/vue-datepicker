@@ -5,7 +5,7 @@
   "author": "Vuepic",
   "private": false,
   "license": "MIT",
-  "homepage": "https://vuepic.github.io/vue3-date-time-picker/",
+  "homepage": "https://vue3datepicker.com/",
   "main": "dist/vue3-date-time-picker.ssr.js",
   "browser": "dist/vue3-date-time-picker.esm.js",
   "module": "dist/vue3-date-time-picker.esm.js",
