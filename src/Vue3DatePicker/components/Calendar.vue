@@ -7,16 +7,16 @@
                 :years="years"
                 :filters="filters"
                 :month-picker="monthPicker"
-                :auto-apply="autoApply"
-                v-model:month="month"
-                v-model:year="year"
-                @selectMonth="selectMonth"
+                :month="month"
+                :year="year"
+                @update:month="updateMonth"
+                @update:year="updateYear"
             />
             <table class="dp__calendar_tb" v-if="!specificMode">
                 <thead>
                     <tr class="dp__calendar_days">
                         <th class="dp__calendar_header_cell" v-if="weekNumbers">{{ weekNumName }}</th>
-                        <th class="dp__calendar_header_cell" v-for="(day, i) in weekDays" :key="i">{{ day }}</th>
+                        <th class="dp__calendar_header_cell" v-for="(dayVal, i) in weekDays" :key="i">{{ dayVal }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -24,12 +24,12 @@
                         <td v-if="weekNumbers" class="dp__cell dp__week_num">{{ getWeekDay(week.days) }}</td>
                         <td
                             class="dp__cell"
-                            v-for="(day, dayInd) in week.days"
+                            v-for="(dayVal, dayInd) in week.days"
                             :key="dayInd + weekInd"
-                            @click="selectDate(day)"
-                            @mouseover="setHoverDate(day)"
+                            @click="selectDate(dayVal)"
+                            @mouseover="setHoverDate(dayVal)"
                         >
-                            <div class="dp__cell_inner" :class="day.classData">{{ day.text }}</div>
+                            <div class="dp__cell_inner" :class="dayVal.classData">{{ dayVal.text }}</div>
                         </td>
                     </tr>
                 </tbody>
@@ -104,7 +104,7 @@
             'closePicker',
             'selectDate',
             'update:monthPickerValue',
-            'selectMonth',
+            'autoApply',
         ],
         props: {
             months: { type: Array as PropType<IMonth[]>, default: () => [] },
@@ -150,9 +150,9 @@
             const hoursRange = ref([0, 0]);
             const minutesSingle = ref(0);
             const minutesRange = ref([0, 0]);
-            const month = ref(0);
-            const year = ref(0);
-            const day = ref(0);
+            const month = ref(new Date().getMonth());
+            const year = ref(new Date().getFullYear());
+            const day = ref(new Date().getDate());
             const today = ref(new Date());
             const hoveredDate = ref<Date>();
             const activeDate = toRef(props, 'startDate');
@@ -186,18 +186,6 @@
             watch(minutesRange, () => {
                 if (props.rangeModelValue.length === 2) {
                     updateRangeDateTimes();
-                }
-            });
-
-            watch(month, () => {
-                if (props.monthPicker) {
-                    updateMonthPicker();
-                }
-            });
-
-            watch(year, () => {
-                if (props.monthPicker) {
-                    updateMonthPicker();
                 }
             });
 
@@ -314,8 +302,12 @@
                 });
             });
 
-            const updateMonthPicker = (): void => {
+            const updateMonthPicker = (yearChange = false): void => {
                 emit('update:monthPickerValue', { month: month.value, year: year.value });
+                if (props.autoApply) {
+                    emit('autoApply', yearChange);
+                    // console.log(yearChange);
+                }
             };
 
             /**
@@ -407,6 +399,9 @@
                     day.value.setHours(hoursSingle.value);
                     day.value.setMinutes(minutesSingle.value);
                     emit('update:singleModelValue', day.value);
+                    if (props.autoApply) {
+                        emit('autoApply');
+                    }
                 } else {
                     let rangeDate = rangeModelValue.value.slice();
                     if (rangeDate.length === 2) {
@@ -428,6 +423,9 @@
                         rangeDate[1].setHours(hoursRange.value[1], minutesRange.value[1]);
                     }
                     emit('update:rangeModelValue', rangeDate);
+                    if (rangeDate[0] && rangeDate[1] && props.autoApply) {
+                        emit('autoApply');
+                    }
                 }
             };
 
@@ -459,6 +457,9 @@
                 const newDate = new Date(JSON.parse(JSON.stringify(props.singleModelValue)));
                 newDate.setHours(hoursSingle.value, minutesSingle.value);
                 emit('update:singleModelValue', newDate);
+                if (props.autoApply) {
+                    emit('autoApply', true);
+                }
             };
 
             /**
@@ -480,10 +481,23 @@
                 newDate1.setHours(hoursRange.value[0], minutesRange.value[0]);
                 newDate2.setHours(hoursRange.value[1], minutesRange.value[1]);
                 emit('update:rangeModelValue', [newDate1, newDate2]);
+                if (props.autoApply) {
+                    emit('autoApply', true);
+                }
             };
 
-            const selectMonth = () => {
-                emit('selectMonth', { month: month.value, year: year.value });
+            const updateMonth = (monthValue: number): void => {
+                month.value = monthValue;
+                if (props.monthPicker) {
+                    updateMonthPicker();
+                }
+            };
+
+            const updateYear = (yearValue: number): void => {
+                year.value = yearValue;
+                if (props.monthPicker) {
+                    updateMonthPicker(true);
+                }
             };
 
             return {
@@ -491,9 +505,6 @@
                 years,
                 calendarClass,
                 weekDays,
-                selectDate,
-                getWeekDay,
-                setHoverDate,
                 dates,
                 month,
                 year,
@@ -504,7 +515,11 @@
                 minutesRange,
                 specificMode,
                 contentWrapClass,
-                selectMonth,
+                selectDate,
+                getWeekDay,
+                setHoverDate,
+                updateMonth,
+                updateYear,
             };
         },
     });

@@ -74,6 +74,7 @@ export interface RDatepickerProps {
     autoPosition: boolean;
     monthPicker: boolean;
     timePicker: boolean;
+    closeOnAutoApply: boolean;
 }
 
 export interface DatepickerInputProps {
@@ -178,7 +179,6 @@ export interface MonthYearPickerProps {
     month: number;
     filters: IDateFilter;
     monthPicker: boolean;
-    autoApply: boolean;
 }
 
 export interface ICalendarDay {

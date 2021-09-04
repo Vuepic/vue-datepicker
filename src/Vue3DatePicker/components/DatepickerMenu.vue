@@ -35,7 +35,7 @@
             @selectRangeDate="$emit('update:rangeModelValue', $event)"
             @closePicker="$emit('closePicker')"
             @selectDate="$emit('selectDate')"
-            @selectMonth="$emit('selectMonth', $event)"
+            @autoApply="$emit('autoApply', $event)"
             v-model:rangeModelValue="rangeDate"
             v-model:singleModelValue="singleDate"
             v-model:monthPickerValue="monthValue"
@@ -69,7 +69,7 @@
             'selectDate',
             'dpOpen',
             'update:monthPickerValue',
-            'selectMonth',
+            'autoApply',
         ],
         props: {
             uid: { type: String as PropType<string>, default: 'dp' },

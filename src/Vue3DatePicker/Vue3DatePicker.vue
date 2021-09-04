@@ -64,7 +64,7 @@
                 @closePicker="closeMenu"
                 @selectDate="selectDate"
                 @dpOpen="recalculatePosition"
-                @selectMonth="selectMonth"
+                @autoApply="autoApplyValue"
                 v-if="isOpen"
             />
         </teleport>
@@ -73,15 +73,7 @@
 
 <script lang="ts">
     import { computed, defineComponent, onMounted, onUnmounted, PropType, ref, toRef, watch } from 'vue';
-    import {
-        FormatOptions,
-        IDateFilter,
-        ITimeRange,
-        OpenPosition,
-        RDatepickerProps,
-        DynamicClass,
-        IModelValueMonthPicker,
-    } from './interfaces';
+    import { FormatOptions, IDateFilter, ITimeRange, OpenPosition, RDatepickerProps, DynamicClass } from './interfaces';
     import DatepickerInput from './components/DatepickerInput.vue';
     import DatepickerMenu from './components/DatepickerMenu.vue';
     import { formatMonthValue, formatRangeDate, formatSingleDate } from './utils/util';
@@ -145,6 +137,7 @@
             autoPosition: { type: Boolean as PropType<boolean>, default: true },
             monthPicker: { type: Boolean as PropType<boolean>, default: false },
             timePicker: { type: Boolean as PropType<boolean>, default: false },
+            closeOnAutoApply: { type: Boolean as PropType<boolean>, default: true },
         },
         setup(props: RDatepickerProps, { emit }) {
             const isOpen = ref(false);
@@ -156,14 +149,6 @@
             const valueCleared = ref(false);
             const modelValue = toRef(props, 'modelValue');
             const monthPickerValue = ref();
-
-            watch(singleModelValue, () => {
-                formatSingleDateValue(props.autoApply);
-            });
-
-            watch(rangeModelValue, () => {
-                formatRangeDateValue(props.autoApply);
-            });
 
             watch(modelValue, () => {
                 if (externalInternalValueDiff.value) {
@@ -242,11 +227,6 @@
                             }
                         }
                     }
-
-                    if (props.autoApply) {
-                        emit('update:modelValue', singleModelValue.value);
-                        closeMenu();
-                    }
                 }
             };
 
@@ -265,11 +245,6 @@
                         } else {
                             internalValue.value = props.format(dateValue);
                         }
-                    }
-
-                    if (props.autoApply) {
-                        emit('update:modelValue', rangeModelValue.value);
-                        closeMenu();
                     }
                 }
             };
@@ -332,13 +307,6 @@
                     emit('update:modelValue', monthPickerValue.value);
                 }
                 closeMenu();
-            };
-
-            const selectMonth = (monthVal: IModelValueMonthPicker): void => {
-                monthPickerValue.value = monthVal;
-                emit('update:modelValue', monthVal);
-                closeMenu();
-                formatMonthPickerValue(true);
             };
 
             const onScroll = (): void => {
@@ -412,6 +380,24 @@
                 }
             };
 
+            const autoApplyValue = (ignoreClose = false): void => {
+                if (props.autoApply) {
+                    if (props.monthPicker) {
+                        formatMonthPickerValue(true);
+                        emit('update:modelValue', monthPickerValue.value);
+                    } else if (props.range) {
+                        formatRangeDateValue(true);
+                        emit('update:modelValue', rangeModelValue.value);
+                    } else {
+                        formatSingleDateValue(true);
+                        emit('update:modelValue', singleModelValue.value);
+                    }
+                    if (props.closeOnAutoApply && !ignoreClose) {
+                        closeMenu();
+                    }
+                }
+            };
+
             const openMenu = (): void => {
                 if (!props.disabled && !props.readonly) {
                     if (!valueCleared.value) {
@@ -458,7 +444,7 @@
                 closeMenu,
                 selectDate,
                 recalculatePosition,
-                selectMonth,
+                autoApplyValue,
             };
         },
     });

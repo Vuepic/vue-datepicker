@@ -34,7 +34,6 @@
                 :items="groupedMonths"
                 @update:modelValue="onMonthUpdate"
                 @toggle="toggleMonthPicker"
-                @selected="emitSelect"
                 :disabled-values="filters.months"
                 :fixed-mode="true"
             >
@@ -72,7 +71,7 @@
 
     export default defineComponent({
         name: 'MonthYearPicker',
-        emits: ['update:month', 'update:year', 'selectMonth'],
+        emits: ['update:month', 'update:year'],
         components: {
             CalendarIcon,
             ChevronLeftIcon,
@@ -86,7 +85,6 @@
             month: { type: Number as PropType<number>, default: 0 },
             filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
             monthPicker: { type: Boolean as PropType<boolean>, default: false },
-            autoApply: { type: Boolean as PropType<boolean>, default: false },
         },
         setup(props: MonthYearPickerProps, { emit }) {
             const showMonthPicker = ref(false);
@@ -144,12 +142,6 @@
                 }
             };
 
-            const emitSelect = (): void => {
-                if (props.autoApply && props.monthPicker) {
-                    emit('selectMonth');
-                }
-            };
-
             return {
                 toggleYearPicker,
                 onNext,
@@ -164,7 +156,6 @@
                 handleYear,
                 groupedYears,
                 useKey,
-                emitSelect,
             };
         },
     });
