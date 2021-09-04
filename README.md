@@ -16,6 +16,7 @@
 - Single date picker
 - Range date picker
 - Time picker
+- Month picker
 - Locale support
 - Week numbers
 - Dark and light theme
