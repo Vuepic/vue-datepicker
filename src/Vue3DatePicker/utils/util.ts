@@ -5,6 +5,7 @@ import {
     IDefaultSelect,
     IHoursOptions,
     IModelValueMonthPicker,
+    IModelValueTimePicker,
 } from '../interfaces';
 
 /**
@@ -127,6 +128,28 @@ export const formatMonthValue = (monthValue: IModelValueMonthPicker): string => 
         return `${month}/${monthValue.year}`;
     }
     return '';
+};
+
+/**
+ * Format time value for time picker
+ */
+export const formatTimeValue = (time: IModelValueTimePicker | IModelValueTimePicker[], is24: boolean): string => {
+    const formatFnc = (timeValue: IModelValueTimePicker) => {
+        if (timeValue && (timeValue.hours || timeValue.hours === 0) && (timeValue.minutes || timeValue.minutes === 0)) {
+            const hours = timeValue.hours < 10 ? `0${timeValue.hours}` : timeValue.hours;
+            const minutes = timeValue.minutes < 10 ? `0${timeValue.minutes}` : timeValue.minutes;
+            if (!is24) {
+                return `${hoursToAmPmHours(timeValue.hours)}:${minutes} ${timeValue.hours > 12 ? 'PM' : 'AM'}`;
+            }
+            return `${hours}:${minutes}`;
+        }
+        return '';
+    };
+
+    if (Array.isArray(time)) {
+        return `${formatFnc(time[0])} - ${formatFnc(time[1])}`;
+    }
+    return formatFnc(time);
 };
 
 export const generateMinutes = (increment: number): IDefaultSelect[] => {

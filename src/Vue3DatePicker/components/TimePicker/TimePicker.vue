@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="dp__button" @click="toggleTimePicker(true)"><ClockIcon /></div>
-        <div v-if="showTimePicker" class="dp__overlay">
+        <div class="dp__button" v-if="!timePicker" @click="toggleTimePicker(true)"><ClockIcon /></div>
+        <div v-if="showTimePicker || timePicker" class="dp__overlay">
             <div class="dp__overlay_container">
                 <div class="dp__overlay_row">
                     <template v-if="!range">
@@ -39,7 +39,7 @@
                             :hours="hoursRange[1]"
                             :minutes="minutesRange[1]"
                             @update:hours="$emit('update:hoursRange', [hoursRange[0], $event])"
-                            @update:minutes="$emit('update:minutesRange', [hoursRange[0], $event])"
+                            @update:minutes="$emit('update:minutesRange', [minutesRange[0], $event])"
                             :is24="is24"
                             :hours-grid-increment="hoursGridIncrement"
                             :minutes-grid-increment="minutesGridIncrement"
@@ -51,7 +51,7 @@
                         />
                     </template>
                 </div>
-                <div class="dp__button" @click="toggleTimePicker(false)"><CalendarIcon /></div>
+                <div class="dp__button" v-if="!timePicker" @click="toggleTimePicker(false)"><CalendarIcon /></div>
             </div>
         </div>
     </div>
@@ -85,6 +85,7 @@
             filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
             minTime: { type: Object as PropType<ITimeRange>, default: () => ({}) },
             maxTime: { type: Object as PropType<ITimeRange>, default: () => ({}) },
+            timePicker: { type: Boolean as PropType<boolean>, default: false },
         },
         setup() {
             const showTimePicker = ref(false);

@@ -58,9 +58,11 @@
                 :cancel-text="cancelText"
                 :inline="inline"
                 :month-picker="monthPicker"
+                :time-picker="timePicker"
                 v-model:singleModelValue="singleModelValue"
                 v-model:rangeModelValue="rangeModelValue"
                 v-model:monthPickerValue="monthPickerValue"
+                v-model:timePickerValue="timePickerValue"
                 @closePicker="closeMenu"
                 @selectDate="selectDate"
                 @dpOpen="recalculatePosition"
@@ -73,10 +75,18 @@
 
 <script lang="ts">
     import { computed, defineComponent, onMounted, onUnmounted, PropType, ref, toRef, watch } from 'vue';
-    import { FormatOptions, IDateFilter, ITimeRange, OpenPosition, RDatepickerProps, DynamicClass } from './interfaces';
+    import {
+        FormatOptions,
+        IDateFilter,
+        ITimeRange,
+        OpenPosition,
+        RDatepickerProps,
+        DynamicClass,
+        IModelValueTimePicker,
+    } from './interfaces';
     import DatepickerInput from './components/DatepickerInput.vue';
     import DatepickerMenu from './components/DatepickerMenu.vue';
-    import { formatMonthValue, formatRangeDate, formatSingleDate } from './utils/util';
+    import { formatMonthValue, formatRangeDate, formatSingleDate, formatTimeValue } from './utils/util';
     import { clickOutsideDirective } from './directives/clickOutside';
 
     export default /*#__PURE__*/ defineComponent({
@@ -149,6 +159,7 @@
             const valueCleared = ref(false);
             const modelValue = toRef(props, 'modelValue');
             const monthPickerValue = ref();
+            const timePickerValue = ref();
 
             watch(modelValue, () => {
                 if (externalInternalValueDiff.value) {
@@ -194,6 +205,8 @@
                 let dateValue;
                 if (props.monthPicker) {
                     dateValue = JSON.stringify(monthPickerValue.value);
+                } else if (props.timePicker) {
+                    dateValue = JSON.stringify(timePickerValue.value);
                 } else {
                     dateValue = props.range
                         ? JSON.stringify(rangeModelValue.value)
@@ -262,8 +275,20 @@
                 }
             };
 
+            const formatTimePickerValue = (formatInternal = false): void => {
+                if (timePickerValue.value) {
+                    if (formatInternal) {
+                        if (typeof props.format === 'object') {
+                            internalValue.value = formatTimeValue(timePickerValue.value, props.is24);
+                        } else {
+                            internalValue.value = props.format(timePickerValue.value);
+                        }
+                    }
+                }
+            };
+
             const mapExternalToInternalValue = () => {
-                if (!props.monthPicker && !props.timePicker) {
+                if (!specificMode.value) {
                     if (props.modelValue) {
                         if (props.range) {
                             if (Array.isArray(props.modelValue)) {
@@ -291,22 +316,45 @@
                             monthPickerValue.value = null;
                         }
                     }
+                    if (props.timePicker) {
+                        if (props.modelValue) {
+                            if (props.range) {
+                                timePickerValue.value = props.modelValue.map((val: IModelValueTimePicker) => {
+                                    const mapped: IModelValueTimePicker = { hours: +val.hours, minutes: +val.minutes };
+                                    return mapped;
+                                });
+                            } else {
+                                timePickerValue.value = {
+                                    hours: +props.modelValue.hours,
+                                    minutes: +props.modelValue.minutes,
+                                };
+                            }
+                            formatTimePickerValue(true);
+                        } else {
+                            timePickerValue.value = null;
+                        }
+                    }
+                }
+            };
+
+            const emitModelValue = (): void => {
+                if (props.monthPicker) {
+                    formatMonthPickerValue(true);
+                    emit('update:modelValue', monthPickerValue.value);
+                } else if (props.timePicker) {
+                    formatTimePickerValue(true);
+                    emit('update:modelValue', timePickerValue.value);
+                } else if (props.range) {
+                    formatRangeDateValue(true);
+                    emit('update:modelValue', rangeModelValue.value);
+                } else {
+                    formatSingleDateValue(true);
+                    emit('update:modelValue', singleModelValue.value);
                 }
             };
 
             const selectDate = (): void => {
-                if (!props.monthPicker) {
-                    if (props.range) {
-                        formatRangeDateValue(true);
-                        emit('update:modelValue', rangeModelValue.value);
-                    } else {
-                        formatSingleDateValue(true);
-                        emit('update:modelValue', singleModelValue.value);
-                    }
-                } else if (props.monthPicker) {
-                    formatMonthPickerValue(true);
-                    emit('update:modelValue', monthPickerValue.value);
-                }
+                emitModelValue();
                 closeMenu();
             };
 
@@ -383,16 +431,7 @@
 
             const autoApplyValue = (ignoreClose = false): void => {
                 if (props.autoApply) {
-                    if (props.monthPicker) {
-                        formatMonthPickerValue(true);
-                        emit('update:modelValue', monthPickerValue.value);
-                    } else if (props.range) {
-                        formatRangeDateValue(true);
-                        emit('update:modelValue', rangeModelValue.value);
-                    } else {
-                        formatSingleDateValue(true);
-                        emit('update:modelValue', singleModelValue.value);
-                    }
+                    emitModelValue();
                     if (props.closeOnAutoApply && !ignoreClose) {
                         closeMenu();
                     }
@@ -418,6 +457,7 @@
                 singleModelValue.value = null;
                 rangeModelValue.value = [];
                 monthPickerValue.value = null;
+                timePickerValue.value = null;
             };
 
             const closeMenu = (): void => {
@@ -440,6 +480,7 @@
                 wrapperClass,
                 openOnTop,
                 monthPickerValue,
+                timePickerValue,
                 clearValue,
                 openMenu,
                 closeMenu,

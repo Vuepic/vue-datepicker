@@ -2,7 +2,7 @@
     <div :class="calendarClass">
         <div :class="contentWrapClass">
             <MonthYearInput
-                v-if="!disableMonthYearSelect"
+                v-if="!disableMonthYearSelect && !timePicker"
                 :months="months"
                 :years="years"
                 :filters="filters"
@@ -45,6 +45,7 @@
                 :filters="filters"
                 :min-time="minTime"
                 :max-time="maxTime"
+                :time-picker="timePicker"
                 v-model:hoursSingle="hoursSingle"
                 v-model:minutesSingle="minutesSingle"
                 v-model:hoursRange="hoursRange"
@@ -87,6 +88,7 @@
         IDateFilter,
         ITimeRange,
         IModelValueMonthPicker,
+        IModelValueTimePicker,
     } from '../interfaces';
     import { useDpDaysGen } from '../utils/hooks';
     import { getDayNames } from '../utils/util';
@@ -104,6 +106,7 @@
             'closePicker',
             'selectDate',
             'update:monthPickerValue',
+            'update:timePickerValue',
             'autoApply',
         ],
         props: {
@@ -143,6 +146,10 @@
             monthPicker: { type: Boolean as PropType<boolean>, default: false },
             timePicker: { type: Boolean as PropType<boolean>, default: false },
             monthPickerValue: { type: Object as PropType<IModelValueMonthPicker>, default: null },
+            timePickerValue: {
+                type: Object as PropType<IModelValueTimePicker | IModelValueTimePicker[]>,
+                default: null,
+            },
         },
         setup(props: CalendarProps, { emit }) {
             const weekDays = ref();
@@ -158,6 +165,7 @@
             const activeDate = toRef(props, 'startDate');
             const rangeModelValue = toRef(props, 'rangeModelValue');
             const singleModelValue = toRef(props, 'singleModelValue');
+            const timePickerValue = toRef(props, 'timePickerValue');
 
             watch(activeDate, () => {
                 if (activeDate.value) {
@@ -166,25 +174,25 @@
             });
 
             watch(hoursSingle, () => {
-                if (props.singleModelValue) {
+                if (props.singleModelValue || props.timePicker) {
                     updateSingleDateTime();
                 }
             });
 
             watch(minutesSingle, () => {
-                if (props.singleModelValue) {
+                if (props.singleModelValue || props.timePicker) {
                     updateSingleDateTime();
                 }
             });
 
             watch(hoursRange, () => {
-                if (props.rangeModelValue.length === 2) {
+                if (props.rangeModelValue.length === 2 || props.timePicker) {
                     updateRangeDateTimes();
                 }
             });
 
             watch(minutesRange, () => {
-                if (props.rangeModelValue.length === 2) {
+                if (props.rangeModelValue.length === 2 || props.timePicker) {
                     updateRangeDateTimes();
                 }
             });
@@ -199,25 +207,44 @@
                 weekDays.value = getDayNames(props.locale, +props.weekStart);
                 const date = new Date();
 
-                if (singleModelValue.value) {
-                    hoursSingle.value = singleModelValue.value.getHours();
-                    minutesSingle.value = singleModelValue.value.getMinutes();
-                } else {
-                    hoursSingle.value = date.getHours();
-                    minutesSingle.value = date.getMinutes();
-                }
+                if (!specificMode.value) {
+                    if (singleModelValue.value) {
+                        assignSingleDateTime(singleModelValue.value);
+                    } else {
+                        assignSingleDateTime(date);
+                    }
 
-                if (rangeModelValue.value && rangeModelValue.value[0] && rangeModelValue.value[1]) {
-                    hoursRange.value = [rangeModelValue.value[0].getHours(), rangeModelValue.value[1].getHours()];
-                    minutesRange.value = [rangeModelValue.value[0].getMinutes(), rangeModelValue.value[1].getMinutes()];
+                    if (rangeModelValue.value && rangeModelValue.value[0] && rangeModelValue.value[1]) {
+                        assignRangeDateTime(rangeModelValue.value as Date[]);
+                    } else {
+                        assignRangeDateTime(date);
+                    }
                 } else {
-                    hoursRange.value = [date.getHours(), date.getHours()];
-                    minutesRange.value = [date.getMinutes(), date.getMinutes()];
-                }
+                    if (props.timePicker) {
+                        if (!props.range && !Array.isArray(timePickerValue.value)) {
+                            if (timePickerValue.value) {
+                                hoursSingle.value = timePickerValue.value.hours;
+                                minutesSingle.value = timePickerValue.value.minutes;
+                            } else {
+                                assignSingleDateTime(date);
+                            }
+                        } else if (props.range && Array.isArray(timePickerValue.value)) {
+                            if (timePickerValue.value.length === 2) {
+                                hoursRange.value = [timePickerValue.value[0].hours, timePickerValue.value[1].hours];
+                                minutesRange.value = [
+                                    timePickerValue.value[0].minutes,
+                                    timePickerValue.value[1].minutes,
+                                ];
+                            } else {
+                                assignRangeDateTime(date);
+                            }
+                        }
+                    }
 
-                if (props.monthPickerValue && props.monthPicker) {
-                    month.value = props.monthPickerValue.month;
-                    year.value = props.monthPickerValue.year;
+                    if (props.monthPickerValue && props.monthPicker) {
+                        month.value = props.monthPickerValue.month;
+                        year.value = props.monthPickerValue.year;
+                    }
                 }
             });
 
@@ -256,9 +283,24 @@
             const contentWrapClass = computed(
                 (): DynamicClass => ({
                     dp__calendar_content_wrap: true,
-                    dp_calendar_fixed: props.monthPicker,
+                    dp_calendar_fixed: specificMode.value,
                 }),
             );
+
+            const assignSingleDateTime = (date: Date): void => {
+                hoursSingle.value = date.getHours();
+                minutesSingle.value = date.getMinutes();
+            };
+
+            const assignRangeDateTime = (date: Date | Date[]): void => {
+                if (Array.isArray(date)) {
+                    hoursRange.value = [date[0].getHours(), date[1].getHours()];
+                    minutesRange.value = [date[0].getMinutes(), date[1].getMinutes()];
+                } else {
+                    hoursRange.value = [date.getHours(), date.getHours()];
+                    minutesRange.value = [date.getMinutes(), date.getMinutes()];
+                }
+            };
 
             /**
              * CHeck if date is between max and min date
@@ -453,11 +495,19 @@
              * Set hours and minutes on a single date when they are updated in time picker
              */
             const updateSingleDateTime = (): void => {
-                const newDate = new Date(JSON.parse(JSON.stringify(props.singleModelValue)));
-                newDate.setHours(hoursSingle.value, minutesSingle.value);
-                emit('update:singleModelValue', newDate);
-                if (props.autoApply) {
-                    emit('autoApply', true);
+                if (!props.timePicker) {
+                    const newDate = new Date(JSON.parse(JSON.stringify(props.singleModelValue)));
+                    newDate.setHours(hoursSingle.value, minutesSingle.value);
+                    emit('update:singleModelValue', newDate);
+                    if (props.autoApply) {
+                        emit('autoApply', true);
+                    }
+                } else {
+                    const time: IModelValueTimePicker = { hours: hoursSingle.value, minutes: minutesSingle.value };
+                    emit('update:timePickerValue', time);
+                    if (props.autoApply) {
+                        emit('autoApply', true);
+                    }
                 }
             };
 
@@ -476,12 +526,23 @@
              * Set hours and minutes on range date values, when they are updated in time picker
              */
             const updateRangeDateTimes = (): void => {
-                const [newDate1, newDate2] = getRangeCopy();
-                newDate1.setHours(hoursRange.value[0], minutesRange.value[0]);
-                newDate2.setHours(hoursRange.value[1], minutesRange.value[1]);
-                emit('update:rangeModelValue', [newDate1, newDate2]);
-                if (props.autoApply) {
-                    emit('autoApply', true);
+                if (!props.timePicker) {
+                    const [newDate1, newDate2] = getRangeCopy();
+                    newDate1.setHours(hoursRange.value[0], minutesRange.value[0]);
+                    newDate2.setHours(hoursRange.value[1], minutesRange.value[1]);
+                    emit('update:rangeModelValue', [newDate1, newDate2]);
+                    if (props.autoApply) {
+                        emit('autoApply', true);
+                    }
+                } else {
+                    const time: IModelValueTimePicker[] = [
+                        { hours: hoursRange.value[0], minutes: minutesRange.value[0] },
+                        { hours: hoursRange.value[1], minutes: minutesRange.value[1] },
+                    ];
+                    emit('update:timePickerValue', time);
+                    if (props.autoApply) {
+                        emit('autoApply', true);
+                    }
                 }
             };
 

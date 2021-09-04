@@ -39,6 +39,7 @@
             v-model:rangeModelValue="rangeDate"
             v-model:singleModelValue="singleDate"
             v-model:monthPickerValue="monthValue"
+            v-model:timePickerValue="timeValue"
         ></Calendar>
     </div>
 </template>
@@ -55,6 +56,7 @@
         IDateFilter,
         ITimeRange,
         IModelValueMonthPicker,
+        IModelValueTimePicker,
     } from '../interfaces';
     import { useBindValue } from '../utils/hooks';
     import { getMonthNames } from '../utils/util';
@@ -69,6 +71,7 @@
             'selectDate',
             'dpOpen',
             'update:monthPickerValue',
+            'update:timePickerValue',
             'autoApply',
         ],
         props: {
@@ -109,6 +112,7 @@
             monthPicker: { type: Boolean as PropType<boolean>, default: false },
             timePicker: { type: Boolean as PropType<boolean>, default: false },
             monthPickerValue: { type: Object as PropType<IModelValueMonthPicker>, default: null },
+            timePickerValue: { type: Object as PropType<IModelValueTimePicker>, default: null },
         },
         setup(props: DatepickerMenuProps, { emit }) {
             onMounted(() => {
@@ -138,6 +142,7 @@
             const rangeDate = useBindValue(props, emit, 'rangeModelValue');
             const singleDate = useBindValue(props, emit, 'singleModelValue');
             const monthValue = useBindValue(props, emit, 'monthPickerValue');
+            const timeValue = useBindValue(props, emit, 'timePickerValue');
 
             const firstDate = computed((): Date => {
                 if (props.range) {
@@ -158,6 +163,7 @@
                 mappedMonths,
                 arrowClass,
                 monthValue,
+                timeValue,
             };
         },
     });

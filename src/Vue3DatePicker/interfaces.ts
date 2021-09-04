@@ -31,6 +31,11 @@ export interface IModelValueMonthPicker {
     year: number;
 }
 
+export interface IModelValueTimePicker {
+    hours: number;
+    minutes: number;
+}
+
 export interface RDatepickerProps {
     uid: string;
     is24: boolean;
@@ -134,6 +139,7 @@ export interface DatepickerMenuProps {
     monthPicker: boolean;
     timePicker: boolean;
     monthPickerValue: IModelValueMonthPicker;
+    timePickerValue: IModelValueTimePicker;
 }
 
 export interface CalendarProps {
@@ -170,6 +176,7 @@ export interface CalendarProps {
     monthPicker: boolean;
     timePicker: boolean;
     monthPickerValue: IModelValueMonthPicker;
+    timePickerValue: IModelValueTimePicker | IModelValueTimePicker[];
 }
 
 export interface MonthYearPickerProps {
