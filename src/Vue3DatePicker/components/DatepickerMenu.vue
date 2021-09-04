@@ -112,7 +112,10 @@
             monthPicker: { type: Boolean as PropType<boolean>, default: false },
             timePicker: { type: Boolean as PropType<boolean>, default: false },
             monthPickerValue: { type: Object as PropType<IModelValueMonthPicker>, default: null },
-            timePickerValue: { type: Object as PropType<IModelValueTimePicker>, default: null },
+            timePickerValue: {
+                type: [Object, Array] as PropType<IModelValueTimePicker | IModelValueTimePicker[]>,
+                default: null,
+            },
         },
         setup(props: DatepickerMenuProps, { emit }) {
             onMounted(() => {

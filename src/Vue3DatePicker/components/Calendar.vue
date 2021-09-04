@@ -149,7 +149,7 @@
             timePicker: { type: Boolean as PropType<boolean>, default: false },
             monthPickerValue: { type: Object as PropType<IModelValueMonthPicker>, default: null },
             timePickerValue: {
-                type: Object as PropType<IModelValueTimePicker | IModelValueTimePicker[]>,
+                type: [Object, Array] as PropType<IModelValueTimePicker | IModelValueTimePicker[]>,
                 default: null,
             },
         },
