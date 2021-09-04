@@ -306,7 +306,6 @@
                 emit('update:monthPickerValue', { month: month.value, year: year.value });
                 if (props.autoApply) {
                     emit('autoApply', yearChange);
-                    // console.log(yearChange);
                 }
             };
 

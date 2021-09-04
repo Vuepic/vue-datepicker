@@ -10,18 +10,18 @@
                 v-if="showMonthPicker"
                 :model-value="month"
                 :items="groupedMonths"
+                :disabled-values="filters.months"
                 @update:modelValue="onMonthUpdate"
                 @toggle="toggleMonthPicker"
-                :disabled-values="filters.months"
                 ><template #button-icon><CalendarIcon /></template
             ></SelectionGrid>
             <SelectionGrid
                 v-if="showYearPicker"
                 :model-value="year"
                 :items="groupedYears"
+                :disabled-values="filters.years"
                 @update:modelValue="onYearUpdate"
                 @toggle="toggleYearPicker"
-                :disabled-values="filters.years"
                 ><template #button-icon><CalendarIcon /></template
             ></SelectionGrid>
             <div class="dp__month_year_col_nav" @click="onNext">
@@ -32,10 +32,9 @@
             <SelectionGrid
                 :model-value="month"
                 :items="groupedMonths"
+                :disabled-values="filters.months"
                 @update:modelValue="onMonthUpdate"
                 @toggle="toggleMonthPicker"
-                :disabled-values="filters.months"
-                :fixed-mode="true"
             >
                 <template #header>
                     <div class="dp__month_picker_header">
@@ -49,11 +48,13 @@
                     </div>
                     <SelectionGrid
                         v-if="showYearPicker"
+                        uid="-inner"
+                        id="dp__overlay_inner"
                         :model-value="year"
                         :items="groupedYears"
+                        :disabled-values="filters.years"
                         @update:modelValue="onYearUpdate"
                         @toggle="toggleYearPicker"
-                        :disabled-values="filters.years"
                         ><template #button-icon><CalendarIcon /></template
                     ></SelectionGrid>
                 </template>

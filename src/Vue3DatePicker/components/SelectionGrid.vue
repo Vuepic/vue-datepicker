@@ -8,7 +8,11 @@
                     v-for="col in row"
                     :key="col.value"
                     @click="onClick(col.value)"
-                    :id="col.value === modelValue && !disabledValues.includes(col.value) ? 'selection-active' : null"
+                    :id="
+                        col.value === modelValue && !disabledValues.includes(col.value)
+                            ? `selection-active${uid}`
+                            : null
+                    "
                 >
                     <div :class="col.className">
                         {{ col.text }}
@@ -31,13 +35,13 @@
         name: 'SelectionGrid',
         emits: ['update:modelValue', 'selected', 'toggle'],
         props: {
+            uid: { type: String as PropType<string>, default: '' },
             items: { type: Array as PropType<IDefaultSelect[][]>, default: () => [] },
             modelValue: { type: [String, Number] as PropType<string | number>, default: null },
             id: { type: String as PropType<string>, default: 'dp__overlay' },
             disabledValues: { type: Array as PropType<number[]>, default: () => [] },
             minValue: { type: [Number, String] as PropType<number | string>, default: null },
             maxValue: { type: [Number, String] as PropType<number | string>, default: null },
-            fixedMode: { type: Boolean as PropType<boolean>, default: true },
         },
         setup(props: SelectionGridProps, { emit }) {
             const scrollable = ref(false);
@@ -60,7 +64,7 @@
              * On mounted hook, set the scroll position, if any to a selected value when opening overlay
              */
             onMounted(() => {
-                useScrollPosition(props.id, 'selection-active');
+                useScrollPosition(props.id, `selection-active${props.uid}`);
                 const elm = document.getElementById(props.id);
                 if (elm) {
                     scrollable.value = elm.clientHeight < elm.scrollHeight;
@@ -70,7 +74,6 @@
             const dpOverlayClass = computed(
                 (): DynamicClass => ({
                     dp__overlay: true,
-                    dp__overlay_fixed: props.fixedMode,
                 }),
             );
 

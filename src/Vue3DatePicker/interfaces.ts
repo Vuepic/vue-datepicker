@@ -230,13 +230,13 @@ export interface TimeGridProps {
 }
 
 export interface SelectionGridProps {
+    uid: string;
     modelValue: string | number;
     items: IDefaultSelect[][];
     id: string;
     disabledValues: number[];
     minValue: number | string;
     maxValue: number | string;
-    fixedMode: boolean;
 }
 
 export interface ActionRowProps {
