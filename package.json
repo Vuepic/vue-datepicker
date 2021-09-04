@@ -24,7 +24,7 @@
     "build:es": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format es",
     "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife",
     "build:css": "cross-env NODE_ENV=production sass src/Vue3DatePicker/style/main.scss dist/main.css --style compressed",
-    "post:build": "rimraf ./dist/dev",
+    "post:build": "rimraf ./dist/dev ./dist/src/Vue3DatePicker/components ./dist/src/Vue3DatePicker/directives ./dist/src/Vue3DatePicker/utils",
     "test": "vue-cli-service test:unit"
   },
   "devDependencies": {
