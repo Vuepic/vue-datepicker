@@ -37,6 +37,7 @@
                 :hours-increment="hoursIncrement"
                 :minutes-increment="minutesIncrement"
                 :menu-class-name="menuClassName"
+                :calendar-class-name="calendarClassName"
                 :year-range="yearRange"
                 :is24="is24"
                 :calendar-cell-class-name="calendarCellClassName"
