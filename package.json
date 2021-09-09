@@ -5,7 +5,7 @@
   "author": "Vuepic",
   "private": false,
   "license": "MIT",
-  "homepage": "https://vue3datepicker.com/",
+  "homepage": "https://vue3datepicker.com",
   "main": "dist/vue3-date-time-picker.ssr.js",
   "browser": "dist/vue3-date-time-picker.esm.js",
   "module": "dist/vue3-date-time-picker.esm.js",
@@ -83,5 +83,12 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/Vuepic/vue3-date-time-picker.git"
-  }
+  },
+  "keywords": [
+    "datepicker",
+    "datetimepicker",
+    "vue-datepicker",
+    "vue3-datepicker",
+    "daterangepicker"
+  ]
 }
