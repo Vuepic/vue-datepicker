@@ -7,18 +7,20 @@ interface IUseDateUtils {
     formatDateRange: (dates: string[] | Date[]) => string;
 }
 
+export const getDefaultPattern = (is24: boolean): string => {
+    return `MM/dd/yyyy, ${is24 ? 'HH:mm' : 'hh:mm aa'}`;
+};
+
 /**
  * Global hook with collection of functions for date manipulations
  */
-export const useDateUtils = (pattern?: string | ((date: Date | Date[]) => string)): IUseDateUtils => {
-    const formatPattern = typeof pattern === 'string' && pattern ? pattern : 'MM/dd/yyyy, hh:mm';
-
+export const useDateUtils = (pattern: string): IUseDateUtils => {
     const parseDate = (date: string): Date => {
-        return parse(date, formatPattern, new Date());
+        return parse(date, pattern, new Date());
     };
 
     const formatDate = (date: string | Date): string => {
-        return format(new Date(date), formatPattern);
+        return format(new Date(date), pattern);
     };
 
     const formatDateRange = (dates: string[] | Date[]): string => {
