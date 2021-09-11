@@ -239,7 +239,6 @@ export interface ActionRowProps {
     singleModelValue: Date;
     rangeModelValue: Date[];
     previewFormat: string | ((date: Date | Date[]) => string);
-    locale: string;
     is24: boolean;
     enableTimePicker: boolean;
     inline: boolean;

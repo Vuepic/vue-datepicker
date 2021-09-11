@@ -33,7 +33,6 @@
                 type: [String, Function] as PropType<string | ((date: Date | Date[]) => string)>,
                 default: () => 'MM/dd/yyyy, HH:mm',
             },
-            locale: { type: String as PropType<string>, default: 'en-US' },
             is24: { type: Boolean as PropType<boolean>, default: true },
             enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
             inline: { type: Boolean as PropType<boolean>, default: false },

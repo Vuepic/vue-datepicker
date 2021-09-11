@@ -60,7 +60,6 @@
             :select-text="selectText"
             :cancel-text="cancelText"
             :preview-format="previewFormat"
-            :locale="locale"
             :is24="is24"
             :enable-time-picker="enableTimePicker"
             :inline="inline"
