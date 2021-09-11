@@ -1,12 +1,7 @@
 <template>
     <div id="app">
         <div class="wrapper">
-            <vue3-date-picker
-                v-model="selectedDate"
-                placeholder="Select Date"
-                text-input
-                :text-input-options="{ freeInput: true }"
-            />
+            <vue3-date-picker v-model="selectedDate" placeholder="Select Date" />
         </div>
     </div>
 </template>
