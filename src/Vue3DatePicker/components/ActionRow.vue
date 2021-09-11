@@ -105,6 +105,8 @@
                     } else {
                         previewValue.value = props.previewFormat(props.singleModelValue);
                     }
+                } else {
+                    previewValue.value = '';
                 }
             };
 
@@ -118,6 +120,8 @@
                     } else {
                         previewValue.value = props.previewFormat(props.rangeModelValue);
                     }
+                } else {
+                    previewValue.value = '';
                 }
             };
 
@@ -128,6 +132,8 @@
                     } else {
                         previewValue.value = props.previewFormat(props.monthPickerValue);
                     }
+                } else {
+                    previewValue.value = '';
                 }
             };
 
@@ -138,6 +144,8 @@
                     } else {
                         previewValue.value = props.previewFormat(props.timePickerValue);
                     }
+                } else {
+                    previewValue.value = '';
                 }
             };
 
