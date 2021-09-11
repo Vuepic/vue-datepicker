@@ -86,7 +86,6 @@
         IMonth,
         DynamicClass,
         IDefaultSelect,
-        FormatOptions,
         IDateFilter,
         ITimeRange,
         IModelValueMonthPicker,
@@ -133,7 +132,7 @@
             selectText: { type: String as PropType<string>, default: 'Select' },
             cancelText: { type: String as PropType<string>, default: 'Cancel' },
             previewFormat: {
-                type: [Object, Function] as PropType<FormatOptions | ((date: Date | Date[]) => string)>,
+                type: [String, Function] as PropType<string | ((date: Date | Date[]) => string)>,
                 default: null,
             },
             locale: { type: String as PropType<string>, default: 'en-US' },

@@ -1,7 +1,7 @@
 <template>
     <div :class="wrapperClass">
         <DatepickerInput
-            :internal-value="internalValue"
+            v-model:internal-value="internalValue"
             :placeholder="placeholder"
             :hide-input-icon="hideInputIcon"
             :readonly="readonly"
@@ -10,6 +10,9 @@
             :clearable="clearable"
             :state="state"
             :inline="inline"
+            :text-input="textInput"
+            :uid="uid"
+            :mask-props="maskProps"
             @clear="clearValue"
             @open="openMenu"
             :id="`dp__input_${uid}`"
@@ -50,7 +53,7 @@
                 :auto-apply="autoApply"
                 :locale="locale"
                 :week-num-name="weekNumName"
-                :preview-format="previewFormat"
+                :preview-format="previewFormatDefault"
                 :disabled-dates="disabledDates"
                 :filters="filters"
                 :min-time="minTime"
@@ -77,18 +80,20 @@
 <script lang="ts">
     import { computed, defineComponent, onMounted, onUnmounted, PropType, ref, toRef, watch } from 'vue';
     import {
-        FormatOptions,
         IDateFilter,
         ITimeRange,
         OpenPosition,
-        RDatepickerProps,
         DynamicClass,
         IModelValueTimePicker,
+        IMaskProps,
+        IDatepickerProps,
     } from './interfaces';
     import DatepickerInput from './components/DatepickerInput.vue';
     import DatepickerMenu from './components/DatepickerMenu.vue';
-    import { formatMonthValue, formatRangeDate, formatSingleDate, formatTimeValue } from './utils/util';
+    import { formatMonthValue, formatTimeValue } from './utils/util';
     import { clickOutsideDirective } from './directives/clickOutside';
+    import { getPatternAndMask } from './utils/masker';
+    import { useDateUtils } from './utils/date-utils';
 
     export default /*#__PURE__*/ defineComponent({
         name: 'Vue3DatePicker',
@@ -122,12 +127,12 @@
             readonly: { type: Boolean as PropType<boolean>, default: false },
             weekNumName: { type: String as PropType<string>, default: 'W' },
             format: {
-                type: [Object, Function] as PropType<FormatOptions | ((date: Date | Date[]) => string)>,
-                default: () => ({}),
+                type: [String, Function] as PropType<string | ((date: Date | Date[]) => string)>,
+                default: () => 'MM/dd/yyyy, HH:mm',
             },
             previewFormat: {
-                type: [Object, Function] as PropType<FormatOptions | ((date: Date | Date[]) => string)>,
-                default: () => ({}),
+                type: [String, Function] as PropType<string | ((date: Date | Date[]) => string)>,
+                default: () => null,
             },
             inputClassName: { type: String as PropType<string>, default: null },
             menuClassName: { type: String as PropType<string>, default: null },
@@ -149,8 +154,9 @@
             monthPicker: { type: Boolean as PropType<boolean>, default: false },
             timePicker: { type: Boolean as PropType<boolean>, default: false },
             closeOnAutoApply: { type: Boolean as PropType<boolean>, default: true },
+            textInput: { type: Boolean as PropType<boolean>, default: false },
         },
-        setup(props: RDatepickerProps, { emit }) {
+        setup(props: IDatepickerProps, { emit }) {
             const isOpen = ref(false);
             const menuPosition = ref({ top: '0', left: '0', transform: 'none' });
             const internalValue = ref<string | string[]>('');
@@ -196,11 +202,29 @@
                 }),
             );
 
+            const defaultPattern = computed((): string => {
+                return typeof props.format === 'string' ? props.format : 'MM/dd/yyyy, HH:mm';
+            });
+
+            const previewFormatDefault = computed(() => {
+                if (!props.previewFormat) {
+                    return typeof props.format === 'string' ? defaultPattern.value : props.format;
+                }
+                return props.previewFormat;
+            });
+
             const theme = computed(() => (props.dark ? 'dp__theme_dark' : 'dp__theme_light'));
 
             const specificMode = computed((): boolean => props.monthPicker || props.timePicker);
 
             const isSingle = computed((): boolean => !props.range);
+
+            const { formatDate, formatDateRange } = useDateUtils(props.format);
+
+            const maskProps = computed(
+                (): IMaskProps =>
+                    props.textInput ? getPatternAndMask(defaultPattern.value) : { mask: '', pattern: '' },
+            );
 
             const externalInternalValueDiff = computed((): boolean => {
                 let dateValue;
@@ -229,14 +253,8 @@
                     if (singleModelValue.value) {
                         if (formatInternal) {
                             const dateValue = new Date(singleModelValue.value);
-                            if (typeof props.format === 'object') {
-                                internalValue.value = formatSingleDate(
-                                    dateValue,
-                                    props.locale,
-                                    props.format,
-                                    props.is24,
-                                    props.enableTimePicker,
-                                );
+                            if (typeof props.format === 'string') {
+                                internalValue.value = formatDate(dateValue);
                             } else {
                                 internalValue.value = props.format(dateValue);
                             }
@@ -249,14 +267,8 @@
                 if (rangeModelValue.value && rangeModelValue.value.length === 2 && !specificMode.value) {
                     const dateValue = [new Date(rangeModelValue.value[0]), new Date(rangeModelValue.value[1])];
                     if (formatInternal) {
-                        if (typeof props.format === 'object') {
-                            internalValue.value = formatRangeDate(
-                                dateValue,
-                                props.locale,
-                                props.format,
-                                props.is24,
-                                props.enableTimePicker,
-                            );
+                        if (typeof props.format === 'string') {
+                            internalValue.value = formatDateRange(dateValue);
                         } else {
                             internalValue.value = props.format(dateValue);
                         }
@@ -267,7 +279,7 @@
             const formatMonthPickerValue = (formatInternal = false): void => {
                 if (monthPickerValue.value) {
                     if (formatInternal) {
-                        if (typeof props.format === 'object') {
+                        if (typeof props.format === 'string') {
                             internalValue.value = formatMonthValue(monthPickerValue.value);
                         } else {
                             internalValue.value = props.format(monthPickerValue.value);
@@ -279,7 +291,7 @@
             const formatTimePickerValue = (formatInternal = false): void => {
                 if (timePickerValue.value) {
                     if (formatInternal) {
-                        if (typeof props.format === 'object') {
+                        if (typeof props.format === 'string') {
                             internalValue.value = formatTimeValue(timePickerValue.value, props.is24);
                         } else {
                             internalValue.value = props.format(timePickerValue.value);
@@ -482,6 +494,8 @@
                 openOnTop,
                 monthPickerValue,
                 timePickerValue,
+                maskProps,
+                previewFormatDefault,
                 clearValue,
                 openMenu,
                 closeMenu,

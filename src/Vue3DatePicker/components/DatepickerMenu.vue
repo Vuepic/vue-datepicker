@@ -52,7 +52,6 @@
         DatepickerMenuProps,
         IMonth,
         DynamicClass,
-        FormatOptions,
         IDateFilter,
         ITimeRange,
         IModelValueMonthPicker,
@@ -98,8 +97,8 @@
             selectText: { type: String as PropType<string>, default: 'Select' },
             cancelText: { type: String as PropType<string>, default: 'Cancel' },
             previewFormat: {
-                type: [Object, Function] as PropType<FormatOptions | ((date: Date | Date[]) => string)>,
-                default: null,
+                type: [String, Function] as PropType<string | ((date: Date | Date[]) => string)>,
+                default: () => 'MM/dd/yyyy, HH:mm',
             },
             locale: { type: String as PropType<string>, default: 'en-US' },
             weekNumName: { type: String as PropType<string>, default: 'W' },

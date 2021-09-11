@@ -36,7 +36,7 @@ export interface IModelValueTimePicker {
     minutes: number;
 }
 
-export interface RDatepickerProps {
+export interface IDatepickerProps {
     uid: string;
     is24: boolean;
     enableTimePicker: boolean;
@@ -58,7 +58,8 @@ export interface RDatepickerProps {
     weekStart: string | number;
     disabled: boolean;
     readonly: boolean;
-    format: FormatOptions | ((date: Date | Date[]) => string);
+    format: string | ((date: Date | Date[]) => string);
+    previewFormat: string | ((date: Date | Date[]) => string);
     inputClassName: string;
     menuClassName: string;
     calendarClassName: string;
@@ -80,6 +81,7 @@ export interface RDatepickerProps {
     monthPicker: boolean;
     timePicker: boolean;
     closeOnAutoApply: boolean;
+    textInput: boolean;
 }
 
 export interface DatepickerInputProps {
@@ -92,6 +94,8 @@ export interface DatepickerInputProps {
     state: boolean;
     clearable: boolean;
     inline: boolean;
+    textInput: boolean;
+    maskProps: IMaskProps;
 }
 
 export interface IMonth {
@@ -126,7 +130,7 @@ export interface DatepickerMenuProps {
     autoApply: boolean;
     selectText: string;
     cancelText: string;
-    previewFormat: FormatOptions | ((date: Date | Date[]) => string);
+    previewFormat: string | ((date: Date | Date[]) => string);
     locale: string;
     minDate: Date | string;
     maxDate: Date | string;
@@ -164,7 +168,7 @@ export interface CalendarProps {
     autoApply: boolean;
     selectText: string;
     cancelText: string;
-    previewFormat: FormatOptions | ((date: Date | Date[]) => string);
+    previewFormat: string | ((date: Date | Date[]) => string);
     locale: string;
     minDate: Date | string;
     maxDate: Date | string;
@@ -204,24 +208,6 @@ export interface IMonthYearHook {
     onPrev(): void;
 }
 
-export type FormatOptions = Intl.DateTimeFormatOptions;
-
-// export interface TimePickerProps {
-//     hoursIncrement: number | string;
-//     minutesIncrement: number | string;
-//     is24: boolean;
-//     hoursGridIncrement: number | string;
-//     minutesGridIncrement: number | string;
-//     hoursSingle: number;
-//     minutesSingle: number;
-//     range: boolean;
-//     hoursRange: IHoursRange;
-//     minutesRange: IMinutesRange;
-//     filters: IDateFilter;
-//     minTime: ITimeRange;
-//     maxTime: ITimeRange;
-// }
-
 export interface IHoursMinutes {
     hours: IDefaultSelect[];
     minutes: IDefaultSelect[];
@@ -252,7 +238,7 @@ export interface ActionRowProps {
     range: boolean;
     singleModelValue: Date;
     rangeModelValue: Date[];
-    previewFormat: FormatOptions | ((date: Date | Date[]) => string);
+    previewFormat: string | ((date: Date | Date[]) => string);
     locale: string;
     is24: boolean;
     enableTimePicker: boolean;
@@ -282,4 +268,9 @@ export type IMinutesRange = [number, number];
 export interface IHoursOptions {
     hourCycle?: string;
     hour12?: boolean;
+}
+
+export interface IMaskProps {
+    pattern: string;
+    mask: string;
 }

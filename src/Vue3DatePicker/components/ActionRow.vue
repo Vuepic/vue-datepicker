@@ -16,8 +16,9 @@
 
 <script lang="ts">
     import { defineComponent, onMounted, PropType, ref, toRef, watch } from 'vue';
-    import { ActionRowProps, FormatOptions, IModelValueMonthPicker, IModelValueTimePicker } from '../interfaces';
-    import { formatSingleDate, formatRangeDate, formatMonthValue, formatTimeValue } from '../utils/util';
+    import { ActionRowProps, IModelValueMonthPicker, IModelValueTimePicker } from '../interfaces';
+    import { formatMonthValue, formatTimeValue } from '../utils/util';
+    import { useDateUtils } from '../utils/date-utils';
 
     export default defineComponent({
         name: 'ActionRow',
@@ -29,8 +30,8 @@
             range: { type: Boolean as PropType<boolean>, default: false },
             rangeModelValue: { type: Array as unknown as PropType<Date[]>, default: null },
             previewFormat: {
-                type: [Object, Function] as PropType<FormatOptions | ((date: Date | Date[]) => string)>,
-                default: () => ({}),
+                type: [String, Function] as PropType<string | ((date: Date | Date[]) => string)>,
+                default: () => 'MM/dd/yyyy, HH:mm',
             },
             locale: { type: String as PropType<string>, default: 'en-US' },
             is24: { type: Boolean as PropType<boolean>, default: true },
@@ -67,6 +68,8 @@
                 formatTimePickerValue();
             });
 
+            const { formatDate } = useDateUtils(props.previewFormat);
+
             onMounted((): void => {
                 if (
                     props.singleModelValue ||
@@ -92,14 +95,8 @@
 
             const formatSinglePreview = (): void => {
                 if (props.singleModelValue) {
-                    if (typeof props.previewFormat === 'object') {
-                        previewValue.value = formatSingleDate(
-                            props.singleModelValue,
-                            props.locale,
-                            props.previewFormat,
-                            props.is24,
-                            props.enableTimePicker,
-                        );
+                    if (typeof props.previewFormat === 'string') {
+                        previewValue.value = formatDate(props.singleModelValue);
                     } else {
                         previewValue.value = props.previewFormat(props.singleModelValue);
                     }
@@ -108,15 +105,11 @@
 
             const formatRangePreview = (): void => {
                 if (props.rangeModelValue && props.rangeModelValue.length === 2) {
-                    if (typeof props.previewFormat === 'object') {
-                        previewValue.value = formatRangeDate(
-                            props.rangeModelValue,
-                            props.locale,
-                            props.previewFormat,
-                            props.is24,
-                            props.enableTimePicker,
-                            true,
-                        );
+                    if (typeof props.previewFormat === 'string') {
+                        previewValue.value = [
+                            formatDate(props.rangeModelValue[0]),
+                            formatDate(props.rangeModelValue[1]),
+                        ];
                     } else {
                         previewValue.value = props.previewFormat(props.rangeModelValue);
                     }

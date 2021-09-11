@@ -10,6 +10,7 @@ import { terser } from 'rollup-plugin-terser';
 import ttypescript from 'ttypescript';
 import typescript from 'rollup-plugin-typescript2';
 import minimist from 'minimist';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
 
 // Get browserslist config and remove ie from es build targets
 const esbrowserslist = fs
@@ -109,6 +110,7 @@ if (!argv.format || argv.format === 'es') {
                     ecma: 5,
                 },
             }),
+            nodeResolve(),
         ],
     };
     buildFormats.push(esConfig);
@@ -137,6 +139,7 @@ if (!argv.format || argv.format === 'cjs') {
                     ecma: 5,
                 },
             }),
+            nodeResolve(),
         ],
     };
     buildFormats.push(umdConfig);
@@ -165,6 +168,7 @@ if (!argv.format || argv.format === 'iife') {
                     ecma: 5,
                 },
             }),
+            nodeResolve(),
         ],
     };
     buildFormats.push(unpkgConfig);

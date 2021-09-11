@@ -1,5 +1,5 @@
 import { ICalendarDate, IHoursMinutes, IMonthYearHook, MonthYearPickerProps, VueEmit } from '../interfaces';
-import { computed, ComputedRef, Ref } from 'vue';
+import { computed, ComputedRef, Ref, WritableComputedRef } from 'vue';
 import { generateHours, generateMinutes, getCalendarDays } from './util';
 
 export const useMontYearPick = (props: MonthYearPickerProps, emit: VueEmit): IMonthYearHook => {
@@ -87,7 +87,7 @@ export const useHoursAndMinutes = (is24: boolean, timeIncrement: number): Comput
     });
 };
 
-export const useBindValue = (props: any, emit: VueEmit, key = 'modelValue'): ComputedRef<unknown> => {
+export const useBindValue = (props: any, emit: VueEmit, key = 'modelValue'): WritableComputedRef<any> => {
     return computed({
         get: () => props[key],
         set: (value) => emit(`update:${key}`, value),

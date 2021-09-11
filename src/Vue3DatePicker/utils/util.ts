@@ -1,9 +1,7 @@
 import {
-    FormatOptions,
     ICalendarDate,
     ICalendarDay,
     IDefaultSelect,
-    IHoursOptions,
     IModelValueMonthPicker,
     IModelValueTimePicker,
 } from '../interfaces';
@@ -67,56 +65,6 @@ export const getCalendarDays = (month: number, year: number, start: number): ICa
     }
 
     return weeks;
-};
-
-/**
- * Different config for 24h and 12H
- */
-const getHoursOptions = (is24: boolean): IHoursOptions => {
-    return is24 ? { hourCycle: 'h23' } : { hour12: true };
-};
-
-/**
- * Format Date object into readable format, specified by props
- */
-export const formatSingleDate = (
-    date: Date,
-    locale: string,
-    formatOptions: FormatOptions,
-    is24: boolean,
-    showTime: boolean,
-): string => {
-    let options = formatOptions;
-    if (showTime) {
-        options = Object.assign(options, {
-            hour: 'numeric',
-            minute: 'numeric',
-            hourCycle: 'h23',
-            ...getHoursOptions(is24),
-        });
-    }
-    return date.toLocaleDateString(locale, options);
-};
-
-/**
- *  Format Date range into readable format, specified by props
- */
-export const formatRangeDate = (
-    dates: Date[],
-    locale: string,
-    formatOptions: FormatOptions,
-    is24: boolean,
-    showTime: boolean,
-    returnArr?: boolean,
-): string | string[] => {
-    let options = formatOptions;
-    if (showTime) {
-        options = Object.assign(options, { hour: 'numeric', minute: 'numeric', ...getHoursOptions(is24) });
-    }
-    if (returnArr) {
-        return [dates[0].toLocaleDateString(locale, options), dates[1].toLocaleDateString(locale, options)];
-    }
-    return `${dates[0].toLocaleDateString(locale, options)} - ${dates[1].toLocaleDateString(locale, options)}`;
 };
 
 /**
