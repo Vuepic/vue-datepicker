@@ -15,7 +15,7 @@
             :mask-props="maskProps"
             :text-input-options="inputDefaultOptions"
             :range="range"
-            @enter="selectDate"
+            :is-menu-open="isOpen"
             @clear="clearValue"
             @open="openMenu"
             @setInputDate="setInputDate"
@@ -97,7 +97,7 @@
     import DatepickerInput from './components/DatepickerInput.vue';
     import DatepickerMenu from './components/DatepickerMenu.vue';
     import { clickOutsideDirective } from './directives/clickOutside';
-    import { getDefaultPattern, useDateUtils } from './utils/date-utils';
+    import { getDefaultPattern, isValidTextInput, useDateUtils } from './utils/date-utils';
     import { isFormatValidString, useInternalFormat, getPatternAndMask } from './utils/util';
 
     export default /*#__PURE__*/ defineComponent({
@@ -498,31 +498,38 @@
                 }
             };
 
-            const setInputDate = (date: Date | Date[] | null): void => {
+            const setInputDate = (date: Date | Date[] | null, submit?: boolean): void => {
                 if (!date) {
                     rangeModelValue.value = [];
                     singleModelValue.value = null;
                     return;
                 }
-                if (props.monthPicker && !Array.isArray(date)) {
-                    monthPickerValue.value = { month: date?.getMonth(), year: date?.getFullYear() };
-                    return;
-                }
-                if (props.timePicker) {
-                    if (Array.isArray(date)) {
-                        timePickerValue.value = [
-                            { hours: date[0].getHours(), minutes: date[0].getMinutes() },
-                            { hours: date[1].getHours(), minutes: date[1].getMinutes() },
-                        ];
+                const { timePicker, monthPicker, minDate, maxDate, minTime, maxTime } = props;
+                if (isValidTextInput(date, timePicker, monthPicker, minDate, maxDate, minTime, maxTime)) {
+                    if (!submit) {
+                        if (monthPicker && !Array.isArray(date)) {
+                            monthPickerValue.value = { month: date?.getMonth(), year: date?.getFullYear() };
+                            return;
+                        }
+                        if (timePicker) {
+                            if (Array.isArray(date)) {
+                                timePickerValue.value = [
+                                    { hours: date[0].getHours(), minutes: date[0].getMinutes() },
+                                    { hours: date[1].getHours(), minutes: date[1].getMinutes() },
+                                ];
+                            } else {
+                                timePickerValue.value = { hours: date.getHours(), minutes: date.getMinutes() };
+                            }
+                            return;
+                        }
+                        if (Array.isArray(date)) {
+                            rangeModelValue.value = date;
+                        } else {
+                            singleModelValue.value = date;
+                        }
                     } else {
-                        timePickerValue.value = { hours: date.getHours(), minutes: date.getMinutes() };
+                        selectDate();
                     }
-                    return;
-                }
-                if (Array.isArray(date)) {
-                    rangeModelValue.value = date;
-                } else {
-                    singleModelValue.value = date;
                 }
             };
 

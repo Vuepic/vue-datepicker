@@ -2,7 +2,7 @@ import parse from 'date-fns/parse';
 import format from 'date-fns/format';
 import isDate from 'date-fns/isDate';
 import isValid from 'date-fns/isValid';
-import { IModelValueMonthPicker, IModelValueTimePicker } from '../interfaces';
+import { IModelValueMonthPicker, IModelValueTimePicker, ITimeRange } from '../interfaces';
 import { isTimeValueValid } from './util';
 
 interface IUseDateUtils {
@@ -47,6 +47,113 @@ export const isValidDate = (value: Date | Date[] | null): boolean => {
         return isValid(value[0]) && isValid(value[1]);
     }
     return value ? isValid(value) : false;
+};
+
+interface IRefDateValues {
+    refMonth: number;
+    refYear: number;
+    refDate: number;
+}
+
+const getRefDateValues = (date: string | Date): IRefDateValues => {
+    const dt = new Date(date);
+
+    const refMonth = dt.getMonth();
+    const refYear = dt.getFullYear();
+    const refDate = dt.getDate();
+
+    return { refMonth, refYear, refDate };
+};
+
+interface IDateValues {
+    month: number;
+    year: number;
+    date: number;
+}
+
+const getDateValues = (dateVal: string | Date): IDateValues => {
+    const dt = new Date(dateVal);
+
+    const month = dt.getMonth();
+    const year = dt.getFullYear();
+    const date = dt.getDate();
+
+    return { month, year, date };
+};
+
+const getHoursAndMinutes = (date: string | Date): ITimeRange => {
+    const dt = new Date(date);
+
+    return { hours: dt.getHours(), minutes: dt.getMinutes() };
+};
+
+/**
+ * In case that the provided input is ok, check provided validation
+ */
+export const isValidTextInput = (
+    value: Date | Date[],
+    timePicker: boolean,
+    monthPicker: boolean,
+    minDate: Date | string,
+    maxDate: Date | string,
+    minTime: ITimeRange,
+    maxTime: ITimeRange,
+): boolean => {
+    if (!value) return false;
+
+    let valid = true;
+
+    if (minDate && !timePicker) {
+        const { refDate, refMonth, refYear } = getRefDateValues(minDate);
+        const { month, year, date } = Array.isArray(value) ? getDateValues(value[0]) : getDateValues(value);
+        if (timePicker) {
+            valid = month >= refMonth && year >= refYear;
+        } else {
+            valid =
+                month >= refMonth &&
+                year >= refYear &&
+                (refYear === year && refMonth === month ? date >= refDate : true);
+        }
+    }
+
+    if (maxDate && !timePicker) {
+        const { refDate, refMonth, refYear } = getRefDateValues(minDate);
+        const { month, year, date } = Array.isArray(value) ? getDateValues(value[1]) : getDateValues(value);
+        if (timePicker) {
+            valid = month <= refMonth && year <= refYear;
+        } else {
+            valid =
+                month <= refMonth &&
+                year <= refYear &&
+                (refYear === year && refMonth === month ? date <= refDate : true);
+        }
+    }
+
+    if (Object.keys(minTime).length && !monthPicker) {
+        const { hours, minutes } = minTime;
+        if (Array.isArray(value)) {
+            const val1 = getHoursAndMinutes(value[0]);
+            const val2 = getHoursAndMinutes(value[1]);
+            valid = val1.hours >= hours && val1.minutes >= minutes && val2.hours >= hours && val2.minutes >= minutes;
+        } else {
+            const val = getHoursAndMinutes(value);
+            valid = val.hours >= hours && val.minutes >= minutes;
+        }
+    }
+
+    if (Object.keys(maxTime).length && !monthPicker) {
+        const { hours, minutes } = minTime;
+        if (Array.isArray(value)) {
+            const val1 = getHoursAndMinutes(value[0]);
+            const val2 = getHoursAndMinutes(value[1]);
+            valid = val1.hours <= hours && val1.minutes <= minutes && val2.hours <= hours && val2.minutes <= minutes;
+        } else {
+            const val = getHoursAndMinutes(value);
+            valid = val.hours <= hours && val.minutes <= minutes;
+        }
+    }
+
+    return valid;
 };
 
 /**

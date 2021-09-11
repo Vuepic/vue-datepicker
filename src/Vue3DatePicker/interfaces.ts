@@ -103,6 +103,7 @@ export interface DatepickerInputProps {
     textInput: boolean;
     maskProps: IMaskProps;
     textInputOptions: ITextInputOptions;
+    isMenuOpen: boolean;
 }
 
 export interface IMonth {

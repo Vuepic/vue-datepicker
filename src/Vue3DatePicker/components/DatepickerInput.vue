@@ -40,7 +40,7 @@
 
     export default defineComponent({
         name: 'DatepickerInput',
-        emits: ['clear', 'open', 'update:internalValue', 'setInputDate', 'enter'],
+        emits: ['clear', 'open', 'update:internalValue', 'setInputDate'],
         components: { CalendarIcon, CancelIcon },
         props: {
             internalValue: { type: String as PropType<string>, default: '' },
@@ -56,6 +56,7 @@
             textInput: { type: Boolean as PropType<boolean>, default: false },
             maskProps: { type: Object as PropType<IMaskProps>, default: () => ({ pattern: '', mask: '' }) },
             textInputOptions: { type: Object as PropType<ITextInputOptions>, default: () => null },
+            isMenuOpen: { type: Boolean as PropType<boolean>, default: false },
         },
         setup(props: DatepickerInputProps, { emit }) {
             const rawValue = ref('');
@@ -106,14 +107,14 @@
 
             const handleEnter = (): void => {
                 if (props.textInputOptions?.enterSubmit && isValidDate(parsedDate.value)) {
-                    emit('enter');
+                    emit('setInputDate', parsedDate.value, true);
                 }
             };
 
             const handleOpen = () => {
-                if (props.textInput && props.textInputOptions?.openMenu) {
+                if (props.textInput && props.textInputOptions?.openMenu && !props.isMenuOpen) {
                     emit('open');
-                } else {
+                } else if (!props.textInput) {
                     emit('open');
                 }
             };
