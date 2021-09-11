@@ -15,6 +15,10 @@ export enum OpenPosition {
     right = 'right',
 }
 
+export type IFormat =
+    | string
+    | ((date: Date | Date[] | IModelValueTimePicker | IModelValueTimePicker[] | IModelValueMonthPicker) => string);
+
 export interface IDateFilter {
     months: number[];
     years: number[];
@@ -58,8 +62,8 @@ export interface IDatepickerProps {
     weekStart: string | number;
     disabled: boolean;
     readonly: boolean;
-    format: string | ((date: Date | Date[]) => string);
-    previewFormat: string | ((date: Date | Date[]) => string);
+    format: IFormat;
+    previewFormat: IFormat;
     inputClassName: string;
     menuClassName: string;
     calendarClassName: string;
@@ -130,7 +134,7 @@ export interface DatepickerMenuProps {
     autoApply: boolean;
     selectText: string;
     cancelText: string;
-    previewFormat: string | ((date: Date | Date[]) => string);
+    previewFormat: IFormat;
     locale: string;
     minDate: Date | string;
     maxDate: Date | string;
@@ -168,7 +172,7 @@ export interface CalendarProps {
     autoApply: boolean;
     selectText: string;
     cancelText: string;
-    previewFormat: string | ((date: Date | Date[]) => string);
+    previewFormat: IFormat;
     locale: string;
     minDate: Date | string;
     maxDate: Date | string;
@@ -238,7 +242,7 @@ export interface ActionRowProps {
     range: boolean;
     singleModelValue: Date;
     rangeModelValue: Date[];
-    previewFormat: string | ((date: Date | Date[]) => string);
+    previewFormat: IFormat;
     is24: boolean;
     enableTimePicker: boolean;
     inline: boolean;

@@ -15,10 +15,10 @@
 </template>
 
 <script lang="ts">
-    import { defineComponent, onMounted, PropType, ref, toRef, watch } from 'vue';
-    import { ActionRowProps, IModelValueMonthPicker, IModelValueTimePicker } from '../interfaces';
-    import { formatMonthValue, formatTimeValue } from '../utils/util';
-    import { useDateUtils } from '../utils/date-utils';
+    import { computed, defineComponent, onMounted, PropType, ref, toRef, watch } from 'vue';
+    import { ActionRowProps, IFormat, IModelValueMonthPicker, IModelValueTimePicker } from '../interfaces';
+    import { getDefaultPattern, useDateUtils } from '../utils/date-utils';
+    import { useInternalFormat } from '../utils/util';
 
     export default defineComponent({
         name: 'ActionRow',
@@ -30,8 +30,8 @@
             range: { type: Boolean as PropType<boolean>, default: false },
             rangeModelValue: { type: Array as unknown as PropType<Date[]>, default: null },
             previewFormat: {
-                type: [String, Function] as PropType<string | ((date: Date | Date[]) => string)>,
-                default: () => 'MM/dd/yyyy, HH:mm',
+                type: [String, Function] as PropType<IFormat>,
+                default: () => null,
             },
             is24: { type: Boolean as PropType<boolean>, default: true },
             enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
@@ -67,7 +67,13 @@
                 formatTimePickerValue();
             });
 
-            const { formatDate } = useDateUtils(props.previewFormat);
+            const defaultPattern = computed((): string => {
+                return props.previewFormat && typeof props.previewFormat === 'string'
+                    ? props.previewFormat
+                    : getDefaultPattern(props.is24, props.monthPicker, props.timePicker);
+            });
+
+            const { formatDate, formatMonth, formatTime } = useDateUtils(defaultPattern.value);
 
             onMounted((): void => {
                 if (
@@ -94,7 +100,7 @@
 
             const formatSinglePreview = (): void => {
                 if (props.singleModelValue) {
-                    if (typeof props.previewFormat === 'string') {
+                    if (useInternalFormat(props.previewFormat)) {
                         previewValue.value = formatDate(props.singleModelValue);
                     } else {
                         previewValue.value = props.previewFormat(props.singleModelValue);
@@ -104,7 +110,7 @@
 
             const formatRangePreview = (): void => {
                 if (props.rangeModelValue && props.rangeModelValue.length === 2) {
-                    if (typeof props.previewFormat === 'string') {
+                    if (useInternalFormat(props.previewFormat)) {
                         previewValue.value = [
                             formatDate(props.rangeModelValue[0]),
                             formatDate(props.rangeModelValue[1]),
@@ -117,13 +123,21 @@
 
             const formatMonthValValue = (): void => {
                 if (props.monthPicker && props.monthPickerValue) {
-                    previewValue.value = formatMonthValue(props.monthPickerValue);
+                    if (useInternalFormat(props.previewFormat)) {
+                        previewValue.value = formatMonth(props.monthPickerValue);
+                    } else {
+                        previewValue.value = props.previewFormat(props.monthPickerValue);
+                    }
                 }
             };
 
             const formatTimePickerValue = (): void => {
                 if (props.timePicker && props.timePickerValue) {
-                    previewValue.value = formatTimeValue(props.timePickerValue, props.is24);
+                    if (useInternalFormat(props.previewFormat)) {
+                        previewValue.value = formatTime(props.timePickerValue);
+                    } else {
+                        previewValue.value = props.previewFormat(props.timePickerValue);
+                    }
                 }
             };
 

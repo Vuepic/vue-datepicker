@@ -89,6 +89,7 @@
         ITimeRange,
         IModelValueMonthPicker,
         IModelValueTimePicker,
+        IFormat,
     } from '../interfaces';
     import { useDpDaysGen } from '../utils/hooks';
     import { getDayNames } from '../utils/util';
@@ -131,7 +132,7 @@
             selectText: { type: String as PropType<string>, default: 'Select' },
             cancelText: { type: String as PropType<string>, default: 'Cancel' },
             previewFormat: {
-                type: [String, Function] as PropType<string | ((date: Date | Date[]) => string)>,
+                type: [String, Function] as PropType<IFormat>,
                 default: null,
             },
             locale: { type: String as PropType<string>, default: 'en-US' },

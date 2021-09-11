@@ -1,10 +1,4 @@
-import {
-    ICalendarDate,
-    ICalendarDay,
-    IDefaultSelect,
-    IModelValueMonthPicker,
-    IModelValueTimePicker,
-} from '../interfaces';
+import { ICalendarDate, ICalendarDay, IDefaultSelect, IModelValueTimePicker } from '../interfaces';
 
 /**
  * Depending on a week start get starting date of the current calendar
@@ -67,37 +61,16 @@ export const getCalendarDays = (month: number, year: number, start: number): ICa
     return weeks;
 };
 
-/**
- * Format value for month picker
- */
-export const formatMonthValue = (monthValue: IModelValueMonthPicker): string => {
-    if (monthValue && (monthValue.month || monthValue.month === 0) && monthValue.year) {
-        const month = monthValue.month + 1 < 10 ? `0${monthValue.month + 1}` : monthValue.month + 1;
-        return `${month}/${monthValue.year}`;
-    }
-    return '';
+export const useInternalFormat = (prop: string | ((date: Date | Date[]) => string)): prop is string => {
+    return !prop || typeof prop === 'string';
 };
 
-/**
- * Format time value for time picker
- */
-export const formatTimeValue = (time: IModelValueTimePicker | IModelValueTimePicker[], is24: boolean): string => {
-    const formatFnc = (timeValue: IModelValueTimePicker) => {
-        if (timeValue && (timeValue.hours || timeValue.hours === 0) && (timeValue.minutes || timeValue.minutes === 0)) {
-            const hours = timeValue.hours < 10 ? `0${timeValue.hours}` : timeValue.hours;
-            const minutes = timeValue.minutes < 10 ? `0${timeValue.minutes}` : timeValue.minutes;
-            if (!is24) {
-                return `${hoursToAmPmHours(timeValue.hours)}:${minutes} ${timeValue.hours > 12 ? 'PM' : 'AM'}`;
-            }
-            return `${hours}:${minutes}`;
-        }
-        return '';
-    };
+export const isFormatValidString = (prop: string | ((date: Date | Date[]) => string)): prop is string => {
+    return !!prop && typeof prop === 'string';
+};
 
-    if (Array.isArray(time)) {
-        return `${formatFnc(time[0])} - ${formatFnc(time[1])}`;
-    }
-    return formatFnc(time);
+export const isTimeValueValid = (time: IModelValueTimePicker): boolean => {
+    return !!(time && (time.hours || time.hours === 0) && (time.minutes || time.minutes === 0));
 };
 
 export const generateMinutes = (increment: number): IDefaultSelect[] => {

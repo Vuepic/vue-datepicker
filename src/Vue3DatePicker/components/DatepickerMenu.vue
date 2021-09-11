@@ -56,6 +56,7 @@
         ITimeRange,
         IModelValueMonthPicker,
         IModelValueTimePicker,
+        IFormat,
     } from '../interfaces';
     import { useBindValue } from '../utils/hooks';
     import { getMonthNames } from '../utils/util';
@@ -97,8 +98,8 @@
             selectText: { type: String as PropType<string>, default: 'Select' },
             cancelText: { type: String as PropType<string>, default: 'Cancel' },
             previewFormat: {
-                type: [String, Function] as PropType<string | ((date: Date | Date[]) => string)>,
-                default: () => 'MM/dd/yyyy, HH:mm',
+                type: [String, Function] as PropType<IFormat>,
+                default: () => null,
             },
             locale: { type: String as PropType<string>, default: 'en-US' },
             weekNumName: { type: String as PropType<string>, default: 'W' },

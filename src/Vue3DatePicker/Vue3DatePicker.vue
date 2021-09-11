@@ -87,13 +87,14 @@
         IModelValueTimePicker,
         IMaskProps,
         IDatepickerProps,
+        IFormat,
     } from './interfaces';
     import DatepickerInput from './components/DatepickerInput.vue';
     import DatepickerMenu from './components/DatepickerMenu.vue';
-    import { formatMonthValue, formatTimeValue } from './utils/util';
     import { clickOutsideDirective } from './directives/clickOutside';
     import { getPatternAndMask } from './utils/masker';
     import { getDefaultPattern, useDateUtils } from './utils/date-utils';
+    import { isFormatValidString, useInternalFormat } from './utils/util';
 
     export default /*#__PURE__*/ defineComponent({
         name: 'Vue3DatePicker',
@@ -127,11 +128,11 @@
             readonly: { type: Boolean as PropType<boolean>, default: false },
             weekNumName: { type: String as PropType<string>, default: 'W' },
             format: {
-                type: [String, Function] as PropType<string | ((date: Date | Date[]) => string)>,
+                type: [String, Function] as PropType<IFormat>,
                 default: () => null,
             },
             previewFormat: {
-                type: [String, Function] as PropType<string | ((date: Date | Date[]) => string)>,
+                type: [String, Function] as PropType<IFormat>,
                 default: () => null,
             },
             inputClassName: { type: String as PropType<string>, default: null },
@@ -203,12 +204,14 @@
             );
 
             const defaultPattern = computed((): string => {
-                return props.format && typeof props.format === 'string' ? props.format : getDefaultPattern(props.is24);
+                return isFormatValidString(props.format)
+                    ? props.format
+                    : getDefaultPattern(props.is24, props.monthPicker, props.timePicker);
             });
 
             const previewFormatDefault = computed(() => {
                 if (!props.previewFormat) {
-                    return !props.format || typeof props.format === 'string' ? defaultPattern.value : props.format;
+                    return isFormatValidString(props.format) ? defaultPattern.value : props.format;
                 }
                 return props.previewFormat;
             });
@@ -219,12 +222,12 @@
 
             const isSingle = computed((): boolean => !props.range);
 
-            const { formatDate, formatDateRange } = useDateUtils(defaultPattern.value);
-
             const maskProps = computed(
                 (): IMaskProps =>
                     props.textInput ? getPatternAndMask(defaultPattern.value) : { mask: '', pattern: '' },
             );
+
+            const { formatDate, formatDateRange, formatMonth, formatTime } = useDateUtils(defaultPattern.value);
 
             const externalInternalValueDiff = computed((): boolean => {
                 let dateValue;
@@ -253,7 +256,7 @@
                     if (singleModelValue.value) {
                         if (formatInternal) {
                             const dateValue = new Date(singleModelValue.value);
-                            if (!props.format || typeof props.format === 'string') {
+                            if (useInternalFormat(props.format)) {
                                 internalValue.value = formatDate(dateValue);
                             } else {
                                 internalValue.value = props.format(dateValue);
@@ -267,7 +270,7 @@
                 if (rangeModelValue.value && rangeModelValue.value.length === 2 && !specificMode.value) {
                     const dateValue = [new Date(rangeModelValue.value[0]), new Date(rangeModelValue.value[1])];
                     if (formatInternal) {
-                        if (!props.format || typeof props.format === 'string') {
+                        if (useInternalFormat(props.format)) {
                             internalValue.value = formatDateRange(dateValue);
                         } else {
                             internalValue.value = props.format(dateValue);
@@ -279,8 +282,8 @@
             const formatMonthPickerValue = (formatInternal = false): void => {
                 if (monthPickerValue.value) {
                     if (formatInternal) {
-                        if (!props.format || typeof props.format === 'string') {
-                            internalValue.value = formatMonthValue(monthPickerValue.value);
+                        if (useInternalFormat(props.format)) {
+                            internalValue.value = formatMonth(monthPickerValue.value);
                         } else {
                             internalValue.value = props.format(monthPickerValue.value);
                         }
@@ -291,8 +294,8 @@
             const formatTimePickerValue = (formatInternal = false): void => {
                 if (timePickerValue.value) {
                     if (formatInternal) {
-                        if (!props.format || typeof props.format === 'string') {
-                            internalValue.value = formatTimeValue(timePickerValue.value, props.is24);
+                        if (useInternalFormat(props.format)) {
+                            internalValue.value = formatTime(timePickerValue.value);
                         } else {
                             internalValue.value = props.format(timePickerValue.value);
                         }
