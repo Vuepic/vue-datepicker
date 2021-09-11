@@ -86,6 +86,7 @@ export interface IDatepickerProps {
     timePicker: boolean;
     closeOnAutoApply: boolean;
     textInput: boolean;
+    textInputOptions: ITextInputOptions;
 }
 
 export interface DatepickerInputProps {
@@ -98,8 +99,10 @@ export interface DatepickerInputProps {
     state: boolean;
     clearable: boolean;
     inline: boolean;
+    range: boolean;
     textInput: boolean;
     maskProps: IMaskProps;
+    textInputOptions: ITextInputOptions;
 }
 
 export interface IMonth {
@@ -276,4 +279,12 @@ export interface IHoursOptions {
 export interface IMaskProps {
     pattern: string;
     mask: string;
+    format: string;
+}
+
+export interface ITextInputOptions {
+    placeholder?: string;
+    enterSubmit: boolean;
+    openMenu: boolean;
+    freeInput: boolean;
 }

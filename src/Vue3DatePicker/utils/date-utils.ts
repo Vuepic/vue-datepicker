@@ -1,10 +1,11 @@
 import parse from 'date-fns/parse';
 import format from 'date-fns/format';
+import isDate from 'date-fns/isDate';
+import isValid from 'date-fns/isValid';
 import { IModelValueMonthPicker, IModelValueTimePicker } from '../interfaces';
 import { isTimeValueValid } from './util';
 
 interface IUseDateUtils {
-    parseDate: (date: string) => Date;
     formatDate: (date: string | Date) => string;
     formatDateRange: (dates: string[] | Date[]) => string;
     formatMonth: (value: IModelValueMonthPicker) => string;
@@ -21,14 +22,34 @@ export const getDefaultPattern = (is24: boolean, monthPicker: boolean, timePicke
     return `MM/dd/yyyy, ${is24 ? 'HH:mm' : 'hh:mm aa'}`;
 };
 
+export const parseFreeInput = (value: string, pattern: string): Date | null => {
+    const parsedDate = parse(value, pattern.slice(0, value.length), new Date());
+    if (isValid(parsedDate)) {
+        return parsedDate;
+    }
+    return null;
+};
+
+const parseDate = (date: string, pattern: string): Date => {
+    return parse(date, pattern, new Date());
+};
+
+export const getMaskedDate = (value: string, pattern: string): Date | null => {
+    const parsedDate = parseDate(value, pattern);
+    if (isDate(parsedDate) && isValid(parsedDate)) {
+        return parsedDate;
+    }
+    return null;
+};
+
+export const isValidDate = (value: Date | null): boolean => {
+    return value ? isValid(value) : false;
+};
+
 /**
  * Global hook with collection of functions for date manipulations
  */
 export const useDateUtils = (pattern: string): IUseDateUtils => {
-    const parseDate = (date: string): Date => {
-        return parse(date, pattern, new Date());
-    };
-
     const formatDate = (date: string | Date): string => {
         return format(new Date(date), pattern);
     };
@@ -70,5 +91,5 @@ export const useDateUtils = (pattern: string): IUseDateUtils => {
         return '';
     };
 
-    return { parseDate, formatDate, formatDateRange, formatMonth, formatTime };
+    return { formatDate, formatDateRange, formatMonth, formatTime };
 };

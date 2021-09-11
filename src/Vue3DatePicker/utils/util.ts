@@ -1,4 +1,4 @@
-import { ICalendarDate, ICalendarDay, IDefaultSelect, IModelValueTimePicker } from '../interfaces';
+import { ICalendarDate, ICalendarDay, IDefaultSelect, IMaskProps, IModelValueTimePicker } from '../interfaces';
 
 /**
  * Depending on a week start get starting date of the current calendar
@@ -139,4 +139,15 @@ export const hoursToAmPmHours = (index: number): number => {
     const hoursValues = [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
     return hoursValues[index];
+};
+
+export const getPatternAndMask = (format: string, range: boolean): IMaskProps => {
+    let pattern = format.replace(/[a-zA-Z]/g, '*');
+    let mask = format;
+    if (range) {
+        pattern = `${pattern} - ${pattern}`;
+        mask = `${format} - ${format}`;
+    }
+
+    return { pattern, mask, format };
 };

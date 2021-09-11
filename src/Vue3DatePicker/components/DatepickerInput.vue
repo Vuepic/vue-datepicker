@@ -10,6 +10,7 @@
                 :readonly="!textInput"
                 :value="internalValue"
                 @input="handleInput"
+                @keydown.enter="handleEnter"
             />
             <span class="dp__input_icon" v-if="$slots['input-icon'] && !hideInputIcon"
                 ><slot name="input-icon"></slot
@@ -31,15 +32,15 @@
 </template>
 
 <script lang="ts">
-    import { computed, nextTick, PropType, ref, watch, defineComponent, onMounted } from 'vue';
-    import { DynamicClass, DatepickerInputProps, IMaskProps } from '../interfaces';
+    import { computed, PropType, ref, defineComponent, onMounted } from 'vue';
+    import Inputmask from 'inputmask';
+    import { DynamicClass, DatepickerInputProps, IMaskProps, ITextInputOptions } from '../interfaces';
     import { CalendarIcon, CancelIcon } from './Icons';
-    import { maskValue, unmask } from '../utils/masker';
-    import parse from 'date-fns/parse';
+    import { getMaskedDate, isValidDate, parseFreeInput } from '../utils/date-utils';
 
     export default defineComponent({
         name: 'DatepickerInput',
-        emits: ['clear', 'open', 'update:internalValue'],
+        emits: ['clear', 'open', 'update:internalValue', 'setInputDate', 'enter'],
         components: { CalendarIcon, CancelIcon },
         props: {
             internalValue: { type: String as PropType<string>, default: '' },
@@ -48,15 +49,17 @@
             disabled: { type: Boolean as PropType<boolean>, default: true },
             readonly: { type: Boolean as PropType<boolean>, default: true },
             clearable: { type: Boolean as PropType<boolean>, default: true },
+            range: { type: Boolean as PropType<boolean>, default: false },
             state: { type: Boolean as PropType<boolean>, default: null },
             inputClassName: { type: String as PropType<string>, default: null },
             inline: { type: Boolean as PropType<boolean>, default: false },
             textInput: { type: Boolean as PropType<boolean>, default: false },
             maskProps: { type: Object as PropType<IMaskProps>, default: () => ({ pattern: '', mask: '' }) },
+            textInputOptions: { type: Object as PropType<ITextInputOptions>, default: () => null },
         },
         setup(props: DatepickerInputProps, { emit }) {
             const rawValue = ref('');
-            const prevMaskedValue = ref('');
+            const parsedDate = ref();
             const el = ref();
 
             const inputClass = computed(
@@ -72,53 +75,51 @@
             );
 
             onMounted(() => {
-                // if (props.textInput) {
-                //     const date = new Date();
-                // }
-            });
-
-            watch(rawValue, (newVal: string, oldVal: string): void => {
-                handleTextMask(newVal.length < oldVal.length);
+                const { freeInput, placeholder } = props.textInputOptions;
+                if (props.textInput && !freeInput) {
+                    const mask = new Inputmask({
+                        mask: props.maskProps?.pattern,
+                        placeholder: placeholder || props.maskProps?.mask,
+                    });
+                    mask.mask(el.value);
+                }
             });
 
             const handleInput = (event: InputEvent): void => {
                 const { value } = event.target as HTMLInputElement;
-                rawValue.value = unmask(value);
-            };
-            // todo - work in progress
-            const handleTextMask = (isDelete: boolean): void => {
-                const { masked, position } = maskValue(
-                    rawValue.value,
-                    props.maskProps?.pattern,
-                    props.maskProps?.mask,
-                    isDelete,
-                );
-                if (prevMaskedValue.value === masked) {
-                    console.log(masked);
-                    console.log(parse(masked, 'dd.MM.yyyy, hh:mm', new Date()));
+                rawValue.value = value;
+
+                const { freeInput } = props.textInputOptions;
+                const { format } = props.maskProps;
+                if (props.range) {
+                    const [dateOne, dateTwo] = value.split(' - ');
+                    const parsedDateOne = freeInput ? parseFreeInput(dateOne, format) : getMaskedDate(dateOne, format);
+                    const parsedDateTwo = freeInput ? parseFreeInput(dateTwo, format) : getMaskedDate(dateTwo, format);
+                    parsedDate.value = parsedDateOne && parsedDateTwo ? [parsedDateOne, parsedDateTwo] : null;
+                } else {
+                    parsedDate.value = freeInput ? parseFreeInput(value, format) : getMaskedDate(value, format);
                 }
-                emit('update:internalValue', masked);
-                prevMaskedValue.value = masked;
-                nextTick(() => {
-                    el.value.focus();
-                    el.value.setSelectionRange(
-                        isDelete ? position - 1 : position,
-                        isDelete ? position : position + 1,
-                        isDelete ? 'backward' : 'forward',
-                    );
-                });
+
+                emit('setInputDate', parsedDate.value);
+                emit('update:internalValue', value);
+            };
+
+            const handleEnter = (): void => {
+                if (props.textInputOptions?.enterSubmit && isValidDate(parsedDate.value)) {
+                    emit('enter');
+                }
             };
 
             const handleOpen = () => {
-                if (rawValue.value.length) {
-                    return;
+                if (props.textInput && props.textInputOptions?.openMenu) {
+                    emit('open');
+                } else {
+                    emit('open');
                 }
-                emit('open');
             };
 
             const onClear = () => {
                 rawValue.value = '';
-                prevMaskedValue.value = '';
                 emit('clear');
             };
 
@@ -126,9 +127,9 @@
                 inputClass,
                 handleOpen,
                 handleInput,
+                handleEnter,
                 onClear,
                 el,
-                rawValue,
             };
         },
     });

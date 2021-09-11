@@ -1,4 +1,4 @@
-const devPresets = ['@babel/preset-env'];
+const devPresets = ['@babel/preset-env', '@vue/app'];
 
 const buildPresets = ['@babel/preset-env', '@babel/preset-typescript'];
 

@@ -13,8 +13,12 @@
             :text-input="textInput"
             :uid="uid"
             :mask-props="maskProps"
+            :text-input-options="inputDefaultOptions"
+            :range="range"
+            @enter="selectDate"
             @clear="clearValue"
             @open="openMenu"
+            @setInputDate="setInputDate"
             :id="`dp__input_${uid}`"
         >
             <template #trigger v-if="$slots.trigger">
@@ -88,13 +92,13 @@
         IMaskProps,
         IDatepickerProps,
         IFormat,
+        ITextInputOptions,
     } from './interfaces';
     import DatepickerInput from './components/DatepickerInput.vue';
     import DatepickerMenu from './components/DatepickerMenu.vue';
     import { clickOutsideDirective } from './directives/clickOutside';
-    import { getPatternAndMask } from './utils/masker';
     import { getDefaultPattern, useDateUtils } from './utils/date-utils';
-    import { isFormatValidString, useInternalFormat } from './utils/util';
+    import { isFormatValidString, useInternalFormat, getPatternAndMask } from './utils/util';
 
     export default /*#__PURE__*/ defineComponent({
         name: 'Vue3DatePicker',
@@ -156,6 +160,7 @@
             timePicker: { type: Boolean as PropType<boolean>, default: false },
             closeOnAutoApply: { type: Boolean as PropType<boolean>, default: true },
             textInput: { type: Boolean as PropType<boolean>, default: false },
+            textInputOptions: { type: Object as PropType<ITextInputOptions>, default: () => null },
         },
         setup(props: IDatepickerProps, { emit }) {
             const isOpen = ref(false);
@@ -222,10 +227,18 @@
 
             const isSingle = computed((): boolean => !props.range);
 
-            const maskProps = computed(
-                (): IMaskProps =>
-                    props.textInput ? getPatternAndMask(defaultPattern.value) : { mask: '', pattern: '' },
-            );
+            const maskProps = computed((): IMaskProps => getPatternAndMask(defaultPattern.value, props.range));
+
+            const inputDefaultOptions = computed((): ITextInputOptions => {
+                return Object.assign(
+                    {
+                        enterSubmit: true,
+                        openMenu: true,
+                        freeInput: false,
+                    },
+                    props.textInputOptions || {},
+                );
+            });
 
             const { formatDate, formatDateRange, formatMonth, formatTime } = useDateUtils(defaultPattern.value);
 
@@ -485,6 +498,18 @@
                 }
             };
 
+            const setInputDate = (date: Date | Date[] | null): void => {
+                if (!date) {
+                    rangeModelValue.value = [];
+                    singleModelValue.value = null;
+                }
+                if (Array.isArray(date)) {
+                    rangeModelValue.value = date;
+                } else {
+                    singleModelValue.value = date;
+                }
+            };
+
             return {
                 singleModelValue,
                 rangeModelValue,
@@ -499,6 +524,8 @@
                 timePickerValue,
                 maskProps,
                 previewFormatDefault,
+                inputDefaultOptions,
+                setInputDate,
                 clearValue,
                 openMenu,
                 closeMenu,
