@@ -17,6 +17,7 @@
 - Range date picker
 - Time picker
 - Month picker
+- Text input
 - Locale support
 - Week numbers
 - Dark and light theme
