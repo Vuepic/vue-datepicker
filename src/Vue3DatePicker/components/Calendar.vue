@@ -92,7 +92,7 @@
         IFormat,
     } from '../interfaces';
     import { useDpDaysGen } from '../utils/hooks';
-    import { getDayNames } from '../utils/util';
+    import { getDayNames, isTimeDiff } from '../utils/util';
 
     export default defineComponent({
         name: 'Calendar',
@@ -167,6 +167,7 @@
             const rangeModelValue = toRef(props, 'rangeModelValue');
             const singleModelValue = toRef(props, 'singleModelValue');
             const timePickerValue = toRef(props, 'timePickerValue');
+            const monthPickerValue = toRef(props, 'monthPickerValue');
 
             watch(activeDate, () => {
                 if (activeDate.value) {
@@ -198,6 +199,33 @@
                 }
             });
 
+            watch(timePickerValue, () => {
+                if (props.timePicker) {
+                    if (
+                        Array.isArray(timePickerValue.value) &&
+                        (isTimeDiff(timePickerValue.value[0], hoursRange.value[0], minutesRange.value[0]) ||
+                            isTimeDiff(timePickerValue.value[1], hoursRange.value[1], minutesRange.value[1]))
+                    ) {
+                        assignTimeFromModelValue();
+                    } else if (
+                        !Array.isArray(timePickerValue.value) &&
+                        isTimeDiff(timePickerValue.value, hoursSingle.value, minutesSingle.value)
+                    ) {
+                        assignTimeFromModelValue();
+                    }
+                }
+            });
+
+            watch(monthPickerValue, () => {
+                if (
+                    props.monthPicker &&
+                    monthPickerValue.value &&
+                    (monthPickerValue.value.month !== month.value || monthPickerValue.value.year !== year.value)
+                ) {
+                    updateMonthFromModelValue();
+                }
+            });
+
             onMounted(() => {
                 if (props.startDate) {
                     setStartDate(props.startDate);
@@ -222,29 +250,33 @@
                     }
                 } else {
                     if (props.timePicker) {
-                        if (!props.range && !Array.isArray(timePickerValue.value)) {
-                            if (timePickerValue.value) {
-                                hoursSingle.value = timePickerValue.value.hours;
-                                minutesSingle.value = timePickerValue.value.minutes;
-                            } else {
-                                assignSingleDateTime(date);
-                            }
-                        } else if (props.range && Array.isArray(timePickerValue.value)) {
-                            if (timePickerValue.value.length === 2) {
-                                hoursRange.value = [timePickerValue.value[0].hours, timePickerValue.value[1].hours];
-                                minutesRange.value = [
-                                    timePickerValue.value[0].minutes,
-                                    timePickerValue.value[1].minutes,
-                                ];
-                            } else {
-                                assignRangeDateTime(date);
-                            }
+                        if (timePickerValue.value) {
+                            assignTimeFromModelValue();
+                        } else {
+                            assignRangeDateTime(date);
                         }
+                        // if (!props.range && !Array.isArray(timePickerValue.value)) {
+                        //     if (timePickerValue.value) {
+                        //         hoursSingle.value = timePickerValue.value.hours;
+                        //         minutesSingle.value = timePickerValue.value.minutes;
+                        //     } else {
+                        //         assignSingleDateTime(date);
+                        //     }
+                        // } else if (props.range && Array.isArray(timePickerValue.value)) {
+                        //     if (timePickerValue.value.length === 2) {
+                        //         hoursRange.value = [timePickerValue.value[0].hours, timePickerValue.value[1].hours];
+                        //         minutesRange.value = [
+                        //             timePickerValue.value[0].minutes,
+                        //             timePickerValue.value[1].minutes,
+                        //         ];
+                        //     } else {
+                        //         assignRangeDateTime(date);
+                        //     }
+                        // }
                     }
 
                     if (props.monthPickerValue && props.monthPicker) {
-                        month.value = props.monthPickerValue.month;
-                        year.value = props.monthPickerValue.year;
+                        updateMonthFromModelValue();
                     }
                 }
             });
@@ -350,6 +382,21 @@
                 if (props.autoApply) {
                     emit('autoApply', yearChange);
                 }
+            };
+
+            const assignTimeFromModelValue = (): void => {
+                if (Array.isArray(timePickerValue.value)) {
+                    hoursRange.value = [timePickerValue.value[0].hours, timePickerValue.value[1].hours];
+                    minutesRange.value = [timePickerValue.value[0].minutes, timePickerValue.value[1].minutes];
+                } else {
+                    hoursSingle.value = timePickerValue.value.hours;
+                    minutesSingle.value = timePickerValue.value.minutes;
+                }
+            };
+
+            const updateMonthFromModelValue = (): void => {
+                month.value = monthPickerValue.value.month;
+                year.value = monthPickerValue.value.year;
             };
 
             /**

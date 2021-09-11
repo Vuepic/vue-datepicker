@@ -502,6 +502,22 @@
                 if (!date) {
                     rangeModelValue.value = [];
                     singleModelValue.value = null;
+                    return;
+                }
+                if (props.monthPicker && !Array.isArray(date)) {
+                    monthPickerValue.value = { month: date?.getMonth(), year: date?.getFullYear() };
+                    return;
+                }
+                if (props.timePicker) {
+                    if (Array.isArray(date)) {
+                        timePickerValue.value = [
+                            { hours: date[0].getHours(), minutes: date[0].getMinutes() },
+                            { hours: date[1].getHours(), minutes: date[1].getMinutes() },
+                        ];
+                    } else {
+                        timePickerValue.value = { hours: date.getHours(), minutes: date.getMinutes() };
+                    }
+                    return;
                 }
                 if (Array.isArray(date)) {
                     rangeModelValue.value = date;

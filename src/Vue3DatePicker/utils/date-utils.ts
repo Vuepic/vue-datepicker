@@ -42,7 +42,10 @@ export const getMaskedDate = (value: string, pattern: string): Date | null => {
     return null;
 };
 
-export const isValidDate = (value: Date | null): boolean => {
+export const isValidDate = (value: Date | Date[] | null): boolean => {
+    if (Array.isArray(value)) {
+        return isValid(value[0]) && isValid(value[1]);
+    }
     return value ? isValid(value) : false;
 };
 

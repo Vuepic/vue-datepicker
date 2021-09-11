@@ -73,6 +73,13 @@ export const isTimeValueValid = (time: IModelValueTimePicker): boolean => {
     return !!(time && (time.hours || time.hours === 0) && (time.minutes || time.minutes === 0));
 };
 
+export const isTimeDiff = (time: IModelValueTimePicker, hours: number, minutes: number): boolean => {
+    if (isTimeValueValid(time)) {
+        return time.hours !== hours || time.minutes !== minutes;
+    }
+    return false;
+};
+
 export const generateMinutes = (increment: number): IDefaultSelect[] => {
     const minutes = [];
 
