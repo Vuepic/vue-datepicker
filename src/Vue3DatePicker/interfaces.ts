@@ -1,7 +1,7 @@
 export type DynamicClass = Record<string, boolean>;
 
-export interface IDefaultSelect {
-    value: string | number;
+export interface IDefaultSelect<T = number> {
+    value: T;
     text: string;
     className?: DynamicClass;
 }
@@ -15,9 +15,9 @@ export enum OpenPosition {
     right = 'right',
 }
 
-export type IFormat =
-    | string
-    | ((date: Date | Date[] | IModelValueTimePicker | IModelValueTimePicker[] | IModelValueMonthPicker) => string);
+export type IFormat = string | ((date: Date | Date[] | ITimeValue | ITimeValue[] | IMonthValue) => string);
+
+export type InternalModuleValue = Date | Date[] | null;
 
 export interface IDateFilter {
     months: number[];
@@ -25,27 +25,12 @@ export interface IDateFilter {
     times: { hours: number[]; minutes: number[] };
 }
 
-export interface ITimeRange {
-    hours: number | string;
-    minutes: number | string;
-}
-
-export interface IModelValueMonthPicker {
-    month: number;
-    year: number;
-}
-
-export interface IModelValueTimePicker {
-    hours: number;
-    minutes: number;
-}
-
 export interface IDatepickerProps {
     uid: string;
     is24: boolean;
     enableTimePicker: boolean;
     range: boolean;
-    modelValue: any;
+    modelValue: ModelValue;
     locale: string;
     position: OpenPosition;
     dark: boolean;
@@ -57,8 +42,8 @@ export interface IDatepickerProps {
     minutesIncrement: number | string;
     minDate: Date | string;
     maxDate: Date | string;
-    minTime: ITimeRange;
-    maxTime: ITimeRange;
+    minTime: ITimeValue;
+    maxTime: ITimeValue;
     weekStart: string | number;
     disabled: boolean;
     readonly: boolean;
@@ -87,10 +72,11 @@ export interface IDatepickerProps {
     closeOnAutoApply: boolean;
     textInput: boolean;
     textInputOptions: ITextInputOptions;
+    teleport: string;
 }
 
 export interface DatepickerInputProps {
-    internalValue: string;
+    inputValue?: string;
     placeholder: string;
     disabled: boolean;
     readonly: boolean;
@@ -106,16 +92,6 @@ export interface DatepickerInputProps {
     isMenuOpen: boolean;
 }
 
-export interface IMonth {
-    text: string;
-    value: number;
-}
-
-export interface IYear {
-    text: string;
-    value: number;
-}
-
 export interface DatepickerMenuProps {
     uid: string;
     weekNumName: string;
@@ -126,8 +102,7 @@ export interface DatepickerMenuProps {
     calendarClassName: string;
     is24: boolean;
     yearRange: number[];
-    singleModelValue: string | Date;
-    rangeModelValue: [Date?, Date?];
+    internalModelValue?: InternalModuleValue;
     range: boolean;
     calendarCellClassName: string;
     enableTimePicker: boolean;
@@ -144,26 +119,22 @@ export interface DatepickerMenuProps {
     maxDate: Date | string;
     disabledDates: Date[] | string[];
     filters: IDateFilter;
-    minTime: ITimeRange;
-    maxTime: ITimeRange;
+    minTime: ITimeValue;
+    maxTime: ITimeValue;
     inline: boolean;
     openOnTop: boolean;
     monthPicker: boolean;
     timePicker: boolean;
-    monthPickerValue: IModelValueMonthPicker;
-    timePickerValue: IModelValueTimePicker | IModelValueTimePicker[];
 }
 
 export interface CalendarProps {
     weekStart: number | string;
     weekNumbers: boolean;
     weekNumName: string;
-    months: IMonth[];
     disableMonthYearSelect: boolean;
     calendarClassName: string;
     is24: boolean;
     yearRange: number[];
-    startDate: Date;
     calendarCellClassName: string;
     enableTimePicker: boolean;
     hoursIncrement: number | string;
@@ -171,8 +142,7 @@ export interface CalendarProps {
     hoursGridIncrement: number | string;
     minutesGridIncrement: number | string;
     range: boolean;
-    rangeModelValue: [Date?, Date?];
-    singleModelValue: Date;
+    internalModelValue: InternalModuleValue;
     autoApply: boolean;
     selectText: string;
     cancelText: string;
@@ -182,18 +152,16 @@ export interface CalendarProps {
     maxDate: Date | string;
     disabledDates: Date[] | string[];
     filters: IDateFilter;
-    minTime: ITimeRange;
-    maxTime: ITimeRange;
+    minTime: ITimeValue;
+    maxTime: ITimeValue;
     inline: boolean;
     monthPicker: boolean;
     timePicker: boolean;
-    monthPickerValue: IModelValueMonthPicker;
-    timePickerValue: IModelValueTimePicker | IModelValueTimePicker[];
 }
 
 export interface MonthYearPickerProps {
-    months: IMonth[];
-    years: IYear[];
+    months: IDefaultSelect[];
+    years: IDefaultSelect[];
     year: number;
     month: number;
     filters: IDateFilter;
@@ -234,7 +202,7 @@ export interface SelectionGridProps {
     uid: string;
     modelValue: string | number;
     items: IDefaultSelect[][];
-    id: string;
+    gridId: string;
     disabledValues: number[];
     minValue: number | string;
     maxValue: number | string;
@@ -243,17 +211,12 @@ export interface SelectionGridProps {
 export interface ActionRowProps {
     selectText: string;
     cancelText: string;
+    internalModelValue: InternalModuleValue;
     range: boolean;
-    singleModelValue: Date;
-    rangeModelValue: Date[];
     previewFormat: IFormat;
-    is24: boolean;
-    enableTimePicker: boolean;
     inline: boolean;
-    monthPickerValue: IModelValueMonthPicker;
     monthPicker: boolean;
     timePicker: boolean;
-    timePickerValue: IModelValueTimePicker | IModelValueTimePicker[];
 }
 
 export interface TimeInputProps {
@@ -265,16 +228,8 @@ export interface TimeInputProps {
     minutesGridIncrement: string | number;
     is24: boolean;
     filters: IDateFilter;
-    minTime: ITimeRange;
-    maxTime: ITimeRange;
-}
-
-export type IHoursRange = [number, number];
-export type IMinutesRange = [number, number];
-
-export interface IHoursOptions {
-    hourCycle?: string;
-    hour12?: boolean;
+    minTime: ITimeValue;
+    maxTime: ITimeValue;
 }
 
 export interface IMaskProps {
@@ -289,3 +244,15 @@ export interface ITextInputOptions {
     openMenu: boolean;
     freeInput: boolean;
 }
+
+export interface IMonthValue {
+    month: number | string;
+    year: number | string;
+}
+
+export interface ITimeValue {
+    hours: number | string;
+    minutes: number | string;
+}
+
+export type ModelValue = Date | Date[] | string | string[] | ITimeValue | ITimeValue[] | IMonthValue | null;

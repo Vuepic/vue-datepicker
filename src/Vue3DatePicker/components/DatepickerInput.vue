@@ -8,7 +8,7 @@
                 :placeholder="placeholder"
                 :disabled="disabled"
                 :readonly="!textInput"
-                :value="internalValue"
+                :value="inputValue"
                 @input="handleInput"
                 @keydown.enter="handleEnter"
             />
@@ -23,7 +23,7 @@
                 ><slot name="clear-icon"></slot
             ></span>
             <CancelIcon
-                v-if="clearable && !$slots['clear-icon'] && internalValue && !disabled && !readonly"
+                v-if="clearable && !$slots['clear-icon'] && inputValue && !disabled && !readonly"
                 class="dp__clear_icon dp__input_icons"
                 @click.prevent="onClear"
             />
@@ -40,10 +40,10 @@
 
     export default defineComponent({
         name: 'DatepickerInput',
-        emits: ['clear', 'open', 'update:internalValue', 'setInputDate'],
+        emits: ['clear', 'open', 'update:inputValue', 'setInputDate'],
         components: { CalendarIcon, CancelIcon },
         props: {
-            internalValue: { type: String as PropType<string>, default: '' },
+            inputValue: { type: String as PropType<string>, default: '' },
             placeholder: { type: String as PropType<string>, default: '' },
             hideInputIcon: { type: Boolean as PropType<boolean>, default: false },
             disabled: { type: Boolean as PropType<boolean>, default: true },
@@ -102,7 +102,7 @@
                 }
 
                 emit('setInputDate', parsedDate.value);
-                emit('update:internalValue', value);
+                emit('update:inputValue', value);
             };
 
             const handleEnter = (): void => {

@@ -8,18 +8,14 @@
             <div class="dp__month_year_select" @click="toggleYearPicker">{{ year }}</div>
             <SelectionGrid
                 v-if="showMonthPicker"
-                :model-value="month"
-                :items="groupedMonths"
-                :disabled-values="filters.months"
+                v-bind="{ modelValue: month, items: groupedMonths, disabledValues: filters.months }"
                 @update:modelValue="onMonthUpdate"
                 @toggle="toggleMonthPicker"
                 ><template #button-icon><CalendarIcon /></template
             ></SelectionGrid>
             <SelectionGrid
                 v-if="showYearPicker"
-                :model-value="year"
-                :items="groupedYears"
-                :disabled-values="filters.years"
+                v-bind="{ modelValue: year, items: groupedYears, disabledValues: filters.years }"
                 @update:modelValue="onYearUpdate"
                 @toggle="toggleYearPicker"
                 ><template #button-icon><CalendarIcon /></template
@@ -30,9 +26,7 @@
         </template>
         <template v-if="monthPicker">
             <SelectionGrid
-                :model-value="month"
-                :items="groupedMonths"
-                :disabled-values="filters.months"
+                v-bind="{ modelValue: month, items: groupedMonths, disabledValues: filters.months }"
                 @update:modelValue="onMonthUpdate"
                 @toggle="toggleMonthPicker"
             >
@@ -48,11 +42,13 @@
                     </div>
                     <SelectionGrid
                         v-if="showYearPicker"
-                        uid="-inner"
-                        id="dp__overlay_inner"
-                        :model-value="year"
-                        :items="groupedYears"
-                        :disabled-values="filters.years"
+                        v-bind="{
+                            modelValue: year,
+                            items: groupedYears,
+                            disabledValues: filters.years,
+                            gridId: 'dp__overlay_inner',
+                            uid: 'inner',
+                        }"
                         @update:modelValue="onYearUpdate"
                         @toggle="toggleYearPicker"
                         ><template #button-icon><CalendarIcon /></template
@@ -65,10 +61,12 @@
 
 <script lang="ts">
     import { computed, defineComponent, PropType, ref } from 'vue';
-    import { IDateFilter, IMonth, IYear, MonthYearPickerProps } from '../interfaces';
-    import { useKey, useMontYearPick } from '../utils/hooks';
+
     import { ChevronLeftIcon, ChevronRightIcon, CalendarIcon } from './Icons';
     import SelectionGrid from './SelectionGrid.vue';
+
+    import { IDateFilter, IDefaultSelect, MonthYearPickerProps } from '../interfaces';
+    import { useMontYearPick } from '../utils/composition/month-year';
 
     export default defineComponent({
         name: 'MonthYearPicker',
@@ -80,8 +78,8 @@
             SelectionGrid,
         },
         props: {
-            months: { type: Array as PropType<IMonth[]>, default: () => [] },
-            years: { type: Array as PropType<IYear[]>, default: () => [] },
+            months: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
+            years: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
             year: { type: Number as PropType<number>, default: 0 },
             month: { type: Number as PropType<number>, default: 0 },
             filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
@@ -102,7 +100,7 @@
                 toggleYearPicker();
             };
 
-            const getGroupedList = (items: IMonth[] | IYear[]): IMonth[][] | IYear[][] => {
+            const getGroupedList = (items: IDefaultSelect[]): IDefaultSelect[][] => {
                 const list = [];
 
                 for (let i = 0; i < items.length; i += 3) {
@@ -117,11 +115,11 @@
                 return '';
             });
 
-            const groupedMonths = computed((): IMonth[][] => {
+            const groupedMonths = computed((): IDefaultSelect[][] => {
                 return getGroupedList(props.months);
             });
 
-            const groupedYears = computed((): IYear[][] => {
+            const groupedYears = computed((): IDefaultSelect[][] => {
                 return getGroupedList(props.years);
             });
 
@@ -144,19 +142,18 @@
             };
 
             return {
-                toggleYearPicker,
                 onNext,
                 onPrev,
-                onYearUpdate,
                 getMonthDisplayVal,
                 showMonthPicker,
                 showYearPicker,
                 groupedMonths,
+                groupedYears,
                 toggleMonthPicker,
                 onMonthUpdate,
                 handleYear,
-                groupedYears,
-                useKey,
+                onYearUpdate,
+                toggleYearPicker,
             };
         },
     });

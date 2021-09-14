@@ -2,44 +2,41 @@
     <div class="dp__menu" :class="dpMenuClass" :id="`dp__menu_${uid}`">
         <div :class="arrowClass" v-if="!inline"></div>
         <Calendar
-            :months="mappedMonths"
-            :week-numbers="weekNumbers"
-            :week-start="weekStart"
-            :disable-month-year-select="disableMonthYearSelect"
-            :calendar-class-name="calendarClassName"
-            :is24="is24"
-            :range="range"
-            :year-range="yearRange"
-            :start-date="firstDate"
-            :calendar-cell-class-name="calendarCellClassName"
-            :enable-time-picker="enableTimePicker"
-            :hours-increment="hoursIncrement"
-            :minutes-increment="minutesIncrement"
-            :hours-grid-increment="hoursGridIncrement"
-            :minutes-grid-increment="minutesGridIncrement"
-            :auto-apply="autoApply"
-            :locale="locale"
-            :week-num-name="weekNumName"
-            :preview-format="previewFormat"
-            :min-date="minDate"
-            :max-date="maxDate"
-            :disabled-dates="disabledDates"
-            :filters="assignedFilter"
-            :min-time="minTime"
-            :max-time="maxTime"
-            :select-text="selectText"
-            :cancel-text="cancelText"
-            :inline="inline"
-            :month-picker="monthPicker"
-            :time-picker="timePicker"
-            @selectRangeDate="$emit('update:rangeModelValue', $event)"
+            v-bind="{
+                internalModelValue,
+                range,
+                weekNumbers,
+                weekStart,
+                disableMonthYearSelect,
+                calendarClassName,
+                is24,
+                yearRange,
+                calendarCellClassName,
+                enableTimePicker,
+                hoursIncrement,
+                minutesIncrement,
+                hoursGridIncrement,
+                minutesGridIncrement,
+                autoApply,
+                locale,
+                weekNumName,
+                previewFormat,
+                minDate,
+                maxDate,
+                disabledDates,
+                filters,
+                minTime,
+                maxTime,
+                selectText,
+                cancelText,
+                inline,
+                monthPicker,
+                timePicker,
+            }"
             @closePicker="$emit('closePicker')"
             @selectDate="$emit('selectDate')"
             @autoApply="$emit('autoApply', $event)"
-            v-model:rangeModelValue="rangeDate"
-            v-model:singleModelValue="singleDate"
-            v-model:monthPickerValue="monthValue"
-            v-model:timePickerValue="timeValue"
+            @update:internalModelValue="$emit('update:internalModelValue', $event)"
         ></Calendar>
     </div>
 </template>
@@ -50,40 +47,27 @@
 
     import {
         DatepickerMenuProps,
-        IMonth,
         DynamicClass,
         IDateFilter,
-        ITimeRange,
-        IModelValueMonthPicker,
-        IModelValueTimePicker,
         IFormat,
+        InternalModuleValue,
+        ITimeValue,
     } from '../interfaces';
-    import { useBindValue } from '../utils/hooks';
-    import { getMonthNames } from '../utils/util';
 
     export default defineComponent({
         name: 'DatepickerMenu',
         components: { Calendar },
-        emits: [
-            'update:singleModelValue',
-            'update:rangeModelValue',
-            'closePicker',
-            'selectDate',
-            'dpOpen',
-            'update:monthPickerValue',
-            'update:timePickerValue',
-            'autoApply',
-        ],
+        emits: ['update:internalModelValue', 'closePicker', 'selectDate', 'dpOpen', 'autoApply'],
+        // From this point onward there is no point on defining default values from props, since they are passed from the main component
         props: {
             uid: { type: String as PropType<string>, default: 'dp' },
+            internalModelValue: { type: [String, Date, Object] as PropType<InternalModuleValue>, default: null },
             weekNumbers: { type: Boolean as PropType<boolean>, default: false },
             weekStart: { type: [Number, String] as PropType<number | string>, default: 1 },
             disableMonthYearSelect: { type: Boolean as PropType<boolean>, default: false },
             menuClassName: { type: String as PropType<string>, default: null },
             calendarClassName: { type: String as PropType<string>, default: null },
             yearRange: { type: Array as PropType<number[]>, default: () => [] },
-            singleModelValue: { type: [String, Date] as PropType<string | Date>, default: null },
-            rangeModelValue: { type: Array as unknown as PropType<[Date?, Date?]>, default: () => [] },
             range: { type: Boolean as PropType<boolean>, default: false },
             calendarCellClassName: { type: String as PropType<string>, default: null },
             enableTimePicker: { type: Boolean as PropType<boolean>, default: false },
@@ -105,17 +89,12 @@
             weekNumName: { type: String as PropType<string>, default: 'W' },
             disabledDates: { type: Array as PropType<Date[] | string[]>, default: () => [] },
             filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
-            minTime: { type: Object as PropType<ITimeRange>, default: () => ({}) },
-            maxTime: { type: Object as PropType<ITimeRange>, default: () => ({}) },
+            minTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
+            maxTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
             inline: { type: Boolean as PropType<boolean>, default: false },
             openOnTop: { type: Boolean as PropType<boolean>, default: false },
             monthPicker: { type: Boolean as PropType<boolean>, default: false },
             timePicker: { type: Boolean as PropType<boolean>, default: false },
-            monthPickerValue: { type: Object as PropType<IModelValueMonthPicker>, default: null },
-            timePickerValue: {
-                type: [Object, Array] as PropType<IModelValueTimePicker | IModelValueTimePicker[]>,
-                default: null,
-            },
         },
         setup(props: DatepickerMenuProps, { emit }) {
             onMounted(() => {
@@ -124,14 +103,7 @@
                 }
             });
 
-            const mappedMonths = computed((): IMonth[] =>
-                getMonthNames(props.locale).map((month: string, i: number) => ({ text: month, value: i })),
-            );
-
-            const assignedFilter = computed(
-                (): IDateFilter =>
-                    Object.assign({ months: [], years: [], times: { hours: [], minutes: [] } }, props.filters),
-            );
+            const arrowClass = computed(() => (!props.openOnTop ? 'dp__arrow_top' : 'dp__arrow_bottom'));
 
             const dpMenuClass = computed(
                 (): DynamicClass => ({
@@ -140,33 +112,9 @@
                 }),
             );
 
-            const arrowClass = computed(() => (!props.openOnTop ? 'dp__arrow_top' : 'dp__arrow_bottom'));
-
-            const rangeDate = useBindValue(props, emit, 'rangeModelValue');
-            const singleDate = useBindValue(props, emit, 'singleModelValue');
-            const monthValue = useBindValue(props, emit, 'monthPickerValue');
-            const timeValue = useBindValue(props, emit, 'timePickerValue');
-
-            const firstDate = computed((): Date => {
-                if (props.range) {
-                    return props.rangeModelValue && props.rangeModelValue[0]
-                        ? new Date(props.rangeModelValue[0])
-                        : new Date();
-                } else {
-                    return props.singleModelValue ? new Date(props.singleModelValue) : new Date();
-                }
-            });
-
             return {
-                assignedFilter,
-                firstDate,
-                rangeDate,
-                singleDate,
                 dpMenuClass,
-                mappedMonths,
                 arrowClass,
-                monthValue,
-                timeValue,
             };
         },
     });

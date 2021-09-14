@@ -20,11 +20,6 @@
             "vue",
             "jest"
         ],
-        "paths": {
-            "@/*": [
-                "src/*"
-            ]
-        },
         "lib": [
             "esnext",
             "dom",

@@ -6,48 +6,27 @@
                 <div class="dp__overlay_row">
                     <template v-if="!range">
                         <TimeInput
-                            :is24="is24"
-                            :hours="hoursSingle"
-                            :minutes="minutesSingle"
-                            @update:hours="$emit('update:hoursSingle', $event)"
-                            @update:minutes="$emit('update:minutesSingle', $event)"
-                            :hours-grid-increment="hoursGridIncrement"
-                            :minutes-grid-increment="minutesGridIncrement"
-                            :hours-increment="hoursIncrement"
-                            :minutes-increment="minutesIncrement"
-                            :filters="filters"
-                            :max-time="maxTime"
-                            :min-time="minTime"
+                            :hours="hours"
+                            :minutes="minutes"
+                            v-bind="timeInputProps"
+                            @update:hours="$emit('update:hours', $event)"
+                            @update:minutes="$emit('update:minutes', $event)"
                         />
                     </template>
                     <template v-if="range">
                         <TimeInput
-                            :hours="hoursRange[0]"
-                            :minutes="minutesRange[0]"
-                            @update:hours="$emit('update:hoursRange', [$event, hoursRange[1]])"
-                            @update:minutes="$emit('update:minutesRange', [$event, minutesRange[1]])"
-                            :is24="is24"
-                            :hours-grid-increment="hoursGridIncrement"
-                            :minutes-grid-increment="minutesGridIncrement"
-                            :hours-increment="hoursIncrement"
-                            :minutes-increment="minutesIncrement"
-                            :filters="filters"
-                            :max-time="maxTime"
-                            :min-time="minTime"
+                            :hours="hours[0]"
+                            :minutes="minutes[0]"
+                            v-bind="timeInputProps"
+                            @update:hours="$emit('update:hours', [$event, hours[1]])"
+                            @update:minutes="$emit('update:minutes', [$event, minutes[1]])"
                         />
                         <TimeInput
-                            :hours="hoursRange[1]"
-                            :minutes="minutesRange[1]"
-                            @update:hours="$emit('update:hoursRange', [hoursRange[0], $event])"
-                            @update:minutes="$emit('update:minutesRange', [minutesRange[0], $event])"
-                            :is24="is24"
-                            :hours-grid-increment="hoursGridIncrement"
-                            :minutes-grid-increment="minutesGridIncrement"
-                            :hours-increment="hoursIncrement"
-                            :minutes-increment="minutesIncrement"
-                            :filters="filters"
-                            :max-time="maxTime"
-                            :min-time="minTime"
+                            :hours="hours[1]"
+                            :minutes="minutes[1]"
+                            v-bind="timeInputProps"
+                            @update:hours="$emit('update:hours', [hours[0], $event])"
+                            @update:minutes="$emit('update:minutes', [minutes[0], $event])"
                         />
                     </template>
                 </div>
@@ -58,14 +37,16 @@
 </template>
 
 <script lang="ts">
-    import { defineComponent, PropType, ref } from 'vue';
-    import { IDateFilter, IHoursRange, IMinutesRange, ITimeRange } from '../../interfaces';
+    import { computed, defineComponent, PropType, ref } from 'vue';
+
     import { ClockIcon, CalendarIcon } from '../Icons';
     import TimeInput from './TimeInput.vue';
 
+    import { IDateFilter, ITimeValue } from '../../interfaces';
+
     export default defineComponent({
         name: 'TimePicker',
-        emits: ['update:hoursSingle', 'update:minutesSingle', 'update:hoursRange', 'update:minutesRange'],
+        emits: ['update:hours', 'update:minutes'],
         components: {
             CalendarIcon,
             ClockIcon,
@@ -77,24 +58,34 @@
             is24: { type: Boolean as PropType<boolean>, default: true },
             hoursGridIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
             minutesGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 },
-            hoursSingle: { type: Number as PropType<number>, default: 0 },
-            minutesSingle: { type: Number as PropType<number>, default: 0 },
-            hoursRange: { type: Array as unknown as PropType<IHoursRange>, default: () => [0, 0] },
-            minutesRange: { type: Array as unknown as PropType<IMinutesRange>, default: () => [0, 0] },
             range: { type: Boolean as PropType<boolean>, default: false },
             filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
-            minTime: { type: Object as PropType<ITimeRange>, default: () => ({}) },
-            maxTime: { type: Object as PropType<ITimeRange>, default: () => ({}) },
+            minTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
+            maxTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
             timePicker: { type: Boolean as PropType<boolean>, default: false },
+            hours: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
+            minutes: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         },
-        setup() {
+        setup(props) {
             const showTimePicker = ref(false);
 
             const toggleTimePicker = (show: boolean): void => {
                 showTimePicker.value = show;
             };
 
+            const timeInputProps = computed(() => ({
+                is24: props.is24,
+                hoursGridIncrement: props.hoursGridIncrement,
+                minutesGridIncrement: props.minutesGridIncrement,
+                hoursIncrement: props.hoursIncrement,
+                minutesIncrement: props.minutesIncrement,
+                filters: props.filters,
+                maxTime: props.maxTime,
+                minTime: props.minTime,
+            }));
+
             return {
+                timeInputProps,
                 showTimePicker,
                 toggleTimePicker,
             };

@@ -2,26 +2,27 @@ import parse from 'date-fns/parse';
 import format from 'date-fns/format';
 import isDate from 'date-fns/isDate';
 import isValid from 'date-fns/isValid';
-import { IModelValueMonthPicker, IModelValueTimePicker, ITimeRange } from '../interfaces';
-import { isTimeValueValid } from './util';
+import setYear from 'date-fns/setYear';
+import setMonth from 'date-fns/setMonth';
+import setHours from 'date-fns/setHours';
+import setMinutes from 'date-fns/setMinutes';
+import setSeconds from 'date-fns/setSeconds';
+import setMilliseconds from 'date-fns/setMilliseconds';
+import getHours from 'date-fns/getHours';
+import getMinutes from 'date-fns/getMinutes';
+import getMonth from 'date-fns/getMonth';
+import getYear from 'date-fns/getYear';
+import isAfter from 'date-fns/isAfter';
+import isBefore from 'date-fns/isBefore';
+import isEqual from 'date-fns/isEqual';
+import getISOWeek from 'date-fns/getISOWeek';
 
-interface IUseDateUtils {
-    formatDate: (date: string | Date) => string;
-    formatDateRange: (dates: string[] | Date[]) => string;
-    formatMonth: (value: IModelValueMonthPicker) => string;
-    formatTime: (value: IModelValueTimePicker | IModelValueTimePicker[]) => string;
-}
+import { IMonthValue, ITimeValue } from '../interfaces';
 
-export const getDefaultPattern = (is24: boolean, monthPicker: boolean, timePicker: boolean): string => {
-    if (monthPicker) {
-        return 'MM/yyyy';
-    }
-    if (timePicker) {
-        return is24 ? 'HH:mm' : 'hh:mm aa';
-    }
-    return `MM/dd/yyyy, ${is24 ? 'HH:mm' : 'hh:mm aa'}`;
-};
-
+/**
+ * If text input is set to free, meaning there is no specified mask,
+ * it will try to parse date based on pattern and parts of the text value
+ */
 export const parseFreeInput = (value: string, pattern: string): Date | null => {
     const parsedDate = parse(value, pattern.slice(0, value.length), new Date());
     if (isValid(parsedDate)) {
@@ -30,10 +31,27 @@ export const parseFreeInput = (value: string, pattern: string): Date | null => {
     return null;
 };
 
-const parseDate = (date: string, pattern: string): Date => {
+export const resetDateTime = (value: Date | string): Date => {
+    // deep copy to bread inheritance
+    let dateParse = new Date(JSON.parse(JSON.stringify(value)));
+    dateParse = setHours(dateParse, 0);
+    dateParse = setMinutes(dateParse, 0);
+    dateParse = setSeconds(dateParse, 0);
+    dateParse = setMilliseconds(dateParse, 0);
+
+    return dateParse;
+};
+
+/**
+ * Convert string value to date based on provided pattern
+ */
+export const parseDate = (date: string, pattern: string): Date => {
     return parse(date, pattern, new Date());
 };
 
+/**
+ * From masked text input, return date if valid, null if not
+ */
 export const getMaskedDate = (value: string, pattern: string): Date | null => {
     const parsedDate = parseDate(value, pattern);
     if (isDate(parsedDate) && isValid(parsedDate)) {
@@ -42,6 +60,9 @@ export const getMaskedDate = (value: string, pattern: string): Date | null => {
     return null;
 };
 
+/**
+ * Check if provided date(s) is valid
+ */
 export const isValidDate = (value: Date | Date[] | null): boolean => {
     if (Array.isArray(value)) {
         return isValid(value[0]) && isValid(value[1]);
@@ -49,157 +70,159 @@ export const isValidDate = (value: Date | Date[] | null): boolean => {
     return value ? isValid(value) : false;
 };
 
-interface IRefDateValues {
-    refMonth: number;
-    refYear: number;
-    refDate: number;
-}
-
-const getRefDateValues = (date: string | Date): IRefDateValues => {
-    const dt = new Date(date);
-
-    const refMonth = dt.getMonth();
-    const refYear = dt.getFullYear();
-    const refDate = dt.getDate();
-
-    return { refMonth, refYear, refDate };
-};
-
-interface IDateValues {
-    month: number;
-    year: number;
-    date: number;
-}
-
-const getDateValues = (dateVal: string | Date): IDateValues => {
-    const dt = new Date(dateVal);
-
-    const month = dt.getMonth();
-    const year = dt.getFullYear();
-    const date = dt.getDate();
-
-    return { month, year, date };
-};
-
-const getHoursAndMinutes = (date: string | Date): ITimeRange => {
-    const dt = new Date(date);
-
-    return { hours: dt.getHours(), minutes: dt.getMinutes() };
+/**
+ * On a given date set time, or return a new date with set time
+ */
+export const setDateTime = (date: Date | null, hours?: number | null, minutes?: number | null): Date => {
+    let dateCopy = date ? new Date(date) : new Date();
+    if (hours || hours === 0) {
+        dateCopy = setHours(dateCopy, hours);
+    }
+    if (minutes || minutes === 0) {
+        dateCopy = setMinutes(dateCopy, minutes);
+    }
+    return dateCopy;
 };
 
 /**
- * In case that the provided input is ok, check provided validation
+ * On a given date set month and/or year or return new date with set month/year
  */
-export const isValidTextInput = (
-    value: Date | Date[],
-    timePicker: boolean,
+export const setDateMonthOrYear = (date: Date | null, month?: number | null, year?: number | null): Date => {
+    let dateCopy = date ? new Date(date) : new Date();
+    if (month) {
+        dateCopy = setMonth(dateCopy, month);
+    }
+    if (year) {
+        dateCopy = setYear(dateCopy, year);
+    }
+    return dateCopy;
+};
+
+/**
+ * If pattern is not specified return default
+ */
+export const getDefaultPattern = (
+    pattern: string | null,
+    is24: boolean,
     monthPicker: boolean,
-    minDate: Date | string,
-    maxDate: Date | string,
-    minTime: ITimeRange,
-    maxTime: ITimeRange,
-): boolean => {
-    if (!value) return false;
-
-    let valid = true;
-
-    if (minDate && !timePicker) {
-        const { refDate, refMonth, refYear } = getRefDateValues(minDate);
-        const { month, year, date } = Array.isArray(value) ? getDateValues(value[0]) : getDateValues(value);
-        if (timePicker) {
-            valid = month >= refMonth && year >= refYear;
-        } else {
-            valid =
-                month >= refMonth &&
-                year >= refYear &&
-                (refYear === year && refMonth === month ? date >= refDate : true);
-        }
+    timePicker: boolean,
+    enableTimePicker: boolean,
+): string => {
+    if (pattern) {
+        return pattern;
     }
-
-    if (maxDate && !timePicker) {
-        const { refDate, refMonth, refYear } = getRefDateValues(minDate);
-        const { month, year, date } = Array.isArray(value) ? getDateValues(value[1]) : getDateValues(value);
-        if (timePicker) {
-            valid = month <= refMonth && year <= refYear;
-        } else {
-            valid =
-                month <= refMonth &&
-                year <= refYear &&
-                (refYear === year && refMonth === month ? date <= refDate : true);
-        }
+    if (monthPicker) {
+        return 'MM/yyyy';
     }
-
-    if (Object.keys(minTime).length && !monthPicker) {
-        const { hours, minutes } = minTime;
-        if (Array.isArray(value)) {
-            const val1 = getHoursAndMinutes(value[0]);
-            const val2 = getHoursAndMinutes(value[1]);
-            valid = val1.hours >= hours && val1.minutes >= minutes && val2.hours >= hours && val2.minutes >= minutes;
-        } else {
-            const val = getHoursAndMinutes(value);
-            valid = val.hours >= hours && val.minutes >= minutes;
-        }
+    if (timePicker) {
+        return is24 ? 'HH:mm' : 'hh:mm aa';
     }
-
-    if (Object.keys(maxTime).length && !monthPicker) {
-        const { hours, minutes } = minTime;
-        if (Array.isArray(value)) {
-            const val1 = getHoursAndMinutes(value[0]);
-            const val2 = getHoursAndMinutes(value[1]);
-            valid = val1.hours <= hours && val1.minutes <= minutes && val2.hours <= hours && val2.minutes <= minutes;
-        } else {
-            const val = getHoursAndMinutes(value);
-            valid = val.hours <= hours && val.minutes <= minutes;
-        }
-    }
-
-    return valid;
+    return enableTimePicker ? `MM/dd/yyyy, ${is24 ? 'HH:mm' : 'hh:mm aa'}` : 'MM/dd/yyyy';
 };
 
 /**
- * Global hook with collection of functions for date manipulations
+ * Extract time value from the date for time picker
  */
-export const useDateUtils = (pattern: string): IUseDateUtils => {
-    const formatDate = (date: string | Date): string => {
-        return format(new Date(date), pattern);
-    };
+export const getTimeVal = (date?: Date): ITimeValue => {
+    return { hours: getHours(date || new Date()), minutes: getMinutes(date || new Date()) };
+};
 
-    const formatDateRange = (dates: string[] | Date[]): string => {
-        return `${formatDate(dates[0])} - ${formatDate(dates[1])}`;
-    };
+/**
+ * Extract month value from the date for month picker
+ */
+export const getMonthVal = (date: Date): IMonthValue => {
+    return { month: getMonth(date), year: getYear(date) };
+};
 
-    const formatMonth = (month: IModelValueMonthPicker): string => {
-        if (month && (month.month || month.month === 0) && month.year) {
-            const date = new Date(month.year, month.month);
+/**
+ * Map internal date value to the value that will be passed to v-model external on time picker
+ */
+export const getTImeForExternal = (date: Date | Date[]): ITimeValue | ITimeValue[] => {
+    if (Array.isArray(date)) {
+        return [getTimeVal(date[0]), getTimeVal(date[1])];
+    }
+    return getTimeVal(date);
+};
 
-            return format(date, pattern);
-        }
-        return '';
-    };
+/**
+ * Map internal date vale to the value that will be passed to v-model external on month picker
+ */
+export const getMonthForExternal = (date: Date): IMonthValue => {
+    return getMonthVal(date);
+};
 
-    const formatTime = (time: IModelValueTimePicker | IModelValueTimePicker[]): string => {
-        if (Array.isArray(time)) {
-            if (isTimeValueValid(time[0]) && isTimeValueValid(time[0])) {
-                const dateOne = new Date();
-                const dateTwo = new Date();
-                dateOne.setHours(time[0].hours);
-                dateTwo.setHours(time[1].hours);
-                dateOne.setMinutes(time[0].minutes);
-                dateTwo.setMinutes(time[1].minutes);
+/**
+ * Format date values for the input field based on provided pattern
+ */
+export const formatDate = (value: Date | Date[], pattern: string): string => {
+    if (Array.isArray(value)) {
+        return `${format(value[0], pattern)} - ${format(value[1], pattern)}`;
+    }
 
-                return `${format(dateOne, pattern)} - ${format(dateTwo, pattern)}`;
-            }
-            return '';
-        }
-        if (isTimeValueValid(time)) {
-            const date = new Date();
-            date.setHours(time.hours);
-            date.setMinutes(time.minutes);
+    return format(value, pattern);
+};
 
-            return format(date, pattern);
-        }
-        return '';
-    };
+/**
+ * Get month value from the provided date
+ */
+export const getDateMonth = (date: Date): number => {
+    return getMonth(date);
+};
 
-    return { formatDate, formatDateRange, formatMonth, formatTime };
+/**
+ * Get year value from the provided date
+ */
+export const getDateYear = (date: Date): number => {
+    return getYear(date);
+};
+
+/**
+ * Check if the given date is after the provided date
+ */
+export const isDateAfter = (date: Date | string | null, dateToCompare: Date | string | null): boolean => {
+    if (!date || !dateToCompare) {
+        return false;
+    }
+    return isAfter(resetDateTime(date), resetDateTime(dateToCompare));
+};
+
+/**
+ * Check if the given date is before the provided date
+ */
+export const isDateBefore = (date: Date | string | null, dateToCompare: Date | string | null): boolean => {
+    if (!date || !dateToCompare) {
+        return false;
+    }
+    return isBefore(resetDateTime(date), resetDateTime(dateToCompare));
+};
+
+/**
+ * Check if the given date is equal to the provided date
+ */
+export const isDateEqual = (date: Date | string | null, dateToCompare: Date | string | null): boolean => {
+    if (!date || !dateToCompare) {
+        return false;
+    }
+    return isEqual(resetDateTime(date), resetDateTime(dateToCompare));
+};
+
+/**
+ * Return the ISO week number for the given date
+ */
+export const getWeekNumber = (date: Date): number => {
+    return getISOWeek(new Date(date));
+};
+
+/**
+ * Get hours from given date, if none, will return current hours
+ */
+export const getDateHours = (date?: Date): number => {
+    return getHours(date || new Date());
+};
+
+/**
+ * Get minutes from the given date, if none, will return current minutes
+ */
+export const getDateMinutes = (date?: Date): number => {
+    return getMinutes(date || new Date());
 };

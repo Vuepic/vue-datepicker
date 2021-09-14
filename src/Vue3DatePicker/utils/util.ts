@@ -1,4 +1,4 @@
-import { ICalendarDate, ICalendarDay, IDefaultSelect, IMaskProps, IModelValueTimePicker } from '../interfaces';
+import { ICalendarDate, ICalendarDay, IDateFilter, IDefaultSelect, IMaskProps, ITextInputOptions } from '../interfaces';
 
 /**
  * Depending on a week start get starting date of the current calendar
@@ -61,43 +61,6 @@ export const getCalendarDays = (month: number, year: number, start: number): ICa
     return weeks;
 };
 
-export const useInternalFormat = (prop: string | ((date: Date | Date[]) => string)): prop is string => {
-    return !prop || typeof prop === 'string';
-};
-
-export const isFormatValidString = (prop: string | ((date: Date | Date[]) => string)): prop is string => {
-    return !!prop && typeof prop === 'string';
-};
-
-export const isTimeValueValid = (time: IModelValueTimePicker): boolean => {
-    return !!(time && (time.hours || time.hours === 0) && (time.minutes || time.minutes === 0));
-};
-
-export const isTimeDiff = (time: IModelValueTimePicker, hours: number, minutes: number): boolean => {
-    if (isTimeValueValid(time)) {
-        return time.hours !== hours || time.minutes !== minutes;
-    }
-    return false;
-};
-
-export const generateMinutes = (increment: number): IDefaultSelect[] => {
-    const minutes = [];
-
-    for (let i = 1; i < 60; i += increment) {
-        minutes.push({ text: `${i}`, value: i });
-    }
-    return minutes;
-};
-
-export const generateHours = (is24: boolean): IDefaultSelect[] => {
-    const hours = [];
-
-    for (let i = 1; i <= (is24 ? 24 : 12); i++) {
-        hours.push({ text: `${i}`, value: i });
-    }
-    return hours;
-};
-
 export const getArrayInArray = <T>(list: T[], increment = 3): T[][] => {
     const items = [];
     for (let i = 0; i < list.length; i += increment) {
@@ -128,15 +91,29 @@ export const getDayNames = (locale: string, weekStart: number): string[] => {
 };
 
 /**
- * Generate month names based on locale
+ * Generate array of years for selection display
  */
-export const getMonthNames = (locale: string): string[] => {
+export const getYears = (yearRange: number[]): IDefaultSelect[] => {
+    const years: IDefaultSelect[] = [];
+    for (let year = yearRange[0]; year <= yearRange[1]; year++) {
+        years.push({ value: year, text: `${year}` });
+    }
+    return years;
+};
+
+/**
+ * Generate month names based on locale for selection display
+ */
+export const getMonths = (locale: string): IDefaultSelect[] => {
     const formatter = new Intl.DateTimeFormat(locale, { month: 'short', timeZone: 'UTC' });
     const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((month) => {
         const mm = month < 10 ? `0${month}` : month;
         return new Date(`2017-${mm}-01T00:00:00+00:00`);
     });
-    return months.map((date) => formatter.format(date).slice(0, 3));
+    return months.map((date, i) => ({
+        text: formatter.format(date).slice(0, 3),
+        value: i,
+    }));
 };
 
 /**
@@ -157,4 +134,37 @@ export const getPatternAndMask = (format: string, range: boolean): IMaskProps =>
     }
 
     return { pattern, mask, format };
+};
+
+/**
+ * Default options to merge with user provided ones
+ */
+export const getDefaultTextInputOptions = (): ITextInputOptions => ({
+    enterSubmit: true,
+    openMenu: true,
+    freeInput: false,
+});
+
+/**
+ * Default filters to merge with user provided values
+ */
+export const getDefaultFilters = (filters: Partial<IDateFilter>): IDateFilter => {
+    return Object.assign({ months: [], years: [], times: { hours: [], minutes: [] } }, filters);
+};
+
+/**
+ * For v-for loops randomize string value
+ */
+export const getKey = (index: number): string => {
+    const len = 5;
+    function makeKey(length: number): string {
+        let result = '';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const charactersLength = characters.length;
+        for (let i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result + index;
+    }
+    return makeKey(len);
 };

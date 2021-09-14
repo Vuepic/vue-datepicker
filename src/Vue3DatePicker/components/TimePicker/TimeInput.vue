@@ -58,7 +58,7 @@
 <script lang="ts">
     import { computed, defineComponent, onMounted, PropType, ref, toRef } from 'vue';
     import { ChevronUpIcon, ChevronDownIcon, ClockIcon } from '../Icons';
-    import { IDateFilter, IDefaultSelect, ITimeRange, TimeInputProps } from '../../interfaces';
+    import { IDateFilter, IDefaultSelect, ITimeValue, TimeInputProps } from '../../interfaces';
     import { getArrayInArray, hoursToAmPmHours } from '../../utils/util';
     import SelectionGrid from '../SelectionGrid.vue';
 
@@ -80,8 +80,8 @@
             minutesIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
             is24: { type: Boolean as PropType<boolean>, default: true },
             filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
-            minTime: { type: Object as PropType<ITimeRange>, default: () => ({}) },
-            maxTime: { type: Object as PropType<ITimeRange>, default: () => ({}) },
+            minTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
+            maxTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
         },
         setup(props: TimeInputProps, { emit }) {
             const showTimePicker = ref(false);
