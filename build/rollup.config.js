@@ -7,8 +7,6 @@ import replace from '@rollup/plugin-replace';
 import babel from '@rollup/plugin-babel';
 import PostCSS from 'rollup-plugin-postcss';
 import { terser } from 'rollup-plugin-terser';
-import ttypescript from 'ttypescript';
-import typescript from 'rollup-plugin-typescript2';
 import minimist from 'minimist';
 
 // Get browserslist config and remove ie from es build targets
@@ -78,11 +76,6 @@ if (!argv.format || argv.format === 'es') {
             // ...baseConfig.plugins.preVue,
             vue(baseConfig.plugins.vue),
             ...baseConfig.plugins.postVue,
-            typescript({
-                typescript: ttypescript,
-                useTsconfigDeclarationDir: true,
-                emitDeclarationOnly: true,
-            }),
             babel({
                 ...baseConfig.plugins.babel,
                 presets: [
