@@ -2,7 +2,8 @@
     <div class="dp__month_year_row">
         <template v-if="!monthPicker">
             <div class="dp__month_year_col_nav" @click="onPrev">
-                <ChevronLeftIcon />
+                <slot name="arrow-left" v-if="$slots['arrow-left']" />
+                <ChevronLeftIcon v-if="!$slots['arrow-left']" />
             </div>
             <div class="dp__month_year_select" @click="toggleMonthPicker">{{ getMonthDisplayVal }}</div>
             <div class="dp__month_year_select" @click="toggleYearPicker">{{ year }}</div>
@@ -11,17 +12,22 @@
                 v-bind="{ modelValue: month, items: groupedMonths, disabledValues: filters.months }"
                 @update:modelValue="onMonthUpdate"
                 @toggle="toggleMonthPicker"
-                ><template #button-icon><CalendarIcon /></template
+                ><template #button-icon>
+                    <slot name="calendar-icon" v-if="$slots['calendar-icon']" />
+                    <CalendarIcon v-if="!$slots['calendar-icon']" /> </template
             ></SelectionGrid>
             <SelectionGrid
                 v-if="showYearPicker"
                 v-bind="{ modelValue: year, items: groupedYears, disabledValues: filters.years }"
                 @update:modelValue="onYearUpdate"
                 @toggle="toggleYearPicker"
-                ><template #button-icon><CalendarIcon /></template
+                ><template #button-icon>
+                    <slot name="calendar-icon" v-if="$slots['calendar-icon']" />
+                    <CalendarIcon v-if="!$slots['calendar-icon']" /> </template
             ></SelectionGrid>
             <div class="dp__month_year_col_nav" @click="onNext">
-                <ChevronRightIcon />
+                <slot name="arrow-right" v-if="$slots['arrow-right']" />
+                <ChevronRightIcon v-if="!$slots['arrow-right']" />
             </div>
         </template>
         <template v-if="monthPicker">
@@ -33,11 +39,13 @@
                 <template #header>
                     <div class="dp__month_picker_header">
                         <div class="dp__month_year_col_nav" @click="handleYear">
-                            <ChevronLeftIcon />
+                            <slot name="arrow-left" v-if="$slots['arrow-left']" />
+                            <ChevronLeftIcon v-if="!$slots['arrow-left']" />
                         </div>
                         <div @click="toggleYearPicker" class="dp__pointer">{{ year }}</div>
                         <div class="dp__month_year_col_nav" @click="handleYear(true)">
-                            <ChevronRightIcon />
+                            <slot name="arrow-right" v-if="$slots['arrow-right']" />
+                            <ChevronRightIcon v-if="!$slots['arrow-right']" />
                         </div>
                     </div>
                     <SelectionGrid
@@ -51,7 +59,9 @@
                         }"
                         @update:modelValue="onYearUpdate"
                         @toggle="toggleYearPicker"
-                        ><template #button-icon><CalendarIcon /></template
+                        ><template #button-icon>
+                            <slot name="calendar-icon" v-if="$slots['calendar-icon']" />
+                            <CalendarIcon v-if="!$slots['calendar-icon']" /> </template
                     ></SelectionGrid>
                 </template>
             </SelectionGrid>

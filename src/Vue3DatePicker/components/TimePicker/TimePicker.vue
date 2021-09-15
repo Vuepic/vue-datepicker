@@ -1,6 +1,9 @@
 <template>
     <div>
-        <div class="dp__button" v-if="!timePicker" @click="toggleTimePicker(true)"><ClockIcon /></div>
+        <div class="dp__button" v-if="!timePicker" @click="toggleTimePicker(true)">
+            <slot name="clock-icon" v-if="$slots['clock-icon']" />
+            <ClockIcon v-if="!$slots['clock-icon']" />
+        </div>
         <div v-if="showTimePicker || timePicker" class="dp__overlay">
             <div class="dp__overlay_container">
                 <div class="dp__overlay_row">
@@ -11,7 +14,11 @@
                             v-bind="timeInputProps"
                             @update:hours="$emit('update:hours', $event)"
                             @update:minutes="$emit('update:minutes', $event)"
-                        />
+                        >
+                            <template v-for="(slot, i) in timeInputSlots" #[slot] :key="i">
+                                <slot :name="slot" />
+                            </template>
+                        </TimeInput>
                     </template>
                     <template v-if="range">
                         <TimeInput
@@ -20,17 +27,28 @@
                             v-bind="timeInputProps"
                             @update:hours="$emit('update:hours', [$event, hours[1]])"
                             @update:minutes="$emit('update:minutes', [$event, minutes[1]])"
-                        />
+                        >
+                            <template v-for="(slot, i) in timeInputSlots" #[slot] :key="i">
+                                <slot :name="slot" />
+                            </template>
+                        </TimeInput>
                         <TimeInput
                             :hours="hours[1]"
                             :minutes="minutes[1]"
                             v-bind="timeInputProps"
                             @update:hours="$emit('update:hours', [hours[0], $event])"
                             @update:minutes="$emit('update:minutes', [minutes[0], $event])"
-                        />
+                        >
+                            <template v-for="(slot, i) in timeInputSlots" #[slot] :key="i">
+                                <slot :name="slot" />
+                            </template>
+                        </TimeInput>
                     </template>
                 </div>
-                <div class="dp__button" v-if="!timePicker" @click="toggleTimePicker(false)"><CalendarIcon /></div>
+                <div class="dp__button" v-if="!timePicker" @click="toggleTimePicker(false)">
+                    <slot name="calendar-icon" v-if="$slots['calendar-icon']" />
+                    <CalendarIcon v-if="!$slots['calendar-icon']" />
+                </div>
             </div>
         </div>
     </div>
@@ -43,6 +61,7 @@
     import TimeInput from './TimeInput.vue';
 
     import { IDateFilter, ITimeValue } from '../../interfaces';
+    import { useSlots } from '../../utils/composition/slots';
 
     export default defineComponent({
         name: 'TimePicker',
@@ -66,12 +85,14 @@
             hours: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
             minutes: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         },
-        setup(props) {
+        setup(props, { slots }) {
             const showTimePicker = ref(false);
 
             const toggleTimePicker = (show: boolean): void => {
                 showTimePicker.value = show;
             };
+
+            const timeInputSlots = useSlots(slots, 'timePicker');
 
             const timeInputProps = computed(() => ({
                 is24: props.is24,
@@ -87,6 +108,7 @@
             return {
                 timeInputProps,
                 showTimePicker,
+                timeInputSlots,
                 toggleTimePicker,
             };
         },

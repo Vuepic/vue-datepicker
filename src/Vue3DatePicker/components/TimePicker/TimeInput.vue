@@ -2,23 +2,27 @@
     <div class="dp__time_input">
         <div class="dp__time_col">
             <div class="dp__inc_dec_button" @click="handleHours('increment')">
-                <ChevronUpIcon />
+                <slot name="arrow-up" v-if="$slots['arrow-up']" />
+                <ChevronUpIcon v-if="!$slots['arrow-up']" />
             </div>
             <div class="dp__time_display" @click="toggleHourOverlay">{{ hourDisplay }}</div>
             <div class="dp__inc_dec_button" @click="handleHours('decrement')">
-                <ChevronDownIcon />
+                <slot name="arrow-down" v-if="$slots['arrow-down']" />
+                <ChevronDownIcon v-if="!$slots['arrow-down']" />
             </div>
         </div>
         <div class="dp__time_col">:</div>
         <div class="dp__time_col">
             <div class="dp__inc_dec_button" @click="handleMinutes('increment')">
-                <ChevronUpIcon />
+                <slot name="arrow-up" v-if="$slots['arrow-up']" />
+                <ChevronUpIcon v-if="!$slots['arrow-up']" />
             </div>
             <div class="dp__time_display" @click="toggleMinuteOverlay">
                 {{ minuteDisplay }}
             </div>
             <div class="dp__inc_dec_button" @click="handleMinutes('decrement')">
-                <ChevronDownIcon />
+                <slot name="arrow-down" v-if="$slots['arrow-down']" />
+                <ChevronDownIcon v-if="!$slots['arrow-down']" />
             </div>
         </div>
         <div v-if="!is24">
@@ -35,7 +39,8 @@
             :max-value="maxTime.hours"
         >
             <template #button-icon>
-                <ClockIcon />
+                <slot name="clock-icon" v-if="$slots['clock-icon']" />
+                <ClockIcon v-if="!$slots['clock-icon']" />
             </template>
         </SelectionGrid>
         <SelectionGrid
@@ -49,7 +54,8 @@
             :max-value="maxTime.minutes"
         >
             <template #button-icon>
-                <ClockIcon />
+                <slot name="clock-icon" v-if="$slots['clock-icon']" />
+                <ClockIcon v-if="!$slots['clock-icon']" />
             </template>
         </SelectionGrid>
     </div>

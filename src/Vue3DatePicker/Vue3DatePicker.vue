@@ -22,14 +22,8 @@
             @open="openMenu"
             @setInputDate="setInputDate"
         >
-            <template #trigger v-if="$slots.trigger">
-                <slot name="trigger"></slot>
-            </template>
-            <template #input-icon v-if="$slots['input-icon']">
-                <slot name="input-icon"></slot>
-            </template>
-            <template #clear-icon v-if="$slots['clear-icon']">
-                <slot name="clear-icon"></slot>
+            <template v-for="(slot, i) in inputSlots" #[slot] :key="i">
+                <slot :name="slot" />
             </template>
         </DatepickerInput>
         <teleport :to="teleport" :disabled="inline">
@@ -76,13 +70,21 @@
                 @selectDate="selectDate"
                 @dpOpen="recalculatePosition"
                 @autoApply="autoApplyValue"
-            />
+            >
+                <template v-for="(slot, i) in slotList" #[slot]="props" :key="i">
+                    <slot :name="slot" v-bind="{ ...props }" />
+                </template>
+            </DatepickerMenu>
         </teleport>
     </div>
 </template>
 
 <script lang="ts">
     import { computed, defineComponent, onMounted, onUnmounted, PropType, ref } from 'vue';
+
+    import DatepickerInput from './components/DatepickerInput.vue';
+    import DatepickerMenu from './components/DatepickerMenu.vue';
+
     import {
         IDateFilter,
         OpenPosition,
@@ -94,18 +96,17 @@
         ModelValue,
         ITimeValue,
     } from './interfaces';
-    import DatepickerInput from './components/DatepickerInput.vue';
-    import DatepickerMenu from './components/DatepickerMenu.vue';
     import { clickOutsideDirective } from './directives/clickOutside';
     import { getDefaultPattern } from './utils/date-utils';
     import { getPatternAndMask, getDefaultTextInputOptions, getDefaultFilters } from './utils/util';
     import { usePosition } from './utils/composition/position';
     import { useExternalInternalMapper } from './utils/composition/external-internal-mapper';
     import { isString } from './utils/type-guard';
+    import { useSlots } from './utils/composition/slots';
 
     export default /*#__PURE__*/ defineComponent({
         name: 'Vue3DatePicker',
-        emits: ['update:modelValue', 'textSubmit'],
+        emits: ['update:modelValue', 'textSubmit', 'closed', 'cleared'],
         directives: { clickOutsideDirective },
         components: {
             DatepickerInput,
@@ -166,7 +167,7 @@
             textInputOptions: { type: Object as PropType<ITextInputOptions>, default: () => ({}) },
             teleport: { type: String as PropType<string>, default: 'body' },
         },
-        setup(props: IDatepickerProps, { emit }) {
+        setup(props: IDatepickerProps, { emit, slots }) {
             const isOpen = ref(false);
             const valueCleared = ref(false);
 
@@ -188,6 +189,9 @@
                     window.removeEventListener('resize', onResize);
                 }
             });
+
+            const slotList = useSlots(slots, 'all');
+            const inputSlots = useSlots(slots, 'input');
 
             const { openOnTop, menuPosition, setMenuPosition, recalculatePosition } = usePosition(
                 props.position,
@@ -283,6 +287,7 @@
                 inputValue.value = '';
                 clearInternalValues();
                 emit('update:modelValue', null);
+                emit('cleared');
                 closeMenu();
             };
 
@@ -325,6 +330,7 @@
                 if (!props.inline) {
                     if (isOpen.value) {
                         isOpen.value = false;
+                        emit('closed');
                     }
                     clearInternalValues();
                 }
@@ -355,6 +361,8 @@
                 recalculatePosition,
                 menuPosition,
                 defaultFilters,
+                slotList,
+                inputSlots,
                 setInputDate,
                 clearValue,
                 openMenu,

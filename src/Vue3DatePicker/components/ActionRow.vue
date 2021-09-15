@@ -1,15 +1,21 @@
 <template>
     <div class="dp__action_row">
         <div class="dp__selection_preview">
-            <template v-if="!Array.isArray(previewValue)">{{ previewValue }}</template>
-            <template v-if="Array.isArray(previewValue)">
-                <div>{{ previewValue[0] }}</div>
-                <div>{{ previewValue[1] }}</div>
+            <slot name="action-preview" v-if="$slots['action-preview']" :value="internalModelValue" />
+            <template v-if="!$slots['action-preview']">
+                <template v-if="!Array.isArray(previewValue)">{{ previewValue }}</template>
+                <template v-if="Array.isArray(previewValue)">
+                    <div>{{ previewValue[0] }}</div>
+                    <div>{{ previewValue[1] }}</div>
+                </template>
             </template>
         </div>
         <div class="dp__action_buttons">
-            <span v-if="!inline" class="dp__action dp__cancel" @click="$emit('closePicker')">{{ cancelText }}</span>
-            <span class="dp__action dp__select" @click="$emit('selectDate')">{{ selectText }}</span>
+            <slot name="action-preview" v-if="$slots['action-select']" :value="internalModelValue" />
+            <template v-if="!$slots['action-select']">
+                <span v-if="!inline" class="dp__action dp__cancel" @click="$emit('closePicker')">{{ cancelText }}</span>
+                <span class="dp__action dp__select" @click="$emit('selectDate')">{{ selectText }}</span>
+            </template>
         </div>
     </div>
 </template>

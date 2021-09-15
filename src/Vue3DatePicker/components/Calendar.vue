@@ -6,7 +6,11 @@
                 v-bind="{ months, years, filters, monthPicker, month, year }"
                 @update:month="updateMonthYear($event)"
                 @update:year="updateMonthYear($event, false)"
-            />
+            >
+                <template v-for="(slot, i) in monthYearSlots" #[slot] :key="i">
+                    <slot :name="slot" />
+                </template>
+            </MonthYearInput>
             <table class="dp__calendar_tb" v-if="!specificMode">
                 <thead>
                     <tr class="dp__calendar_days">
@@ -24,7 +28,12 @@
                             @click="selectDate(dayVal)"
                             @mouseover="setHoverDate(dayVal)"
                         >
-                            <div class="dp__cell_inner" :class="dayVal.classData">{{ dayVal.text }}</div>
+                            <div class="dp__cell_inner" :class="dayVal.classData">
+                                <slot name="day" v-if="$slots.day" :day="+dayVal.text" :date="dayVal.value"></slot>
+                                <template v-if="!$slots.day">
+                                    {{ dayVal.text }}
+                                </template>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -47,7 +56,11 @@
                 }"
                 @update:hours="updateTime($event)"
                 @update:minutes="updateTime($event, false)"
-            />
+            >
+                <template v-for="(slot, i) in timePickerSlots" #[slot] :key="i">
+                    <slot :name="slot" />
+                </template>
+            </TimePicker>
         </div>
         <ActionRow
             v-if="!autoApply"
@@ -63,7 +76,11 @@
             }"
             @closePicker="$emit('closePicker')"
             @selectDate="$emit('selectDate')"
-        ></ActionRow>
+        >
+            <template v-for="(slot, i) in actionSlots" #[slot]="props" :key="i">
+                <slot :name="slot" v-bind="{ ...props }" />
+            </template>
+        </ActionRow>
     </div>
 </template>
 
@@ -85,6 +102,7 @@
     import { getCalendarDays, getDayNames, getMonths, getYears } from '../utils/util';
     import { isDateEqual } from '../utils/date-utils';
     import { useCalendar } from '../utils/composition/calendar';
+    import { useSlots } from '../utils/composition/slots';
 
     export default defineComponent({
         name: 'Calendar',
@@ -128,7 +146,7 @@
             monthPicker: { type: Boolean as PropType<boolean>, default: false },
             timePicker: { type: Boolean as PropType<boolean>, default: false },
         },
-        setup(props: CalendarProps, { emit }) {
+        setup(props: CalendarProps, { emit, slots }) {
             const {
                 updateTime,
                 updateMonthYear,
@@ -151,6 +169,10 @@
 
             // If datepicker is using only month or time picker
             const specificMode = computed((): boolean => props.monthPicker || props.timePicker);
+
+            const monthYearSlots = useSlots(slots, 'monthYear');
+            const timePickerSlots = useSlots(slots, 'timePicker');
+            const actionSlots = useSlots(slots, 'action');
 
             // Generate array of years depending on provided range that will be available for picker
             const years = computed((): IDefaultSelect[] => {
@@ -229,6 +251,9 @@
                 setHoverDate,
                 updateMonthYear,
                 updateTime,
+                monthYearSlots,
+                timePickerSlots,
+                actionSlots,
             };
         },
     });

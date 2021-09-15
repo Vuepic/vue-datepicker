@@ -37,7 +37,11 @@
             @selectDate="$emit('selectDate')"
             @autoApply="$emit('autoApply', $event)"
             @update:internalModelValue="$emit('update:internalModelValue', $event)"
-        ></Calendar>
+        >
+            <template v-for="(slot, i) in slotList" #[slot]="props" :key="i">
+                <slot :name="slot" v-bind="{ ...props }" />
+            </template>
+        </Calendar>
     </div>
 </template>
 
@@ -53,6 +57,7 @@
         InternalModuleValue,
         ITimeValue,
     } from '../interfaces';
+    import { useSlots } from '../utils/composition/slots';
 
     export default defineComponent({
         name: 'DatepickerMenu',
@@ -96,12 +101,14 @@
             monthPicker: { type: Boolean as PropType<boolean>, default: false },
             timePicker: { type: Boolean as PropType<boolean>, default: false },
         },
-        setup(props: DatepickerMenuProps, { emit }) {
+        setup(props: DatepickerMenuProps, { emit, slots }) {
             onMounted(() => {
                 if (!props.inline) {
                     nextTick(() => emit('dpOpen'));
                 }
             });
+
+            const slotList = useSlots(slots, 'all');
 
             const arrowClass = computed(() => (!props.openOnTop ? 'dp__arrow_top' : 'dp__arrow_bottom'));
 
@@ -113,6 +120,7 @@
             );
 
             return {
+                slotList,
                 dpMenuClass,
                 arrowClass,
             };
