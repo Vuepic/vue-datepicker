@@ -145,6 +145,7 @@
             inline: { type: Boolean as PropType<boolean>, default: false },
             monthPicker: { type: Boolean as PropType<boolean>, default: false },
             timePicker: { type: Boolean as PropType<boolean>, default: false },
+            monthNameFormat: { type: String as PropType<'long' | 'short'>, default: 'short' },
         },
         setup(props: CalendarProps, { emit, slots }) {
             const {
@@ -181,7 +182,7 @@
 
             // Get generated months
             const months = computed((): IDefaultSelect[] => {
-                return getMonths(props.locale);
+                return getMonths(props.locale, props.monthNameFormat);
             });
 
             // Get dates for the currently selected month and year

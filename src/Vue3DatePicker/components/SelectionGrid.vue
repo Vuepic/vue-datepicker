@@ -4,7 +4,7 @@
             <div class="dp__selection_grid_header"><slot name="header"></slot></div>
             <div class="dp__overlay_row" v-for="(row, i) in mappedItems" :key="getKey(i)">
                 <div
-                    class="dp__overlay_col"
+                    :class="cellClassName"
                     v-for="col in row"
                     :key="col.value"
                     @click="onClick(col.value)"
@@ -65,6 +65,10 @@
                 }),
             );
 
+            const cellClassName = computed(() => ({
+                dp__overlay_col: true,
+            }));
+
             /**
              * Simple map for building a grid, just add dynamic classes for each cell
              */
@@ -81,6 +85,7 @@
                                     dp__overlay_cell_disabled:
                                         props.disabledValues.some((val) => val === itemVal.value) ||
                                         checkMinMaxValue(itemVal.value),
+                                    dp__overlay_cell_pad: true,
                                 },
                             };
                         });
@@ -144,6 +149,7 @@
                 actionButtonClass,
                 mappedItems,
                 dpOverlayClass,
+                cellClassName,
             };
         },
     });

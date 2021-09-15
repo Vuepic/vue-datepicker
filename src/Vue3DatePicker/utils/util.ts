@@ -104,14 +104,14 @@ export const getYears = (yearRange: number[]): IDefaultSelect[] => {
 /**
  * Generate month names based on locale for selection display
  */
-export const getMonths = (locale: string): IDefaultSelect[] => {
-    const formatter = new Intl.DateTimeFormat(locale, { month: 'short', timeZone: 'UTC' });
+export const getMonths = (locale: string, format: 'long' | 'short'): IDefaultSelect[] => {
+    const formatter = new Intl.DateTimeFormat(locale, { month: format, timeZone: 'UTC' });
     const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((month) => {
         const mm = month < 10 ? `0${month}` : month;
         return new Date(`2017-${mm}-01T00:00:00+00:00`);
     });
     return months.map((date, i) => ({
-        text: formatter.format(date).slice(0, 3),
+        text: formatter.format(date),
         value: i,
     }));
 };

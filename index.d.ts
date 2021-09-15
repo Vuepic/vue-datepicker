@@ -73,6 +73,7 @@ declare const Vue3DatePicker: DefineComponent<
             freeInput?: boolean;
         };
         teleport?: string;
+        monthNameFormat?: 'long' | 'short';
     },
     {},
     any

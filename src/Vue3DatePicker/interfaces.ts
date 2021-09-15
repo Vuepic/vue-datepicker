@@ -73,6 +73,7 @@ export interface IDatepickerProps {
     textInput: boolean;
     textInputOptions: ITextInputOptions;
     teleport: string;
+    monthNameFormat: 'long' | 'short';
 }
 
 export interface DatepickerInputProps {
@@ -125,6 +126,7 @@ export interface DatepickerMenuProps {
     openOnTop: boolean;
     monthPicker: boolean;
     timePicker: boolean;
+    monthNameFormat: 'long' | 'short';
 }
 
 export interface CalendarProps {
@@ -157,6 +159,7 @@ export interface CalendarProps {
     inline: boolean;
     monthPicker: boolean;
     timePicker: boolean;
+    monthNameFormat: 'long' | 'short';
 }
 
 export interface MonthYearPickerProps {

@@ -55,8 +55,11 @@
     padding: 5px;
 }
 
+.dp__overlay_cell_pad {
+    padding: 10px 0;
+}
+
 .dp__overlay_cell_active {
-    padding: 10px;
     cursor: pointer;
     border-radius: $dp__border_radius;
     text-align: center;
@@ -65,7 +68,6 @@
 }
 
 .dp__overlay_cell {
-    padding: 10px;
     cursor: pointer;
     border-radius: $dp__border_radius;
     text-align: center;

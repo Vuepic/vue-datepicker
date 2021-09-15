@@ -64,6 +64,7 @@
                     inline,
                     monthPicker,
                     timePicker,
+                    monthNameFormat,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @closePicker="closeMenu"
@@ -134,6 +135,7 @@
             weekStart: { type: [String, Number] as PropType<string | number>, default: 1 },
             disabled: { type: Boolean as PropType<boolean>, default: false },
             readonly: { type: Boolean as PropType<boolean>, default: false },
+            monthNameFormat: { type: String as PropType<'long' | 'short'>, default: 'short' },
             weekNumName: { type: String as PropType<string>, default: 'W' },
             format: {
                 type: [String, Function] as PropType<IFormat>,
