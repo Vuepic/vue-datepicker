@@ -74,6 +74,8 @@ declare const Vue3DatePicker: DefineComponent<
         };
         teleport?: string;
         monthNameFormat?: 'long' | 'short';
+        startDate: string | Date;
+        startTime: ITimeObj | ITimeObj[];
     },
     {},
     any
