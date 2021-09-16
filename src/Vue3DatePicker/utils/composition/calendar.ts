@@ -12,7 +12,7 @@ import {
     setDateMonthOrYear,
     setDateTime,
 } from '../date-utils';
-import { isModelValueRange, isNumberArray, isRange } from '../type-guard';
+import { isModelValueRange, isNumberArray, isRange, isTimeArr } from '../type-guard';
 
 interface IUseCalendar {
     isDisabled: (date: Date) => boolean;
@@ -40,7 +40,32 @@ export const useCalendar = (props: CalendarProps, emit: VueEmit): IUseCalendar =
 
     onMounted(() => {
         mapInternalModuleValues();
+
+        if (!modelValue.value) {
+            if (props.startDate) {
+                month.value = getDateMonth(new Date(props.startDate));
+                year.value = getDateYear(new Date(props.startDate));
+            }
+            if (props.startTime) {
+                assignStartTime();
+            }
+        }
     });
+
+    /**
+     * If start time is provided, assign data.
+     * Note: data is sanitized from the parent component with all parameters since props
+     * can be provided partially
+     */
+    const assignStartTime = (): void => {
+        if (isTimeArr(props.startTime)) {
+            hours.value = [+props.startTime[0].hours, +props.startTime[1].hours];
+            minutes.value = [+props.startTime[0].minutes, +props.startTime[1].minutes];
+        } else {
+            hours.value = +props.startTime.hours;
+            minutes.value = +props.startTime.minutes;
+        }
+    };
 
     /**
      * Model binding, removes the need for watches, sync data between components
@@ -122,9 +147,11 @@ export const useCalendar = (props: CalendarProps, emit: VueEmit): IUseCalendar =
     const mapInternalModuleValues = (): void => {
         if (modelValue.value) {
             if (isModelValueRange(modelValue.value)) {
-                assignMonthAndYear(modelValue.value[0]);
-                hours.value = [getDateHours(modelValue.value[0]), getDateHours(modelValue.value[1])];
-                minutes.value = [getDateMinutes(modelValue.value[0]), getDateMinutes(modelValue.value[1])];
+                if (modelValue.value.length === 2) {
+                    assignMonthAndYear(modelValue.value[0]);
+                    hours.value = [getDateHours(modelValue.value[0]), getDateHours(modelValue.value[1])];
+                    minutes.value = [getDateMinutes(modelValue.value[0]), getDateMinutes(modelValue.value[1])];
+                }
             } else {
                 assignMonthAndYear(modelValue.value);
                 hours.value = getDateHours(modelValue.value);

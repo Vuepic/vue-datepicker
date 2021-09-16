@@ -74,6 +74,8 @@ export interface IDatepickerProps {
     textInputOptions: ITextInputOptions;
     teleport: string;
     monthNameFormat: 'long' | 'short';
+    startDate: string | Date;
+    startTime: ITimeValue | ITimeValue[];
 }
 
 export interface DatepickerInputProps {
@@ -127,6 +129,8 @@ export interface DatepickerMenuProps {
     monthPicker: boolean;
     timePicker: boolean;
     monthNameFormat: 'long' | 'short';
+    startDate: string | Date;
+    startTime: ITimeValue | ITimeValue[];
 }
 
 export interface CalendarProps {
@@ -160,6 +164,8 @@ export interface CalendarProps {
     monthPicker: boolean;
     timePicker: boolean;
     monthNameFormat: 'long' | 'short';
+    startDate: string | Date;
+    startTime: ITimeValue | ITimeValue[];
 }
 
 export interface MonthYearPickerProps {

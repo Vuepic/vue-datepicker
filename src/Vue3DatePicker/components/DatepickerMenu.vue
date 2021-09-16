@@ -33,6 +33,8 @@
                 monthPicker,
                 timePicker,
                 monthNameFormat,
+                startDate,
+                startTime,
             }"
             @closePicker="$emit('closePicker')"
             @selectDate="$emit('selectDate')"
@@ -102,6 +104,8 @@
             monthPicker: { type: Boolean as PropType<boolean>, default: false },
             timePicker: { type: Boolean as PropType<boolean>, default: false },
             monthNameFormat: { type: String as PropType<'long' | 'short'>, default: 'short' },
+            startDate: { type: [Date, String] as PropType<string | Date>, default: null },
+            startTime: { type: Object as PropType<ITimeValue | ITimeValue[]>, default: null },
         },
         setup(props: DatepickerMenuProps, { emit, slots }) {
             onMounted(() => {

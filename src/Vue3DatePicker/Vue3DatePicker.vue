@@ -65,6 +65,8 @@
                     monthPicker,
                     timePicker,
                     monthNameFormat,
+                    startDate,
+                    startTime: defaultStartTime,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @closePicker="closeMenu"
@@ -98,7 +100,7 @@
         ITimeValue,
     } from './interfaces';
     import { clickOutsideDirective } from './directives/clickOutside';
-    import { getDefaultPattern } from './utils/date-utils';
+    import { getDateHours, getDateMinutes, getDefaultPattern } from './utils/date-utils';
     import { getPatternAndMask, getDefaultTextInputOptions, getDefaultFilters } from './utils/util';
     import { usePosition } from './utils/composition/position';
     import { useExternalInternalMapper } from './utils/composition/external-internal-mapper';
@@ -168,6 +170,8 @@
             textInput: { type: Boolean as PropType<boolean>, default: false },
             textInputOptions: { type: Object as PropType<ITextInputOptions>, default: () => ({}) },
             teleport: { type: String as PropType<string>, default: 'body' },
+            startDate: { type: [Date, String] as PropType<string | Date>, default: null },
+            startTime: { type: Object as PropType<ITimeValue | ITimeValue[]>, default: null },
         },
         setup(props: IDatepickerProps, { emit, slots }) {
             const isOpen = ref(false);
@@ -242,6 +246,20 @@
             });
 
             const defaultFilters = computed(() => getDefaultFilters(props.filters));
+
+            const defaultStartTime = computed((): ITimeValue | ITimeValue[] | null => {
+                const assignDefaultTime = (obj: ITimeValue): ITimeValue => {
+                    const defaultTime = { hours: getDateHours(), minutes: getDateMinutes() };
+                    return Object.assign(defaultTime, obj);
+                };
+                if (props.range) {
+                    if (props.startTime && Array.isArray(props.startTime)) {
+                        return [assignDefaultTime(props.startTime[0]), assignDefaultTime(props.startTime[1])];
+                    }
+                    return null;
+                }
+                return props.startTime && !Array.isArray(props.startTime) ? assignDefaultTime(props.startTime) : null;
+            });
 
             /**
              * Event listener for 'scroll'
@@ -365,6 +383,7 @@
                 defaultFilters,
                 slotList,
                 inputSlots,
+                defaultStartTime,
                 setInputDate,
                 clearValue,
                 openMenu,
