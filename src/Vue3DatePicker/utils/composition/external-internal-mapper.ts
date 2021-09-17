@@ -86,7 +86,7 @@ export const useExternalInternalMapper = (
             inputValue.value = format(getTImeForExternal(internalModelValue.value));
         } else if (monthPicker) {
             inputValue.value = format(getMonthForExternal(internalModelValue.value as Date));
-        } else if (range) {
+        } else {
             inputValue.value = format(internalModelValue.value);
         }
     };
