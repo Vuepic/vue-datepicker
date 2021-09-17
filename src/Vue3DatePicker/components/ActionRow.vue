@@ -11,7 +11,7 @@
             </template>
         </div>
         <div class="dp__action_buttons">
-            <slot name="action-preview" v-if="$slots['action-select']" :value="internalModelValue" />
+            <slot name="action-select" v-if="$slots['action-select']" :value="internalModelValue" />
             <template v-if="!$slots['action-select']">
                 <span v-if="!inline" class="dp__action dp__cancel" @click="$emit('closePicker')">{{ cancelText }}</span>
                 <span class="dp__action dp__select" @click="$emit('selectDate')">{{ selectText }}</span>
