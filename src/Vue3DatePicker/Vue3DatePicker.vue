@@ -1,98 +1,115 @@
 <template>
     <div :class="wrapperClass">
         <DatepickerInput
-            :internal-value="internalValue"
-            :placeholder="placeholder"
-            :hide-input-icon="hideInputIcon"
-            :readonly="readonly"
-            :disabled="disabled"
-            :input-class-name="inputClassName"
-            :clearable="clearable"
-            :state="state"
-            :inline="inline"
+            :id="`dp__input_${uid}`"
+            v-bind="{
+                placeholder,
+                hideInputIcon,
+                readonly,
+                disabled,
+                inputClassName,
+                clearable,
+                state,
+                inline,
+                textInput,
+                maskProps,
+                textInputOptions: inputDefaultOptions,
+                range,
+                isMenuOpen: isOpen,
+            }"
+            v-model:input-value="inputValue"
             @clear="clearValue"
             @open="openMenu"
-            :id="`dp__input_${uid}`"
+            @setInputDate="setInputDate"
         >
-            <template #trigger v-if="$slots.trigger">
-                <slot name="trigger"></slot>
-            </template>
-            <template #input-icon v-if="$slots['input-icon']">
-                <slot name="input-icon"></slot>
-            </template>
-            <template #clear-icon v-if="$slots['clear-icon']">
-                <slot name="clear-icon"></slot>
+            <template v-for="(slot, i) in inputSlots" #[slot] :key="i">
+                <slot :name="slot" />
             </template>
         </DatepickerInput>
-        <teleport to="body" :disabled="inline">
+        <teleport :to="teleport" :disabled="inline">
             <DatepickerMenu
-                :class="theme"
-                :uid="uid"
+                v-if="isOpen"
                 v-click-outside-directive.dp__menu="closeMenu"
-                :open-on-top="openOnTop"
-                :enable-time-picker="enableTimePicker"
-                :week-numbers="weekNumbers"
-                :week-start="weekStart"
-                :disable-month-year-select="disableMonthYearSelect"
-                :hours-increment="hoursIncrement"
-                :minutes-increment="minutesIncrement"
-                :menu-class-name="menuClassName"
-                :calendar-class-name="calendarClassName"
-                :year-range="yearRange"
-                :is24="is24"
-                :calendar-cell-class-name="calendarCellClassName"
-                :hours-grid-increment="hoursGridIncrement"
-                :minutes-grid-increment="minutesGridIncrement"
-                :min-date="minDate"
-                :max-date="maxDate"
+                :class="theme"
                 :style="menuPosition"
-                :range="range"
-                :auto-apply="autoApply"
-                :locale="locale"
-                :week-num-name="weekNumName"
-                :preview-format="previewFormat"
-                :disabled-dates="disabledDates"
-                :filters="filters"
-                :min-time="minTime"
-                :max-time="maxTime"
-                :select-text="selectText"
-                :cancel-text="cancelText"
-                :inline="inline"
-                :month-picker="monthPicker"
-                :time-picker="timePicker"
-                v-model:singleModelValue="singleModelValue"
-                v-model:rangeModelValue="rangeModelValue"
-                v-model:monthPickerValue="monthPickerValue"
-                v-model:timePickerValue="timePickerValue"
+                v-bind="{
+                    uid,
+                    openOnTop,
+                    enableTimePicker,
+                    weekNumbers,
+                    weekStart,
+                    disableMonthYearSelect,
+                    hoursIncrement,
+                    minutesIncrement,
+                    menuClassName,
+                    calendarClassName,
+                    calendarCellClassName,
+                    yearRange,
+                    is24,
+                    hoursGridIncrement,
+                    minutesGridIncrement,
+                    minDate,
+                    maxDate,
+                    range,
+                    autoApply,
+                    locale,
+                    weekNumName,
+                    previewFormat: previewFormatDefault,
+                    selectText,
+                    cancelText,
+                    filters: defaultFilters,
+                    maxDate,
+                    minDate,
+                    disabledDates,
+                    inline,
+                    monthPicker,
+                    timePicker,
+                    monthNameFormat,
+                    startDate,
+                    startTime: defaultStartTime,
+                }"
+                v-model:internalModelValue="internalModelValue"
                 @closePicker="closeMenu"
                 @selectDate="selectDate"
                 @dpOpen="recalculatePosition"
                 @autoApply="autoApplyValue"
-                v-if="isOpen"
-            />
+            >
+                <template v-for="(slot, i) in slotList" #[slot]="props" :key="i">
+                    <slot :name="slot" v-bind="{ ...props }" />
+                </template>
+            </DatepickerMenu>
         </teleport>
     </div>
 </template>
 
 <script lang="ts">
-    import { computed, defineComponent, onMounted, onUnmounted, PropType, ref, toRef, watch } from 'vue';
-    import {
-        FormatOptions,
-        IDateFilter,
-        ITimeRange,
-        OpenPosition,
-        RDatepickerProps,
-        DynamicClass,
-        IModelValueTimePicker,
-    } from './interfaces';
+    import { computed, defineComponent, onMounted, onUnmounted, PropType, ref } from 'vue';
+
     import DatepickerInput from './components/DatepickerInput.vue';
     import DatepickerMenu from './components/DatepickerMenu.vue';
-    import { formatMonthValue, formatRangeDate, formatSingleDate, formatTimeValue } from './utils/util';
+
+    import {
+        IDateFilter,
+        OpenPosition,
+        DynamicClass,
+        IMaskProps,
+        IDatepickerProps,
+        IFormat,
+        ITextInputOptions,
+        ModelValue,
+        ITimeValue,
+    } from './interfaces';
     import { clickOutsideDirective } from './directives/clickOutside';
+    import { getDateHours, getDateMinutes, getDefaultPattern } from './utils/date-utils';
+    import { getPatternAndMask, getDefaultTextInputOptions, getDefaultFilters } from './utils/util';
+    import { usePosition } from './utils/composition/position';
+    import { useExternalInternalMapper } from './utils/composition/external-internal-mapper';
+    import { isString } from './utils/type-guard';
+    import { useSlots } from './utils/composition/slots';
 
     export default /*#__PURE__*/ defineComponent({
         name: 'Vue3DatePicker',
-        emits: ['update:modelValue'],
+        emits: ['update:modelValue', 'textSubmit', 'closed', 'cleared'],
         directives: { clickOutsideDirective },
         components: {
             DatepickerInput,
@@ -104,7 +121,7 @@
             enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
             locale: { type: String as PropType<string>, default: 'en-US' },
             range: { type: Boolean as PropType<boolean>, default: false },
-            modelValue: { type: [String, Date, Array, Object], default: null },
+            modelValue: { type: [String, Date, Array, Object] as PropType<ModelValue>, default: null },
             position: { type: String as PropType<OpenPosition>, default: OpenPosition.center },
             placeholder: { type: String as PropType<string>, default: null },
             weekNumbers: { type: Boolean as PropType<boolean>, default: false },
@@ -115,19 +132,20 @@
             minutesGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 },
             minDate: { type: [Date, String] as PropType<Date | string>, default: null },
             maxDate: { type: [Date, String] as PropType<Date | string>, default: null },
-            minTime: { type: Object as PropType<ITimeRange>, default: () => ({}) },
-            maxTime: { type: Object as PropType<ITimeRange>, default: () => ({}) },
+            minTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
+            maxTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
             weekStart: { type: [String, Number] as PropType<string | number>, default: 1 },
             disabled: { type: Boolean as PropType<boolean>, default: false },
             readonly: { type: Boolean as PropType<boolean>, default: false },
+            monthNameFormat: { type: String as PropType<'long' | 'short'>, default: 'short' },
             weekNumName: { type: String as PropType<string>, default: 'W' },
             format: {
-                type: [Object, Function] as PropType<FormatOptions | ((date: Date | Date[]) => string)>,
-                default: () => ({}),
+                type: [String, Function] as PropType<IFormat>,
+                default: () => null,
             },
             previewFormat: {
-                type: [Object, Function] as PropType<FormatOptions | ((date: Date | Date[]) => string)>,
-                default: () => ({}),
+                type: [String, Function] as PropType<IFormat>,
+                default: () => null,
             },
             inputClassName: { type: String as PropType<string>, default: null },
             menuClassName: { type: String as PropType<string>, default: null },
@@ -149,27 +167,18 @@
             monthPicker: { type: Boolean as PropType<boolean>, default: false },
             timePicker: { type: Boolean as PropType<boolean>, default: false },
             closeOnAutoApply: { type: Boolean as PropType<boolean>, default: true },
+            textInput: { type: Boolean as PropType<boolean>, default: false },
+            textInputOptions: { type: Object as PropType<ITextInputOptions>, default: () => ({}) },
+            teleport: { type: String as PropType<string>, default: 'body' },
+            startDate: { type: [Date, String] as PropType<string | Date>, default: null },
+            startTime: { type: Object as PropType<ITimeValue | ITimeValue[]>, default: null },
         },
-        setup(props: RDatepickerProps, { emit }) {
+        setup(props: IDatepickerProps, { emit, slots }) {
             const isOpen = ref(false);
-            const menuPosition = ref({ top: '0', left: '0', transform: 'none' });
-            const internalValue = ref<string | string[]>('');
-            const singleModelValue = ref();
-            const rangeModelValue = ref();
-            const openOnTop = ref(false);
             const valueCleared = ref(false);
-            const modelValue = toRef(props, 'modelValue');
-            const monthPickerValue = ref();
-            const timePickerValue = ref();
-
-            watch(modelValue, () => {
-                if (externalInternalValueDiff.value) {
-                    mapExternalToInternalValue();
-                }
-            });
 
             onMounted(() => {
-                mapExternalToInternalValue();
+                parseExternalModelValue(props.modelValue);
                 if (!props.inline) {
                     window.addEventListener('scroll', onScroll);
                     window.addEventListener('resize', onResize);
@@ -187,6 +196,25 @@
                 }
             });
 
+            const slotList = useSlots(slots, 'all');
+            const inputSlots = useSlots(slots, 'input');
+
+            const { openOnTop, menuPosition, setMenuPosition, recalculatePosition } = usePosition(
+                props.position,
+                props.uid,
+            );
+
+            const { internalModelValue, inputValue, parseExternalModelValue, emitModelValue } =
+                useExternalInternalMapper(
+                    props.format,
+                    props.timePicker,
+                    props.monthPicker,
+                    props.range,
+                    props.is24,
+                    props.enableTimePicker,
+                    emit,
+                );
+
             const wrapperClass = computed(
                 (): DynamicClass => ({
                     dp__main: true,
@@ -196,169 +224,47 @@
                 }),
             );
 
-            const theme = computed(() => (props.dark ? 'dp__theme_dark' : 'dp__theme_light'));
-
-            const specificMode = computed((): boolean => props.monthPicker || props.timePicker);
-
-            const isSingle = computed((): boolean => !props.range);
-
-            const externalInternalValueDiff = computed((): boolean => {
-                let dateValue;
-                if (props.monthPicker) {
-                    dateValue = JSON.stringify(monthPickerValue.value);
-                } else if (props.timePicker) {
-                    dateValue = JSON.stringify(timePickerValue.value);
-                } else {
-                    dateValue = props.range
-                        ? JSON.stringify(rangeModelValue.value)
-                        : JSON.stringify(singleModelValue.value);
-                }
-                return JSON.stringify(modelValue.value) !== dateValue;
+            const defaultPattern = computed((): string => {
+                return isString(props.format)
+                    ? props.format
+                    : getDefaultPattern(null, props.is24, props.monthPicker, props.timePicker, props.enableTimePicker);
             });
 
-            const clearValue = (): void => {
-                valueCleared.value = true;
-                internalValue.value = '';
-                clearInternalValues();
-                emit('update:modelValue', null);
-                closeMenu();
-            };
-
-            const formatSingleDateValue = (formatInternal = false): void => {
-                if (!specificMode.value) {
-                    if (singleModelValue.value) {
-                        if (formatInternal) {
-                            const dateValue = new Date(singleModelValue.value);
-                            if (typeof props.format === 'object') {
-                                internalValue.value = formatSingleDate(
-                                    dateValue,
-                                    props.locale,
-                                    props.format,
-                                    props.is24,
-                                    props.enableTimePicker,
-                                );
-                            } else {
-                                internalValue.value = props.format(dateValue);
-                            }
-                        }
-                    }
+            const previewFormatDefault = computed(() => {
+                if (!props.previewFormat) {
+                    return isString(defaultPattern.value) ? defaultPattern.value : props.format;
                 }
-            };
+                return props.previewFormat;
+            });
 
-            const formatRangeDateValue = (formatInternal = false): void => {
-                if (rangeModelValue.value && rangeModelValue.value.length === 2 && !specificMode.value) {
-                    const dateValue = [new Date(rangeModelValue.value[0]), new Date(rangeModelValue.value[1])];
-                    if (formatInternal) {
-                        if (typeof props.format === 'object') {
-                            internalValue.value = formatRangeDate(
-                                dateValue,
-                                props.locale,
-                                props.format,
-                                props.is24,
-                                props.enableTimePicker,
-                            );
-                        } else {
-                            internalValue.value = props.format(dateValue);
-                        }
+            const theme = computed(() => (props.dark ? 'dp__theme_dark' : 'dp__theme_light'));
+
+            const maskProps = computed((): IMaskProps => getPatternAndMask(defaultPattern.value, props.range));
+
+            const inputDefaultOptions = computed((): ITextInputOptions => {
+                return Object.assign(getDefaultTextInputOptions(), props.textInputOptions);
+            });
+
+            const defaultFilters = computed(() => getDefaultFilters(props.filters));
+
+            const defaultStartTime = computed((): ITimeValue | ITimeValue[] | null => {
+                const assignDefaultTime = (obj: ITimeValue): ITimeValue => {
+                    const defaultTime = { hours: getDateHours(), minutes: getDateMinutes() };
+                    return Object.assign(defaultTime, obj);
+                };
+                if (props.range) {
+                    if (props.startTime && Array.isArray(props.startTime)) {
+                        return [assignDefaultTime(props.startTime[0]), assignDefaultTime(props.startTime[1])];
                     }
+                    return null;
                 }
-            };
+                return props.startTime && !Array.isArray(props.startTime) ? assignDefaultTime(props.startTime) : null;
+            });
 
-            const formatMonthPickerValue = (formatInternal = false): void => {
-                if (monthPickerValue.value) {
-                    if (formatInternal) {
-                        if (typeof props.format === 'object') {
-                            internalValue.value = formatMonthValue(monthPickerValue.value);
-                        } else {
-                            internalValue.value = props.format(monthPickerValue.value);
-                        }
-                    }
-                }
-            };
-
-            const formatTimePickerValue = (formatInternal = false): void => {
-                if (timePickerValue.value) {
-                    if (formatInternal) {
-                        if (typeof props.format === 'object') {
-                            internalValue.value = formatTimeValue(timePickerValue.value, props.is24);
-                        } else {
-                            internalValue.value = props.format(timePickerValue.value);
-                        }
-                    }
-                }
-            };
-
-            const mapExternalToInternalValue = () => {
-                if (!specificMode.value) {
-                    if (props.modelValue) {
-                        if (props.range) {
-                            if (Array.isArray(props.modelValue)) {
-                                rangeModelValue.value = JSON.parse(JSON.stringify(props.modelValue)).map(
-                                    (date: string) => new Date(date),
-                                );
-                                formatRangeDateValue(true);
-                            } else {
-                                rangeModelValue.value = [];
-                            }
-                        } else {
-                            singleModelValue.value = new Date(props.modelValue);
-                            formatSingleDateValue(true);
-                        }
-                    } else {
-                        rangeModelValue.value = [];
-                        singleModelValue.value = null;
-                    }
-                } else {
-                    if (props.monthPicker) {
-                        if (props.modelValue) {
-                            monthPickerValue.value = { month: +props.modelValue.month, year: +props.modelValue.year };
-                            formatMonthPickerValue(true);
-                        } else {
-                            monthPickerValue.value = null;
-                        }
-                    }
-                    if (props.timePicker) {
-                        if (props.modelValue) {
-                            if (props.range) {
-                                timePickerValue.value = props.modelValue.map((val: IModelValueTimePicker) => {
-                                    const mapped: IModelValueTimePicker = { hours: +val.hours, minutes: +val.minutes };
-                                    return mapped;
-                                });
-                            } else {
-                                timePickerValue.value = {
-                                    hours: +props.modelValue.hours,
-                                    minutes: +props.modelValue.minutes,
-                                };
-                            }
-                            formatTimePickerValue(true);
-                        } else {
-                            timePickerValue.value = null;
-                        }
-                    }
-                }
-            };
-
-            const emitModelValue = (): void => {
-                if (props.monthPicker) {
-                    formatMonthPickerValue(true);
-                    emit('update:modelValue', monthPickerValue.value);
-                } else if (props.timePicker) {
-                    formatTimePickerValue(true);
-                    emit('update:modelValue', timePickerValue.value);
-                } else if (props.range) {
-                    formatRangeDateValue(true);
-                    emit('update:modelValue', rangeModelValue.value);
-                } else {
-                    formatSingleDateValue(true);
-                    emit('update:modelValue', singleModelValue.value);
-                }
-            };
-
-            const selectDate = (): void => {
-                emitModelValue();
-                closeMenu();
-            };
-
+            /**
+             * Event listener for 'scroll'
+             * Depending on the props, it can close the menu or set correct position
+             */
             const onScroll = (): void => {
                 if (props.closeOnScroll) {
                     closeMenu();
@@ -369,74 +275,12 @@
                 }
             };
 
+            /**
+             * Event listener for 'resize'
+             * Since the menu is absolutely positioned, on window resize, correct positioning
+             */
             const onResize = (): void => {
                 setMenuPosition();
-            };
-
-            const setMenuPosition = (recalculate = true): void => {
-                const el = document.getElementById(`dp__input_${props.uid}`);
-                if (el) {
-                    const { left, width, height } = el.getBoundingClientRect();
-                    const position = { top: `${height + el.offsetTop + 10}px`, left: '', transform: 'none' };
-                    if (props.position === OpenPosition.left) {
-                        position.left = `${left}px`;
-                    }
-
-                    if (props.position === OpenPosition.right) {
-                        position.left = `${left + width}px`;
-                        position.transform = `translateX(-100%)`;
-                    }
-
-                    if (props.position === OpenPosition.center) {
-                        position.left = `${left + width / 2}px`;
-                        position.transform = `translateX(-50%)`;
-                    }
-                    menuPosition.value = position;
-                    if (recalculate) {
-                        recalculatePosition();
-                    }
-                }
-            };
-
-            const recalculatePosition = (): void => {
-                const el = document.getElementById(`dp__input_${props.uid}`);
-                if (el) {
-                    const { height: inputHeight, top } = el.getBoundingClientRect();
-                    const fullHeight = window.innerHeight;
-                    const freeSpaceBottom = fullHeight - top - inputHeight;
-
-                    const menuEl = document.getElementById(`dp__menu_${props.uid}`);
-
-                    if (menuEl) {
-                        const { height } = menuEl.getBoundingClientRect();
-                        const menuHeight = height + inputHeight;
-                        if (menuHeight > top && menuHeight > freeSpaceBottom) {
-                            if (top > freeSpaceBottom) {
-                                openOnTop.value = true;
-                            } else {
-                                setMenuPosition(false);
-                                openOnTop.value = false;
-                            }
-                        } else {
-                            if (menuHeight > freeSpaceBottom) {
-                                menuPosition.value.top = `${el.offsetTop - height - 12}px`;
-                                openOnTop.value = true;
-                            } else {
-                                setMenuPosition(false);
-                                openOnTop.value = false;
-                            }
-                        }
-                    }
-                }
-            };
-
-            const autoApplyValue = (ignoreClose = false): void => {
-                if (props.autoApply) {
-                    emitModelValue();
-                    if (props.closeOnAutoApply && !ignoreClose) {
-                        closeMenu();
-                    }
-                }
             };
 
             const openMenu = (): void => {
@@ -450,43 +294,101 @@
                         }
                     }
                     valueCleared.value = false;
-                    mapExternalToInternalValue();
+                    parseExternalModelValue(props.modelValue);
                 }
             };
 
-            const clearInternalValues = (): void => {
-                singleModelValue.value = null;
-                rangeModelValue.value = [];
-                monthPickerValue.value = null;
-                timePickerValue.value = null;
+            /**
+             * When x button is pressed on input, it will call this function that will emit null
+             * for the modelValue and clear internally stored data
+             */
+            const clearValue = (): void => {
+                valueCleared.value = true;
+                inputValue.value = '';
+                clearInternalValues();
+                emit('update:modelValue', null);
+                emit('cleared');
+                closeMenu();
             };
 
+            /**
+             * Called when select button is clicked, emit update for the modelValue
+             */
+            const selectDate = (): void => {
+                if (internalModelValue.value) {
+                    emitModelValue();
+                    closeMenu();
+                }
+            };
+
+            /**
+             * When value is selected it will emit an event that will call this function
+             * ignoreClose is passed when time is picked or month and year, since they update the value and for
+             * the user experience it should not close the menu
+             */
+            const autoApplyValue = (ignoreClose = false): void => {
+                if (props.autoApply) {
+                    emitModelValue();
+                    if (props.closeOnAutoApply && !ignoreClose) {
+                        closeMenu();
+                    }
+                }
+            };
+
+            /**
+             * Clears the internally stored values. This is different from clearValue since it does not emit v-model
+             * update, just clears internal data
+             */
+            const clearInternalValues = (): void => {
+                internalModelValue.value = null;
+            };
+
+            /**
+             * Closes the menu and clears the internal data
+             */
             const closeMenu = (): void => {
                 if (!props.inline) {
                     if (isOpen.value) {
                         isOpen.value = false;
+                        emit('closed');
                     }
                     clearInternalValues();
                 }
             };
 
+            const setInputDate = (date: Date | Date[] | null, submit?: boolean): void => {
+                if (!date) {
+                    internalModelValue.value = null;
+                    return;
+                }
+                internalModelValue.value = date;
+                if (submit) {
+                    selectDate();
+                    emit('textSubmit');
+                }
+            };
+
             return {
-                singleModelValue,
-                rangeModelValue,
-                menuPosition,
-                internalValue,
+                inputValue,
+                openOnTop,
+                previewFormatDefault,
+                maskProps,
+                inputDefaultOptions,
                 isOpen,
-                isSingle,
                 theme,
                 wrapperClass,
-                openOnTop,
-                monthPickerValue,
-                timePickerValue,
+                internalModelValue,
+                recalculatePosition,
+                menuPosition,
+                defaultFilters,
+                slotList,
+                inputSlots,
+                defaultStartTime,
+                setInputDate,
                 clearValue,
                 openMenu,
                 closeMenu,
                 selectDate,
-                recalculatePosition,
                 autoApplyValue,
             };
         },

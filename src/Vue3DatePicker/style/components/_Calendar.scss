@@ -2,6 +2,7 @@
     font-family: $dp__font_family;
     border-collapse: collapse;
     color: var(--dp-text-color);
+    width: 100%;
 }
 
 .dp__calendar {
@@ -9,7 +10,7 @@
 }
 
 .dp_calendar_fixed {
-    height: 250px;
+    height: 255px;
 }
 
 .dp__calendar_content_wrap {

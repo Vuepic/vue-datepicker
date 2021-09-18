@@ -12,6 +12,7 @@
         "experimentalDecorators": true,
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
+        "allowJs": true,
         "sourceMap": true,
         "baseUrl": ".",
         "types": [
@@ -19,11 +20,6 @@
             "vue",
             "jest"
         ],
-        "paths": {
-            "@/*": [
-                "src/*"
-            ]
-        },
         "lib": [
             "esnext",
             "dom",

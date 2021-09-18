@@ -1,10 +1,10 @@
 <template>
-    <div class="dp__overlay" :id="id" :class="dpOverlayClass">
+    <div class="dp__overlay" :id="gridId" :class="dpOverlayClass">
         <div class="dp__overlay_container">
             <div class="dp__selection_grid_header"><slot name="header"></slot></div>
-            <div class="dp__overlay_row" v-for="(row, i) in mappedItems" :key="useKey(i)">
+            <div class="dp__overlay_row" v-for="(row, i) in mappedItems" :key="getKey(i)">
                 <div
-                    class="dp__overlay_col"
+                    :class="cellClassName"
                     v-for="col in row"
                     :key="col.value"
                     @click="onClick(col.value)"
@@ -28,8 +28,9 @@
 
 <script lang="ts">
     import { computed, defineComponent, onMounted, PropType, ref } from 'vue';
+
     import { SelectionGridProps, IDefaultSelect, DynamicClass } from '../interfaces';
-    import { useScrollPosition, useKey } from '../utils/hooks';
+    import { getKey } from '../utils/util';
 
     export default defineComponent({
         name: 'SelectionGrid',
@@ -38,7 +39,7 @@
             uid: { type: String as PropType<string>, default: '' },
             items: { type: Array as PropType<IDefaultSelect[][]>, default: () => [] },
             modelValue: { type: [String, Number] as PropType<string | number>, default: null },
-            id: { type: String as PropType<string>, default: 'dp__overlay' },
+            gridId: { type: String as PropType<string>, default: 'dp__overlay' },
             disabledValues: { type: Array as PropType<number[]>, default: () => [] },
             minValue: { type: [Number, String] as PropType<number | string>, default: null },
             maxValue: { type: [Number, String] as PropType<number | string>, default: null },
@@ -47,45 +48,26 @@
             const scrollable = ref(false);
 
             /**
-             * Handle click on cell, if value is enabled (not in filters), emit value back to parent
-             */
-            const onClick = (val: string | number): void => {
-                if (
-                    !props.disabledValues.some((value) => value === val) &&
-                    (props.minValue ? +props.minValue < val : true) &&
-                    (props.maxValue ? +props.maxValue > val : true)
-                ) {
-                    emit('update:modelValue', val);
-                    emit('selected');
-                }
-            };
-
-            /**
              * On mounted hook, set the scroll position, if any to a selected value when opening overlay
              */
             onMounted(() => {
-                useScrollPosition(props.id, `selection-active${props.uid}`);
-                const elm = document.getElementById(props.id);
+                setScrollPosition();
+                const elm = document.getElementById(props.gridId);
                 if (elm) {
                     scrollable.value = elm.clientHeight < elm.scrollHeight;
                 }
             });
 
+            // Dynamic class  for the overlay
             const dpOverlayClass = computed(
                 (): DynamicClass => ({
                     dp__overlay: true,
                 }),
             );
 
-            /**
-             * Check if value is within min-max range
-             */
-            const checkMinMaxValue = (value: number | string): boolean => {
-                const isAboveMax = props.maxValue ? +value > +props.maxValue : false;
-                const isBellowMin = props.minValue ? +value < +props.minValue : false;
-
-                return isAboveMax || isBellowMin;
-            };
+            const cellClassName = computed(() => ({
+                dp__overlay_col: true,
+            }));
 
             /**
              * Simple map for building a grid, just add dynamic classes for each cell
@@ -103,6 +85,7 @@
                                     dp__overlay_cell_disabled:
                                         props.disabledValues.some((val) => val === itemVal.value) ||
                                         checkMinMaxValue(itemVal.value),
+                                    dp__overlay_cell_pad: true,
                                 },
                             };
                         });
@@ -120,12 +103,53 @@
                 }),
             );
 
+            /**
+             * Check if value is within min-max range
+             */
+            const checkMinMaxValue = (value: number | string): boolean => {
+                const isAboveMax = props.maxValue ? +value > +props.maxValue : false;
+                const isBellowMin = props.minValue ? +value < +props.minValue : false;
+
+                return isAboveMax || isBellowMin;
+            };
+
+            /**
+             * Set scroll position in overlay based on active selection
+             */
+            const setScrollPosition = (): void => {
+                const el = document.getElementById(`selection-active${props.uid}`);
+                if (el) {
+                    const parent = document.getElementById(props.gridId);
+                    if (parent) {
+                        parent.scrollTop =
+                            el.offsetTop -
+                            parent.offsetTop -
+                            (parent.getBoundingClientRect().height / 2 - el.getBoundingClientRect().height);
+                    }
+                }
+            };
+
+            /**
+             * Handle click on cell, if value is enabled (not in filters), emit value back to parent
+             */
+            const onClick = (val: string | number): void => {
+                if (
+                    !props.disabledValues.some((value) => value === val) &&
+                    (props.minValue ? +props.minValue < val : true) &&
+                    (props.maxValue ? +props.maxValue > val : true)
+                ) {
+                    emit('update:modelValue', val);
+                    emit('selected');
+                }
+            };
+
             return {
-                useKey,
+                getKey,
                 onClick,
                 actionButtonClass,
                 mappedItems,
                 dpOverlayClass,
+                cellClassName,
             };
         },
     });

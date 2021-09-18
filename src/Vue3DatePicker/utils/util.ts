@@ -1,12 +1,4 @@
-import {
-    FormatOptions,
-    ICalendarDate,
-    ICalendarDay,
-    IDefaultSelect,
-    IHoursOptions,
-    IModelValueMonthPicker,
-    IModelValueTimePicker,
-} from '../interfaces';
+import { ICalendarDate, ICalendarDay, IDateFilter, IDefaultSelect, IMaskProps, ITextInputOptions } from '../interfaces';
 
 /**
  * Depending on a week start get starting date of the current calendar
@@ -69,107 +61,6 @@ export const getCalendarDays = (month: number, year: number, start: number): ICa
     return weeks;
 };
 
-/**
- * Different config for 24h and 12H
- */
-const getHoursOptions = (is24: boolean): IHoursOptions => {
-    return is24 ? { hourCycle: 'h23' } : { hour12: true };
-};
-
-/**
- * Format Date object into readable format, specified by props
- */
-export const formatSingleDate = (
-    date: Date,
-    locale: string,
-    formatOptions: FormatOptions,
-    is24: boolean,
-    showTime: boolean,
-): string => {
-    let options = formatOptions;
-    if (showTime) {
-        options = Object.assign(options, {
-            hour: 'numeric',
-            minute: 'numeric',
-            hourCycle: 'h23',
-            ...getHoursOptions(is24),
-        });
-    }
-    return date.toLocaleDateString(locale, options);
-};
-
-/**
- *  Format Date range into readable format, specified by props
- */
-export const formatRangeDate = (
-    dates: Date[],
-    locale: string,
-    formatOptions: FormatOptions,
-    is24: boolean,
-    showTime: boolean,
-    returnArr?: boolean,
-): string | string[] => {
-    let options = formatOptions;
-    if (showTime) {
-        options = Object.assign(options, { hour: 'numeric', minute: 'numeric', ...getHoursOptions(is24) });
-    }
-    if (returnArr) {
-        return [dates[0].toLocaleDateString(locale, options), dates[1].toLocaleDateString(locale, options)];
-    }
-    return `${dates[0].toLocaleDateString(locale, options)} - ${dates[1].toLocaleDateString(locale, options)}`;
-};
-
-/**
- * Format value for month picker
- */
-export const formatMonthValue = (monthValue: IModelValueMonthPicker): string => {
-    if (monthValue && (monthValue.month || monthValue.month === 0) && monthValue.year) {
-        const month = monthValue.month + 1 < 10 ? `0${monthValue.month + 1}` : monthValue.month + 1;
-        return `${month}/${monthValue.year}`;
-    }
-    return '';
-};
-
-/**
- * Format time value for time picker
- */
-export const formatTimeValue = (time: IModelValueTimePicker | IModelValueTimePicker[], is24: boolean): string => {
-    const formatFnc = (timeValue: IModelValueTimePicker) => {
-        if (timeValue && (timeValue.hours || timeValue.hours === 0) && (timeValue.minutes || timeValue.minutes === 0)) {
-            const hours = timeValue.hours < 10 ? `0${timeValue.hours}` : timeValue.hours;
-            const minutes = timeValue.minutes < 10 ? `0${timeValue.minutes}` : timeValue.minutes;
-            if (!is24) {
-                return `${hoursToAmPmHours(timeValue.hours)}:${minutes} ${timeValue.hours > 12 ? 'PM' : 'AM'}`;
-            }
-            return `${hours}:${minutes}`;
-        }
-        return '';
-    };
-
-    if (Array.isArray(time)) {
-        return `${formatFnc(time[0])} - ${formatFnc(time[1])}`;
-    }
-    return formatFnc(time);
-};
-
-export const generateMinutes = (increment: number): IDefaultSelect[] => {
-    const minutes = [];
-
-    for (let i = 1; i < 60; i += increment) {
-        minutes.push({ text: `${i}`, value: i });
-    }
-    return minutes;
-};
-
-export const generateHours = (is24: boolean): IDefaultSelect[] => {
-    const hours = [];
-
-    for (let i = 1; i <= (is24 ? 24 : 12); i++) {
-        hours.push({ text: `${i}`, value: i });
-    }
-    return hours;
-};
-
 export const getArrayInArray = <T>(list: T[], increment = 3): T[][] => {
     const items = [];
     for (let i = 0; i < list.length; i += increment) {
@@ -200,15 +91,29 @@ export const getDayNames = (locale: string, weekStart: number): string[] => {
 };
 
 /**
- * Generate month names based on locale
+ * Generate array of years for selection display
  */
-export const getMonthNames = (locale: string): string[] => {
-    const formatter = new Intl.DateTimeFormat(locale, { month: 'short', timeZone: 'UTC' });
+export const getYears = (yearRange: number[]): IDefaultSelect[] => {
+    const years: IDefaultSelect[] = [];
+    for (let year = yearRange[0]; year <= yearRange[1]; year++) {
+        years.push({ value: year, text: `${year}` });
+    }
+    return years;
+};
+
+/**
+ * Generate month names based on locale for selection display
+ */
+export const getMonths = (locale: string, format: 'long' | 'short'): IDefaultSelect[] => {
+    const formatter = new Intl.DateTimeFormat(locale, { month: format, timeZone: 'UTC' });
     const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((month) => {
         const mm = month < 10 ? `0${month}` : month;
         return new Date(`2017-${mm}-01T00:00:00+00:00`);
     });
-    return months.map((date) => formatter.format(date).slice(0, 3));
+    return months.map((date, i) => ({
+        text: formatter.format(date),
+        value: i,
+    }));
 };
 
 /**
@@ -218,4 +123,48 @@ export const hoursToAmPmHours = (index: number): number => {
     const hoursValues = [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
     return hoursValues[index];
+};
+
+export const getPatternAndMask = (format: string, range: boolean): IMaskProps => {
+    let pattern = format.replace(/[a-zA-Z]/g, '*');
+    let mask = format;
+    if (range) {
+        pattern = `${pattern} - ${pattern}`;
+        mask = `${format} - ${format}`;
+    }
+
+    return { pattern, mask, format };
+};
+
+/**
+ * Default options to merge with user provided ones
+ */
+export const getDefaultTextInputOptions = (): ITextInputOptions => ({
+    enterSubmit: true,
+    openMenu: true,
+    freeInput: false,
+});
+
+/**
+ * Default filters to merge with user provided values
+ */
+export const getDefaultFilters = (filters: Partial<IDateFilter>): IDateFilter => {
+    return Object.assign({ months: [], years: [], times: { hours: [], minutes: [] } }, filters);
+};
+
+/**
+ * For v-for loops randomize string value
+ */
+export const getKey = (index: number): string => {
+    const len = 5;
+    function makeKey(length: number): string {
+        let result = '';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const charactersLength = characters.length;
+        for (let i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result + index;
+    }
+    return makeKey(len);
 };
