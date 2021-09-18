@@ -1,7 +1,7 @@
 ## vue3-date-time-picker
 
 
-### The most complete date picker solution for Vue 3
+### The most complete datepicker solution for Vue 3
 
 [![License](https://img.shields.io/github/license/vuepic/vue3-date-time-picker)](https://github.com/Vuepic/vue3-date-time-picker/blob/master/LICENSE) [![npm](https://img.shields.io/npm/v/vue3-date-time-picker.svg)](https://www.npmjs.com/package/vue3-date-time-picker) ![Downloads](https://img.shields.io/npm/dm/vue3-date-time-picker) [![Open issues](https://img.shields.io/github/issues-raw/vuepic/vue3-date-time-picker)](https://github.com/Vuepic/vue3-date-time-picker/issues) ![Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/vuepic/vue3-date-time-picker) ![Release date](https://img.shields.io/github/release-date/vuepic/vue3-date-time-picker)
 
@@ -9,7 +9,7 @@
 [DOCUMENTATION](https://vue3datepicker.com/)
 
 
-[JSFiddle DEMO](https://jsfiddle.net/6gn3he1b/)
+[CodeSandbox Playground](https://codesandbox.io/s/vue3-date-time-picker-demo-5scsr?file=/src/components/Demo.vue)
 
 ## Features
 
