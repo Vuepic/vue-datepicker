@@ -91,7 +91,11 @@ export const useCalendar = (props: CalendarProps, emit: VueEmit): IUseCalendar =
         const disabledMonths = props.filters.months.length ? props.filters.months.map((month) => +month) : [];
         const inDisabledMonths = disabledMonths.includes(getDateMonth(date));
 
-        return aboveMax || bellowMin || inDisableArr || inDisabledMonths;
+        const dateYear = getDateYear(date);
+
+        const outOfYearRange = dateYear < +props.yearRange[0] || dateYear > +props.yearRange[1];
+
+        return aboveMax || bellowMin || inDisableArr || inDisabledMonths || outOfYearRange;
     };
 
     /**
