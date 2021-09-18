@@ -34,7 +34,9 @@ export const useMontYearPick = (props: MonthYearPickerProps, emit: VueEmit): IMo
                 year = foundYear;
             }
         }
-        updateMonthYear(month, year);
+        if (year <= years[years.length - 1]) {
+            updateMonthYear(month, year);
+        }
     };
 
     const onPrev = (): void => {
@@ -65,7 +67,9 @@ export const useMontYearPick = (props: MonthYearPickerProps, emit: VueEmit): IMo
                 year = foundYear;
             }
         }
-        updateMonthYear(month, year);
+        if (year >= years[0]) {
+            updateMonthYear(month, year);
+        }
     };
 
     const updateMonthYear = (month: number, year: number): void => {
