@@ -38,7 +38,7 @@
             >
                 <template #header>
                     <div class="dp__month_picker_header">
-                        <div class="dp__month_year_col_nav" @click="handleYear">
+                        <div class="dp__month_year_col_nav" @click="handleYear(false)">
                             <slot name="arrow-left" v-if="$slots['arrow-left']" />
                             <ChevronLeftIcon v-if="!$slots['arrow-left']" />
                         </div>
