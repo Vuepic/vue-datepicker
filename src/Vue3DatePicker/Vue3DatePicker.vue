@@ -68,6 +68,8 @@
                     startDate,
                     startTime: defaultStartTime,
                     monthYearComponent,
+                    timePickerComponent,
+                    customProps,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @closePicker="closeMenu"
@@ -174,6 +176,8 @@
             startDate: { type: [Date, String] as PropType<string | Date>, default: null },
             startTime: { type: Object as PropType<ITimeValue | ITimeValue[]>, default: null },
             monthYearComponent: { type: Object as PropType<DefineComponent>, default: null },
+            timePickerComponent: { type: Object as PropType<DefineComponent>, default: null },
+            customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
         },
         setup(props: IDatepickerProps, { emit, slots }) {
             const isOpen = ref(false);

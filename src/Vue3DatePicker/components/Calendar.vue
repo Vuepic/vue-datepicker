@@ -4,7 +4,7 @@
             <component
                 :is="monthYearCmp"
                 v-if="!disableMonthYearSelect && !timePicker"
-                v-bind="{ months, years, filters, monthPicker, month, year }"
+                v-bind="{ months, years, filters, monthPicker, month, year, customProps }"
                 @update:month="updateMonthYear($event)"
                 @update:year="updateMonthYear($event, false)"
             >
@@ -39,10 +39,11 @@
                     </tr>
                 </tbody>
             </table>
-            <TimePicker
+            <component
                 v-if="enableTimePicker"
-                :is24="is24"
+                :is="timePickerCmp"
                 v-bind="{
+                    is24,
                     hoursIncrement,
                     minutesIncrement,
                     hoursGridIncrement,
@@ -54,6 +55,7 @@
                     timePicker,
                     hours,
                     minutes,
+                    customProps,
                 }"
                 @update:hours="updateTime($event)"
                 @update:minutes="updateTime($event, false)"
@@ -61,7 +63,7 @@
                 <template v-for="(slot, i) in timePickerSlots" #[slot] :key="i">
                     <slot :name="slot" />
                 </template>
-            </TimePicker>
+            </component>
         </div>
         <ActionRow
             v-if="!autoApply"
@@ -150,6 +152,8 @@
             startDate: { type: [Date, String] as PropType<string | Date>, default: null },
             startTime: { type: Object as PropType<ITimeValue | ITimeValue[]>, default: null },
             monthYearComponent: { type: Object as PropType<DefineComponent>, default: null },
+            timePickerComponent: { type: Object as PropType<DefineComponent>, default: null },
+            customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
         },
         setup(props: CalendarProps, { emit, slots }) {
             const {
@@ -174,6 +178,10 @@
 
             const monthYearCmp = computed(() => {
                 return props.monthYearComponent ? props.monthYearComponent : 'MonthYearInput';
+            });
+
+            const timePickerCmp = computed(() => {
+                return props.timePickerComponent ? props.timePickerComponent : 'TimePicker';
             });
 
             // If datepicker is using only month or time picker
@@ -264,6 +272,7 @@
                 timePickerSlots,
                 actionSlots,
                 monthYearCmp,
+                timePickerCmp,
             };
         },
     });

@@ -79,6 +79,8 @@ export interface IDatepickerProps {
     startDate: string | Date;
     startTime: ITimeValue | ITimeValue[];
     monthYearComponent: DefineComponent;
+    timePickerComponent: DefineComponent;
+    customProps: Record<string, unknown>;
 }
 
 export interface DatepickerInputProps {
@@ -135,6 +137,8 @@ export interface DatepickerMenuProps {
     startDate: string | Date;
     startTime: ITimeValue | ITimeValue[];
     monthYearComponent: DefineComponent;
+    timePickerComponent: DefineComponent;
+    customProps: Record<string, unknown>;
 }
 
 export interface CalendarProps {
@@ -171,6 +175,8 @@ export interface CalendarProps {
     startDate: string | Date;
     startTime: ITimeValue | ITimeValue[];
     monthYearComponent: DefineComponent;
+    timePickerComponent: DefineComponent;
+    customProps: Record<string, unknown>;
 }
 
 export interface MonthYearPickerProps {

@@ -36,6 +36,8 @@
                 startDate,
                 startTime,
                 monthYearComponent,
+                timePickerComponent,
+                customProps,
             }"
             @closePicker="$emit('closePicker')"
             @selectDate="$emit('selectDate')"
@@ -108,6 +110,8 @@
             startDate: { type: [Date, String] as PropType<string | Date>, default: null },
             startTime: { type: Object as PropType<ITimeValue | ITimeValue[]>, default: null },
             monthYearComponent: { type: Object as PropType<DefineComponent>, default: null },
+            timePickerComponent: { type: Object as PropType<DefineComponent>, default: null },
+            customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
         },
         setup(props: DatepickerMenuProps, { emit, slots }) {
             onMounted(() => {
