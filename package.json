@@ -83,6 +83,7 @@
     "type": "git",
     "url": "https://github.com/Vuepic/vue3-date-time-picker.git"
   },
+  "types": "index.d.ts",
   "keywords": [
     "date",
     "calendar",
