@@ -65,8 +65,9 @@
                 </template>
             </component>
         </div>
-        <ActionRow
+        <component
             v-if="!autoApply"
+            :is="actionRowCmp"
             v-bind="{
                 selectText,
                 cancelText,
@@ -76,6 +77,7 @@
                 inline,
                 monthPicker,
                 timePicker,
+                customProps,
             }"
             @closePicker="$emit('closePicker')"
             @selectDate="$emit('selectDate')"
@@ -83,7 +85,7 @@
             <template v-for="(slot, i) in actionSlots" #[slot]="props" :key="i">
                 <slot :name="slot" v-bind="{ ...props }" />
             </template>
-        </ActionRow>
+        </component>
     </div>
 </template>
 
@@ -153,6 +155,7 @@
             startTime: { type: Object as PropType<ITimeValue | ITimeValue[]>, default: null },
             monthYearComponent: { type: Object as PropType<DefineComponent>, default: null },
             timePickerComponent: { type: Object as PropType<DefineComponent>, default: null },
+            actionRowComponent: { type: Object as PropType<DefineComponent>, default: null },
             customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
         },
         setup(props: CalendarProps, { emit, slots }) {
@@ -176,12 +179,16 @@
                 return getDayNames(props.locale, +props.weekStart);
             });
 
-            const monthYearCmp = computed(() => {
+            const monthYearCmp = computed((): DefineComponent | string => {
                 return props.monthYearComponent ? props.monthYearComponent : 'MonthYearInput';
             });
 
-            const timePickerCmp = computed(() => {
+            const timePickerCmp = computed((): DefineComponent | string => {
                 return props.timePickerComponent ? props.timePickerComponent : 'TimePicker';
+            });
+
+            const actionRowCmp = computed((): DefineComponent | string => {
+                return props.actionRowComponent ? props.actionRowComponent : 'ActionRow';
             });
 
             // If datepicker is using only month or time picker
@@ -273,6 +280,7 @@
                 actionSlots,
                 monthYearCmp,
                 timePickerCmp,
+                actionRowCmp,
             };
         },
     });

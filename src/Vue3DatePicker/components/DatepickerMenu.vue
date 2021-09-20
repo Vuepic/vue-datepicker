@@ -37,6 +37,7 @@
                 startTime,
                 monthYearComponent,
                 timePickerComponent,
+                actionRowComponent,
                 customProps,
             }"
             @closePicker="$emit('closePicker')"
@@ -111,6 +112,7 @@
             startTime: { type: Object as PropType<ITimeValue | ITimeValue[]>, default: null },
             monthYearComponent: { type: Object as PropType<DefineComponent>, default: null },
             timePickerComponent: { type: Object as PropType<DefineComponent>, default: null },
+            actionRowComponent: { type: Object as PropType<DefineComponent>, default: null },
             customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
         },
         setup(props: DatepickerMenuProps, { emit, slots }) {

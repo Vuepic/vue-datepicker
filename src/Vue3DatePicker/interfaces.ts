@@ -80,6 +80,7 @@ export interface IDatepickerProps {
     startTime: ITimeValue | ITimeValue[];
     monthYearComponent: DefineComponent;
     timePickerComponent: DefineComponent;
+    actionRowComponent: DefineComponent;
     customProps: Record<string, unknown>;
 }
 
@@ -138,6 +139,7 @@ export interface DatepickerMenuProps {
     startTime: ITimeValue | ITimeValue[];
     monthYearComponent: DefineComponent;
     timePickerComponent: DefineComponent;
+    actionRowComponent: DefineComponent;
     customProps: Record<string, unknown>;
 }
 
@@ -176,6 +178,7 @@ export interface CalendarProps {
     startTime: ITimeValue | ITimeValue[];
     monthYearComponent: DefineComponent;
     timePickerComponent: DefineComponent;
+    actionRowComponent: DefineComponent;
     customProps: Record<string, unknown>;
 }
 
