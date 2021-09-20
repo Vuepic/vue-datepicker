@@ -76,6 +76,10 @@ declare const Vue3DatePicker: DefineComponent<
         monthNameFormat?: 'long' | 'short';
         startDate: string | Date;
         startTime: ITimeObj | ITimeObj[];
+        monthYearComponent: DefineComponent;
+        timePickerComponent: DefineComponent;
+        actionRowComponent: DefineComponent;
+        customProps: Record<string, unknown>;
     },
     {},
     any
