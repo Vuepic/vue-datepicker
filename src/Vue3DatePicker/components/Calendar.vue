@@ -1,7 +1,8 @@
 <template>
     <div :class="calendarClass">
         <div :class="contentWrapClass">
-            <MonthYearInput
+            <component
+                :is="monthYearCmp"
                 v-if="!disableMonthYearSelect && !timePicker"
                 v-bind="{ months, years, filters, monthPicker, month, year }"
                 @update:month="updateMonthYear($event)"
@@ -10,7 +11,7 @@
                 <template v-for="(slot, i) in monthYearSlots" #[slot] :key="i">
                     <slot :name="slot" />
                 </template>
-            </MonthYearInput>
+            </component>
             <table class="dp__calendar_tb" v-if="!specificMode">
                 <thead>
                     <tr class="dp__calendar_days">
@@ -85,7 +86,7 @@
 </template>
 
 <script lang="ts">
-    import { computed, defineComponent, PropType } from 'vue';
+    import { computed, DefineComponent, defineComponent, PropType } from 'vue';
     import MonthYearInput from './MonthYearInput.vue';
     import TimePicker from './TimePicker/TimePicker.vue';
     import ActionRow from './ActionRow.vue';
@@ -148,6 +149,7 @@
             monthNameFormat: { type: String as PropType<'long' | 'short'>, default: 'short' },
             startDate: { type: [Date, String] as PropType<string | Date>, default: null },
             startTime: { type: Object as PropType<ITimeValue | ITimeValue[]>, default: null },
+            monthYearComponent: { type: Object as PropType<DefineComponent>, default: null },
         },
         setup(props: CalendarProps, { emit, slots }) {
             const {
@@ -168,6 +170,10 @@
 
             const weekDays = computed(() => {
                 return getDayNames(props.locale, +props.weekStart);
+            });
+
+            const monthYearCmp = computed(() => {
+                return props.monthYearComponent ? props.monthYearComponent : 'MonthYearInput';
             });
 
             // If datepicker is using only month or time picker
@@ -257,6 +263,7 @@
                 monthYearSlots,
                 timePickerSlots,
                 actionSlots,
+                monthYearCmp,
             };
         },
     });

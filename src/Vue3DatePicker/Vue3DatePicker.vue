@@ -67,6 +67,7 @@
                     monthNameFormat,
                     startDate,
                     startTime: defaultStartTime,
+                    monthYearComponent,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @closePicker="closeMenu"
@@ -83,7 +84,7 @@
 </template>
 
 <script lang="ts">
-    import { computed, defineComponent, onMounted, onUnmounted, PropType, ref } from 'vue';
+    import { computed, DefineComponent, defineComponent, onMounted, onUnmounted, PropType, ref } from 'vue';
 
     import DatepickerInput from './components/DatepickerInput.vue';
     import DatepickerMenu from './components/DatepickerMenu.vue';
@@ -172,6 +173,7 @@
             teleport: { type: String as PropType<string>, default: 'body' },
             startDate: { type: [Date, String] as PropType<string | Date>, default: null },
             startTime: { type: Object as PropType<ITimeValue | ITimeValue[]>, default: null },
+            monthYearComponent: { type: Object as PropType<DefineComponent>, default: null },
         },
         setup(props: IDatepickerProps, { emit, slots }) {
             const isOpen = ref(false);

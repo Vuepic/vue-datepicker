@@ -35,6 +35,7 @@
                 monthNameFormat,
                 startDate,
                 startTime,
+                monthYearComponent,
             }"
             @closePicker="$emit('closePicker')"
             @selectDate="$emit('selectDate')"
@@ -49,7 +50,7 @@
 </template>
 
 <script lang="ts">
-    import { computed, defineComponent, onMounted, PropType, nextTick } from 'vue';
+    import { computed, defineComponent, onMounted, PropType, nextTick, DefineComponent } from 'vue';
     import Calendar from './Calendar.vue';
 
     import {
@@ -106,6 +107,7 @@
             monthNameFormat: { type: String as PropType<'long' | 'short'>, default: 'short' },
             startDate: { type: [Date, String] as PropType<string | Date>, default: null },
             startTime: { type: Object as PropType<ITimeValue | ITimeValue[]>, default: null },
+            monthYearComponent: { type: Object as PropType<DefineComponent>, default: null },
         },
         setup(props: DatepickerMenuProps, { emit, slots }) {
             onMounted(() => {

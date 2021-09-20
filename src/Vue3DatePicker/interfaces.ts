@@ -1,3 +1,5 @@
+import { DefineComponent } from 'vue';
+
 export type DynamicClass = Record<string, boolean>;
 
 export interface IDefaultSelect<T = number> {
@@ -76,6 +78,7 @@ export interface IDatepickerProps {
     monthNameFormat: 'long' | 'short';
     startDate: string | Date;
     startTime: ITimeValue | ITimeValue[];
+    monthYearComponent: DefineComponent;
 }
 
 export interface DatepickerInputProps {
@@ -131,6 +134,7 @@ export interface DatepickerMenuProps {
     monthNameFormat: 'long' | 'short';
     startDate: string | Date;
     startTime: ITimeValue | ITimeValue[];
+    monthYearComponent: DefineComponent;
 }
 
 export interface CalendarProps {
@@ -166,6 +170,7 @@ export interface CalendarProps {
     monthNameFormat: 'long' | 'short';
     startDate: string | Date;
     startTime: ITimeValue | ITimeValue[];
+    monthYearComponent: DefineComponent;
 }
 
 export interface MonthYearPickerProps {
