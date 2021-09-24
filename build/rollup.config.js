@@ -52,11 +52,12 @@ const baseConfig = {
     },
 };
 
-const external = ['vue', 'inputmask'];
+const external = ['vue', 'inputmask', 'date-fns'];
 
 const globals = {
     vue: 'Vue',
     inputmask: 'Inputmask',
+    'date-fns': 'date-fns',
 };
 
 // Customize configs for individual targets
