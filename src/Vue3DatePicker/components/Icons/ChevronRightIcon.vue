@@ -6,10 +6,4 @@
     </svg>
 </template>
 
-<script lang="ts">
-    import { defineComponent } from 'vue';
-
-    export default defineComponent({
-        name: 'ChevronRightIcon',
-    });
-</script>
+<script lang="ts" setup></script>

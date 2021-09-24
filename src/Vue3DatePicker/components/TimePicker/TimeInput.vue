@@ -30,13 +30,13 @@
         </div>
         <SelectionGrid
             v-if="hourOverlay"
-            @update:modelValue="$emit('update:hours', $event)"
             :items="getHoursGridItems()"
-            @selected="toggleHourOverlay"
-            @toggle="toggleHourOverlay"
             :disabled-values="filters.times.hours"
             :min-value="minTime.hours"
             :max-value="maxTime.hours"
+            @update:modelValue="$emit('update:hours', $event)"
+            @selected="toggleHourOverlay"
+            @toggle="toggleHourOverlay"
         >
             <template #button-icon>
                 <slot name="clock-icon" v-if="$slots['clock-icon']" />
@@ -45,13 +45,13 @@
         </SelectionGrid>
         <SelectionGrid
             v-if="minuteOverlay"
-            @update:modelValue="$emit('update:minutes', $event)"
             :items="getMinutesGridItems()"
-            @selected="toggleMinuteOverlay"
-            @toggle="toggleMinuteOverlay"
             :disabled-values="filters.times.minutes"
             :min-value="minTime.minutes"
             :max-value="maxTime.minutes"
+            @update:modelValue="$emit('update:minutes', $event)"
+            @selected="toggleMinuteOverlay"
+            @toggle="toggleMinuteOverlay"
         >
             <template #button-icon>
                 <slot name="clock-icon" v-if="$slots['clock-icon']" />
@@ -61,213 +61,186 @@
     </div>
 </template>
 
-<script lang="ts">
-    import { computed, defineComponent, onMounted, PropType, ref, toRef } from 'vue';
+<script lang="ts" setup>
+    import { computed, onMounted, PropType, ref, toRef } from 'vue';
     import { ChevronUpIcon, ChevronDownIcon, ClockIcon } from '../Icons';
-    import { IDateFilter, IDefaultSelect, ITimeValue, TimeInputProps } from '../../interfaces';
+    import { IDateFilter, IDefaultSelect, ITimeValue } from '../../interfaces';
     import { getArrayInArray, hoursToAmPmHours } from '../../utils/util';
     import SelectionGrid from '../SelectionGrid.vue';
 
-    export default defineComponent({
-        name: 'TimeInput',
-        emits: ['setHours', 'setMinutes', 'update:hours', 'update:minutes'],
-        components: {
-            ChevronDownIcon,
-            ChevronUpIcon,
-            ClockIcon,
-            SelectionGrid,
-        },
-        props: {
-            hours: { type: Number as PropType<number>, default: 0 },
-            minutes: { type: Number as PropType<number>, default: 0 },
-            hoursGridIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
-            minutesGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 },
-            hoursIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
-            minutesIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
-            is24: { type: Boolean as PropType<boolean>, default: true },
-            filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
-            minTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
-            maxTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
-        },
-        setup(props: TimeInputProps, { emit }) {
-            const showTimePicker = ref(false);
-            const hourOverlay = ref(false);
-            const minuteOverlay = ref(false);
-            const hours = toRef(props, 'hours');
-            const minutes = toRef(props, 'minutes');
-            const amPm = ref('AM');
-
-            onMounted(() => {
-                checkMinMaxHours();
-            });
-
-            const hourDisplay = computed((): string => {
-                const hour = convert24ToAmPm(hours.value);
-                return hour < 10 ? `0${hour}` : `${hour}`;
-            });
-
-            const minuteDisplay = computed((): string => {
-                return minutes.value < 10 ? `0${minutes.value}` : `${minutes.value}`;
-            });
-
-            const generateGridItems = (loopMax: number, increment: number) => {
-                const generatedArray: IDefaultSelect[] = [];
-
-                for (let i = 0; i < loopMax; i += increment) {
-                    generatedArray.push({ value: i, text: i < 10 ? `0${i}` : `${i}` });
-                }
-
-                return getArrayInArray(generatedArray);
-            };
-
-            const getHoursGridItems = (): IDefaultSelect[][] => {
-                const hours = props.is24 ? 24 : 12;
-                return generateGridItems(hours, +props.hoursGridIncrement);
-            };
-
-            const getMinutesGridItems = (): IDefaultSelect[][] => {
-                return generateGridItems(60, +props.minutesGridIncrement);
-            };
-
-            const toggleHourOverlay = (): void => {
-                hourOverlay.value = !hourOverlay.value;
-            };
-
-            const toggleMinuteOverlay = (): void => {
-                minuteOverlay.value = !minuteOverlay.value;
-            };
-
-            const checkMinMaxHours = (): void => {
-                if (Object.keys(props.maxTime).length) {
-                    if (props.maxTime.hours && hours.value > props.maxTime.hours) {
-                        emit('update:hours', +props.maxTime.hours);
-                    }
-                    if (props.maxTime.minutes && minutes.value > props.maxTime.minutes) {
-                        emit('update:minutes', +props.maxTime.minutes);
-                    }
-                }
-                if (Object.keys(props.minTime).length) {
-                    if (props.minTime.hours && hours.value < props.minTime.hours) {
-                        emit('update:hours', +props.minTime.hours);
-                    }
-                    if (props.minTime.minutes && minutes.value < props.minTime.minutes) {
-                        emit('update:minutes', +props.minTime.minutes);
-                    }
-                }
-            };
-
-            const handleHours = (type: string): void => {
-                if (type === 'increment') {
-                    if (props.maxTime.hours) {
-                        if (hours.value + +props.hoursIncrement > +props.maxTime.hours) {
-                            return;
-                        }
-                    }
-                    if (props.minTime.hours) {
-                        if (hours.value + +props.hoursIncrement < +props.minTime.hours) {
-                            return;
-                        }
-                    }
-                    if (
-                        (props.is24 && hours.value + +props.hoursIncrement >= 24) ||
-                        (!props.is24 && hours.value + +props.hoursIncrement >= 12)
-                    ) {
-                        emit('update:hours', 0);
-                    } else {
-                        emit('update:hours', hours.value + +props.hoursIncrement);
-                    }
-                } else {
-                    if (props.minTime.hours) {
-                        if (hours.value - +props.hoursIncrement < +props.minTime.hours) {
-                            return;
-                        }
-                    }
-                    if (props.maxTime.hours) {
-                        if (hours.value - +props.hoursIncrement > +props.maxTime.hours) {
-                            return;
-                        }
-                    }
-                    if (hours.value - +props.hoursIncrement < 0) {
-                        emit('update:hours', props.is24 ? 24 - +props.hoursIncrement : 12 - -+props.hoursIncrement);
-                    } else {
-                        emit('update:hours', hours.value - +props.hoursIncrement);
-                    }
-                }
-            };
-
-            const handleMinutes = (type: string): void => {
-                if (type === 'increment') {
-                    if (props.maxTime.minutes) {
-                        if (minutes.value + +props.minutesIncrement > +props.maxTime.minutes) {
-                            return;
-                        }
-                    }
-                    if (props.minTime.minutes) {
-                        if (minutes.value + +props.minutesIncrement < +props.minTime.minutes) {
-                            return;
-                        }
-                    }
-                    if (minutes.value + +props.minutesIncrement >= 60) {
-                        emit('update:minutes', 0);
-                    } else {
-                        emit('update:minutes', minutes.value + +props.minutesIncrement);
-                    }
-                } else {
-                    if (props.minTime.minutes) {
-                        if (minutes.value - +props.minutesIncrement < +props.minTime.minutes) {
-                            return;
-                        }
-                    }
-                    if (props.maxTime.minutes) {
-                        if (minutes.value + +props.minutesIncrement > +props.maxTime.minutes) {
-                            return;
-                        }
-                    }
-                    if (minutes.value - +props.minutesIncrement < 0) {
-                        emit('update:minutes', 60 - +props.minutesIncrement);
-                    } else {
-                        emit('update:minutes', minutes.value - +props.minutesIncrement);
-                    }
-                }
-            };
-
-            const convert24ToAmPm = (time: number): number => {
-                if (props.is24) {
-                    return time;
-                }
-                if (time >= 12) {
-                    amPm.value = 'PM';
-                } else {
-                    amPm.value = 'AM';
-                }
-                return hoursToAmPmHours(time);
-            };
-
-            const setAmPm = () => {
-                if (amPm.value === 'PM') {
-                    amPm.value = 'AM';
-                    emit('update:hours', hours.value - 12);
-                } else {
-                    amPm.value = 'PM';
-                    emit('update:hours', hours.value + 12);
-                }
-            };
-
-            return {
-                showTimePicker,
-                hourOverlay,
-                minuteOverlay,
-                hourDisplay,
-                minuteDisplay,
-                toggleHourOverlay,
-                toggleMinuteOverlay,
-                getHoursGridItems,
-                getMinutesGridItems,
-                handleHours,
-                handleMinutes,
-                setAmPm,
-                amPm,
-            };
-        },
+    const emit = defineEmits(['setHours', 'setMinutes', 'update:hours', 'update:minutes']);
+    const props = defineProps({
+        hours: { type: Number as PropType<number>, default: 0 },
+        minutes: { type: Number as PropType<number>, default: 0 },
+        hoursGridIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
+        minutesGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 },
+        hoursIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
+        minutesIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
+        is24: { type: Boolean as PropType<boolean>, default: true },
+        filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
+        minTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
+        maxTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
     });
+
+    const hourOverlay = ref(false);
+    const minuteOverlay = ref(false);
+    const hours = toRef(props, 'hours');
+    const minutes = toRef(props, 'minutes');
+    const amPm = ref('AM');
+
+    onMounted(() => {
+        checkMinMaxHours();
+    });
+
+    const hourDisplay = computed((): string => {
+        const hour = convert24ToAmPm(hours.value);
+        return hour < 10 ? `0${hour}` : `${hour}`;
+    });
+
+    const minuteDisplay = computed((): string => {
+        return minutes.value < 10 ? `0${minutes.value}` : `${minutes.value}`;
+    });
+
+    const generateGridItems = (loopMax: number, increment: number) => {
+        const generatedArray: IDefaultSelect[] = [];
+
+        for (let i = 0; i < loopMax; i += increment) {
+            generatedArray.push({ value: i, text: i < 10 ? `0${i}` : `${i}` });
+        }
+
+        return getArrayInArray(generatedArray);
+    };
+
+    const getHoursGridItems = (): IDefaultSelect[][] => {
+        const hours = props.is24 ? 24 : 12;
+        return generateGridItems(hours, +props.hoursGridIncrement);
+    };
+
+    const getMinutesGridItems = (): IDefaultSelect[][] => {
+        return generateGridItems(60, +props.minutesGridIncrement);
+    };
+
+    const toggleHourOverlay = (): void => {
+        hourOverlay.value = !hourOverlay.value;
+    };
+
+    const toggleMinuteOverlay = (): void => {
+        minuteOverlay.value = !minuteOverlay.value;
+    };
+
+    const checkMinMaxHours = (): void => {
+        if (Object.keys(props.maxTime).length) {
+            if (props.maxTime.hours && hours.value > props.maxTime.hours) {
+                emit('update:hours', +props.maxTime.hours);
+            }
+            if (props.maxTime.minutes && minutes.value > props.maxTime.minutes) {
+                emit('update:minutes', +props.maxTime.minutes);
+            }
+        }
+        if (Object.keys(props.minTime).length) {
+            if (props.minTime.hours && hours.value < props.minTime.hours) {
+                emit('update:hours', +props.minTime.hours);
+            }
+            if (props.minTime.minutes && minutes.value < props.minTime.minutes) {
+                emit('update:minutes', +props.minTime.minutes);
+            }
+        }
+    };
+
+    const handleHours = (type: string): void => {
+        if (type === 'increment') {
+            if (props.maxTime.hours) {
+                if (hours.value + +props.hoursIncrement > +props.maxTime.hours) {
+                    return;
+                }
+            }
+            if (props.minTime.hours) {
+                if (hours.value + +props.hoursIncrement < +props.minTime.hours) {
+                    return;
+                }
+            }
+            if (
+                (props.is24 && hours.value + +props.hoursIncrement >= 24) ||
+                (!props.is24 && hours.value + +props.hoursIncrement >= 12)
+            ) {
+                emit('update:hours', 0);
+            } else {
+                emit('update:hours', hours.value + +props.hoursIncrement);
+            }
+        } else {
+            if (props.minTime.hours) {
+                if (hours.value - +props.hoursIncrement < +props.minTime.hours) {
+                    return;
+                }
+            }
+            if (props.maxTime.hours) {
+                if (hours.value - +props.hoursIncrement > +props.maxTime.hours) {
+                    return;
+                }
+            }
+            if (hours.value - +props.hoursIncrement < 0) {
+                emit('update:hours', props.is24 ? 24 - +props.hoursIncrement : 12 - -+props.hoursIncrement);
+            } else {
+                emit('update:hours', hours.value - +props.hoursIncrement);
+            }
+        }
+    };
+
+    const handleMinutes = (type: string): void => {
+        if (type === 'increment') {
+            if (props.maxTime.minutes) {
+                if (minutes.value + +props.minutesIncrement > +props.maxTime.minutes) {
+                    return;
+                }
+            }
+            if (props.minTime.minutes) {
+                if (minutes.value + +props.minutesIncrement < +props.minTime.minutes) {
+                    return;
+                }
+            }
+            if (minutes.value + +props.minutesIncrement >= 60) {
+                emit('update:minutes', 0);
+            } else {
+                emit('update:minutes', minutes.value + +props.minutesIncrement);
+            }
+        } else {
+            if (props.minTime.minutes) {
+                if (minutes.value - +props.minutesIncrement < +props.minTime.minutes) {
+                    return;
+                }
+            }
+            if (props.maxTime.minutes) {
+                if (minutes.value + +props.minutesIncrement > +props.maxTime.minutes) {
+                    return;
+                }
+            }
+            if (minutes.value - +props.minutesIncrement < 0) {
+                emit('update:minutes', 60 - +props.minutesIncrement);
+            } else {
+                emit('update:minutes', minutes.value - +props.minutesIncrement);
+            }
+        }
+    };
+
+    const convert24ToAmPm = (time: number): number => {
+        if (props.is24) {
+            return time;
+        }
+        if (time >= 12) {
+            amPm.value = 'PM';
+        } else {
+            amPm.value = 'AM';
+        }
+        return hoursToAmPmHours(time);
+    };
+
+    const setAmPm = () => {
+        if (amPm.value === 'PM') {
+            amPm.value = 'AM';
+            emit('update:hours', hours.value - 12);
+        } else {
+            amPm.value = 'PM';
+            emit('update:hours', hours.value + 12);
+        }
+    };
 </script>

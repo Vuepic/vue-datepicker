@@ -1,10 +1,10 @@
-import { IMonthYearHook, MonthYearPickerProps, VueEmit } from '../../interfaces';
+import { IMonthYearHook, UseMonthYearPick, VueEmit } from '../../interfaces';
 
-export const useMontYearPick = (props: MonthYearPickerProps, emit: VueEmit): IMonthYearHook => {
+export const useMontYearPick = (props: UseMonthYearPick, emit: VueEmit): IMonthYearHook => {
     const months = props.months.map((month) => month.value);
     const years = props.years.map((year) => year.value);
-    const excludedMonths = months.filter((month) => !props.filters.months.some((mon) => mon === month));
-    const excludedYears = years.filter((year) => !props.filters.years.some((yr) => yr === year));
+    const excludedMonths = months.filter((month: number) => !props.filters.months.some((mon: number) => mon === month));
+    const excludedYears = years.filter((year: number) => !props.filters.years.some((yr: number) => yr === year));
 
     const onNext = (): void => {
         let tempMonth;
@@ -29,7 +29,7 @@ export const useMontYearPick = (props: MonthYearPickerProps, emit: VueEmit): IMo
             year = props.year + 1;
         }
         if (props.filters.years.includes(year)) {
-            const foundYear = excludedYears.find((availableYear) => availableYear > year);
+            const foundYear = excludedYears.find((availableYear: number) => availableYear > year);
             if (foundYear) {
                 year = foundYear;
             }
@@ -62,7 +62,7 @@ export const useMontYearPick = (props: MonthYearPickerProps, emit: VueEmit): IMo
             year = props.year - 1;
         }
         if (props.filters.years.includes(year)) {
-            const foundYear = excludedYears.reverse().find((availableYear) => availableYear < year);
+            const foundYear = excludedYears.reverse().find((availableYear: number) => availableYear < year);
             if (foundYear) {
                 year = foundYear;
             }

@@ -69,102 +69,77 @@
     </div>
 </template>
 
-<script lang="ts">
-    import { computed, defineComponent, PropType, ref } from 'vue';
+<script lang="ts" setup>
+    import { computed, PropType, ref } from 'vue';
 
     import { ChevronLeftIcon, ChevronRightIcon, CalendarIcon } from './Icons';
     import SelectionGrid from './SelectionGrid.vue';
 
-    import { IDateFilter, IDefaultSelect, MonthYearPickerProps } from '../interfaces';
+    import { IDateFilter, IDefaultSelect } from '../interfaces';
     import { useMontYearPick } from '../utils/composition/month-year';
 
-    export default defineComponent({
-        name: 'MonthYearPicker',
-        emits: ['update:month', 'update:year'],
-        components: {
-            CalendarIcon,
-            ChevronLeftIcon,
-            ChevronRightIcon,
-            SelectionGrid,
-        },
-        props: {
-            months: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
-            years: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
-            year: { type: Number as PropType<number>, default: 0 },
-            month: { type: Number as PropType<number>, default: 0 },
-            filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
-            monthPicker: { type: Boolean as PropType<boolean>, default: false },
-        },
-        setup(props: MonthYearPickerProps, { emit }) {
-            const showMonthPicker = ref(false);
-            const showYearPicker = ref(false);
-            const { onNext, onPrev } = useMontYearPick(props, emit);
-
-            const onMonthUpdate = (month: number): void => {
-                emit('update:month', month);
-                toggleMonthPicker();
-            };
-
-            const onYearUpdate = (year: number): void => {
-                emit('update:year', year);
-                toggleYearPicker();
-            };
-
-            const getGroupedList = (items: IDefaultSelect[]): IDefaultSelect[][] => {
-                const list = [];
-
-                for (let i = 0; i < items.length; i += 3) {
-                    list.push([items[i], items[i + 1], items[i + 2]]);
-                }
-                return list;
-            };
-
-            const getMonthDisplayVal = computed((): string => {
-                const month = props.months.find((month) => month.value === props.month);
-                if (month) return month.text;
-                return '';
-            });
-
-            const groupedMonths = computed((): IDefaultSelect[][] => {
-                return getGroupedList(props.months);
-            });
-
-            const groupedYears = computed((): IDefaultSelect[][] => {
-                return getGroupedList(props.years);
-            });
-
-            const toggleMonthPicker = (): void => {
-                showMonthPicker.value = !showMonthPicker.value;
-            };
-
-            const toggleYearPicker = (): void => {
-                showYearPicker.value = !showYearPicker.value;
-            };
-
-            const handleYear = (increment = false): void => {
-                if (increment) {
-                    const yr = props.year + 1;
-                    emit('update:year', yr);
-                } else {
-                    const yr = props.year - 1;
-                    emit('update:year', yr);
-                }
-            };
-
-            return {
-                onNext,
-                onPrev,
-                getMonthDisplayVal,
-                showMonthPicker,
-                showYearPicker,
-                groupedMonths,
-                groupedYears,
-                toggleMonthPicker,
-                onMonthUpdate,
-                handleYear,
-                onYearUpdate,
-                toggleYearPicker,
-            };
-        },
+    const emit = defineEmits(['update:month', 'update:year']);
+    const props = defineProps({
+        months: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
+        years: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
+        year: { type: Number as PropType<number>, default: 0 },
+        month: { type: Number as PropType<number>, default: 0 },
+        filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
+        monthPicker: { type: Boolean as PropType<boolean>, default: false },
     });
+
+    const showMonthPicker = ref(false);
+    const showYearPicker = ref(false);
+    const { onNext, onPrev } = useMontYearPick(props, emit);
+
+    const onMonthUpdate = (month: number): void => {
+        emit('update:month', month);
+        toggleMonthPicker();
+    };
+
+    const onYearUpdate = (year: number): void => {
+        emit('update:year', year);
+        toggleYearPicker();
+    };
+
+    const getGroupedList = (items: IDefaultSelect[]): IDefaultSelect[][] => {
+        const list = [];
+
+        for (let i = 0; i < items.length; i += 3) {
+            list.push([items[i], items[i + 1], items[i + 2]]);
+        }
+        return list;
+    };
+
+    const getMonthDisplayVal = computed((): string => {
+        const month = props.months.find((month) => month.value === props.month);
+        if (month) return month.text;
+        return '';
+    });
+
+    const groupedMonths = computed((): IDefaultSelect[][] => {
+        return getGroupedList(props.months);
+    });
+
+    const groupedYears = computed((): IDefaultSelect[][] => {
+        return getGroupedList(props.years);
+    });
+
+    const toggleMonthPicker = (): void => {
+        showMonthPicker.value = !showMonthPicker.value;
+    };
+
+    const toggleYearPicker = (): void => {
+        showYearPicker.value = !showYearPicker.value;
+    };
+
+    const handleYear = (increment = false): void => {
+        if (increment) {
+            const yr = props.year + 1;
+            emit('update:year', yr);
+        } else {
+            const yr = props.year - 1;
+            emit('update:year', yr);
+        }
+    };
 </script>
