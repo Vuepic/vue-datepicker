@@ -12,10 +12,10 @@
                 state,
                 inline,
                 textInput,
-                maskProps,
                 textInputOptions: inputDefaultOptions,
                 range,
                 isMenuOpen: isOpen,
+                pattern: defaultPattern,
             }"
             v-model:input-value="inputValue"
             @clear="clearValue"
@@ -96,7 +96,6 @@
         IDateFilter,
         OpenPosition,
         DynamicClass,
-        IMaskProps,
         IFormat,
         ITextInputOptions,
         ModelValue,
@@ -104,7 +103,7 @@
     } from './interfaces';
     import { clickOutsideDirective as vClickOutsideDirective } from './directives/clickOutside';
     import { getDateHours, getDateMinutes, getDefaultPattern } from './utils/date-utils';
-    import { getPatternAndMask, getDefaultTextInputOptions, getDefaultFilters } from './utils/util';
+    import { getDefaultTextInputOptions, getDefaultFilters } from './utils/util';
     import { usePosition } from './utils/composition/position';
     import { useExternalInternalMapper } from './utils/composition/external-internal-mapper';
     import { isString } from './utils/type-guard';
@@ -234,8 +233,6 @@
     });
 
     const theme = computed(() => (props.dark ? 'dp__theme_dark' : 'dp__theme_light'));
-
-    const maskProps = computed((): IMaskProps => getPatternAndMask(defaultPattern.value, props.range));
 
     const inputDefaultOptions = computed((): ITextInputOptions => {
         return Object.assign(getDefaultTextInputOptions(), props.textInputOptions);

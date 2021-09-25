@@ -55,17 +55,11 @@ export interface TimeGridProps {
     values: TimeGridValues;
 }
 
-export interface IMaskProps {
-    pattern: string;
-    mask: string;
-    format: string;
-}
-
 export interface ITextInputOptions {
-    placeholder?: string;
     enterSubmit: boolean;
     openMenu: boolean;
-    freeInput: boolean;
+    rangeSeparator: string;
+    format?: null;
 }
 
 export interface IMonthValue {

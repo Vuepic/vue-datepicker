@@ -1,4 +1,4 @@
-import { ICalendarDate, ICalendarDay, IDateFilter, IDefaultSelect, IMaskProps, ITextInputOptions } from '../interfaces';
+import { ICalendarDate, ICalendarDay, IDateFilter, IDefaultSelect, ITextInputOptions } from '../interfaces';
 
 /**
  * Depending on a week start get starting date of the current calendar
@@ -125,24 +125,13 @@ export const hoursToAmPmHours = (index: number): number => {
     return hoursValues[index];
 };
 
-export const getPatternAndMask = (format: string, range: boolean): IMaskProps => {
-    let pattern = format.replace(/[a-zA-Z]/g, '*');
-    let mask = format;
-    if (range) {
-        pattern = `${pattern} - ${pattern}`;
-        mask = `${format} - ${format}`;
-    }
-
-    return { pattern, mask, format };
-};
-
 /**
  * Default options to merge with user provided ones
  */
 export const getDefaultTextInputOptions = (): ITextInputOptions => ({
     enterSubmit: true,
     openMenu: true,
-    freeInput: false,
+    rangeSeparator: '-',
 });
 
 /**

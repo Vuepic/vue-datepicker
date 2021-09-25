@@ -30,11 +30,10 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, PropType, ref, onMounted } from 'vue';
-    import Inputmask from 'inputmask';
-    import { DynamicClass, IMaskProps, ITextInputOptions } from '../interfaces';
+    import { computed, PropType, ref } from 'vue';
+    import { DynamicClass, ITextInputOptions } from '../interfaces';
     import { CalendarIcon, CancelIcon } from './Icons';
-    import { getMaskedDate, isValidDate, parseFreeInput } from '../utils/date-utils';
+    import { isValidDate, parseFreeInput } from '../utils/date-utils';
 
     const emit = defineEmits(['clear', 'open', 'update:inputValue', 'setInputDate']);
 
@@ -50,14 +49,13 @@
         inputClassName: { type: String as PropType<string>, default: null },
         inline: { type: Boolean as PropType<boolean>, default: false },
         textInput: { type: Boolean as PropType<boolean>, default: false },
-        maskProps: { type: Object as PropType<IMaskProps>, default: () => ({ pattern: '', mask: '' }) },
         textInputOptions: { type: Object as PropType<ITextInputOptions>, default: () => null },
         isMenuOpen: { type: Boolean as PropType<boolean>, default: false },
+        pattern: { type: String as PropType<string>, default: '' },
     });
 
     const rawValue = ref('');
     const parsedDate = ref();
-    const el = ref();
 
     const inputClass = computed(
         (): DynamicClass => ({
@@ -71,30 +69,20 @@
         }),
     );
 
-    onMounted(() => {
-        const { freeInput, placeholder } = props.textInputOptions;
-        if (props.textInput && !freeInput) {
-            const mask = new Inputmask({
-                mask: props.maskProps?.pattern,
-                placeholder: placeholder || props.maskProps?.mask,
-            });
-            mask.mask(el.value);
-        }
-    });
-
     const handleInput = (event: Event): void => {
         const { value } = event.target as HTMLInputElement;
         rawValue.value = value;
-
-        const { freeInput } = props.textInputOptions;
-        const { format } = props.maskProps;
+        const { format, rangeSeparator } = props.textInputOptions;
         if (props.range) {
-            const [dateOne, dateTwo] = value.split(' - ');
-            const parsedDateOne = freeInput ? parseFreeInput(dateOne, format) : getMaskedDate(dateOne, format);
-            const parsedDateTwo = freeInput ? parseFreeInput(dateTwo, format) : getMaskedDate(dateTwo, format);
-            parsedDate.value = parsedDateOne && parsedDateTwo ? [parsedDateOne, parsedDateTwo] : null;
+            const [dateOne, dateTwo] = value.split(`${rangeSeparator}`);
+
+            if (dateOne && dateTwo) {
+                const parsedDateOne = parseFreeInput(dateOne.trim(), format || props.pattern);
+                const parsedDateTwo = parseFreeInput(dateTwo.trim(), format || props.pattern);
+                parsedDate.value = parsedDateOne && parsedDateTwo ? [parsedDateOne, parsedDateTwo] : null;
+            }
         } else {
-            parsedDate.value = freeInput ? parseFreeInput(value, format) : getMaskedDate(value, format);
+            parsedDate.value = parseFreeInput(value, format || props.pattern);
         }
 
         emit('setInputDate', parsedDate.value);
