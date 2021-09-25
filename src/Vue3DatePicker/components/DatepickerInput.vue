@@ -53,8 +53,6 @@
         isMenuOpen: { type: Boolean as PropType<boolean>, default: false },
         pattern: { type: String as PropType<string>, default: '' },
     });
-
-    const rawValue = ref('');
     const parsedDate = ref();
 
     const inputClass = computed(
@@ -71,7 +69,6 @@
 
     const handleInput = (event: Event): void => {
         const { value } = event.target as HTMLInputElement;
-        rawValue.value = value;
         const { format, rangeSeparator } = props.textInputOptions;
         if (props.range) {
             const [dateOne, dateTwo] = value.split(`${rangeSeparator}`);
@@ -92,6 +89,7 @@
     const handleEnter = (): void => {
         if (props.textInputOptions?.enterSubmit && isValidDate(parsedDate.value)) {
             emit('setInputDate', parsedDate.value, true);
+            parsedDate.value = null;
         }
     };
 
@@ -104,7 +102,6 @@
     };
 
     const onClear = () => {
-        rawValue.value = '';
         emit('clear');
     };
 </script>
