@@ -54,63 +54,49 @@
     </div>
 </template>
 
-<script lang="ts">
-    import { computed, defineComponent, PropType, ref } from 'vue';
+<script lang="ts" setup>
+    import { computed, PropType, ref, useSlots } from 'vue';
 
     import { ClockIcon, CalendarIcon } from '../Icons';
     import TimeInput from './TimeInput.vue';
 
     import { IDateFilter, ITimeValue } from '../../interfaces';
-    import { useSlots } from '../../utils/composition/slots';
+    import { mapSlots } from '../../utils/composition/slots';
 
-    export default defineComponent({
-        name: 'TimePicker',
-        emits: ['update:hours', 'update:minutes'],
-        components: {
-            CalendarIcon,
-            ClockIcon,
-            TimeInput,
-        },
-        props: {
-            hoursIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
-            minutesIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
-            is24: { type: Boolean as PropType<boolean>, default: true },
-            hoursGridIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
-            minutesGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 },
-            range: { type: Boolean as PropType<boolean>, default: false },
-            filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
-            minTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
-            maxTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
-            timePicker: { type: Boolean as PropType<boolean>, default: false },
-            hours: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
-            minutes: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
-        },
-        setup(props, { slots }) {
-            const showTimePicker = ref(false);
+    defineEmits(['update:hours', 'update:minutes']);
 
-            const toggleTimePicker = (show: boolean): void => {
-                showTimePicker.value = show;
-            };
-
-            const timeInputSlots = useSlots(slots, 'timePicker');
-
-            const timeInputProps = computed(() => ({
-                is24: props.is24,
-                hoursGridIncrement: props.hoursGridIncrement,
-                minutesGridIncrement: props.minutesGridIncrement,
-                hoursIncrement: props.hoursIncrement,
-                minutesIncrement: props.minutesIncrement,
-                filters: props.filters,
-                maxTime: props.maxTime,
-                minTime: props.minTime,
-            }));
-
-            return {
-                timeInputProps,
-                showTimePicker,
-                timeInputSlots,
-                toggleTimePicker,
-            };
-        },
+    const props = defineProps({
+        hoursIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
+        minutesIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
+        is24: { type: Boolean as PropType<boolean>, default: true },
+        hoursGridIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
+        minutesGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 },
+        range: { type: Boolean as PropType<boolean>, default: false },
+        filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
+        minTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
+        maxTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
+        timePicker: { type: Boolean as PropType<boolean>, default: false },
+        hours: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
+        minutes: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
     });
+    const slots = useSlots();
+
+    const showTimePicker = ref(false);
+
+    const toggleTimePicker = (show: boolean): void => {
+        showTimePicker.value = show;
+    };
+
+    const timeInputSlots = mapSlots(slots, 'timePicker');
+
+    const timeInputProps = computed(() => ({
+        is24: props.is24,
+        hoursGridIncrement: props.hoursGridIncrement,
+        minutesGridIncrement: props.minutesGridIncrement,
+        hoursIncrement: props.hoursIncrement,
+        minutesIncrement: props.minutesIncrement,
+        filters: props.filters,
+        maxTime: props.maxTime,
+        minTime: props.minTime,
+    }));
 </script>

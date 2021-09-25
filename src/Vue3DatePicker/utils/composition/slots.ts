@@ -22,7 +22,7 @@ const slotNames = {
     action: () => slots.filter((slot) => slot.use.includes('action')),
 };
 
-export const useSlots = (slots: Slots, usage: 'all' | 'monthYear' | 'timePicker' | 'input' | 'action'): string[] => {
+export const mapSlots = (slots: Slots, usage: 'all' | 'monthYear' | 'timePicker' | 'input' | 'action'): string[] => {
     const toReturn: string[] = [];
 
     slotNames[usage]().forEach((slot) => {

@@ -20,55 +20,48 @@
     </div>
 </template>
 
-<script lang="ts">
-    import { computed, defineComponent, PropType } from 'vue';
-    import { ActionRowProps, IFormat, InternalModuleValue } from '../interfaces';
+<script lang="ts" setup>
+    import { computed, PropType } from 'vue';
+    import { IFormat, InternalModuleValue } from '../interfaces';
     import { formatDate, getMonthForExternal, getTImeForExternal } from '../utils/date-utils';
     import { isModelValueRange } from '../utils/type-guard';
 
-    export default defineComponent({
-        name: 'ActionRow',
-        emits: ['closePicker', 'selectDate'],
-        props: {
-            selectText: { type: String as PropType<string>, default: 'Select' },
-            cancelText: { type: String as PropType<string>, default: 'Cancel' },
-            internalModelValue: { type: [Date, Array, Object] as PropType<InternalModuleValue>, default: null },
-            range: { type: Boolean as PropType<boolean>, default: false },
-            previewFormat: {
-                type: [String, Function] as PropType<IFormat>,
-                default: () => '',
-            },
-            inline: { type: Boolean as PropType<boolean>, default: false },
-            monthPicker: { type: Boolean as PropType<boolean>, default: false },
-            timePicker: { type: Boolean as PropType<boolean>, default: false },
-        },
-        setup(props: ActionRowProps) {
-            const previewValue = computed((): string | string[] => {
-                if (!props.internalModelValue) return '';
-                if (typeof props.previewFormat === 'string') {
-                    if (isModelValueRange(props.internalModelValue)) {
-                        if (props.internalModelValue.length === 2) {
-                            return [
-                                formatDate(props.internalModelValue[0], props.previewFormat),
-                                formatDate(props.internalModelValue[1], props.previewFormat),
-                            ];
-                        }
-                        return `${formatDate(props.internalModelValue[0], props.previewFormat)} -`;
-                    }
-                    return formatDate(props.internalModelValue, props.previewFormat);
-                }
-                if (props.timePicker) {
-                    return props.previewFormat(getTImeForExternal(props.internalModelValue));
-                }
-                if (props.monthPicker) {
-                    return props.previewFormat(getMonthForExternal(props.internalModelValue as Date));
-                }
-                return props.previewFormat(props.internalModelValue);
-            });
+    defineEmits(['closePicker', 'selectDate']);
 
-            return {
-                previewValue,
-            };
+    const props = defineProps({
+        selectText: { type: String as PropType<string>, default: 'Select' },
+        cancelText: { type: String as PropType<string>, default: 'Cancel' },
+        internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
+        range: { type: Boolean as PropType<boolean>, default: false },
+        previewFormat: {
+            type: [String, Function] as PropType<IFormat>,
+            default: () => '',
         },
+        inline: { type: Boolean as PropType<boolean>, default: false },
+        monthPicker: { type: Boolean as PropType<boolean>, default: false },
+        timePicker: { type: Boolean as PropType<boolean>, default: false },
+    });
+
+    const previewValue = computed((): string | string[] => {
+        if (!props.internalModelValue) return '';
+        if (typeof props.previewFormat === 'string') {
+            if (isModelValueRange(props.internalModelValue)) {
+                if (props.internalModelValue.length === 2) {
+                    return [
+                        formatDate(props.internalModelValue[0], props.previewFormat),
+                        formatDate(props.internalModelValue[1], props.previewFormat),
+                    ];
+                }
+                return `${formatDate(props.internalModelValue[0], props.previewFormat)} -`;
+            }
+            return formatDate(props.internalModelValue, props.previewFormat);
+        }
+        if (props.timePicker) {
+            return props.previewFormat(getTImeForExternal(props.internalModelValue));
+        }
+        if (props.monthPicker) {
+            return props.previewFormat(getMonthForExternal(props.internalModelValue as Date));
+        }
+        return props.previewFormat(props.internalModelValue);
     });
 </script>

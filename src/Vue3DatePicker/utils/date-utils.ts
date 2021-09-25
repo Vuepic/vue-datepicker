@@ -20,12 +20,11 @@ import getISOWeek from 'date-fns/getISOWeek';
 import { IMonthValue, ITimeValue } from '../interfaces';
 
 /**
- * If text input is set to free, meaning there is no specified mask,
  * it will try to parse date based on pattern and parts of the text value
  */
 export const parseFreeInput = (value: string, pattern: string): Date | null => {
     const parsedDate = parse(value, pattern.slice(0, value.length), new Date());
-    if (isValid(parsedDate)) {
+    if (isValid(parsedDate) && isDate(parsedDate)) {
         return parsedDate;
     }
     return null;
@@ -47,17 +46,6 @@ export const resetDateTime = (value: Date | string): Date => {
  */
 export const parseDate = (date: string, pattern: string): Date => {
     return parse(date, pattern, new Date());
-};
-
-/**
- * From masked text input, return date if valid, null if not
- */
-export const getMaskedDate = (value: string, pattern: string): Date | null => {
-    const parsedDate = parseDate(value, pattern);
-    if (isDate(parsedDate) && isValid(parsedDate)) {
-        return parsedDate;
-    }
-    return null;
 };
 
 /**

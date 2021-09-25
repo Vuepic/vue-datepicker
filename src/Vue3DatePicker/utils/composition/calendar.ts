@@ -1,5 +1,5 @@
 import { computed, onMounted, Ref, ref, UnwrapRef, watch } from 'vue';
-import { CalendarProps, ICalendarDay, InternalModuleValue, VueEmit } from '../../interfaces';
+import { ICalendarDay, InternalModuleValue, UseCalendar, VueEmit } from '../../interfaces';
 import {
     getDateHours,
     getDateMinutes,
@@ -30,7 +30,7 @@ interface IUseCalendar {
     minutes: Ref<number | number[]>;
 }
 
-export const useCalendar = (props: CalendarProps, emit: VueEmit): IUseCalendar => {
+export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => {
     const today = ref<Date>(new Date());
     const hoveredDate = ref<Date>();
     const month = ref<number>(getDateMonth(new Date()));
@@ -58,12 +58,14 @@ export const useCalendar = (props: CalendarProps, emit: VueEmit): IUseCalendar =
      * can be provided partially
      */
     const assignStartTime = (): void => {
-        if (isTimeArr(props.startTime)) {
-            hours.value = [+props.startTime[0].hours, +props.startTime[1].hours];
-            minutes.value = [+props.startTime[0].minutes, +props.startTime[1].minutes];
-        } else {
-            hours.value = +props.startTime.hours;
-            minutes.value = +props.startTime.minutes;
+        if (props.startTime) {
+            if (isTimeArr(props.startTime)) {
+                hours.value = [+props.startTime[0].hours, +props.startTime[1].hours];
+                minutes.value = [+props.startTime[0].minutes, +props.startTime[1].minutes];
+            } else {
+                hours.value = +props.startTime.hours;
+                minutes.value = +props.startTime.minutes;
+            }
         }
     };
 

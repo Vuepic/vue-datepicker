@@ -9,10 +9,4 @@
     </svg>
 </template>
 
-<script lang="ts">
-    import { defineComponent } from 'vue';
-
-    export default defineComponent({
-        name: 'ClockIcon',
-    });
-</script>
+<script lang="ts" setup></script>
