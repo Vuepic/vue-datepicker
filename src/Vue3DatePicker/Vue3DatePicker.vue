@@ -360,4 +360,11 @@
             emit('textSubmit');
         }
     };
+
+    defineExpose({
+        closeMenu,
+        selectDate,
+        clearValue,
+        openMenu,
+    });
 </script>
