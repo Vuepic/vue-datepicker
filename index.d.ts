@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { DefineComponent, ComputedOptions, ComponentOptionsMixin } from 'vue';
+import { DefineComponent, ComputedOptions, ComponentOptionsMixin, MethodOptions } from 'vue';
 
 interface ITimeObj {
     hours: number | string;
@@ -16,13 +16,6 @@ type ModelValDef = Date | Date[] | string | string[] | ITimeObj | ITimeObj[] | I
 type FormatFnc = string | ((date: Date | Date[] | ITimeObj | ITimeObj[] | IMonthObj) => string);
 
 type EmitEvents = 'update:modelValue' | 'textSubmit' | 'closed' | 'cleared';
-
-interface PublicMethods {
-    selectDate: () => void;
-    closeMenu: () => void;
-    openMenu: () => void;
-    clearValue: () => void;
-}
 
 interface Vue3DatePicker {
     uid?: string;
@@ -88,6 +81,13 @@ interface Vue3DatePicker {
     timePickerComponent?: DefineComponent;
     actionRowComponent?: DefineComponent;
     customProps?: Record<string, unknown>;
+}
+
+interface PublicMethods extends MethodOptions {
+    selectDate: () => void;
+    closeMenu: () => void;
+    openMenu: () => void;
+    clearValue: () => void;
 }
 
 declare const _default: DefineComponent<
