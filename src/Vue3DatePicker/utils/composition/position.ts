@@ -14,6 +14,18 @@ interface IUsePosition {
 export const usePosition = (openPosition: OpenPosition, uid: string): IUsePosition => {
     const menuPosition = ref({ top: '0', left: '0', transform: 'none' });
     const openOnTop = ref(false);
+    const diagonal = 18; // arrow square diagonal + 1
+
+    /**
+     * Get bounding client rect of an input field, and proper top offset
+     */
+    const getElClientRect = (el: HTMLElement) => {
+        const bodyRect = document.body.getBoundingClientRect();
+        const { left, width, height, top } = el.getBoundingClientRect();
+        const offset = top - bodyRect.top;
+
+        return { left, width, height, top, offset };
+    };
 
     /**
      * Main call, when input is clicked, opens the menu on the first entry
@@ -22,8 +34,8 @@ export const usePosition = (openPosition: OpenPosition, uid: string): IUsePositi
     const setMenuPosition = (recalculate = true): void => {
         const el = document.getElementById(`dp__input_${uid}`);
         if (el) {
-            const { left, width, height, top } = el.getBoundingClientRect();
-            const position = { top: `${height + top + 10}px`, left: '', transform: 'none' };
+            const { left, width, height, offset } = getElClientRect(el);
+            const position = { top: `${height + offset + diagonal}px`, left: '', transform: 'none' };
             if (openPosition === OpenPosition.left) {
                 position.left = `${left}px`;
             }
@@ -51,9 +63,9 @@ export const usePosition = (openPosition: OpenPosition, uid: string): IUsePositi
     const recalculatePosition = (): void => {
         const el = document.getElementById(`dp__input_${uid}`);
         if (el) {
-            const { height: inputHeight, top } = el.getBoundingClientRect();
+            const { height: inputHeight, top, offset } = getElClientRect(el);
             const fullHeight = window.innerHeight;
-            const freeSpaceBottom = fullHeight - top - inputHeight;
+            const freeSpaceBottom = fullHeight - offset - inputHeight;
 
             const menuEl = document.getElementById(`dp__menu_${uid}`);
 
@@ -62,14 +74,14 @@ export const usePosition = (openPosition: OpenPosition, uid: string): IUsePositi
                 const menuHeight = height + inputHeight;
                 if (menuHeight > top && menuHeight > freeSpaceBottom) {
                     if (top > freeSpaceBottom) {
-                        openOnTop.value = true;
+                        openOnTop.value = false;
                     } else {
                         setMenuPosition(false);
                         openOnTop.value = false;
                     }
                 } else {
                     if (menuHeight > freeSpaceBottom) {
-                        menuPosition.value.top = `${top - height - 12}px`;
+                        menuPosition.value.top = `${offset - height - 1}px`;
                         openOnTop.value = true;
                     } else {
                         setMenuPosition(false);
