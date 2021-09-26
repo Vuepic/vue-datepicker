@@ -22,8 +22,8 @@ export const usePosition = (openPosition: OpenPosition, uid: string): IUsePositi
     const setMenuPosition = (recalculate = true): void => {
         const el = document.getElementById(`dp__input_${uid}`);
         if (el) {
-            const { left, width, height } = el.getBoundingClientRect();
-            const position = { top: `${height + el.offsetTop + 10}px`, left: '', transform: 'none' };
+            const { left, width, height, top } = el.getBoundingClientRect();
+            const position = { top: `${height + top + 10}px`, left: '', transform: 'none' };
             if (openPosition === OpenPosition.left) {
                 position.left = `${left}px`;
             }
@@ -69,7 +69,7 @@ export const usePosition = (openPosition: OpenPosition, uid: string): IUsePositi
                     }
                 } else {
                     if (menuHeight > freeSpaceBottom) {
-                        menuPosition.value.top = `${el.offsetTop - height - 12}px`;
+                        menuPosition.value.top = `${top - height - 12}px`;
                         openOnTop.value = true;
                     } else {
                         setMenuPosition(false);
