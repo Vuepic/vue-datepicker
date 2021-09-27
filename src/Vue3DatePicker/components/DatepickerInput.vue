@@ -1,5 +1,5 @@
 <template>
-    <div @click="handleOpen">
+    <div @click="handleOpen" :id="`dp__input_${uid}`">
         <slot v-if="$slots.trigger && !inline" name="trigger" />
         <div v-if="!$slots.trigger && !inline" class="dp__input_wrap">
             <input
@@ -52,6 +52,7 @@
         textInputOptions: { type: Object as PropType<ITextInputOptions>, default: () => null },
         isMenuOpen: { type: Boolean as PropType<boolean>, default: false },
         pattern: { type: String as PropType<string>, default: '' },
+        uid: { type: String as PropType<string>, default: 'dp' },
     });
     const parsedDate = ref();
 
