@@ -1,7 +1,6 @@
 <template>
     <div :class="wrapperClass">
         <DatepickerInput
-            :id="`dp__input_${uid}`"
             v-bind="{
                 placeholder,
                 hideInputIcon,
@@ -16,6 +15,7 @@
                 range,
                 isMenuOpen: isOpen,
                 pattern: defaultPattern,
+                uid,
             }"
             v-model:input-value="inputValue"
             @clear="clearValue"
@@ -259,12 +259,14 @@
      * Depending on the props, it can close the menu or set correct position
      */
     const onScroll = (): void => {
-        if (props.closeOnScroll) {
-            closeMenu();
-        } else if (props.autoPosition) {
-            setMenuPosition();
-        } else {
-            window.removeEventListener('scroll', onScroll);
+        if (isOpen.value) {
+            if (props.closeOnScroll) {
+                closeMenu();
+            } else if (props.autoPosition) {
+                setMenuPosition();
+            } else {
+                window.removeEventListener('scroll', onScroll);
+            }
         }
     };
 
@@ -273,7 +275,9 @@
      * Since the menu is absolutely positioned, on window resize, correct positioning
      */
     const onResize = (): void => {
-        setMenuPosition();
+        if (isOpen.value) {
+            setMenuPosition();
+        }
     };
 
     const openMenu = (): void => {
