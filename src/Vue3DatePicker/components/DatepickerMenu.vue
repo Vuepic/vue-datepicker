@@ -43,6 +43,7 @@
             @closePicker="$emit('closePicker')"
             @selectDate="$emit('selectDate')"
             @autoApply="$emit('autoApply', $event)"
+            @timeUpdate="$emit('timeUpdate')"
             @update:internalModelValue="$emit('update:internalModelValue', $event)"
         >
             <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
@@ -59,7 +60,14 @@
     import { DynamicClass, IDateFilter, IFormat, InternalModuleValue, ITimeValue } from '../interfaces';
     import { mapSlots } from '../utils/composition/slots';
 
-    const emit = defineEmits(['update:internalModelValue', 'closePicker', 'selectDate', 'dpOpen', 'autoApply']);
+    const emit = defineEmits([
+        'update:internalModelValue',
+        'closePicker',
+        'selectDate',
+        'dpOpen',
+        'autoApply',
+        'timeUpdate',
+    ]);
     const props = defineProps({
         uid: { type: String as PropType<string>, default: 'dp' },
         internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },

@@ -108,7 +108,7 @@
     import { useCalendar } from '../utils/composition/calendar';
     import { mapSlots } from '../utils/composition/slots';
 
-    const emit = defineEmits(['update:internalModelValue', 'closePicker', 'selectDate', 'autoApply']);
+    const emit = defineEmits(['update:internalModelValue', 'closePicker', 'selectDate', 'autoApply', 'timeUpdate']);
 
     const props = defineProps({
         weekStart: { type: [Number, String] as PropType<number | string>, default: 1 },

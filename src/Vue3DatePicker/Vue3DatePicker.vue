@@ -77,6 +77,7 @@
                 @selectDate="selectDate"
                 @dpOpen="recalculatePosition"
                 @autoApply="autoApplyValue"
+                @timeUpdate="timeUpdate"
             >
                 <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
                     <slot :name="slot" v-bind="{ ...args }" />
@@ -362,6 +363,12 @@
         if (submit) {
             selectDate();
             emit('textSubmit');
+        }
+    };
+
+    const timeUpdate = (): void => {
+        if (props.autoApply) {
+            emitModelValue();
         }
     };
 
