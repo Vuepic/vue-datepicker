@@ -253,6 +253,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         } else if (!props.range && !isRange(dateValue)) {
             modelValue.value = setDateTime(dateValue as Date, hours.value as number, minutes.value as number);
         }
+        emit('timeUpdate');
     };
 
     /**
