@@ -26,7 +26,7 @@
                 <slot :name="slot" />
             </template>
         </DatepickerInput>
-        <teleport :to="teleport" :disabled="inline">
+        <teleport :to="teleport" :disabled="inline" v-if="isOpen">
             <DatepickerMenu
                 v-if="isOpen"
                 v-click-outside-directive.dp__menu="closeMenu"
