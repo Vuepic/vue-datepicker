@@ -18,6 +18,7 @@ interface IExternalInternalMapper {
     inputValue: Ref<string>;
     formatInputValue: () => void;
     emitModelValue: () => void;
+    checkBeforeEmit: () => boolean;
 }
 
 /**
@@ -91,6 +92,16 @@ export const useExternalInternalMapper = (
         }
     };
 
+    const checkBeforeEmit = (): boolean => {
+        if (internalModelValue.value) {
+            if (range) {
+                return internalModelValue.value.length === 2;
+            }
+            return !!internalModelValue.value;
+        }
+        return false;
+    };
+
     /**
      * When date is selected, emit event to update modelValue on external
      */
@@ -105,5 +116,12 @@ export const useExternalInternalMapper = (
         formatInputValue();
     };
 
-    return { parseExternalModelValue, formatInputValue, internalModelValue, inputValue, emitModelValue };
+    return {
+        parseExternalModelValue,
+        formatInputValue,
+        internalModelValue,
+        inputValue,
+        emitModelValue,
+        checkBeforeEmit,
+    };
 };
