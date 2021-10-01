@@ -26,7 +26,7 @@
                 <slot :name="slot" />
             </template>
         </DatepickerInput>
-        <teleport :to="teleport" :disabled="inline">
+        <teleport :to="teleport" :disabled="inline" v-if="isOpen">
             <DatepickerMenu
                 v-if="isOpen"
                 v-click-outside-directive.dp__menu="closeMenu"
@@ -201,15 +201,16 @@
 
     const { openOnTop, menuPosition, setMenuPosition, recalculatePosition } = usePosition(props.position, props.uid);
 
-    const { internalModelValue, inputValue, parseExternalModelValue, emitModelValue } = useExternalInternalMapper(
-        props.format,
-        props.timePicker,
-        props.monthPicker,
-        props.range,
-        props.is24,
-        props.enableTimePicker,
-        emit,
-    );
+    const { internalModelValue, inputValue, parseExternalModelValue, emitModelValue, checkBeforeEmit } =
+        useExternalInternalMapper(
+            props.format,
+            props.timePicker,
+            props.monthPicker,
+            props.range,
+            props.is24,
+            props.enableTimePicker,
+            emit,
+        );
 
     const wrapperClass = computed(
         (): DynamicClass => ({
@@ -313,7 +314,7 @@
      * Called when select button is clicked, emit update for the modelValue
      */
     const selectDate = (): void => {
-        if (internalModelValue.value) {
+        if (checkBeforeEmit()) {
             emitModelValue();
             closeMenu();
         }

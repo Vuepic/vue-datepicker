@@ -10,7 +10,7 @@
 
 .dp__time_col {
     padding: 0 20px;
-    font-size: 2rem;
+    font-size: $dp__time_font_size;
     text-align: center;
 }
 
@@ -44,7 +44,7 @@
     background: var(--dp-primary-color);
     color: var(--dp-primary-text-color);
     border: none;
-    padding: 10px;
+    padding: $dp__common_padding;
     border-radius: $dp__border_radius;
     cursor: pointer;
 }

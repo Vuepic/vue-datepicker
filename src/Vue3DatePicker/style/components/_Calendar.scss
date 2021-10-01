@@ -36,10 +36,10 @@
     align-items: center;
     text-align: center;
     justify-content: center;
-    border-radius: $dp_cell_border_radius;
-    height: 30px;
+    border-radius: $dp__cell_border_radius;
+    height: $dp__cell_size;
     padding: $dp__cell_padding;
-    width: 30px;
+    width: $dp__cell_size;
 }
 
 .dp__cell_offset {

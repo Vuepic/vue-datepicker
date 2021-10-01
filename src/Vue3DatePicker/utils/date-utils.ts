@@ -77,7 +77,7 @@ export const setDateTime = (date: Date | null, hours?: number | null, minutes?: 
  */
 export const setDateMonthOrYear = (date: Date | null, month?: number | null, year?: number | null): Date => {
     let dateCopy = date ? new Date(date) : new Date();
-    if (month) {
+    if (month || month === 0) {
         dateCopy = setMonth(dateCopy, month);
     }
     if (year) {

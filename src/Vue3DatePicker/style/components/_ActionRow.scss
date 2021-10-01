@@ -2,7 +2,7 @@
     display: flex;
     align-items: center;
     width: 100%;
-    padding: 10px;
+    padding: $dp__common_padding;
     box-sizing: border-box;
     color: var(--dp-text-color);
     background: var(--dp-background-color);
@@ -16,7 +16,7 @@
 .dp__selection_preview {
     width: 50%;
     color: var(--dp-text-color);
-    font-size: 0.8rem;
+    font-size: $dp__preview_font_size;
 }
 
 .dp__action_buttons {
