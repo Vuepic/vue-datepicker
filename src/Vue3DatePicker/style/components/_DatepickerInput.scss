@@ -10,12 +10,10 @@
     outline: none;
     transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
     width: 100%;
-    font-size: 1rem;
-    line-height: 1.5rem;
+    font-size: $dp__font_size;
+    line-height: $dp__font_size * 1.5;
     padding: 6px 12px;
     color: var(--dp-text-color);
-    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-    -moz-box-sizing: border-box; /* Firefox, other Gecko */
     box-sizing: border-box;
 
     &::placeholder {
@@ -37,11 +35,11 @@
 
 .dp__input_icons {
     display: inline-block;
-    width: 1rem;
-    height: 1rem;
+    width: $dp__font_size;
+    height: $dp__font_size;
     stroke-width: 0;
-    font-size: 1rem;
-    line-height: 1.5rem;
+    font-size: $dp__font_size;
+    line-height: $dp__font_size * 1.5;
     padding: 6px 12px;
     color: var(--dp-icon-color);
 }
@@ -69,6 +67,7 @@
 
 .dp__input_valid {
     box-shadow: 0 0 4px var(--dp-success-color);
+    border-color: var(--dp-success-color);
 
     &:hover {
         border-color: var(--dp-success-color);
@@ -77,6 +76,7 @@
 
 .dp__input_invalid {
     box-shadow: 0 0 4px var(--dp-danger-color);
+    border-color: var(--dp-danger-color);
 
     &:hover {
         border-color: var(--dp-danger-color);
