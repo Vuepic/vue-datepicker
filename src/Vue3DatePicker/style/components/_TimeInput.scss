@@ -6,6 +6,7 @@
     user-select: none;
     font-family: $dp__font_family;
     color: var(--dp-text-color);
+    box-sizing: unset;
 }
 
 .dp__time_col {

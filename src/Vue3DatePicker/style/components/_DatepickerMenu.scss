@@ -7,7 +7,8 @@
     font-size: $dp__font_size;
     user-select: none;
     border: 1px solid var(--dp-border-color);
-    z-index: 1;
+    z-index: 99999;
+    box-sizing: unset;
 }
 
 .dp__arrow_top {
