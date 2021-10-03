@@ -7,9 +7,10 @@
     top: 0;
     left: 0;
     transition: opacity 1s ease-out;
-    z-index: 2;
+    z-index: 99999;
     font-family: $dp__font_family;
     color: var(--dp-text-color);
+    box-sizing: unset;
 }
 
 .dp__overlay::-webkit-scrollbar-track {
