@@ -20,14 +20,11 @@ export const usePosition = (openPosition: OpenPosition, uid: string): IUsePositi
      * Get correct offset of an element
      */
     const getOffset = (el: HTMLElement): { top: number; left: number } => {
-        let x = 0;
-        let y = 0;
-        while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
-            x += el.offsetLeft - el.scrollLeft;
-            y += el.offsetTop - el.scrollTop;
-            el = el.offsetParent as HTMLElement;
-        }
-        return { top: y, left: x };
+        const rect = el.getBoundingClientRect();
+        return {
+            left: rect.left + window.scrollX,
+            top: rect.top + window.scrollY,
+        };
     };
 
     /**
