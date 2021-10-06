@@ -40,6 +40,7 @@
         inline: { type: Boolean as PropType<boolean>, default: false },
         monthPicker: { type: Boolean as PropType<boolean>, default: false },
         timePicker: { type: Boolean as PropType<boolean>, default: false },
+        twoCalendars: { type: Boolean as PropType<boolean>, default: false },
     });
 
     const previewValue = computed((): string | string[] => {
@@ -47,6 +48,12 @@
         if (typeof props.previewFormat === 'string') {
             if (isModelValueRange(props.internalModelValue)) {
                 if (props.internalModelValue.length === 2) {
+                    if (props.twoCalendars) {
+                        return `${formatDate(props.internalModelValue[0], props.previewFormat)} - ${formatDate(
+                            props.internalModelValue[1],
+                            props.previewFormat,
+                        )}`;
+                    }
                     return [
                         formatDate(props.internalModelValue[0], props.previewFormat),
                         formatDate(props.internalModelValue[1], props.previewFormat),

@@ -9,7 +9,7 @@
             <div class="dp__month_year_select" @click="toggleYearPicker">{{ year }}</div>
             <SelectionGrid
                 v-if="showMonthPicker"
-                v-bind="{ modelValue: month, items: groupedMonths, disabledValues: filters.months }"
+                v-bind="{ modelValue: month, items: groupedMonths, disabledValues: filters.months, uid: instance }"
                 @update:modelValue="onMonthUpdate"
                 @toggle="toggleMonthPicker"
                 ><template #button-icon>
@@ -18,7 +18,7 @@
             ></SelectionGrid>
             <SelectionGrid
                 v-if="showYearPicker"
-                v-bind="{ modelValue: year, items: groupedYears, disabledValues: filters.years }"
+                v-bind="{ modelValue: year, items: groupedYears, disabledValues: filters.years, uid: instance }"
                 @update:modelValue="onYearUpdate"
                 @toggle="toggleYearPicker"
                 ><template #button-icon>
@@ -86,6 +86,7 @@
         month: { type: Number as PropType<number>, default: 0 },
         filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
         monthPicker: { type: Boolean as PropType<boolean>, default: false },
+        instance: { type: Number as PropType<number>, default: 1 },
     });
 
     const showMonthPicker = ref(false);
