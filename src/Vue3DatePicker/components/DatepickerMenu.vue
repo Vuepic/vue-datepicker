@@ -134,6 +134,7 @@
         timePickerComponent: { type: Object as PropType<DefineComponent>, default: null },
         actionRowComponent: { type: Object as PropType<DefineComponent>, default: null },
         customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
+        hideOffsetDates: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
 
@@ -178,11 +179,11 @@
 
     // Get dates for the currently selected month and year
     const dates = computed(() => {
-        return getCalendarDays(month.value, year.value, +props.weekStart);
+        return getCalendarDays(month.value, year.value, +props.weekStart, props.hideOffsetDates);
     });
 
     const datesNextMonth = computed(() => {
-        return getCalendarDays(monthNext.value, yearNext.value, +props.weekStart);
+        return getCalendarDays(monthNext.value, yearNext.value, +props.weekStart, props.hideOffsetDates);
     });
 
     // If datepicker is using only month or time picker
@@ -237,11 +238,17 @@
                     const disabled = isDisabled(calendarDay.value);
                     calendarDay.classData = {
                         ['dp__cell_offset']: !calendarDay.current,
-                        ['dp__pointer']: !disabled,
+                        ['dp__pointer']: !disabled && !(!calendarDay.current && props.hideOffsetDates),
                         ['dp__active_date']: isActiveDate(calendarDay),
-                        ['dp__date_hover']: !disabled && !isActiveDate(calendarDay),
+                        ['dp__date_hover']:
+                            !disabled && !isActiveDate(calendarDay) && !(!calendarDay.current && props.hideOffsetDates),
                         ['dp__range_between']:
-                            props.range && !disabled && !isActiveDate(calendarDay) ? rangeActive(calendarDay) : false,
+                            props.range &&
+                            !disabled &&
+                            !(!calendarDay.current && props.hideOffsetDates) &&
+                            !isActiveDate(calendarDay)
+                                ? rangeActive(calendarDay)
+                                : false,
                         ['dp__today']: isDateEqual(calendarDay.value, today.value),
                         ['dp__cell_disabled']: disabled,
                         [props.calendarCellClassName]: !!props.calendarCellClassName,

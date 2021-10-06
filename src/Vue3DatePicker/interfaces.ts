@@ -26,7 +26,7 @@ export interface IDateFilter {
 }
 
 export interface ICalendarDay {
-    text: number;
+    text: number | string;
     value: Date;
     current: boolean;
     classData?: DynamicClass;
@@ -87,6 +87,8 @@ export type UseCalendar = {
     autoApply: boolean;
     monthPicker: boolean;
     timePicker: boolean;
+    hideOffsetDates: boolean;
+    twoCalendars: boolean;
 } & { [key: string]: any };
 
 export interface UseMonthYearPick {

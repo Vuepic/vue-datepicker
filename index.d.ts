@@ -82,6 +82,7 @@ interface Vue3DatePicker {
     timePickerComponent?: DefineComponent;
     actionRowComponent?: DefineComponent;
     customProps?: Record<string, unknown>;
+    hideOffsetDates?: boolean;
 }
 
 interface PublicMethods extends MethodOptions {
