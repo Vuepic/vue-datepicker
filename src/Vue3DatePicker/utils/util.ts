@@ -20,16 +20,17 @@ const getSevenDaysOffset = (date: Date): Date => {
 };
 
 // Get 7 days from the provided start date, month is used to check whether the date is from the specified month or in the offset
-const getWeekDays = (startDay: Date, month: number): ICalendarDay[] => {
+const getWeekDays = (startDay: Date, month: number, hideOffsetDates: boolean): ICalendarDay[] => {
     const startDate = new Date(JSON.parse(JSON.stringify(startDay)));
     const dates = [];
     for (let i = 0; i < 7; i++) {
         const next = new Date(new Date(JSON.parse(JSON.stringify(startDate))).getTime());
         next.setDate(startDate.getDate() + i);
+        const isNext = JSON.parse(JSON.stringify(next.getMonth())) !== month;
         dates.push({
-            text: next.getDate(),
+            text: hideOffsetDates && isNext ? '' : next.getDate(),
             value: next,
-            current: JSON.parse(JSON.stringify(next.getMonth())) === month,
+            current: !isNext,
         });
     }
     return dates;
@@ -43,7 +44,12 @@ const getNumberOfWeeksInAMonth = (firstDate: Date, lastDate: Date): number => {
 };
 
 // Get days for the calendar to be displayed in a table grouped by weeks
-export const getCalendarDays = (month: number, year: number, start: number): ICalendarDate[] => {
+export const getCalendarDays = (
+    month: number,
+    year: number,
+    start: number,
+    hideOffsetDates: boolean,
+): ICalendarDate[] => {
     const weeks: ICalendarDate[] = [];
     const firstDate = new Date(year, month, 1);
     const lastDate = new Date(year, month + 1, 0);
@@ -54,7 +60,7 @@ export const getCalendarDays = (month: number, year: number, start: number): ICa
         if (week !== 0) {
             firstDateInCalendar = getSevenDaysOffset(firstDateInCalendar);
         }
-        const days = getWeekDays(firstDateInCalendar, month);
+        const days = getWeekDays(firstDateInCalendar, month, hideOffsetDates);
         weeks.push({ days });
     }
 

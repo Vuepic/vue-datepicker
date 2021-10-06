@@ -188,6 +188,9 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         if (isDisabled(day.value)) {
             return;
         }
+        if (!day.current && props.hideOffsetDates) {
+            return;
+        }
         if (!props.range && !isNumberArray(hours.value) && !isNumberArray(minutes.value)) {
             modelValue.value = setDateTime(new Date(day.value), hours.value, minutes.value);
             if (props.autoApply) {
@@ -235,6 +238,9 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
      * When using range picker keep track of hovered value in the calendar
      */
     const setHoverDate = (day: UnwrapRef<ICalendarDay>): void => {
+        if (!day.current && props.hideOffsetDates) {
+            return;
+        }
         hoveredDate.value = day.value;
     };
 

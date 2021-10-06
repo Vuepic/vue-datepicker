@@ -72,6 +72,7 @@
                     timePickerComponent,
                     actionRowComponent,
                     customProps,
+                    hideOffsetDates,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @closePicker="closeMenu"
@@ -174,6 +175,7 @@
         timePickerComponent: { type: Object as PropType<DefineComponent>, default: null },
         actionRowComponent: { type: Object as PropType<DefineComponent>, default: null },
         customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
+        hideOffsetDates: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
     const isOpen = ref(false);
