@@ -16,6 +16,7 @@ import isAfter from 'date-fns/isAfter';
 import isBefore from 'date-fns/isBefore';
 import isEqual from 'date-fns/isEqual';
 import getISOWeek from 'date-fns/getISOWeek';
+import addMonths from 'date-fns/addMonths';
 
 import { IMonthValue, ITimeValue } from '../interfaces';
 
@@ -70,6 +71,11 @@ export const setDateTime = (date: Date | null, hours?: number | null, minutes?: 
         dateCopy = setMinutes(dateCopy, minutes);
     }
     return dateCopy;
+};
+
+export const getNextMonthYear = (date: Date): { month: number; year: number } => {
+    const newDate = addMonths(date, 1);
+    return { month: getMonth(newDate), year: getYear(newDate) };
 };
 
 /**

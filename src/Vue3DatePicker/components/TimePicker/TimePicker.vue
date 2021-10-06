@@ -22,6 +22,7 @@
                     </template>
                     <template v-if="range">
                         <TimeInput
+                            v-if="twoCalendars ? instance === 1 : true"
                             :hours="hours[0]"
                             :minutes="minutes[0]"
                             v-bind="timeInputProps"
@@ -33,6 +34,7 @@
                             </template>
                         </TimeInput>
                         <TimeInput
+                            v-if="twoCalendars ? instance === 2 : true"
                             :hours="hours[1]"
                             :minutes="minutes[1]"
                             v-bind="timeInputProps"
@@ -43,6 +45,7 @@
                                 <slot :name="slot" />
                             </template>
                         </TimeInput>
+                        <!--                        </template>-->
                     </template>
                 </div>
                 <div class="dp__button" v-if="!timePicker" @click="toggleTimePicker(false)">
@@ -78,6 +81,8 @@
         timePicker: { type: Boolean as PropType<boolean>, default: false },
         hours: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         minutes: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
+        instance: { type: [Number, Array] as PropType<number | number[]>, default: 1 },
+        twoCalendars: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
 

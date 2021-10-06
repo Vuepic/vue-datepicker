@@ -33,7 +33,7 @@
     const emit = defineEmits(['update:modelValue', 'selected', 'toggle']);
 
     const props = defineProps({
-        uid: { type: String as PropType<string>, default: '' },
+        uid: { type: [String, Number] as PropType<string | number>, default: '' },
         items: { type: Array as PropType<IDefaultSelect[][]>, default: () => [] },
         modelValue: { type: [String, Number] as PropType<string | number>, default: null },
         gridId: { type: String as PropType<string>, default: 'dp__overlay' },

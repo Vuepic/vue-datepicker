@@ -22,6 +22,7 @@ interface Vue3DatePicker {
     is24?: boolean;
     enableTimePicker?: boolean;
     range?: boolean;
+    twoCalendars?: boolean;
     modelValue?: ModelValDef;
     locale?: string;
     position?: 'left' | 'center' | 'right';

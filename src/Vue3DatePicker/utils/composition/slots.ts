@@ -1,12 +1,12 @@
 import { Slots } from 'vue';
 
 export const slots = [
-    { name: 'clock-icon', use: ['time'] },
-    { name: 'arrow-left', use: ['month-year'] },
-    { name: 'arrow-right', use: ['month-year'] },
-    { name: 'arrow-up', use: ['time'] },
-    { name: 'arrow-down', use: ['time'] },
-    { name: 'calendar-icon', use: ['month-year', 'time'] },
+    { name: 'clock-icon', use: ['time', 'calendar'] },
+    { name: 'arrow-left', use: ['month-year', 'calendar'] },
+    { name: 'arrow-right', use: ['month-year', 'calendar'] },
+    { name: 'arrow-up', use: ['time', 'calendar'] },
+    { name: 'arrow-down', use: ['time', 'calendar'] },
+    { name: 'calendar-icon', use: ['month-year', 'time', 'calendar'] },
     { name: 'day', use: ['calendar'] },
     { name: 'action-select', use: ['action'] },
     { name: 'action-preview', use: ['action'] },
@@ -20,9 +20,13 @@ const slotNames = {
     input: () => inputSlots,
     timePicker: () => slots.filter((slot) => slot.use.includes('time')),
     action: () => slots.filter((slot) => slot.use.includes('action')),
+    calendar: () => slots.filter((slot) => slot.use.includes('calendar')),
 };
 
-export const mapSlots = (slots: Slots, usage: 'all' | 'monthYear' | 'timePicker' | 'input' | 'action'): string[] => {
+export const mapSlots = (
+    slots: Slots,
+    usage: 'all' | 'monthYear' | 'timePicker' | 'input' | 'action' | 'calendar',
+): string[] => {
     const toReturn: string[] = [];
 
     slotNames[usage]().forEach((slot) => {
