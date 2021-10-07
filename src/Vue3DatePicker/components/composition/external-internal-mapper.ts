@@ -8,9 +8,9 @@ import {
     isValidDate,
     setDateTime,
     setDateMonthOrYear,
-} from '../date-utils';
+} from '../../utils/date-utils';
 import { IFormat, ModelValue, VueEmit } from '../../interfaces';
-import { isMonth, isRange, isSingle, isTime, isTimeArray } from '../type-guard';
+import { isMonth, isRange, isSingle, isTime, isTimeArray } from '../../utils/type-guard';
 
 interface IExternalInternalMapper {
     parseExternalModelValue: (value: ModelValue) => void;

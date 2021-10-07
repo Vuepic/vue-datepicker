@@ -88,7 +88,7 @@
 
     import { DynamicClass, IDateFilter, ITimeValue, ICalendarDate, ICalendarDay, IDefaultSelect } from '../interfaces';
     import { getDayNames } from '../utils/util';
-    import { mapSlots } from '../utils/composition/slots';
+    import { mapSlots } from './composition/slots';
 
     defineEmits(['update:hours', 'update:minutes', 'selectDate', 'setHoverDate', 'update:month', 'update:year']);
 

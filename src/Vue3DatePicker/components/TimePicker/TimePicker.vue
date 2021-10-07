@@ -64,7 +64,7 @@
     import TimeInput from './TimeInput.vue';
 
     import { IDateFilter, ITimeValue } from '../../interfaces';
-    import { mapSlots } from '../../utils/composition/slots';
+    import { mapSlots } from '../composition/slots';
 
     defineEmits(['update:hours', 'update:minutes']);
 

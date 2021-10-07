@@ -12,8 +12,8 @@ import {
     isDateEqual,
     setDateMonthOrYear,
     setDateTime,
-} from '../date-utils';
-import { isModelValueRange, isNumberArray, isRange, isTimeArr } from '../type-guard';
+} from '../../utils/date-utils';
+import { isModelValueRange, isNumberArray, isRange, isTimeArr } from '../../utils/type-guard';
 
 interface IUseCalendar {
     isDisabled: (date: Date) => boolean;

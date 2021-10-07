@@ -77,9 +77,9 @@
         InternalModuleValue,
         ITimeValue,
     } from '../interfaces';
-    import { mapSlots } from '../utils/composition/slots';
+    import { mapSlots } from './composition/slots';
     import { getCalendarDays, getMonths, getYears } from '../utils/util';
-    import { useCalendar } from '../utils/composition/calendar';
+    import { useCalendar } from './composition/calendar';
     import { isDateEqual } from '../utils/date-utils';
 
     const emit = defineEmits([
@@ -135,6 +135,7 @@
         actionRowComponent: { type: Object as PropType<DefineComponent>, default: null },
         customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
         hideOffsetDates: { type: Boolean as PropType<boolean>, default: false },
+        autoRange: { type: [Number, String] as PropType<number | string>, default: null },
     });
     const slots = useSlots();
 
