@@ -76,7 +76,7 @@
     import SelectionGrid from './SelectionGrid.vue';
 
     import { IDateFilter, IDefaultSelect } from '../interfaces';
-    import { useMontYearPick } from '../utils/composition/month-year';
+    import { useMontYearPick } from './composition/month-year';
 
     const emit = defineEmits(['update:month', 'update:year']);
     const props = defineProps({

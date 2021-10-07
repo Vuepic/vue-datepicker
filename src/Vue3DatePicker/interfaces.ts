@@ -89,6 +89,7 @@ export type UseCalendar = {
     timePicker: boolean;
     hideOffsetDates: boolean;
     twoCalendars: boolean;
+    autoRange: number | string;
 } & { [key: string]: any };
 
 export interface UseMonthYearPick {

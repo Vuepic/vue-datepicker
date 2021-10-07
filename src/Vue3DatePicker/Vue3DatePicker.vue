@@ -73,6 +73,7 @@
                     actionRowComponent,
                     customProps,
                     hideOffsetDates,
+                    autoRange,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @closePicker="closeMenu"
@@ -107,10 +108,10 @@
     import { clickOutsideDirective as vClickOutsideDirective } from './directives/clickOutside';
     import { getDateHours, getDateMinutes, getDefaultPattern } from './utils/date-utils';
     import { getDefaultTextInputOptions, getDefaultFilters } from './utils/util';
-    import { usePosition } from './utils/composition/position';
-    import { useExternalInternalMapper } from './utils/composition/external-internal-mapper';
+    import { usePosition } from './components/composition/position';
+    import { useExternalInternalMapper } from './components/composition/external-internal-mapper';
     import { isString } from './utils/type-guard';
-    import { mapSlots } from './utils/composition/slots';
+    import { mapSlots } from './components/composition/slots';
 
     const emit = defineEmits(['update:modelValue', 'textSubmit', 'closed', 'cleared']);
     const props = defineProps({
@@ -176,6 +177,7 @@
         actionRowComponent: { type: Object as PropType<DefineComponent>, default: null },
         customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
         hideOffsetDates: { type: Boolean as PropType<boolean>, default: false },
+        autoRange: { type: [Number, String] as PropType<number | string>, default: null },
     });
     const slots = useSlots();
     const isOpen = ref(false);
