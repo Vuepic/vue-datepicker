@@ -1,6 +1,6 @@
 {
   "name": "vue3-date-time-picker",
-  "version": "2.1.7",
+  "version": "2.1.8",
   "description": "Datepicker component for Vue 3",
   "author": "Vuepic",
   "private": false,
