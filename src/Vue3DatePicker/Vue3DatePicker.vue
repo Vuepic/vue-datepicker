@@ -88,7 +88,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, DefineComponent, onMounted, onUnmounted, PropType, ref, useSlots } from 'vue';
+    import { computed, DefineComponent, onMounted, onUnmounted, PropType, ref, toRef, useSlots, watch } from 'vue';
 
     import DatepickerInput from './components/DatepickerInput.vue';
     import DatepickerMenu from './components/DatepickerMenu.vue';
@@ -176,6 +176,7 @@
     const slots = useSlots();
     const isOpen = ref(false);
     const valueCleared = ref(false);
+    const modelValue = toRef(props, 'modelValue');
 
     onMounted(() => {
         parseExternalModelValue(props.modelValue);
@@ -198,6 +199,10 @@
 
     const slotList = mapSlots(slots, 'all');
     const inputSlots = mapSlots(slots, 'input');
+
+    watch(modelValue, () => {
+        parseExternalModelValue(modelValue.value);
+    });
 
     const { openOnTop, menuPosition, setMenuPosition, recalculatePosition } = usePosition(props.position, props.uid);
 

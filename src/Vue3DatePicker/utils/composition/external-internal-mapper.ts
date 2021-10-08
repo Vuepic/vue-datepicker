@@ -73,6 +73,7 @@ export const useExternalInternalMapper = (
             formatInputValue();
         } else {
             internalModelValue.value = null;
+            inputValue.value = '';
         }
     };
 
