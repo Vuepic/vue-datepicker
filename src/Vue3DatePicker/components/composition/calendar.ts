@@ -1,6 +1,7 @@
 import { computed, onMounted, Ref, ref, UnwrapRef, watch } from 'vue';
 import { ICalendarDay, InternalModuleValue, UseCalendar, VueEmit } from '../../interfaces';
 import {
+    getAddedDays,
     getDateHours,
     getDateMinutes,
     getDateMonth,
@@ -24,6 +25,11 @@ interface IUseCalendar {
     setHoverDate: (day: UnwrapRef<ICalendarDay>) => void;
     updateTime: (value: number | number[], isHours?: boolean) => void;
     updateMonthYear: (value: number, isMonth?: boolean, isNext?: boolean) => void;
+    isHoverRangeEnd: (day: UnwrapRef<ICalendarDay>) => boolean;
+    isAutoRangeInBetween: (day: UnwrapRef<ICalendarDay>) => boolean;
+    isAutoRangeStart: (day: UnwrapRef<ICalendarDay>) => boolean;
+    rangeActiveStartEnd: (day: UnwrapRef<ICalendarDay>, isStart?: boolean) => boolean;
+    clearHoverDate: () => void;
     today: Ref<Date>;
     month: Ref<number>;
     year: Ref<number>;
@@ -35,7 +41,7 @@ interface IUseCalendar {
 
 export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => {
     const today = ref<Date>(new Date());
-    const hoveredDate = ref<Date>();
+    const hoveredDate = ref<Date | null>();
     const month = ref<number>(getDateMonth(new Date()));
     const year = ref<number>(getDateYear(new Date()));
     const monthNext = ref<number>(getNextMonthYear(new Date()).month);
@@ -114,6 +120,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
      */
     const isActiveDate = (calendarDay: ICalendarDay): boolean => {
         if (!modelValue.value) return false;
+        if (props.hideOffsetDates && !calendarDay.current) return false;
         if (!props.range) {
             return isDateEqual(calendarDay.value, modelValue.value ? (modelValue.value as Date) : today.value);
         }
@@ -201,13 +208,17 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
             if (rangeDate.length === 2) {
                 rangeDate = [];
             }
-            if (!rangeDate[0]) {
-                rangeDate[0] = new Date(day.value);
+            if (props.autoRange) {
+                rangeDate = [new Date(day.value), getAddedDays(new Date(day.value), +props.autoRange)];
             } else {
-                if (isDateBefore(new Date(day.value), new Date(rangeDate[0]))) {
-                    rangeDate.unshift(new Date(day.value));
+                if (!rangeDate[0]) {
+                    rangeDate[0] = new Date(day.value);
                 } else {
-                    rangeDate[1] = new Date(day.value);
+                    if (isDateBefore(new Date(day.value), new Date(rangeDate[0]))) {
+                        rangeDate.unshift(new Date(day.value));
+                    } else {
+                        rangeDate[1] = new Date(day.value);
+                    }
                 }
             }
             if (rangeDate[0] && !rangeDate[1]) {
@@ -242,6 +253,47 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
             return;
         }
         hoveredDate.value = day.value;
+    };
+
+    /**
+     * Check if range ends on the given day
+     */
+    const isHoverRangeEnd = (day: UnwrapRef<ICalendarDay>): boolean => {
+        if (props.autoRange) {
+            if (hoveredDate.value) {
+                if (props.hideOffsetDates && !day.current) return false;
+                const rangeEnd = getAddedDays(hoveredDate.value, +props.autoRange);
+                return isDateEqual(rangeEnd, new Date(day.value));
+            }
+            return false;
+        }
+        return false;
+    };
+
+    /**
+     * Check if date in auto range preview is in between
+     */
+    const isAutoRangeInBetween = (day: UnwrapRef<ICalendarDay>): boolean => {
+        if (props.autoRange) {
+            if (hoveredDate.value) {
+                const rangeEnd = getAddedDays(hoveredDate.value, +props.autoRange);
+                if (props.hideOffsetDates && !day.current) return false;
+                return isDateAfter(day.value, hoveredDate.value) && isDateBefore(day.value, rangeEnd);
+            }
+            return false;
+        }
+        return false;
+    };
+
+    const isAutoRangeStart = (day: UnwrapRef<ICalendarDay>): boolean => {
+        if (props.autoRange) {
+            if (hoveredDate.value) {
+                if (props.hideOffsetDates && !day.current) return false;
+                return isDateEqual(hoveredDate.value, day.value);
+            }
+            return false;
+        }
+        return false;
     };
 
     const handleNextMonthYear = (): void => {
@@ -306,6 +358,22 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         }
     };
 
+    // When mouse leaves the menu clear the hover date data
+    const clearHoverDate = (): void => {
+        hoveredDate.value = null;
+    };
+
+    /**
+     * Check when to add a proper active start/end date class on range picker
+     */
+    const rangeActiveStartEnd = (day: UnwrapRef<ICalendarDay>, isStart = true): boolean => {
+        if (props.range && isRange(modelValue.value)) {
+            if (props.hideOffsetDates && !day.current) return false;
+            return isDateEqual(new Date(day.value), modelValue.value[isStart ? 0 : 1]);
+        }
+        return false;
+    };
+
     return {
         today,
         hours,
@@ -322,5 +390,10 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         rangeActive,
         isActiveDate,
         updateMonthYear,
+        isHoverRangeEnd,
+        isAutoRangeInBetween,
+        isAutoRangeStart,
+        clearHoverDate,
+        rangeActiveStartEnd,
     };
 };
