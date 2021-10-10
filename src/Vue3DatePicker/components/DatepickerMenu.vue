@@ -1,5 +1,5 @@
 <template>
-    <div class="dp__menu" :class="dpMenuClass" :id="`dp__menu_${uid}`">
+    <div class="dp__menu" :class="dpMenuClass" :id="`dp__menu_${uid}`" @mouseleave="clearHoverDate">
         <div :class="arrowClass" v-if="!inline"></div>
         <div class="dp__calendar_wrapper">
             <Calendar
@@ -160,7 +160,12 @@
         selectDate,
         getWeekNum,
         setHoverDate,
+        isHoverRangeEnd,
+        isAutoRangeInBetween,
+        isAutoRangeStart,
         rangeActive,
+        clearHoverDate,
+        rangeActiveStartEnd,
     } = useCalendar(props, emit);
 
     const calendarSlots = mapSlots(slots, 'calendar');
@@ -238,20 +243,25 @@
                 days: date.days.map((calendarDay) => {
                     const disabled = isDisabled(calendarDay.value);
                     calendarDay.classData = {
-                        ['dp__cell_offset']: !calendarDay.current,
-                        ['dp__pointer']: !disabled && !(!calendarDay.current && props.hideOffsetDates),
-                        ['dp__active_date']: isActiveDate(calendarDay),
-                        ['dp__date_hover']:
+                        dp__cell_offset: !calendarDay.current,
+                        dp__pointer: !disabled && !(!calendarDay.current && props.hideOffsetDates),
+                        dp__active_date: isActiveDate(calendarDay) && !props.range,
+                        dp__date_hover:
                             !disabled && !isActiveDate(calendarDay) && !(!calendarDay.current && props.hideOffsetDates),
-                        ['dp__range_between']:
+                        dp__range_between:
                             props.range &&
                             !disabled &&
                             !(!calendarDay.current && props.hideOffsetDates) &&
                             !isActiveDate(calendarDay)
                                 ? rangeActive(calendarDay)
                                 : false,
-                        ['dp__today']: isDateEqual(calendarDay.value, today.value),
-                        ['dp__cell_disabled']: disabled,
+                        dp__today: isDateEqual(calendarDay.value, today.value),
+                        dp__cell_disabled: disabled,
+                        dp__cell_auto_range: isAutoRangeInBetween(calendarDay),
+                        dp__cell_auto_range_start: isAutoRangeStart(calendarDay),
+                        dp__cell_auto_range_end: isHoverRangeEnd(calendarDay),
+                        dp__range_start: rangeActiveStartEnd(calendarDay),
+                        dp__range_end: rangeActiveStartEnd(calendarDay, false),
                         [props.calendarCellClassName]: !!props.calendarCellClassName,
                     };
                     return calendarDay;

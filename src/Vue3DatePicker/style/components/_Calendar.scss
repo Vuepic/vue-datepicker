@@ -28,6 +28,7 @@
 
 .dp__cell {
     position: relative;
+    padding: 0;
 }
 
 .dp__cell_inner {
@@ -40,6 +41,27 @@
     height: $dp__cell_size;
     padding: $dp__cell_padding;
     width: $dp__cell_size;
+    border: 1px solid transparent;
+}
+
+%__dp_range_border_radius_start {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+}
+
+%__dp_range_border_radius_end {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
+
+%__dp_active {
+    background: var(--dp-primary-color);
+    color: var(--dp-primary-text-color);
+}
+
+%__dp_range_preview {
+    border-top: 1px dashed var(--dp-primary-color);
+    border-bottom: 1px dashed var(--dp-primary-color);
 }
 
 .dp__cell_offset {
@@ -52,8 +74,17 @@
 }
 
 .dp__active_date {
-    background: var(--dp-primary-color);
-    color: var(--dp-primary-text-color);
+    @extend %__dp_active;
+}
+
+.dp__range_start {
+    @extend %__dp_active;
+    @extend %__dp_range_border_radius_start;
+}
+
+.dp__range_end {
+    @extend %__dp_active;
+    @extend %__dp_range_border_radius_end;
 }
 
 .dp__date_hover {
@@ -64,6 +95,7 @@
 
 .dp__range_between {
     background: var(--dp-hover-color);
+    border-radius: 0;
 }
 
 .dp__today {
@@ -73,4 +105,22 @@
 .dp__week_num {
     color: var(--dp-secondary-color);
     text-align: center;
+}
+
+.dp__cell_auto_range {
+    border-radius: 0;
+    border-top: 1px dashed var(--dp-primary-color);
+    border-bottom: 1px dashed var(--dp-primary-color);
+}
+
+.dp__cell_auto_range_start {
+    @extend %__dp_range_border_radius_start;
+    @extend %__dp_range_preview;
+    border-left: 1px dashed var(--dp-primary-color);
+}
+
+.dp__cell_auto_range_end {
+    @extend %__dp_range_border_radius_end;
+    @extend %__dp_range_preview;
+    border-right: 1px dashed var(--dp-primary-color);
 }

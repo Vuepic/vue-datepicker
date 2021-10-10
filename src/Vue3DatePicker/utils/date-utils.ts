@@ -17,6 +17,7 @@ import isBefore from 'date-fns/isBefore';
 import isEqual from 'date-fns/isEqual';
 import getISOWeek from 'date-fns/getISOWeek';
 import addMonths from 'date-fns/addMonths';
+import addDays from 'date-fns/addDays';
 
 import { IMonthValue, ITimeValue } from '../interfaces';
 
@@ -219,4 +220,11 @@ export const getDateHours = (date?: Date): number => {
  */
 export const getDateMinutes = (date?: Date): number => {
     return getMinutes(date || new Date());
+};
+
+/**
+ * Add n amount of days to a given date
+ */
+export const getAddedDays = (date: Date, days: number): Date => {
+    return addDays(date, days);
 };
