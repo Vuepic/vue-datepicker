@@ -84,6 +84,7 @@ interface Vue3DatePicker {
     customProps?: Record<string, unknown>;
     hideOffsetDates?: boolean;
     autoRange?: number | string;
+    showToday?: boolean;
 }
 
 interface PublicMethods extends MethodOptions {

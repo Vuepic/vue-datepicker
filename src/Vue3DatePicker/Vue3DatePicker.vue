@@ -74,6 +74,7 @@
                     customProps,
                     hideOffsetDates,
                     autoRange,
+                    showToday,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @closePicker="closeMenu"
@@ -178,6 +179,7 @@
         customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
         hideOffsetDates: { type: Boolean as PropType<boolean>, default: false },
         autoRange: { type: [Number, String] as PropType<number | string>, default: null },
+        showToday: { type: Boolean as PropType<boolean>, default: true },
     });
     const slots = useSlots();
     const isOpen = ref(false);
