@@ -136,6 +136,7 @@
         customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
         hideOffsetDates: { type: Boolean as PropType<boolean>, default: false },
         autoRange: { type: [Number, String] as PropType<number | string>, default: null },
+        showToday: { type: Boolean as PropType<boolean>, default: true },
     });
     const slots = useSlots();
 
@@ -255,7 +256,7 @@
                             !isActiveDate(calendarDay)
                                 ? rangeActive(calendarDay)
                                 : false,
-                        dp__today: isDateEqual(calendarDay.value, today.value),
+                        dp__today: props.showToday && isDateEqual(calendarDay.value, today.value),
                         dp__cell_disabled: disabled,
                         dp__cell_auto_range: isAutoRangeInBetween(calendarDay),
                         dp__cell_auto_range_start: isAutoRangeStart(calendarDay),
