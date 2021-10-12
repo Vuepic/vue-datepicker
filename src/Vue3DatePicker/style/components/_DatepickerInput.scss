@@ -43,6 +43,7 @@
     line-height: $dp__font_size * 1.5;
     padding: 6px 12px;
     color: var(--dp-icon-color);
+    box-sizing: content-box;
 }
 
 .dp__input_icon {
