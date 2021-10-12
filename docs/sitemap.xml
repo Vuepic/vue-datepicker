@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+		<!--	created with www.mysitemapgenerator.com	-->
+		<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+	<loc>https://vue3datepicker.com/</loc>
+	<lastmod>2021-10-12T10:56:15+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://vue3datepicker.com/installation/</loc>
+	<lastmod>2021-10-12T10:56:16+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://vue3datepicker.com/api/props/</loc>
+	<lastmod>2021-10-12T10:56:20+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://vue3datepicker.com/api/components/</loc>
+	<lastmod>2021-10-12T10:56:19+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://vue3datepicker.com/api/slots/</loc>
+	<lastmod>2021-10-12T10:56:22+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://vue3datepicker.com/api/events/</loc>
+	<lastmod>2021-10-12T10:56:20+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://vue3datepicker.com/api/methods/</loc>
+	<lastmod>2021-10-12T10:56:21+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://vue3datepicker.com/customization/theming/</loc>
+	<lastmod>2021-10-12T10:56:21+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://vue3datepicker.com/customization/scss/</loc>
+	<lastmod>2021-10-12T10:56:21+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+</urlset>
