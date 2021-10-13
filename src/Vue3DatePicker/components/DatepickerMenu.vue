@@ -137,6 +137,8 @@
         hideOffsetDates: { type: Boolean as PropType<boolean>, default: false },
         autoRange: { type: [Number, String] as PropType<number | string>, default: null },
         showToday: { type: Boolean as PropType<boolean>, default: true },
+        noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
+        noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
 
@@ -228,6 +230,8 @@
         twoCalendars: props.twoCalendars,
         months: months.value,
         years: years.value,
+        noHoursOverlay: props.noHoursOverlay,
+        noMinutesOverlay: props.noMinutesOverlay,
     }));
 
     const dpMenuClass = computed(

@@ -85,6 +85,8 @@ interface Vue3DatePicker {
     hideOffsetDates?: boolean;
     autoRange?: number | string;
     showToday?: boolean;
+    noHoursOverlay?: boolean;
+    noMinutesOverlay?: boolean;
 }
 
 interface PublicMethods extends MethodOptions {

@@ -58,6 +58,8 @@
                     minutesIncrement,
                     hoursGridIncrement,
                     minutesGridIncrement,
+                    noHoursOverlay,
+                    noMinutesOverlay,
                     range,
                     filters,
                     minTime,
@@ -127,6 +129,8 @@
         months: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
         month: { type: Number as PropType<number>, default: 0 },
         year: { type: Number as PropType<number>, default: 0 },
+        noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
+        noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
 

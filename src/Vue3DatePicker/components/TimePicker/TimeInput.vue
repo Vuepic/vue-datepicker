@@ -5,7 +5,7 @@
                 <slot name="arrow-up" v-if="$slots['arrow-up']" />
                 <ChevronUpIcon v-if="!$slots['arrow-up']" />
             </div>
-            <div class="dp__time_display" @click="toggleHourOverlay">
+            <div :class="noHoursOverlay ? '' : 'dp__time_display'" @click="toggleHourOverlay">
                 <slot v-if="$slots.hours" name="hours" :text="hourDisplay.text" :value="hourDisplay.value" />
                 <template v-if="!$slots.hours">{{ hourDisplay.text }}</template>
             </div>
@@ -20,7 +20,7 @@
                 <slot name="arrow-up" v-if="$slots['arrow-up']" />
                 <ChevronUpIcon v-if="!$slots['arrow-up']" />
             </div>
-            <div class="dp__time_display" @click="toggleMinuteOverlay">
+            <div :class="noMinutesOverlay ? '' : 'dp__time_display'" @click="toggleMinuteOverlay">
                 <slot v-if="$slots.minutes" name="minutes" :text="minuteDisplay.text" :value="minuteDisplay.value" />
                 <template v-if="!$slots.minutes">{{ minuteDisplay.text }}</template>
             </div>
@@ -90,6 +90,8 @@
         filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
         minTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
         maxTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
+        noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
+        noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
     });
 
     const hourOverlay = ref(false);
@@ -131,11 +133,15 @@
     };
 
     const toggleHourOverlay = (): void => {
-        hourOverlay.value = !hourOverlay.value;
+        if (!props.noHoursOverlay) {
+            hourOverlay.value = !hourOverlay.value;
+        }
     };
 
     const toggleMinuteOverlay = (): void => {
-        minuteOverlay.value = !minuteOverlay.value;
+        if (!props.noMinutesOverlay) {
+            minuteOverlay.value = !minuteOverlay.value;
+        }
     };
 
     const checkMinMaxHours = (): void => {

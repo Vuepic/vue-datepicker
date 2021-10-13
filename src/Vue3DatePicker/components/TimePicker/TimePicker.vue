@@ -82,6 +82,8 @@
         minutes: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         instance: { type: [Number, Array] as PropType<number | number[]>, default: 1 },
         twoCalendars: { type: Boolean as PropType<boolean>, default: false },
+        noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
+        noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
 
@@ -102,5 +104,7 @@
         filters: props.filters,
         maxTime: props.maxTime,
         minTime: props.minTime,
+        noHoursOverlay: props.noHoursOverlay,
+        noMinutesOverlay: props.noMinutesOverlay,
     }));
 </script>

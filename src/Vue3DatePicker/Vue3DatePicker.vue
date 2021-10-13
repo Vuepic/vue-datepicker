@@ -75,6 +75,8 @@
                     hideOffsetDates,
                     autoRange,
                     showToday,
+                    noHoursOverlay,
+                    noMinutesOverlay,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @closePicker="closeMenu"
@@ -180,6 +182,8 @@
         hideOffsetDates: { type: Boolean as PropType<boolean>, default: false },
         autoRange: { type: [Number, String] as PropType<number | string>, default: null },
         showToday: { type: Boolean as PropType<boolean>, default: true },
+        noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
+        noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
     const isOpen = ref(false);
