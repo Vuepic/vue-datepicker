@@ -5,7 +5,10 @@
                 <slot name="arrow-up" v-if="$slots['arrow-up']" />
                 <ChevronUpIcon v-if="!$slots['arrow-up']" />
             </div>
-            <div class="dp__time_display" @click="toggleHourOverlay">{{ hourDisplay }}</div>
+            <div class="dp__time_display" @click="toggleHourOverlay">
+                <slot v-if="$slots.hours" name="hours" :text="hourDisplay.text" :value="hourDisplay.value" />
+                <template v-if="!$slots.hours">{{ hourDisplay.text }}</template>
+            </div>
             <div class="dp__inc_dec_button" @click="handleHours('decrement')">
                 <slot name="arrow-down" v-if="$slots['arrow-down']" />
                 <ChevronDownIcon v-if="!$slots['arrow-down']" />
@@ -18,7 +21,8 @@
                 <ChevronUpIcon v-if="!$slots['arrow-up']" />
             </div>
             <div class="dp__time_display" @click="toggleMinuteOverlay">
-                {{ minuteDisplay }}
+                <slot v-if="$slots.minutes" name="minutes" :text="minuteDisplay.text" :value="minuteDisplay.value" />
+                <template v-if="!$slots.minutes">{{ minuteDisplay.text }}</template>
             </div>
             <div class="dp__inc_dec_button" @click="handleMinutes('decrement')">
                 <slot name="arrow-down" v-if="$slots['arrow-down']" />
@@ -42,6 +46,9 @@
                 <slot name="clock-icon" v-if="$slots['clock-icon']" />
                 <ClockIcon v-if="!$slots['clock-icon']" />
             </template>
+            <template v-if="$slots['hours-overlay']" #item="{ item }">
+                <slot name="hours-overlay" :text="item.text" :value="item.value" />
+            </template>
         </SelectionGrid>
         <SelectionGrid
             v-if="minuteOverlay"
@@ -56,6 +63,9 @@
             <template #button-icon>
                 <slot name="clock-icon" v-if="$slots['clock-icon']" />
                 <ClockIcon v-if="!$slots['clock-icon']" />
+            </template>
+            <template v-if="$slots['minutes-overlay']" #item="{ item }">
+                <slot name="minutes-overlay" :text="item.text" :value="item.value" />
             </template>
         </SelectionGrid>
     </div>
@@ -92,13 +102,13 @@
         checkMinMaxHours();
     });
 
-    const hourDisplay = computed((): string => {
+    const hourDisplay = computed((): IDefaultSelect => {
         const hour = convert24ToAmPm(hours.value);
-        return hour < 10 ? `0${hour}` : `${hour}`;
+        return { text: hour < 10 ? `0${hour}` : `${hour}`, value: hour };
     });
 
-    const minuteDisplay = computed((): string => {
-        return minutes.value < 10 ? `0${minutes.value}` : `${minutes.value}`;
+    const minuteDisplay = computed((): IDefaultSelect => {
+        return { text: minutes.value < 10 ? `0${minutes.value}` : `${minutes.value}`, value: minutes.value };
     });
 
     const generateGridItems = (loopMax: number, increment: number) => {

@@ -5,17 +5,33 @@
                 <slot name="arrow-left" v-if="$slots['arrow-left']" />
                 <ChevronLeftIcon v-if="!$slots['arrow-left']" />
             </div>
-            <div class="dp__month_year_select" @click="toggleMonthPicker">{{ getMonthDisplayVal }}</div>
-            <div class="dp__month_year_select" @click="toggleYearPicker">{{ year }}</div>
+            <div class="dp__month_year_select" @click="toggleMonthPicker">
+                <slot
+                    v-if="$slots.month"
+                    name="month"
+                    :value="getMonthDisplayVal.value"
+                    :text="getMonthDisplayVal.text"
+                />
+                <template v-if="!$slots.month">{{ getMonthDisplayVal.text }}</template>
+            </div>
+            <div class="dp__month_year_select" @click="toggleYearPicker">
+                <slot v-if="$slots.year" name="year" :year="year" />
+                <template v-if="!$slots.year">{{ year }}</template>
+            </div>
             <SelectionGrid
                 v-if="showMonthPicker"
                 v-bind="{ modelValue: month, items: groupedMonths, disabledValues: filters.months, uid: instance }"
                 @update:modelValue="onMonthUpdate"
                 @toggle="toggleMonthPicker"
-                ><template #button-icon>
+            >
+                <template #button-icon>
                     <slot name="calendar-icon" v-if="$slots['calendar-icon']" />
-                    <CalendarIcon v-if="!$slots['calendar-icon']" /> </template
-            ></SelectionGrid>
+                    <CalendarIcon v-if="!$slots['calendar-icon']" />
+                </template>
+                <template v-if="$slots['month-overlay']" #item="{ item }">
+                    <slot name="month-overlay" :text="item.text" :value="item.value" />
+                </template>
+            </SelectionGrid>
             <SelectionGrid
                 v-if="showYearPicker"
                 v-bind="{ modelValue: year, items: groupedYears, disabledValues: filters.years, uid: instance }"
@@ -23,8 +39,12 @@
                 @toggle="toggleYearPicker"
                 ><template #button-icon>
                     <slot name="calendar-icon" v-if="$slots['calendar-icon']" />
-                    <CalendarIcon v-if="!$slots['calendar-icon']" /> </template
-            ></SelectionGrid>
+                    <CalendarIcon v-if="!$slots['calendar-icon']" />
+                </template>
+                <template v-if="$slots['year-overlay']" #item="{ item }">
+                    <slot name="year-overlay" :text="item.text" :value="item.value" />
+                </template>
+            </SelectionGrid>
             <div class="dp__month_year_col_nav" @click="onNext">
                 <slot name="arrow-right" v-if="$slots['arrow-right']" />
                 <ChevronRightIcon v-if="!$slots['arrow-right']" />
@@ -36,13 +56,19 @@
                 @update:modelValue="onMonthUpdate"
                 @toggle="toggleMonthPicker"
             >
+                <template v-if="$slots['month-overlay']" #item="{ item }">
+                    <slot name="month-overlay" :text="item.text" :value="item.value" />
+                </template>
                 <template #header>
                     <div class="dp__month_picker_header">
                         <div class="dp__month_year_col_nav" @click="handleYear(false)">
                             <slot name="arrow-left" v-if="$slots['arrow-left']" />
                             <ChevronLeftIcon v-if="!$slots['arrow-left']" />
                         </div>
-                        <div @click="toggleYearPicker" class="dp__pointer">{{ year }}</div>
+                        <div @click="toggleYearPicker" class="dp__pointer">
+                            <slot v-if="$slots.year" name="year" :year="year" />
+                            <template v-if="!$slots.year">{{ year }}</template>
+                        </div>
                         <div class="dp__month_year_col_nav" @click="handleYear(true)">
                             <slot name="arrow-right" v-if="$slots['arrow-right']" />
                             <ChevronRightIcon v-if="!$slots['arrow-right']" />
@@ -61,8 +87,12 @@
                         @toggle="toggleYearPicker"
                         ><template #button-icon>
                             <slot name="calendar-icon" v-if="$slots['calendar-icon']" />
-                            <CalendarIcon v-if="!$slots['calendar-icon']" /> </template
-                    ></SelectionGrid>
+                            <CalendarIcon v-if="!$slots['calendar-icon']" />
+                        </template>
+                        <template v-if="$slots['year-overlay']" #item="{ item }">
+                            <slot name="year-overlay" :text="item.text" :value="item.value" />
+                        </template>
+                    </SelectionGrid>
                 </template>
             </SelectionGrid>
         </template>
@@ -112,10 +142,10 @@
         return list;
     };
 
-    const getMonthDisplayVal = computed((): string => {
+    const getMonthDisplayVal = computed((): IDefaultSelect => {
         const month = props.months.find((month) => month.value === props.month);
-        if (month) return month.text;
-        return '';
+        if (month) return month;
+        return { text: '', value: 0 };
     });
 
     const groupedMonths = computed((): IDefaultSelect[][] => {

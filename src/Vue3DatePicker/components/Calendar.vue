@@ -18,8 +18,8 @@
                 @update:month="$emit('update:month', $event)"
                 @update:year="$emit('update:year', $event)"
             >
-                <template v-for="(slot, i) in monthYearSlots" #[slot] :key="i">
-                    <slot :name="slot" />
+                <template v-for="(slot, i) in monthYearSlots" #[slot]="args" :key="i">
+                    <slot :name="slot" v-bind="args" />
                 </template>
             </component>
             <table class="dp__calendar_tb" v-if="!specificMode">
@@ -72,8 +72,8 @@
                 @update:hours="$emit('update:hours', $event)"
                 @update:minutes="$emit('update:minutes', $event)"
             >
-                <template v-for="(slot, i) in timePickerSlots" #[slot] :key="i">
-                    <slot :name="slot" />
+                <template v-for="(slot, i) in timePickerSlots" #[slot]="args" :key="i">
+                    <slot :name="slot" v-bind="args" />
                 </template>
             </component>
         </div>

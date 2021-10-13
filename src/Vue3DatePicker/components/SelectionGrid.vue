@@ -13,7 +13,8 @@
                     "
                 >
                     <div :class="col.className">
-                        {{ col.text }}
+                        <slot v-if="$slots.item" name="item" :item="col" />
+                        <template v-if="!$slots.item">{{ col.text }}</template>
                     </div>
                 </div>
             </div>

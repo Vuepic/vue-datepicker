@@ -15,8 +15,8 @@
                             @update:hours="$emit('update:hours', $event)"
                             @update:minutes="$emit('update:minutes', $event)"
                         >
-                            <template v-for="(slot, i) in timeInputSlots" #[slot] :key="i">
-                                <slot :name="slot" />
+                            <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
+                                <slot :name="slot" v-bind="args" />
                             </template>
                         </TimeInput>
                     </template>
@@ -29,8 +29,8 @@
                             @update:hours="$emit('update:hours', [$event, hours[1]])"
                             @update:minutes="$emit('update:minutes', [$event, minutes[1]])"
                         >
-                            <template v-for="(slot, i) in timeInputSlots" #[slot] :key="i">
-                                <slot :name="slot" />
+                            <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
+                                <slot :name="slot" v-bind="args" />
                             </template>
                         </TimeInput>
                         <TimeInput
@@ -41,11 +41,10 @@
                             @update:hours="$emit('update:hours', [hours[0], $event])"
                             @update:minutes="$emit('update:minutes', [minutes[0], $event])"
                         >
-                            <template v-for="(slot, i) in timeInputSlots" #[slot] :key="i">
-                                <slot :name="slot" />
+                            <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
+                                <slot :name="slot" v-bind="args" />
                             </template>
                         </TimeInput>
-                        <!--                        </template>-->
                     </template>
                 </div>
                 <div class="dp__button" v-if="!timePicker" @click="toggleTimePicker(false)">
