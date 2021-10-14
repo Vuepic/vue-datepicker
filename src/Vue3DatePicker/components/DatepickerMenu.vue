@@ -221,7 +221,7 @@
         is24: props.is24,
         hoursIncrement: props.hoursIncrement,
         minutesIncrement: props.minutesIncrement,
-        hoursGridIncrement: props.minutesGridIncrement,
+        hoursGridIncrement: props.hoursGridIncrement,
         minutesGridIncrement: props.minutesGridIncrement,
         range: props.range,
         filters: props.filters,
