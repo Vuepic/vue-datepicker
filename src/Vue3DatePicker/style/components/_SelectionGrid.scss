@@ -10,7 +10,7 @@
     z-index: 99999;
     font-family: $dp__font_family;
     color: var(--dp-text-color);
-    box-sizing: unset;
+    box-sizing: border-box;
 }
 
 .dp__overlay::-webkit-scrollbar-track {
