@@ -1,42 +1,44 @@
 <template>
     <div class="dp__menu" :class="dpMenuClass" :id="`dp__menu_${uid}`" @mouseleave="clearHoverDate">
         <div :class="arrowClass" v-if="!inline"></div>
-        <div class="dp__calendar_wrapper">
-            <Calendar
-                v-bind="calendarProps"
-                :instance="1"
-                :mapped-dates="mappedDates"
-                :month="month"
-                :year="year"
-                @update:hours="updateTime($event)"
-                @update:minutes="updateTime($event, false)"
-                @update:month="updateMonthYear($event)"
-                @update:year="updateMonthYear($event, false)"
-                @selectDate="selectDate($event)"
-                @setHoverDate="setHoverDate($event)"
-            >
-                <template v-for="(slot, i) in calendarSlots" #[slot]="args" :key="i">
-                    <slot :name="slot" v-bind="{ ...args }" />
-                </template>
-            </Calendar>
-            <Calendar
-                v-if="range && twoCalendars"
-                v-bind="calendarProps"
-                :instance="2"
-                :mapped-dates="mappedDatesNext"
-                :month="monthNext"
-                :year="yearNext"
-                @update:hours="updateTime($event)"
-                @update:minutes="updateTime($event, false)"
-                @update:month="updateMonthYear($event, true, true)"
-                @update:year="updateMonthYear($event, false, true)"
-                @selectDate="selectDate($event, true)"
-                @setHoverDate="setHoverDate($event)"
-            >
-                <template v-for="(slot, i) in calendarSlots" #[slot]="args" :key="i">
-                    <slot :name="slot" v-bind="{ ...args }" />
-                </template>
-            </Calendar>
+        <div :class="inline ? 'dp__flex_display' : ''">
+            <div class="dp__calendar_wrapper" :class="twoCalendars ? 'dp__flex_display' : ''">
+                <Calendar
+                    v-bind="calendarProps"
+                    :instance="1"
+                    :mapped-dates="mappedDates"
+                    :month="month"
+                    :year="year"
+                    @update:hours="updateTime($event)"
+                    @update:minutes="updateTime($event, false)"
+                    @update:month="updateMonthYear($event)"
+                    @update:year="updateMonthYear($event, false)"
+                    @selectDate="selectDate($event)"
+                    @setHoverDate="setHoverDate($event)"
+                >
+                    <template v-for="(slot, i) in calendarSlots" #[slot]="args" :key="i">
+                        <slot :name="slot" v-bind="{ ...args }" />
+                    </template>
+                </Calendar>
+                <Calendar
+                    v-if="range && twoCalendars"
+                    v-bind="calendarProps"
+                    :instance="2"
+                    :mapped-dates="mappedDatesNext"
+                    :month="monthNext"
+                    :year="yearNext"
+                    @update:hours="updateTime($event)"
+                    @update:minutes="updateTime($event, false)"
+                    @update:month="updateMonthYear($event, true, true)"
+                    @update:year="updateMonthYear($event, false, true)"
+                    @selectDate="selectDate($event, true)"
+                    @setHoverDate="setHoverDate($event)"
+                >
+                    <template v-for="(slot, i) in calendarSlots" #[slot]="args" :key="i">
+                        <slot :name="slot" v-bind="{ ...args }" />
+                    </template>
+                </Calendar>
+            </div>
         </div>
         <component
             v-if="!autoApply"
@@ -237,7 +239,6 @@
     const dpMenuClass = computed(
         (): DynamicClass => ({
             [props.menuClassName]: !!props.menuClassName,
-            dp__flex_display: props.inline,
         }),
     );
 
