@@ -124,6 +124,8 @@
 .dp__range_between {
     background: var(--dp-hover-color);
     border-radius: 0;
+    border-top: 1px solid var(--dp-hover-color);
+    border-bottom: 1px solid var(--dp-hover-color);
 }
 
 .dp__today {
