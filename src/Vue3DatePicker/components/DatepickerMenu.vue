@@ -250,7 +250,7 @@
                     calendarDay.classData = {
                         dp__cell_offset: !calendarDay.current,
                         dp__pointer: !disabled && !(!calendarDay.current && props.hideOffsetDates),
-                        dp__active_date: isActiveDate(calendarDay) && !props.range,
+                        dp__active_date: isActiveDate(calendarDay),
                         dp__date_hover:
                             !disabled && !isActiveDate(calendarDay) && !(!calendarDay.current && props.hideOffsetDates),
                         dp__range_between:
