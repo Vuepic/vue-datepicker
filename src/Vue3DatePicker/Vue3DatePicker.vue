@@ -184,6 +184,7 @@
         showToday: { type: Boolean as PropType<boolean>, default: true },
         noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
         noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
+        altPosition: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
     const isOpen = ref(false);
@@ -216,7 +217,11 @@
         parseExternalModelValue(modelValue.value);
     });
 
-    const { openOnTop, menuPosition, setMenuPosition, recalculatePosition } = usePosition(props.position, props.uid);
+    const { openOnTop, menuPosition, setMenuPosition, recalculatePosition } = usePosition(
+        props.position,
+        props.uid,
+        props.altPosition,
+    );
 
     const { internalModelValue, inputValue, parseExternalModelValue, emitModelValue, checkBeforeEmit } =
         useExternalInternalMapper(

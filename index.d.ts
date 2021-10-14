@@ -87,6 +87,7 @@ interface Vue3DatePicker {
     showToday?: boolean;
     noHoursOverlay?: boolean;
     noMinutesOverlay?: boolean;
+    altPosition?: boolean;
 }
 
 interface PublicMethods extends MethodOptions {

@@ -11,7 +11,7 @@ interface IUsePosition {
 /**
  * Extracted code from the main component, used for calculating the position of the menu
  */
-export const usePosition = (openPosition: OpenPosition, uid: string): IUsePosition => {
+export const usePosition = (openPosition: OpenPosition, uid: string, altPosition: boolean): IUsePosition => {
     const menuPosition = ref({ top: '0', left: '0', transform: 'none' });
     const openOnTop = ref(false);
     const diagonal = 10; // arrow square diagonal + 1
@@ -28,6 +28,20 @@ export const usePosition = (openPosition: OpenPosition, uid: string): IUsePositi
     };
 
     /**
+     * Use alternative position calculation, for specific cases on nested relative elements
+     */
+    const getOffsetAlt = (el: HTMLElement): { top: number; left: number } => {
+        let x = 0;
+        let y = 0;
+        while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
+            x += el.offsetLeft - el.scrollLeft;
+            y += el.offsetTop - el.scrollTop;
+            el = el.offsetParent as HTMLElement;
+        }
+        return { top: y, left: x };
+    };
+
+    /**
      * Main call, when input is clicked, opens the menu on the first entry
      * Recalculate param is added when the menu component is mounted so that we can check the correct space
      */
@@ -35,7 +49,7 @@ export const usePosition = (openPosition: OpenPosition, uid: string): IUsePositi
         const el = document.getElementById(`dp__input_${uid}`);
         if (el) {
             const { left, width, height } = el.getBoundingClientRect();
-            const { top: offset } = getOffset(el);
+            const { top: offset } = altPosition ? getOffsetAlt(el) : getOffset(el);
             const position = { top: `${height + offset + diagonal}px`, left: '', transform: 'none' };
             if (openPosition === OpenPosition.left) {
                 position.left = `${left}px`;
@@ -65,7 +79,7 @@ export const usePosition = (openPosition: OpenPosition, uid: string): IUsePositi
         const el = document.getElementById(`dp__input_${uid}`);
         if (el) {
             const { height: inputHeight, top } = el.getBoundingClientRect();
-            const { top: offset } = getOffset(el);
+            const { top: offset } = altPosition ? getOffsetAlt(el) : getOffset(el);
             const fullHeight = window.innerHeight;
             const freeSpaceBottom = fullHeight - top - inputHeight;
 
