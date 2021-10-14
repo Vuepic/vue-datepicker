@@ -2,8 +2,10 @@
     <div class="dp__month_year_row">
         <template v-if="!monthPicker">
             <div class="dp__month_year_col_nav" @click="onPrev">
-                <slot name="arrow-left" v-if="$slots['arrow-left']" />
-                <ChevronLeftIcon v-if="!$slots['arrow-left']" />
+                <div class="dp__inner_nav">
+                    <slot name="arrow-left" v-if="$slots['arrow-left']" />
+                    <ChevronLeftIcon v-if="!$slots['arrow-left']" />
+                </div>
             </div>
             <div class="dp__month_year_select" @click="toggleMonthPicker">
                 <slot
@@ -46,8 +48,10 @@
                 </template>
             </SelectionGrid>
             <div class="dp__month_year_col_nav" @click="onNext">
-                <slot name="arrow-right" v-if="$slots['arrow-right']" />
-                <ChevronRightIcon v-if="!$slots['arrow-right']" />
+                <div class="dp__inner_nav">
+                    <slot name="arrow-right" v-if="$slots['arrow-right']" />
+                    <ChevronRightIcon v-if="!$slots['arrow-right']" />
+                </div>
             </div>
         </template>
         <template v-if="monthPicker">

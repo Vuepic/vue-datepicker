@@ -22,18 +22,16 @@
                     <slot :name="slot" v-bind="args" />
                 </template>
             </component>
-            <table class="dp__calendar_tb" v-if="!specificMode">
-                <thead>
-                    <tr class="dp__calendar_days">
-                        <th class="dp__calendar_header_cell" v-if="weekNumbers">{{ weekNumName }}</th>
-                        <th class="dp__calendar_header_cell" v-for="(dayVal, i) in weekDays" :key="i">{{ dayVal }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(week, weekInd) in mappedDates" :key="weekInd">
-                        <td v-if="weekNumbers" class="dp__cell dp__week_num">{{ getWeekNum(week.days) }}</td>
-                        <td
-                            class="dp__cell"
+            <div v-if="!specificMode" class="dp__calendar_wrap">
+                <div class="db__calendar_header">
+                    <div class="dp__calendar_header_item" v-if="weekNumbers">{{ weekNumName }}</div>
+                    <div class="dp__calendar_header_item" v-for="(dayVal, i) in weekDays" :key="i">{{ dayVal }}</div>
+                </div>
+                <div class="dp__calendar">
+                    <div class="dp__calendar_row" v-for="(week, weekInd) in mappedDates" :key="weekInd">
+                        <div v-if="weekNumbers" class="dp__calendar_item">{{ getWeekNum(week.days) }}</div>
+                        <div
+                            class="dp__calendar_item"
                             v-for="(dayVal, dayInd) in week.days"
                             :key="dayInd + weekInd"
                             @click="$emit('selectDate', dayVal)"
@@ -45,10 +43,10 @@
                                     {{ dayVal.text }}
                                 </template>
                             </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <component
                 v-if="enableTimePicker"
                 :is="timePickerComponent ? timePickerComponent : TimePickerCmp"
