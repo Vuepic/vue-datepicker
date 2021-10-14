@@ -74,7 +74,7 @@
                     customProps,
                     hideOffsetDates,
                     autoRange,
-                    showToday,
+                    noToday,
                     noHoursOverlay,
                     noMinutesOverlay,
                 }"
@@ -181,7 +181,7 @@
         customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
         hideOffsetDates: { type: Boolean as PropType<boolean>, default: false },
         autoRange: { type: [Number, String] as PropType<number | string>, default: null },
-        showToday: { type: Boolean as PropType<boolean>, default: true },
+        noToday: { type: Boolean as PropType<boolean>, default: false },
         noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
         noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
         altPosition: { type: Boolean as PropType<boolean>, default: false },

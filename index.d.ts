@@ -84,7 +84,7 @@ interface Vue3DatePicker {
     customProps?: Record<string, unknown>;
     hideOffsetDates?: boolean;
     autoRange?: number | string;
-    showToday?: boolean;
+    noToday?: boolean;
     noHoursOverlay?: boolean;
     noMinutesOverlay?: boolean;
     altPosition?: boolean;
