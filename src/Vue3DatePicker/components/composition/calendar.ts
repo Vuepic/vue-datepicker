@@ -20,7 +20,7 @@ interface IUseCalendar {
     isDisabled: (date: Date) => boolean;
     isActiveDate: (day: ICalendarDay) => boolean;
     rangeActive: (day: ICalendarDay) => boolean;
-    selectDate: (day: UnwrapRef<ICalendarDay>) => void;
+    selectDate: (day: UnwrapRef<ICalendarDay>, isNext?: boolean) => void;
     getWeekNum: (days: UnwrapRef<ICalendarDay[]>) => string | number;
     setHoverDate: (day: UnwrapRef<ICalendarDay>) => void;
     updateTime: (value: number | number[], isHours?: boolean) => void;
@@ -188,10 +188,23 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
     };
 
     /**
+     * When using next calendar on auto range mode, adjust month and year for both calendars
+     */
+    const handleNextCalendarAutoRange = (date: string | Date) => {
+        const monthValue = getDateMonth(new Date(date));
+        const yearValue = getDateYear(new Date(date));
+        const next = getNextMonthYear(new Date(date));
+        month.value = monthValue;
+        year.value = yearValue;
+        monthNext.value = next.month;
+        yearNext.value = next.year;
+    };
+
+    /**
      * Called when the date in the calendar is clicked
      * Do a necessary formatting and assign value to internal
      */
-    const selectDate = (day: UnwrapRef<ICalendarDay>): void => {
+    const selectDate = (day: UnwrapRef<ICalendarDay>, isNext = false): void => {
         if (isDisabled(day.value)) {
             return;
         }
@@ -209,6 +222,9 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
                 rangeDate = [];
             }
             if (props.autoRange) {
+                if (isNext) {
+                    handleNextCalendarAutoRange(day.value);
+                }
                 rangeDate = [new Date(day.value), getAddedDays(new Date(day.value), +props.autoRange)];
             } else {
                 if (!rangeDate[0]) {
@@ -299,8 +315,10 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
     const handleNextMonthYear = (): void => {
         if (Array.isArray(modelValue.value) && modelValue.value.length === 2) {
             const date = new Date(modelValue.value[1]);
-            monthNext.value = getDateMonth(date);
-            yearNext.value = getDateYear(date);
+            if (getDateMonth(modelValue.value[0]) !== getDateMonth(modelValue.value[1])) {
+                monthNext.value = getDateMonth(date);
+                yearNext.value = getDateYear(date);
+            }
         }
     };
 

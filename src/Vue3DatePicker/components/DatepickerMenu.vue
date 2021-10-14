@@ -30,7 +30,7 @@
                 @update:minutes="updateTime($event, false)"
                 @update:month="updateMonthYear($event, true, true)"
                 @update:year="updateMonthYear($event, false, true)"
-                @selectDate="selectDate($event)"
+                @selectDate="selectDate($event, true)"
                 @setHoverDate="setHoverDate($event)"
             >
                 <template v-for="(slot, i) in calendarSlots" #[slot]="args" :key="i">
