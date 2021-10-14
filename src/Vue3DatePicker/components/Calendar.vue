@@ -29,7 +29,11 @@
                 </div>
                 <div class="dp__calendar">
                     <div class="dp__calendar_row" v-for="(week, weekInd) in mappedDates" :key="weekInd">
-                        <div v-if="weekNumbers" class="dp__calendar_item">{{ getWeekNum(week.days) }}</div>
+                        <div v-if="weekNumbers" class="dp__calendar_item dp__week_num">
+                            <div class="dp__cell_inner">
+                                {{ getWeekNum(week.days) }}
+                            </div>
+                        </div>
                         <div
                             class="dp__calendar_item"
                             v-for="(dayVal, dayInd) in week.days"
