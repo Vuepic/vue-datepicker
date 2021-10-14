@@ -223,6 +223,8 @@
         minutesIncrement: props.minutesIncrement,
         hoursGridIncrement: props.hoursGridIncrement,
         minutesGridIncrement: props.minutesGridIncrement,
+        monthPicker: props.monthPicker,
+        timePicker: props.timePicker,
         range: props.range,
         filters: props.filters,
         minTime: props.minTime,

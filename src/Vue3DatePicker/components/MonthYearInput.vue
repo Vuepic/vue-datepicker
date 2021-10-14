@@ -66,16 +66,20 @@
                 <template #header>
                     <div class="dp__month_picker_header">
                         <div class="dp__month_year_col_nav" @click="handleYear(false)">
-                            <slot name="arrow-left" v-if="$slots['arrow-left']" />
-                            <ChevronLeftIcon v-if="!$slots['arrow-left']" />
+                            <div class="dp__inner_nav">
+                                <slot name="arrow-left" v-if="$slots['arrow-left']" />
+                                <ChevronLeftIcon v-if="!$slots['arrow-left']" />
+                            </div>
                         </div>
                         <div @click="toggleYearPicker" class="dp__pointer">
                             <slot v-if="$slots.year" name="year" :year="year" />
                             <template v-if="!$slots.year">{{ year }}</template>
                         </div>
                         <div class="dp__month_year_col_nav" @click="handleYear(true)">
-                            <slot name="arrow-right" v-if="$slots['arrow-right']" />
-                            <ChevronRightIcon v-if="!$slots['arrow-right']" />
+                            <div class="dp__inner_nav">
+                                <slot name="arrow-right" v-if="$slots['arrow-right']" />
+                                <ChevronRightIcon v-if="!$slots['arrow-right']" />
+                            </div>
                         </div>
                     </div>
                     <SelectionGrid

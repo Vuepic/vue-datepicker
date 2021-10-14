@@ -8,7 +8,7 @@
                     months,
                     years,
                     filters,
-                    monthPicker: specificMode,
+                    monthPicker,
                     month,
                     year,
                     customProps,
