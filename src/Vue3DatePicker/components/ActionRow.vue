@@ -1,5 +1,5 @@
 <template>
-    <div class="dp__action_row">
+    <div class="dp__action_row" :style="calendarWidth ? { width: `${calendarWidth}px` } : {}">
         <div class="dp__selection_preview">
             <slot name="action-preview" v-if="$slots['action-preview']" :value="internalModelValue" />
             <template v-if="!$slots['action-preview']">
@@ -41,6 +41,7 @@
         monthPicker: { type: Boolean as PropType<boolean>, default: false },
         timePicker: { type: Boolean as PropType<boolean>, default: false },
         twoCalendars: { type: Boolean as PropType<boolean>, default: false },
+        calendarWidth: { type: Number as PropType<number>, default: 0 },
     });
 
     const previewValue = computed((): string | string[] => {

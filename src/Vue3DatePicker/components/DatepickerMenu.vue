@@ -1,7 +1,11 @@
 <template>
     <div class="dp__menu" :class="dpMenuClass" :id="`dp__menu_${uid}`" @mouseleave="clearHoverDate">
         <div :class="arrowClass" v-if="!inline"></div>
-        <div class="dp__calendar_wrapper" :class="twoCalendars ? 'dp__flex_display' : ''">
+        <div
+            class="dp__calendar_wrapper"
+            :class="twoCalendars ? 'dp__flex_display' : ''"
+            :id="`dp__calendar_wrapper_${uid}`"
+        >
             <Calendar
                 v-bind="calendarProps"
                 :instance="1"
@@ -46,6 +50,7 @@
             v-if="!autoApply"
             :is="actionRowComponent ? actionRowComponent : ActionRow"
             v-bind="{
+                calendarWidth,
                 selectText,
                 cancelText,
                 internalModelValue,
@@ -68,7 +73,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, onMounted, PropType, nextTick, DefineComponent, useSlots, ComputedRef } from 'vue';
+    import { computed, onMounted, PropType, nextTick, DefineComponent, useSlots, ComputedRef, ref } from 'vue';
     import Calendar from './Calendar.vue';
     import ActionRow from './ActionRow.vue';
 
@@ -145,8 +150,14 @@
         noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
+    const calendarWidth = ref(0);
 
     onMounted(() => {
+        const el = document.getElementById(`dp__calendar_wrapper_${props.uid}`);
+        if (el) {
+            console.log('this is el', el.getBoundingClientRect());
+            calendarWidth.value = el.getBoundingClientRect().width;
+        }
         if (!props.inline) {
             nextTick(() => emit('dpOpen'));
         }
