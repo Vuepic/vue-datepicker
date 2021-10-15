@@ -27,6 +27,7 @@
                     <div class="dp__calendar_header_item" v-if="weekNumbers">{{ weekNumName }}</div>
                     <div class="dp__calendar_header_item" v-for="(dayVal, i) in weekDays" :key="i">{{ dayVal }}</div>
                 </div>
+                <div class="dp__calendar_header_separator"></div>
                 <div class="dp__calendar">
                     <div class="dp__calendar_row" v-for="(week, weekInd) in mappedDates" :key="weekInd">
                         <div v-if="weekNumbers" class="dp__calendar_item dp__week_num">
