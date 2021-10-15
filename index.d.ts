@@ -1,20 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { DefineComponent, ComputedOptions, ComponentOptionsMixin, MethodOptions } from 'vue';
 
-interface ITimeObj {
-    hours: number | string;
-    minutes: number | string;
-}
-
-interface IMonthObj {
-    month: number | string;
-    year: number | string;
-}
-
-type ModelValDef = Date | Date[] | string | string[] | ITimeObj | ITimeObj[] | IMonthObj | null;
-
-type FormatFnc = string | ((date: Date | Date[] | ITimeObj | ITimeObj[] | IMonthObj) => string);
-
 type EmitEvents = 'update:modelValue' | 'textSubmit' | 'closed' | 'cleared';
 
 interface Vue3DatePicker {
@@ -23,7 +9,21 @@ interface Vue3DatePicker {
     enableTimePicker?: boolean;
     range?: boolean;
     twoCalendars?: boolean;
-    modelValue?: ModelValDef;
+    modelValue?:
+        | Date
+        | Date[]
+        | string
+        | string[]
+        | {
+              hours: number | string;
+              minutes: number | string;
+          }
+        | {
+              hours: number | string;
+              minutes: number | string;
+          }[]
+        | { month: number | string; year: number | string }
+        | null;
     locale?: string;
     position?: 'left' | 'center' | 'right';
     dark?: boolean;
@@ -40,8 +40,44 @@ interface Vue3DatePicker {
     weekStart?: string | number;
     disabled?: boolean;
     readonly?: boolean;
-    format?: FormatFnc;
-    previewFormat?: FormatFnc;
+    format?:
+        | string
+        | ((
+              date:
+                  | Date
+                  | Date[]
+                  | {
+                        hours: number | string;
+                        minutes: number | string;
+                    }
+                  | {
+                        hours: number | string;
+                        minutes: number | string;
+                    }[]
+                  | {
+                        month: number | string;
+                        year: number | string;
+                    },
+          ) => string);
+    previewFormat?:
+        | string
+        | ((
+              date:
+                  | Date
+                  | Date[]
+                  | {
+                        hours: number | string;
+                        minutes: number | string;
+                    }
+                  | {
+                        hours: number | string;
+                        minutes: number | string;
+                    }[]
+                  | {
+                        month: number | string;
+                        year: number | string;
+                    },
+          ) => string);
     inputClassName?: string;
     menuClassName?: string;
     calendarClassName?: string;
@@ -77,7 +113,15 @@ interface Vue3DatePicker {
     teleport?: string;
     monthNameFormat?: 'long' | 'short';
     startDate?: string | Date;
-    startTime?: ITimeObj | ITimeObj[];
+    startTime?:
+        | {
+              hours: number | string;
+              minutes: number | string;
+          }
+        | {
+              hours: number | string;
+              minutes: number | string;
+          }[];
     monthYearComponent?: DefineComponent;
     timePickerComponent?: DefineComponent;
     actionRowComponent?: DefineComponent;
