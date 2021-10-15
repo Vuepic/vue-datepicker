@@ -1,11 +1,7 @@
 <template>
-    <div class="dp__menu" :class="dpMenuClass" :id="`dp__menu_${uid}`" @mouseleave="clearHoverDate">
+    <div :class="dpMenuClass" :id="`dp__menu_${uid}`" @mouseleave="clearHoverDate">
         <div :class="arrowClass" v-if="!inline"></div>
-        <div
-            class="dp__calendar_wrapper"
-            :class="twoCalendars ? 'dp__flex_display' : ''"
-            :id="`dp__calendar_wrapper_${uid}`"
-        >
+        <div :class="menuCalendarClassWrapper" :id="`dp__calendar_wrapper_${uid}`">
             <Calendar
                 v-bind="calendarProps"
                 :instance="1"
@@ -215,6 +211,13 @@
     // If datepicker is using only month or time picker
     const specificMode = computed((): boolean => props.monthPicker || props.timePicker);
 
+    const menuCalendarClassWrapper = computed(
+        (): DynamicClass => ({
+            dp__calendar_wrapper: true,
+            dp__flex_display: props.twoCalendars,
+        }),
+    );
+
     /**
      * Array of the dates from which calendar is built.
      * It also sets classes depending on picker modes, active dates, today, v-model.
@@ -255,6 +258,7 @@
 
     const dpMenuClass = computed(
         (): DynamicClass => ({
+            dp__menu: true,
             [props.menuClassName]: !!props.menuClassName,
             dp__relative: props.inline,
         }),
