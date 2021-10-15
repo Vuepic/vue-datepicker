@@ -84,6 +84,7 @@
         twoCalendars: { type: Boolean as PropType<boolean>, default: false },
         noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
         noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
+        customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
     });
     const slots = useSlots();
 

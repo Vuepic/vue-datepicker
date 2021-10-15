@@ -43,6 +43,7 @@
         twoCalendars: { type: Boolean as PropType<boolean>, default: false },
         calendarWidth: { type: Number as PropType<number>, default: 0 },
         menuMount: { type: Boolean as PropType<boolean>, default: false },
+        customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
     });
 
     const previewValue = computed((): string | string[] => {

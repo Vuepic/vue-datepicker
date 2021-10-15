@@ -125,6 +125,7 @@
         filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
         monthPicker: { type: Boolean as PropType<boolean>, default: false },
         instance: { type: Number as PropType<number>, default: 1 },
+        customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
     });
 
     const showMonthPicker = ref(false);
