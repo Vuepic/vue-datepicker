@@ -1,5 +1,5 @@
 <template>
-    <div :class="calendarClass">
+    <div class="dp__calendar">
         <div :class="contentWrapClass">
             <component
                 :is="monthYearComponent ? monthYearComponent : MonthYearInput"
@@ -22,7 +22,7 @@
                     <slot :name="slot" v-bind="args" />
                 </template>
             </component>
-            <div v-if="!specificMode" class="dp__calendar_wrap">
+            <div v-if="!specificMode" :class="calendarWrapClass">
                 <div class="db__calendar_header">
                     <div class="dp__calendar_header_item" v-if="weekNumbers">{{ weekNumName }}</div>
                     <div class="dp__calendar_header_item" v-for="(dayVal, i) in weekDays" :key="i">{{ dayVal }}</div>
@@ -145,10 +145,10 @@
 
     const specificMode = computed(() => props.monthPicker || props.timePicker);
 
-    // Class object for top most calendar wrapper
-    const calendarClass = computed(
+    // Class object for calendar wrapper
+    const calendarWrapClass = computed(
         (): DynamicClass => ({
-            ['dp__calendar']: true,
+            dp__calendar_wrap: true,
             [props.calendarClassName]: !!props.calendarClassName,
         }),
     );
