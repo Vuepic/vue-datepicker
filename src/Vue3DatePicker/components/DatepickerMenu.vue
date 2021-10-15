@@ -61,6 +61,7 @@
                 timePicker,
                 customProps,
                 twoCalendars,
+                menuMount,
             }"
             @closePicker="$emit('closePicker')"
             @selectDate="$emit('selectDate')"
@@ -151,11 +152,12 @@
     });
     const slots = useSlots();
     const calendarWidth = ref(0);
+    const menuMount = ref(false);
 
     onMounted(() => {
+        menuMount.value = true;
         const el = document.getElementById(`dp__calendar_wrapper_${props.uid}`);
         if (el) {
-            console.log('this is el', el.getBoundingClientRect());
             calendarWidth.value = el.getBoundingClientRect().width;
         }
         if (!props.inline) {

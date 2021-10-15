@@ -42,10 +42,11 @@
         timePicker: { type: Boolean as PropType<boolean>, default: false },
         twoCalendars: { type: Boolean as PropType<boolean>, default: false },
         calendarWidth: { type: Number as PropType<number>, default: 0 },
+        menuMount: { type: Boolean as PropType<boolean>, default: false },
     });
 
     const previewValue = computed((): string | string[] => {
-        if (!props.internalModelValue) return '';
+        if (!props.internalModelValue || !props.menuMount) return '';
         if (typeof props.previewFormat === 'string') {
             if (isModelValueRange(props.internalModelValue)) {
                 if (props.internalModelValue.length === 2) {
