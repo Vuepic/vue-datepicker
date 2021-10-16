@@ -232,6 +232,7 @@
         weekStart: props.weekStart,
         weekNumbers: props.weekNumbers,
         enableTimePicker: props.enableTimePicker,
+        disableMonthYearSelect: props.disableMonthYearSelect,
         is24: props.is24,
         hoursIncrement: props.hoursIncrement,
         minutesIncrement: props.minutesIncrement,
