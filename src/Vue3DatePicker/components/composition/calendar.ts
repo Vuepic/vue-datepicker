@@ -184,6 +184,19 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
                 hours.value = getDateHours(modelValue.value);
                 minutes.value = getDateMinutes(modelValue.value);
             }
+        } else {
+            if (props.timePicker) {
+                if (!props.range) {
+                    modelValue.value = setDateTime(new Date(), hours.value as number, minutes.value as number);
+                } else if (isNumberArray(hours.value) && isNumberArray(minutes.value)) {
+                    modelValue.value = [
+                        setDateTime(new Date(), hours.value[0], minutes.value[0]),
+                        setDateTime(new Date(), hours.value[1], minutes.value[1]),
+                    ];
+                }
+            } else if (props.monthPicker) {
+                modelValue.value = setDateMonthOrYear(new Date(), month.value, year.value);
+            }
         }
     };
 
