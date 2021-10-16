@@ -88,10 +88,14 @@
     "date",
     "calendar",
     "vue",
+    "vue3-datepicker",
     "datepicker",
     "datetimepicker",
     "vue-datepicker",
     "vue3-datepicker",
-    "daterangepicker"
+    "daterangepicker",
+    "time-picker",
+    "timepicker",
+    "vue3-date-time-picker"
   ]
 }
