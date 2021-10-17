@@ -1,6 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
+import addDays from 'date-fns/addDays';
+
 import Vue3Datepicker from '../../src/Vue3DatePicker/Vue3DatePicker.vue';
-import { addDays } from 'date-fns';
+
 import { resetDateTime } from '../../src/Vue3DatePicker/utils/date-utils';
 
 describe('v-model mapping', () => {
