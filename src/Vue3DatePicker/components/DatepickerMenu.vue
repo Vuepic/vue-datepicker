@@ -203,11 +203,16 @@
 
     // Get dates for the currently selected month and year
     const dates = computed(() => {
-        return getCalendarDays(month.value, year.value, +props.weekStart, props.hideOffsetDates);
+        return getCalendarDays(month.value, year.value, +props.weekStart as WeekStartNum, props.hideOffsetDates);
     });
 
     const datesNextMonth = computed(() => {
-        return getCalendarDays(monthNext.value, yearNext.value, +props.weekStart, props.hideOffsetDates);
+        return getCalendarDays(
+            monthNext.value,
+            yearNext.value,
+            +props.weekStart as WeekStartNum,
+            props.hideOffsetDates,
+        );
     });
 
     // If datepicker is using only month or time picker
