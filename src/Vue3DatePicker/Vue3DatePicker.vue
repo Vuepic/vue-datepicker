@@ -107,6 +107,8 @@
         ITextInputOptions,
         ModelValue,
         ITimeValue,
+        WeekStartNum,
+        WeekStartStr,
     } from './interfaces';
     import { clickOutsideDirective as vClickOutsideDirective } from './directives/clickOutside';
     import { getDateHours, getDateMinutes, getDefaultPattern } from './utils/date-utils';
@@ -137,7 +139,7 @@
         maxDate: { type: [Date, String] as PropType<Date | string>, default: null },
         minTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
         maxTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
-        weekStart: { type: [String, Number] as PropType<string | number>, default: 1 },
+        weekStart: { type: [String, Number] as PropType<WeekStartNum | WeekStartStr>, default: 1 },
         disabled: { type: Boolean as PropType<boolean>, default: false },
         readonly: { type: Boolean as PropType<boolean>, default: false },
         monthNameFormat: { type: String as PropType<'long' | 'short'>, default: 'short' },

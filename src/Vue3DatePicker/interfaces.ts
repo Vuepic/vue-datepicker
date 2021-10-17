@@ -74,6 +74,9 @@ export interface ITimeValue {
 
 export type ModelValue = Date | Date[] | string | string[] | ITimeValue | ITimeValue[] | IMonthValue | null;
 
+export type WeekStartNum = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+export type WeekStartStr = '0' | '1' | '2' | '3' | '4' | '5' | '6';
+
 export type UseCalendar = {
     range: boolean;
     startDate: Date | string;

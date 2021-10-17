@@ -82,6 +82,8 @@
         IFormat,
         InternalModuleValue,
         ITimeValue,
+        WeekStartNum,
+        WeekStartStr,
     } from '../interfaces';
     import { mapSlots } from './composition/slots';
     import { getCalendarDays, getMonths, getYears } from '../utils/util';
@@ -100,7 +102,7 @@
         uid: { type: String as PropType<string>, default: 'dp' },
         internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
         weekNumbers: { type: Boolean as PropType<boolean>, default: false },
-        weekStart: { type: [Number, String] as PropType<number | string>, default: 1 },
+        weekStart: { type: [Number, String] as PropType<WeekStartNum | WeekStartStr>, default: 1 },
         disableMonthYearSelect: { type: Boolean as PropType<boolean>, default: false },
         menuClassName: { type: String as PropType<string>, default: null },
         calendarClassName: { type: String as PropType<string>, default: null },
