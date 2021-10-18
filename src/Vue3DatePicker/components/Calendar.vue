@@ -1,5 +1,5 @@
 <template>
-    <div class="dp__calendar">
+    <div :class="calendarParentClass">
         <div :class="contentWrapClass">
             <component
                 :is="monthYearComponent ? monthYearComponent : MonthYearInput"
@@ -13,6 +13,7 @@
                     year,
                     customProps,
                     twoCalendars,
+                    twoCalendarsSolo,
                     instance,
                 }"
                 @update:month="$emit('update:month', $event)"
@@ -134,6 +135,7 @@
         year: { type: Number as PropType<number>, default: 0 },
         noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
         noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
+        twoCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
 
@@ -153,6 +155,11 @@
             [props.calendarClassName]: !!props.calendarClassName,
         }),
     );
+
+    const calendarParentClass = computed(() => ({
+        dp__calendar: true,
+        dp__calendar_next: props.instance === 2,
+    }));
 
     // Wrapper class for the wrapper div
     const contentWrapClass = computed(

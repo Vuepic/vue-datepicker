@@ -7,6 +7,8 @@ import {
     getDateMonth,
     getDateYear,
     getNextMonthYear,
+    getNextYearMonth,
+    getPreviousMonthYear,
     getWeekNumber,
     isDateAfter,
     isDateBefore,
@@ -124,16 +126,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         if (!props.range) {
             return isDateEqual(calendarDay.value, modelValue.value ? (modelValue.value as Date) : today.value);
         }
-        return (
-            isDateEqual(
-                calendarDay.value,
-                isModelValueRange(modelValue.value) && modelValue.value[0] ? modelValue.value[0] : null,
-            ) ||
-            isDateEqual(
-                calendarDay.value,
-                isModelValueRange(modelValue.value) && modelValue.value[1] ? modelValue.value[1] : null,
-            )
-        );
+        return false;
     };
 
     /**
@@ -328,24 +321,48 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
     const handleNextMonthYear = (): void => {
         if (Array.isArray(modelValue.value) && modelValue.value.length === 2) {
             const date = new Date(modelValue.value[1]);
-            if (getDateMonth(modelValue.value[0]) !== getDateMonth(modelValue.value[1])) {
+            if ((monthNext.value === month.value && yearNext.value === year.value) || !props.twoCalendarsSolo) {
+                const date = getNextYearMonth(month.value, year.value);
+                monthNext.value = date.month;
+                yearNext.value = date.year;
+            } else {
                 monthNext.value = getDateMonth(date);
                 yearNext.value = getDateYear(date);
             }
         }
     };
 
+    const handlePreviousCalendarChange = (monthVal: number, yearVal: number): void => {
+        if (!props.twoCalendarsSolo) {
+            const date = getPreviousMonthYear(monthVal, yearVal);
+            month.value = date.month;
+            year.value = date.year;
+        }
+    };
+
+    const handleNextCalendarChange = (monthVal: number, yearVal: number): void => {
+        if (!props.twoCalendarsSolo) {
+            const date = getNextYearMonth(monthVal, yearVal);
+            monthNext.value = date.month;
+            yearNext.value = date.year;
+        }
+    };
+
     const updateMonthYear = (value: number, isMonth = true, isNext = false): void => {
         if (isMonth) {
             if (isNext) {
+                handlePreviousCalendarChange(value, yearNext.value);
                 monthNext.value = value;
             } else {
+                handleNextCalendarChange(value, year.value);
                 month.value = value;
             }
         } else {
             if (isNext) {
+                handlePreviousCalendarChange(monthNext.value, value);
                 yearNext.value = value;
             } else {
+                handleNextCalendarChange(month.value, value);
                 year.value = value;
             }
         }
@@ -401,6 +418,15 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         if (props.range && isRange(modelValue.value)) {
             if (props.hideOffsetDates && !day.current) return false;
             return isDateEqual(new Date(day.value), modelValue.value[isStart ? 0 : 1]);
+        } else if (props.range) {
+            return isDateEqual(
+                new Date(day.value),
+                modelValue.value && Array.isArray(modelValue.value)
+                    ? isStart
+                        ? modelValue.value[0] || null
+                        : modelValue.value[1]
+                    : null,
+            );
         }
         return false;
     };

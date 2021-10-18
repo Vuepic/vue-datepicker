@@ -77,6 +77,7 @@
                     noToday,
                     noHoursOverlay,
                     noMinutesOverlay,
+                    twoCalendarsSolo,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @closePicker="closeMenu"
@@ -126,6 +127,7 @@
         locale: { type: String as PropType<string>, default: 'en-US' },
         range: { type: Boolean as PropType<boolean>, default: false },
         twoCalendars: { type: Boolean as PropType<boolean>, default: false },
+        twoCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
         modelValue: { type: [String, Date, Array, Object] as PropType<ModelValue>, default: null },
         position: { type: String as PropType<OpenPosition>, default: OpenPosition.center },
         placeholder: { type: String as PropType<string>, default: null },

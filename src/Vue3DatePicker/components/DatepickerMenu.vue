@@ -109,6 +109,7 @@
         yearRange: { type: Array as PropType<number[]>, default: () => [1970, 2100] },
         range: { type: Boolean as PropType<boolean>, default: false },
         twoCalendars: { type: Boolean as PropType<boolean>, default: false },
+        twoCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
         calendarCellClassName: { type: String as PropType<string>, default: null },
         enableTimePicker: { type: Boolean as PropType<boolean>, default: false },
         is24: { type: Boolean as PropType<boolean>, default: true },
@@ -262,6 +263,7 @@
         years: years.value,
         noHoursOverlay: props.noHoursOverlay,
         noMinutesOverlay: props.noMinutesOverlay,
+        twoCalendarsSolo: props.twoCalendarsSolo,
     }));
 
     const dpMenuClass = computed(
@@ -281,11 +283,17 @@
                     calendarDay.classData = {
                         dp__cell_offset: !calendarDay.current,
                         dp__pointer: !disabled && !(!calendarDay.current && props.hideOffsetDates),
-                        dp__active_date: isActiveDate(calendarDay),
+                        dp__active_date: props.range ? false : isActiveDate(calendarDay),
                         dp__date_hover:
-                            !disabled && !isActiveDate(calendarDay) && !(!calendarDay.current && props.hideOffsetDates),
+                            !disabled &&
+                            !isActiveDate(calendarDay) &&
+                            !(!calendarDay.current && props.hideOffsetDates) &&
+                            (props.range
+                                ? !rangeActiveStartEnd(calendarDay) && !rangeActiveStartEnd(calendarDay, false)
+                                : true),
                         dp__range_between:
                             props.range &&
+                            (props.twoCalendars ? calendarDay.current : true) &&
                             !disabled &&
                             !(!calendarDay.current && props.hideOffsetDates) &&
                             !isActiveDate(calendarDay)
@@ -296,8 +304,12 @@
                         dp__cell_auto_range: isAutoRangeInBetween(calendarDay),
                         dp__cell_auto_range_start: isAutoRangeStart(calendarDay),
                         dp__cell_auto_range_end: isHoverRangeEnd(calendarDay),
-                        dp__range_start: rangeActiveStartEnd(calendarDay),
-                        dp__range_end: rangeActiveStartEnd(calendarDay, false),
+                        dp__range_start: props.twoCalendars
+                            ? calendarDay.current && rangeActiveStartEnd(calendarDay)
+                            : rangeActiveStartEnd(calendarDay),
+                        dp__range_end: props.twoCalendars
+                            ? calendarDay.current && rangeActiveStartEnd(calendarDay, false)
+                            : rangeActiveStartEnd(calendarDay, false),
                         [props.calendarCellClassName]: !!props.calendarCellClassName,
                     };
                     return calendarDay;

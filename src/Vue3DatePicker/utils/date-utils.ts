@@ -22,6 +22,7 @@ import addHours from 'date-fns/addHours';
 import subHours from 'date-fns/subHours';
 import addMinutes from 'date-fns/addMinutes';
 import subMinutes from 'date-fns/subMinutes';
+import subMonths from 'date-fns/subMonths';
 
 import { IMonthValue, ITimeValue } from '../interfaces';
 
@@ -259,4 +260,14 @@ export const addDateMinutes = (minutes: number, toAdd: number): number => {
  */
 export const subDateMinutes = (minutes: number, toSub: number): number => {
     return getMinutes(subMinutes(setMinutes(new Date(), minutes), toSub));
+};
+
+export const getPreviousMonthYear = (month: number, year: number): { month: number; year: number } => {
+    const date = subMonths(setYear(setMonth(new Date(), month), year), 1);
+    return { month: getMonth(date), year: getYear(date) };
+};
+
+export const getNextYearMonth = (month: number, year: number): { month: number; year: number } => {
+    const date = addMonths(setYear(setMonth(new Date(), month), year), 1);
+    return { month: getMonth(date), year: getYear(date) };
 };

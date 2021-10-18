@@ -1,7 +1,7 @@
 <template>
     <div class="dp__month_year_row">
         <template v-if="!monthPicker">
-            <div class="dp__month_year_col_nav" @click="onPrev">
+            <div class="dp__month_year_col_nav" @click="onPrev" v-if="showLeftIcon">
                 <div class="dp__inner_nav">
                     <slot name="arrow-left" v-if="$slots['arrow-left']" />
                     <ChevronLeftIcon v-if="!$slots['arrow-left']" />
@@ -47,7 +47,7 @@
                     <slot name="year-overlay" :text="item.text" :value="item.value" />
                 </template>
             </SelectionGrid>
-            <div class="dp__month_year_col_nav" @click="onNext">
+            <div class="dp__month_year_col_nav" @click="onNext" v-if="showRightIcon">
                 <div class="dp__inner_nav">
                     <slot name="arrow-right" v-if="$slots['arrow-right']" />
                     <ChevronRightIcon v-if="!$slots['arrow-right']" />
@@ -126,6 +126,8 @@
         monthPicker: { type: Boolean as PropType<boolean>, default: false },
         instance: { type: Number as PropType<number>, default: 1 },
         customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
+        twoCalendars: { type: Boolean as PropType<boolean>, default: false },
+        twoCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
     });
 
     const showMonthPicker = ref(false);
@@ -163,6 +165,20 @@
 
     const groupedYears = computed((): IDefaultSelect[][] => {
         return getGroupedList(props.years);
+    });
+
+    const showLeftIcon = computed(() => {
+        if (props.twoCalendars) {
+            return !props.twoCalendarsSolo ? props.instance === 1 : true;
+        }
+        return true;
+    });
+
+    const showRightIcon = computed((): boolean => {
+        if (props.twoCalendars) {
+            return !props.twoCalendarsSolo ? props.instance === 2 : true;
+        }
+        return true;
     });
 
     const toggleMonthPicker = (): void => {
