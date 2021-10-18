@@ -326,8 +326,10 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
                 monthNext.value = date.month;
                 yearNext.value = date.year;
             } else {
-                monthNext.value = getDateMonth(date);
-                yearNext.value = getDateYear(date);
+                if (getDateMonth(modelValue.value[0]) !== getDateMonth(modelValue.value[1])) {
+                    monthNext.value = getDateMonth(date);
+                    yearNext.value = getDateYear(date);
+                }
             }
         }
     };
