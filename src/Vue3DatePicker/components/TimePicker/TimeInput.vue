@@ -77,6 +77,7 @@
     import { IDateFilter, IDefaultSelect, ITimeValue } from '../../interfaces';
     import { getArrayInArray, hoursToAmPmHours } from '../../utils/util';
     import SelectionGrid from '../SelectionGrid.vue';
+    import { addDateHours, addDateMinutes, subDateHours, subDateMinutes } from '../../utils/date-utils';
 
     const emit = defineEmits(['setHours', 'setMinutes', 'update:hours', 'update:minutes']);
     const props = defineProps({
@@ -175,14 +176,7 @@
                     return;
                 }
             }
-            if (
-                (props.is24 && hours.value + +props.hoursIncrement >= 24) ||
-                (!props.is24 && hours.value + +props.hoursIncrement >= 12)
-            ) {
-                emit('update:hours', 0);
-            } else {
-                emit('update:hours', hours.value + +props.hoursIncrement);
-            }
+            emit('update:hours', addDateHours(hours.value, +props.hoursIncrement));
         } else {
             if (props.minTime.hours) {
                 if (hours.value - +props.hoursIncrement < +props.minTime.hours) {
@@ -194,11 +188,7 @@
                     return;
                 }
             }
-            if (hours.value - +props.hoursIncrement < 0) {
-                emit('update:hours', props.is24 ? 24 - +props.hoursIncrement : 12 - -+props.hoursIncrement);
-            } else {
-                emit('update:hours', hours.value - +props.hoursIncrement);
-            }
+            emit('update:hours', subDateHours(hours.value, +props.hoursIncrement));
         }
     };
 
@@ -214,11 +204,7 @@
                     return;
                 }
             }
-            if (minutes.value + +props.minutesIncrement >= 60) {
-                emit('update:minutes', 0);
-            } else {
-                emit('update:minutes', minutes.value + +props.minutesIncrement);
-            }
+            emit('update:minutes', addDateMinutes(minutes.value, +props.minutesIncrement));
         } else {
             if (props.minTime.minutes) {
                 if (minutes.value - +props.minutesIncrement < +props.minTime.minutes) {
@@ -230,11 +216,7 @@
                     return;
                 }
             }
-            if (minutes.value - +props.minutesIncrement < 0) {
-                emit('update:minutes', 60 - +props.minutesIncrement);
-            } else {
-                emit('update:minutes', minutes.value - +props.minutesIncrement);
-            }
+            emit('update:minutes', subDateMinutes(minutes.value, +props.minutesIncrement));
         }
     };
 

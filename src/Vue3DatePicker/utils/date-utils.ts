@@ -18,6 +18,10 @@ import isEqual from 'date-fns/isEqual';
 import getISOWeek from 'date-fns/getISOWeek';
 import addMonths from 'date-fns/addMonths';
 import addDays from 'date-fns/addDays';
+import addHours from 'date-fns/addHours';
+import subHours from 'date-fns/subHours';
+import addMinutes from 'date-fns/addMinutes';
+import subMinutes from 'date-fns/subMinutes';
 
 import { IMonthValue, ITimeValue } from '../interfaces';
 
@@ -227,4 +231,32 @@ export const getDateMinutes = (date?: Date): number => {
  */
 export const getAddedDays = (date: Date, days: number): Date => {
     return addDays(date, days);
+};
+
+/**
+ * Add specific amount of hours to the previous hours
+ */
+export const addDateHours = (hours: number, toAdd: number): number => {
+    return getHours(addHours(setHours(new Date(), hours), toAdd));
+};
+
+/**
+ * Subtract specific amount of hours to the previous hours
+ */
+export const subDateHours = (hours: number, toSub: number): number => {
+    return getHours(subHours(setHours(new Date(), hours), toSub));
+};
+
+/**
+ * Add specific amount of minutes to the previous minutes
+ */
+export const addDateMinutes = (minutes: number, toAdd: number): number => {
+    return getMinutes(addMinutes(setMinutes(new Date(), minutes), toAdd));
+};
+
+/**
+ * Subtract specific amount of minutes to the previous minutes
+ */
+export const subDateMinutes = (minutes: number, toSub: number): number => {
+    return getMinutes(subMinutes(setMinutes(new Date(), minutes), toSub));
 };
