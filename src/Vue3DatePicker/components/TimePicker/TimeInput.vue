@@ -166,57 +166,61 @@
 
     const handleHours = (type: string): void => {
         if (type === 'increment') {
+            const hoursValue = addDateHours(hours.value, +props.hoursIncrement);
             if (props.maxTime.hours) {
-                if (hours.value + +props.hoursIncrement > +props.maxTime.hours) {
+                if (hoursValue > +props.maxTime.hours) {
                     return;
                 }
             }
             if (props.minTime.hours) {
-                if (hours.value + +props.hoursIncrement < +props.minTime.hours) {
+                if (hoursValue < +props.minTime.hours) {
                     return;
                 }
             }
-            emit('update:hours', addDateHours(hours.value, +props.hoursIncrement));
+            emit('update:hours', hoursValue);
         } else {
+            const hoursValue = subDateHours(hours.value, +props.hoursIncrement);
             if (props.minTime.hours) {
-                if (hours.value - +props.hoursIncrement < +props.minTime.hours) {
+                if (hoursValue < +props.minTime.hours) {
                     return;
                 }
             }
             if (props.maxTime.hours) {
-                if (hours.value - +props.hoursIncrement > +props.maxTime.hours) {
+                if (hoursValue > +props.maxTime.hours) {
                     return;
                 }
             }
-            emit('update:hours', subDateHours(hours.value, +props.hoursIncrement));
+            emit('update:hours', hoursValue);
         }
     };
 
     const handleMinutes = (type: string): void => {
         if (type === 'increment') {
+            const minutesValue = addDateMinutes(minutes.value, +props.minutesIncrement);
             if (props.maxTime.minutes) {
-                if (minutes.value + +props.minutesIncrement > +props.maxTime.minutes) {
+                if (minutesValue > +props.maxTime.minutes || minutesValue === 0) {
                     return;
                 }
             }
             if (props.minTime.minutes) {
-                if (minutes.value + +props.minutesIncrement < +props.minTime.minutes) {
+                if (minutesValue < +props.minTime.minutes || minutesValue === 0) {
                     return;
                 }
             }
-            emit('update:minutes', addDateMinutes(minutes.value, +props.minutesIncrement));
+            emit('update:minutes', minutesValue);
         } else {
+            const minutesValue = subDateMinutes(minutes.value, +props.minutesIncrement);
             if (props.minTime.minutes) {
-                if (minutes.value - +props.minutesIncrement < +props.minTime.minutes) {
+                if (minutesValue < +props.minTime.minutes || minutesValue === 0) {
                     return;
                 }
             }
             if (props.maxTime.minutes) {
-                if (minutes.value + +props.minutesIncrement > +props.maxTime.minutes) {
+                if (minutesValue > +props.maxTime.minutes) {
                     return;
                 }
             }
-            emit('update:minutes', subDateMinutes(minutes.value, +props.minutesIncrement));
+            emit('update:minutes', minutesValue);
         }
     };
 

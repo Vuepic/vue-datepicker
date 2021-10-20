@@ -133,8 +133,8 @@
     const onClick = (val: string | number): void => {
         if (
             !props.disabledValues.some((value) => value === val) &&
-            (props.minValue ? +props.minValue < val : true) &&
-            (props.maxValue ? +props.maxValue > val : true)
+            (props.minValue ? +props.minValue <= val : true) &&
+            (props.maxValue ? +props.maxValue >= val : true)
         ) {
             emit('update:modelValue', val);
             emit('selected');
