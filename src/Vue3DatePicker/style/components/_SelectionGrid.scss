@@ -10,7 +10,7 @@
     z-index: 99999;
     font-family: $dp__font_family;
     color: var(--dp-text-color);
-    box-sizing: unset;
+    box-sizing: border-box;
 }
 
 .dp__overlay::-webkit-scrollbar-track {
@@ -35,7 +35,7 @@
 }
 
 .dp__overlay_row {
-    padding: 0 $dp__common_padding;
+    padding: 0;
     box-sizing: border-box;
     display: flex;
     margin-left: auto;
@@ -53,7 +53,8 @@
 .dp__overlay_col {
     box-sizing: border-box;
     width: 33%;
-    padding: 5px;
+    padding: 3px;
+    white-space: nowrap;
 }
 
 .dp__overlay_cell_pad {
@@ -103,4 +104,5 @@
     width: 100%;
     align-items: center;
     justify-content: space-between;
+    height: $dp__cell_size;
 }

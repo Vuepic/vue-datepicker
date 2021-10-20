@@ -26,7 +26,7 @@ export interface IDateFilter {
 }
 
 export interface ICalendarDay {
-    text: number;
+    text: number | string;
     value: Date;
     current: boolean;
     classData?: DynamicClass;
@@ -57,7 +57,9 @@ export interface TimeGridProps {
 
 export interface ITextInputOptions {
     enterSubmit: boolean;
+    tabSubmit: boolean;
     openMenu: boolean;
+    openMenuOnFocus: boolean;
     rangeSeparator: string;
     format?: null;
 }
@@ -74,6 +76,9 @@ export interface ITimeValue {
 
 export type ModelValue = Date | Date[] | string | string[] | ITimeValue | ITimeValue[] | IMonthValue | null;
 
+export type WeekStartNum = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+export type WeekStartStr = '0' | '1' | '2' | '3' | '4' | '5' | '6';
+
 export type UseCalendar = {
     range: boolean;
     startDate: Date | string;
@@ -87,6 +92,10 @@ export type UseCalendar = {
     autoApply: boolean;
     monthPicker: boolean;
     timePicker: boolean;
+    hideOffsetDates: boolean;
+    twoCalendars: boolean;
+    twoCalendarsSolo: boolean;
+    autoRange: number | string;
 } & { [key: string]: any };
 
 export interface UseMonthYearPick {

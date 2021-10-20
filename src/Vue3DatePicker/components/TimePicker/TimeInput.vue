@@ -5,7 +5,10 @@
                 <slot name="arrow-up" v-if="$slots['arrow-up']" />
                 <ChevronUpIcon v-if="!$slots['arrow-up']" />
             </div>
-            <div class="dp__time_display" @click="toggleHourOverlay">{{ hourDisplay }}</div>
+            <div :class="noHoursOverlay ? '' : 'dp__time_display'" @click="toggleHourOverlay">
+                <slot v-if="$slots.hours" name="hours" :text="hourDisplay.text" :value="hourDisplay.value" />
+                <template v-if="!$slots.hours">{{ hourDisplay.text }}</template>
+            </div>
             <div class="dp__inc_dec_button" @click="handleHours('decrement')">
                 <slot name="arrow-down" v-if="$slots['arrow-down']" />
                 <ChevronDownIcon v-if="!$slots['arrow-down']" />
@@ -17,8 +20,9 @@
                 <slot name="arrow-up" v-if="$slots['arrow-up']" />
                 <ChevronUpIcon v-if="!$slots['arrow-up']" />
             </div>
-            <div class="dp__time_display" @click="toggleMinuteOverlay">
-                {{ minuteDisplay }}
+            <div :class="noMinutesOverlay ? '' : 'dp__time_display'" @click="toggleMinuteOverlay">
+                <slot v-if="$slots.minutes" name="minutes" :text="minuteDisplay.text" :value="minuteDisplay.value" />
+                <template v-if="!$slots.minutes">{{ minuteDisplay.text }}</template>
             </div>
             <div class="dp__inc_dec_button" @click="handleMinutes('decrement')">
                 <slot name="arrow-down" v-if="$slots['arrow-down']" />
@@ -42,6 +46,9 @@
                 <slot name="clock-icon" v-if="$slots['clock-icon']" />
                 <ClockIcon v-if="!$slots['clock-icon']" />
             </template>
+            <template v-if="$slots['hours-overlay']" #item="{ item }">
+                <slot name="hours-overlay" :text="item.text" :value="item.value" />
+            </template>
         </SelectionGrid>
         <SelectionGrid
             v-if="minuteOverlay"
@@ -57,6 +64,9 @@
                 <slot name="clock-icon" v-if="$slots['clock-icon']" />
                 <ClockIcon v-if="!$slots['clock-icon']" />
             </template>
+            <template v-if="$slots['minutes-overlay']" #item="{ item }">
+                <slot name="minutes-overlay" :text="item.text" :value="item.value" />
+            </template>
         </SelectionGrid>
     </div>
 </template>
@@ -67,6 +77,7 @@
     import { IDateFilter, IDefaultSelect, ITimeValue } from '../../interfaces';
     import { getArrayInArray, hoursToAmPmHours } from '../../utils/util';
     import SelectionGrid from '../SelectionGrid.vue';
+    import { addDateHours, addDateMinutes, subDateHours, subDateMinutes } from '../../utils/date-utils';
 
     const emit = defineEmits(['setHours', 'setMinutes', 'update:hours', 'update:minutes']);
     const props = defineProps({
@@ -80,6 +91,8 @@
         filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
         minTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
         maxTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
+        noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
+        noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
     });
 
     const hourOverlay = ref(false);
@@ -92,13 +105,13 @@
         checkMinMaxHours();
     });
 
-    const hourDisplay = computed((): string => {
+    const hourDisplay = computed((): IDefaultSelect => {
         const hour = convert24ToAmPm(hours.value);
-        return hour < 10 ? `0${hour}` : `${hour}`;
+        return { text: hour < 10 ? `0${hour}` : `${hour}`, value: hour };
     });
 
-    const minuteDisplay = computed((): string => {
-        return minutes.value < 10 ? `0${minutes.value}` : `${minutes.value}`;
+    const minuteDisplay = computed((): IDefaultSelect => {
+        return { text: minutes.value < 10 ? `0${minutes.value}` : `${minutes.value}`, value: minutes.value };
     });
 
     const generateGridItems = (loopMax: number, increment: number) => {
@@ -121,11 +134,15 @@
     };
 
     const toggleHourOverlay = (): void => {
-        hourOverlay.value = !hourOverlay.value;
+        if (!props.noHoursOverlay) {
+            hourOverlay.value = !hourOverlay.value;
+        }
     };
 
     const toggleMinuteOverlay = (): void => {
-        minuteOverlay.value = !minuteOverlay.value;
+        if (!props.noMinutesOverlay) {
+            minuteOverlay.value = !minuteOverlay.value;
+        }
     };
 
     const checkMinMaxHours = (): void => {
@@ -149,76 +166,61 @@
 
     const handleHours = (type: string): void => {
         if (type === 'increment') {
+            const hoursValue = addDateHours(hours.value, +props.hoursIncrement);
             if (props.maxTime.hours) {
-                if (hours.value + +props.hoursIncrement > +props.maxTime.hours) {
+                if (hoursValue > +props.maxTime.hours) {
                     return;
                 }
             }
             if (props.minTime.hours) {
-                if (hours.value + +props.hoursIncrement < +props.minTime.hours) {
+                if (hoursValue < +props.minTime.hours) {
                     return;
                 }
             }
-            if (
-                (props.is24 && hours.value + +props.hoursIncrement >= 24) ||
-                (!props.is24 && hours.value + +props.hoursIncrement >= 12)
-            ) {
-                emit('update:hours', 0);
-            } else {
-                emit('update:hours', hours.value + +props.hoursIncrement);
-            }
+            emit('update:hours', hoursValue);
         } else {
+            const hoursValue = subDateHours(hours.value, +props.hoursIncrement);
             if (props.minTime.hours) {
-                if (hours.value - +props.hoursIncrement < +props.minTime.hours) {
+                if (hoursValue < +props.minTime.hours) {
                     return;
                 }
             }
             if (props.maxTime.hours) {
-                if (hours.value - +props.hoursIncrement > +props.maxTime.hours) {
+                if (hoursValue > +props.maxTime.hours) {
                     return;
                 }
             }
-            if (hours.value - +props.hoursIncrement < 0) {
-                emit('update:hours', props.is24 ? 24 - +props.hoursIncrement : 12 - -+props.hoursIncrement);
-            } else {
-                emit('update:hours', hours.value - +props.hoursIncrement);
-            }
+            emit('update:hours', hoursValue);
         }
     };
 
     const handleMinutes = (type: string): void => {
         if (type === 'increment') {
+            const minutesValue = addDateMinutes(minutes.value, +props.minutesIncrement);
             if (props.maxTime.minutes) {
-                if (minutes.value + +props.minutesIncrement > +props.maxTime.minutes) {
+                if (minutesValue > +props.maxTime.minutes || minutesValue === 0) {
                     return;
                 }
             }
             if (props.minTime.minutes) {
-                if (minutes.value + +props.minutesIncrement < +props.minTime.minutes) {
+                if (minutesValue < +props.minTime.minutes || minutesValue === 0) {
                     return;
                 }
             }
-            if (minutes.value + +props.minutesIncrement >= 60) {
-                emit('update:minutes', 0);
-            } else {
-                emit('update:minutes', minutes.value + +props.minutesIncrement);
-            }
+            emit('update:minutes', minutesValue);
         } else {
+            const minutesValue = subDateMinutes(minutes.value, +props.minutesIncrement);
             if (props.minTime.minutes) {
-                if (minutes.value - +props.minutesIncrement < +props.minTime.minutes) {
+                if (minutesValue < +props.minTime.minutes || minutesValue === 0) {
                     return;
                 }
             }
             if (props.maxTime.minutes) {
-                if (minutes.value + +props.minutesIncrement > +props.maxTime.minutes) {
+                if (minutesValue > +props.maxTime.minutes) {
                     return;
                 }
             }
-            if (minutes.value - +props.minutesIncrement < 0) {
-                emit('update:minutes', 60 - +props.minutesIncrement);
-            } else {
-                emit('update:minutes', minutes.value - +props.minutesIncrement);
-            }
+            emit('update:minutes', minutesValue);
         }
     };
 

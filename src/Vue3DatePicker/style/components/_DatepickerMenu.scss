@@ -8,7 +8,15 @@
     user-select: none;
     border: 1px solid var(--dp-border-color);
     z-index: 99999;
-    box-sizing: unset;
+    box-sizing: border-box;
+
+    &::after {
+        box-sizing: border-box;
+    }
+
+    &::before {
+        box-sizing: border-box;
+    }
 }
 
 .dp__arrow_top {

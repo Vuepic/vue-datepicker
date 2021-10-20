@@ -1,20 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { DefineComponent, ComputedOptions, ComponentOptionsMixin, MethodOptions } from 'vue';
 
-interface ITimeObj {
-    hours: number | string;
-    minutes: number | string;
-}
-
-interface IMonthObj {
-    month: number | string;
-    year: number | string;
-}
-
-type ModelValDef = Date | Date[] | string | string[] | ITimeObj | ITimeObj[] | IMonthObj | null;
-
-type FormatFnc = string | ((date: Date | Date[] | ITimeObj | ITimeObj[] | IMonthObj) => string);
-
 type EmitEvents = 'update:modelValue' | 'textSubmit' | 'closed' | 'cleared';
 
 interface Vue3DatePicker {
@@ -22,7 +8,23 @@ interface Vue3DatePicker {
     is24?: boolean;
     enableTimePicker?: boolean;
     range?: boolean;
-    modelValue?: ModelValDef;
+    twoCalendars?: boolean;
+    twoCalendarsSolo?: boolean;
+    modelValue?:
+        | Date
+        | Date[]
+        | string
+        | string[]
+        | {
+              hours: number | string;
+              minutes: number | string;
+          }
+        | {
+              hours: number | string;
+              minutes: number | string;
+          }[]
+        | { month: number | string; year: number | string }
+        | null;
     locale?: string;
     position?: 'left' | 'center' | 'right';
     dark?: boolean;
@@ -36,11 +38,47 @@ interface Vue3DatePicker {
     maxDate?: Date | string;
     minTime?: { hours?: number | string; minutes?: number | string };
     maxTime?: { hours?: number | string; minutes?: number | string };
-    weekStart?: string | number;
+    weekStart?: '0' | '1' | '2' | '3' | '4' | '5' | '6' | 0 | 1 | 2 | 3 | 4 | 5 | 6;
     disabled?: boolean;
     readonly?: boolean;
-    format?: FormatFnc;
-    previewFormat?: FormatFnc;
+    format?:
+        | string
+        | ((
+              date:
+                  | Date
+                  | Date[]
+                  | {
+                        hours: number | string;
+                        minutes: number | string;
+                    }
+                  | {
+                        hours: number | string;
+                        minutes: number | string;
+                    }[]
+                  | {
+                        month: number | string;
+                        year: number | string;
+                    },
+          ) => string);
+    previewFormat?:
+        | string
+        | ((
+              date:
+                  | Date
+                  | Date[]
+                  | {
+                        hours: number | string;
+                        minutes: number | string;
+                    }
+                  | {
+                        hours: number | string;
+                        minutes: number | string;
+                    }[]
+                  | {
+                        month: number | string;
+                        year: number | string;
+                    },
+          ) => string);
     inputClassName?: string;
     menuClassName?: string;
     calendarClassName?: string;
@@ -69,18 +107,34 @@ interface Vue3DatePicker {
     textInput?: boolean;
     textInputOptions?: {
         enterSubmit?: boolean;
+        tabSubmit?: boolean;
         openMenu?: boolean;
+        openMenuOnFocus?: boolean;
         rangeSeparator?: string;
         format?: null;
     };
     teleport?: string;
     monthNameFormat?: 'long' | 'short';
     startDate?: string | Date;
-    startTime?: ITimeObj | ITimeObj[];
+    startTime?:
+        | {
+              hours: number | string;
+              minutes: number | string;
+          }
+        | {
+              hours: number | string;
+              minutes: number | string;
+          }[];
     monthYearComponent?: DefineComponent;
     timePickerComponent?: DefineComponent;
     actionRowComponent?: DefineComponent;
     customProps?: Record<string, unknown>;
+    hideOffsetDates?: boolean;
+    autoRange?: number | string;
+    noToday?: boolean;
+    noHoursOverlay?: boolean;
+    noMinutesOverlay?: boolean;
+    altPosition?: boolean;
 }
 
 interface PublicMethods extends MethodOptions {

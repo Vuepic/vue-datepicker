@@ -1,33 +1,47 @@
 <template>
-    <div :class="calendarClass">
+    <div :class="calendarParentClass">
         <div :class="contentWrapClass">
             <component
                 :is="monthYearComponent ? monthYearComponent : MonthYearInput"
                 v-if="!disableMonthYearSelect && !timePicker"
-                v-bind="{ months, years, filters, monthPicker, month, year, customProps }"
-                @update:month="updateMonthYear($event)"
-                @update:year="updateMonthYear($event, false)"
+                v-bind="{
+                    months,
+                    years,
+                    filters,
+                    monthPicker,
+                    month,
+                    year,
+                    customProps,
+                    twoCalendars,
+                    twoCalendarsSolo,
+                    instance,
+                }"
+                @update:month="$emit('update:month', $event)"
+                @update:year="$emit('update:year', $event)"
             >
-                <template v-for="(slot, i) in monthYearSlots" #[slot] :key="i">
-                    <slot :name="slot" />
+                <template v-for="(slot, i) in monthYearSlots" #[slot]="args" :key="i">
+                    <slot :name="slot" v-bind="args" />
                 </template>
             </component>
-            <table class="dp__calendar_tb" v-if="!specificMode">
-                <thead>
-                    <tr class="dp__calendar_days">
-                        <th class="dp__calendar_header_cell" v-if="weekNumbers">{{ weekNumName }}</th>
-                        <th class="dp__calendar_header_cell" v-for="(dayVal, i) in weekDays" :key="i">{{ dayVal }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(week, weekInd) in mappedDates" :key="weekInd">
-                        <td v-if="weekNumbers" class="dp__cell dp__week_num">{{ getWeekDay(week.days) }}</td>
-                        <td
-                            class="dp__cell"
+            <div v-if="!specificMode" :class="calendarWrapClass">
+                <div class="db__calendar_header">
+                    <div class="dp__calendar_header_item" v-if="weekNumbers">{{ weekNumName }}</div>
+                    <div class="dp__calendar_header_item" v-for="(dayVal, i) in weekDays" :key="i">{{ dayVal }}</div>
+                </div>
+                <div class="dp__calendar_header_separator"></div>
+                <div class="dp__calendar">
+                    <div class="dp__calendar_row" v-for="(week, weekInd) in mappedDates" :key="weekInd">
+                        <div v-if="weekNumbers" class="dp__calendar_item dp__week_num">
+                            <div class="dp__cell_inner">
+                                {{ getWeekNum(week.days) }}
+                            </div>
+                        </div>
+                        <div
+                            class="dp__calendar_item"
                             v-for="(dayVal, dayInd) in week.days"
                             :key="dayInd + weekInd"
-                            @click="selectDate(dayVal)"
-                            @mouseover="setHoverDate(dayVal)"
+                            @click="$emit('selectDate', dayVal)"
+                            @mouseover="$emit('setHoverDate', dayVal)"
                         >
                             <div class="dp__cell_inner" :class="dayVal.classData">
                                 <slot name="day" v-if="$slots.day" :day="+dayVal.text" :date="dayVal.value"></slot>
@@ -35,10 +49,10 @@
                                     {{ dayVal.text }}
                                 </template>
                             </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <component
                 v-if="enableTimePicker"
                 :is="timePickerComponent ? timePickerComponent : TimePickerCmp"
@@ -48,6 +62,8 @@
                     minutesIncrement,
                     hoursGridIncrement,
                     minutesGridIncrement,
+                    noHoursOverlay,
+                    noMinutesOverlay,
                     range,
                     filters,
                     minTime,
@@ -56,152 +72,94 @@
                     hours,
                     minutes,
                     customProps,
+                    twoCalendars,
+                    instance,
                 }"
-                @update:hours="updateTime($event)"
-                @update:minutes="updateTime($event, false)"
+                @update:hours="$emit('update:hours', $event)"
+                @update:minutes="$emit('update:minutes', $event)"
             >
-                <template v-for="(slot, i) in timePickerSlots" #[slot] :key="i">
-                    <slot :name="slot" />
+                <template v-for="(slot, i) in timePickerSlots" #[slot]="args" :key="i">
+                    <slot :name="slot" v-bind="args" />
                 </template>
             </component>
         </div>
-        <component
-            v-if="!autoApply"
-            :is="actionRowComponent ? actionRowComponent : ActionRow"
-            v-bind="{
-                selectText,
-                cancelText,
-                internalModelValue,
-                range,
-                previewFormat,
-                inline,
-                monthPicker,
-                timePicker,
-                customProps,
-            }"
-            @closePicker="$emit('closePicker')"
-            @selectDate="$emit('selectDate')"
-        >
-            <template v-for="(slot, i) in actionSlots" #[slot]="args" :key="i">
-                <slot :name="slot" v-bind="{ ...args }" />
-            </template>
-        </component>
     </div>
 </template>
 
 <script lang="ts" setup>
-    import { computed, DefineComponent, PropType, useSlots } from 'vue';
-    import MonthYearInput from './MonthYearInput.vue';
-    import TimePickerCmp from './TimePicker/TimePicker.vue';
-    import ActionRow from './ActionRow.vue';
-    import {
-        ICalendarDate,
-        DynamicClass,
-        IDefaultSelect,
-        IDateFilter,
-        IFormat,
-        ITimeValue,
-        InternalModuleValue,
-    } from '../interfaces';
-    import { getCalendarDays, getDayNames, getMonths, getYears } from '../utils/util';
-    import { isDateEqual } from '../utils/date-utils';
-    import { useCalendar } from '../utils/composition/calendar';
-    import { mapSlots } from '../utils/composition/slots';
+    import { computed, DefineComponent, PropType, UnwrapRef, useSlots } from 'vue';
 
-    const emit = defineEmits(['update:internalModelValue', 'closePicker', 'selectDate', 'autoApply', 'timeUpdate']);
+    import TimePickerCmp from './TimePicker/TimePicker.vue';
+    import MonthYearInput from './MonthYearInput.vue';
+
+    import { DynamicClass, IDateFilter, ITimeValue, ICalendarDate, ICalendarDay, IDefaultSelect } from '../interfaces';
+    import { getDayNames } from '../utils/util';
+    import { mapSlots } from './composition/slots';
+
+    defineEmits(['update:hours', 'update:minutes', 'selectDate', 'setHoverDate', 'update:month', 'update:year']);
 
     const props = defineProps({
+        locale: { type: String as PropType<string>, default: 'en-Us' },
+        weekNumName: { type: String as PropType<string>, default: 'W' },
         weekStart: { type: [Number, String] as PropType<number | string>, default: 1 },
         weekNumbers: { type: Boolean as PropType<boolean>, default: false },
-        disableMonthYearSelect: { type: Boolean as PropType<boolean>, default: false },
-        calendarClassName: { type: String as PropType<string>, default: null },
-        yearRange: { type: Array as PropType<number[]>, default: () => [] },
-        internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
-        calendarCellClassName: { type: String as PropType<string>, default: null },
+        mappedDates: { type: Array as PropType<ICalendarDate[]>, default: () => [] },
         enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
+        timePickerComponent: { type: Object as PropType<DefineComponent>, default: null },
+        monthYearComponent: { type: Object as PropType<DefineComponent>, default: null },
         is24: { type: Boolean as PropType<boolean>, default: true },
         hoursIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
         minutesIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
         hoursGridIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
         minutesGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 },
         range: { type: Boolean as PropType<boolean>, default: false },
-        autoApply: { type: Boolean as PropType<boolean>, default: false },
-        selectText: { type: String as PropType<string>, default: 'Select' },
-        cancelText: { type: String as PropType<string>, default: 'Cancel' },
-        previewFormat: {
-            type: [String, Function] as PropType<IFormat>,
-            default: () => null,
-        },
-        locale: { type: String as PropType<string>, default: 'en-Us' },
-        weekNumName: { type: String as PropType<string>, default: 'W' },
-        minDate: { type: [Date, String] as PropType<Date | string>, default: null },
-        maxDate: { type: [Date, String] as PropType<Date | string>, default: null },
-        disabledDates: { type: Array as PropType<Date[] | string[]>, default: () => [] },
         filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
         minTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
         maxTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
-        inline: { type: Boolean as PropType<boolean>, default: false },
+        customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
+        hours: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
+        minutes: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
+        calendarClassName: { type: String as PropType<string>, default: null },
         monthPicker: { type: Boolean as PropType<boolean>, default: false },
         timePicker: { type: Boolean as PropType<boolean>, default: false },
-        monthNameFormat: { type: String as PropType<'long' | 'short'>, default: 'short' },
-        startDate: { type: [Date, String] as PropType<string | Date>, default: null },
-        startTime: { type: [Object, Array] as PropType<ITimeValue | ITimeValue[] | null>, default: null },
-        monthYearComponent: { type: Object as PropType<DefineComponent>, default: null },
-        timePickerComponent: { type: Object as PropType<DefineComponent>, default: null },
-        actionRowComponent: { type: Object as PropType<DefineComponent>, default: null },
-        customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
+        disableMonthYearSelect: { type: Boolean as PropType<boolean>, default: false },
+        getWeekNum: {
+            type: Function as PropType<(dates: UnwrapRef<ICalendarDay[]>) => string | number>,
+            default: () => '',
+        },
+        instance: { type: Number as PropType<number>, default: 1 },
+        twoCalendars: { type: Boolean as PropType<boolean>, default: false },
+        years: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
+        months: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
+        month: { type: Number as PropType<number>, default: 0 },
+        year: { type: Number as PropType<number>, default: 0 },
+        noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
+        noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
+        twoCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
-
-    const {
-        updateTime,
-        updateMonthYear,
-        today,
-        month,
-        year,
-        hours,
-        minutes,
-        isDisabled,
-        isActiveDate,
-        selectDate,
-        getWeekDay,
-        setHoverDate,
-        rangeActive,
-    } = useCalendar(props, emit);
 
     const weekDays = computed(() => {
         return getDayNames(props.locale, +props.weekStart);
     });
 
-    // If datepicker is using only month or time picker
-    const specificMode = computed((): boolean => props.monthPicker || props.timePicker);
-
-    const monthYearSlots = mapSlots(slots, 'monthYear');
     const timePickerSlots = mapSlots(slots, 'timePicker');
-    const actionSlots = mapSlots(slots, 'action');
+    const monthYearSlots = mapSlots(slots, 'monthYear');
 
-    // Generate array of years depending on provided range that will be available for picker
-    const years = computed((): IDefaultSelect[] => {
-        return getYears(props.yearRange);
-    });
+    const specificMode = computed(() => props.monthPicker || props.timePicker);
 
-    // Get generated months
-    const months = computed((): IDefaultSelect[] => {
-        return getMonths(props.locale, props.monthNameFormat);
-    });
-
-    // Get dates for the currently selected month and year
-    const dates = computed(() => {
-        return getCalendarDays(month.value, year.value, +props.weekStart);
-    });
-
-    // Class object for top most calendar wrapper
-    const calendarClass = computed(
+    // Class object for calendar wrapper
+    const calendarWrapClass = computed(
         (): DynamicClass => ({
-            ['dp__calendar']: true,
+            dp__calendar_wrap: true,
             [props.calendarClassName]: !!props.calendarClassName,
         }),
     );
+
+    const calendarParentClass = computed(() => ({
+        dp__calendar: true,
+        dp__calendar_next: props.instance === 2,
+    }));
 
     // Wrapper class for the wrapper div
     const contentWrapClass = computed(
@@ -210,31 +168,4 @@
             dp_calendar_fixed: specificMode.value,
         }),
     );
-
-    /**
-     * Array of the dates from which calendar is built.
-     * It also sets classes depending on picker modes, active dates, today, v-model.
-     */
-    const mappedDates = computed((): ICalendarDate[] => {
-        return dates.value.map((date) => {
-            return {
-                ...date,
-                days: date.days.map((calendarDay) => {
-                    const disabled = isDisabled(calendarDay.value);
-                    calendarDay.classData = {
-                        ['dp__cell_offset']: !calendarDay.current,
-                        ['dp__pointer']: !disabled,
-                        ['dp__active_date']: isActiveDate(calendarDay),
-                        ['dp__date_hover']: !disabled && !isActiveDate(calendarDay),
-                        ['dp__range_between']:
-                            props.range && !disabled && !isActiveDate(calendarDay) ? rangeActive(calendarDay) : false,
-                        ['dp__today']: isDateEqual(calendarDay.value, today.value),
-                        ['dp__cell_disabled']: disabled,
-                        [props.calendarCellClassName]: !!props.calendarCellClassName,
-                    };
-                    return calendarDay;
-                }),
-            };
-        });
-    });
 </script>

@@ -1,40 +1,53 @@
 import { computed, onMounted, Ref, ref, UnwrapRef, watch } from 'vue';
 import { ICalendarDay, InternalModuleValue, UseCalendar, VueEmit } from '../../interfaces';
 import {
+    getAddedDays,
     getDateHours,
     getDateMinutes,
     getDateMonth,
     getDateYear,
+    getNextMonthYear,
+    getNextYearMonth,
+    getPreviousMonthYear,
     getWeekNumber,
     isDateAfter,
     isDateBefore,
     isDateEqual,
     setDateMonthOrYear,
     setDateTime,
-} from '../date-utils';
-import { isModelValueRange, isNumberArray, isRange, isTimeArr } from '../type-guard';
+} from '../../utils/date-utils';
+import { isModelValueRange, isNumberArray, isRange, isTimeArr } from '../../utils/type-guard';
 
 interface IUseCalendar {
     isDisabled: (date: Date) => boolean;
     isActiveDate: (day: ICalendarDay) => boolean;
     rangeActive: (day: ICalendarDay) => boolean;
-    selectDate: (day: UnwrapRef<ICalendarDay>) => void;
-    getWeekDay: (days: UnwrapRef<ICalendarDay[]>) => string | number;
+    selectDate: (day: UnwrapRef<ICalendarDay>, isNext?: boolean) => void;
+    getWeekNum: (days: UnwrapRef<ICalendarDay[]>) => string | number;
     setHoverDate: (day: UnwrapRef<ICalendarDay>) => void;
     updateTime: (value: number | number[], isHours?: boolean) => void;
-    updateMonthYear: (value: number, isMonth?: boolean) => void;
+    updateMonthYear: (value: number, isMonth?: boolean, isNext?: boolean) => void;
+    isHoverRangeEnd: (day: UnwrapRef<ICalendarDay>) => boolean;
+    isAutoRangeInBetween: (day: UnwrapRef<ICalendarDay>) => boolean;
+    isAutoRangeStart: (day: UnwrapRef<ICalendarDay>) => boolean;
+    rangeActiveStartEnd: (day: UnwrapRef<ICalendarDay>, isStart?: boolean) => boolean;
+    clearHoverDate: () => void;
     today: Ref<Date>;
     month: Ref<number>;
     year: Ref<number>;
+    monthNext: Ref<number>;
+    yearNext: Ref<number>;
     hours: Ref<number | number[]>;
     minutes: Ref<number | number[]>;
 }
 
 export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => {
     const today = ref<Date>(new Date());
-    const hoveredDate = ref<Date>();
+    const hoveredDate = ref<Date | null>();
     const month = ref<number>(getDateMonth(new Date()));
     const year = ref<number>(getDateYear(new Date()));
+    const monthNext = ref<number>(getNextMonthYear(new Date()).month);
+    const yearNext = ref<number>(getNextMonthYear(new Date()).year);
     const hours = ref<number | number[]>(props.range ? [getDateHours(), getDateHours()] : getDateHours());
     const minutes = ref<number | number[]>(props.range ? [getDateMinutes(), getDateMinutes()] : getDateMinutes());
 
@@ -45,6 +58,10 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
             if (props.startDate) {
                 month.value = getDateMonth(new Date(props.startDate));
                 year.value = getDateYear(new Date(props.startDate));
+                if (props.twoCalendars) {
+                    monthNext.value = getNextMonthYear(new Date(props.startDate)).month;
+                    yearNext.value = getNextMonthYear(new Date(props.startDate)).year;
+                }
             }
             if (props.startTime) {
                 assignStartTime();
@@ -105,19 +122,11 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
      */
     const isActiveDate = (calendarDay: ICalendarDay): boolean => {
         if (!modelValue.value) return false;
+        if (props.hideOffsetDates && !calendarDay.current) return false;
         if (!props.range) {
             return isDateEqual(calendarDay.value, modelValue.value ? (modelValue.value as Date) : today.value);
         }
-        return (
-            isDateEqual(
-                calendarDay.value,
-                isModelValueRange(modelValue.value) && modelValue.value[0] ? modelValue.value[0] : null,
-            ) ||
-            isDateEqual(
-                calendarDay.value,
-                isModelValueRange(modelValue.value) && modelValue.value[1] ? modelValue.value[1] : null,
-            )
-        );
+        return false;
     };
 
     /**
@@ -160,20 +169,52 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
                     hours.value = [getDateHours(modelValue.value[0]), getDateHours(modelValue.value[1])];
                     minutes.value = [getDateMinutes(modelValue.value[0]), getDateMinutes(modelValue.value[1])];
                 }
+                if (props.twoCalendars) {
+                    handleNextMonthYear();
+                }
             } else {
                 assignMonthAndYear(modelValue.value);
                 hours.value = getDateHours(modelValue.value);
                 minutes.value = getDateMinutes(modelValue.value);
             }
+        } else {
+            if (props.timePicker) {
+                if (!props.range) {
+                    modelValue.value = setDateTime(new Date(), hours.value as number, minutes.value as number);
+                } else if (isNumberArray(hours.value) && isNumberArray(minutes.value)) {
+                    modelValue.value = [
+                        setDateTime(new Date(), hours.value[0], minutes.value[0]),
+                        setDateTime(new Date(), hours.value[1], minutes.value[1]),
+                    ];
+                }
+            } else if (props.monthPicker) {
+                modelValue.value = setDateMonthOrYear(new Date(), month.value, year.value);
+            }
         }
+    };
+
+    /**
+     * When using next calendar on auto range mode, adjust month and year for both calendars
+     */
+    const handleNextCalendarAutoRange = (date: string | Date) => {
+        const monthValue = getDateMonth(new Date(date));
+        const yearValue = getDateYear(new Date(date));
+        const next = getNextMonthYear(new Date(date));
+        month.value = monthValue;
+        year.value = yearValue;
+        monthNext.value = next.month;
+        yearNext.value = next.year;
     };
 
     /**
      * Called when the date in the calendar is clicked
      * Do a necessary formatting and assign value to internal
      */
-    const selectDate = (day: UnwrapRef<ICalendarDay>): void => {
+    const selectDate = (day: UnwrapRef<ICalendarDay>, isNext = false): void => {
         if (isDisabled(day.value)) {
+            return;
+        }
+        if (!day.current && props.hideOffsetDates) {
             return;
         }
         if (!props.range && !isNumberArray(hours.value) && !isNumberArray(minutes.value)) {
@@ -186,13 +227,20 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
             if (rangeDate.length === 2) {
                 rangeDate = [];
             }
-            if (!rangeDate[0]) {
-                rangeDate[0] = new Date(day.value);
+            if (props.autoRange) {
+                if (isNext) {
+                    handleNextCalendarAutoRange(day.value);
+                }
+                rangeDate = [new Date(day.value), getAddedDays(new Date(day.value), +props.autoRange)];
             } else {
-                if (isDateBefore(new Date(day.value), new Date(rangeDate[0]))) {
-                    rangeDate.unshift(new Date(day.value));
+                if (!rangeDate[0]) {
+                    rangeDate[0] = new Date(day.value);
                 } else {
-                    rangeDate[1] = new Date(day.value);
+                    if (isDateBefore(new Date(day.value), new Date(rangeDate[0]))) {
+                        rangeDate.unshift(new Date(day.value));
+                    } else {
+                        rangeDate[1] = new Date(day.value);
+                    }
                 }
             }
             if (rangeDate[0] && !rangeDate[1]) {
@@ -211,7 +259,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
     /**
      * Get week number if enabled
      */
-    const getWeekDay = (days: UnwrapRef<ICalendarDay[]>): string | number => {
+    const getWeekNum = (days: UnwrapRef<ICalendarDay[]>): string | number => {
         const firstCurrentData = days.find((day) => day.current);
         if (firstCurrentData) {
             return getWeekNumber(firstCurrentData.value);
@@ -223,14 +271,102 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
      * When using range picker keep track of hovered value in the calendar
      */
     const setHoverDate = (day: UnwrapRef<ICalendarDay>): void => {
+        if (!day.current && props.hideOffsetDates) {
+            return;
+        }
         hoveredDate.value = day.value;
     };
 
-    const updateMonthYear = (value: number, isMonth = true): void => {
+    /**
+     * Check if range ends on the given day
+     */
+    const isHoverRangeEnd = (day: UnwrapRef<ICalendarDay>): boolean => {
+        if (props.autoRange) {
+            if (hoveredDate.value) {
+                if (props.hideOffsetDates && !day.current) return false;
+                const rangeEnd = getAddedDays(hoveredDate.value, +props.autoRange);
+                return isDateEqual(rangeEnd, new Date(day.value));
+            }
+            return false;
+        }
+        return false;
+    };
+
+    /**
+     * Check if date in auto range preview is in between
+     */
+    const isAutoRangeInBetween = (day: UnwrapRef<ICalendarDay>): boolean => {
+        if (props.autoRange) {
+            if (hoveredDate.value) {
+                const rangeEnd = getAddedDays(hoveredDate.value, +props.autoRange);
+                if (props.hideOffsetDates && !day.current) return false;
+                return isDateAfter(day.value, hoveredDate.value) && isDateBefore(day.value, rangeEnd);
+            }
+            return false;
+        }
+        return false;
+    };
+
+    const isAutoRangeStart = (day: UnwrapRef<ICalendarDay>): boolean => {
+        if (props.autoRange) {
+            if (hoveredDate.value) {
+                if (props.hideOffsetDates && !day.current) return false;
+                return isDateEqual(hoveredDate.value, day.value);
+            }
+            return false;
+        }
+        return false;
+    };
+
+    const handleNextMonthYear = (): void => {
+        if (Array.isArray(modelValue.value) && modelValue.value.length === 2) {
+            const date = new Date(modelValue.value[1]);
+            if ((monthNext.value === month.value && yearNext.value === year.value) || !props.twoCalendarsSolo) {
+                const date = getNextYearMonth(month.value, year.value);
+                monthNext.value = date.month;
+                yearNext.value = date.year;
+            } else {
+                if (getDateMonth(modelValue.value[0]) !== getDateMonth(modelValue.value[1])) {
+                    monthNext.value = getDateMonth(date);
+                    yearNext.value = getDateYear(date);
+                }
+            }
+        }
+    };
+
+    const handlePreviousCalendarChange = (monthVal: number, yearVal: number): void => {
+        if (!props.twoCalendarsSolo) {
+            const date = getPreviousMonthYear(monthVal, yearVal);
+            month.value = date.month;
+            year.value = date.year;
+        }
+    };
+
+    const handleNextCalendarChange = (monthVal: number, yearVal: number): void => {
+        if (!props.twoCalendarsSolo) {
+            const date = getNextYearMonth(monthVal, yearVal);
+            monthNext.value = date.month;
+            yearNext.value = date.year;
+        }
+    };
+
+    const updateMonthYear = (value: number, isMonth = true, isNext = false): void => {
         if (isMonth) {
-            month.value = value;
+            if (isNext) {
+                handlePreviousCalendarChange(value, yearNext.value);
+                monthNext.value = value;
+            } else {
+                handleNextCalendarChange(value, year.value);
+                month.value = value;
+            }
         } else {
-            year.value = value;
+            if (isNext) {
+                handlePreviousCalendarChange(monthNext.value, value);
+                yearNext.value = value;
+            } else {
+                handleNextCalendarChange(month.value, value);
+                year.value = value;
+            }
         }
         if (props.monthPicker) {
             if (modelValue.value) {
@@ -272,19 +408,51 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         }
     };
 
+    // When mouse leaves the menu clear the hover date data
+    const clearHoverDate = (): void => {
+        hoveredDate.value = null;
+    };
+
+    /**
+     * Check when to add a proper active start/end date class on range picker
+     */
+    const rangeActiveStartEnd = (day: UnwrapRef<ICalendarDay>, isStart = true): boolean => {
+        if (props.range && isRange(modelValue.value)) {
+            if (props.hideOffsetDates && !day.current) return false;
+            return isDateEqual(new Date(day.value), modelValue.value[isStart ? 0 : 1]);
+        } else if (props.range) {
+            return isDateEqual(
+                new Date(day.value),
+                modelValue.value && Array.isArray(modelValue.value)
+                    ? isStart
+                        ? modelValue.value[0] || null
+                        : modelValue.value[1]
+                    : null,
+            );
+        }
+        return false;
+    };
+
     return {
         today,
         hours,
         month,
         year,
+        monthNext,
+        yearNext,
         minutes,
         isDisabled,
         updateTime,
         setHoverDate,
-        getWeekDay,
+        getWeekNum,
         selectDate,
         rangeActive,
         isActiveDate,
         updateMonthYear,
+        isHoverRangeEnd,
+        isAutoRangeInBetween,
+        isAutoRangeStart,
+        clearHoverDate,
+        rangeActiveStartEnd,
     };
 };

@@ -1,64 +1,94 @@
 <template>
-    <div class="dp__menu" :class="dpMenuClass" :id="`dp__menu_${uid}`">
+    <div :class="dpMenuClass" :id="`dp__menu_${uid}`" @mouseleave="clearHoverDate">
         <div :class="arrowClass" v-if="!inline"></div>
-        <Calendar
+        <div :class="menuCalendarClassWrapper" :id="`dp__calendar_wrapper_${uid}`">
+            <Calendar
+                v-bind="calendarProps"
+                :instance="1"
+                :mapped-dates="mappedDates"
+                :month="month"
+                :year="year"
+                :month-year-component="monthYearComponent"
+                :time-picker-component="timePickerComponent"
+                @update:hours="updateTime($event)"
+                @update:minutes="updateTime($event, false)"
+                @update:month="updateMonthYear($event)"
+                @update:year="updateMonthYear($event, false)"
+                @selectDate="selectDate($event)"
+                @setHoverDate="setHoverDate($event)"
+            >
+                <template v-for="(slot, i) in calendarSlots" #[slot]="args" :key="i">
+                    <slot :name="slot" v-bind="{ ...args }" />
+                </template>
+            </Calendar>
+            <Calendar
+                v-if="range && twoCalendars"
+                v-bind="calendarProps"
+                :instance="2"
+                :mapped-dates="mappedDatesNext"
+                :month="monthNext"
+                :year="yearNext"
+                :month-year-component="monthYearComponent"
+                :time-picker-component="timePickerComponent"
+                @update:hours="updateTime($event)"
+                @update:minutes="updateTime($event, false)"
+                @update:month="updateMonthYear($event, true, true)"
+                @update:year="updateMonthYear($event, false, true)"
+                @selectDate="selectDate($event, true)"
+                @setHoverDate="setHoverDate($event)"
+            >
+                <template v-for="(slot, i) in calendarSlots" #[slot]="args" :key="i">
+                    <slot :name="slot" v-bind="{ ...args }" />
+                </template>
+            </Calendar>
+        </div>
+        <component
+            v-if="!autoApply"
+            :is="actionRowComponent ? actionRowComponent : ActionRow"
             v-bind="{
-                internalModelValue,
-                range,
-                weekNumbers,
-                weekStart,
-                disableMonthYearSelect,
-                calendarClassName,
-                is24,
-                yearRange,
-                calendarCellClassName,
-                enableTimePicker,
-                hoursIncrement,
-                minutesIncrement,
-                hoursGridIncrement,
-                minutesGridIncrement,
-                autoApply,
-                locale,
-                weekNumName,
-                previewFormat,
-                minDate,
-                maxDate,
-                disabledDates,
-                filters,
-                minTime,
-                maxTime,
+                calendarWidth,
                 selectText,
                 cancelText,
+                internalModelValue,
+                range,
+                previewFormat,
                 inline,
                 monthPicker,
                 timePicker,
-                monthNameFormat,
-                startDate,
-                startTime,
-                monthYearComponent,
-                timePickerComponent,
-                actionRowComponent,
                 customProps,
+                twoCalendars,
+                menuMount,
             }"
             @closePicker="$emit('closePicker')"
             @selectDate="$emit('selectDate')"
-            @autoApply="$emit('autoApply', $event)"
-            @timeUpdate="$emit('timeUpdate')"
-            @update:internalModelValue="$emit('update:internalModelValue', $event)"
         >
-            <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
+            <template v-for="(slot, i) in actionSlots" #[slot]="args" :key="i">
                 <slot :name="slot" v-bind="{ ...args }" />
             </template>
-        </Calendar>
+        </component>
     </div>
 </template>
 
 <script lang="ts" setup>
-    import { computed, onMounted, PropType, nextTick, DefineComponent, useSlots } from 'vue';
+    import { computed, onMounted, PropType, nextTick, DefineComponent, useSlots, ComputedRef, ref } from 'vue';
     import Calendar from './Calendar.vue';
+    import ActionRow from './ActionRow.vue';
 
-    import { DynamicClass, IDateFilter, IFormat, InternalModuleValue, ITimeValue } from '../interfaces';
-    import { mapSlots } from '../utils/composition/slots';
+    import {
+        DynamicClass,
+        ICalendarDate,
+        IDateFilter,
+        IDefaultSelect,
+        IFormat,
+        InternalModuleValue,
+        ITimeValue,
+        WeekStartNum,
+        WeekStartStr,
+    } from '../interfaces';
+    import { mapSlots } from './composition/slots';
+    import { getCalendarDays, getMonths, getYears } from '../utils/util';
+    import { useCalendar } from './composition/calendar';
+    import { isDateEqual } from '../utils/date-utils';
 
     const emit = defineEmits([
         'update:internalModelValue',
@@ -72,12 +102,14 @@
         uid: { type: String as PropType<string>, default: 'dp' },
         internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
         weekNumbers: { type: Boolean as PropType<boolean>, default: false },
-        weekStart: { type: [Number, String] as PropType<number | string>, default: 1 },
+        weekStart: { type: [Number, String] as PropType<WeekStartNum | WeekStartStr>, default: 1 },
         disableMonthYearSelect: { type: Boolean as PropType<boolean>, default: false },
         menuClassName: { type: String as PropType<string>, default: null },
         calendarClassName: { type: String as PropType<string>, default: null },
         yearRange: { type: Array as PropType<number[]>, default: () => [1970, 2100] },
         range: { type: Boolean as PropType<boolean>, default: false },
+        twoCalendars: { type: Boolean as PropType<boolean>, default: false },
+        twoCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
         calendarCellClassName: { type: String as PropType<string>, default: null },
         enableTimePicker: { type: Boolean as PropType<boolean>, default: false },
         is24: { type: Boolean as PropType<boolean>, default: true },
@@ -111,23 +143,178 @@
         timePickerComponent: { type: Object as PropType<DefineComponent>, default: null },
         actionRowComponent: { type: Object as PropType<DefineComponent>, default: null },
         customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
+        hideOffsetDates: { type: Boolean as PropType<boolean>, default: false },
+        autoRange: { type: [Number, String] as PropType<number | string>, default: null },
+        noToday: { type: Boolean as PropType<boolean>, default: false },
+        noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
+        noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
+    const calendarWidth = ref(0);
+    const menuMount = ref(false);
 
     onMounted(() => {
+        menuMount.value = true;
+        const el = document.getElementById(`dp__calendar_wrapper_${props.uid}`);
+        if (el) {
+            calendarWidth.value = el.getBoundingClientRect().width;
+        }
         if (!props.inline) {
             nextTick(() => emit('dpOpen'));
         }
     });
 
-    const slotList = mapSlots(slots, 'all');
+    const {
+        updateTime,
+        updateMonthYear,
+        today,
+        month,
+        year,
+        monthNext,
+        yearNext,
+        hours,
+        minutes,
+        isDisabled,
+        isActiveDate,
+        selectDate,
+        getWeekNum,
+        setHoverDate,
+        isHoverRangeEnd,
+        isAutoRangeInBetween,
+        isAutoRangeStart,
+        rangeActive,
+        clearHoverDate,
+        rangeActiveStartEnd,
+    } = useCalendar(props, emit);
+
+    const calendarSlots = mapSlots(slots, 'calendar');
+    const actionSlots = mapSlots(slots, 'action');
 
     const arrowClass = computed(() => (!props.openOnTop ? 'dp__arrow_top' : 'dp__arrow_bottom'));
 
-    const dpMenuClass = computed(
+    // Generate array of years depending on provided range that will be available for picker
+    const years = computed((): IDefaultSelect[] => {
+        return getYears(props.yearRange);
+    });
+
+    // Get generated months
+    const months = computed((): IDefaultSelect[] => {
+        return getMonths(props.locale, props.monthNameFormat);
+    });
+
+    // Get dates for the currently selected month and year
+    const dates = computed(() => {
+        return getCalendarDays(month.value, year.value, +props.weekStart as WeekStartNum, props.hideOffsetDates);
+    });
+
+    const datesNextMonth = computed(() => {
+        return getCalendarDays(
+            monthNext.value,
+            yearNext.value,
+            +props.weekStart as WeekStartNum,
+            props.hideOffsetDates,
+        );
+    });
+
+    // If datepicker is using only month or time picker
+    const specificMode = computed((): boolean => props.monthPicker || props.timePicker);
+
+    const menuCalendarClassWrapper = computed(
         (): DynamicClass => ({
-            [props.menuClassName]: !!props.menuClassName,
-            dp__flex_display: props.inline,
+            dp__calendar_wrapper: true,
+            dp__flex_display: props.twoCalendars,
         }),
     );
+
+    /**
+     * Array of the dates from which calendar is built.
+     * It also sets classes depending on picker modes, active dates, today, v-model.
+     */
+    const mappedDates = computed((): ICalendarDate[] => mapDates(dates));
+    // This one is for the next month if twoCalendars is active
+    const mappedDatesNext = computed((): ICalendarDate[] => mapDates(datesNextMonth));
+
+    const calendarProps = computed(() => ({
+        locale: props.locale,
+        weekNumName: props.weekNumName,
+        weekStart: props.weekStart,
+        weekNumbers: props.weekNumbers,
+        enableTimePicker: props.enableTimePicker,
+        disableMonthYearSelect: props.disableMonthYearSelect,
+        is24: props.is24,
+        hoursIncrement: props.hoursIncrement,
+        minutesIncrement: props.minutesIncrement,
+        hoursGridIncrement: props.hoursGridIncrement,
+        minutesGridIncrement: props.minutesGridIncrement,
+        monthPicker: props.monthPicker,
+        timePicker: props.timePicker,
+        range: props.range,
+        filters: props.filters,
+        minTime: props.minTime,
+        maxTime: props.maxTime,
+        customProps: props.customProps,
+        hours: hours.value,
+        minutes: minutes.value,
+        calendarClassName: props.calendarClassName,
+        specificMode: specificMode.value,
+        getWeekNum,
+        twoCalendars: props.twoCalendars,
+        months: months.value,
+        years: years.value,
+        noHoursOverlay: props.noHoursOverlay,
+        noMinutesOverlay: props.noMinutesOverlay,
+        twoCalendarsSolo: props.twoCalendarsSolo,
+    }));
+
+    const dpMenuClass = computed(
+        (): DynamicClass => ({
+            dp__menu: true,
+            [props.menuClassName]: !!props.menuClassName,
+            dp__relative: props.inline,
+        }),
+    );
+
+    const mapDates = (dates: ComputedRef<ICalendarDate[]>): ICalendarDate[] => {
+        return dates.value.map((date) => {
+            return {
+                ...date,
+                days: date.days.map((calendarDay) => {
+                    const disabled = isDisabled(calendarDay.value);
+                    calendarDay.classData = {
+                        dp__cell_offset: !calendarDay.current,
+                        dp__pointer: !disabled && !(!calendarDay.current && props.hideOffsetDates),
+                        dp__active_date: props.range ? false : isActiveDate(calendarDay),
+                        dp__date_hover:
+                            !disabled &&
+                            !isActiveDate(calendarDay) &&
+                            !(!calendarDay.current && props.hideOffsetDates) &&
+                            (props.range
+                                ? !rangeActiveStartEnd(calendarDay) && !rangeActiveStartEnd(calendarDay, false)
+                                : true),
+                        dp__range_between:
+                            props.range &&
+                            (props.twoCalendars ? calendarDay.current : true) &&
+                            !disabled &&
+                            !(!calendarDay.current && props.hideOffsetDates) &&
+                            !isActiveDate(calendarDay)
+                                ? rangeActive(calendarDay)
+                                : false,
+                        dp__today: !props.noToday && isDateEqual(calendarDay.value, today.value),
+                        dp__cell_disabled: disabled,
+                        dp__cell_auto_range: isAutoRangeInBetween(calendarDay),
+                        dp__cell_auto_range_start: isAutoRangeStart(calendarDay),
+                        dp__cell_auto_range_end: isHoverRangeEnd(calendarDay),
+                        dp__range_start: props.twoCalendars
+                            ? calendarDay.current && rangeActiveStartEnd(calendarDay)
+                            : rangeActiveStartEnd(calendarDay),
+                        dp__range_end: props.twoCalendars
+                            ? calendarDay.current && rangeActiveStartEnd(calendarDay, false)
+                            : rangeActiveStartEnd(calendarDay, false),
+                        [props.calendarCellClassName]: !!props.calendarCellClassName,
+                    };
+                    return calendarDay;
+                }),
+            };
+        });
+    };
 </script>

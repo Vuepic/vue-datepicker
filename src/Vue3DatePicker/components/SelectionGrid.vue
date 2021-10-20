@@ -13,7 +13,8 @@
                     "
                 >
                     <div :class="col.className">
-                        {{ col.text }}
+                        <slot v-if="$slots.item" name="item" :item="col" />
+                        <template v-if="!$slots.item">{{ col.text }}</template>
                     </div>
                 </div>
             </div>
@@ -33,7 +34,7 @@
     const emit = defineEmits(['update:modelValue', 'selected', 'toggle']);
 
     const props = defineProps({
-        uid: { type: String as PropType<string>, default: '' },
+        uid: { type: [String, Number] as PropType<string | number>, default: '' },
         items: { type: Array as PropType<IDefaultSelect[][]>, default: () => [] },
         modelValue: { type: [String, Number] as PropType<string | number>, default: null },
         gridId: { type: String as PropType<string>, default: 'dp__overlay' },
@@ -132,8 +133,8 @@
     const onClick = (val: string | number): void => {
         if (
             !props.disabledValues.some((value) => value === val) &&
-            (props.minValue ? +props.minValue < val : true) &&
-            (props.maxValue ? +props.maxValue > val : true)
+            (props.minValue ? +props.minValue <= val : true) &&
+            (props.maxValue ? +props.maxValue >= val : true)
         ) {
             emit('update:modelValue', val);
             emit('selected');

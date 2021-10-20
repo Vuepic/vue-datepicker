@@ -1,4 +1,12 @@
-import { ICalendarDate, ICalendarDay, IDateFilter, IDefaultSelect, ITextInputOptions } from '../interfaces';
+import {
+    ICalendarDate,
+    ICalendarDay,
+    IDateFilter,
+    IDefaultSelect,
+    ITextInputOptions,
+    WeekStartNum,
+} from '../interfaces';
+import { getAddedDays, isDateEqual, resetDateTime } from './date-utils';
 
 /**
  * Depending on a week start get starting date of the current calendar
@@ -13,50 +21,47 @@ const getFirstDayOfTheFirstWeek = (firstDate: Date, start: number): Date => {
     return startDate;
 };
 
-// From the giving date get the date after 7 days
-const getSevenDaysOffset = (date: Date): Date => {
-    const startDate = new Date(JSON.parse(JSON.stringify(date)));
-    return new Date(startDate.setDate(startDate.getDate() + 7));
-};
-
 // Get 7 days from the provided start date, month is used to check whether the date is from the specified month or in the offset
-const getWeekDays = (startDay: Date, month: number): ICalendarDay[] => {
+const getWeekDays = (startDay: Date, month: number, hideOffsetDates: boolean): ICalendarDay[] => {
     const startDate = new Date(JSON.parse(JSON.stringify(startDay)));
     const dates = [];
     for (let i = 0; i < 7; i++) {
         const next = new Date(new Date(JSON.parse(JSON.stringify(startDate))).getTime());
         next.setDate(startDate.getDate() + i);
+        const isNext = JSON.parse(JSON.stringify(next.getMonth())) !== month;
         dates.push({
-            text: next.getDate(),
+            text: hideOffsetDates && isNext ? '' : next.getDate(),
             value: next,
-            current: JSON.parse(JSON.stringify(next.getMonth())) === month,
+            current: !isNext,
         });
     }
     return dates;
 };
 
-/**
- * Returns the number of weeks in a month, each week must have current month date in
- */
-const getNumberOfWeeksInAMonth = (firstDate: Date, lastDate: Date): number => {
-    return Math.ceil((firstDate.getDay() + lastDate.getDate() - 1) / 7);
-};
-
 // Get days for the calendar to be displayed in a table grouped by weeks
-export const getCalendarDays = (month: number, year: number, start: number): ICalendarDate[] => {
+export const getCalendarDays = (
+    month: number,
+    year: number,
+    start: WeekStartNum,
+    hideOffsetDates: boolean,
+): ICalendarDate[] => {
     const weeks: ICalendarDate[] = [];
     const firstDate = new Date(year, month, 1);
     const lastDate = new Date(year, month + 1, 0);
 
-    let firstDateInCalendar = getFirstDayOfTheFirstWeek(firstDate, start);
-    const weeksInMonth = getNumberOfWeeksInAMonth(firstDate, lastDate);
-    for (let week = 0; week < weeksInMonth; week++) {
-        if (week !== 0) {
-            firstDateInCalendar = getSevenDaysOffset(firstDateInCalendar);
-        }
-        const days = getWeekDays(firstDateInCalendar, month);
+    const firstDateInCalendar = getFirstDayOfTheFirstWeek(firstDate, start);
+
+    const addDaysToWeek = (date: Date) => {
+        const days = getWeekDays(date, month, hideOffsetDates);
         weeks.push({ days });
-    }
+        if (
+            !weeks[weeks.length - 1].days.some((day) => isDateEqual(resetDateTime(day.value), resetDateTime(lastDate)))
+        ) {
+            const nextDate = getAddedDays(date, 7);
+            addDaysToWeek(nextDate);
+        }
+    };
+    addDaysToWeek(firstDateInCalendar);
 
     return weeks;
 };
@@ -130,7 +135,9 @@ export const hoursToAmPmHours = (index: number): number => {
  */
 export const getDefaultTextInputOptions = (): ITextInputOptions => ({
     enterSubmit: true,
+    tabSubmit: true,
     openMenu: true,
+    openMenuOnFocus: true,
     rangeSeparator: '-',
 });
 

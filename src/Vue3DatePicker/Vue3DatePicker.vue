@@ -41,6 +41,7 @@
                     calendarClassName,
                     yearRange,
                     range,
+                    twoCalendars,
                     calendarCellClassName,
                     enableTimePicker,
                     is24,
@@ -71,6 +72,12 @@
                     timePickerComponent,
                     actionRowComponent,
                     customProps,
+                    hideOffsetDates,
+                    autoRange,
+                    noToday,
+                    noHoursOverlay,
+                    noMinutesOverlay,
+                    twoCalendarsSolo,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @closePicker="closeMenu"
@@ -101,14 +108,16 @@
         ITextInputOptions,
         ModelValue,
         ITimeValue,
+        WeekStartNum,
+        WeekStartStr,
     } from './interfaces';
     import { clickOutsideDirective as vClickOutsideDirective } from './directives/clickOutside';
     import { getDateHours, getDateMinutes, getDefaultPattern } from './utils/date-utils';
     import { getDefaultTextInputOptions, getDefaultFilters } from './utils/util';
-    import { usePosition } from './utils/composition/position';
-    import { useExternalInternalMapper } from './utils/composition/external-internal-mapper';
+    import { usePosition } from './components/composition/position';
+    import { useExternalInternalMapper } from './components/composition/external-internal-mapper';
     import { isString } from './utils/type-guard';
-    import { mapSlots } from './utils/composition/slots';
+    import { mapSlots } from './components/composition/slots';
 
     const emit = defineEmits(['update:modelValue', 'textSubmit', 'closed', 'cleared']);
     const props = defineProps({
@@ -117,6 +126,8 @@
         enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
         locale: { type: String as PropType<string>, default: 'en-US' },
         range: { type: Boolean as PropType<boolean>, default: false },
+        twoCalendars: { type: Boolean as PropType<boolean>, default: false },
+        twoCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
         modelValue: { type: [String, Date, Array, Object] as PropType<ModelValue>, default: null },
         position: { type: String as PropType<OpenPosition>, default: OpenPosition.center },
         placeholder: { type: String as PropType<string>, default: null },
@@ -130,7 +141,7 @@
         maxDate: { type: [Date, String] as PropType<Date | string>, default: null },
         minTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
         maxTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
-        weekStart: { type: [String, Number] as PropType<string | number>, default: 1 },
+        weekStart: { type: [String, Number] as PropType<WeekStartNum | WeekStartStr>, default: 1 },
         disabled: { type: Boolean as PropType<boolean>, default: false },
         readonly: { type: Boolean as PropType<boolean>, default: false },
         monthNameFormat: { type: String as PropType<'long' | 'short'>, default: 'short' },
@@ -172,6 +183,12 @@
         timePickerComponent: { type: Object as PropType<DefineComponent>, default: null },
         actionRowComponent: { type: Object as PropType<DefineComponent>, default: null },
         customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
+        hideOffsetDates: { type: Boolean as PropType<boolean>, default: false },
+        autoRange: { type: [Number, String] as PropType<number | string>, default: null },
+        noToday: { type: Boolean as PropType<boolean>, default: false },
+        noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
+        noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
+        altPosition: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
     const isOpen = ref(false);
@@ -204,7 +221,11 @@
         parseExternalModelValue(modelValue.value);
     });
 
-    const { openOnTop, menuPosition, setMenuPosition, recalculatePosition } = usePosition(props.position, props.uid);
+    const { openOnTop, menuPosition, setMenuPosition, recalculatePosition } = usePosition(
+        props.position,
+        props.uid,
+        props.altPosition,
+    );
 
     const { internalModelValue, inputValue, parseExternalModelValue, emitModelValue, checkBeforeEmit } =
         useExternalInternalMapper(

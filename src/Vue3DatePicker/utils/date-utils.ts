@@ -16,6 +16,13 @@ import isAfter from 'date-fns/isAfter';
 import isBefore from 'date-fns/isBefore';
 import isEqual from 'date-fns/isEqual';
 import getISOWeek from 'date-fns/getISOWeek';
+import addMonths from 'date-fns/addMonths';
+import addDays from 'date-fns/addDays';
+import addHours from 'date-fns/addHours';
+import subHours from 'date-fns/subHours';
+import addMinutes from 'date-fns/addMinutes';
+import subMinutes from 'date-fns/subMinutes';
+import subMonths from 'date-fns/subMonths';
 
 import { IMonthValue, ITimeValue } from '../interfaces';
 
@@ -70,6 +77,11 @@ export const setDateTime = (date: Date | null, hours?: number | null, minutes?: 
         dateCopy = setMinutes(dateCopy, minutes);
     }
     return dateCopy;
+};
+
+export const getNextMonthYear = (date: Date): { month: number; year: number } => {
+    const newDate = addMonths(date, 1);
+    return { month: getMonth(newDate), year: getYear(newDate) };
 };
 
 /**
@@ -213,4 +225,49 @@ export const getDateHours = (date?: Date): number => {
  */
 export const getDateMinutes = (date?: Date): number => {
     return getMinutes(date || new Date());
+};
+
+/**
+ * Add n amount of days to a given date
+ */
+export const getAddedDays = (date: Date, days: number): Date => {
+    return addDays(date, days);
+};
+
+/**
+ * Add specific amount of hours to the previous hours
+ */
+export const addDateHours = (hours: number, toAdd: number): number => {
+    return getHours(addHours(setHours(new Date(), hours), toAdd));
+};
+
+/**
+ * Subtract specific amount of hours to the previous hours
+ */
+export const subDateHours = (hours: number, toSub: number): number => {
+    return getHours(subHours(setHours(new Date(), hours), toSub));
+};
+
+/**
+ * Add specific amount of minutes to the previous minutes
+ */
+export const addDateMinutes = (minutes: number, toAdd: number): number => {
+    return getMinutes(addMinutes(setMinutes(new Date(), minutes), toAdd));
+};
+
+/**
+ * Subtract specific amount of minutes to the previous minutes
+ */
+export const subDateMinutes = (minutes: number, toSub: number): number => {
+    return getMinutes(subMinutes(setMinutes(new Date(), minutes), toSub));
+};
+
+export const getPreviousMonthYear = (month: number, year: number): { month: number; year: number } => {
+    const date = subMonths(setYear(setMonth(new Date(), month), year), 1);
+    return { month: getMonth(date), year: getYear(date) };
+};
+
+export const getNextYearMonth = (month: number, year: number): { month: number; year: number } => {
+    const date = addMonths(setYear(setMonth(new Date(), month), year), 1);
+    return { month: getMonth(date), year: getYear(date) };
 };

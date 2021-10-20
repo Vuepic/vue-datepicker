@@ -3,20 +3,23 @@
     align-items: center;
     height: $dp__month_year_row_height;
     color: var(--dp-text-color);
+    box-sizing: border-box;
 }
 
-.dp__month_year_col_nav {
-    padding: 5px;
+.dp__inner_nav {
     display: flex;
-    height: 25px;
     align-items: center;
     justify-content: center;
+    height: 25px;
     cursor: pointer;
     width: 25px;
     color: var(--dp-icon-color);
     text-align: center;
     border-radius: 50%;
-
+    svg {
+        height: 20px;
+        width: 20px;
+    }
     &:hover {
         background: var(--dp-hover-color);
     }
@@ -31,6 +34,7 @@
     align-items: center;
     justify-content: center;
     border-radius: $dp__border_radius;
+    box-sizing: border-box;
 
     &:hover {
         background: var(--dp-hover-color);

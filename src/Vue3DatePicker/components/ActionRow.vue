@@ -1,5 +1,5 @@
 <template>
-    <div class="dp__action_row">
+    <div class="dp__action_row" :style="calendarWidth ? { width: `${calendarWidth}px` } : {}">
         <div class="dp__selection_preview">
             <slot name="action-preview" v-if="$slots['action-preview']" :value="internalModelValue" />
             <template v-if="!$slots['action-preview']">
@@ -40,13 +40,23 @@
         inline: { type: Boolean as PropType<boolean>, default: false },
         monthPicker: { type: Boolean as PropType<boolean>, default: false },
         timePicker: { type: Boolean as PropType<boolean>, default: false },
+        twoCalendars: { type: Boolean as PropType<boolean>, default: false },
+        calendarWidth: { type: Number as PropType<number>, default: 0 },
+        menuMount: { type: Boolean as PropType<boolean>, default: false },
+        customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
     });
 
     const previewValue = computed((): string | string[] => {
-        if (!props.internalModelValue) return '';
+        if (!props.internalModelValue || !props.menuMount) return '';
         if (typeof props.previewFormat === 'string') {
             if (isModelValueRange(props.internalModelValue)) {
                 if (props.internalModelValue.length === 2) {
+                    if (props.twoCalendars) {
+                        return `${formatDate(props.internalModelValue[0], props.previewFormat)} - ${formatDate(
+                            props.internalModelValue[1],
+                            props.previewFormat,
+                        )}`;
+                    }
                     return [
                         formatDate(props.internalModelValue[0], props.previewFormat),
                         formatDate(props.internalModelValue[1], props.previewFormat),

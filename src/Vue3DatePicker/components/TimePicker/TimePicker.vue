@@ -15,32 +15,34 @@
                             @update:hours="$emit('update:hours', $event)"
                             @update:minutes="$emit('update:minutes', $event)"
                         >
-                            <template v-for="(slot, i) in timeInputSlots" #[slot] :key="i">
-                                <slot :name="slot" />
+                            <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
+                                <slot :name="slot" v-bind="args" />
                             </template>
                         </TimeInput>
                     </template>
                     <template v-if="range">
                         <TimeInput
+                            v-if="twoCalendars ? instance === 1 : true"
                             :hours="hours[0]"
                             :minutes="minutes[0]"
                             v-bind="timeInputProps"
                             @update:hours="$emit('update:hours', [$event, hours[1]])"
                             @update:minutes="$emit('update:minutes', [$event, minutes[1]])"
                         >
-                            <template v-for="(slot, i) in timeInputSlots" #[slot] :key="i">
-                                <slot :name="slot" />
+                            <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
+                                <slot :name="slot" v-bind="args" />
                             </template>
                         </TimeInput>
                         <TimeInput
+                            v-if="twoCalendars ? instance === 2 : true"
                             :hours="hours[1]"
                             :minutes="minutes[1]"
                             v-bind="timeInputProps"
                             @update:hours="$emit('update:hours', [hours[0], $event])"
                             @update:minutes="$emit('update:minutes', [minutes[0], $event])"
                         >
-                            <template v-for="(slot, i) in timeInputSlots" #[slot] :key="i">
-                                <slot :name="slot" />
+                            <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
+                                <slot :name="slot" v-bind="args" />
                             </template>
                         </TimeInput>
                     </template>
@@ -61,7 +63,7 @@
     import TimeInput from './TimeInput.vue';
 
     import { IDateFilter, ITimeValue } from '../../interfaces';
-    import { mapSlots } from '../../utils/composition/slots';
+    import { mapSlots } from '../composition/slots';
 
     defineEmits(['update:hours', 'update:minutes']);
 
@@ -78,6 +80,11 @@
         timePicker: { type: Boolean as PropType<boolean>, default: false },
         hours: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         minutes: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
+        instance: { type: [Number, Array] as PropType<number | number[]>, default: 1 },
+        twoCalendars: { type: Boolean as PropType<boolean>, default: false },
+        noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
+        noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
+        customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
     });
     const slots = useSlots();
 
@@ -98,5 +105,7 @@
         filters: props.filters,
         maxTime: props.maxTime,
         minTime: props.minTime,
+        noHoursOverlay: props.noHoursOverlay,
+        noMinutesOverlay: props.noMinutesOverlay,
     }));
 </script>
