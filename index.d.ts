@@ -107,7 +107,9 @@ interface Vue3DatePicker {
     textInput?: boolean;
     textInputOptions?: {
         enterSubmit?: boolean;
+        tabSubmit?: boolean;
         openMenu?: boolean;
+        openMenuOnFocus?: boolean;
         rangeSeparator?: string;
         format?: null;
     };

@@ -11,6 +11,8 @@
                 :value="inputValue"
                 @input="handleInput"
                 @keydown.enter="handleEnter"
+                @keydown.tab="handleTab"
+                @focus="handleFocus"
             />
             <span class="dp__input_icon" v-if="$slots['input-icon'] && !hideInputIcon"><slot name="input-icon" /></span>
             <CalendarIcon v-if="!$slots['input-icon'] && !hideInputIcon" class="dp__input_icon dp__input_icons" />
@@ -91,6 +93,19 @@
         if (props.textInputOptions?.enterSubmit && isValidDate(parsedDate.value)) {
             emit('setInputDate', parsedDate.value, true);
             parsedDate.value = null;
+        }
+    };
+
+    const handleTab = (): void => {
+        if (props.textInputOptions?.tabSubmit && isValidDate(parsedDate.value)) {
+            emit('setInputDate', parsedDate.value, true);
+            parsedDate.value = null;
+        }
+    };
+
+    const handleFocus = (): void => {
+        if (props.textInputOptions?.openMenuOnFocus && !props.isMenuOpen) {
+            emit('open');
         }
     };
 

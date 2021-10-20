@@ -57,7 +57,9 @@ export interface TimeGridProps {
 
 export interface ITextInputOptions {
     enterSubmit: boolean;
+    tabSubmit: boolean;
     openMenu: boolean;
+    openMenuOnFocus: boolean;
     rangeSeparator: string;
     format?: null;
 }

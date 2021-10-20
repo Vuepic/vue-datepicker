@@ -135,7 +135,9 @@ export const hoursToAmPmHours = (index: number): number => {
  */
 export const getDefaultTextInputOptions = (): ITextInputOptions => ({
     enterSubmit: true,
+    tabSubmit: true,
     openMenu: true,
+    openMenuOnFocus: true,
     rangeSeparator: '-',
 });
 
