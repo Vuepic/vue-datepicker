@@ -36,6 +36,7 @@
     text-align: center;
     flex-grow: 1;
     box-sizing: border-box;
+    color: var(--dp-text-color);
 }
 
 .dp__calendar {
@@ -48,10 +49,6 @@
 
 .dp__calendar_content_wrap {
     position: relative;
-}
-
-.dp__calendar_days {
-    color: var(--dp-text-color);
 }
 
 .dp__calendar_header_cell {
