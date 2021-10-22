@@ -56,7 +56,7 @@ app.component('Datepicker', Datepicker);
 ```vue
 <script>
     import Datepicker from 'vue3-date-time-picker';
-    import 'vue3-date-time-picker/dist/main.css'
+    import 'vue3-date-time-picker/dist/main.css';
     
     export default {
         components: { Datepicker }
