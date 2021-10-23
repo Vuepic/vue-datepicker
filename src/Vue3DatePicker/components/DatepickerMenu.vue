@@ -149,6 +149,7 @@
         noToday: { type: Boolean as PropType<boolean>, default: false },
         noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
         noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
+        disabledWeekDays: { type: Array as PropType<string[] | number[]>, default: () => [] },
     });
     const slots = useSlots();
     const calendarWidth = ref(0);

@@ -78,6 +78,7 @@
                     noHoursOverlay,
                     noMinutesOverlay,
                     twoCalendarsSolo,
+                    disabledWeekDays,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @closePicker="closeMenu"
@@ -167,6 +168,7 @@
         disableMonthYearSelect: { type: Boolean as PropType<boolean>, default: false },
         yearRange: { type: Array as PropType<number[]>, default: () => [1970, 2100] },
         disabledDates: { type: Array as PropType<Date[] | string[]>, default: () => [] },
+        disabledWeekDays: { type: Array as PropType<string[] | number[]>, default: () => [] },
         inline: { type: Boolean as PropType<boolean>, default: false },
         selectText: { type: String as PropType<string>, default: 'Select' },
         cancelText: { type: String as PropType<string>, default: 'Cancel' },

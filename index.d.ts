@@ -135,6 +135,7 @@ interface Vue3DatePicker {
     noHoursOverlay?: boolean;
     noMinutesOverlay?: boolean;
     altPosition?: boolean;
+    disabledWeekDays?: number[] | string[];
 }
 
 interface PublicMethods extends MethodOptions {

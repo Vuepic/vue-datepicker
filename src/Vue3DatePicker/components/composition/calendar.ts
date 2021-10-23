@@ -9,6 +9,7 @@ import {
     getNextMonthYear,
     getNextYearMonth,
     getPreviousMonthYear,
+    getWeekDay,
     getWeekNumber,
     isDateAfter,
     isDateBefore,
@@ -110,12 +111,15 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         const inDisableArr = props.disabledDates.some((disabledDate: Date | string) => isDateEqual(disabledDate, date));
         const disabledMonths = props.filters.months.length ? props.filters.months.map((month) => +month) : [];
         const inDisabledMonths = disabledMonths.includes(getDateMonth(date));
+        const weekDayDisabled = props.disabledWeekDays.length
+            ? props.disabledWeekDays.some((day) => +day === getWeekDay(date))
+            : false;
 
         const dateYear = getDateYear(date);
 
         const outOfYearRange = dateYear < +props.yearRange[0] || dateYear > +props.yearRange[1];
 
-        return aboveMax || bellowMin || inDisableArr || inDisabledMonths || outOfYearRange;
+        return aboveMax || bellowMin || inDisableArr || inDisabledMonths || outOfYearRange || weekDayDisabled;
     };
 
     /**
