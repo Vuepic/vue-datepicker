@@ -27,7 +27,12 @@
             <div v-if="!specificMode" :class="calendarWrapClass">
                 <div class="db__calendar_header">
                     <div class="dp__calendar_header_item" v-if="weekNumbers">{{ weekNumName }}</div>
-                    <div class="dp__calendar_header_item" v-for="(dayVal, i) in weekDays" :key="i">{{ dayVal }}</div>
+                    <div class="dp__calendar_header_item" v-for="(dayVal, i) in weekDays" :key="i">
+                        <slot v-if="$slots['calendar-header']" name="calendar-header" :day="dayVal" :index="i" />
+                        <template v-if="!$slots['calendar-header']">
+                            {{ dayVal }}
+                        </template>
+                    </div>
                 </div>
                 <div class="dp__calendar_header_separator"></div>
                 <div class="dp__calendar">
