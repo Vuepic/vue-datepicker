@@ -14,6 +14,7 @@
                 @update:minutes="updateTime($event, false)"
                 @update:month="updateMonthYear($event)"
                 @update:year="updateMonthYear($event, false)"
+                @monthYearSelect="monthYearSelect"
                 @selectDate="selectDate($event)"
                 @setHoverDate="setHoverDate($event)"
             >
@@ -185,6 +186,7 @@
         rangeActive,
         clearHoverDate,
         rangeActiveStartEnd,
+        monthYearSelect,
     } = useCalendar(props, emit);
 
     const calendarSlots = mapSlots(slots, 'calendar');

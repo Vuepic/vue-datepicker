@@ -18,6 +18,7 @@
                 }"
                 @update:month="$emit('update:month', $event)"
                 @update:year="$emit('update:year', $event)"
+                @monthYearSelect="$emit('monthYearSelect', $event)"
             >
                 <template v-for="(slot, i) in monthYearSlots" #[slot]="args" :key="i">
                     <slot :name="slot" v-bind="args" />
@@ -96,7 +97,15 @@
     import { getDayNames } from '../utils/util';
     import { mapSlots } from './composition/slots';
 
-    defineEmits(['update:hours', 'update:minutes', 'selectDate', 'setHoverDate', 'update:month', 'update:year']);
+    defineEmits([
+        'update:hours',
+        'update:minutes',
+        'selectDate',
+        'setHoverDate',
+        'update:month',
+        'update:year',
+        'monthYearSelect',
+    ]);
 
     const props = defineProps({
         locale: { type: String as PropType<string>, default: 'en-Us' },

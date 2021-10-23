@@ -31,6 +31,7 @@ interface IUseCalendar {
     isAutoRangeInBetween: (day: UnwrapRef<ICalendarDay>) => boolean;
     isAutoRangeStart: (day: UnwrapRef<ICalendarDay>) => boolean;
     rangeActiveStartEnd: (day: UnwrapRef<ICalendarDay>, isStart?: boolean) => boolean;
+    monthYearSelect: (isYear?: boolean) => void;
     clearHoverDate: () => void;
     today: Ref<Date>;
     month: Ref<number>;
@@ -433,6 +434,12 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         return false;
     };
 
+    const monthYearSelect = (isYear = false) => {
+        if (props.autoApply && props.monthPicker) {
+            emit('autoApply', isYear);
+        }
+    };
+
     return {
         today,
         hours,
@@ -441,6 +448,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         monthNext,
         yearNext,
         minutes,
+        monthYearSelect,
         isDisabled,
         updateTime,
         setHoverDate,

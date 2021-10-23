@@ -116,7 +116,7 @@
     import { IDateFilter, IDefaultSelect } from '../interfaces';
     import { useMontYearPick } from './composition/month-year';
 
-    const emit = defineEmits(['update:month', 'update:year']);
+    const emit = defineEmits(['update:month', 'update:year', 'monthYearSelect']);
     const props = defineProps({
         months: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
         years: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
@@ -136,11 +136,13 @@
 
     const onMonthUpdate = (month: number): void => {
         emit('update:month', month);
+        emit('monthYearSelect');
         toggleMonthPicker();
     };
 
     const onYearUpdate = (year: number): void => {
         emit('update:year', year);
+        emit('monthYearSelect', true);
         toggleYearPicker();
     };
 
