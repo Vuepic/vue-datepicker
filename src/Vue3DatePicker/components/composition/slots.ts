@@ -20,7 +20,7 @@ export const slots = [
     { name: 'action-preview', use: ['action'] },
 ];
 
-export const inputSlots = [{ name: 'trigger' }, { name: 'input-icon' }, { name: 'clear-icon' }];
+export const inputSlots = [{ name: 'trigger' }, { name: 'input-icon' }, { name: 'clear-icon' }, { name: 'dp-input' }];
 
 const slotNames = {
     all: () => slots,

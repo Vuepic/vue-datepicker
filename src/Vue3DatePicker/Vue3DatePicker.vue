@@ -22,8 +22,8 @@
             @open="openMenu"
             @setInputDate="setInputDate"
         >
-            <template v-for="(slot, i) in inputSlots" #[slot] :key="i">
-                <slot :name="slot" />
+            <template v-for="(slot, i) in inputSlots" #[slot]="args" :key="i">
+                <slot :name="slot" v-bind="args" />
             </template>
         </DatepickerInput>
         <teleport :to="teleport" :disabled="inline" v-if="isOpen">
