@@ -24,10 +24,10 @@
                     <slot :name="slot" v-bind="args" />
                 </template>
             </component>
-            <div v-if="!specificMode" :class="calendarWrapClass">
-                <div class="db__calendar_header">
-                    <div class="dp__calendar_header_item" v-if="weekNumbers">{{ weekNumName }}</div>
-                    <div class="dp__calendar_header_item" v-for="(dayVal, i) in weekDays" :key="i">
+            <div v-if="!specificMode" :class="calendarWrapClass" role="grid" aria-label="Calendar wrapper">
+                <div class="db__calendar_header" role="row">
+                    <div class="dp__calendar_header_item" role="gridcell" v-if="weekNumbers">{{ weekNumName }}</div>
+                    <div class="dp__calendar_header_item" role="gridcell" v-for="(dayVal, i) in weekDays" :key="i">
                         <slot v-if="$slots['calendar-header']" name="calendar-header" :day="dayVal" :index="i" />
                         <template v-if="!$slots['calendar-header']">
                             {{ dayVal }}
@@ -35,19 +35,26 @@
                     </div>
                 </div>
                 <div class="dp__calendar_header_separator"></div>
-                <div class="dp__calendar">
-                    <div class="dp__calendar_row" v-for="(week, weekInd) in mappedDates" :key="weekInd">
-                        <div v-if="weekNumbers" class="dp__calendar_item dp__week_num">
+                <div class="dp__calendar" role="grid" aria-label="Calendar days">
+                    <div class="dp__calendar_row" role="row" v-for="(week, weekInd) in mappedDates" :key="weekInd">
+                        <div role="gridcell" v-if="weekNumbers" class="dp__calendar_item dp__week_num">
                             <div class="dp__cell_inner">
                                 {{ getWeekNum(week.days) }}
                             </div>
                         </div>
                         <div
+                            role="gridcell"
                             class="dp__calendar_item"
                             v-for="(dayVal, dayInd) in week.days"
                             :key="dayInd + weekInd"
                             @click="$emit('selectDate', dayVal)"
                             @mouseover="$emit('setHoverDate', dayVal)"
+                            :aria-selected="
+                                dayVal.classData.dp__active_date ||
+                                dayVal.classData.dp__range_start ||
+                                dayVal.classData.dp__range_start
+                            "
+                            :aria-disabled="dayVal.classData.dp__cell_disabled"
                         >
                             <div class="dp__cell_inner" :class="dayVal.classData">
                                 <slot name="day" v-if="$slots.day" :day="+dayVal.text" :date="dayVal.value"></slot>

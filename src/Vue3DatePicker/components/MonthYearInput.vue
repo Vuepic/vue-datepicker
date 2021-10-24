@@ -2,12 +2,17 @@
     <div class="dp__month_year_row">
         <template v-if="!monthPicker">
             <div class="dp__month_year_col_nav" @click="onPrev" v-if="showLeftIcon">
-                <div class="dp__inner_nav">
+                <div class="dp__inner_nav" role="button" aria-label="Previous month">
                     <slot name="arrow-left" v-if="$slots['arrow-left']" />
                     <ChevronLeftIcon v-if="!$slots['arrow-left']" />
                 </div>
             </div>
-            <div class="dp__month_year_select" @click="toggleMonthPicker">
+            <div
+                class="dp__month_year_select"
+                @click="toggleMonthPicker"
+                role="button"
+                aria-label="Open months overlay"
+            >
                 <slot
                     v-if="$slots.month"
                     name="month"
@@ -16,7 +21,7 @@
                 />
                 <template v-if="!$slots.month">{{ getMonthDisplayVal.text }}</template>
             </div>
-            <div class="dp__month_year_select" @click="toggleYearPicker">
+            <div class="dp__month_year_select" @click="toggleYearPicker" role="button" aria-label="Open years overlay">
                 <slot v-if="$slots.year" name="year" :year="year" />
                 <template v-if="!$slots.year">{{ year }}</template>
             </div>
@@ -48,7 +53,7 @@
                 </template>
             </SelectionGrid>
             <div class="dp__month_year_col_nav" @click="onNext" v-if="showRightIcon">
-                <div class="dp__inner_nav">
+                <div class="dp__inner_nav" role="button" aria-label="Next month">
                     <slot name="arrow-right" v-if="$slots['arrow-right']" />
                     <ChevronRightIcon v-if="!$slots['arrow-right']" />
                 </div>
@@ -66,17 +71,22 @@
                 <template #header>
                     <div class="dp__month_picker_header">
                         <div class="dp__month_year_col_nav" @click="handleYear(false)">
-                            <div class="dp__inner_nav">
+                            <div class="dp__inner_nav" role="button" aria-label="Previous month">
                                 <slot name="arrow-left" v-if="$slots['arrow-left']" />
                                 <ChevronLeftIcon v-if="!$slots['arrow-left']" />
                             </div>
                         </div>
-                        <div @click="toggleYearPicker" class="dp__pointer">
+                        <div
+                            @click="toggleYearPicker"
+                            class="dp__pointer"
+                            role="button"
+                            aria-label="Open years overlay"
+                        >
                             <slot v-if="$slots.year" name="year" :year="year" />
                             <template v-if="!$slots.year">{{ year }}</template>
                         </div>
                         <div class="dp__month_year_col_nav" @click="handleYear(true)">
-                            <div class="dp__inner_nav">
+                            <div class="dp__inner_nav" role="button" aria-label="Next month">
                                 <slot name="arrow-right" v-if="$slots['arrow-right']" />
                                 <ChevronRightIcon v-if="!$slots['arrow-right']" />
                             </div>

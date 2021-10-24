@@ -1,7 +1,13 @@
 <template>
-    <div :class="dpMenuClass" :id="`dp__menu_${uid}`" @mouseleave="clearHoverDate">
+    <div
+        :class="dpMenuClass"
+        :id="`dp__menu_${uid}`"
+        @mouseleave="clearHoverDate"
+        role="dialog"
+        aria-label="Datepicker menu"
+    >
         <div :class="arrowClass" v-if="!inline"></div>
-        <div :class="menuCalendarClassWrapper" :id="`dp__calendar_wrapper_${uid}`">
+        <div :class="menuCalendarClassWrapper" :id="`dp__calendar_wrapper_${uid}`" role="document">
             <Calendar
                 v-bind="calendarProps"
                 :instance="1"
