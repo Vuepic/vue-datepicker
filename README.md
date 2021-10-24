@@ -24,6 +24,7 @@
 - Zero dependencies
 - SSR support
 - Highly configurable
+- Accessible
 - Type support
 
 ## Install
