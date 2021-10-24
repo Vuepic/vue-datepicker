@@ -79,6 +79,7 @@
                     noMinutesOverlay,
                     twoCalendarsSolo,
                     disabledWeekDays,
+                    allowedDates,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @closePicker="closeMenu"
@@ -191,6 +192,7 @@
         noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
         noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
         altPosition: { type: Boolean as PropType<boolean>, default: false },
+        allowedDates: { type: Array as PropType<string[] | Date[]>, default: () => [] },
     });
     const slots = useSlots();
     const isOpen = ref(false);

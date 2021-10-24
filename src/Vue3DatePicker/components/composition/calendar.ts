@@ -114,12 +114,23 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         const weekDayDisabled = props.disabledWeekDays.length
             ? props.disabledWeekDays.some((day) => +day === getWeekDay(date))
             : false;
+        const notInSpecific = props.allowedDates.length
+            ? !props.allowedDates.some((dateVal) => isDateEqual(new Date(dateVal), date))
+            : false;
 
         const dateYear = getDateYear(date);
 
         const outOfYearRange = dateYear < +props.yearRange[0] || dateYear > +props.yearRange[1];
 
-        return aboveMax || bellowMin || inDisableArr || inDisabledMonths || outOfYearRange || weekDayDisabled;
+        return (
+            aboveMax ||
+            bellowMin ||
+            inDisableArr ||
+            inDisabledMonths ||
+            outOfYearRange ||
+            weekDayDisabled ||
+            notInSpecific
+        );
     };
 
     /**
