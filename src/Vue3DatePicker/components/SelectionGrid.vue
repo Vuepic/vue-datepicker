@@ -1,13 +1,16 @@
 <template>
-    <div class="dp__overlay" :id="gridId" :class="dpOverlayClass">
-        <div class="dp__overlay_container">
+    <div class="dp__overlay" :id="gridId" :class="dpOverlayClass" role="dialog">
+        <div class="dp__overlay_container" role="grid">
             <div class="dp__selection_grid_header"><slot name="header"></slot></div>
-            <div class="dp__overlay_row" v-for="(row, i) in mappedItems" :key="getKey(i)">
+            <div class="dp__overlay_row" v-for="(row, i) in mappedItems" :key="getKey(i)" role="row">
                 <div
+                    role="gridcell"
                     :class="cellClassName"
                     v-for="col in row"
                     :key="col.value"
                     @click="onClick(col.value)"
+                    :aria-selected="col.value === modelValue && !disabledValues.includes(col.value)"
+                    :aria-disabled="col.className.dp__overlay_cell_disabled"
                     :id="
                         col.value === modelValue && !disabledValues.includes(col.value) ? `selection-active${uid}` : ''
                     "
@@ -18,7 +21,13 @@
                     </div>
                 </div>
             </div>
-            <div :class="actionButtonClass" @click="$emit('toggle')" v-if="$slots['button-icon']">
+            <div
+                :class="actionButtonClass"
+                @click="$emit('toggle')"
+                v-if="$slots['button-icon']"
+                role="button"
+                aria-label="Toggle overlay"
+            >
                 <slot name="button-icon" />
             </div>
         </div>

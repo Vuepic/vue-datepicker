@@ -96,6 +96,8 @@ export type UseCalendar = {
     twoCalendars: boolean;
     twoCalendarsSolo: boolean;
     autoRange: number | string;
+    disabledWeekDays: number[] | string[];
+    allowedDates: Date[] | string[];
 } & { [key: string]: any };
 
 export interface UseMonthYearPick {

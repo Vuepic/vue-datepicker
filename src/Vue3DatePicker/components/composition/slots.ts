@@ -18,9 +18,10 @@ export const slots = [
     { name: 'year', use: ['calendar', 'month-year'] },
     { name: 'action-select', use: ['action'] },
     { name: 'action-preview', use: ['action'] },
+    { name: 'calendar-header', use: ['calendar'] },
 ];
 
-export const inputSlots = [{ name: 'trigger' }, { name: 'input-icon' }, { name: 'clear-icon' }];
+export const inputSlots = [{ name: 'trigger' }, { name: 'input-icon' }, { name: 'clear-icon' }, { name: 'dp-input' }];
 
 const slotNames = {
     all: () => slots,

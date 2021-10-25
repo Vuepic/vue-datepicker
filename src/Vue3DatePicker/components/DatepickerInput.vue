@@ -1,9 +1,24 @@
 <template>
-    <div @click="handleOpen" :id="`dp__input_${uid}`">
-        <slot v-if="$slots.trigger && !inline" name="trigger" />
-        <div v-if="!$slots.trigger && !inline" class="dp__input_wrap">
+    <div
+        @click="handleOpen"
+        :id="`dp__input_${uid}`"
+        aria-label="Datepicker input"
+        role="textbox"
+        aria-multiline="false"
+        :aria-disabled="disabled"
+        :aria-readonly="readonly"
+    >
+        <slot v-if="$slots.trigger && !$slots['dp-input'] && !inline" name="trigger" />
+        <slot
+            v-if="$slots['dp-input'] && !$slots.trigger && !inline"
+            name="dp-input"
+            :value="inputValue"
+            :onInput="handleInput"
+            :onEnter="handleEnter"
+            :onTab="handleTab"
+        />
+        <div v-if="!$slots.trigger && !$slots['dp-input'] && !inline" class="dp__input_wrap">
             <input
-                ref="el"
                 :class="inputClass"
                 :placeholder="placeholder"
                 :disabled="disabled"

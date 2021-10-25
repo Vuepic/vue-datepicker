@@ -9,6 +9,7 @@ import {
     getNextMonthYear,
     getNextYearMonth,
     getPreviousMonthYear,
+    getWeekDay,
     getWeekNumber,
     isDateAfter,
     isDateBefore,
@@ -31,6 +32,7 @@ interface IUseCalendar {
     isAutoRangeInBetween: (day: UnwrapRef<ICalendarDay>) => boolean;
     isAutoRangeStart: (day: UnwrapRef<ICalendarDay>) => boolean;
     rangeActiveStartEnd: (day: UnwrapRef<ICalendarDay>, isStart?: boolean) => boolean;
+    monthYearSelect: (isYear?: boolean) => void;
     clearHoverDate: () => void;
     today: Ref<Date>;
     month: Ref<number>;
@@ -109,12 +111,26 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         const inDisableArr = props.disabledDates.some((disabledDate: Date | string) => isDateEqual(disabledDate, date));
         const disabledMonths = props.filters.months.length ? props.filters.months.map((month) => +month) : [];
         const inDisabledMonths = disabledMonths.includes(getDateMonth(date));
+        const weekDayDisabled = props.disabledWeekDays.length
+            ? props.disabledWeekDays.some((day) => +day === getWeekDay(date))
+            : false;
+        const notInSpecific = props.allowedDates.length
+            ? !props.allowedDates.some((dateVal) => isDateEqual(new Date(dateVal), date))
+            : false;
 
         const dateYear = getDateYear(date);
 
         const outOfYearRange = dateYear < +props.yearRange[0] || dateYear > +props.yearRange[1];
 
-        return aboveMax || bellowMin || inDisableArr || inDisabledMonths || outOfYearRange;
+        return (
+            aboveMax ||
+            bellowMin ||
+            inDisableArr ||
+            inDisabledMonths ||
+            outOfYearRange ||
+            weekDayDisabled ||
+            notInSpecific
+        );
     };
 
     /**
@@ -433,6 +449,12 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         return false;
     };
 
+    const monthYearSelect = (isYear = false) => {
+        if (props.autoApply && props.monthPicker) {
+            emit('autoApply', isYear);
+        }
+    };
+
     return {
         today,
         hours,
@@ -441,6 +463,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         monthNext,
         yearNext,
         minutes,
+        monthYearSelect,
         isDisabled,
         updateTime,
         setHoverDate,

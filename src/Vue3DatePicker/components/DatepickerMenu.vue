@@ -1,7 +1,13 @@
 <template>
-    <div :class="dpMenuClass" :id="`dp__menu_${uid}`" @mouseleave="clearHoverDate">
+    <div
+        :class="dpMenuClass"
+        :id="`dp__menu_${uid}`"
+        @mouseleave="clearHoverDate"
+        role="dialog"
+        aria-label="Datepicker menu"
+    >
         <div :class="arrowClass" v-if="!inline"></div>
-        <div :class="menuCalendarClassWrapper" :id="`dp__calendar_wrapper_${uid}`">
+        <div :class="menuCalendarClassWrapper" :id="`dp__calendar_wrapper_${uid}`" role="document">
             <Calendar
                 v-bind="calendarProps"
                 :instance="1"
@@ -14,6 +20,7 @@
                 @update:minutes="updateTime($event, false)"
                 @update:month="updateMonthYear($event)"
                 @update:year="updateMonthYear($event, false)"
+                @monthYearSelect="monthYearSelect"
                 @selectDate="selectDate($event)"
                 @setHoverDate="setHoverDate($event)"
             >
@@ -148,6 +155,8 @@
         noToday: { type: Boolean as PropType<boolean>, default: false },
         noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
         noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
+        disabledWeekDays: { type: Array as PropType<string[] | number[]>, default: () => [] },
+        allowedDates: { type: Array as PropType<string[] | Date[]>, default: () => [] },
     });
     const slots = useSlots();
     const calendarWidth = ref(0);
@@ -185,6 +194,7 @@
         rangeActive,
         clearHoverDate,
         rangeActiveStartEnd,
+        monthYearSelect,
     } = useCalendar(props, emit);
 
     const calendarSlots = mapSlots(slots, 'calendar');

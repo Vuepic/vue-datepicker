@@ -22,8 +22,8 @@
             @open="openMenu"
             @setInputDate="setInputDate"
         >
-            <template v-for="(slot, i) in inputSlots" #[slot] :key="i">
-                <slot :name="slot" />
+            <template v-for="(slot, i) in inputSlots" #[slot]="args" :key="i">
+                <slot :name="slot" v-bind="args" />
             </template>
         </DatepickerInput>
         <teleport :to="teleport" :disabled="inline" v-if="isOpen">
@@ -78,6 +78,8 @@
                     noHoursOverlay,
                     noMinutesOverlay,
                     twoCalendarsSolo,
+                    disabledWeekDays,
+                    allowedDates,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @closePicker="closeMenu"
@@ -167,6 +169,7 @@
         disableMonthYearSelect: { type: Boolean as PropType<boolean>, default: false },
         yearRange: { type: Array as PropType<number[]>, default: () => [1970, 2100] },
         disabledDates: { type: Array as PropType<Date[] | string[]>, default: () => [] },
+        disabledWeekDays: { type: Array as PropType<string[] | number[]>, default: () => [] },
         inline: { type: Boolean as PropType<boolean>, default: false },
         selectText: { type: String as PropType<string>, default: 'Select' },
         cancelText: { type: String as PropType<string>, default: 'Cancel' },
@@ -189,6 +192,7 @@
         noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
         noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
         altPosition: { type: Boolean as PropType<boolean>, default: false },
+        allowedDates: { type: Array as PropType<string[] | Date[]>, default: () => [] },
     });
     const slots = useSlots();
     const isOpen = ref(false);
