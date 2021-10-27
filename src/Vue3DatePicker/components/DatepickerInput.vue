@@ -29,8 +29,14 @@
                 @keydown.tab="handleTab"
                 @focus="handleFocus"
             />
-            <span class="dp__input_icon" v-if="$slots['input-icon'] && !hideInputIcon"><slot name="input-icon" /></span>
-            <CalendarIcon v-if="!$slots['input-icon'] && !hideInputIcon" class="dp__input_icon dp__input_icons" />
+            <span class="dp__input_icon" v-if="$slots['input-icon'] && !hideInputIcon" @click="stopPropagation"
+                ><slot name="input-icon"
+            /></span>
+            <CalendarIcon
+                v-if="!$slots['input-icon'] && !hideInputIcon"
+                class="dp__input_icon dp__input_icons"
+                @click="stopPropagation"
+            />
             <span
                 class="dp__clear_icon"
                 v-if="$slots['clear-icon'] && clearable && !disabled && !readonly"
@@ -40,7 +46,7 @@
             <CancelIcon
                 v-if="clearable && !$slots['clear-icon'] && inputValue && !disabled && !readonly"
                 class="dp__clear_icon dp__input_icons"
-                @click.prevent="onClear"
+                @click.stop.prevent="onClear"
             />
         </div>
     </div>
@@ -124,13 +130,16 @@
         }
     };
 
-    const handleOpen = (e: Event) => {
-        e.stopImmediatePropagation();
+    const handleOpen = () => {
         if (props.textInput && props.textInputOptions?.openMenu && !props.isMenuOpen) {
             emit('open');
         } else if (!props.textInput) {
             emit('open');
         }
+    };
+
+    const stopPropagation = (e: Event) => {
+        e.stopImmediatePropagation();
     };
 
     const onClear = () => {

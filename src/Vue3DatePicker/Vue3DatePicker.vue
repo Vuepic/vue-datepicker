@@ -196,7 +196,6 @@
     });
     const slots = useSlots();
     const isOpen = ref(false);
-    const valueCleared = ref(false);
     const modelValue = toRef(props, 'modelValue');
 
     onMounted(() => {
@@ -314,15 +313,12 @@
 
     const openMenu = (): void => {
         if (!props.disabled && !props.readonly) {
-            if (!valueCleared.value) {
-                setMenuPosition();
-                isOpen.value = !isOpen.value;
+            setMenuPosition();
+            isOpen.value = !isOpen.value;
 
-                if (!isOpen.value) {
-                    clearInternalValues();
-                }
+            if (!isOpen.value) {
+                clearInternalValues();
             }
-            valueCleared.value = false;
             parseExternalModelValue(props.modelValue);
         }
     };
@@ -332,7 +328,6 @@
      * for the modelValue and clear internally stored data
      */
     const clearValue = (): void => {
-        valueCleared.value = true;
         inputValue.value = '';
         clearInternalValues();
         emit('update:modelValue', null);
