@@ -124,7 +124,8 @@
         }
     };
 
-    const handleOpen = () => {
+    const handleOpen = (e: Event) => {
+        e.stopImmediatePropagation();
         if (props.textInput && props.textInputOptions?.openMenu && !props.isMenuOpen) {
             emit('open');
         } else if (!props.textInput) {

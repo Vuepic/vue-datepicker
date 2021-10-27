@@ -5,6 +5,7 @@
         @mouseleave="clearHoverDate"
         role="dialog"
         aria-label="Datepicker menu"
+        @click="handleDpMenuClick"
     >
         <div :class="arrowClass" v-if="!inline"></div>
         <div :class="menuCalendarClassWrapper" :id="`dp__calendar_wrapper_${uid}`" role="document">
@@ -326,5 +327,9 @@
                 }),
             };
         });
+    };
+
+    const handleDpMenuClick = (e: Event) => {
+        e.stopImmediatePropagation();
     };
 </script>
