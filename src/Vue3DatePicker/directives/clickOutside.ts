@@ -1,42 +1,82 @@
-import { DirectiveBinding } from 'vue';
+// Following code is a port of @vueuse/core clickOutside hook
+import { unref, ComponentPublicInstance, watch, getCurrentScope, onScopeDispose } from 'vue';
+import { Fn, MaybeElementRef, MaybeRef, OnClickOutsideEvents, OnClickOutsideOptions } from '../interfaces';
 
-interface CustomHTMLElement extends Partial<HTMLElement> {
-    clickOutsideEvent: (ev: MouseEvent) => void;
-    contains: (param: unknown) => boolean;
-}
+const defaultWindow = typeof window !== 'undefined' ? window : undefined;
 
-export const clickOutsideDirective = {
-    beforeMount(el: CustomHTMLElement, binding: DirectiveBinding): void {
-        const em = binding.instance;
-        const sameEl = Object.keys(binding.modifiers);
+const noop = () => {
+    return;
+};
 
-        el.clickOutsideEvent = (event: MouseEvent) => {
-            const path = event.composedPath ? event.composedPath() : undefined;
+const unrefElement = (elRef: MaybeElementRef): HTMLElement | SVGElement | undefined => {
+    const plain = unref(elRef);
+    return (plain as ComponentPublicInstance)?.$el ?? plain;
+};
 
-            if (em && path && !path.includes(em.$el)) {
-                if (sameEl.length > 0) {
-                    if (
-                        !sameEl.some((className) =>
-                            path.some((elm) => {
-                                if ((elm as Element).className && typeof (elm as Element)?.className === 'string') {
-                                    return (elm as Element).className.includes(className);
-                                }
-                            }),
-                        )
-                    ) {
-                        binding.value(event, el);
-                    }
-                } else {
-                    if (!em.$el.contains(event.target as HTMLElement)) {
-                        binding.value(event, el);
-                    }
-                }
-            }
-        };
+const tryOnScopeDispose = (fn: Fn): boolean => {
+    if (getCurrentScope()) {
+        onScopeDispose(fn);
+        return true;
+    }
+    return false;
+};
 
-        document.body.addEventListener('click', el.clickOutsideEvent, false);
-    },
-    unmounted(el: CustomHTMLElement): void {
-        document.body.removeEventListener('click', el.clickOutsideEvent);
-    },
+const useEventListener = (
+    target: MaybeRef<EventTarget> | undefined,
+    event: string,
+    listener: EventListener,
+    options: Record<string, boolean>,
+): (() => void) => {
+    if (!target) return noop;
+
+    let cleanup = noop;
+
+    const stopWatch = watch(
+        () => unref(target),
+        (el) => {
+            cleanup();
+            if (!el) return;
+
+            el.addEventListener(event, listener, options);
+
+            cleanup = () => {
+                el.removeEventListener(event, listener, options);
+                cleanup = noop;
+            };
+        },
+        { immediate: true, flush: 'post' },
+    );
+
+    const stop = () => {
+        stopWatch();
+        cleanup();
+    };
+
+    tryOnScopeDispose(stop);
+
+    return stop;
+};
+
+export const onClickOutside = <E extends keyof OnClickOutsideEvents = 'pointerdown'>(
+    target: MaybeElementRef,
+    inputRef: MaybeElementRef,
+    handler: (evt: OnClickOutsideEvents[E]) => void,
+    options: OnClickOutsideOptions<E> = {},
+): (() => void) | undefined => {
+    const { window = defaultWindow, event = 'pointerdown' } = options;
+
+    if (!window) return;
+
+    const listener = (event: OnClickOutsideEvents[E]) => {
+        const el = unrefElement(target);
+        const inputEl = unrefElement(inputRef);
+
+        if (!el || !inputEl) return;
+
+        if (el === event.target || event.composedPath().includes(el) || event.composedPath().includes(inputEl)) return;
+
+        handler(event);
+    };
+
+    return useEventListener(window, event, listener as EventListener, { passive: true });
 };

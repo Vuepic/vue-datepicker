@@ -1,3 +1,5 @@
+import { ComponentPublicInstance, Ref } from 'vue';
+
 export type DynamicClass = Record<string, boolean>;
 
 export interface IDefaultSelect<T = number> {
@@ -106,4 +108,21 @@ export interface UseMonthYearPick {
     filters: IDateFilter;
     year: number;
     month: number;
+}
+
+export type MaybeRef<T> = T | Ref<T>;
+export type Fn = () => void;
+
+export interface ConfigurableWindow {
+    window?: Window;
+}
+
+export type MaybeElementRef = MaybeRef<HTMLElement | SVGElement | ComponentPublicInstance | undefined | null>;
+export type OnClickOutsideEvents = Pick<
+    WindowEventMap,
+    'click' | 'mousedown' | 'mouseup' | 'touchstart' | 'touchend' | 'pointerdown' | 'pointerup'
+>;
+
+export interface OnClickOutsideOptions<E extends keyof OnClickOutsideEvents> extends ConfigurableWindow {
+    event?: E;
 }

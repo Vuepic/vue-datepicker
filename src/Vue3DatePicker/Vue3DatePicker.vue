@@ -1,6 +1,7 @@
 <template>
     <div :class="wrapperClass">
         <DatepickerInput
+            ref="inputRef"
             v-bind="{
                 placeholder,
                 hideInputIcon,
@@ -29,7 +30,7 @@
         <teleport :to="teleport" :disabled="inline" v-if="isOpen">
             <DatepickerMenu
                 v-if="isOpen"
-                v-click-outside-directive.dp__menu="closeMenu"
+                ref="dpMenuRef"
                 :class="theme"
                 :style="menuPosition"
                 v-bind="{
@@ -113,13 +114,14 @@
         WeekStartNum,
         WeekStartStr,
     } from './interfaces';
-    import { clickOutsideDirective as vClickOutsideDirective } from './directives/clickOutside';
+    // import { clickOutsideDirective as vClickOutsideDirective } from './directives/clickOutside';
     import { getDateHours, getDateMinutes, getDefaultPattern } from './utils/date-utils';
     import { getDefaultTextInputOptions, getDefaultFilters } from './utils/util';
     import { usePosition } from './components/composition/position';
     import { useExternalInternalMapper } from './components/composition/external-internal-mapper';
     import { isString } from './utils/type-guard';
     import { mapSlots } from './components/composition/slots';
+    import { onClickOutside } from './directives/clickOutside';
 
     const emit = defineEmits(['update:modelValue', 'textSubmit', 'closed', 'cleared']);
     const props = defineProps({
@@ -197,6 +199,8 @@
     const slots = useSlots();
     const isOpen = ref(false);
     const modelValue = toRef(props, 'modelValue');
+    const dpMenuRef = ref(null);
+    const inputRef = ref(null);
 
     onMounted(() => {
         parseExternalModelValue(props.modelValue);
@@ -397,6 +401,8 @@
             emitModelValue();
         }
     };
+
+    onClickOutside(dpMenuRef, inputRef, closeMenu);
 
     defineExpose({
         closeMenu,
