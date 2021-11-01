@@ -1,16 +1,12 @@
 // Following code is a port of @vueuse/core clickOutside hook
-import { unref, ComponentPublicInstance, watch, getCurrentScope, onScopeDispose } from 'vue';
+import { unref, watch, getCurrentScope, onScopeDispose } from 'vue';
 import { Fn, MaybeElementRef, MaybeRef, OnClickOutsideEvents, OnClickOutsideOptions } from '../interfaces';
+import { unrefElement } from '../utils/util';
 
 const defaultWindow = typeof window !== 'undefined' ? window : undefined;
 
 const noop = () => {
     return;
-};
-
-const unrefElement = (elRef: MaybeElementRef): HTMLElement | SVGElement | undefined => {
-    const plain = unref(elRef);
-    return (plain as ComponentPublicInstance)?.$el ?? plain;
 };
 
 const tryOnScopeDispose = (fn: Fn): boolean => {

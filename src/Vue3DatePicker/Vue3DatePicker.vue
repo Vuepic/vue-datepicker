@@ -16,7 +16,6 @@
                 range,
                 isMenuOpen: isOpen,
                 pattern: defaultPattern,
-                uid,
             }"
             v-model:input-value="inputValue"
             @clear="clearValue"
@@ -35,7 +34,6 @@
                 :class="theme"
                 :style="menuPosition"
                 v-bind="{
-                    uid,
                     weekNumbers,
                     weekStart,
                     disableMonthYearSelect,
@@ -126,7 +124,6 @@
 
     const emit = defineEmits(['update:modelValue', 'textSubmit', 'closed', 'cleared']);
     const props = defineProps({
-        uid: { type: String as PropType<string>, default: 'dp' },
         is24: { type: Boolean as PropType<boolean>, default: true },
         enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
         locale: { type: String as PropType<string>, default: 'en-US' },
@@ -231,8 +228,9 @@
 
     const { openOnTop, menuPosition, setMenuPosition, recalculatePosition } = usePosition(
         props.position,
-        props.uid,
         props.altPosition,
+        dpMenuRef,
+        inputRef,
     );
 
     const { internalModelValue, inputValue, parseExternalModelValue, emitModelValue, checkBeforeEmit } =

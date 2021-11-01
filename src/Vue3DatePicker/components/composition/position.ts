@@ -1,5 +1,6 @@
-import { OpenPosition } from '../../interfaces';
 import { ref, Ref } from 'vue';
+import { OpenPosition } from '../../interfaces';
+import { unrefElement } from '../../utils/util';
 
 interface IUsePosition {
     menuPosition: Ref<{ top: string; left: string; transform: string }>;
@@ -8,10 +9,17 @@ interface IUsePosition {
     recalculatePosition: () => void;
 }
 
+type ComponentRef = Ref<HTMLElement | null>;
+
 /**
  * Extracted code from the main component, used for calculating the position of the menu
  */
-export const usePosition = (openPosition: OpenPosition, uid: string, altPosition: boolean): IUsePosition => {
+export const usePosition = (
+    openPosition: OpenPosition,
+    altPosition: boolean,
+    menuRef: ComponentRef,
+    inputRef: ComponentRef,
+): IUsePosition => {
     const menuPosition = ref({ top: '0', left: '0', transform: 'none' });
     const openOnTop = ref(false);
     const diagonal = 10; // arrow square diagonal + 1
@@ -46,7 +54,7 @@ export const usePosition = (openPosition: OpenPosition, uid: string, altPosition
      * Recalculate param is added when the menu component is mounted so that we can check the correct space
      */
     const setMenuPosition = (recalculate = true): void => {
-        const el = document.getElementById(`dp__input_${uid}`);
+        const el = unrefElement(inputRef);
         if (el) {
             const { left, width, height } = el.getBoundingClientRect();
             const { top: offset } = altPosition ? getOffsetAlt(el) : getOffset(el);
@@ -76,14 +84,14 @@ export const usePosition = (openPosition: OpenPosition, uid: string, altPosition
      * of the input field to place the menu
      */
     const recalculatePosition = (): void => {
-        const el = document.getElementById(`dp__input_${uid}`);
+        const el = unrefElement(inputRef);
         if (el) {
             const { height: inputHeight, top } = el.getBoundingClientRect();
             const { top: offset } = altPosition ? getOffsetAlt(el) : getOffset(el);
             const fullHeight = window.innerHeight;
             const freeSpaceBottom = fullHeight - top - inputHeight;
 
-            const menuEl = document.getElementById(`dp__menu_${uid}`);
+            const menuEl = unrefElement(menuRef);
 
             if (menuEl) {
                 const { height } = menuEl.getBoundingClientRect();

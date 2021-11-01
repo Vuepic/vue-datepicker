@@ -1,5 +1,5 @@
 <template>
-    <div class="dp__overlay" :id="gridId" :class="dpOverlayClass" role="dialog">
+    <div class="dp__overlay" ref="gridWrapRef" :class="dpOverlayClass" role="dialog">
         <div class="dp__overlay_container" role="grid">
             <div class="dp__selection_grid_header"><slot name="header"></slot></div>
             <div class="dp__overlay_row" v-for="(row, i) in mappedItems" :key="getKey(i)" role="row">
@@ -11,9 +11,7 @@
                     @click="onClick(col.value)"
                     :aria-selected="col.value === modelValue && !disabledValues.includes(col.value)"
                     :aria-disabled="col.className.dp__overlay_cell_disabled"
-                    :id="
-                        col.value === modelValue && !disabledValues.includes(col.value) ? `selection-active${uid}` : ''
-                    "
+                    :ref="col.value === modelValue && !disabledValues.includes(col.value) ? `selectionActiveRef` : ''"
                 >
                     <div :class="col.className">
                         <slot v-if="$slots.item" name="item" :item="col" />
@@ -38,28 +36,28 @@
     import { computed, onMounted, PropType, ref } from 'vue';
 
     import { IDefaultSelect, DynamicClass } from '../interfaces';
-    import { getKey } from '../utils/util';
+    import { getKey, unrefElement } from '../utils/util';
 
     const emit = defineEmits(['update:modelValue', 'selected', 'toggle']);
 
     const props = defineProps({
-        uid: { type: [String, Number] as PropType<string | number>, default: '' },
         items: { type: Array as PropType<IDefaultSelect[][]>, default: () => [] },
         modelValue: { type: [String, Number] as PropType<string | number>, default: null },
-        gridId: { type: String as PropType<string>, default: 'dp__overlay' },
         disabledValues: { type: Array as PropType<number[]>, default: () => [] },
         minValue: { type: [Number, String] as PropType<number | string>, default: null },
         maxValue: { type: [Number, String] as PropType<number | string>, default: null },
     });
 
     const scrollable = ref(false);
+    const selectionActiveRef = ref(null);
+    const gridWrapRef = ref(null);
 
     /**
      * On mounted hook, set the scroll position, if any to a selected value when opening overlay
      */
     onMounted(() => {
         setScrollPosition();
-        const elm = document.getElementById(props.gridId);
+        const elm = unrefElement(gridWrapRef);
         if (elm) {
             scrollable.value = elm.clientHeight < elm.scrollHeight;
         }
@@ -124,9 +122,9 @@
      * Set scroll position in overlay based on active selection
      */
     const setScrollPosition = (): void => {
-        const el = document.getElementById(`selection-active${props.uid}`);
+        const el = unrefElement(selectionActiveRef);
         if (el) {
-            const parent = document.getElementById(props.gridId);
+            const parent = unrefElement(gridWrapRef);
             if (parent) {
                 parent.scrollTop =
                     el.offsetTop -

@@ -4,7 +4,6 @@ import { DefineComponent, ComputedOptions, ComponentOptionsMixin, MethodOptions 
 type EmitEvents = 'update:modelValue' | 'textSubmit' | 'closed' | 'cleared';
 
 interface Vue3DatePicker {
-    uid?: string;
     is24?: boolean;
     enableTimePicker?: boolean;
     range?: boolean;

@@ -4,9 +4,11 @@ import {
     IDateFilter,
     IDefaultSelect,
     ITextInputOptions,
+    MaybeElementRef,
     WeekStartNum,
 } from '../interfaces';
 import { getAddedDays, isDateEqual, resetDateTime } from './date-utils';
+import { ComponentPublicInstance, unref } from 'vue';
 
 /**
  * Depending on a week start get starting date of the current calendar
@@ -163,4 +165,9 @@ export const getKey = (index: number): string => {
         return result + index;
     }
     return makeKey(len);
+};
+
+export const unrefElement = (elRef: MaybeElementRef): HTMLElement | undefined => {
+    const plain = unref(elRef);
+    return (plain as ComponentPublicInstance)?.$el ?? plain;
 };

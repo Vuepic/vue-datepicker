@@ -27,7 +27,7 @@
             </div>
             <SelectionGrid
                 v-if="showMonthPicker"
-                v-bind="{ modelValue: month, items: groupedMonths, disabledValues: filters.months, uid: instance }"
+                v-bind="{ modelValue: month, items: groupedMonths, disabledValues: filters.months }"
                 @update:modelValue="onMonthUpdate"
                 @toggle="toggleMonthPicker"
             >
@@ -41,7 +41,7 @@
             </SelectionGrid>
             <SelectionGrid
                 v-if="showYearPicker"
-                v-bind="{ modelValue: year, items: groupedYears, disabledValues: filters.years, uid: instance }"
+                v-bind="{ modelValue: year, items: groupedYears, disabledValues: filters.years }"
                 @update:modelValue="onYearUpdate"
                 @toggle="toggleYearPicker"
                 ><template #button-icon>
@@ -98,8 +98,6 @@
                             modelValue: year,
                             items: groupedYears,
                             disabledValues: filters.years,
-                            gridId: 'dp__overlay_inner',
-                            uid: 'inner',
                         }"
                         @update:modelValue="onYearUpdate"
                         @toggle="toggleYearPicker"

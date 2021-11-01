@@ -1,14 +1,13 @@
 <template>
     <div
         :class="dpMenuClass"
-        :id="`dp__menu_${uid}`"
         @mouseleave="clearHoverDate"
         role="dialog"
         aria-label="Datepicker menu"
         @click="handleDpMenuClick"
     >
         <div :class="arrowClass" v-if="!inline"></div>
-        <div :class="menuCalendarClassWrapper" :id="`dp__calendar_wrapper_${uid}`" role="document">
+        <div :class="menuCalendarClassWrapper" ref="calendarWrapperRef" role="document">
             <Calendar
                 v-bind="calendarProps"
                 :instance="1"
@@ -94,7 +93,7 @@
         WeekStartStr,
     } from '../interfaces';
     import { mapSlots } from './composition/slots';
-    import { getCalendarDays, getMonths, getYears } from '../utils/util';
+    import { getCalendarDays, getMonths, getYears, unrefElement } from '../utils/util';
     import { useCalendar } from './composition/calendar';
     import { isDateEqual } from '../utils/date-utils';
 
@@ -107,7 +106,6 @@
         'timeUpdate',
     ]);
     const props = defineProps({
-        uid: { type: String as PropType<string>, default: 'dp' },
         internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
         weekNumbers: { type: Boolean as PropType<boolean>, default: false },
         weekStart: { type: [Number, String] as PropType<WeekStartNum | WeekStartStr>, default: 1 },
@@ -160,12 +158,13 @@
         allowedDates: { type: Array as PropType<string[] | Date[]>, default: () => [] },
     });
     const slots = useSlots();
+    const calendarWrapperRef = ref(null);
     const calendarWidth = ref(0);
     const menuMount = ref(false);
 
     onMounted(() => {
         menuMount.value = true;
-        const el = document.getElementById(`dp__calendar_wrapper_${props.uid}`);
+        const el = unrefElement(calendarWrapperRef);
         if (el) {
             calendarWidth.value = el.getBoundingClientRect().width;
         }

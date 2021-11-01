@@ -1,7 +1,6 @@
 <template>
     <div
         @click="handleOpen"
-        :id="`dp__input_${uid}`"
         aria-label="Datepicker input"
         role="textbox"
         aria-multiline="false"
@@ -75,7 +74,6 @@
         textInputOptions: { type: Object as PropType<ITextInputOptions>, default: () => null },
         isMenuOpen: { type: Boolean as PropType<boolean>, default: false },
         pattern: { type: String as PropType<string>, default: '' },
-        uid: { type: String as PropType<string>, default: 'dp' },
     });
     const parsedDate = ref();
 
