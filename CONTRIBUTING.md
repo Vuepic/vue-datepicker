@@ -31,7 +31,7 @@ Before you submit your pull request consider the following guidelines:
 
 - Fork the project, install NPM dependencies and start the development server.
 - Follow defined [coding standard](#coding-standard).
-- Commit your changes using a descriptive commit message that follows defined [commit message conventions](#commitmessageguidelines).
+- Commit your changes using a descriptive commit message that follows defined [commit message conventions](#commit-message-guidelines).
 - Push the code to your forked repository and create a pull request on GitHub.
 - If somebody from project contributors suggest changes then:
     - Make the required updates.
