@@ -65,6 +65,14 @@ app.component('Datepicker', Datepicker);
 </script>
 ```
 
+## Supporting the project
+
+As you may know, maintaining an open-source project is a very time-consuming job. Your support is very appreciated ❤️
+
+Please ⭐️ this repository if you like the component!
+
+You can also make a financial contribution via sponsoring this project or one time donation. [Become a sponsor](https://github.com/sponsors/Vuepic)
+
 ## License
 
 [MIT](https://github.com/Vuepic/vue3-date-time-picker/blob/master/LICENSE)
