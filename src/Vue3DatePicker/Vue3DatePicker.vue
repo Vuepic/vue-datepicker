@@ -22,6 +22,7 @@
             @clear="clearValue"
             @open="openMenu"
             @setInputDate="setInputDate"
+            @close="closeMenu"
         >
             <template v-for="(slot, i) in inputSlots" #[slot]="args" :key="i">
                 <slot :name="slot" v-bind="args" />

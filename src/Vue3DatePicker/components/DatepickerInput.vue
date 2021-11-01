@@ -58,7 +58,7 @@
     import { CalendarIcon, CancelIcon } from './Icons';
     import { isValidDate, parseFreeInput } from '../utils/date-utils';
 
-    const emit = defineEmits(['clear', 'open', 'update:inputValue', 'setInputDate']);
+    const emit = defineEmits(['clear', 'open', 'update:inputValue', 'setInputDate', 'close']);
 
     const props = defineProps({
         inputValue: { type: String as PropType<string>, default: '' },
@@ -94,34 +94,45 @@
     const handleInput = (event: Event): void => {
         const { value } = event.target as HTMLInputElement;
         const { format, rangeSeparator } = props.textInputOptions;
-        if (props.range) {
-            const [dateOne, dateTwo] = value.split(`${rangeSeparator}`);
+        if (value !== '') {
+            if (props.range) {
+                const [dateOne, dateTwo] = value.split(`${rangeSeparator}`);
 
-            if (dateOne && dateTwo) {
-                const parsedDateOne = parseFreeInput(dateOne.trim(), format || props.pattern);
-                const parsedDateTwo = parseFreeInput(dateTwo.trim(), format || props.pattern);
-                parsedDate.value = parsedDateOne && parsedDateTwo ? [parsedDateOne, parsedDateTwo] : null;
+                if (dateOne && dateTwo) {
+                    const parsedDateOne = parseFreeInput(dateOne.trim(), format || props.pattern);
+                    const parsedDateTwo = parseFreeInput(dateTwo.trim(), format || props.pattern);
+                    parsedDate.value = parsedDateOne && parsedDateTwo ? [parsedDateOne, parsedDateTwo] : null;
+                }
+            } else {
+                parsedDate.value = parseFreeInput(value, format || props.pattern);
             }
-        } else {
-            parsedDate.value = parseFreeInput(value, format || props.pattern);
-        }
 
-        emit('setInputDate', parsedDate.value);
+            emit('setInputDate', parsedDate.value);
+        } else {
+            emit('setInputDate', null);
+        }
         emit('update:inputValue', value);
     };
 
     const handleEnter = (): void => {
-        if (props.textInputOptions?.enterSubmit && isValidDate(parsedDate.value)) {
+        if (props.textInputOptions?.enterSubmit && isValidDate(parsedDate.value) && props.inputValue !== '') {
             emit('setInputDate', parsedDate.value, true);
             parsedDate.value = null;
+        } else if (props.textInputOptions?.enterSubmit && props.inputValue === '') {
+            parsedDate.value = null;
+            emit('clear');
         }
     };
 
     const handleTab = (): void => {
-        if (props.textInputOptions?.tabSubmit && isValidDate(parsedDate.value)) {
+        if (props.textInputOptions?.tabSubmit && isValidDate(parsedDate.value) && props.inputValue !== '') {
             emit('setInputDate', parsedDate.value, true);
             parsedDate.value = null;
+        } else if (props.textInputOptions?.tabSubmit && props.inputValue === '') {
+            parsedDate.value = null;
+            emit('clear');
         }
+        emit('close');
     };
 
     const handleFocus = (): void => {
