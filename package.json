@@ -24,8 +24,8 @@
     "build:ssr": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format cjs",
     "build:es": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format es",
     "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife",
-    "build:css": "cross-env NODE_ENV=production sass src/Vue3DatePicker/style/main.scss dist/main.css --style compressed",
-    "test": "cross-env NODE_ENV=test vue-cli-service test:unit"
+    "build:css": "cross-env NODE_ENV=production node_modules/.bin/node-sass src/Vue3DatePicker/style/main.scss dist/main.css --output-style compressed",
+    "test": "cross-env NODE_ENV=test node_modules/.bin/vue-cli-service test:unit"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
