@@ -39,7 +39,7 @@
     "@vue/cli-plugin-typescript": "~4.5.0",
     "@vue/cli-plugin-unit-jest": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
-    "@vue/compiler-sfc": "^3.2.20",
+    "@vue/compiler-sfc": "^3.2.21",
     "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^9.0.0",
     "@vue/test-utils": "^2.0.0-0",
@@ -69,7 +69,7 @@
     "stylelint-prettier": "^1.2.0",
     "stylelint-scss": "^3.21.0",
     "typescript": "^4.4.4",
-    "vue": "^3.2.20",
+    "vue": "^3.2.21",
     "vue-eslint-parser": "^8.0.1",
     "vue-jest": "^5.0.0-0"
   },
