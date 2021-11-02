@@ -16,11 +16,13 @@
                 range,
                 isMenuOpen: isOpen,
                 pattern: defaultPattern,
+                autoApply,
             }"
             v-model:input-value="inputValue"
             @clear="clearValue"
             @open="openMenu"
             @setInputDate="setInputDate"
+            @selectDate="selectDate"
             @close="closeMenu"
         >
             <template v-for="(slot, i) in inputSlots" #[slot]="args" :key="i">

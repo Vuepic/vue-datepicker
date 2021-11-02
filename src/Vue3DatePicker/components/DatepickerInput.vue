@@ -27,6 +27,7 @@
                 @keydown.enter="handleEnter"
                 @keydown.tab="handleTab"
                 @focus="handleFocus"
+                @blur="handleBlur"
             />
             <span class="dp__input_icon" v-if="$slots['input-icon'] && !hideInputIcon" @click="stopPropagation"
                 ><slot name="input-icon"
@@ -57,7 +58,7 @@
     import { CalendarIcon, CancelIcon } from './Icons';
     import { isValidDate, parseFreeInput } from '../utils/date-utils';
 
-    const emit = defineEmits(['clear', 'open', 'update:inputValue', 'setInputDate', 'close']);
+    const emit = defineEmits(['clear', 'open', 'update:inputValue', 'setInputDate', 'close', 'selectDate']);
 
     const props = defineProps({
         inputValue: { type: String as PropType<string>, default: '' },
@@ -73,6 +74,7 @@
         textInput: { type: Boolean as PropType<boolean>, default: false },
         textInputOptions: { type: Object as PropType<ITextInputOptions>, default: () => null },
         isMenuOpen: { type: Boolean as PropType<boolean>, default: false },
+        autoApply: { type: Boolean as PropType<boolean>, default: false },
         pattern: { type: String as PropType<string>, default: '' },
     });
     const parsedDate = ref();
@@ -144,6 +146,14 @@
             emit('open');
         } else if (!props.textInput) {
             emit('open');
+        }
+    };
+
+    const handleBlur = (): void => {
+        if (props.autoApply && props.textInput && parsedDate.value) {
+            emit('setInputDate', parsedDate.value);
+            emit('selectDate');
+            parsedDate.value = null;
         }
     };
 
