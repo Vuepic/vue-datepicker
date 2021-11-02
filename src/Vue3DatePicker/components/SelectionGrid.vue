@@ -11,7 +11,12 @@
                     @click="onClick(col.value)"
                     :aria-selected="col.value === modelValue && !disabledValues.includes(col.value)"
                     :aria-disabled="col.className.dp__overlay_cell_disabled"
-                    :ref="col.value === modelValue && !disabledValues.includes(col.value) ? `selectionActiveRef` : ''"
+                    :ref="
+                        (el) => {
+                            if (col.value === modelValue && !disabledValues.includes(col.value))
+                                selectionActiveRef = el;
+                        }
+                    "
                 >
                     <div :class="col.className">
                         <slot v-if="$slots.item" name="item" :item="col" />
@@ -33,7 +38,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, onMounted, PropType, ref } from 'vue';
+    import { computed, onBeforeUpdate, onMounted, PropType, ref } from 'vue';
 
     import { IDefaultSelect, DynamicClass } from '../interfaces';
     import { getKey, unrefElement } from '../utils/util';
@@ -51,6 +56,10 @@
     const scrollable = ref(false);
     const selectionActiveRef = ref(null);
     const gridWrapRef = ref(null);
+
+    onBeforeUpdate(() => {
+        selectionActiveRef.value = null;
+    });
 
     /**
      * On mounted hook, set the scroll position, if any to a selected value when opening overlay

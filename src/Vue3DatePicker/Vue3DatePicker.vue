@@ -113,7 +113,6 @@
         WeekStartNum,
         WeekStartStr,
     } from './interfaces';
-    // import { clickOutsideDirective as vClickOutsideDirective } from './directives/clickOutside';
     import { getDateHours, getDateMinutes, getDefaultPattern } from './utils/date-utils';
     import { getDefaultTextInputOptions, getDefaultFilters } from './utils/util';
     import { usePosition } from './components/composition/position';
