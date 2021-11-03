@@ -197,7 +197,7 @@
     });
     const slots = useSlots();
     const isOpen = ref(false);
-    const modelValue = toRef(props, 'modelValue');
+    const modelValueMap = toRef(props, 'modelValue');
     const dpMenuRef = ref(null);
     const inputRef = ref(null);
 
@@ -223,9 +223,13 @@
     const slotList = mapSlots(slots, 'all');
     const inputSlots = mapSlots(slots, 'input');
 
-    watch(modelValue, () => {
-        parseExternalModelValue(modelValue.value);
-    });
+    watch(
+        modelValueMap,
+        () => {
+            parseExternalModelValue(modelValueMap.value);
+        },
+        { deep: true },
+    );
 
     const { openOnTop, menuPosition, setMenuPosition, recalculatePosition } = usePosition(
         props.position,
