@@ -20,9 +20,9 @@
                 @update:minutes="updateTime($event, false)"
                 @update:month="updateMonthYear($event)"
                 @update:year="updateMonthYear($event, false)"
-                @monthYearSelect="monthYearSelect"
-                @selectDate="selectDate($event)"
-                @setHoverDate="setHoverDate($event)"
+                @month-year-select="monthYearSelect"
+                @select-date="selectDate($event)"
+                @set-hover-date="setHoverDate($event)"
             >
                 <template v-for="(slot, i) in calendarSlots" #[slot]="args" :key="i">
                     <slot :name="slot" v-bind="{ ...args }" />
@@ -41,8 +41,8 @@
                 @update:minutes="updateTime($event, false)"
                 @update:month="updateMonthYear($event, true, true)"
                 @update:year="updateMonthYear($event, false, true)"
-                @selectDate="selectDate($event, true)"
-                @setHoverDate="setHoverDate($event)"
+                @select-date="selectDate($event, true)"
+                @set-hover-date="setHoverDate($event)"
             >
                 <template v-for="(slot, i) in calendarSlots" #[slot]="args" :key="i">
                     <slot :name="slot" v-bind="{ ...args }" />
@@ -66,8 +66,8 @@
                 twoCalendars,
                 menuMount,
             }"
-            @closePicker="$emit('closePicker')"
-            @selectDate="$emit('selectDate')"
+            @close-picker="$emit('closePicker')"
+            @select-date="$emit('selectDate')"
         >
             <template v-for="(slot, i) in actionSlots" #[slot]="args" :key="i">
                 <slot :name="slot" v-bind="{ ...args }" />

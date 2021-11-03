@@ -1,5 +1,3 @@
-// rollup.config.js
-import fs from 'fs';
 import vue from 'rollup-plugin-vue';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
@@ -8,16 +6,6 @@ import babel from '@rollup/plugin-babel';
 import PostCSS from 'rollup-plugin-postcss';
 import { terser } from 'rollup-plugin-terser';
 import minimist from 'minimist';
-
-// Get browserslist config and remove ie from es build targets
-const esbrowserslist = fs
-    .readFileSync('./.browserslistrc')
-    .toString()
-    .split('\n')
-    .filter((entry) => entry && entry.substring(0, 2) !== 'ie');
-
-// Extract babel preset-env config, to combine with esbrowserslist
-const babelPresetEnvConfig = {};
 
 const argv = minimist(process.argv.slice(2));
 
@@ -47,7 +35,6 @@ const baseConfig = {
         babel: {
             exclude: 'node_modules/**',
             extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
-            babelHelpers: 'bundled',
         },
     },
 };
@@ -72,20 +59,13 @@ if (!argv.format || argv.format === 'es') {
         },
         plugins: [
             replace(baseConfig.plugins.replace),
-            // ...baseConfig.plugins.preVue,
             vue(baseConfig.plugins.vue),
             ...baseConfig.plugins.postVue,
             babel({
                 ...baseConfig.plugins.babel,
-                presets: [
-                    [
-                        '@babel/preset-env',
-                        {
-                            ...babelPresetEnvConfig,
-                            targets: esbrowserslist,
-                        },
-                    ],
-                ],
+                babelHelpers: 'runtime',
+                plugins: ['@babel/plugin-transform-runtime'],
+                presets: [['@babel/preset-env']],
             }),
             terser({
                 output: {
@@ -114,7 +94,7 @@ if (!argv.format || argv.format === 'cjs') {
             // ...baseConfig.plugins.preVue,
             vue(baseConfig.plugins.vue),
             ...baseConfig.plugins.postVue,
-            babel(baseConfig.plugins.babel),
+            babel({ ...baseConfig.plugins.babel, babelHelpers: 'bundled' }),
             terser({
                 output: {
                     ecma: 5,
@@ -142,7 +122,7 @@ if (!argv.format || argv.format === 'iife') {
             // ...baseConfig.plugins.preVue,
             vue(baseConfig.plugins.vue),
             ...baseConfig.plugins.postVue,
-            babel(baseConfig.plugins.babel),
+            babel({ ...baseConfig.plugins.babel, babelHelpers: 'bundled' }),
             terser({
                 output: {
                     ecma: 5,

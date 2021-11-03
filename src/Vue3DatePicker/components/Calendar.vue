@@ -18,7 +18,7 @@
                 }"
                 @update:month="$emit('update:month', $event)"
                 @update:year="$emit('update:year', $event)"
-                @monthYearSelect="$emit('monthYearSelect', $event)"
+                @month-year-select="$emit('monthYearSelect', $event)"
             >
                 <template v-for="(slot, i) in monthYearSlots" #[slot]="args" :key="i">
                     <slot :name="slot" v-bind="args" />

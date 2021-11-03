@@ -28,7 +28,7 @@
             <SelectionGrid
                 v-if="showMonthPicker"
                 v-bind="{ modelValue: month, items: groupedMonths, disabledValues: filters.months }"
-                @update:modelValue="onMonthUpdate"
+                @update:model-value="onMonthUpdate"
                 @toggle="toggleMonthPicker"
             >
                 <template #button-icon>
@@ -42,7 +42,7 @@
             <SelectionGrid
                 v-if="showYearPicker"
                 v-bind="{ modelValue: year, items: groupedYears, disabledValues: filters.years }"
-                @update:modelValue="onYearUpdate"
+                @update:model-value="onYearUpdate"
                 @toggle="toggleYearPicker"
                 ><template #button-icon>
                     <slot name="calendar-icon" v-if="$slots['calendar-icon']" />
@@ -62,7 +62,7 @@
         <template v-if="monthPicker">
             <SelectionGrid
                 v-bind="{ modelValue: month, items: groupedMonths, disabledValues: filters.months }"
-                @update:modelValue="onMonthUpdate"
+                @update:model-value="onMonthUpdate"
                 @toggle="toggleMonthPicker"
             >
                 <template v-if="$slots['month-overlay']" #item="{ item }">
@@ -99,7 +99,7 @@
                             items: groupedYears,
                             disabledValues: filters.years,
                         }"
-                        @update:modelValue="onYearUpdate"
+                        @update:model-value="onYearUpdate"
                         @toggle="toggleYearPicker"
                         ><template #button-icon>
                             <slot name="calendar-icon" v-if="$slots['calendar-icon']" />

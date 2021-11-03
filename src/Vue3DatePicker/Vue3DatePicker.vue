@@ -21,8 +21,8 @@
             v-model:input-value="inputValue"
             @clear="clearValue"
             @open="openMenu"
-            @setInputDate="setInputDate"
-            @selectDate="selectDate"
+            @set-input-date="setInputDate"
+            @select-date="selectDate"
             @close="closeMenu"
         >
             <template v-for="(slot, i) in inputSlots" #[slot]="args" :key="i">
@@ -84,11 +84,11 @@
                     allowedDates,
                 }"
                 v-model:internalModelValue="internalModelValue"
-                @closePicker="closeMenu"
-                @selectDate="selectDate"
-                @dpOpen="recalculatePosition"
-                @autoApply="autoApplyValue"
-                @timeUpdate="timeUpdate"
+                @close-picker="closeMenu"
+                @select-date="selectDate"
+                @dp-open="recalculatePosition"
+                @auto-apply="autoApplyValue"
+                @time-update="timeUpdate"
             >
                 <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
                     <slot :name="slot" v-bind="{ ...args }" />
@@ -132,7 +132,7 @@
         twoCalendars: { type: Boolean as PropType<boolean>, default: false },
         twoCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
         modelValue: { type: [String, Date, Array, Object] as PropType<ModelValue>, default: null },
-        position: { type: String as PropType<OpenPosition>, default: OpenPosition.center },
+        position: { type: String as PropType<OpenPosition>, default: 'center' },
         placeholder: { type: String as PropType<string>, default: null },
         weekNumbers: { type: Boolean as PropType<boolean>, default: false },
         dark: { type: Boolean as PropType<boolean>, default: false },
