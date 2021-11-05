@@ -49,6 +49,18 @@
                 </template>
             </Calendar>
         </div>
+        <div class="dp__now_wrap" v-if="showNowButton">
+            <slot name="now-button" v-if="$slots['now-button']" :selectCurrentDate="selectCurrentDate" />
+            <button
+                v-if="!$slots['now-button']"
+                type="button"
+                role="button"
+                class="dp__now_button"
+                @click="selectCurrentDate"
+            >
+                {{ nowButtonLabel }}
+            </button>
+        </div>
         <component
             v-if="!autoApply"
             :is="actionRowComponent ? actionRowComponent : ActionRow"
@@ -156,6 +168,8 @@
         noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
         disabledWeekDays: { type: Array as PropType<string[] | number[]>, default: () => [] },
         allowedDates: { type: Array as PropType<string[] | Date[]>, default: () => [] },
+        showNowButton: { type: Boolean as PropType<boolean>, default: false },
+        nowButtonLabel: { type: String as PropType<string>, default: 'Now' },
     });
     const slots = useSlots();
     const calendarWrapperRef = ref(null);
@@ -330,5 +344,10 @@
 
     const handleDpMenuClick = (e: Event) => {
         e.stopImmediatePropagation();
+    };
+
+    const selectCurrentDate = (): void => {
+        emit('update:internalModelValue', new Date());
+        emit('selectDate');
     };
 </script>

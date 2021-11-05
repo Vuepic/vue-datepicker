@@ -19,6 +19,7 @@ export const slots = [
     { name: 'action-select', use: ['action'] },
     { name: 'action-preview', use: ['action'] },
     { name: 'calendar-header', use: ['calendar'] },
+    { name: 'now-button', use: [] },
 ];
 
 export const inputSlots = [{ name: 'trigger' }, { name: 'input-icon' }, { name: 'clear-icon' }, { name: 'dp-input' }];

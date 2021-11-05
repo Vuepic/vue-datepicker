@@ -136,6 +136,8 @@ interface Vue3DatePicker {
     altPosition?: boolean;
     disabledWeekDays?: number[] | string[];
     allowedDates?: string[] | Date[];
+    showNowButton?: boolean;
+    nowButtonLabel?: string;
 }
 
 interface PublicMethods extends MethodOptions {

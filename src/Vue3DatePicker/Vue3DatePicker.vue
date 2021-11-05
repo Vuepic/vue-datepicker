@@ -82,6 +82,8 @@
                     twoCalendarsSolo,
                     disabledWeekDays,
                     allowedDates,
+                    showNowButton,
+                    nowButtonLabel,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @close-picker="closeMenu"
@@ -194,6 +196,8 @@
         noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
         altPosition: { type: Boolean as PropType<boolean>, default: false },
         allowedDates: { type: Array as PropType<string[] | Date[]>, default: () => [] },
+        showNowButton: { type: Boolean as PropType<boolean>, default: false },
+        nowButtonLabel: { type: String as PropType<string>, default: 'Now' },
     });
     const slots = useSlots();
     const isOpen = ref(false);

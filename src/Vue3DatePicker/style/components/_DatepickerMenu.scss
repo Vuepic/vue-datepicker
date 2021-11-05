@@ -44,3 +44,18 @@
     border-bottom: 1px solid var(--dp-border-color);
     transform: translate(-50%, 50%) rotate(45deg);
 }
+
+.dp__now_wrap {
+    text-align: center;
+}
+
+.dp__now_button {
+    border: 1px solid var(--dp-primary-color);
+    color: var(--dp-primary-color);
+    padding: 0 4px;
+    font-weight: bold;
+    border-radius: $dp__border_radius;
+    font-size: $dp__font_size;
+    cursor: pointer;
+    background: transparent;
+}
