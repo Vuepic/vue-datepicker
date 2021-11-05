@@ -115,6 +115,7 @@
 .dp__date_hover {
     &:hover {
         background: var(--dp-hover-color);
+        color: var(--dp-hover-text-color);
     }
 }
 

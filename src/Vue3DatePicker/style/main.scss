@@ -11,6 +11,8 @@
     --dp-background-color: #212121;
     --dp-text-color: #ffffff;
     --dp-hover-color: #484848;
+    --dp-hover-text-color: #ffffff;
+    --dp-hover-icon-color: #959595;
     --dp-primary-color: #005cb2;
     --dp-primary-text-color: #ffffff;
     --dp-secondary-color: #a9a9a9;
@@ -29,6 +31,8 @@
     --dp-background-color: #ffffff;
     --dp-text-color: #212121;
     --dp-hover-color: #f3f3f3;
+    --dp-hover-text-color: #212121;
+    --dp-hover-icon-color: #959595;
     --dp-primary-color: #1976d2;
     --dp-primary-text-color: #f8f5f5;
     --dp-secondary-color: #c0c4cc;
@@ -76,6 +80,7 @@
 
     &:hover {
         background: var(--dp-hover-color);
+        color: var(--dp-hover-icon-color);
     }
 
     // todo - change selector
