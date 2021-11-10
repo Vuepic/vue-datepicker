@@ -61,7 +61,7 @@ export const parseDate = (date: string, pattern: string): Date => {
  */
 export const isValidDate = (value: Date | Date[] | null): boolean => {
     if (Array.isArray(value)) {
-        return isValid(value[0]) && isValid(value[1]);
+        return isValid(value[0]) && (value[1] ? isValid(value[1]) : true);
     }
     return value ? isValid(value) : false;
 };
@@ -157,7 +157,7 @@ export const getMonthForExternal = (date: Date): IMonthValue => {
  */
 export const formatDate = (value: Date | Date[], pattern: string): string => {
     if (Array.isArray(value)) {
-        return `${format(value[0], pattern)} - ${format(value[1], pattern)}`;
+        return `${format(value[0], pattern)} - ${value[1] ? format(value[1], pattern) : ''}`;
     }
 
     return format(value, pattern);

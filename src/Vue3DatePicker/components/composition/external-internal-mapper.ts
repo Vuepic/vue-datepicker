@@ -10,7 +10,7 @@ import {
     setDateMonthOrYear,
 } from '../../utils/date-utils';
 import { IFormat, ModelValue, VueEmit } from '../../interfaces';
-import { isMonth, isRange, isSingle, isTime, isTimeArray } from '../../utils/type-guard';
+import { isMonth, isRangeArray, isSingle, isTime, isTimeArray } from '../../utils/type-guard';
 
 interface IExternalInternalMapper {
     parseExternalModelValue: (value: ModelValue) => void;
@@ -29,6 +29,7 @@ export const useExternalInternalMapper = (
     timePicker: boolean,
     monthPicker: boolean,
     range: boolean,
+    partialRange: boolean,
     is24: boolean,
     enableTimePicker: boolean,
     emit: VueEmit,
@@ -58,8 +59,8 @@ export const useExternalInternalMapper = (
                     mappedDate = setDateMonthOrYear(null, +value.month, +value.year);
                 }
             } else if (range) {
-                if (isRange(value)) {
-                    mappedDate = [new Date(value[0]), new Date(value[1])];
+                if (isRangeArray(value, partialRange)) {
+                    mappedDate = [new Date(value[0]), value[1] ? new Date(value[1]) : (null as unknown as Date)];
                 }
             } else if (isSingle(value)) {
                 mappedDate = new Date(value);
@@ -96,6 +97,7 @@ export const useExternalInternalMapper = (
     const checkBeforeEmit = (): boolean => {
         if (internalModelValue.value) {
             if (range) {
+                if (partialRange) return internalModelValue.value.length >= 1;
                 return internalModelValue.value.length === 2;
             }
             return !!internalModelValue.value;
@@ -112,6 +114,9 @@ export const useExternalInternalMapper = (
         } else if (timePicker) {
             emit('update:modelValue', getTImeForExternal(internalModelValue.value));
         } else {
+            if (range && partialRange && internalModelValue.value.length === 1) {
+                internalModelValue.value.push(null);
+            }
             emit('update:modelValue', internalModelValue.value);
         }
         formatInputValue();

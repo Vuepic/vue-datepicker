@@ -50,7 +50,7 @@
         if (!props.internalModelValue || !props.menuMount) return '';
         if (typeof props.previewFormat === 'string') {
             if (isModelValueRange(props.internalModelValue)) {
-                if (props.internalModelValue.length === 2) {
+                if (props.internalModelValue.length === 2 && props.internalModelValue[1]) {
                     if (props.twoCalendars) {
                         return `${formatDate(props.internalModelValue[0], props.previewFormat)} - ${formatDate(
                             props.internalModelValue[1],

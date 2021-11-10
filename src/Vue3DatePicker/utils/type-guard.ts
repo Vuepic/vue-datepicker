@@ -30,6 +30,11 @@ export const isRange = (value: ModelValue): value is Date[] => {
     return Array.isArray(value) && value.length === 2;
 };
 
+export const isRangeArray = (value: ModelValue, partialRange: boolean): value is Date[] => {
+    if (partialRange) return Array.isArray(value);
+    return isRange(value);
+};
+
 export const isTimeArr = (value: ITimeValue | ITimeValue[]): value is ITimeValue[] => {
     return Array.isArray(value);
 };

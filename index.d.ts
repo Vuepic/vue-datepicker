@@ -138,6 +138,7 @@ interface Vue3DatePicker {
     allowedDates?: string[] | Date[];
     showNowButton?: boolean;
     nowButtonLabel?: string;
+    partialRange?: boolean;
 }
 
 interface PublicMethods extends MethodOptions {

@@ -198,6 +198,7 @@
         allowedDates: { type: Array as PropType<string[] | Date[]>, default: () => [] },
         showNowButton: { type: Boolean as PropType<boolean>, default: false },
         nowButtonLabel: { type: String as PropType<string>, default: 'Now' },
+        partialRange: { type: Boolean as PropType<boolean>, default: true },
     });
     const slots = useSlots();
     const isOpen = ref(false);
@@ -248,6 +249,7 @@
             props.timePicker,
             props.monthPicker,
             props.range,
+            props.partialRange,
             props.is24,
             props.enableTimePicker,
             emit,
