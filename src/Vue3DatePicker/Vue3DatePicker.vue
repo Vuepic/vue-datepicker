@@ -125,7 +125,7 @@
     import { mapSlots } from './components/composition/slots';
     import { onClickOutside } from './directives/clickOutside';
 
-    const emit = defineEmits(['update:modelValue', 'textSubmit', 'closed', 'cleared']);
+    const emit = defineEmits(['update:modelValue', 'textSubmit', 'closed', 'cleared', 'open']);
     const props = defineProps({
         is24: { type: Boolean as PropType<boolean>, default: true },
         enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
@@ -330,6 +330,9 @@
 
             if (!isOpen.value) {
                 clearInternalValues();
+            }
+            if (isOpen.value) {
+                emit('open');
             }
             parseExternalModelValue(props.modelValue);
         }
