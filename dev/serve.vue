@@ -4,23 +4,11 @@
     </div>
 </template>
 
-<script lang="ts">
-    import { defineComponent, ref } from 'vue';
+<script lang="ts" setup>
+    import { ref } from 'vue';
     import Vue3DatePicker from '@/Vue3DatePicker/Vue3DatePicker.vue';
 
-    export default defineComponent({
-        name: 'ServeDev',
-        components: {
-            Vue3DatePicker,
-        },
-        setup() {
-            const selectedDate = ref();
-
-            return {
-                selectedDate,
-            };
-        },
-    });
+    const selectedDate = ref();
 </script>
 
 <style lang="scss">
