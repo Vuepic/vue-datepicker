@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { DefineComponent, ComputedOptions, ComponentOptionsMixin, MethodOptions } from 'vue';
 
-type EmitEvents = 'update:modelValue' | 'textSubmit' | 'closed' | 'cleared';
+type EmitEvents = 'update:modelValue' | 'textSubmit' | 'closed' | 'cleared' | 'open';
 
 interface Vue3DatePicker {
     is24?: boolean;
