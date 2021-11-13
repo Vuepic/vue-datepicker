@@ -24,7 +24,13 @@
                     <slot :name="slot" v-bind="args" />
                 </template>
             </component>
-            <div v-if="!specificMode" :class="calendarWrapClass" role="grid" aria-label="Calendar wrapper">
+            <div
+                v-if="!specificMode"
+                :class="calendarWrapClass"
+                role="grid"
+                aria-label="Calendar wrapper"
+                @wheel="$emit('handleScroll', $event)"
+            >
                 <div class="db__calendar_header" role="row">
                     <div class="dp__calendar_header_item" role="gridcell" v-if="weekNumbers">{{ weekNumName }}</div>
                     <div class="dp__calendar_header_item" role="gridcell" v-for="(dayVal, i) in weekDays" :key="i">
@@ -117,6 +123,7 @@
         'update:month',
         'update:year',
         'monthYearSelect',
+        'handleScroll',
     ]);
 
     const props = defineProps({

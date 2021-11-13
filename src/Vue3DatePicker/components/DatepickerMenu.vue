@@ -23,6 +23,7 @@
                 @month-year-select="monthYearSelect"
                 @select-date="selectDate($event)"
                 @set-hover-date="setHoverDate($event)"
+                @handle-scroll="handleScroll"
             >
                 <template v-for="(slot, i) in calendarSlots" #[slot]="args" :key="i">
                     <slot :name="slot" v-bind="{ ...args }" />
@@ -43,6 +44,7 @@
                 @update:year="updateMonthYear($event, false, true)"
                 @select-date="selectDate($event, true)"
                 @set-hover-date="setHoverDate($event)"
+                @handle-scroll="handleScroll($event, true)"
             >
                 <template v-for="(slot, i) in calendarSlots" #[slot]="args" :key="i">
                     <slot :name="slot" v-bind="{ ...args }" />
@@ -170,6 +172,7 @@
         allowedDates: { type: Array as PropType<string[] | Date[]>, default: () => [] },
         showNowButton: { type: Boolean as PropType<boolean>, default: false },
         nowButtonLabel: { type: String as PropType<string>, default: 'Now' },
+        monthChangeOnScroll: { type: Boolean as PropType<boolean>, default: true },
     });
     const slots = useSlots();
     const calendarWrapperRef = ref(null);
@@ -209,6 +212,7 @@
         clearHoverDate,
         rangeActiveStartEnd,
         monthYearSelect,
+        handleScroll,
     } = useCalendar(props, emit);
 
     const calendarSlots = mapSlots(slots, 'calendar');

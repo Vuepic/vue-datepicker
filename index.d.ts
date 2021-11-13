@@ -139,6 +139,7 @@ interface Vue3DatePicker {
     showNowButton?: boolean;
     nowButtonLabel?: string;
     partialRange?: boolean;
+    monthChangeOnScroll?: boolean;
 }
 
 interface PublicMethods extends MethodOptions {

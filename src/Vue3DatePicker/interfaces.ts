@@ -100,6 +100,7 @@ export type UseCalendar = {
     autoRange: number | string;
     disabledWeekDays: number[] | string[];
     allowedDates: Date[] | string[];
+    monthChangeOnScroll: boolean;
 } & { [key: string]: any };
 
 export interface UseMonthYearPick {

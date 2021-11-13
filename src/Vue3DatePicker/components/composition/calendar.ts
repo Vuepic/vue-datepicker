@@ -34,6 +34,7 @@ interface IUseCalendar {
     rangeActiveStartEnd: (day: UnwrapRef<ICalendarDay>, isStart?: boolean) => boolean;
     monthYearSelect: (isYear?: boolean) => void;
     clearHoverDate: () => void;
+    handleScroll: (event: WheelEvent, isNext?: boolean) => void;
     today: Ref<Date>;
     month: Ref<number>;
     year: Ref<number>;
@@ -455,6 +456,12 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         }
     };
 
+    const handleScroll = (event: WheelEvent, isNext = false): void => {
+        const yearMonth: [number, number] = isNext ? [monthNext.value, yearNext.value] : [month.value, year.value];
+        const dates = event.deltaY < 0 ? getNextYearMonth(...yearMonth) : getPreviousMonthYear(...yearMonth);
+        updateMonthYear(dates.month, true, isNext);
+    };
+
     return {
         today,
         hours,
@@ -477,5 +484,6 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         isAutoRangeStart,
         clearHoverDate,
         rangeActiveStartEnd,
+        handleScroll,
     };
 };

@@ -199,6 +199,7 @@
         showNowButton: { type: Boolean as PropType<boolean>, default: false },
         nowButtonLabel: { type: String as PropType<string>, default: 'Now' },
         partialRange: { type: Boolean as PropType<boolean>, default: true },
+        monthChangeOnScroll: { type: Boolean as PropType<boolean>, default: true },
     });
     const slots = useSlots();
     const isOpen = ref(false);
