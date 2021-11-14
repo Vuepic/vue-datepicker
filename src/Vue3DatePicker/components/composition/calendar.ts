@@ -17,7 +17,7 @@ import {
     setDateMonthOrYear,
     setDateTime,
 } from '../../utils/date-utils';
-import { isModelValueRange, isNumberArray, isRange, isTimeArr } from '../../utils/type-guard';
+import { isModelValueRange, isNumberArray, isRange, isRangeArray, isTimeArr } from '../../utils/type-guard';
 
 interface IUseCalendar {
     isDisabled: (date: Date) => boolean;
@@ -430,6 +430,15 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         hoveredDate.value = null;
     };
 
+    const checkRangeDirection = (isStart: boolean): boolean => {
+        if (isRangeArray(modelValue.value, true) && modelValue.value[0] && hoveredDate.value) {
+            return isStart
+                ? isDateAfter(hoveredDate.value, modelValue.value[0])
+                : isDateBefore(hoveredDate.value, modelValue.value[0]);
+        }
+        return true;
+    };
+
     /**
      * Check when to add a proper active start/end date class on range picker
      */
@@ -438,13 +447,24 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
             if (props.hideOffsetDates && !day.current) return false;
             return isDateEqual(new Date(day.value), modelValue.value[isStart ? 0 : 1]);
         } else if (props.range) {
-            return isDateEqual(
-                new Date(day.value),
-                modelValue.value && Array.isArray(modelValue.value)
-                    ? isStart
-                        ? modelValue.value[0] || null
-                        : modelValue.value[1]
-                    : null,
+            return (
+                (isDateEqual(
+                    new Date(day.value),
+                    modelValue.value && Array.isArray(modelValue.value)
+                        ? isStart
+                            ? modelValue.value[0] || null
+                            : modelValue.value[1]
+                        : null,
+                ) &&
+                    // this part will rotate start/end depending on the hover date
+                    (isStart
+                        ? !isDateBefore(
+                              hoveredDate.value || null,
+                              Array.isArray(modelValue.value) ? modelValue.value[0] : null,
+                          )
+                        : true)) ||
+                (isDateEqual(day.value, Array.isArray(modelValue.value) ? modelValue.value[0] : null) &&
+                    checkRangeDirection(isStart))
             );
         }
         return false;
