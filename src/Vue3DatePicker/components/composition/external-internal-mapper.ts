@@ -82,7 +82,9 @@ export const useExternalInternalMapper = (
      * Map the date value(s) to the human readable text for the input field
      */
     const formatInputValue = (): void => {
-        if (!format || typeof format === 'string') {
+        if (!internalModelValue.value) {
+            inputValue.value = '';
+        } else if (!format || typeof format === 'string') {
             const pattern = getDefaultPattern(format, is24, monthPicker, timePicker, enableTimePicker);
             inputValue.value = formatDate(internalModelValue.value, pattern);
         } else if (timePicker) {

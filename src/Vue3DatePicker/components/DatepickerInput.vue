@@ -58,7 +58,15 @@
     import { CalendarIcon, CancelIcon } from './Icons';
     import { isValidDate, parseFreeInput } from '../utils/date-utils';
 
-    const emit = defineEmits(['clear', 'open', 'update:inputValue', 'setInputDate', 'close', 'selectDate']);
+    const emit = defineEmits([
+        'clear',
+        'open',
+        'update:inputValue',
+        'setInputDate',
+        'close',
+        'selectDate',
+        'setEmptyDate',
+    ]);
 
     const props = defineProps({
         inputValue: { type: String as PropType<string>, default: '' },
@@ -110,6 +118,10 @@
             emit('setInputDate', parsedDate.value);
         } else {
             emit('setInputDate', null);
+            if (props.autoApply) {
+                emit('setEmptyDate');
+                parsedDate.value = null;
+            }
         }
         emit('update:inputValue', value);
     };

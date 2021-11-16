@@ -22,6 +22,7 @@
             @clear="clearValue"
             @open="openMenu"
             @set-input-date="setInputDate"
+            @set-empty-date="emitModelValue"
             @select-date="selectDate"
             @close="closeMenu"
         >
