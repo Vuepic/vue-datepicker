@@ -477,9 +477,11 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
     };
 
     const handleScroll = (event: WheelEvent, isNext = false): void => {
-        const yearMonth: [number, number] = isNext ? [monthNext.value, yearNext.value] : [month.value, year.value];
-        const dates = event.deltaY < 0 ? getNextYearMonth(...yearMonth) : getPreviousMonthYear(...yearMonth);
-        updateMonthYear(dates.month, true, isNext);
+        if (props.monthChangeOnScroll) {
+            const yearMonth: [number, number] = isNext ? [monthNext.value, yearNext.value] : [month.value, year.value];
+            const dates = event.deltaY < 0 ? getNextYearMonth(...yearMonth) : getPreviousMonthYear(...yearMonth);
+            updateMonthYear(dates.month, true, isNext);
+        }
     };
 
     return {

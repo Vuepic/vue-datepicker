@@ -29,7 +29,7 @@
                 :class="calendarWrapClass"
                 role="grid"
                 aria-label="Calendar wrapper"
-                @wheel="$emit('handleScroll', $event)"
+                @wheel.prevent="$emit('handleScroll', $event)"
             >
                 <div class="db__calendar_header" role="row">
                     <div class="dp__calendar_header_item" role="gridcell" v-if="weekNumbers">{{ weekNumName }}</div>

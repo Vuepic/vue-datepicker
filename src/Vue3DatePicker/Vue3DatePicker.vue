@@ -85,6 +85,7 @@
                     allowedDates,
                     showNowButton,
                     nowButtonLabel,
+                    monthChangeOnScroll,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @close-picker="closeMenu"
