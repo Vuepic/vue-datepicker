@@ -24,7 +24,9 @@
     "build:rollup": "cross-env NODE_ENV=production node_modules/.bin/rollup --config build/rollup.config.js",
     "build:css": "cross-env NODE_ENV=production node_modules/.bin/node-sass src/Vue3DatePicker/style/main.scss dist/main.css --output-style compressed",
     "test": "cross-env NODE_ENV=test node_modules/.bin/vue-cli-service test:unit",
-    "lint:style": "stylelint --fix src/**/*.scss"
+    "lint": "run-s lint:style lint:vue",
+    "lint:style": "stylelint --fix \"src/**/*.scss\"",
+    "lint:vue": "eslint --fix \"src/**\" --ignore-pattern \"src/**/*.scss\""
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
