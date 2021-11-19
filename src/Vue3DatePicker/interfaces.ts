@@ -43,11 +43,6 @@ export interface IMonthYearHook {
     onPrev(): void;
 }
 
-export interface IHoursMinutes {
-    hours: IDefaultSelect[];
-    minutes: IDefaultSelect[];
-}
-
 export interface TimeGridValues {
     value: '';
     text: '';
@@ -101,7 +96,7 @@ export type UseCalendar = {
     disabledWeekDays: number[] | string[];
     allowedDates: Date[] | string[];
     monthChangeOnScroll: boolean;
-} & { [key: string]: any };
+} & { [key: string]: unknown };
 
 export interface UseMonthYearPick {
     months: IDefaultSelect[];

@@ -70,7 +70,7 @@
             :disabled-values="filters.times.hours"
             :min-value="minTime.hours"
             :max-value="maxTime.hours"
-            @update:modelValue="$emit('update:hours', $event)"
+            @update:model-value="$emit('update:hours', $event)"
             @selected="toggleHourOverlay"
             @toggle="toggleHourOverlay"
         >
@@ -88,7 +88,7 @@
             :disabled-values="filters.times.minutes"
             :min-value="minTime.minutes"
             :max-value="maxTime.minutes"
-            @update:modelValue="$emit('update:minutes', $event)"
+            @update:model-value="$emit('update:minutes', $event)"
             @selected="toggleMinuteOverlay"
             @toggle="toggleMinuteOverlay"
         >
