@@ -1,44 +1,46 @@
 .dp__month_year_row {
-    display: flex;
-    align-items: center;
-    height: $dp__month_year_row_height;
-    color: var(--dp-text-color);
-    box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  height: $dp__month_year_row_height;
+  color: var(--dp-text-color);
+  box-sizing: border-box;
 }
 
 .dp__inner_nav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 25px;
-    cursor: pointer;
-    width: 25px;
-    color: var(--dp-icon-color);
-    text-align: center;
-    border-radius: 50%;
-    svg {
-        height: 20px;
-        width: 20px;
-    }
-    &:hover {
-        background: var(--dp-hover-color);
-        color: var(--dp-hover-icon-color);
-    }
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 25px;
+  cursor: pointer;
+  width: 25px;
+  color: var(--dp-icon-color);
+  text-align: center;
+  border-radius: 50%;
+
+  svg {
+    height: 20px;
+    width: 20px;
+  }
+
+  &:hover {
+    background: var(--dp-hover-color);
+    color: var(--dp-hover-icon-color);
+  }
 }
 
 .dp__month_year_select {
-    width: 50%;
-    text-align: center;
-    cursor: pointer;
-    height: $dp__month_year_row_height;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: $dp__border_radius;
-    box-sizing: border-box;
+  width: 50%;
+  text-align: center;
+  cursor: pointer;
+  height: $dp__month_year_row_height;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $dp__border_radius;
+  box-sizing: border-box;
 
-    &:hover {
-        background: var(--dp-hover-color);
-        color: var(--dp-hover-text-color);
-    }
+  &:hover {
+    background: var(--dp-hover-color);
+    color: var(--dp-hover-text-color);
+  }
 }

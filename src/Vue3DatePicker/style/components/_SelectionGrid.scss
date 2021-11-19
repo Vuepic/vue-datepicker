@@ -1,109 +1,109 @@
 .dp__overlay {
-    position: absolute;
-    overflow-y: auto;
-    width: 100%;
-    height: 100%;
-    background: var(--dp-background-color);
-    top: 0;
-    left: 0;
-    transition: opacity 1s ease-out;
-    z-index: 99999;
-    font-family: $dp__font_family;
-    color: var(--dp-text-color);
-    box-sizing: border-box;
+  position: absolute;
+  overflow-y: auto;
+  width: 100%;
+  height: 100%;
+  background: var(--dp-background-color);
+  top: 0;
+  left: 0;
+  transition: opacity 1s ease-out;
+  z-index: 99999;
+  font-family: $dp__font_family;
+  color: var(--dp-text-color);
+  box-sizing: border-box;
 }
 
 .dp__overlay::-webkit-scrollbar-track {
-    -webkit-box-shadow: var(--dp-scroll-bar-background);
-    background-color: var(--dp-scroll-bar-background);
+  box-shadow: var(--dp-scroll-bar-background);
+  background-color: var(--dp-scroll-bar-background);
 }
 
 .dp__overlay::-webkit-scrollbar {
-    width: 5px;
-    background-color: var(--dp-scroll-bar-background);
+  width: 5px;
+  background-color: var(--dp-scroll-bar-background);
 }
 
 .dp__overlay::-webkit-scrollbar-thumb {
-    background-color: var(--dp-scroll-bar-color);
-    border-radius: 10px;
+  background-color: var(--dp-scroll-bar-color);
+  border-radius: 10px;
 }
 
 .dp__overlay_container {
-    display: flex;
-    height: 100%;
-    flex-direction: column;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
 }
 
 .dp__overlay_row {
-    padding: 0;
-    box-sizing: border-box;
-    display: flex;
-    margin-left: auto;
-    margin-right: auto;
-    flex-wrap: wrap;
-    max-width: 100%;
-    width: 100%;
-    align-items: center;
+  padding: 0;
+  box-sizing: border-box;
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  flex-wrap: wrap;
+  max-width: 100%;
+  width: 100%;
+  align-items: center;
 }
 
 .dp__overlay_container > .dp__overlay_row {
-    flex: 1;
+  flex: 1;
 }
 
 .dp__overlay_col {
-    box-sizing: border-box;
-    width: 33%;
-    padding: 3px;
-    white-space: nowrap;
+  box-sizing: border-box;
+  width: 33%;
+  padding: 3px;
+  white-space: nowrap;
 }
 
 .dp__overlay_cell_pad {
-    padding: $dp__common_padding 0;
+  padding: $dp__common_padding 0;
 }
 
 .dp__overlay_cell_active {
-    cursor: pointer;
-    border-radius: $dp__border_radius;
-    text-align: center;
-    background: var(--dp-primary-color);
-    color: var(--dp-primary-text-color);
+  cursor: pointer;
+  border-radius: $dp__border_radius;
+  text-align: center;
+  background: var(--dp-primary-color);
+  color: var(--dp-primary-text-color);
 }
 
 .dp__overlay_cell {
-    cursor: pointer;
-    border-radius: $dp__border_radius;
-    text-align: center;
-    &:hover {
-        background: var(--dp-hover-color);
-        color: var(--dp-hover-text-color);
-    }
+  cursor: pointer;
+  border-radius: $dp__border_radius;
+  text-align: center;
+
+  &:hover {
+    background: var(--dp-hover-color);
+    color: var(--dp-hover-text-color);
+  }
 }
 
 .dp__overlay_action {
-    position: -webkit-sticky;
-    position: sticky;
-    bottom: 0;
-    background: #fff;
+  position: sticky;
+  bottom: 0;
+  background: #fff;
 }
 
 .dp__over_action_scroll {
-    right: 5px;
-    box-sizing: border-box;
+  right: 5px;
+  box-sizing: border-box;
 }
 
 .dp__overlay_cell_disabled {
-    cursor: not-allowed;
-    background: var(--dp-disabled-color);
+  cursor: not-allowed;
+  background: var(--dp-disabled-color);
 
-    &:hover {
-        background: var(--dp-disabled-color);
-    }
+  &:hover {
+    background: var(--dp-disabled-color);
+  }
 }
 
 .dp__month_picker_header {
-    display: flex;
-    width: 100%;
-    align-items: center;
-    justify-content: space-between;
-    height: $dp__cell_size;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  height: $dp__cell_size;
 }

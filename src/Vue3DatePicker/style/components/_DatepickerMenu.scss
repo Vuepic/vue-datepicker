@@ -1,62 +1,60 @@
 .dp__menu {
-    position: absolute;
-    background: var(--dp-background-color);
-    border-radius: $dp__border_radius;
-    min-width: 260px;
-    font-family: $dp__font_family;
-    font-size: $dp__font_size;
-    user-select: none;
-    border: 1px solid var(--dp-border-color);
-    z-index: 99999;
+  position: absolute;
+  background: var(--dp-background-color);
+  border-radius: $dp__border_radius;
+  min-width: 260px;
+  font-family: $dp__font_family;
+  font-size: $dp__font_size;
+  user-select: none;
+  border: 1px solid var(--dp-border-color);
+  z-index: 99999;
+  box-sizing: border-box;
+
+  &::after {
     box-sizing: border-box;
+  }
 
-    &::after {
-        box-sizing: border-box;
-    }
-
-    &::before {
-        box-sizing: border-box;
-    }
+  &::before {
+    box-sizing: border-box;
+  }
 }
 
 .dp__arrow_top {
-    left: 50%;
-    top: -1px;
-    height: 12px;
-    width: 12px;
-
-    background-color: var(--dp-background-color);
-    position: absolute;
-    border-left: 1px solid var(--dp-border-color);
-    border-top: 1px solid var(--dp-border-color);
-    transform: translate(-50%, -50%) rotate(45deg);
+  left: 50%;
+  top: -1px;
+  height: 12px;
+  width: 12px;
+  background-color: var(--dp-background-color);
+  position: absolute;
+  border-left: 1px solid var(--dp-border-color);
+  border-top: 1px solid var(--dp-border-color);
+  transform: translate(-50%, -50%) rotate(45deg);
 }
 
 .dp__arrow_bottom {
-    left: 50%;
-    bottom: -1px;
-    height: 12px;
-    width: 12px;
-
-    background-color: var(--dp-background-color);
-    position: absolute;
-    border-right: 1px solid var(--dp-border-color);
-    border-bottom: 1px solid var(--dp-border-color);
-    transform: translate(-50%, 50%) rotate(45deg);
+  left: 50%;
+  bottom: -1px;
+  height: 12px;
+  width: 12px;
+  background-color: var(--dp-background-color);
+  position: absolute;
+  border-right: 1px solid var(--dp-border-color);
+  border-bottom: 1px solid var(--dp-border-color);
+  transform: translate(-50%, 50%) rotate(45deg);
 }
 
 .dp__now_wrap {
-    text-align: center;
-    padding: 2px 0;
+  text-align: center;
+  padding: 2px 0;
 }
 
 .dp__now_button {
-    border: 1px solid var(--dp-primary-color);
-    color: var(--dp-primary-color);
-    padding: 0 4px;
-    font-weight: bold;
-    border-radius: $dp__border_radius;
-    font-size: $dp__font_size;
-    cursor: pointer;
-    background: transparent;
+  border: 1px solid var(--dp-primary-color);
+  color: var(--dp-primary-color);
+  padding: 0 4px;
+  font-weight: bold;
+  border-radius: $dp__border_radius;
+  font-size: $dp__font_size;
+  cursor: pointer;
+  background: transparent;
 }

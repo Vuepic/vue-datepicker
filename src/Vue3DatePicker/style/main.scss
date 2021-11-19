@@ -1,100 +1,100 @@
-@import 'variables';
-@import 'components/DatepickerInput';
-@import 'components/DatepickerMenu';
-@import 'components/Calendar';
-@import 'components/MonthYearInput';
-@import 'components/SelectionGrid';
-@import 'components/TimeInput';
-@import 'components/ActionRow';
+@import "variables";
+@import "components/DatepickerInput";
+@import "components/DatepickerMenu";
+@import "components/Calendar";
+@import "components/MonthYearInput";
+@import "components/SelectionGrid";
+@import "components/TimeInput";
+@import "components/ActionRow";
 
 .dp__theme_dark {
-    --dp-background-color: #212121;
-    --dp-text-color: #ffffff;
-    --dp-hover-color: #484848;
-    --dp-hover-text-color: #ffffff;
-    --dp-hover-icon-color: #959595;
-    --dp-primary-color: #005cb2;
-    --dp-primary-text-color: #ffffff;
-    --dp-secondary-color: #a9a9a9;
-    --dp-border-color: #2d2d2d;
-    --dp-border-color-hover: #aaaeb7;
-    --dp-disabled-color: #737373;
-    --dp-disabled-color-text: #d0d0d0;
-    --dp-scroll-bar-background: #212121;
-    --dp-scroll-bar-color: #484848;
-    --dp-success-color: #00701a;
-    --dp-icon-color: #959595;
-    --dp-danger-color: #e53935;
+  --dp-background-color: #212121;
+  --dp-text-color: #fff;
+  --dp-hover-color: #484848;
+  --dp-hover-text-color: #fff;
+  --dp-hover-icon-color: #959595;
+  --dp-primary-color: #005cb2;
+  --dp-primary-text-color: #fff;
+  --dp-secondary-color: #a9a9a9;
+  --dp-border-color: #2d2d2d;
+  --dp-border-color-hover: #aaaeb7;
+  --dp-disabled-color: #737373;
+  --dp-disabled-color-text: #d0d0d0;
+  --dp-scroll-bar-background: #212121;
+  --dp-scroll-bar-color: #484848;
+  --dp-success-color: #00701a;
+  --dp-icon-color: #959595;
+  --dp-danger-color: #e53935;
 }
 
 .dp__theme_light {
-    --dp-background-color: #ffffff;
-    --dp-text-color: #212121;
-    --dp-hover-color: #f3f3f3;
-    --dp-hover-text-color: #212121;
-    --dp-hover-icon-color: #959595;
-    --dp-primary-color: #1976d2;
-    --dp-primary-text-color: #f8f5f5;
-    --dp-secondary-color: #c0c4cc;
-    --dp-border-color: #ddd;
-    --dp-border-color-hover: #aaaeb7;
-    --dp-disabled-color: #f6f6f6;
-    --dp-scroll-bar-background: #f3f3f3;
-    --dp-scroll-bar-color: #959595;
-    --dp-success-color: #76d275;
-    --dp-icon-color: #959595;
-    --dp-danger-color: #ff6f60;
-    --dp-disabled-color-text: #8e8e8e;
+  --dp-background-color: #fff;
+  --dp-text-color: #212121;
+  --dp-hover-color: #f3f3f3;
+  --dp-hover-text-color: #212121;
+  --dp-hover-icon-color: #959595;
+  --dp-primary-color: #1976d2;
+  --dp-primary-text-color: #f8f5f5;
+  --dp-secondary-color: #c0c4cc;
+  --dp-border-color: #ddd;
+  --dp-border-color-hover: #aaaeb7;
+  --dp-disabled-color: #f6f6f6;
+  --dp-scroll-bar-background: #f3f3f3;
+  --dp-scroll-bar-color: #959595;
+  --dp-success-color: #76d275;
+  --dp-icon-color: #959595;
+  --dp-danger-color: #ff6f60;
+  --dp-disabled-color-text: #8e8e8e;
 }
 
 .dp__main {
-    font-family: $dp__font_family;
-    user-select: none;
-    box-sizing: border-box;
+  font-family: $dp__font_family;
+  user-select: none;
+  box-sizing: border-box;
 }
 
 .dp__pointer {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 // Allow control of color property on icons
 .dp__icon {
-    stroke: currentColor;
-    fill: currentColor;
+  stroke: currentColor;
+  fill: currentColor;
 }
 
 // Div style that is displayed on the bottom of the menu for switching layouts
 .dp__button {
-    width: 100%;
-    text-align: center;
-    color: var(--dp-icon-color);
-    background: var(--dp-background-color);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    align-content: center;
-    justify-content: center;
-    padding: $dp__common_padding;
-    box-sizing: border-box;
-    height: 35px;
+  width: 100%;
+  text-align: center;
+  color: var(--dp-icon-color);
+  background: var(--dp-background-color);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  padding: $dp__common_padding;
+  box-sizing: border-box;
+  height: 35px;
 
-    &:hover {
-        background: var(--dp-hover-color);
-        color: var(--dp-hover-icon-color);
-    }
+  &:hover {
+    background: var(--dp-hover-color);
+    color: var(--dp-hover-icon-color);
+  }
 
-    // todo - change selector
-    svg {
-        height: 20px;
-        width: auto;
-    }
+  // todo - change selector
+  svg {
+    height: 20px;
+    width: auto;
+  }
 }
 
 .dp__flex_display {
-    display: flex;
-    position: relative;
+  display: flex;
+  position: relative;
 }
 
 .dp__relative {
-    position: relative;
+  position: relative;
 }

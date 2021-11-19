@@ -1,13 +1,8 @@
 {
-  "extends": ["stylelint-config-recommended", "stylelint-prettier/recommended"],
-  "plugins": [
-    "stylelint-scss",
-    "stylelint-prettier"
-  ],
+  "extends": ["stylelint-config-standard-scss"],
   "rules": {
-    "prettier/prettier": true,
-    "at-rule-no-unknown": null,
-    "scss/at-rule-no-unknown": true,
-    "selector-pseudo-element-no-unknown": [true, { "ignorePseudoElements": ["v-deep"] }]
+    "selector-class-pattern": "[^ ]",
+    "scss/dollar-variable-pattern": "[^ ]",
+    "scss/percent-placeholder-pattern": "[^ ]"
   }
 }

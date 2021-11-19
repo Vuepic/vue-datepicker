@@ -1,42 +1,42 @@
 .dp__action_row {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding: $dp__common_padding;
-    box-sizing: border-box;
-    color: var(--dp-text-color);
-    background: var(--dp-background-color);
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: $dp__common_padding;
+  box-sizing: border-box;
+  color: var(--dp-text-color);
+  background: var(--dp-background-color);
 
-    svg {
-        height: 20px;
-        width: auto;
-    }
+  svg {
+    height: 20px;
+    width: auto;
+  }
 }
 
 .dp__selection_preview {
-    width: 50%;
-    color: var(--dp-text-color);
-    font-size: $dp__preview_font_size;
+  width: 50%;
+  color: var(--dp-text-color);
+  font-size: $dp__preview_font_size;
 }
 
 .dp__action_buttons {
-    width: 50%;
-    text-align: right;
+  width: 50%;
+  text-align: right;
 }
 
 .dp__action {
-    font-weight: bold;
-    cursor: pointer;
-    padding: 2px 5px;
-    border-radius: $dp__border_radius;
-    display: inline-flex;
-    align-items: center;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 2px 5px;
+  border-radius: $dp__border_radius;
+  display: inline-flex;
+  align-items: center;
 }
 
 .dp__select {
-    color: var(--dp-success-color);
+  color: var(--dp-success-color);
 }
 
 .dp__cancel {
-    color: var(--dp-secondary-color);
+  color: var(--dp-secondary-color);
 }

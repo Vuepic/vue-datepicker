@@ -1,67 +1,67 @@
 .dp__time_input {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    user-select: none;
-    font-family: $dp__font_family;
-    color: var(--dp-text-color);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  font-family: $dp__font_family;
+  color: var(--dp-text-color);
 }
 
 .dp__time_col {
-    padding: 0 20px;
-    font-size: $dp__time_font_size;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
+  padding: 0 20px;
+  font-size: $dp__time_font_size;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
 
 .dp__time_display {
-    cursor: pointer;
-    color: var(--dp-text-color);
-    border-radius: $dp__border_radius;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 3px;
+  cursor: pointer;
+  color: var(--dp-text-color);
+  border-radius: $dp__border_radius;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
 
-    &:hover {
-        background: var(--dp-hover-color);
-        color: var(--dp-hover-text-color);
-    }
+  &:hover {
+    background: var(--dp-hover-color);
+    color: var(--dp-hover-text-color);
+  }
 }
 
 .dp__inc_dec_button {
-    padding: 5px 5px;
-    margin: 0;
+  padding: 5px;
+  margin: 0;
+  height: 32px;
+  width: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  color: var(--dp-icon-color);
+  box-sizing: border-box;
+
+  svg {
     height: 32px;
     width: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border-radius: 50%;
-    color: var(--dp-icon-color);
-    box-sizing: border-box;
+  }
 
-    svg {
-        height: 32px;
-        width: 32px;
-    }
-
-    &:hover {
-        background: var(--dp-hover-color);
-        color: var(--dp-primary-color);
-    }
+  &:hover {
+    background: var(--dp-hover-color);
+    color: var(--dp-primary-color);
+  }
 }
 
 .dp__pm_am_button {
-    background: var(--dp-primary-color);
-    color: var(--dp-primary-text-color);
-    border: none;
-    padding: $dp__common_padding;
-    border-radius: $dp__border_radius;
-    cursor: pointer;
+  background: var(--dp-primary-color);
+  color: var(--dp-primary-text-color);
+  border: none;
+  padding: $dp__common_padding;
+  border-radius: $dp__border_radius;
+  cursor: pointer;
 }
