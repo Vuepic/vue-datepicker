@@ -1,29 +1,31 @@
-import parse from 'date-fns/parse';
-import format from 'date-fns/format';
-import isDate from 'date-fns/isDate';
-import isValid from 'date-fns/isValid';
-import setYear from 'date-fns/setYear';
-import setMonth from 'date-fns/setMonth';
-import setHours from 'date-fns/setHours';
-import setMinutes from 'date-fns/setMinutes';
-import setSeconds from 'date-fns/setSeconds';
-import setMilliseconds from 'date-fns/setMilliseconds';
-import getHours from 'date-fns/getHours';
-import getMinutes from 'date-fns/getMinutes';
-import getMonth from 'date-fns/getMonth';
-import getYear from 'date-fns/getYear';
-import isAfter from 'date-fns/isAfter';
-import isBefore from 'date-fns/isBefore';
-import isEqual from 'date-fns/isEqual';
-import getISOWeek from 'date-fns/getISOWeek';
-import addMonths from 'date-fns/addMonths';
-import addDays from 'date-fns/addDays';
-import addHours from 'date-fns/addHours';
-import subHours from 'date-fns/subHours';
-import addMinutes from 'date-fns/addMinutes';
-import subMinutes from 'date-fns/subMinutes';
-import subMonths from 'date-fns/subMonths';
-import getDay from 'date-fns/getDay';
+import {
+    parse,
+    format,
+    isDate,
+    isValid,
+    setYear,
+    setMonth,
+    setHours,
+    setMinutes,
+    setSeconds,
+    setMilliseconds,
+    getHours,
+    getMinutes,
+    getMonth,
+    getYear,
+    isAfter,
+    isBefore,
+    isEqual,
+    getISOWeek,
+    addMonths,
+    addDays,
+    addHours,
+    subHours,
+    addMinutes,
+    subMinutes,
+    subMonths,
+    getDay,
+} from 'date-fns';
 
 import { IMonthValue, ITimeValue } from '../interfaces';
 

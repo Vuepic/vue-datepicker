@@ -39,10 +39,11 @@ const baseConfig = {
     },
 };
 
-const external = ['vue'];
+const external = ['vue', 'date-fns'];
 
 const globals = {
     vue: 'Vue',
+    'date-fns': 'dateFns',
 };
 
 // Customize configs for individual targets
