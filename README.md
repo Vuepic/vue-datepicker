@@ -23,7 +23,7 @@
 - SSR support
 - Highly configurable
 - Accessible
-- Type support
+- Included type definitions
 
 ## Install
 
