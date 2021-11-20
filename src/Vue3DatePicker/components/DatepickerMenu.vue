@@ -9,42 +9,23 @@
         <div :class="arrowClass" v-if="!inline"></div>
         <div :class="menuCalendarClassWrapper" ref="calendarWrapperRef" role="document">
             <Calendar
+                v-for="instance in calendarAmm"
                 v-bind="calendarProps"
-                :instance="1"
-                :mapped-dates="mappedDates"
-                :month="month"
-                :year="year"
+                :key="instance"
+                :instance="instance"
+                :mapped-dates="isFirstInstance(instance) ? mappedDates : mappedDatesNext"
+                :month="isFirstInstance(instance) ? month : monthNext"
+                :year="isFirstInstance(instance) ? year : yearNext"
                 :month-year-component="monthYearComponent"
                 :time-picker-component="timePickerComponent"
                 @update:hours="updateTime($event)"
                 @update:minutes="updateTime($event, false)"
-                @update:month="updateMonthYear($event)"
-                @update:year="updateMonthYear($event, false)"
+                @update:month="updateMonthYear($event, true, !isFirstInstance(instance))"
+                @update:year="updateMonthYear($event, false, !isFirstInstance(instance))"
                 @month-year-select="monthYearSelect"
-                @select-date="selectDate($event)"
+                @select-date="selectDate($event, !isFirstInstance(instance))"
                 @set-hover-date="setHoverDate($event)"
-                @handle-scroll="handleScroll"
-            >
-                <template v-for="(slot, i) in calendarSlots" #[slot]="args" :key="i">
-                    <slot :name="slot" v-bind="{ ...args }" />
-                </template>
-            </Calendar>
-            <Calendar
-                v-if="range && twoCalendars"
-                v-bind="calendarProps"
-                :instance="2"
-                :mapped-dates="mappedDatesNext"
-                :month="monthNext"
-                :year="yearNext"
-                :month-year-component="monthYearComponent"
-                :time-picker-component="timePickerComponent"
-                @update:hours="updateTime($event)"
-                @update:minutes="updateTime($event, false)"
-                @update:month="updateMonthYear($event, true, true)"
-                @update:year="updateMonthYear($event, false, true)"
-                @select-date="selectDate($event, true)"
-                @set-hover-date="setHoverDate($event)"
-                @handle-scroll="handleScroll($event, true)"
+                @handle-scroll="handleScroll($event, !isFirstInstance(instance))"
             >
                 <template v-for="(slot, i) in calendarSlots" #[slot]="args" :key="i">
                     <slot :name="slot" v-bind="{ ...args }" />
@@ -243,6 +224,13 @@
             props.hideOffsetDates,
         );
     });
+
+    const calendarAmm = computed((): number[] => (props.twoCalendars && props.range ? [1, 2] : [1]));
+    const isFirstInstance = computed(
+        (): ((instance: number) => boolean) =>
+            (instance): boolean =>
+                instance === 1,
+    );
 
     // If datepicker is using only month or time picker
     const specificMode = computed((): boolean => props.monthPicker || props.timePicker);
