@@ -86,6 +86,7 @@
                     showNowButton,
                     nowButtonLabel,
                     monthChangeOnScroll,
+                    markers,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @close-picker="closeMenu"
@@ -118,6 +119,7 @@
         ITimeValue,
         WeekStartNum,
         WeekStartStr,
+        IMarker,
     } from './interfaces';
     import { getDateHours, getDateMinutes, getDefaultPattern } from './utils/date-utils';
     import { getDefaultTextInputOptions, getDefaultFilters } from './utils/util';
@@ -202,6 +204,7 @@
         nowButtonLabel: { type: String as PropType<string>, default: 'Now' },
         partialRange: { type: Boolean as PropType<boolean>, default: true },
         monthChangeOnScroll: { type: Boolean as PropType<boolean>, default: true },
+        markers: { type: Array as PropType<IMarker[]>, default: () => [] },
     });
     const slots = useSlots();
     const isOpen = ref(false);

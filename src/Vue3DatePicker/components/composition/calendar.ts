@@ -1,5 +1,5 @@
 import { computed, onMounted, Ref, ref, UnwrapRef, watch } from 'vue';
-import { ICalendarDay, InternalModuleValue, UseCalendar, VueEmit } from '../../interfaces';
+import { ICalendarDay, IMarker, InternalModuleValue, UseCalendar, VueEmit } from '../../interfaces';
 import {
     getAddedDays,
     getDateHours,
@@ -35,6 +35,7 @@ interface IUseCalendar {
     monthYearSelect: (isYear?: boolean) => void;
     clearHoverDate: () => void;
     handleScroll: (event: WheelEvent, isNext?: boolean) => void;
+    getMarker: (day: UnwrapRef<ICalendarDay>) => IMarker | undefined;
     today: Ref<Date>;
     month: Ref<number>;
     year: Ref<number>;
@@ -484,6 +485,10 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         }
     };
 
+    const getMarker = (date: UnwrapRef<ICalendarDay>): IMarker | undefined => {
+        return props.markers.find((marker) => isDateEqual(new Date(date.value), new Date(marker.date)));
+    };
+
     return {
         today,
         hours,
@@ -507,5 +512,6 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         clearHoverDate,
         rangeActiveStartEnd,
         handleScroll,
+        getMarker,
     };
 };

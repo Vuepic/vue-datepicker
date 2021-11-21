@@ -1,9 +1,9 @@
 <template>
     <div
-        :class="dpMenuClass"
-        @mouseleave="clearHoverDate"
         role="dialog"
         aria-label="Datepicker menu"
+        :class="dpMenuClass"
+        @mouseleave="clearHoverDate"
         @click="handleDpMenuClick"
     >
         <div :class="arrowClass" v-if="!inline"></div>
@@ -82,6 +82,7 @@
         IDateFilter,
         IDefaultSelect,
         IFormat,
+        IMarker,
         InternalModuleValue,
         ITimeValue,
         WeekStartNum,
@@ -154,6 +155,7 @@
         showNowButton: { type: Boolean as PropType<boolean>, default: false },
         nowButtonLabel: { type: String as PropType<string>, default: 'Now' },
         monthChangeOnScroll: { type: Boolean as PropType<boolean>, default: true },
+        markers: { type: Array as PropType<IMarker[]>, default: () => [] },
     });
     const slots = useSlots();
     const calendarWrapperRef = ref(null);
@@ -194,6 +196,7 @@
         rangeActiveStartEnd,
         monthYearSelect,
         handleScroll,
+        getMarker,
     } = useCalendar(props, emit);
 
     const calendarSlots = mapSlots(slots, 'calendar');
@@ -296,6 +299,7 @@
                 ...date,
                 days: date.days.map((calendarDay) => {
                     const disabled = isDisabled(calendarDay.value);
+                    calendarDay.marker = getMarker(calendarDay);
                     calendarDay.classData = {
                         dp__cell_offset: !calendarDay.current,
                         dp__pointer: !disabled && !(!calendarDay.current && props.hideOffsetDates),

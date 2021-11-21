@@ -3,6 +3,7 @@ import {
     ICalendarDay,
     IDateFilter,
     IDefaultSelect,
+    IMarker,
     ITextInputOptions,
     MaybeElementRef,
     WeekStartNum,
@@ -171,3 +172,5 @@ export const unrefElement = (elRef: MaybeElementRef): HTMLElement | undefined =>
     const plain = unref(elRef);
     return (plain as ComponentPublicInstance)?.$el ?? plain;
 };
+
+export const getDefaultMarker = (marker: IMarker): IMarker => Object.assign({ type: 'dot' }, marker);

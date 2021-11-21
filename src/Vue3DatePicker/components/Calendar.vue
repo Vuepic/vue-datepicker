@@ -52,21 +52,58 @@
                             role="gridcell"
                             class="dp__calendar_item"
                             v-for="(dayVal, dayInd) in week.days"
+                            :ref="
+                                (el) => {
+                                    if (el) dayRefs[dayInd + weekInd] = el;
+                                }
+                            "
                             :key="dayInd + weekInd"
-                            @click="$emit('selectDate', dayVal)"
-                            @mouseover="$emit('setHoverDate', dayVal)"
                             :aria-selected="
                                 dayVal.classData.dp__active_date ||
                                 dayVal.classData.dp__range_start ||
                                 dayVal.classData.dp__range_start
                             "
                             :aria-disabled="dayVal.classData.dp__cell_disabled"
+                            @click="$emit('selectDate', dayVal)"
+                            @mouseover="onMouseOver(dayVal, dayInd + weekInd)"
+                            @mouseleave="onMouseLeave"
                         >
                             <div class="dp__cell_inner" :class="dayVal.classData">
                                 <slot name="day" v-if="$slots.day" :day="+dayVal.text" :date="dayVal.value"></slot>
-                                <template v-if="!$slots.day">
-                                    {{ dayVal.text }}
-                                </template>
+                                <template v-if="!$slots.day"> {{ dayVal.text }} </template>
+                                <div
+                                    v-if="dayVal.marker"
+                                    :class="markerClass(dayVal.marker)"
+                                    :style="dayVal.marker.color ? { backgroundColor: dayVal.marker.color } : {}"
+                                ></div>
+                                <div
+                                    class="dp__marker_tooltip"
+                                    v-if="dateMatch(dayVal.value)"
+                                    :style="markerTooltipStyle"
+                                >
+                                    <div class="dp__tooltip_content" @click.stop>
+                                        <div
+                                            v-for="(tooltip, i) in dayVal.marker.tooltip"
+                                            :key="i"
+                                            class="dp__tooltip_text"
+                                        >
+                                            <slot
+                                                name="marker-tooltip"
+                                                v-if="$slots['marker-tooltip']"
+                                                :tooltop="tooltip"
+                                                :day="dayVal.value"
+                                            ></slot>
+                                            <template v-if="!$slots['marker-tooltip']">
+                                                <div
+                                                    class="dp__tooltip_mark"
+                                                    :style="tooltip.color ? { backgroundColor: tooltip.color } : {}"
+                                                ></div>
+                                                <div>{{ tooltip.text }}</div>
+                                            </template>
+                                        </div>
+                                        <div class="dp__arrow_bottom_tp"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -106,16 +143,25 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, DefineComponent, PropType, UnwrapRef, useSlots } from 'vue';
+    import { computed, DefineComponent, PropType, ref, UnwrapRef, useSlots } from 'vue';
 
     import TimePickerCmp from './TimePicker/TimePicker.vue';
     import MonthYearInput from './MonthYearInput.vue';
 
-    import { DynamicClass, IDateFilter, ITimeValue, ICalendarDate, ICalendarDay, IDefaultSelect } from '../interfaces';
-    import { getDayNames } from '../utils/util';
+    import {
+        DynamicClass,
+        IDateFilter,
+        ITimeValue,
+        ICalendarDate,
+        ICalendarDay,
+        IDefaultSelect,
+        IMarker,
+    } from '../interfaces';
+    import { getDayNames, getDefaultMarker, unrefElement } from '../utils/util';
     import { mapSlots } from './composition/slots';
+    import { isDateEqual } from '../utils/date-utils';
 
-    defineEmits([
+    const emit = defineEmits([
         'update:hours',
         'update:minutes',
         'selectDate',
@@ -166,6 +212,9 @@
         twoCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
+    const showMakerTooltip = ref<Date | null>(null);
+    const markerTooltipStyle = ref({ bottom: '', left: '', transform: '' });
+    const dayRefs = ref([]);
 
     const weekDays = computed(() => {
         return getDayNames(props.locale, +props.weekStart);
@@ -184,6 +233,16 @@
         }),
     );
 
+    const markerClass = computed((): ((marker: IMarker) => DynamicClass) => (marker) => {
+        const defaultMarker = getDefaultMarker(marker);
+        return {
+            dp__marker_dot: defaultMarker.type === 'dot',
+            dp__marker_line: defaultMarker.type === 'line',
+        };
+    });
+
+    const dateMatch = computed((): ((day: Date) => boolean) => (day) => isDateEqual(day, showMakerTooltip.value));
+
     const calendarParentClass = computed(() => ({
         dp__calendar: true,
         dp__calendar_next: props.instance === 2,
@@ -196,4 +255,25 @@
             dp_calendar_fixed: specificMode.value,
         }),
     );
+
+    const onMouseOver = (day: UnwrapRef<ICalendarDay>, refIndex: number): void => {
+        emit('setHoverDate', day);
+        if (day.marker?.tooltip?.length) {
+            const el = unrefElement(dayRefs.value[refIndex]);
+            if (el) {
+                const { width, height } = el.getBoundingClientRect();
+
+                markerTooltipStyle.value = {
+                    bottom: `${height}px`,
+                    left: `${width / 2}px`,
+                    transform: `translateX(-50%)`,
+                };
+                showMakerTooltip.value = day.value;
+            }
+        }
+    };
+
+    const onMouseLeave = (): void => {
+        showMakerTooltip.value = null;
+    };
 </script>

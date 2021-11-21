@@ -140,6 +140,12 @@ interface Vue3DatePicker {
     nowButtonLabel?: string;
     partialRange?: boolean;
     monthChangeOnScroll?: boolean;
+    highlights?: {
+        date: Date | string;
+        type?: 'dot' | 'line';
+        tooltip?: { text: string; color?: string }[];
+        color?: string;
+    }[];
 }
 
 interface PublicMethods extends MethodOptions {

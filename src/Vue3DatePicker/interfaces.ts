@@ -32,6 +32,7 @@ export interface ICalendarDay {
     value: Date;
     current: boolean;
     classData?: DynamicClass;
+    marker?: IMarker | null;
 }
 
 export interface ICalendarDate {
@@ -96,6 +97,7 @@ export type UseCalendar = {
     disabledWeekDays: number[] | string[];
     allowedDates: Date[] | string[];
     monthChangeOnScroll: boolean;
+    markers: IMarker[];
 } & { [key: string]: unknown };
 
 export interface UseMonthYearPick {
@@ -121,4 +123,11 @@ export type OnClickOutsideEvents = Pick<
 
 export interface OnClickOutsideOptions<E extends keyof OnClickOutsideEvents> extends ConfigurableWindow {
     event?: E;
+}
+
+export interface IMarker {
+    date: Date | string;
+    type?: 'dot' | 'line';
+    tooltip?: { text: string; color?: string }[];
+    color?: string;
 }
