@@ -5,6 +5,7 @@ import {
     IDefaultSelect,
     IMarker,
     ITextInputOptions,
+    ITransition,
     MaybeElementRef,
     WeekStartNum,
 } from '../interfaces';
@@ -174,3 +175,14 @@ export const unrefElement = (elRef: MaybeElementRef): HTMLElement | undefined =>
 };
 
 export const getDefaultMarker = (marker: IMarker): IMarker => Object.assign({ type: 'dot' }, marker);
+
+export const mergeDefaultTransitions = (conf: Partial<ITransition>): ITransition =>
+    Object.assign(
+        {
+            open: 'dp-open',
+            close: 'dp-close',
+            next: 'calendar-next',
+            previous: 'calendar-prev',
+        },
+        conf,
+    );

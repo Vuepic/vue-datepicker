@@ -131,3 +131,10 @@ export interface IMarker {
     tooltip?: { text: string; color?: string }[];
     color?: string;
 }
+
+export interface ITransition {
+    open: string;
+    close: string;
+    next: string;
+    previous: string;
+}

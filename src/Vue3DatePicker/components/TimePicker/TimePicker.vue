@@ -10,61 +10,63 @@
             <slot name="clock-icon" v-if="$slots['clock-icon']" />
             <ClockIcon v-if="!$slots['clock-icon']" />
         </div>
-        <div v-if="showTimePicker || timePicker" class="dp__overlay">
-            <div class="dp__overlay_container">
-                <div class="dp__overlay_row">
-                    <template v-if="!range">
-                        <TimeInput
-                            :hours="hours"
-                            :minutes="minutes"
-                            v-bind="timeInputProps"
-                            @update:hours="$emit('update:hours', $event)"
-                            @update:minutes="$emit('update:minutes', $event)"
-                        >
-                            <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
-                                <slot :name="slot" v-bind="args" />
-                            </template>
-                        </TimeInput>
-                    </template>
-                    <template v-if="range">
-                        <TimeInput
-                            v-if="twoCalendars ? instance === 1 : true"
-                            :hours="hours[0]"
-                            :minutes="minutes[0]"
-                            v-bind="timeInputProps"
-                            @update:hours="$emit('update:hours', [$event, hours[1]])"
-                            @update:minutes="$emit('update:minutes', [$event, minutes[1]])"
-                        >
-                            <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
-                                <slot :name="slot" v-bind="args" />
-                            </template>
-                        </TimeInput>
-                        <TimeInput
-                            v-if="twoCalendars ? instance === 2 : true"
-                            :hours="hours[1]"
-                            :minutes="minutes[1]"
-                            v-bind="timeInputProps"
-                            @update:hours="$emit('update:hours', [hours[0], $event])"
-                            @update:minutes="$emit('update:minutes', [minutes[0], $event])"
-                        >
-                            <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
-                                <slot :name="slot" v-bind="args" />
-                            </template>
-                        </TimeInput>
-                    </template>
-                </div>
-                <div
-                    class="dp__button"
-                    v-if="!timePicker"
-                    @click="toggleTimePicker(false)"
-                    role="button"
-                    aria-label="Close time picker"
-                >
-                    <slot name="calendar-icon" v-if="$slots['calendar-icon']" />
-                    <CalendarIcon v-if="!$slots['calendar-icon']" />
+        <transition :name="transitionName(showTimePicker)" :css="showTransition">
+            <div v-if="showTimePicker || timePicker" class="dp__overlay">
+                <div class="dp__overlay_container">
+                    <div class="dp__overlay_row">
+                        <template v-if="!range">
+                            <TimeInput
+                                :hours="hours"
+                                :minutes="minutes"
+                                v-bind="timeInputProps"
+                                @update:hours="$emit('update:hours', $event)"
+                                @update:minutes="$emit('update:minutes', $event)"
+                            >
+                                <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
+                                    <slot :name="slot" v-bind="args" />
+                                </template>
+                            </TimeInput>
+                        </template>
+                        <template v-if="range">
+                            <TimeInput
+                                v-if="twoCalendars ? instance === 1 : true"
+                                :hours="hours[0]"
+                                :minutes="minutes[0]"
+                                v-bind="timeInputProps"
+                                @update:hours="$emit('update:hours', [$event, hours[1]])"
+                                @update:minutes="$emit('update:minutes', [$event, minutes[1]])"
+                            >
+                                <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
+                                    <slot :name="slot" v-bind="args" />
+                                </template>
+                            </TimeInput>
+                            <TimeInput
+                                v-if="twoCalendars ? instance === 2 : true"
+                                :hours="hours[1]"
+                                :minutes="minutes[1]"
+                                v-bind="timeInputProps"
+                                @update:hours="$emit('update:hours', [hours[0], $event])"
+                                @update:minutes="$emit('update:minutes', [minutes[0], $event])"
+                            >
+                                <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
+                                    <slot :name="slot" v-bind="args" />
+                                </template>
+                            </TimeInput>
+                        </template>
+                    </div>
+                    <div
+                        class="dp__button"
+                        v-if="!timePicker"
+                        @click="toggleTimePicker(false)"
+                        role="button"
+                        aria-label="Close time picker"
+                    >
+                        <slot name="calendar-icon" v-if="$slots['calendar-icon']" />
+                        <CalendarIcon v-if="!$slots['calendar-icon']" />
+                    </div>
                 </div>
             </div>
-        </div>
+        </transition>
     </div>
 </template>
 
@@ -76,6 +78,7 @@
 
     import { IDateFilter, ITimeValue } from '../../interfaces';
     import { mapSlots } from '../composition/slots';
+    import { useTransitions } from '../composition/transition';
 
     defineEmits(['update:hours', 'update:minutes']);
 
@@ -99,6 +102,8 @@
         customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
     });
     const slots = useSlots();
+
+    const { transitionName, showTransition } = useTransitions();
 
     const showTimePicker = ref(false);
 

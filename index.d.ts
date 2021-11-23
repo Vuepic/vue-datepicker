@@ -146,6 +146,7 @@ interface Vue3DatePicker {
         tooltip?: { text: string; color?: string }[];
         color?: string;
     }[];
+    transitions?: boolean | { open?: string; close?: string; next?: string; previous?: string };
 }
 
 interface PublicMethods extends MethodOptions {

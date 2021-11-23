@@ -64,42 +64,46 @@
                 {{ amPm }}
             </button>
         </div>
-        <SelectionGrid
-            v-if="hourOverlay"
-            :items="getHoursGridItems()"
-            :disabled-values="filters.times.hours"
-            :min-value="minTime.hours"
-            :max-value="maxTime.hours"
-            @update:model-value="$emit('update:hours', $event)"
-            @selected="toggleHourOverlay"
-            @toggle="toggleHourOverlay"
-        >
-            <template #button-icon>
-                <slot name="clock-icon" v-if="$slots['clock-icon']" />
-                <ClockIcon v-if="!$slots['clock-icon']" />
-            </template>
-            <template v-if="$slots['hours-overlay']" #item="{ item }">
-                <slot name="hours-overlay" :text="item.text" :value="item.value" />
-            </template>
-        </SelectionGrid>
-        <SelectionGrid
-            v-if="minuteOverlay"
-            :items="getMinutesGridItems()"
-            :disabled-values="filters.times.minutes"
-            :min-value="minTime.minutes"
-            :max-value="maxTime.minutes"
-            @update:model-value="$emit('update:minutes', $event)"
-            @selected="toggleMinuteOverlay"
-            @toggle="toggleMinuteOverlay"
-        >
-            <template #button-icon>
-                <slot name="clock-icon" v-if="$slots['clock-icon']" />
-                <ClockIcon v-if="!$slots['clock-icon']" />
-            </template>
-            <template v-if="$slots['minutes-overlay']" #item="{ item }">
-                <slot name="minutes-overlay" :text="item.text" :value="item.value" />
-            </template>
-        </SelectionGrid>
+        <transition :name="transitionName(hourOverlay)" :css="showTransition">
+            <SelectionGrid
+                v-if="hourOverlay"
+                :items="getHoursGridItems()"
+                :disabled-values="filters.times.hours"
+                :min-value="minTime.hours"
+                :max-value="maxTime.hours"
+                @update:model-value="$emit('update:hours', $event)"
+                @selected="toggleHourOverlay"
+                @toggle="toggleHourOverlay"
+            >
+                <template #button-icon>
+                    <slot name="clock-icon" v-if="$slots['clock-icon']" />
+                    <ClockIcon v-if="!$slots['clock-icon']" />
+                </template>
+                <template v-if="$slots['hours-overlay']" #item="{ item }">
+                    <slot name="hours-overlay" :text="item.text" :value="item.value" />
+                </template>
+            </SelectionGrid>
+        </transition>
+        <transition :name="transitionName(minuteOverlay)" :css="showTransition">
+            <SelectionGrid
+                v-if="minuteOverlay"
+                :items="getMinutesGridItems()"
+                :disabled-values="filters.times.minutes"
+                :min-value="minTime.minutes"
+                :max-value="maxTime.minutes"
+                @update:model-value="$emit('update:minutes', $event)"
+                @selected="toggleMinuteOverlay"
+                @toggle="toggleMinuteOverlay"
+            >
+                <template #button-icon>
+                    <slot name="clock-icon" v-if="$slots['clock-icon']" />
+                    <ClockIcon v-if="!$slots['clock-icon']" />
+                </template>
+                <template v-if="$slots['minutes-overlay']" #item="{ item }">
+                    <slot name="minutes-overlay" :text="item.text" :value="item.value" />
+                </template>
+            </SelectionGrid>
+        </transition>
     </div>
 </template>
 
@@ -110,6 +114,7 @@
     import { getArrayInArray, hoursToAmPmHours } from '../../utils/util';
     import SelectionGrid from '../SelectionGrid.vue';
     import { addDateHours, addDateMinutes, subDateHours, subDateMinutes } from '../../utils/date-utils';
+    import { useTransitions } from '../composition/transition';
 
     const emit = defineEmits(['setHours', 'setMinutes', 'update:hours', 'update:minutes']);
     const props = defineProps({
@@ -132,6 +137,7 @@
     const hours = toRef(props, 'hours');
     const minutes = toRef(props, 'minutes');
     const amPm = ref('AM');
+    const { transitionName, showTransition } = useTransitions();
 
     onMounted(() => {
         checkMinMaxHours();

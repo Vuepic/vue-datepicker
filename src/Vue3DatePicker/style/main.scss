@@ -102,3 +102,54 @@
 .dp__relative {
   position: relative;
 }
+
+.dp-open-enter-active,
+.dp-open-leave-active,
+.dp-close-enter-active,
+.dp-close-leave-active,
+.calendar-next-enter-active,
+.calendar-next-leave-active,
+.calendar-prev-enter-active,
+.calendar-prev-leave-active, {
+  transition: all $dp__transition_duration cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.calendar-next-enter-from {
+  opacity: 0;
+  transform: translateX($dp__transition_length);
+}
+
+.calendar-next-leave-to {
+  opacity: 0;
+  transform: translateX(-$dp__transition_length);
+}
+
+.calendar-prev-enter-from {
+  opacity: 0;
+  transform: translateX(-$dp__transition_length);
+}
+
+.calendar-prev-leave-to {
+  opacity: 0;
+  transform: translateX($dp__transition_length);
+}
+
+.dp-open-enter-from {
+  opacity: 0;
+  transform: translateY(-$dp__transition_length);
+}
+
+.dp-open-leave-to {
+  opacity: 0;
+  transform: translateY($dp__transition_length);
+}
+
+.dp-close-enter-from {
+  opacity: 0;
+  transform: translateY($dp__transition_length);
+}
+
+.dp-close-leave-to {
+  opacity: 0;
+  transform: translateY(-$dp__transition_length);
+}

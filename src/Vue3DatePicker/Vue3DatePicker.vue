@@ -30,81 +30,94 @@
                 <slot :name="slot" v-bind="args" />
             </template>
         </DatepickerInput>
-        <teleport :to="teleport" :disabled="inline" v-if="isOpen">
-            <DatepickerMenu
-                v-if="isOpen"
-                ref="dpMenuRef"
-                :class="theme"
-                :style="menuPosition"
-                v-bind="{
-                    weekNumbers,
-                    weekStart,
-                    disableMonthYearSelect,
-                    menuClassName,
-                    calendarClassName,
-                    yearRange,
-                    range,
-                    twoCalendars,
-                    calendarCellClassName,
-                    enableTimePicker,
-                    is24,
-                    hoursIncrement,
-                    minutesIncrement,
-                    hoursGridIncrement,
-                    minutesGridIncrement,
-                    minDate,
-                    maxDate,
-                    autoApply,
-                    selectText,
-                    cancelText,
-                    previewFormat: previewFormatDefault,
-                    locale,
-                    weekNumName,
-                    disabledDates,
-                    filters: defaultFilters,
-                    minTime,
-                    maxTime,
-                    inline,
-                    openOnTop,
-                    monthPicker,
-                    timePicker,
-                    monthNameFormat,
-                    startDate,
-                    startTime: defaultStartTime,
-                    monthYearComponent,
-                    timePickerComponent,
-                    actionRowComponent,
-                    customProps,
-                    hideOffsetDates,
-                    autoRange,
-                    noToday,
-                    noHoursOverlay,
-                    noMinutesOverlay,
-                    twoCalendarsSolo,
-                    disabledWeekDays,
-                    allowedDates,
-                    showNowButton,
-                    nowButtonLabel,
-                    monthChangeOnScroll,
-                    markers,
-                }"
-                v-model:internalModelValue="internalModelValue"
-                @close-picker="closeMenu"
-                @select-date="selectDate"
-                @dp-open="recalculatePosition"
-                @auto-apply="autoApplyValue"
-                @time-update="timeUpdate"
-            >
-                <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
-                    <slot :name="slot" v-bind="{ ...args }" />
-                </template>
-            </DatepickerMenu>
-        </teleport>
+        <transition name="dp-open">
+            <teleport :to="teleport" :disabled="inline" v-if="isOpen">
+                <DatepickerMenu
+                    v-if="isOpen"
+                    ref="dpMenuRef"
+                    :class="theme"
+                    :style="menuPosition"
+                    v-bind="{
+                        weekNumbers,
+                        weekStart,
+                        disableMonthYearSelect,
+                        menuClassName,
+                        calendarClassName,
+                        yearRange,
+                        range,
+                        twoCalendars,
+                        calendarCellClassName,
+                        enableTimePicker,
+                        is24,
+                        hoursIncrement,
+                        minutesIncrement,
+                        hoursGridIncrement,
+                        minutesGridIncrement,
+                        minDate,
+                        maxDate,
+                        autoApply,
+                        selectText,
+                        cancelText,
+                        previewFormat: previewFormatDefault,
+                        locale,
+                        weekNumName,
+                        disabledDates,
+                        filters: defaultFilters,
+                        minTime,
+                        maxTime,
+                        inline,
+                        openOnTop,
+                        monthPicker,
+                        timePicker,
+                        monthNameFormat,
+                        startDate,
+                        startTime: defaultStartTime,
+                        monthYearComponent,
+                        timePickerComponent,
+                        actionRowComponent,
+                        customProps,
+                        hideOffsetDates,
+                        autoRange,
+                        noToday,
+                        noHoursOverlay,
+                        noMinutesOverlay,
+                        twoCalendarsSolo,
+                        disabledWeekDays,
+                        allowedDates,
+                        showNowButton,
+                        nowButtonLabel,
+                        monthChangeOnScroll,
+                        markers,
+                    }"
+                    v-model:internalModelValue="internalModelValue"
+                    @close-picker="closeMenu"
+                    @select-date="selectDate"
+                    @dp-open="recalculatePosition"
+                    @auto-apply="autoApplyValue"
+                    @time-update="timeUpdate"
+                >
+                    <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
+                        <slot :name="slot" v-bind="{ ...args }" />
+                    </template>
+                </DatepickerMenu>
+            </teleport>
+        </transition>
     </div>
 </template>
 
 <script lang="ts" setup>
-    import { computed, DefineComponent, onMounted, onUnmounted, PropType, ref, toRef, useSlots, watch } from 'vue';
+    import {
+        computed,
+        DefineComponent,
+        onMounted,
+        onUnmounted,
+        PropType,
+        provide,
+        ref,
+        toRef,
+        useSlots,
+        watch,
+    } from 'vue';
 
     import DatepickerInput from './components/DatepickerInput.vue';
     import DatepickerMenu from './components/DatepickerMenu.vue';
@@ -120,9 +133,10 @@
         WeekStartNum,
         WeekStartStr,
         IMarker,
+        ITransition,
     } from './interfaces';
     import { getDateHours, getDateMinutes, getDefaultPattern } from './utils/date-utils';
-    import { getDefaultTextInputOptions, getDefaultFilters } from './utils/util';
+    import { getDefaultTextInputOptions, getDefaultFilters, mergeDefaultTransitions } from './utils/util';
     import { usePosition } from './components/composition/position';
     import { useExternalInternalMapper } from './components/composition/external-internal-mapper';
     import { isString } from './utils/type-guard';
@@ -205,6 +219,7 @@
         partialRange: { type: Boolean as PropType<boolean>, default: true },
         monthChangeOnScroll: { type: Boolean as PropType<boolean>, default: true },
         markers: { type: Array as PropType<IMarker[]>, default: () => [] },
+        transitions: { type: Boolean as PropType<boolean | ITransition>, default: true },
     });
     const slots = useSlots();
     const isOpen = ref(false);
@@ -282,6 +297,14 @@
         }
         return props.previewFormat;
     });
+
+    const defaultTransitions = computed((): ITransition | boolean => {
+        if (typeof props.transitions === 'boolean') {
+            return props.transitions ? mergeDefaultTransitions({}) : false;
+        }
+        return mergeDefaultTransitions(props.transitions);
+    });
+    provide('transitions', defaultTransitions);
 
     const theme = computed(() => (props.dark ? 'dp__theme_dark' : 'dp__theme_light'));
 

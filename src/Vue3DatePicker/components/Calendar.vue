@@ -41,73 +41,75 @@
                     </div>
                 </div>
                 <div class="dp__calendar_header_separator"></div>
-                <div class="dp__calendar" role="grid" aria-label="Calendar days">
-                    <div class="dp__calendar_row" role="row" v-for="(week, weekInd) in mappedDates" :key="weekInd">
-                        <div role="gridcell" v-if="weekNumbers" class="dp__calendar_item dp__week_num">
-                            <div class="dp__cell_inner">
-                                {{ getWeekNum(week.days) }}
+                <transition :name="transitionName" :css="!!transitions">
+                    <div class="dp__calendar" role="grid" aria-label="Calendar days" v-if="showCalendar">
+                        <div class="dp__calendar_row" role="row" v-for="(week, weekInd) in mappedDates" :key="weekInd">
+                            <div role="gridcell" v-if="weekNumbers" class="dp__calendar_item dp__week_num">
+                                <div class="dp__cell_inner">
+                                    {{ getWeekNum(week.days) }}
+                                </div>
                             </div>
-                        </div>
-                        <div
-                            role="gridcell"
-                            class="dp__calendar_item"
-                            v-for="(dayVal, dayInd) in week.days"
-                            :ref="
-                                (el) => {
-                                    if (el) dayRefs[dayInd + weekInd] = el;
-                                }
-                            "
-                            :key="dayInd + weekInd"
-                            :aria-selected="
-                                dayVal.classData.dp__active_date ||
-                                dayVal.classData.dp__range_start ||
-                                dayVal.classData.dp__range_start
-                            "
-                            :aria-disabled="dayVal.classData.dp__cell_disabled"
-                            @click="$emit('selectDate', dayVal)"
-                            @mouseover="onMouseOver(dayVal, dayInd + weekInd)"
-                            @mouseleave="onMouseLeave"
-                        >
-                            <div class="dp__cell_inner" :class="dayVal.classData">
-                                <slot name="day" v-if="$slots.day" :day="+dayVal.text" :date="dayVal.value"></slot>
-                                <template v-if="!$slots.day"> {{ dayVal.text }} </template>
-                                <div
-                                    v-if="dayVal.marker"
-                                    :class="markerClass(dayVal.marker)"
-                                    :style="dayVal.marker.color ? { backgroundColor: dayVal.marker.color } : {}"
-                                ></div>
-                                <div
-                                    class="dp__marker_tooltip"
-                                    v-if="dateMatch(dayVal.value)"
-                                    :style="markerTooltipStyle"
-                                >
-                                    <div class="dp__tooltip_content" @click.stop>
-                                        <div
-                                            v-for="(tooltip, i) in dayVal.marker.tooltip"
-                                            :key="i"
-                                            class="dp__tooltip_text"
-                                        >
-                                            <slot
-                                                name="marker-tooltip"
-                                                v-if="$slots['marker-tooltip']"
-                                                :tooltop="tooltip"
-                                                :day="dayVal.value"
-                                            ></slot>
-                                            <template v-if="!$slots['marker-tooltip']">
-                                                <div
-                                                    class="dp__tooltip_mark"
-                                                    :style="tooltip.color ? { backgroundColor: tooltip.color } : {}"
-                                                ></div>
-                                                <div>{{ tooltip.text }}</div>
-                                            </template>
+                            <div
+                                role="gridcell"
+                                class="dp__calendar_item"
+                                v-for="(dayVal, dayInd) in week.days"
+                                :ref="
+                                    (el) => {
+                                        if (el) dayRefs[dayInd + weekInd] = el;
+                                    }
+                                "
+                                :key="dayInd + weekInd"
+                                :aria-selected="
+                                    dayVal.classData.dp__active_date ||
+                                    dayVal.classData.dp__range_start ||
+                                    dayVal.classData.dp__range_start
+                                "
+                                :aria-disabled="dayVal.classData.dp__cell_disabled"
+                                @click="$emit('selectDate', dayVal)"
+                                @mouseover="onMouseOver(dayVal, dayInd + weekInd)"
+                                @mouseleave="onMouseLeave"
+                            >
+                                <div class="dp__cell_inner" :class="dayVal.classData">
+                                    <slot name="day" v-if="$slots.day" :day="+dayVal.text" :date="dayVal.value"></slot>
+                                    <template v-if="!$slots.day"> {{ dayVal.text }} </template>
+                                    <div
+                                        v-if="dayVal.marker"
+                                        :class="markerClass(dayVal.marker)"
+                                        :style="dayVal.marker.color ? { backgroundColor: dayVal.marker.color } : {}"
+                                    ></div>
+                                    <div
+                                        class="dp__marker_tooltip"
+                                        v-if="dateMatch(dayVal.value)"
+                                        :style="markerTooltipStyle"
+                                    >
+                                        <div class="dp__tooltip_content" @click.stop>
+                                            <div
+                                                v-for="(tooltip, i) in dayVal.marker.tooltip"
+                                                :key="i"
+                                                class="dp__tooltip_text"
+                                            >
+                                                <slot
+                                                    name="marker-tooltip"
+                                                    v-if="$slots['marker-tooltip']"
+                                                    :tooltop="tooltip"
+                                                    :day="dayVal.value"
+                                                ></slot>
+                                                <template v-if="!$slots['marker-tooltip']">
+                                                    <div
+                                                        class="dp__tooltip_mark"
+                                                        :style="tooltip.color ? { backgroundColor: tooltip.color } : {}"
+                                                    ></div>
+                                                    <div>{{ tooltip.text }}</div>
+                                                </template>
+                                            </div>
+                                            <div class="dp__arrow_bottom_tp"></div>
                                         </div>
-                                        <div class="dp__arrow_bottom_tp"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </transition>
             </div>
             <component
                 v-if="enableTimePicker"
@@ -143,7 +145,20 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, DefineComponent, PropType, ref, UnwrapRef, useSlots } from 'vue';
+    import {
+        computed,
+        ComputedRef,
+        DefineComponent,
+        inject,
+        nextTick,
+        onMounted,
+        PropType,
+        ref,
+        toRef,
+        UnwrapRef,
+        useSlots,
+        watch,
+    } from 'vue';
 
     import TimePickerCmp from './TimePicker/TimePicker.vue';
     import MonthYearInput from './MonthYearInput.vue';
@@ -156,10 +171,11 @@
         ICalendarDay,
         IDefaultSelect,
         IMarker,
+        ITransition,
     } from '../interfaces';
     import { getDayNames, getDefaultMarker, unrefElement } from '../utils/util';
     import { mapSlots } from './composition/slots';
-    import { isDateEqual } from '../utils/date-utils';
+    import { isDateAfter, isDateEqual, setDateMonthOrYear } from '../utils/date-utils';
 
     const emit = defineEmits([
         'update:hours',
@@ -215,15 +231,39 @@
     const showMakerTooltip = ref<Date | null>(null);
     const markerTooltipStyle = ref({ bottom: '', left: '', transform: '' });
     const dayRefs = ref([]);
+    const showCalendar = ref(true);
+    const transitions = inject<ComputedRef<ITransition>>('transitions');
+    const transitionName = ref('');
+    const monthProp = toRef(props, 'month');
+    const yearProp = toRef(props, 'year');
+    const prevDate = ref();
 
     const weekDays = computed(() => {
         return getDayNames(props.locale, +props.weekStart);
+    });
+
+    onMounted(() => {
+        prevDate.value = setDateMonthOrYear(new Date(), props.month, props.year);
     });
 
     const timePickerSlots = mapSlots(slots, 'timePicker');
     const monthYearSlots = mapSlots(slots, 'monthYear');
 
     const specificMode = computed(() => props.monthPicker || props.timePicker);
+
+    watch([monthProp, yearProp], () => {
+        if (transitions?.value) {
+            const newDate = setDateMonthOrYear(new Date(), props.month, props.year);
+            transitionName.value = isDateAfter(setDateMonthOrYear(new Date(), props.month, props.year), prevDate.value)
+                ? transitions.value.next
+                : transitions.value.previous;
+            prevDate.value = newDate;
+            showCalendar.value = false;
+            nextTick(() => {
+                showCalendar.value = true;
+            });
+        }
+    });
 
     // Class object for calendar wrapper
     const calendarWrapClass = computed(
