@@ -1,5 +1,6 @@
 <template>
     <div
+        :id="uid ? `dp-menu-${uid}` : null"
         role="dialog"
         aria-label="Datepicker menu"
         :class="dpMenuClass"
@@ -156,6 +157,7 @@
         nowButtonLabel: { type: String as PropType<string>, default: 'Now' },
         monthChangeOnScroll: { type: Boolean as PropType<boolean>, default: true },
         markers: { type: Array as PropType<IMarker[]>, default: () => [] },
+        uid: { type: String as PropType<string>, default: null },
     });
     const slots = useSlots();
     const calendarWrapperRef = ref(null);

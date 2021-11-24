@@ -17,6 +17,7 @@
                 isMenuOpen: isOpen,
                 pattern: defaultPattern,
                 autoApply,
+                uid,
             }"
             v-model:input-value="inputValue"
             @clear="clearValue"
@@ -88,6 +89,7 @@
                         nowButtonLabel,
                         monthChangeOnScroll,
                         markers,
+                        uid,
                     }"
                     v-model:internalModelValue="internalModelValue"
                     @close-picker="closeMenu"
@@ -145,6 +147,7 @@
 
     const emit = defineEmits(['update:modelValue', 'textSubmit', 'closed', 'cleared', 'open']);
     const props = defineProps({
+        uid: { type: String as PropType<string>, default: null },
         is24: { type: Boolean as PropType<boolean>, default: true },
         enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
         locale: { type: String as PropType<string>, default: 'en-US' },

@@ -18,6 +18,7 @@
         />
         <div v-if="!$slots.trigger && !$slots['dp-input'] && !inline" class="dp__input_wrap">
             <input
+                :id="uid ? `dp-input-${uid}` : null"
                 :class="inputClass"
                 :placeholder="placeholder"
                 :disabled="disabled"
@@ -84,6 +85,7 @@
         isMenuOpen: { type: Boolean as PropType<boolean>, default: false },
         autoApply: { type: Boolean as PropType<boolean>, default: false },
         pattern: { type: String as PropType<string>, default: '' },
+        uid: { type: String as PropType<string>, default: null },
     });
     const parsedDate = ref();
 
