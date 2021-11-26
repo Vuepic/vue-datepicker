@@ -13,47 +13,59 @@
         <transition :name="transitionName(showTimePicker)" :css="showTransition">
             <div v-if="showTimePicker || timePicker" class="dp__overlay">
                 <div class="dp__overlay_container">
-                    <div class="dp__overlay_row">
-                        <template v-if="!range">
-                            <TimeInput
-                                :hours="hours"
-                                :minutes="minutes"
-                                v-bind="timeInputProps"
-                                @update:hours="$emit('update:hours', $event)"
-                                @update:minutes="$emit('update:minutes', $event)"
-                            >
-                                <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
-                                    <slot :name="slot" v-bind="args" />
-                                </template>
-                            </TimeInput>
-                        </template>
-                        <template v-if="range">
-                            <TimeInput
-                                v-if="twoCalendars ? instance === 1 : true"
-                                :hours="hours[0]"
-                                :minutes="minutes[0]"
-                                v-bind="timeInputProps"
-                                @update:hours="$emit('update:hours', [$event, hours[1]])"
-                                @update:minutes="$emit('update:minutes', [$event, minutes[1]])"
-                            >
-                                <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
-                                    <slot :name="slot" v-bind="args" />
-                                </template>
-                            </TimeInput>
-                            <TimeInput
-                                v-if="twoCalendars ? instance === 2 : true"
-                                :hours="hours[1]"
-                                :minutes="minutes[1]"
-                                v-bind="timeInputProps"
-                                @update:hours="$emit('update:hours', [hours[0], $event])"
-                                @update:minutes="$emit('update:minutes', [minutes[0], $event])"
-                            >
-                                <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
-                                    <slot :name="slot" v-bind="args" />
-                                </template>
-                            </TimeInput>
-                        </template>
-                    </div>
+                    <slot
+                        name="time-picker-overlay"
+                        v-if="$slots['time-picker-overlay']"
+                        :range="range"
+                        :instance="instance"
+                        :hours="hours"
+                        :minutes="minutes"
+                        :setHours="updateHours"
+                        :setMinutes="updateMinutes"
+                    ></slot>
+                    <template v-if="!$slots['time-picker-overlay']">
+                        <div class="dp__overlay_row">
+                            <template v-if="!range">
+                                <TimeInput
+                                    :hours="hours"
+                                    :minutes="minutes"
+                                    v-bind="timeInputProps"
+                                    @update:hours="updateHours($event)"
+                                    @update:minutes="updateMinutes($event)"
+                                >
+                                    <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
+                                        <slot :name="slot" v-bind="args" />
+                                    </template>
+                                </TimeInput>
+                            </template>
+                            <template v-if="range">
+                                <TimeInput
+                                    v-if="twoCalendars ? instance === 1 : true"
+                                    :hours="hours[0]"
+                                    :minutes="minutes[0]"
+                                    v-bind="timeInputProps"
+                                    @update:hours="updateHours([$event, hours[1]])"
+                                    @update:minutes="updateMinutes([$event, minutes[1]])"
+                                >
+                                    <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
+                                        <slot :name="slot" v-bind="args" />
+                                    </template>
+                                </TimeInput>
+                                <TimeInput
+                                    v-if="twoCalendars ? instance === 2 : true"
+                                    :hours="hours[1]"
+                                    :minutes="minutes[1]"
+                                    v-bind="timeInputProps"
+                                    @update:hours="updateHours([hours[0], $event])"
+                                    @update:minutes="updateMinutes([minutes[0], $event])"
+                                >
+                                    <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
+                                        <slot :name="slot" v-bind="args" />
+                                    </template>
+                                </TimeInput>
+                            </template>
+                        </div>
+                    </template>
                     <div
                         class="dp__button"
                         v-if="!timePicker"
@@ -80,7 +92,7 @@
     import { mapSlots } from '../composition/slots';
     import { useTransitions } from '../composition/transition';
 
-    defineEmits(['update:hours', 'update:minutes']);
+    const emit = defineEmits(['update:hours', 'update:minutes']);
 
     const props = defineProps({
         hoursIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
@@ -125,4 +137,12 @@
         noHoursOverlay: props.noHoursOverlay,
         noMinutesOverlay: props.noMinutesOverlay,
     }));
+
+    const updateHours = (hours: number | number[]): void => {
+        emit('update:hours', hours);
+    };
+
+    const updateMinutes = (minutes: number | number[]): void => {
+        emit('update:minutes', minutes);
+    };
 </script>

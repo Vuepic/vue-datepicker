@@ -60,7 +60,14 @@
             </div>
         </div>
         <div v-if="!is24">
-            <button class="dp__pm_am_button" role="button" aria-label="Switch AM/PM mode" @click="setAmPm">
+            <slot name="am-pm-button" v-if="$slots['am-pm-button']" :toggle="setAmPm" :value="amPm"></slot>
+            <button
+                v-if="!$slots['am-pm-button']"
+                class="dp__pm_am_button"
+                role="button"
+                aria-label="Switch AM/PM mode"
+                @click="setAmPm"
+            >
                 {{ amPm }}
             </button>
         </div>

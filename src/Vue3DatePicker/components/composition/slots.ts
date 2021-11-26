@@ -21,6 +21,8 @@ export const slots = [
     { name: 'calendar-header', use: ['calendar'] },
     { name: 'marker-tooltip', use: ['calendar'] },
     { name: 'now-button', use: [] },
+    { name: 'time-picker-overlay', use: ['calendar', 'time'] },
+    { name: 'am-pm-button', use: ['calendar', 'time'] },
 ];
 
 export const inputSlots = [{ name: 'trigger' }, { name: 'input-icon' }, { name: 'clear-icon' }, { name: 'dp-input' }];
