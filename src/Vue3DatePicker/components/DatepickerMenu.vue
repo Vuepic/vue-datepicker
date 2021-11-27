@@ -1,6 +1,7 @@
 <template>
     <div
         :id="uid ? `dp-menu-${uid}` : null"
+        ref="dpMenuRef"
         role="dialog"
         aria-label="Datepicker menu"
         :class="dpMenuClass"
@@ -167,6 +168,7 @@
     });
     const slots = useSlots();
     const calendarWrapperRef = ref(null);
+    const dpMenuRef = ref(null);
     const calendarWidth = ref(0);
     const menuMount = ref(false);
 
@@ -178,6 +180,12 @@
         }
         if (!props.inline) {
             nextTick(() => emit('dpOpen'));
+        }
+        const menu = unrefElement(dpMenuRef);
+        if (menu) {
+            menu.addEventListener('pointerdown', (e) => {
+                e.stopImmediatePropagation();
+            });
         }
     });
 
