@@ -158,6 +158,7 @@
         monthChangeOnScroll: { type: Boolean as PropType<boolean>, default: true },
         markers: { type: Array as PropType<IMarker[]>, default: () => [] },
         uid: { type: String as PropType<string>, default: null },
+        modeHeight: { type: [Number, String] as PropType<number | string>, default: 255 },
     });
     const slots = useSlots();
     const calendarWrapperRef = ref(null);
@@ -285,6 +286,7 @@
         noHoursOverlay: props.noHoursOverlay,
         noMinutesOverlay: props.noMinutesOverlay,
         twoCalendarsSolo: props.twoCalendarsSolo,
+        modeHeight: props.modeHeight,
     }));
 
     const dpMenuClass = computed(

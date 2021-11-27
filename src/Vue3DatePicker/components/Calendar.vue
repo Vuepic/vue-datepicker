@@ -1,6 +1,6 @@
 <template>
     <div :class="calendarParentClass">
-        <div :class="contentWrapClass">
+        <div :class="contentWrapClass" :style="contentWrapStyle">
             <component
                 :is="monthYearComponent ? monthYearComponent : MonthYearInput"
                 v-if="!disableMonthYearSelect && !timePicker"
@@ -226,6 +226,7 @@
         noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
         noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
         twoCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
+        modeHeight: { type: [Number, String] as PropType<number | string>, default: 255 },
     });
     const slots = useSlots();
     const showMakerTooltip = ref<Date | null>(null);
@@ -292,9 +293,11 @@
     const contentWrapClass = computed(
         (): DynamicClass => ({
             dp__calendar_content_wrap: true,
-            dp_calendar_fixed: specificMode.value,
+            // dp_calendar_fixed: specificMode.value,
         }),
     );
+
+    const contentWrapStyle = computed(() => (specificMode.value ? { height: `${props.modeHeight}px` } : null));
 
     const onMouseOver = (day: UnwrapRef<ICalendarDay>, refIndex: number): void => {
         emit('setHoverDate', day);

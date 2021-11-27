@@ -90,6 +90,7 @@
                         monthChangeOnScroll,
                         markers,
                         uid,
+                        modeHeight,
                     }"
                     v-model:internalModelValue="internalModelValue"
                     @close-picker="closeMenu"
@@ -223,6 +224,7 @@
         monthChangeOnScroll: { type: Boolean as PropType<boolean>, default: true },
         markers: { type: Array as PropType<IMarker[]>, default: () => [] },
         transitions: { type: Boolean as PropType<boolean | ITransition>, default: true },
+        modeHeight: { type: [Number, String] as PropType<number | string>, default: 255 },
     });
     const slots = useSlots();
     const isOpen = ref(false);

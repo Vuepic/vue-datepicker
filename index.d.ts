@@ -148,6 +148,7 @@ interface Vue3DatePicker {
         color?: string;
     }[];
     transitions?: boolean | { open?: string; close?: string; next?: string; previous?: string };
+    modeHeight?: string | number;
 }
 
 interface PublicMethods extends MethodOptions {
