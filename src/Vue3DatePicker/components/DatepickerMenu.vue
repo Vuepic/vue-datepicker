@@ -21,6 +21,7 @@
                 :time-picker-component="timePickerComponent"
                 @update:hours="updateTime($event)"
                 @update:minutes="updateTime($event, false)"
+                @update:seconds="updateTime($event, false, true)"
                 @update:month="updateMonthYear($event, true, !isFirstInstance(instance))"
                 @update:year="updateMonthYear($event, false, !isFirstInstance(instance))"
                 @month-year-select="monthYearSelect"
@@ -118,7 +119,9 @@
         is24: { type: Boolean as PropType<boolean>, default: true },
         hoursIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
         minutesIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
+        secondsIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
         hoursGridIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
+        secondsGridIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
         minutesGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 },
         minDate: { type: [Date, String] as PropType<Date | string>, default: null },
         maxDate: { type: [Date, String] as PropType<Date | string>, default: null },
@@ -151,6 +154,7 @@
         noToday: { type: Boolean as PropType<boolean>, default: false },
         noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
         noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
+        noSecondsOverlay: { type: Boolean as PropType<boolean>, default: false },
         disabledWeekDays: { type: Array as PropType<string[] | number[]>, default: () => [] },
         allowedDates: { type: Array as PropType<string[] | Date[]>, default: () => [] },
         showNowButton: { type: Boolean as PropType<boolean>, default: false },
@@ -159,6 +163,7 @@
         markers: { type: Array as PropType<IMarker[]>, default: () => [] },
         uid: { type: String as PropType<string>, default: null },
         modeHeight: { type: [Number, String] as PropType<number | string>, default: 255 },
+        enableSeconds: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
     const calendarWrapperRef = ref(null);
@@ -186,6 +191,7 @@
         yearNext,
         hours,
         minutes,
+        seconds,
         isDisabled,
         isActiveDate,
         selectDate,
@@ -266,8 +272,10 @@
         is24: props.is24,
         hoursIncrement: props.hoursIncrement,
         minutesIncrement: props.minutesIncrement,
+        secondsIncrement: props.secondsIncrement,
         hoursGridIncrement: props.hoursGridIncrement,
         minutesGridIncrement: props.minutesGridIncrement,
+        secondsGridIncrement: props.secondsGridIncrement,
         monthPicker: props.monthPicker,
         timePicker: props.timePicker,
         range: props.range,
@@ -277,6 +285,7 @@
         customProps: props.customProps,
         hours: hours.value,
         minutes: minutes.value,
+        seconds: seconds.value,
         calendarClassName: props.calendarClassName,
         specificMode: specificMode.value,
         getWeekNum,
@@ -285,8 +294,10 @@
         years: years.value,
         noHoursOverlay: props.noHoursOverlay,
         noMinutesOverlay: props.noMinutesOverlay,
+        noSecondsOverlay: props.noSecondsOverlay,
         twoCalendarsSolo: props.twoCalendarsSolo,
         modeHeight: props.modeHeight,
+        enableSeconds: props.enableSeconds,
     }));
 
     const dpMenuClass = computed(

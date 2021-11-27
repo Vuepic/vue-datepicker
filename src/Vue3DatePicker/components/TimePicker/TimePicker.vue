@@ -20,8 +20,10 @@
                         :instance="instance"
                         :hours="hours"
                         :minutes="minutes"
+                        :seconds="seconds"
                         :setHours="updateHours"
                         :setMinutes="updateMinutes"
+                        :setSeconds="updateSeconds"
                     ></slot>
                     <template v-if="!$slots['time-picker-overlay']">
                         <div class="dp__overlay_row">
@@ -29,9 +31,11 @@
                                 <TimeInput
                                     :hours="hours"
                                     :minutes="minutes"
+                                    :seconds="seconds"
                                     v-bind="timeInputProps"
                                     @update:hours="updateHours($event)"
                                     @update:minutes="updateMinutes($event)"
+                                    @update:seconds="updateSeconds($event)"
                                 >
                                     <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
                                         <slot :name="slot" v-bind="args" />
@@ -92,14 +96,16 @@
     import { mapSlots } from '../composition/slots';
     import { useTransitions } from '../composition/transition';
 
-    const emit = defineEmits(['update:hours', 'update:minutes']);
+    const emit = defineEmits(['update:hours', 'update:minutes', 'update:seconds']);
 
     const props = defineProps({
         hoursIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
         minutesIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
+        secondsIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
         is24: { type: Boolean as PropType<boolean>, default: true },
         hoursGridIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
         minutesGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 },
+        secondsGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 },
         range: { type: Boolean as PropType<boolean>, default: false },
         filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
         minTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
@@ -107,11 +113,14 @@
         timePicker: { type: Boolean as PropType<boolean>, default: false },
         hours: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         minutes: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
+        seconds: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         instance: { type: [Number, Array] as PropType<number | number[]>, default: 1 },
         twoCalendars: { type: Boolean as PropType<boolean>, default: false },
         noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
         noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
+        noSecondsOverlay: { type: Boolean as PropType<boolean>, default: false },
         customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
+        enableSeconds: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
 
@@ -129,13 +138,17 @@
         is24: props.is24,
         hoursGridIncrement: props.hoursGridIncrement,
         minutesGridIncrement: props.minutesGridIncrement,
+        secondsGridIncrement: props.secondsGridIncrement,
         hoursIncrement: props.hoursIncrement,
         minutesIncrement: props.minutesIncrement,
+        secondsIncrement: props.secondsIncrement,
         filters: props.filters,
         maxTime: props.maxTime,
         minTime: props.minTime,
         noHoursOverlay: props.noHoursOverlay,
         noMinutesOverlay: props.noMinutesOverlay,
+        noSecondsOverlay: props.noSecondsOverlay,
+        enableSeconds: props.enableSeconds,
     }));
 
     const updateHours = (hours: number | number[]): void => {
@@ -144,5 +157,9 @@
 
     const updateMinutes = (minutes: number | number[]): void => {
         emit('update:minutes', minutes);
+    };
+
+    const updateSeconds = (seconds: number | number[]): void => {
+        emit('update:seconds', seconds);
     };
 </script>

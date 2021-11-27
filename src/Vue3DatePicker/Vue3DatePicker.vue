@@ -91,6 +91,10 @@
                         markers,
                         uid,
                         modeHeight,
+                        enableSeconds,
+                        secondsIncrement,
+                        secondsGridIncrement,
+                        noSecondsOverlay,
                     }"
                     v-model:internalModelValue="internalModelValue"
                     @close-picker="closeMenu"
@@ -162,8 +166,10 @@
         dark: { type: Boolean as PropType<boolean>, default: false },
         hoursIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
         minutesIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
+        secondsIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
         hoursGridIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
         minutesGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 },
+        secondsGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 },
         minDate: { type: [Date, String] as PropType<Date | string>, default: null },
         maxDate: { type: [Date, String] as PropType<Date | string>, default: null },
         minTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
@@ -216,6 +222,7 @@
         noToday: { type: Boolean as PropType<boolean>, default: false },
         noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
         noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
+        noSecondsOverlay: { type: Boolean as PropType<boolean>, default: false },
         altPosition: { type: Boolean as PropType<boolean>, default: false },
         allowedDates: { type: Array as PropType<string[] | Date[]>, default: () => [] },
         showNowButton: { type: Boolean as PropType<boolean>, default: false },
@@ -225,6 +232,7 @@
         markers: { type: Array as PropType<IMarker[]>, default: () => [] },
         transitions: { type: Boolean as PropType<boolean | ITransition>, default: true },
         modeHeight: { type: [Number, String] as PropType<number | string>, default: 255 },
+        enableSeconds: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
     const isOpen = ref(false);
@@ -278,6 +286,7 @@
             props.partialRange,
             props.is24,
             props.enableTimePicker,
+            props.enableSeconds,
             emit,
         );
 
@@ -293,7 +302,14 @@
     const defaultPattern = computed((): string => {
         return isString(props.format)
             ? props.format
-            : getDefaultPattern(null, props.is24, props.monthPicker, props.timePicker, props.enableTimePicker);
+            : getDefaultPattern(
+                  null,
+                  props.is24,
+                  props.enableSeconds,
+                  props.monthPicker,
+                  props.timePicker,
+                  props.enableTimePicker,
+              );
     });
 
     const previewFormatDefault = computed(() => {

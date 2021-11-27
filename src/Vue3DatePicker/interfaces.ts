@@ -24,7 +24,7 @@ export type InternalModuleValue = Date | Date[] | null;
 export interface IDateFilter {
     months: number[];
     years: number[];
-    times: { hours: number[]; minutes: number[] };
+    times: { hours: number[]; minutes: number[]; seconds: number[] };
 }
 
 export interface ICalendarDay {
@@ -70,6 +70,7 @@ export interface IMonthValue {
 export interface ITimeValue {
     hours: number | string;
     minutes: number | string;
+    seconds?: number | string;
 }
 
 export type ModelValue = Date | Date[] | string | string[] | ITimeValue | ITimeValue[] | IMonthValue | null;
@@ -98,6 +99,7 @@ export type UseCalendar = {
     allowedDates: Date[] | string[];
     monthChangeOnScroll: boolean;
     markers: IMarker[];
+    enableSeconds: boolean;
 } & { [key: string]: unknown };
 
 export interface UseMonthYearPick {
@@ -138,3 +140,5 @@ export interface ITransition {
     next: string;
     previous: string;
 }
+
+export type ITimeType = 'hours' | 'minutes' | 'seconds';

@@ -32,6 +32,7 @@ export const useExternalInternalMapper = (
     partialRange: boolean,
     is24: boolean,
     enableTimePicker: boolean,
+    enableSeconds: boolean,
     emit: VueEmit,
 ): IExternalInternalMapper => {
     const inputValue = ref('');
@@ -85,7 +86,7 @@ export const useExternalInternalMapper = (
         if (!internalModelValue.value) {
             inputValue.value = '';
         } else if (!format || typeof format === 'string') {
-            const pattern = getDefaultPattern(format, is24, monthPicker, timePicker, enableTimePicker);
+            const pattern = getDefaultPattern(format, is24, enableSeconds, monthPicker, timePicker, enableTimePicker);
             inputValue.value = formatDate(internalModelValue.value, pattern);
         } else if (timePicker) {
             inputValue.value = format(getTImeForExternal(internalModelValue.value));

@@ -12,6 +12,7 @@ export const slots = [
     { name: 'year-overlay', use: ['calendar', 'month-year'] },
     { name: 'hours-overlay', use: ['calendar', 'time'] },
     { name: 'minutes-overlay', use: ['calendar', 'time'] },
+    { name: 'seconds-overlay', use: ['calendar', 'time'] },
     { name: 'hours', use: ['calendar', 'time'] },
     { name: 'minutes', use: ['calendar', 'time'] },
     { name: 'month', use: ['calendar', 'month-year'] },

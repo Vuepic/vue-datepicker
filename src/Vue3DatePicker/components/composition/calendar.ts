@@ -5,6 +5,7 @@ import {
     getDateHours,
     getDateMinutes,
     getDateMonth,
+    getDateSeconds,
     getDateYear,
     getNextMonthYear,
     getNextYearMonth,
@@ -26,7 +27,7 @@ interface IUseCalendar {
     selectDate: (day: UnwrapRef<ICalendarDay>, isNext?: boolean) => void;
     getWeekNum: (days: UnwrapRef<ICalendarDay[]>) => string | number;
     setHoverDate: (day: UnwrapRef<ICalendarDay>) => void;
-    updateTime: (value: number | number[], isHours?: boolean) => void;
+    updateTime: (value: number | number[], isHours?: boolean, isSeconds?: boolean) => void;
     updateMonthYear: (value: number, isMonth?: boolean, isNext?: boolean) => void;
     isHoverRangeEnd: (day: UnwrapRef<ICalendarDay>) => boolean;
     isAutoRangeInBetween: (day: UnwrapRef<ICalendarDay>) => boolean;
@@ -43,6 +44,7 @@ interface IUseCalendar {
     yearNext: Ref<number>;
     hours: Ref<number | number[]>;
     minutes: Ref<number | number[]>;
+    seconds: Ref<number | number[]>;
 }
 
 export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => {
@@ -54,6 +56,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
     const yearNext = ref<number>(getNextMonthYear(new Date()).year);
     const hours = ref<number | number[]>(props.range ? [getDateHours(), getDateHours()] : getDateHours());
     const minutes = ref<number | number[]>(props.range ? [getDateMinutes(), getDateMinutes()] : getDateMinutes());
+    const seconds = ref<number | number[]>(props.range ? [0, 0] : 0);
 
     onMounted(() => {
         mapInternalModuleValues();
@@ -72,6 +75,16 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
             }
         }
     });
+
+    const getSecondsValue = (getFirst = true): number | null => {
+        if (props.enableSeconds) {
+            if (Array.isArray(seconds.value)) {
+                return getFirst ? seconds.value[0] : seconds.value[1];
+            }
+            return seconds.value;
+        }
+        return 0;
+    };
 
     /**
      * If start time is provided, assign data.
@@ -186,6 +199,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
                     assignMonthAndYear(modelValue.value[0]);
                     hours.value = [getDateHours(modelValue.value[0]), getDateHours(modelValue.value[1])];
                     minutes.value = [getDateMinutes(modelValue.value[0]), getDateMinutes(modelValue.value[1])];
+                    seconds.value = [getDateSeconds(modelValue.value[0]), getDateSeconds(modelValue.value[1])];
                 }
                 if (props.twoCalendars) {
                     handleNextMonthYear();
@@ -194,15 +208,21 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
                 assignMonthAndYear(modelValue.value);
                 hours.value = getDateHours(modelValue.value);
                 minutes.value = getDateMinutes(modelValue.value);
+                seconds.value = getDateSeconds(modelValue.value);
             }
         } else {
             if (props.timePicker) {
                 if (!props.range) {
-                    modelValue.value = setDateTime(new Date(), hours.value as number, minutes.value as number);
+                    modelValue.value = setDateTime(
+                        new Date(),
+                        hours.value as number,
+                        minutes.value as number,
+                        getSecondsValue(),
+                    );
                 } else if (isNumberArray(hours.value) && isNumberArray(minutes.value)) {
                     modelValue.value = [
-                        setDateTime(new Date(), hours.value[0], minutes.value[0]),
-                        setDateTime(new Date(), hours.value[1], minutes.value[1]),
+                        setDateTime(new Date(), hours.value[0], minutes.value[0], getSecondsValue()),
+                        setDateTime(new Date(), hours.value[1], minutes.value[1], getSecondsValue(false)),
                     ];
                 }
             } else if (props.monthPicker) {
@@ -236,7 +256,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
             return;
         }
         if (!props.range && !isNumberArray(hours.value) && !isNumberArray(minutes.value)) {
-            modelValue.value = setDateTime(new Date(day.value), hours.value, minutes.value);
+            modelValue.value = setDateTime(new Date(day.value), hours.value, minutes.value, getSecondsValue());
             if (props.autoApply) {
                 emit('autoApply');
             }
@@ -262,10 +282,10 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
                 }
             }
             if (rangeDate[0] && !rangeDate[1]) {
-                rangeDate[0] = setDateTime(rangeDate[0], hours.value[0], minutes.value[0]);
+                rangeDate[0] = setDateTime(rangeDate[0], hours.value[0], minutes.value[0], getSecondsValue());
             } else {
-                rangeDate[0] = setDateTime(rangeDate[0], hours.value[0], minutes.value[0]);
-                rangeDate[1] = setDateTime(rangeDate[1], hours.value[1], minutes.value[1]);
+                rangeDate[0] = setDateTime(rangeDate[0], hours.value[0], minutes.value[0], getSecondsValue());
+                rangeDate[1] = setDateTime(rangeDate[1], hours.value[1], minutes.value[1], getSecondsValue(false));
             }
             modelValue.value = rangeDate;
             if (rangeDate[0] && rangeDate[1] && props.autoApply) {
@@ -401,11 +421,16 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
     const handleTimeUpdate = (dateValue: Date | Date[]): void => {
         if (isRange(dateValue) && isNumberArray(hours.value) && isNumberArray(minutes.value)) {
             modelValue.value = [
-                setDateTime(dateValue[0], hours.value[0], minutes.value[0]),
-                setDateTime(dateValue[1], hours.value[1], minutes.value[1]),
+                setDateTime(dateValue[0], hours.value[0], minutes.value[0], getSecondsValue()),
+                setDateTime(dateValue[1], hours.value[1], minutes.value[1], getSecondsValue(false)),
             ];
         } else if (!props.range && !isRange(dateValue)) {
-            modelValue.value = setDateTime(dateValue as Date, hours.value as number, minutes.value as number);
+            modelValue.value = setDateTime(
+                dateValue as Date,
+                hours.value as number,
+                minutes.value as number,
+                getSecondsValue(),
+            );
         }
         emit('timeUpdate');
     };
@@ -413,11 +438,13 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
     /**
      * Called on event when time value is changed
      */
-    const updateTime = (value: number | number[], isHours = true) => {
+    const updateTime = (value: number | number[], isHours = true, isSeconds = false) => {
         if (isHours) {
             hours.value = value;
-        } else {
+        } else if (!isHours && !isSeconds) {
             minutes.value = value;
+        } else if (isSeconds) {
+            seconds.value = value;
         }
         if (modelValue.value) {
             handleTimeUpdate(modelValue.value);
@@ -498,6 +525,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         monthNext,
         yearNext,
         minutes,
+        seconds,
         monthYearSelect,
         isDisabled,
         updateTime,

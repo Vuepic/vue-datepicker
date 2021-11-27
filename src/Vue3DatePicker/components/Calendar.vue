@@ -119,9 +119,12 @@
                     hoursIncrement,
                     minutesIncrement,
                     hoursGridIncrement,
+                    secondsIncrement,
                     minutesGridIncrement,
+                    secondsGridIncrement,
                     noHoursOverlay,
                     noMinutesOverlay,
+                    noSecondsOverlay,
                     range,
                     filters,
                     minTime,
@@ -129,12 +132,15 @@
                     timePicker,
                     hours,
                     minutes,
+                    seconds,
                     customProps,
                     twoCalendars,
                     instance,
+                    enableSeconds,
                 }"
                 @update:hours="$emit('update:hours', $event)"
                 @update:minutes="$emit('update:minutes', $event)"
+                @update:seconds="$emit('update:seconds', $event)"
             >
                 <template v-for="(slot, i) in timePickerSlots" #[slot]="args" :key="i">
                     <slot :name="slot" v-bind="args" />
@@ -180,6 +186,7 @@
     const emit = defineEmits([
         'update:hours',
         'update:minutes',
+        'update:seconds',
         'selectDate',
         'setHoverDate',
         'update:month',
@@ -200,8 +207,10 @@
         is24: { type: Boolean as PropType<boolean>, default: true },
         hoursIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
         minutesIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
+        secondsIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
         hoursGridIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
         minutesGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 },
+        secondsGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 },
         range: { type: Boolean as PropType<boolean>, default: false },
         filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
         minTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
@@ -209,6 +218,7 @@
         customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
         hours: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         minutes: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
+        seconds: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         calendarClassName: { type: String as PropType<string>, default: null },
         monthPicker: { type: Boolean as PropType<boolean>, default: false },
         timePicker: { type: Boolean as PropType<boolean>, default: false },
@@ -225,8 +235,10 @@
         year: { type: Number as PropType<number>, default: 0 },
         noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
         noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
+        noSecondsOverlay: { type: Boolean as PropType<boolean>, default: false },
         twoCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
         modeHeight: { type: [Number, String] as PropType<number | string>, default: 255 },
+        enableSeconds: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
     const showMakerTooltip = ref<Date | null>(null);

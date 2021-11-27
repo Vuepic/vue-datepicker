@@ -1,9 +1,9 @@
 <template>
     <div class="dp__time_input">
-        <div class="dp__time_col">
+        <div :class="timeColClass">
             <div
                 class="dp__inc_dec_button"
-                @click="handleHours('increment')"
+                @click="handleTimeValue('hours')"
                 role="button"
                 aria-label="Increment hours"
             >
@@ -21,7 +21,7 @@
             </div>
             <div
                 class="dp__inc_dec_button"
-                @click="handleHours('decrement')"
+                @click="handleTimeValue('hours', false)"
                 role="button"
                 aria-label="Decrement hours"
             >
@@ -29,11 +29,11 @@
                 <ChevronDownIcon v-if="!$slots['arrow-down']" />
             </div>
         </div>
-        <div class="dp__time_col">:</div>
-        <div class="dp__time_col">
+        <div :class="timeColClass">:</div>
+        <div :class="timeColClass">
             <div
                 class="dp__inc_dec_button"
-                @click="handleMinutes('increment')"
+                @click="handleTimeValue('minutes')"
                 role="button"
                 aria-label="Increment minutes"
             >
@@ -51,9 +51,39 @@
             </div>
             <div
                 class="dp__inc_dec_button"
-                @click="handleMinutes('decrement')"
+                @click="handleTimeValue('minutes', false)"
                 role="button"
                 aria-label="Decrement minutes"
+            >
+                <slot name="arrow-down" v-if="$slots['arrow-down']" />
+                <ChevronDownIcon v-if="!$slots['arrow-down']" />
+            </div>
+        </div>
+        <div :class="timeColClass" v-if="enableSeconds">:</div>
+        <div :class="timeColClass" v-if="enableSeconds">
+            <div
+                class="dp__inc_dec_button"
+                @click="handleTimeValue('seconds')"
+                role="button"
+                aria-label="Increment seconds"
+            >
+                <slot name="arrow-up" v-if="$slots['arrow-up']" />
+                <ChevronUpIcon v-if="!$slots['arrow-up']" />
+            </div>
+            <div
+                :class="noSecondsOverlay ? '' : 'dp__time_display'"
+                @click="toggleSecondsOverlay"
+                role="button"
+                aria-label="Open seconds overlay"
+            >
+                <slot v-if="$slots.seconds" name="hours" :text="secondDisplay.text" :value="secondDisplay.value" />
+                <template v-if="!$slots.seconds">{{ secondDisplay.text }}</template>
+            </div>
+            <div
+                class="dp__inc_dec_button"
+                @click="handleTimeValue('seconds', false)"
+                role="button"
+                aria-label="Decrement seconds"
             >
                 <slot name="arrow-down" v-if="$slots['arrow-down']" />
                 <ChevronDownIcon v-if="!$slots['arrow-down']" />
@@ -74,7 +104,7 @@
         <transition :name="transitionName(hourOverlay)" :css="showTransition">
             <SelectionGrid
                 v-if="hourOverlay"
-                :items="getHoursGridItems()"
+                :items="getGridItems(is24 ? 24 : 12, hoursGridIncrement)"
                 :disabled-values="filters.times.hours"
                 :min-value="minTime.hours"
                 :max-value="maxTime.hours"
@@ -94,7 +124,7 @@
         <transition :name="transitionName(minuteOverlay)" :css="showTransition">
             <SelectionGrid
                 v-if="minuteOverlay"
-                :items="getMinutesGridItems()"
+                :items="getGridItems(60, minutesGridIncrement)"
                 :disabled-values="filters.times.minutes"
                 :min-value="minTime.minutes"
                 :max-value="maxTime.minutes"
@@ -111,38 +141,70 @@
                 </template>
             </SelectionGrid>
         </transition>
+        <transition :name="transitionName(secondsOverlay)" :css="showTransition">
+            <SelectionGrid
+                v-if="secondsOverlay"
+                :items="getGridItems(60, secondsGridIncrement)"
+                :disabled-values="filters.times.seconds"
+                :min-value="minTime.seconds"
+                :max-value="maxTime.seconds"
+                @update:model-value="$emit('update:seconds', $event)"
+                @selected="toggleSecondsOverlay"
+                @toggle="toggleSecondsOverlay"
+            >
+                <template #button-icon>
+                    <slot name="clock-icon" v-if="$slots['clock-icon']" />
+                    <ClockIcon v-if="!$slots['clock-icon']" />
+                </template>
+                <template v-if="$slots['seconds-overlay']" #item="{ item }">
+                    <slot name="seconds-overlay" :text="item.text" :value="item.value" />
+                </template>
+            </SelectionGrid>
+        </transition>
     </div>
 </template>
 
 <script lang="ts" setup>
-    import { computed, onMounted, PropType, ref, toRef } from 'vue';
+    import { computed, onMounted, PropType, ref } from 'vue';
     import { ChevronUpIcon, ChevronDownIcon, ClockIcon } from '../Icons';
-    import { IDateFilter, IDefaultSelect, ITimeValue } from '../../interfaces';
+    import { DynamicClass, IDateFilter, IDefaultSelect, ITimeType, ITimeValue } from '../../interfaces';
     import { getArrayInArray, hoursToAmPmHours } from '../../utils/util';
     import SelectionGrid from '../SelectionGrid.vue';
-    import { addDateHours, addDateMinutes, subDateHours, subDateMinutes } from '../../utils/date-utils';
+    import {
+        addDateHours,
+        addDateMinutes,
+        addDateSeconds,
+        subDateHours,
+        subDateMinutes,
+        subDateSeconds,
+    } from '../../utils/date-utils';
     import { useTransitions } from '../composition/transition';
 
-    const emit = defineEmits(['setHours', 'setMinutes', 'update:hours', 'update:minutes']);
+    const emit = defineEmits(['setHours', 'setMinutes', 'update:hours', 'update:minutes', 'update:seconds']);
     const props = defineProps({
         hours: { type: Number as PropType<number>, default: 0 },
         minutes: { type: Number as PropType<number>, default: 0 },
+        seconds: { type: Number as PropType<number>, default: 0 },
         hoursGridIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
         minutesGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 },
+        secondsGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 },
         hoursIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
         minutesIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
+        secondsIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
         is24: { type: Boolean as PropType<boolean>, default: true },
         filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
         minTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
         maxTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
         noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
         noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
+        noSecondsOverlay: { type: Boolean as PropType<boolean>, default: false },
+        enableSeconds: { type: Boolean as PropType<boolean>, default: false },
     });
 
     const hourOverlay = ref(false);
     const minuteOverlay = ref(false);
-    const hours = toRef(props, 'hours');
-    const minutes = toRef(props, 'minutes');
+    const secondsOverlay = ref(false);
+    const typeTypes = ref<ITimeType[]>(['hours', 'minutes', 'seconds']);
     const amPm = ref('AM');
     const { transitionName, showTransition } = useTransitions();
 
@@ -150,13 +212,27 @@
         checkMinMaxHours();
     });
 
+    const timeColClass = computed(
+        (): DynamicClass => ({
+            dp__time_col: true,
+            dp__time_col_reg: !props.enableSeconds && props.is24,
+            dp__time_col_reg_with_button: !props.enableSeconds && !props.is24,
+            dp__time_col_sec: props.enableSeconds && props.is24,
+            dp__time_col_sec_with_button: props.enableSeconds && !props.is24,
+        }),
+    );
+
     const hourDisplay = computed((): IDefaultSelect => {
-        const hour = convert24ToAmPm(hours.value);
+        const hour = convert24ToAmPm(props.hours);
         return { text: hour < 10 ? `0${hour}` : `${hour}`, value: hour };
     });
 
     const minuteDisplay = computed((): IDefaultSelect => {
-        return { text: minutes.value < 10 ? `0${minutes.value}` : `${minutes.value}`, value: minutes.value };
+        return { text: props.minutes < 10 ? `0${props.minutes}` : `${props.minutes}`, value: props.minutes };
+    });
+
+    const secondDisplay = computed((): IDefaultSelect => {
+        return { text: props.seconds < 10 ? `0${props.seconds}` : `${props.seconds}`, value: props.seconds };
     });
 
     const generateGridItems = (loopMax: number, increment: number) => {
@@ -169,13 +245,8 @@
         return getArrayInArray(generatedArray);
     };
 
-    const getHoursGridItems = (): IDefaultSelect[][] => {
-        const hours = props.is24 ? 24 : 12;
-        return generateGridItems(hours, +props.hoursGridIncrement);
-    };
-
-    const getMinutesGridItems = (): IDefaultSelect[][] => {
-        return generateGridItems(60, +props.minutesGridIncrement);
+    const getGridItems = (max: number, increment: number | string): IDefaultSelect[][] => {
+        return generateGridItems(max, +increment);
     };
 
     const toggleHourOverlay = (): void => {
@@ -190,82 +261,74 @@
         }
     };
 
+    const toggleSecondsOverlay = (): void => {
+        if (!props.noSecondsOverlay) {
+            secondsOverlay.value = !secondsOverlay.value;
+        }
+    };
+    // for control flow
+    const getMaxType = (type: ITimeType): string => props.maxTime[type] as string;
+    const getMinType = (type: ITimeType): string => props.minTime[type] as string;
+
     const checkMinMaxHours = (): void => {
         if (Object.keys(props.maxTime).length) {
-            if (props.maxTime.hours && hours.value > props.maxTime.hours) {
-                emit('update:hours', +props.maxTime.hours);
-            }
-            if (props.maxTime.minutes && minutes.value > props.maxTime.minutes) {
-                emit('update:minutes', +props.maxTime.minutes);
-            }
+            typeTypes.value.forEach((type) => {
+                if (props.maxTime[type] && props[type] > +getMaxType(type)) {
+                    emit(`update:${type}`, +getMaxType(type));
+                }
+            });
         }
         if (Object.keys(props.minTime).length) {
-            if (props.minTime.hours && hours.value < props.minTime.hours) {
-                emit('update:hours', +props.minTime.hours);
-            }
-            if (props.minTime.minutes && minutes.value < props.minTime.minutes) {
-                emit('update:minutes', +props.minTime.minutes);
-            }
+            typeTypes.value.forEach((type) => {
+                if (props.minTime[type] && props[type] < +getMaxType(type)) {
+                    emit(`update:${type}`, +getMaxType(type));
+                }
+            });
         }
     };
 
-    const handleHours = (type: string): void => {
-        if (type === 'increment') {
-            const hoursValue = addDateHours(hours.value, +props.hoursIncrement);
-            if (props.maxTime.hours) {
-                if (hoursValue > +props.maxTime.hours) {
-                    return;
-                }
-            }
-            if (props.minTime.hours) {
-                if (hoursValue < +props.minTime.hours) {
-                    return;
-                }
-            }
-            emit('update:hours', hoursValue);
-        } else {
-            const hoursValue = subDateHours(hours.value, +props.hoursIncrement);
-            if (props.minTime.hours) {
-                if (hoursValue < +props.minTime.hours) {
-                    return;
-                }
-            }
-            if (props.maxTime.hours) {
-                if (hoursValue > +props.maxTime.hours) {
-                    return;
-                }
-            }
-            emit('update:hours', hoursValue);
+    const getTypeValue = (type: ITimeType, inc: boolean): number => {
+        if (type === 'hours') {
+            return inc
+                ? addDateHours(props.hours, +props.hoursIncrement)
+                : subDateHours(props.hours, +props.hoursIncrement);
         }
+        if (type === 'minutes') {
+            return inc
+                ? addDateMinutes(props.minutes, +props.minutesIncrement)
+                : subDateMinutes(props.minutes, +props.minutesIncrement);
+        }
+        return inc
+            ? addDateSeconds(props.seconds, +props.secondsIncrement)
+            : subDateSeconds(props.seconds, +props.secondsIncrement);
     };
 
-    const handleMinutes = (type: string): void => {
-        if (type === 'increment') {
-            const minutesValue = addDateMinutes(minutes.value, +props.minutesIncrement);
-            if (props.maxTime.minutes) {
-                if (minutesValue > +props.maxTime.minutes || minutesValue === 0) {
+    const handleTimeValue = (type: ITimeType, inc = true): void => {
+        const value = getTypeValue(type, inc);
+        if (inc) {
+            if (props.maxTime[type]) {
+                if (value > +getMaxType(type) || value === 0) {
                     return;
                 }
             }
-            if (props.minTime.minutes) {
-                if (minutesValue < +props.minTime.minutes || minutesValue === 0) {
+            if (props.minTime[type]) {
+                if (value < +getMinType(type) || value === 0) {
                     return;
                 }
             }
-            emit('update:minutes', minutesValue);
+            emit(`update:${type}`, value);
         } else {
-            const minutesValue = subDateMinutes(minutes.value, +props.minutesIncrement);
-            if (props.minTime.minutes) {
-                if (minutesValue < +props.minTime.minutes || minutesValue === 0) {
+            if (props.minTime[type]) {
+                if (value < +getMaxType(type) || value === 0) {
                     return;
                 }
             }
-            if (props.maxTime.minutes) {
-                if (minutesValue > +props.maxTime.minutes) {
+            if (props.maxTime[type]) {
+                if (value > +getMaxType(type)) {
                     return;
                 }
             }
-            emit('update:minutes', minutesValue);
+            emit(`update:${type}`, value);
         }
     };
 
@@ -284,10 +347,10 @@
     const setAmPm = () => {
         if (amPm.value === 'PM') {
             amPm.value = 'AM';
-            emit('update:hours', hours.value - 12);
+            emit('update:hours', props.hours - 12);
         } else {
             amPm.value = 'PM';
-            emit('update:hours', hours.value + 12);
+            emit('update:hours', props.hours + 12);
         }
     };
 </script>

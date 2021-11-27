@@ -25,6 +25,9 @@ import {
     subMinutes,
     subMonths,
     getDay,
+    getSeconds,
+    addSeconds,
+    subSeconds,
 } from 'date-fns';
 
 import { IMonthValue, ITimeValue } from '../interfaces';
@@ -71,13 +74,21 @@ export const isValidDate = (value: Date | Date[] | null): boolean => {
 /**
  * On a given date set time, or return a new date with set time
  */
-export const setDateTime = (date: Date | null, hours?: number | null, minutes?: number | null): Date => {
+export const setDateTime = (
+    date: Date | null,
+    hours?: number | null,
+    minutes?: number | null,
+    seconds?: number | null,
+): Date => {
     let dateCopy = date ? new Date(date) : new Date();
     if (hours || hours === 0) {
         dateCopy = setHours(dateCopy, hours);
     }
     if (minutes || minutes === 0) {
         dateCopy = setMinutes(dateCopy, minutes);
+    }
+    if (seconds || seconds === 0) {
+        dateCopy = setSeconds(dateCopy, seconds);
     }
     return dateCopy;
 };
@@ -101,12 +112,14 @@ export const setDateMonthOrYear = (date: Date | null, month?: number | null, yea
     return dateCopy;
 };
 
-/**
- * If pattern is not specified return default
- */
+const getTimeFormat = (is24: boolean, seconds: boolean): string => {
+    return is24 ? `HH:mm${seconds ? ':ss' : ''}` : `hh:mm${seconds ? ':ss' : ''} aa`;
+};
+
 export const getDefaultPattern = (
     pattern: string | null,
     is24: boolean,
+    enableSeconds: boolean,
     monthPicker: boolean,
     timePicker: boolean,
     enableTimePicker: boolean,
@@ -118,16 +131,20 @@ export const getDefaultPattern = (
         return 'MM/yyyy';
     }
     if (timePicker) {
-        return is24 ? 'HH:mm' : 'hh:mm aa';
+        return getTimeFormat(is24, enableSeconds);
     }
-    return enableTimePicker ? `MM/dd/yyyy, ${is24 ? 'HH:mm' : 'hh:mm aa'}` : 'MM/dd/yyyy';
+    return enableTimePicker ? `MM/dd/yyyy, ${getTimeFormat(is24, enableSeconds)}` : 'MM/dd/yyyy';
 };
 
 /**
  * Extract time value from the date for time picker
  */
 export const getTimeVal = (date?: Date): ITimeValue => {
-    return { hours: getHours(date || new Date()), minutes: getMinutes(date || new Date()) };
+    return {
+        hours: getHours(date || new Date()),
+        minutes: getMinutes(date || new Date()),
+        seconds: getSeconds(date || new Date()),
+    };
 };
 
 /**
@@ -230,6 +247,10 @@ export const getDateMinutes = (date?: Date): number => {
     return getMinutes(date || new Date());
 };
 
+export const getDateSeconds = (date?: Date): number => {
+    return getSeconds(date || new Date());
+};
+
 /**
  * Add n amount of days to a given date
  */
@@ -263,6 +284,14 @@ export const addDateMinutes = (minutes: number, toAdd: number): number => {
  */
 export const subDateMinutes = (minutes: number, toSub: number): number => {
     return getMinutes(subMinutes(setMinutes(new Date(), minutes), toSub));
+};
+
+export const addDateSeconds = (seconds: number, toAdd: number): number => {
+    return getSeconds(addSeconds(setSeconds(new Date(), seconds), toAdd));
+};
+
+export const subDateSeconds = (seconds: number, toSub: number): number => {
+    return getSeconds(subSeconds(setSeconds(new Date(), seconds), toSub));
 };
 
 export const getPreviousMonthYear = (month: number, year: number): { month: number; year: number } => {

@@ -8,8 +8,23 @@
   color: var(--dp-text-color);
 }
 
-.dp__time_col {
+.dp__time_col_reg {
+  padding: 0 20px;
+}
+
+.dp__time_col_reg_with_button {
   padding: 0 15px;
+}
+
+.dp__time_col_sec {
+  padding: 0 10px;
+}
+
+.dp__time_col_sec_with_button {
+  padding: 0 5px;
+}
+
+.dp__time_col {
   font-size: $dp__time_font_size;
   text-align: center;
   display: flex;

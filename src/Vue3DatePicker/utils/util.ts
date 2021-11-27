@@ -149,7 +149,7 @@ export const getDefaultTextInputOptions = (): ITextInputOptions => ({
  * Default filters to merge with user provided values
  */
 export const getDefaultFilters = (filters: Partial<IDateFilter>): IDateFilter => {
-    return Object.assign({ months: [], years: [], times: { hours: [], minutes: [] } }, filters);
+    return Object.assign({ months: [], years: [], times: { hours: [], minutes: [], seconds: [] } }, filters);
 };
 
 /**

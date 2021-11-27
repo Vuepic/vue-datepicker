@@ -36,8 +36,8 @@ interface Vue3DatePicker {
     minutesIncrement?: number | string;
     minDate?: Date | string;
     maxDate?: Date | string;
-    minTime?: { hours?: number | string; minutes?: number | string };
-    maxTime?: { hours?: number | string; minutes?: number | string };
+    minTime?: { hours?: number | string; minutes?: number | string; seconds?: number | string };
+    maxTime?: { hours?: number | string; minutes?: number | string; seconds?: number | string };
     weekStart?: '0' | '1' | '2' | '3' | '4' | '5' | '6' | 0 | 1 | 2 | 3 | 4 | 5 | 6;
     disabled?: boolean;
     readonly?: boolean;
@@ -149,6 +149,7 @@ interface Vue3DatePicker {
     }[];
     transitions?: boolean | { open?: string; close?: string; next?: string; previous?: string };
     modeHeight?: string | number;
+    enableSeconds?: boolean;
 }
 
 interface PublicMethods extends MethodOptions {
