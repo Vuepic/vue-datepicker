@@ -154,7 +154,16 @@
     import { mapSlots } from './components/composition/slots';
     import { onClickOutside } from './directives/clickOutside';
 
-    const emit = defineEmits(['update:modelValue', 'textSubmit', 'closed', 'cleared', 'open', 'focus', 'blur']);
+    const emit = defineEmits([
+        'update:modelValue',
+        'textSubmit',
+        'closed',
+        'cleared',
+        'open',
+        'focus',
+        'blur',
+        'internalModelChange',
+    ]);
     const props = defineProps({
         uid: { type: String as PropType<string>, default: null },
         is24: { type: Boolean as PropType<boolean>, default: true },

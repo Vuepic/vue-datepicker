@@ -1,4 +1,4 @@
-import { Ref, ref } from 'vue';
+import { Ref, ref, watch } from 'vue';
 
 import {
     formatDate,
@@ -37,6 +37,10 @@ export const useExternalInternalMapper = (
 ): IExternalInternalMapper => {
     const inputValue = ref('');
     const internalModelValue = ref();
+
+    watch(internalModelValue, () => {
+        emit('internalModelChange', internalModelValue.value);
+    });
 
     /**
      * Map external values to dates that will be used internally by the datepicker
@@ -80,7 +84,7 @@ export const useExternalInternalMapper = (
     };
 
     /**
-     * Map the date value(s) to the human readable text for the input field
+     * Map the date value(s) to the human-readable text for the input field
      */
     const formatInputValue = (): void => {
         if (!internalModelValue.value) {

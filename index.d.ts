@@ -1,7 +1,15 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { DefineComponent, ComputedOptions, ComponentOptionsMixin, MethodOptions } from 'vue';
 
-type EmitEvents = 'update:modelValue' | 'textSubmit' | 'closed' | 'cleared' | 'open' | 'focus' | 'blur';
+type EmitEvents =
+    | 'update:modelValue'
+    | 'textSubmit'
+    | 'closed'
+    | 'cleared'
+    | 'open'
+    | 'focus'
+    | 'blur'
+    | 'internalModelChange';
 
 interface Vue3DatePicker {
     uid?: string;
