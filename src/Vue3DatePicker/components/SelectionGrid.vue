@@ -1,14 +1,13 @@
 <template>
-    <div class="dp__overlay" ref="gridWrapRef" :class="dpOverlayClass" role="dialog">
+    <div class="dp__overlay" ref="gridWrapRef" :class="dpOverlayClass" role="dialog" tabindex="0">
         <div class="dp__overlay_container" role="grid">
             <div class="dp__selection_grid_header"><slot name="header"></slot></div>
             <div class="dp__overlay_row" v-for="(row, i) in mappedItems" :key="getKey(i)" role="row">
                 <div
+                    v-for="col in row"
                     role="gridcell"
                     :class="cellClassName"
-                    v-for="col in row"
                     :key="col.value"
-                    @click="onClick(col.value)"
                     :aria-selected="col.value === modelValue && !disabledValues.includes(col.value)"
                     :aria-disabled="col.className.dp__overlay_cell_disabled"
                     :ref="
@@ -17,6 +16,9 @@
                                 selectionActiveRef = el;
                         }
                     "
+                    tabindex="0"
+                    @click="onClick(col.value)"
+                    @keydown.enter="onClick(col.value)"
                 >
                     <div :class="col.className">
                         <slot v-if="$slots.item" name="item" :item="col" />
@@ -25,11 +27,13 @@
                 </div>
             </div>
             <div
-                :class="actionButtonClass"
-                @click="$emit('toggle')"
                 v-if="$slots['button-icon']"
                 role="button"
                 aria-label="Toggle overlay"
+                :class="actionButtonClass"
+                tabindex="0"
+                @click="$emit('toggle')"
+                @keydown.enter="$emit('toggle')"
             >
                 <slot name="button-icon" />
             </div>
@@ -68,6 +72,7 @@
         setScrollPosition();
         const elm = unrefElement(gridWrapRef);
         if (elm) {
+            elm.focus();
             scrollable.value = elm.clientHeight < elm.scrollHeight;
         }
     });

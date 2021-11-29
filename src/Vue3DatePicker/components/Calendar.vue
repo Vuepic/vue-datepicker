@@ -50,9 +50,9 @@
                                 </div>
                             </div>
                             <div
+                                v-for="(dayVal, dayInd) in week.days"
                                 role="gridcell"
                                 class="dp__calendar_item"
-                                v-for="(dayVal, dayInd) in week.days"
                                 :ref="
                                     (el) => {
                                         if (el) dayRefs[dayInd + weekInd] = el;
@@ -65,7 +65,9 @@
                                     dayVal.classData.dp__range_start
                                 "
                                 :aria-disabled="dayVal.classData.dp__cell_disabled"
+                                tabindex="0"
                                 @click="$emit('selectDate', dayVal)"
+                                @keydown.enter="$emit('selectDate', dayVal)"
                                 @mouseover="onMouseOver(dayVal, dayInd + weekInd)"
                                 @mouseleave="onMouseLeave"
                             >

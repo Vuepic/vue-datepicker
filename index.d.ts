@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { DefineComponent, ComputedOptions, ComponentOptionsMixin, MethodOptions } from 'vue';
 
-type EmitEvents = 'update:modelValue' | 'textSubmit' | 'closed' | 'cleared' | 'open';
+type EmitEvents = 'update:modelValue' | 'textSubmit' | 'closed' | 'cleared' | 'open' | 'focus' | 'blur';
 
 interface Vue3DatePicker {
     uid?: string;
@@ -109,7 +109,6 @@ interface Vue3DatePicker {
         enterSubmit?: boolean;
         tabSubmit?: boolean;
         openMenu?: boolean;
-        openMenuOnFocus?: boolean;
         rangeSeparator?: string;
         format?: null;
     };
@@ -150,6 +149,10 @@ interface Vue3DatePicker {
     transitions?: boolean | { open?: string; close?: string; next?: string; previous?: string };
     modeHeight?: string | number;
     enableSeconds?: boolean;
+    escClose?: boolean;
+    openMenuOnFocus?: boolean;
+    spaceConfirm?: boolean;
+    monthChangeOnArrows?: boolean;
 }
 
 interface PublicMethods extends MethodOptions {

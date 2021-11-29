@@ -16,7 +16,12 @@
             :onEnter="handleEnter"
             :onTab="handleTab"
         />
-        <div v-if="!$slots.trigger && !$slots['dp-input'] && !inline" class="dp__input_wrap">
+        <div
+            v-if="!$slots.trigger && !$slots['dp-input'] && !inline"
+            class="dp__input_wrap"
+            tabindex="0"
+            @focus="handleFocus"
+        >
             <input
                 :id="uid ? `dp-input-${uid}` : null"
                 :class="inputClass"
@@ -27,7 +32,6 @@
                 @input="handleInput"
                 @keydown.enter="handleEnter"
                 @keydown.tab="handleTab"
-                @focus="handleFocus"
                 @blur="handleBlur"
             />
             <span class="dp__input_icon" v-if="$slots['input-icon'] && !hideInputIcon" @click="stopPropagation"
@@ -86,8 +90,10 @@
         autoApply: { type: Boolean as PropType<boolean>, default: false },
         pattern: { type: String as PropType<string>, default: '' },
         uid: { type: String as PropType<string>, default: null },
+        openMenuOnFocus: { type: Boolean as PropType<boolean>, default: true },
     });
     const parsedDate = ref();
+    const isFocused = ref(false);
 
     const inputClass = computed(
         (): DynamicClass => ({
@@ -97,6 +103,7 @@
             dp__input_icon_pad: !props.hideInputIcon,
             dp__input_valid: props.state,
             dp__input_invalid: props.state === false,
+            dp__input_focus: isFocused.value,
             [props.inputClassName]: !!props.inputClassName,
         }),
     );
@@ -150,12 +157,14 @@
     };
 
     const handleFocus = (): void => {
-        if (props.textInput && props.textInputOptions?.openMenuOnFocus && !props.isMenuOpen) {
+        isFocused.value = true;
+        if (props.openMenuOnFocus && !props.isMenuOpen) {
             emit('open');
         }
     };
 
     const handleOpen = () => {
+        isFocused.value = true;
         if (props.textInput && props.textInputOptions?.openMenu && !props.isMenuOpen) {
             emit('open');
         } else if (!props.textInput) {
@@ -178,4 +187,12 @@
     const onClear = () => {
         emit('clear');
     };
+
+    const unFocus = (): void => {
+        isFocused.value = false;
+    };
+
+    defineExpose({
+        unFocus,
+    });
 </script>

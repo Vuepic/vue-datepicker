@@ -3,27 +3,33 @@
         <div :class="timeColClass">
             <div
                 class="dp__inc_dec_button"
-                @click="handleTimeValue('hours')"
                 role="button"
                 aria-label="Increment hours"
+                tabindex="0"
+                @keydown.enter="handleTimeValue('hours')"
+                @click="handleTimeValue('hours')"
             >
                 <slot name="arrow-up" v-if="$slots['arrow-up']" />
                 <ChevronUpIcon v-if="!$slots['arrow-up']" />
             </div>
             <div
-                :class="noHoursOverlay ? '' : 'dp__time_display'"
-                @click="toggleHourOverlay"
                 role="button"
                 aria-label="Open hours overlay"
+                :class="noHoursOverlay ? '' : 'dp__time_display'"
+                tabindex="0"
+                @keydown.enter="toggleHourOverlay"
+                @click="toggleHourOverlay"
             >
                 <slot v-if="$slots.hours" name="hours" :text="hourDisplay.text" :value="hourDisplay.value" />
                 <template v-if="!$slots.hours">{{ hourDisplay.text }}</template>
             </div>
             <div
                 class="dp__inc_dec_button"
-                @click="handleTimeValue('hours', false)"
                 role="button"
                 aria-label="Decrement hours"
+                tabindex="0"
+                @keydown.enter="handleTimeValue('hours', false)"
+                @click="handleTimeValue('hours', false)"
             >
                 <slot name="arrow-down" v-if="$slots['arrow-down']" />
                 <ChevronDownIcon v-if="!$slots['arrow-down']" />
@@ -33,27 +39,33 @@
         <div :class="timeColClass">
             <div
                 class="dp__inc_dec_button"
-                @click="handleTimeValue('minutes')"
                 role="button"
                 aria-label="Increment minutes"
+                tabindex="0"
+                @keydown.enter="handleTimeValue('minutes')"
+                @click="handleTimeValue('minutes')"
             >
                 <slot name="arrow-up" v-if="$slots['arrow-up']" />
                 <ChevronUpIcon v-if="!$slots['arrow-up']" />
             </div>
             <div
-                :class="noMinutesOverlay ? '' : 'dp__time_display'"
-                @click="toggleMinuteOverlay"
-                role="button"
                 aria-label="Open minutes overlay"
+                role="button"
+                :class="noMinutesOverlay ? '' : 'dp__time_display'"
+                tabindex="0"
+                @keydown.enter="toggleMinuteOverlay"
+                @click="toggleMinuteOverlay"
             >
                 <slot v-if="$slots.minutes" name="minutes" :text="minuteDisplay.text" :value="minuteDisplay.value" />
                 <template v-if="!$slots.minutes">{{ minuteDisplay.text }}</template>
             </div>
             <div
                 class="dp__inc_dec_button"
-                @click="handleTimeValue('minutes', false)"
                 role="button"
                 aria-label="Decrement minutes"
+                tabindex="0"
+                @keydown.enter="handleTimeValue('minutes', false)"
+                @click="handleTimeValue('minutes', false)"
             >
                 <slot name="arrow-down" v-if="$slots['arrow-down']" />
                 <ChevronDownIcon v-if="!$slots['arrow-down']" />
@@ -63,27 +75,33 @@
         <div :class="timeColClass" v-if="enableSeconds">
             <div
                 class="dp__inc_dec_button"
-                @click="handleTimeValue('seconds')"
                 role="button"
                 aria-label="Increment seconds"
+                tabindex="0"
+                @keydown.enter="handleTimeValue('seconds')"
+                @click="handleTimeValue('seconds')"
             >
                 <slot name="arrow-up" v-if="$slots['arrow-up']" />
                 <ChevronUpIcon v-if="!$slots['arrow-up']" />
             </div>
             <div
-                :class="noSecondsOverlay ? '' : 'dp__time_display'"
-                @click="toggleSecondsOverlay"
                 role="button"
                 aria-label="Open seconds overlay"
+                :class="noSecondsOverlay ? '' : 'dp__time_display'"
+                tabindex="0"
+                @keydown.enter="toggleSecondsOverlay"
+                @click="toggleSecondsOverlay"
             >
                 <slot v-if="$slots.seconds" name="hours" :text="secondDisplay.text" :value="secondDisplay.value" />
                 <template v-if="!$slots.seconds">{{ secondDisplay.text }}</template>
             </div>
             <div
                 class="dp__inc_dec_button"
-                @click="handleTimeValue('seconds', false)"
                 role="button"
                 aria-label="Decrement seconds"
+                tabindex="0"
+                @keydown.enter="handleTimeValue('seconds', false)"
+                @click="handleTimeValue('seconds', false)"
             >
                 <slot name="arrow-down" v-if="$slots['arrow-down']" />
                 <ChevronDownIcon v-if="!$slots['arrow-down']" />
@@ -96,7 +114,9 @@
                 class="dp__pm_am_button"
                 role="button"
                 aria-label="Switch AM/PM mode"
+                tabindex="0"
                 @click="setAmPm"
+                @keydown.enter="setAmPm"
             >
                 {{ amPm }}
             </button>

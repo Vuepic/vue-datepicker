@@ -57,7 +57,6 @@ export interface ITextInputOptions {
     enterSubmit: boolean;
     tabSubmit: boolean;
     openMenu: boolean;
-    openMenuOnFocus: boolean;
     rangeSeparator: string;
     format?: null;
 }
@@ -100,6 +99,7 @@ export type UseCalendar = {
     monthChangeOnScroll: boolean;
     markers: IMarker[];
     enableSeconds: boolean;
+    monthChangeOnArrows: boolean;
 } & { [key: string]: unknown };
 
 export interface UseMonthYearPick {

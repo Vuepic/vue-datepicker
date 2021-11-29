@@ -11,6 +11,11 @@
   font-family: $dp__font_family;
   color: var(--dp-text-color);
   box-sizing: border-box;
+
+  &:focus {
+    border: none;
+    outline: none;
+  }
 }
 
 .dp__overlay::-webkit-scrollbar-track {

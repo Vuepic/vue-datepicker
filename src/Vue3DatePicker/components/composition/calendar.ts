@@ -36,6 +36,7 @@ interface IUseCalendar {
     monthYearSelect: (isYear?: boolean) => void;
     clearHoverDate: () => void;
     handleScroll: (event: WheelEvent, isNext?: boolean) => void;
+    handleArrow: (arrow: 'left' | 'right', isNext?: boolean) => void;
     getMarker: (day: UnwrapRef<ICalendarDay>) => IMarker | undefined;
     today: Ref<Date>;
     month: Ref<number>;
@@ -504,12 +505,26 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         }
     };
 
+    const autoChangeMonth = (increment: number, isNext: boolean) => {
+        const yearMonth: [number, number] = isNext ? [monthNext.value, yearNext.value] : [month.value, year.value];
+        const dates = increment < 0 ? getNextYearMonth(...yearMonth) : getPreviousMonthYear(...yearMonth);
+        updateMonthYear(dates.month, true, isNext);
+        updateMonthYear(dates.year, false, isNext);
+    };
+
     const handleScroll = (event: WheelEvent, isNext = false): void => {
         if (props.monthChangeOnScroll) {
-            const yearMonth: [number, number] = isNext ? [monthNext.value, yearNext.value] : [month.value, year.value];
-            const dates = event.deltaY < 0 ? getNextYearMonth(...yearMonth) : getPreviousMonthYear(...yearMonth);
-            updateMonthYear(dates.month, true, isNext);
-            updateMonthYear(dates.year, false, isNext);
+            autoChangeMonth(event.deltaY, isNext);
+            // const yearMonth: [number, number] = isNext ? [monthNext.value, yearNext.value] : [month.value, year.value];
+            // const dates = event.deltaY < 0 ? getNextYearMonth(...yearMonth) : getPreviousMonthYear(...yearMonth);
+            // updateMonthYear(dates.month, true, isNext);
+            // updateMonthYear(dates.year, false, isNext);
+        }
+    };
+
+    const handleArrow = (arrow: 'left' | 'right', isNext = false): void => {
+        if (props.monthChangeOnArrows) {
+            autoChangeMonth(arrow === 'right' ? -1 : 1, isNext);
         }
     };
 
@@ -542,5 +557,6 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         rangeActiveStartEnd,
         handleScroll,
         getMarker,
+        handleArrow,
     };
 };

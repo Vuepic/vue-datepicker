@@ -17,7 +17,13 @@
   &::before {
     box-sizing: border-box;
   }
+
+  &:focus {
+    border:  1px solid var(--dp-border-color);
+    outline: none;
+  }
 }
+
 
 .dp__arrow_top {
   left: 50%;

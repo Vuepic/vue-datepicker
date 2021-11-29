@@ -18,6 +18,7 @@
                 pattern: defaultPattern,
                 autoApply,
                 uid,
+                openMenuOnFocus,
             }"
             v-model:input-value="inputValue"
             @clear="clearValue"
@@ -95,6 +96,9 @@
                         secondsIncrement,
                         secondsGridIncrement,
                         noSecondsOverlay,
+                        escClose,
+                        spaceConfirm,
+                        monthChangeOnArrows,
                     }"
                     v-model:internalModelValue="internalModelValue"
                     @close-picker="closeMenu"
@@ -150,7 +154,7 @@
     import { mapSlots } from './components/composition/slots';
     import { onClickOutside } from './directives/clickOutside';
 
-    const emit = defineEmits(['update:modelValue', 'textSubmit', 'closed', 'cleared', 'open']);
+    const emit = defineEmits(['update:modelValue', 'textSubmit', 'closed', 'cleared', 'open', 'focus', 'blur']);
     const props = defineProps({
         uid: { type: String as PropType<string>, default: null },
         is24: { type: Boolean as PropType<boolean>, default: true },
@@ -233,6 +237,10 @@
         transitions: { type: Boolean as PropType<boolean | ITransition>, default: true },
         modeHeight: { type: [Number, String] as PropType<number | string>, default: 255 },
         enableSeconds: { type: Boolean as PropType<boolean>, default: false },
+        openMenuOnFocus: { type: Boolean as PropType<boolean>, default: true },
+        escClose: { type: Boolean as PropType<boolean>, default: true },
+        spaceConfirm: { type: Boolean as PropType<boolean>, default: true },
+        monthChangeOnArrows: { type: Boolean as PropType<boolean>, default: true },
     });
     const slots = useSlots();
     const isOpen = ref(false);
@@ -385,6 +393,7 @@
             }
             if (isOpen.value) {
                 emit('open');
+                emit('focus');
             }
             parseExternalModelValue(props.modelValue);
         }
@@ -442,8 +451,12 @@
             if (isOpen.value) {
                 isOpen.value = false;
                 emit('closed');
+                emit('blur');
             }
             clearInternalValues();
+            if (inputRef.value) {
+                (inputRef.value as { unFocus: () => void }).unFocus();
+            }
         }
     };
 

@@ -1,11 +1,13 @@
 <template>
     <div>
         <div
-            class="dp__button"
             v-if="!timePicker"
-            @click="toggleTimePicker(true)"
+            class="dp__button"
             role="button"
             aria-label="Open time picker"
+            tabindex="0"
+            @keydown.enter="toggleTimePicker(true)"
+            @click="toggleTimePicker(true)"
         >
             <slot name="clock-icon" v-if="$slots['clock-icon']" />
             <ClockIcon v-if="!$slots['clock-icon']" />
@@ -71,11 +73,13 @@
                         </div>
                     </template>
                     <div
-                        class="dp__button"
                         v-if="!timePicker"
-                        @click="toggleTimePicker(false)"
+                        class="dp__button"
                         role="button"
                         aria-label="Close time picker"
+                        tabindex="0"
+                        @keydown.enter="toggleTimePicker(false)"
+                        @click="toggleTimePicker(false)"
                     >
                         <slot name="calendar-icon" v-if="$slots['calendar-icon']" />
                         <CalendarIcon v-if="!$slots['calendar-icon']" />

@@ -1,12 +1,17 @@
 <template>
     <div
         :id="uid ? `dp-menu-${uid}` : null"
+        tabindex="0"
         ref="dpMenuRef"
         role="dialog"
         aria-label="Datepicker menu"
         :class="dpMenuClass"
         @mouseleave="clearHoverDate"
         @click="handleDpMenuClick"
+        @keydown.esc="handleEsc"
+        @keydown.space="handleSpace"
+        @keydown.left="handleArrow('left', false)"
+        @keydown.right="handleArrow('right', false)"
     >
         <div :class="arrowClass" v-if="!inline"></div>
         <div :class="menuCalendarClassWrapper" ref="calendarWrapperRef" role="document">
@@ -165,6 +170,9 @@
         uid: { type: String as PropType<string>, default: null },
         modeHeight: { type: [Number, String] as PropType<number | string>, default: 255 },
         enableSeconds: { type: Boolean as PropType<boolean>, default: false },
+        escClose: { type: Boolean as PropType<boolean>, default: true },
+        spaceConfirm: { type: Boolean as PropType<boolean>, default: true },
+        monthChangeOnArrows: { type: Boolean as PropType<boolean>, default: true },
     });
     const slots = useSlots();
     const calendarWrapperRef = ref(null);
@@ -183,6 +191,7 @@
         }
         const menu = unrefElement(dpMenuRef);
         if (menu) {
+            menu.focus();
             menu.addEventListener('pointerdown', (e) => {
                 e.stopImmediatePropagation();
             });
@@ -213,6 +222,7 @@
         rangeActiveStartEnd,
         monthYearSelect,
         handleScroll,
+        handleArrow,
         getMarker,
     } = useCalendar(props, emit);
 
@@ -368,5 +378,17 @@
     const selectCurrentDate = (): void => {
         emit('update:internalModelValue', new Date());
         emit('selectDate');
+    };
+
+    const handleEsc = (): void => {
+        if (props.escClose) {
+            emit('closePicker');
+        }
+    };
+
+    const handleSpace = (): void => {
+        if (props.spaceConfirm) {
+            emit('selectDate');
+        }
     };
 </script>

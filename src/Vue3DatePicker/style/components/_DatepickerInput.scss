@@ -2,6 +2,11 @@
   position: relative;
   width: 100%;
   box-sizing: unset;
+
+  &:focus {
+    border-color: var(--dp-border-color-hover);
+    outline: none;
+  }
 }
 
 .dp__input {
@@ -24,6 +29,10 @@
   &:hover {
     border-color: var(--dp-border-color-hover);
   }
+}
+
+.dp__input_focus {
+  border-color: var(--dp-border-color-hover);
 }
 
 .dp__disabled {
