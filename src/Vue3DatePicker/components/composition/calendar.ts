@@ -514,11 +514,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
 
     const handleScroll = (event: WheelEvent, isNext = false): void => {
         if (props.monthChangeOnScroll) {
-            autoChangeMonth(event.deltaY, isNext);
-            // const yearMonth: [number, number] = isNext ? [monthNext.value, yearNext.value] : [month.value, year.value];
-            // const dates = event.deltaY < 0 ? getNextYearMonth(...yearMonth) : getPreviousMonthYear(...yearMonth);
-            // updateMonthYear(dates.month, true, isNext);
-            // updateMonthYear(dates.year, false, isNext);
+            autoChangeMonth(props.monthChangeOnScroll === 'inverse' ? -event.deltaY : event.deltaY, isNext);
         }
     };
 

@@ -165,7 +165,7 @@
         allowedDates: { type: Array as PropType<string[] | Date[]>, default: () => [] },
         showNowButton: { type: Boolean as PropType<boolean>, default: false },
         nowButtonLabel: { type: String as PropType<string>, default: 'Now' },
-        monthChangeOnScroll: { type: Boolean as PropType<boolean>, default: true },
+        monthChangeOnScroll: { type: [Boolean, String] as PropType<boolean | string>, default: true },
         markers: { type: Array as PropType<IMarker[]>, default: () => [] },
         uid: { type: String as PropType<string>, default: null },
         modeHeight: { type: [Number, String] as PropType<number | string>, default: 255 },

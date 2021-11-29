@@ -139,7 +139,7 @@ interface Vue3DatePicker {
     showNowButton?: boolean;
     nowButtonLabel?: string;
     partialRange?: boolean;
-    monthChangeOnScroll?: boolean;
+    monthChangeOnScroll?: boolean | 'inverse';
     highlights?: {
         date: Date | string;
         type?: 'dot' | 'line';

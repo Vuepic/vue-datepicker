@@ -96,7 +96,7 @@ export type UseCalendar = {
     autoRange: number | string;
     disabledWeekDays: number[] | string[];
     allowedDates: Date[] | string[];
-    monthChangeOnScroll: boolean;
+    monthChangeOnScroll: boolean | 'inverse';
     markers: IMarker[];
     enableSeconds: boolean;
     monthChangeOnArrows: boolean;

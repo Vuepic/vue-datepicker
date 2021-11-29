@@ -232,7 +232,7 @@
         showNowButton: { type: Boolean as PropType<boolean>, default: false },
         nowButtonLabel: { type: String as PropType<string>, default: 'Now' },
         partialRange: { type: Boolean as PropType<boolean>, default: true },
-        monthChangeOnScroll: { type: Boolean as PropType<boolean>, default: true },
+        monthChangeOnScroll: { type: [Boolean, String] as PropType<boolean | string>, default: true },
         markers: { type: Array as PropType<IMarker[]>, default: () => [] },
         transitions: { type: Boolean as PropType<boolean | ITransition>, default: true },
         modeHeight: { type: [Number, String] as PropType<number | string>, default: 255 },
