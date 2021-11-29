@@ -11,11 +11,6 @@
   font-family: $dp__font_family;
   color: var(--dp-text-color);
   box-sizing: border-box;
-
-  &:focus {
-    border: none;
-    outline: none;
-  }
 }
 
 .dp__overlay::-webkit-scrollbar-track {
@@ -31,6 +26,11 @@
 .dp__overlay::-webkit-scrollbar-thumb {
   background-color: var(--dp-scroll-bar-color);
   border-radius: 10px;
+}
+
+.dp__overlay:focus {
+  border: none;
+  outline: none;
 }
 
 .dp__overlay_container {

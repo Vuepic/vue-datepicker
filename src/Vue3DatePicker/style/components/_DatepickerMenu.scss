@@ -19,11 +19,10 @@
   }
 
   &:focus {
-    border:  1px solid var(--dp-border-color);
+    border: 1px solid var(--dp-border-color);
     outline: none;
   }
 }
-
 
 .dp__arrow_top {
   left: 50%;
