@@ -16,12 +16,7 @@
             :onEnter="handleEnter"
             :onTab="handleTab"
         />
-        <div
-            v-if="!$slots.trigger && !$slots['dp-input'] && !inline"
-            class="dp__input_wrap"
-            tabindex="0"
-            @focus="handleFocus"
-        >
+        <div v-if="!$slots.trigger && !$slots['dp-input'] && !inline" class="dp__input_wrap">
             <input
                 :id="uid ? `dp-input-${uid}` : null"
                 :class="inputClass"
@@ -33,6 +28,7 @@
                 @keydown.enter="handleEnter"
                 @keydown.tab="handleTab"
                 @blur="handleBlur"
+                @focus="handleFocus"
             />
             <span class="dp__input_icon" v-if="$slots['input-icon'] && !hideInputIcon" @click="stopPropagation"
                 ><slot name="input-icon"
@@ -55,7 +51,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, PropType, ref } from 'vue';
+    import { computed, PropType, ref, useSlots } from 'vue';
     import { DynamicClass, ITextInputOptions } from '../interfaces';
     import { CalendarIcon, CancelIcon } from './Icons';
     import { isValidDate, parseFreeInput } from '../utils/date-utils';
@@ -91,6 +87,7 @@
     });
     const parsedDate = ref();
     const isFocused = ref(false);
+    const slots = useSlots();
 
     const inputClass = computed(
         (): DynamicClass => ({
@@ -100,7 +97,7 @@
             dp__input_icon_pad: !props.hideInputIcon,
             dp__input_valid: props.state,
             dp__input_invalid: props.state === false,
-            dp__input_focus: isFocused.value,
+            dp__input_focus: isFocused.value || props.isMenuOpen,
             [props.inputClassName]: !!props.inputClassName,
         }),
     );
@@ -161,15 +158,17 @@
     };
 
     const handleOpen = () => {
-        isFocused.value = true;
-        if (props.textInput && props.textInputOptions?.openMenu && !props.isMenuOpen) {
-            emit('open');
-        } else if (!props.textInput) {
-            emit('open');
+        if (!props.openMenuOnFocus || slots['dp-input'] || slots['trigger']) {
+            if (props.textInput && props.textInputOptions?.openMenu && !props.isMenuOpen) {
+                emit('open');
+            } else if (!props.textInput) {
+                emit('open');
+            }
         }
     };
 
     const handleBlur = (): void => {
+        isFocused.value = false;
         if (props.autoApply && props.textInput && parsedDate.value) {
             emit('setInputDate', parsedDate.value);
             emit('selectDate');
