@@ -42,11 +42,8 @@
                 class="dp__input_icon dp__input_icons"
                 @click="stopPropagation"
             />
-            <span
-                class="dp__clear_icon"
-                v-if="$slots['clear-icon'] && clearable && !disabled && !readonly"
-                @click.stop.prevent="onClear"
-                ><slot name="clear-icon"
+            <span class="dp__clear_icon" v-if="$slots['clear-icon'] && clearable && !disabled && !readonly"
+                ><slot name="clear-icon" :clear="onClear"
             /></span>
             <CancelIcon
                 v-if="clearable && !$slots['clear-icon'] && inputValue && !disabled && !readonly"
