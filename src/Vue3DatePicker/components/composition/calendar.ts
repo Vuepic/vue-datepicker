@@ -420,11 +420,23 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
      * Same logic done twice with the time update, however some checks before applying are done
      */
     const handleTimeUpdate = (dateValue: Date | Date[]): void => {
-        if (isRange(dateValue) && isNumberArray(hours.value) && isNumberArray(minutes.value)) {
-            modelValue.value = [
-                setDateTime(dateValue[0], hours.value[0], minutes.value[0], getSecondsValue()),
-                setDateTime(dateValue[1], hours.value[1], minutes.value[1], getSecondsValue(false)),
-            ];
+        if (
+            isModelValueRange(dateValue) &&
+            isModelValueRange(modelValue.value) &&
+            isNumberArray(hours.value) &&
+            isNumberArray(minutes.value)
+        ) {
+            if (dateValue[0] && modelValue.value[0]) {
+                modelValue.value[0] = setDateTime(dateValue[0], hours.value[0], minutes.value[0], getSecondsValue());
+            }
+            if (dateValue[1] && modelValue.value[1]) {
+                modelValue.value[1] = setDateTime(
+                    dateValue[1],
+                    hours.value[1],
+                    minutes.value[1],
+                    getSecondsValue(false),
+                );
+            }
         } else if (!props.range && !isRange(dateValue)) {
             modelValue.value = setDateTime(
                 dateValue as Date,
