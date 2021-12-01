@@ -10,6 +10,10 @@ export const isTime = (value: ModelValue): value is ITimeValue => {
     return typeof value === 'object';
 };
 
+export const modelValueIsRange = (modelValue: ModelValue, range: boolean): modelValue is Date[] => {
+    return range;
+};
+
 export const isTimeArray = (value: ModelValue): value is ITimeValue[] => {
     return Array.isArray(value) && value.length === 2;
 };

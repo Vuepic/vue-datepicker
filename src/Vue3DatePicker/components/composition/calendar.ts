@@ -18,7 +18,7 @@ import {
     setDateMonthOrYear,
     setDateTime,
 } from '../../utils/date-utils';
-import { isModelValueRange, isNumberArray, isRange, isRangeArray, isTimeArr } from '../../utils/type-guard';
+import { isModelValueRange, isNumberArray, isRange, isTimeArr, modelValueIsRange } from '../../utils/type-guard';
 
 interface IUseCalendar {
     isDisabled: (date: Date) => boolean;
@@ -38,6 +38,7 @@ interface IUseCalendar {
     handleScroll: (event: WheelEvent, isNext?: boolean) => void;
     handleArrow: (arrow: 'left' | 'right', isNext?: boolean) => void;
     getMarker: (day: UnwrapRef<ICalendarDay>) => IMarker | undefined;
+    selectCurrentDate: () => void;
     today: Ref<Date>;
     month: Ref<number>;
     year: Ref<number>;
@@ -472,7 +473,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
     };
 
     const checkRangeDirection = (isStart: boolean): boolean => {
-        if (isRangeArray(modelValue.value, true) && modelValue.value[0] && hoveredDate.value) {
+        if (modelValueIsRange(modelValue.value, props.range) && modelValue.value[0] && hoveredDate.value) {
             return isStart
                 ? isDateAfter(hoveredDate.value, modelValue.value[0])
                 : isDateBefore(hoveredDate.value, modelValue.value[0]);
@@ -540,6 +541,23 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         return props.markers.find((marker) => isDateEqual(new Date(date.value), new Date(marker.date)));
     };
 
+    const selectCurrentDate = (): void => {
+        if (!props.range) {
+            emit('update:internalModelValue', new Date());
+        } else if (modelValueIsRange(modelValue.value, props.range)) {
+            if (modelValue.value && modelValue.value[0]) {
+                modelValue.value = isDateBefore(new Date(), modelValue.value[0])
+                    ? [new Date(), modelValue.value[0]]
+                    : [modelValue.value[0], new Date()];
+            } else {
+                modelValue.value = [new Date()];
+            }
+        }
+        if (props.autoApply) {
+            emit('selectDate');
+        }
+    };
+
     return {
         today,
         hours,
@@ -566,5 +584,6 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         handleScroll,
         getMarker,
         handleArrow,
+        selectCurrentDate,
     };
 };

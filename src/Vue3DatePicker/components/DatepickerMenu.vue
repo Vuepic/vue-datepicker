@@ -224,6 +224,7 @@
         handleScroll,
         handleArrow,
         getMarker,
+        selectCurrentDate,
     } = useCalendar(props, emit);
 
     const calendarSlots = mapSlots(slots, 'calendar');
@@ -373,11 +374,6 @@
 
     const handleDpMenuClick = (e: Event) => {
         e.stopImmediatePropagation();
-    };
-
-    const selectCurrentDate = (): void => {
-        emit('update:internalModelValue', new Date());
-        emit('selectDate');
     };
 
     const handleEsc = (): void => {
