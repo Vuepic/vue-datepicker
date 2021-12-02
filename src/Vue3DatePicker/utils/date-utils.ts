@@ -28,9 +28,10 @@ import {
     getSeconds,
     addSeconds,
     subSeconds,
+    startOfWeek,
 } from 'date-fns';
 
-import { IMonthValue, ITimeValue } from '../interfaces';
+import { IMonthValue, ITimeValue, WeekStartNum } from '../interfaces';
 
 /**
  * it will try to parse date based on pattern and parts of the text value
@@ -306,4 +307,8 @@ export const getNextYearMonth = (month: number, year: number): { month: number; 
 
 export const getWeekDay = (date: string | Date): number => {
     return getDay(new Date(date));
+};
+
+export const getStartOfTheWeek = (date: Date, start: WeekStartNum): Date => {
+    return startOfWeek(date, { weekStartsOn: start });
 };

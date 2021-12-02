@@ -1,3 +1,4 @@
+import { ComponentPublicInstance, unref } from 'vue';
 import {
     ICalendarDate,
     ICalendarDay,
@@ -9,21 +10,7 @@ import {
     MaybeElementRef,
     WeekStartNum,
 } from '../interfaces';
-import { getAddedDays, isDateEqual, resetDateTime } from './date-utils';
-import { ComponentPublicInstance, unref } from 'vue';
-
-/**
- * Depending on a week start get starting date of the current calendar
- */
-const getFirstDayOfTheFirstWeek = (firstDate: Date, start: number): Date => {
-    const startDate = new Date(JSON.parse(JSON.stringify(firstDate)));
-    const monthStart = startDate.getDay();
-    const startDiff = Math.abs(start - monthStart);
-    if (startDiff !== 0) {
-        return new Date(startDate.setDate(startDate.getDate() - startDiff));
-    }
-    return startDate;
-};
+import { getAddedDays, getStartOfTheWeek, isDateEqual, resetDateTime } from './date-utils';
 
 // Get 7 days from the provided start date, month is used to check whether the date is from the specified month or in the offset
 const getWeekDays = (startDay: Date, month: number, hideOffsetDates: boolean): ICalendarDay[] => {
@@ -50,10 +37,10 @@ export const getCalendarDays = (
     hideOffsetDates: boolean,
 ): ICalendarDate[] => {
     const weeks: ICalendarDate[] = [];
-    const firstDate = new Date(year, month, 1);
+    const firstDate = new Date(year, month);
     const lastDate = new Date(year, month + 1, 0);
 
-    const firstDateInCalendar = getFirstDayOfTheFirstWeek(firstDate, start);
+    const firstDateInCalendar = getStartOfTheWeek(firstDate, start);
 
     const addDaysToWeek = (date: Date) => {
         const days = getWeekDays(date, month, hideOffsetDates);
