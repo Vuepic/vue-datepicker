@@ -68,6 +68,9 @@
                 customProps,
                 twoCalendars,
                 menuMount,
+                maxTime,
+                minTime,
+                enableTimePicker,
             }"
             @close-picker="$emit('closePicker')"
             @select-date="$emit('selectDate')"
@@ -142,8 +145,8 @@
         weekNumName: { type: String as PropType<string>, default: 'W' },
         disabledDates: { type: Array as PropType<Date[] | string[]>, default: () => [] },
         filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
-        minTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
-        maxTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
+        minTime: { type: Object as PropType<ITimeValue>, default: null },
+        maxTime: { type: Object as PropType<ITimeValue>, default: null },
         inline: { type: Boolean as PropType<boolean>, default: false },
         openOnTop: { type: Boolean as PropType<boolean>, default: false },
         monthPicker: { type: Boolean as PropType<boolean>, default: false },

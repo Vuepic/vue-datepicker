@@ -146,7 +146,7 @@
         IMarker,
         ITransition,
     } from './interfaces';
-    import { getDateHours, getDateMinutes, getDefaultPattern } from './utils/date-utils';
+    import { getDateHours, getDateMinutes, getDefaultPattern, isValidTime } from './utils/date-utils';
     import { getDefaultTextInputOptions, getDefaultFilters, mergeDefaultTransitions } from './utils/util';
     import { usePosition } from './components/composition/position';
     import { useExternalInternalMapper } from './components/composition/external-internal-mapper';
@@ -185,8 +185,8 @@
         secondsGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 },
         minDate: { type: [Date, String] as PropType<Date | string>, default: null },
         maxDate: { type: [Date, String] as PropType<Date | string>, default: null },
-        minTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
-        maxTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
+        minTime: { type: Object as PropType<ITimeValue>, default: null },
+        maxTime: { type: Object as PropType<ITimeValue>, default: null },
         weekStart: { type: [String, Number] as PropType<WeekStartNum | WeekStartStr>, default: 1 },
         disabled: { type: Boolean as PropType<boolean>, default: false },
         readonly: { type: Boolean as PropType<boolean>, default: false },
@@ -437,9 +437,14 @@
      */
     const autoApplyValue = (ignoreClose = false): void => {
         if (props.autoApply) {
-            emitModelValue();
-            if (props.closeOnAutoApply && !ignoreClose) {
-                closeMenu();
+            const isTimeValid = !props.enableTimePicker
+                ? true
+                : isValidTime(internalModelValue.value, props.maxTime, props.minTime);
+            if (isTimeValid) {
+                emitModelValue();
+                if (props.closeOnAutoApply && !ignoreClose) {
+                    closeMenu();
+                }
             }
         }
     };
@@ -482,7 +487,7 @@
     };
 
     const timeUpdate = (): void => {
-        if (props.autoApply) {
+        if (props.autoApply && isValidTime(internalModelValue.value, props.maxTime, props.minTime)) {
             emitModelValue();
         }
     };

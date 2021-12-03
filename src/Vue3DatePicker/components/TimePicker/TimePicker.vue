@@ -96,7 +96,7 @@
     import { ClockIcon, CalendarIcon } from '../Icons';
     import TimeInput from './TimeInput.vue';
 
-    import { IDateFilter, ITimeValue } from '../../interfaces';
+    import { IDateFilter } from '../../interfaces';
     import { mapSlots } from '../composition/slots';
     import { useTransitions } from '../composition/transition';
 
@@ -112,8 +112,6 @@
         secondsGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 },
         range: { type: Boolean as PropType<boolean>, default: false },
         filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
-        minTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
-        maxTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
         timePicker: { type: Boolean as PropType<boolean>, default: false },
         hours: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         minutes: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
@@ -147,8 +145,6 @@
         minutesIncrement: props.minutesIncrement,
         secondsIncrement: props.secondsIncrement,
         filters: props.filters,
-        maxTime: props.maxTime,
-        minTime: props.minTime,
         noHoursOverlay: props.noHoursOverlay,
         noMinutesOverlay: props.noMinutesOverlay,
         noSecondsOverlay: props.noSecondsOverlay,

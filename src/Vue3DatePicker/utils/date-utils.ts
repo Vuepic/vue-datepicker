@@ -29,9 +29,10 @@ import {
     addSeconds,
     subSeconds,
     startOfWeek,
+    set,
 } from 'date-fns';
 
-import { IMonthValue, ITimeValue, WeekStartNum } from '../interfaces';
+import { IMonthValue, InternalModuleValue, ITimeValue, WeekStartNum } from '../interfaces';
 
 /**
  * it will try to parse date based on pattern and parts of the text value
@@ -77,19 +78,19 @@ export const isValidDate = (value: Date | Date[] | null): boolean => {
  */
 export const setDateTime = (
     date: Date | null,
-    hours?: number | null,
-    minutes?: number | null,
-    seconds?: number | null,
+    hours?: number | string | null,
+    minutes?: number | string | null,
+    seconds?: number | string | null,
 ): Date => {
     let dateCopy = date ? new Date(date) : new Date();
     if (hours || hours === 0) {
-        dateCopy = setHours(dateCopy, hours);
+        dateCopy = setHours(dateCopy, +hours);
     }
     if (minutes || minutes === 0) {
-        dateCopy = setMinutes(dateCopy, minutes);
+        dateCopy = setMinutes(dateCopy, +minutes);
     }
     if (seconds || seconds === 0) {
-        dateCopy = setSeconds(dateCopy, seconds);
+        dateCopy = setSeconds(dateCopy, +seconds);
     }
     return dateCopy;
 };
@@ -311,4 +312,47 @@ export const getWeekDay = (date: string | Date): number => {
 
 export const getStartOfTheWeek = (date: Date, start: WeekStartNum): Date => {
     return startOfWeek(date, { weekStartsOn: start });
+};
+
+const setTimeValue = (date: Date): Date => {
+    return set(new Date(), { hours: getHours(date), minutes: getMinutes(date), seconds: getSeconds(date) });
+};
+
+const getMinMaxTime = (time: ITimeValue): Date => {
+    return set(new Date(), {
+        hours: +time.hours || 0,
+        minutes: +time.minutes || 0,
+        seconds: +time.seconds || 0,
+    });
+};
+
+export const isValidTime = (date: InternalModuleValue, maxTime: ITimeValue, minTime: ITimeValue): boolean => {
+    let isValid = true;
+    if (!date) {
+        return true;
+    }
+    const selectedDateTime = Array.isArray(date)
+        ? [date[0] ? setTimeValue(date[0]) : null, date[1] ? setTimeValue(date[1]) : null]
+        : setTimeValue(date);
+    if (maxTime) {
+        const maxDate = getMinMaxTime(maxTime);
+        if (Array.isArray(selectedDateTime)) {
+            isValid =
+                (selectedDateTime[0] ? selectedDateTime[0].getTime() <= maxDate.getTime() : true) &&
+                (selectedDateTime[1] ? selectedDateTime[1].getTime() <= maxDate.getTime() : true);
+        } else {
+            isValid = selectedDateTime.getTime() <= maxDate.getTime();
+        }
+    }
+    if (minTime) {
+        const minDate = getMinMaxTime(minTime);
+        if (Array.isArray(selectedDateTime)) {
+            isValid =
+                (selectedDateTime[0] ? selectedDateTime[0].getTime() >= minDate.getTime() : true) &&
+                (selectedDateTime[1] ? selectedDateTime[1].getTime() >= minDate.getTime() : true);
+        } else {
+            isValid = selectedDateTime.getTime() >= minDate.getTime();
+        }
+    }
+    return isValid;
 };

@@ -126,8 +126,6 @@
                 v-if="hourOverlay"
                 :items="getGridItems(is24 ? 24 : 12, hoursGridIncrement)"
                 :disabled-values="filters.times.hours"
-                :min-value="minTime.hours"
-                :max-value="maxTime.hours"
                 @update:model-value="$emit('update:hours', $event)"
                 @selected="toggleHourOverlay"
                 @toggle="toggleHourOverlay"
@@ -146,8 +144,6 @@
                 v-if="minuteOverlay"
                 :items="getGridItems(60, minutesGridIncrement)"
                 :disabled-values="filters.times.minutes"
-                :min-value="minTime.minutes"
-                :max-value="maxTime.minutes"
                 @update:model-value="$emit('update:minutes', $event)"
                 @selected="toggleMinuteOverlay"
                 @toggle="toggleMinuteOverlay"
@@ -166,8 +162,6 @@
                 v-if="secondsOverlay"
                 :items="getGridItems(60, secondsGridIncrement)"
                 :disabled-values="filters.times.seconds"
-                :min-value="minTime.seconds"
-                :max-value="maxTime.seconds"
                 @update:model-value="$emit('update:seconds', $event)"
                 @selected="toggleSecondsOverlay"
                 @toggle="toggleSecondsOverlay"
@@ -185,9 +179,9 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, onMounted, PropType, ref } from 'vue';
+    import { computed, PropType, ref } from 'vue';
     import { ChevronUpIcon, ChevronDownIcon, ClockIcon } from '../Icons';
-    import { DynamicClass, IDateFilter, IDefaultSelect, ITimeType, ITimeValue } from '../../interfaces';
+    import { DynamicClass, IDateFilter, IDefaultSelect, ITimeType } from '../../interfaces';
     import { getArrayInArray, hoursToAmPmHours } from '../../utils/util';
     import SelectionGrid from '../SelectionGrid.vue';
     import {
@@ -213,8 +207,6 @@
         secondsIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
         is24: { type: Boolean as PropType<boolean>, default: true },
         filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
-        minTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
-        maxTime: { type: Object as PropType<ITimeValue>, default: () => ({}) },
         noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
         noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
         noSecondsOverlay: { type: Boolean as PropType<boolean>, default: false },
@@ -224,13 +216,8 @@
     const hourOverlay = ref(false);
     const minuteOverlay = ref(false);
     const secondsOverlay = ref(false);
-    const typeTypes = ref<ITimeType[]>(['hours', 'minutes', 'seconds']);
     const amPm = ref('AM');
     const { transitionName, showTransition } = useTransitions();
-
-    onMounted(() => {
-        checkMinMaxHours();
-    });
 
     const timeColClass = computed(
         (): DynamicClass => ({
@@ -286,68 +273,36 @@
             secondsOverlay.value = !secondsOverlay.value;
         }
     };
-    // for control flow
-    const getMaxType = (type: ITimeType): string => props.maxTime[type] as string;
-    const getMinType = (type: ITimeType): string => props.minTime[type] as string;
 
-    const checkMinMaxHours = (): void => {
-        if (Object.keys(props.maxTime).length) {
-            typeTypes.value.forEach((type) => {
-                if (props.maxTime[type] && props[type] > +getMaxType(type)) {
-                    emit(`update:${type}`, +getMaxType(type));
-                }
-            });
-        }
-        if (Object.keys(props.minTime).length) {
-            typeTypes.value.forEach((type) => {
-                if (props.minTime[type] && props[type] < +getMaxType(type)) {
-                    emit(`update:${type}`, +getMaxType(type));
-                }
-            });
-        }
-    };
-
-    const getTypeValue = (type: ITimeType, inc: boolean): number => {
-        if (type === 'hours') {
-            return inc
-                ? addDateHours(props.hours, +props.hoursIncrement)
-                : subDateHours(props.hours, +props.hoursIncrement);
-        }
-        if (type === 'minutes') {
-            return inc
-                ? addDateMinutes(props.minutes, +props.minutesIncrement)
-                : subDateMinutes(props.minutes, +props.minutesIncrement);
-        }
-        return inc
-            ? addDateSeconds(props.seconds, +props.secondsIncrement)
-            : subDateSeconds(props.seconds, +props.secondsIncrement);
+    const getTypeValue = (type: ITimeType, inc: boolean): { hours: number; minutes: number; seconds: number } => {
+        return {
+            hours:
+                type === 'hours'
+                    ? inc
+                        ? addDateHours(props.hours, +props.hoursIncrement)
+                        : subDateHours(props.hours, +props.hoursIncrement)
+                    : props.hours,
+            minutes:
+                type === 'minutes'
+                    ? inc
+                        ? addDateMinutes(props.minutes, +props.minutesIncrement)
+                        : subDateMinutes(props.minutes, +props.minutesIncrement)
+                    : props.minutes,
+            seconds:
+                type === 'seconds'
+                    ? inc
+                        ? addDateSeconds(props.seconds, +props.secondsIncrement)
+                        : subDateSeconds(props.seconds, +props.secondsIncrement)
+                    : props.seconds,
+        };
     };
 
     const handleTimeValue = (type: ITimeType, inc = true): void => {
-        const value = getTypeValue(type, inc);
+        const values = getTypeValue(type, inc);
+        const value = values[type];
         if (inc) {
-            if (props.maxTime[type]) {
-                if (value > +getMaxType(type) || value === 0) {
-                    return;
-                }
-            }
-            if (props.minTime[type]) {
-                if (value < +getMinType(type) || value === 0) {
-                    return;
-                }
-            }
             emit(`update:${type}`, value);
         } else {
-            if (props.minTime[type]) {
-                if (value < +getMaxType(type) || value === 0) {
-                    return;
-                }
-            }
-            if (props.maxTime[type]) {
-                if (value > +getMaxType(type)) {
-                    return;
-                }
-            }
             emit(`update:${type}`, value);
         }
     };

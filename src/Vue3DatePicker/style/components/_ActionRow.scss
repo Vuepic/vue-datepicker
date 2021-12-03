@@ -37,6 +37,11 @@
   color: var(--dp-success-color);
 }
 
+.dp__action_disabled {
+  color: var(--dp-success-color-disabled);
+  cursor: not-allowed;
+}
+
 .dp__cancel {
   color: var(--dp-secondary-color);
 }

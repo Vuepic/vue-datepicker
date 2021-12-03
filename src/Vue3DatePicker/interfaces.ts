@@ -69,7 +69,7 @@ export interface IMonthValue {
 export interface ITimeValue {
     hours: number | string;
     minutes: number | string;
-    seconds?: number | string;
+    seconds: number | string;
 }
 
 export type ModelValue = Date | Date[] | string | string[] | ITimeValue | ITimeValue[] | IMonthValue | null;

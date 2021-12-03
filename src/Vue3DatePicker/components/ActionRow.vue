@@ -21,13 +21,9 @@
                     @keydown.enter="$emit('closePicker')"
                     >{{ cancelText }}</span
                 >
-                <span
-                    class="dp__action dp__select"
-                    tabindex="0"
-                    @keydown.enter="$emit('selectDate')"
-                    @click="$emit('selectDate')"
-                    >{{ selectText }}</span
-                >
+                <span :class="selectClass" tabindex="0" @keydown.enter="selectDate" @click="selectDate">{{
+                    selectText
+                }}</span>
             </template>
         </div>
     </div>
@@ -35,11 +31,11 @@
 
 <script lang="ts" setup>
     import { computed, PropType } from 'vue';
-    import { IFormat, InternalModuleValue } from '../interfaces';
-    import { formatDate, getMonthForExternal, getTImeForExternal } from '../utils/date-utils';
+    import { IFormat, InternalModuleValue, ITimeValue } from '../interfaces';
+    import { formatDate, getMonthForExternal, getTImeForExternal, isValidTime } from '../utils/date-utils';
     import { isModelValueRange } from '../utils/type-guard';
 
-    defineEmits(['closePicker', 'selectDate']);
+    const emit = defineEmits(['closePicker', 'selectDate']);
 
     const props = defineProps({
         selectText: { type: String as PropType<string>, default: 'Select' },
@@ -57,6 +53,22 @@
         calendarWidth: { type: Number as PropType<number>, default: 0 },
         menuMount: { type: Boolean as PropType<boolean>, default: false },
         customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
+        minTime: { type: Object as PropType<ITimeValue>, default: null },
+        maxTime: { type: Object as PropType<ITimeValue>, default: null },
+        enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
+    });
+
+    const selectClass = computed(() => ({
+        dp__action: true,
+        dp__select: true,
+        dp__action_disabled: !isTimeValid.value,
+    }));
+
+    const isTimeValid = computed((): boolean => {
+        if (!props.enableTimePicker) {
+            return true;
+        }
+        return isValidTime(props.internalModelValue, props.maxTime, props.minTime);
     });
 
     const previewValue = computed((): string | string[] => {
@@ -87,4 +99,10 @@
         }
         return props.previewFormat(props.internalModelValue);
     });
+
+    const selectDate = (): void => {
+        if (isTimeValid.value) {
+            emit('selectDate');
+        }
+    };
 </script>
