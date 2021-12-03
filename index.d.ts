@@ -26,10 +26,12 @@ interface Vue3DatePicker {
         | {
               hours: number | string;
               minutes: number | string;
+              seconds?: number | string;
           }
         | {
               hours: number | string;
               minutes: number | string;
+              seconds?: number | string;
           }[]
         | { month: number | string; year: number | string }
         | null;
@@ -58,10 +60,12 @@ interface Vue3DatePicker {
                   | {
                         hours: number | string;
                         minutes: number | string;
+                        seconds?: number | string;
                     }
                   | {
                         hours: number | string;
                         minutes: number | string;
+                        seconds?: number | string;
                     }[]
                   | {
                         month: number | string;
@@ -77,10 +81,12 @@ interface Vue3DatePicker {
                   | {
                         hours: number | string;
                         minutes: number | string;
+                        seconds?: number | string;
                     }
                   | {
                         hours: number | string;
                         minutes: number | string;
+                        seconds?: number | string;
                     }[]
                   | {
                         month: number | string;
@@ -99,7 +105,7 @@ interface Vue3DatePicker {
     filters?: {
         months?: number[];
         years?: number[];
-        times?: { hours?: number[]; minutes?: number[] };
+        times?: { hours?: number[]; minutes?: number[]; seconds?: number[] };
     };
     disableMonthYearSelect?: boolean;
     yearRange?: number[];
@@ -127,10 +133,12 @@ interface Vue3DatePicker {
         | {
               hours: number | string;
               minutes: number | string;
+              seconds?: number | string;
           }
         | {
               hours: number | string;
               minutes: number | string;
+              seconds?: number | string;
           }[];
     monthYearComponent?: DefineComponent;
     timePickerComponent?: DefineComponent;
