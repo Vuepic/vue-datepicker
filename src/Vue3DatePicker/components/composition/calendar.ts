@@ -33,6 +33,8 @@ interface IUseCalendar {
     isAutoRangeInBetween: (day: UnwrapRef<ICalendarDay>) => boolean;
     isAutoRangeStart: (day: UnwrapRef<ICalendarDay>) => boolean;
     rangeActiveStartEnd: (day: UnwrapRef<ICalendarDay>, isStart?: boolean) => boolean;
+    isHoverDate: (disabled: boolean, day: UnwrapRef<ICalendarDay>) => boolean;
+    isHoverDateStartEnd: (isHovered: boolean, calendarDay: UnwrapRef<ICalendarDay>, start: boolean) => boolean;
     monthYearSelect: (isYear?: boolean) => void;
     clearHoverDate: () => void;
     handleScroll: (event: WheelEvent, isNext?: boolean) => void;
@@ -513,6 +515,31 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         return false;
     };
 
+    const isHoverDate = (disabled: boolean, calendarDay: ICalendarDay) => {
+        return Array.isArray(props.internalModelValue) && props.internalModelValue.length
+            ? false
+            : !disabled &&
+                  !isActiveDate(calendarDay) &&
+                  !(!calendarDay.current && props.hideOffsetDates) &&
+                  (props.range ? !rangeActiveStartEnd(calendarDay) && !rangeActiveStartEnd(calendarDay, false) : true);
+    };
+
+    const isHoverDateStartEnd = (dateIsHovered: boolean, calendarDay: ICalendarDay, start?: boolean): boolean => {
+        if (
+            Array.isArray(props.internalModelValue) &&
+            props.internalModelValue[0] &&
+            props.internalModelValue.length === 1
+        ) {
+            if (dateIsHovered) {
+                return false;
+            }
+            return start
+                ? isDateAfter(props.internalModelValue[0], calendarDay.value)
+                : isDateBefore(props.internalModelValue[0], calendarDay.value);
+        }
+        return false;
+    };
+
     const monthYearSelect = (isYear = false) => {
         if (props.autoApply && props.monthPicker) {
             emit('autoApply', isYear);
@@ -586,5 +613,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         getMarker,
         handleArrow,
         selectCurrentDate,
+        isHoverDate,
+        isHoverDateStartEnd,
     };
 };

@@ -86,6 +86,11 @@
   border-bottom: 1px dashed var(--dp-primary-color);
 }
 
+%__hover_date {
+  background: var(--dp-hover-color);
+  color: var(--dp-hover-text-color);
+}
+
 .dp__cell_offset {
   color: var(--dp-secondary-color);
 }
@@ -109,10 +114,24 @@
   @extend %__dp_range_border_radius_end;
 }
 
+
 .dp__date_hover {
   &:hover {
-    background: var(--dp-hover-color);
-    color: var(--dp-hover-text-color);
+    @extend %__hover_date;
+  }
+}
+
+.dp__date_hover_start {
+  &:hover {
+    @extend %__dp_range_border_radius_start;
+    @extend %__hover_date;
+  }
+}
+
+.dp__date_hover_end {
+  &:hover {
+    @extend %__dp_range_border_radius_end;
+    @extend %__hover_date;
   }
 }
 

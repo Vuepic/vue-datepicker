@@ -90,6 +90,7 @@
     import {
         DynamicClass,
         ICalendarDate,
+        ICalendarDay,
         IDateFilter,
         IDefaultSelect,
         IFormat,
@@ -102,7 +103,7 @@
     import { mapSlots } from './composition/slots';
     import { getCalendarDays, getMonths, getYears, unrefElement } from '../utils/util';
     import { useCalendar } from './composition/calendar';
-    import { isDateEqual } from '../utils/date-utils';
+    import { isDateAfter, isDateBefore, isDateEqual } from '../utils/date-utils';
 
     const emit = defineEmits([
         'update:internalModelValue',
@@ -228,6 +229,8 @@
         handleArrow,
         getMarker,
         selectCurrentDate,
+        isHoverDateStartEnd,
+        isHoverDate,
     } = useCalendar(props, emit);
 
     const calendarSlots = mapSlots(slots, 'calendar');
@@ -336,18 +339,15 @@
                 ...date,
                 days: date.days.map((calendarDay) => {
                     const disabled = isDisabled(calendarDay.value);
+                    const dateHover = isHoverDate(disabled, calendarDay);
                     calendarDay.marker = getMarker(calendarDay);
                     calendarDay.classData = {
                         dp__cell_offset: !calendarDay.current,
                         dp__pointer: !disabled && !(!calendarDay.current && props.hideOffsetDates),
                         dp__active_date: props.range ? false : isActiveDate(calendarDay),
-                        dp__date_hover:
-                            !disabled &&
-                            !isActiveDate(calendarDay) &&
-                            !(!calendarDay.current && props.hideOffsetDates) &&
-                            (props.range
-                                ? !rangeActiveStartEnd(calendarDay) && !rangeActiveStartEnd(calendarDay, false)
-                                : true),
+                        dp__date_hover: dateHover,
+                        dp__date_hover_start: isHoverDateStartEnd(dateHover, calendarDay, true),
+                        dp__date_hover_end: isHoverDateStartEnd(dateHover, calendarDay, false),
                         dp__range_between:
                             props.range &&
                             (props.twoCalendars ? calendarDay.current : true) &&
