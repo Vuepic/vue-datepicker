@@ -42,8 +42,10 @@ interface Vue3DatePicker {
     weekNumbers?: boolean;
     hoursIncrement?: number | string;
     hoursGridIncrement?: number | string;
+    secondsGridIncrement?: number | string;
     minutesGridIncrement?: number | string;
     minutesIncrement?: number | string;
+    secondsIncrement?: number | string;
     minDate?: Date | string;
     maxDate?: Date | string;
     minTime?: { hours?: number | string; minutes?: number | string; seconds?: number | string };
@@ -149,6 +151,7 @@ interface Vue3DatePicker {
     noToday?: boolean;
     noHoursOverlay?: boolean;
     noMinutesOverlay?: boolean;
+    noSecondsOverlay?: boolean;
     altPosition?: boolean;
     disabledWeekDays?: number[] | string[];
     allowedDates?: string[] | Date[];
@@ -156,7 +159,7 @@ interface Vue3DatePicker {
     nowButtonLabel?: string;
     partialRange?: boolean;
     monthChangeOnScroll?: boolean | 'inverse';
-    highlights?: {
+    markers?: {
         date: Date | string;
         type?: 'dot' | 'line';
         tooltip?: { text: string; color?: string }[];
