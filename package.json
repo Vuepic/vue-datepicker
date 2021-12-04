@@ -38,8 +38,8 @@
     "@rollup/plugin-node-resolve": "^13.0.6",
     "@rollup/plugin-replace": "^3.0.0",
     "@types/jest": "^24.0.19",
-    "@typescript-eslint/eslint-plugin": "^5.4.0",
-    "@typescript-eslint/parser": "^5.4.0",
+    "@typescript-eslint/eslint-plugin": "^5.5.0",
+    "@typescript-eslint/parser": "^5.5.0",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-typescript": "~4.5.0",
     "@vue/cli-plugin-unit-jest": "~4.5.0",
@@ -49,9 +49,9 @@
     "@vue/eslint-config-typescript": "^9.1.0",
     "@vue/test-utils": "^2.0.0-0",
     "babel-jest": "^26.6.3",
-    "core-js": "^3.19.1",
+    "core-js": "^3.19.2",
     "cross-env": "^7.0.3",
-    "eslint": "^8.3.0",
+    "eslint": "^8.4.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.1",
     "eslint-plugin-vue": "^8.1.1",
@@ -61,7 +61,7 @@
     "postcss": "^8.4.4",
     "prettier": "^2.5.0",
     "rimraf": "^3.0.2",
-    "rollup": "^2.60.1",
+    "rollup": "^2.60.2",
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-vue": "^6.0.0",
@@ -74,13 +74,13 @@
     "vue-jest": "^5.0.0-0"
   },
   "dependencies": {
-    "date-fns": "^2.26.0"
+    "date-fns": "^2.27.0"
   },
   "peerDependencies": {
     "vue": ">=3.2.0"
   },
   "engines": {
-    "node": ">=12"
+    "node": ">=14"
   },
   "repository": {
     "type": "git",
