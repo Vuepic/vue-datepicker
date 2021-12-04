@@ -18,6 +18,7 @@
         />
         <div v-if="!$slots.trigger && !$slots['dp-input'] && !inline" class="dp__input_wrap">
             <input
+                ref="inputRef"
                 :id="uid ? `dp-input-${uid}` : null"
                 :class="inputClass"
                 :placeholder="placeholder"
@@ -55,6 +56,7 @@
     import { DynamicClass, ITextInputOptions } from '../interfaces';
     import { CalendarIcon, CancelIcon } from './Icons';
     import { isValidDate, parseFreeInput } from '../utils/date-utils';
+    import { unrefElement } from '../utils/util';
 
     const emit = defineEmits([
         'clear',
@@ -86,6 +88,7 @@
         openMenuOnFocus: { type: Boolean as PropType<boolean>, default: true },
     });
     const parsedDate = ref();
+    const inputRef = ref(null);
     const isFocused = ref(false);
     const slots = useSlots();
 
@@ -154,6 +157,9 @@
         isFocused.value = true;
         if (props.openMenuOnFocus && !props.isMenuOpen) {
             emit('open');
+        } else if (props.isMenuOpen) {
+            unFocus();
+            emit('close');
         }
     };
 
@@ -186,6 +192,10 @@
 
     const unFocus = (): void => {
         isFocused.value = false;
+        const el = unrefElement(inputRef);
+        if (el) {
+            el.blur();
+        }
     };
 
     defineExpose({
