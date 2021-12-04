@@ -214,6 +214,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
             }
         } else {
             if (props.timePicker) {
+                assignStartTime();
                 if (!props.range) {
                     modelValue.value = setDateTime(
                         new Date(),
