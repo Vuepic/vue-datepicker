@@ -90,7 +90,6 @@
     import {
         DynamicClass,
         ICalendarDate,
-        ICalendarDay,
         IDateFilter,
         IDefaultSelect,
         IFormat,
@@ -103,7 +102,7 @@
     import { mapSlots } from './composition/slots';
     import { getCalendarDays, getMonths, getYears, unrefElement } from '../utils/util';
     import { useCalendar } from './composition/calendar';
-    import { isDateAfter, isDateBefore, isDateEqual } from '../utils/date-utils';
+    import { isDateEqual } from '../utils/date-utils';
 
     const emit = defineEmits([
         'update:internalModelValue',
