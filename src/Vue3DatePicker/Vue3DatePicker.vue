@@ -146,7 +146,7 @@
         IMarker,
         ITransition,
     } from './interfaces';
-    import { getDateHours, getDateMinutes, getDefaultPattern, isValidTime } from './utils/date-utils';
+    import { getDateHours, getDateMinutes, getDateSeconds, getDefaultPattern, isValidTime } from './utils/date-utils';
     import { getDefaultTextInputOptions, getDefaultFilters, mergeDefaultTransitions } from './utils/util';
     import { usePosition } from './components/composition/position';
     import { useExternalInternalMapper } from './components/composition/external-internal-mapper';
@@ -355,7 +355,7 @@
 
     const defaultStartTime = computed((): ITimeValue | ITimeValue[] | null => {
         const assignDefaultTime = (obj: ITimeValue): ITimeValue => {
-            const defaultTime = { hours: getDateHours(), minutes: getDateMinutes() };
+            const defaultTime = { hours: getDateHours(), minutes: getDateMinutes(), seconds: getDateSeconds() };
             return Object.assign(defaultTime, obj);
         };
         if (props.range) {

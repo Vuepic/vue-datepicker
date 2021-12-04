@@ -100,9 +100,15 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
             if (isTimeArr(props.startTime)) {
                 hours.value = [+props.startTime[0].hours, +props.startTime[1].hours];
                 minutes.value = [+props.startTime[0].minutes, +props.startTime[1].minutes];
+                if (props.enableSeconds) {
+                    seconds.value = [+props.startTime[0].seconds, +props.startTime[1].seconds];
+                }
             } else {
                 hours.value = +props.startTime.hours;
                 minutes.value = +props.startTime.minutes;
+                if (props.enableSeconds) {
+                    seconds.value = +props.startTime.seconds;
+                }
             }
         }
     };
