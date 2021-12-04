@@ -2,7 +2,7 @@
     <div>
         <div
             v-if="!timePicker"
-            class="dp__button"
+            :class="toggleButtonClass"
             role="button"
             aria-label="Open time picker"
             tabindex="0"
@@ -74,7 +74,7 @@
                     </template>
                     <div
                         v-if="!timePicker"
-                        class="dp__button"
+                        :class="toggleButtonClass"
                         role="button"
                         aria-label="Close time picker"
                         tabindex="0"
@@ -91,7 +91,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, PropType, ref, useSlots } from 'vue';
+    import { computed, inject, PropType, ref, useSlots } from 'vue';
 
     import { ClockIcon, CalendarIcon } from '../Icons';
     import TimeInput from './TimeInput.vue';
@@ -125,6 +125,7 @@
         enableSeconds: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
+    const autoApply = inject('autoApply', false);
 
     const { transitionName, showTransition } = useTransitions();
 
@@ -133,6 +134,11 @@
     const toggleTimePicker = (show: boolean): void => {
         showTimePicker.value = show;
     };
+
+    const toggleButtonClass = computed(() => ({
+        dp__button: true,
+        dp__button_bottom: autoApply,
+    }));
 
     const timeInputSlots = mapSlots(slots, 'timePicker');
 

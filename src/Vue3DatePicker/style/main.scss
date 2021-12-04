@@ -96,6 +96,11 @@
   }
 }
 
+.dp__button_bottom {
+  border-bottom-left-radius: $dp__border_radius;
+  border-bottom-right-radius: $dp__border_radius;
+}
+
 .dp__flex_display {
   display: flex;
   position: relative;

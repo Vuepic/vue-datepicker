@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, onBeforeUpdate, onMounted, PropType, ref } from 'vue';
+    import { computed, inject, onBeforeUpdate, onMounted, PropType, ref } from 'vue';
 
     import { IDefaultSelect, DynamicClass } from '../interfaces';
     import { getKey, unrefElement } from '../utils/util';
@@ -60,6 +60,7 @@
     const scrollable = ref(false);
     const selectionActiveRef = ref(null);
     const gridWrapRef = ref(null);
+    const autoApply = inject('autoApply', false);
 
     onBeforeUpdate(() => {
         selectionActiveRef.value = null;
@@ -119,6 +120,7 @@
             dp__button: true,
             dp__overlay_action: true,
             dp__over_action_scroll: scrollable.value,
+            dp__button_bottom: autoApply,
         }),
     );
 

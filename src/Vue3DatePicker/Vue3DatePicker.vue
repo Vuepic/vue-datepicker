@@ -256,6 +256,7 @@
     const modelValueMap = toRef(props, 'modelValue');
     const dpMenuRef = ref(null);
     const inputRef = ref(null);
+    provide('autoApply', props.autoApply);
 
     onMounted(() => {
         parseExternalModelValue(props.modelValue);
