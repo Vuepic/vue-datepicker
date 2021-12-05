@@ -179,6 +179,7 @@ interface PublicMethods extends MethodOptions {
     closeMenu: () => void;
     openMenu: () => void;
     clearValue: () => void;
+    onScroll: () => void;
 }
 
 declare const _default: DefineComponent<
