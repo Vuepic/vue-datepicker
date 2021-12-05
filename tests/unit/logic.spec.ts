@@ -8,7 +8,7 @@ import Calendar from '../../src/Vue3DatePicker/components/Calendar.vue';
 import ActionRow from '../../src/Vue3DatePicker/components/ActionRow.vue';
 
 import { getNextMonthYear } from '../../src/Vue3DatePicker/utils/date-utils';
-import addMonths from 'date-fns/addMonths';
+import { setSeconds, addMonths } from 'date-fns';
 
 const format = (date: Date): string => {
     return `Selected year is ${date.getFullYear()}`;
@@ -50,7 +50,7 @@ describe('Logic connection', () => {
     });
 
     it('Should select date', async () => {
-        const tomorrow = addDays(new Date(), 1);
+        const tomorrow = setSeconds(addDays(new Date(), 1), 0);
         const dp = mount(Datepicker, { props: { modelValue: null } });
 
         dp.vm.openMenu();
@@ -68,8 +68,8 @@ describe('Logic connection', () => {
     });
 
     it('Should select range', async () => {
-        const start = addDays(new Date(), 1);
-        const end = addDays(start, 7);
+        const start = setSeconds(addDays(new Date(), 1), 0);
+        const end = setSeconds(addDays(start, 7), 0);
         const dp = mount(Datepicker, { props: { modelValue: null, range: true } });
 
         dp.vm.openMenu();
@@ -92,8 +92,8 @@ describe('Logic connection', () => {
     });
 
     it('Should select range from 2 calendars', async () => {
-        const start = addDays(new Date(), 1);
-        const end = addMonths(start, 1);
+        const start = setSeconds(addDays(new Date(), 1), 0);
+        const end = setSeconds(addMonths(start, 1), 0);
         const dp = mount(Datepicker, { props: { modelValue: null, range: true, twoCalendars: true } });
 
         dp.vm.openMenu();
@@ -114,8 +114,8 @@ describe('Logic connection', () => {
     });
 
     it('Should select auto range', async () => {
-        const start = new Date();
-        const end = addDays(start, 7);
+        const start = setSeconds(new Date(), 0);
+        const end = setSeconds(addDays(start, 7), 0);
         const dp = mount(Datepicker, { props: { modelValue: null, range: true, autoRange: 7 } });
 
         dp.vm.openMenu();
