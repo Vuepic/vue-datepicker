@@ -500,5 +500,6 @@
         selectDate,
         clearValue,
         openMenu,
+        onScroll,
     });
 </script>
