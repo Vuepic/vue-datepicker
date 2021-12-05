@@ -32,87 +32,85 @@
                 <slot :name="slot" v-bind="args" />
             </template>
         </DatepickerInput>
-        <transition name="dp-open">
-            <teleport :to="teleport" :disabled="inline" v-if="isOpen">
-                <DatepickerMenu
-                    v-if="isOpen"
-                    ref="dpMenuRef"
-                    :class="theme"
-                    :style="menuPosition"
-                    v-bind="{
-                        weekNumbers,
-                        weekStart,
-                        disableMonthYearSelect,
-                        menuClassName,
-                        calendarClassName,
-                        yearRange,
-                        range,
-                        twoCalendars,
-                        calendarCellClassName,
-                        enableTimePicker,
-                        is24,
-                        hoursIncrement,
-                        minutesIncrement,
-                        hoursGridIncrement,
-                        minutesGridIncrement,
-                        minDate,
-                        maxDate,
-                        autoApply,
-                        selectText,
-                        cancelText,
-                        previewFormat: previewFormatDefault,
-                        locale,
-                        weekNumName,
-                        disabledDates,
-                        filters: defaultFilters,
-                        minTime,
-                        maxTime,
-                        inline,
-                        openOnTop,
-                        monthPicker,
-                        timePicker,
-                        monthNameFormat,
-                        startDate,
-                        startTime: defaultStartTime,
-                        monthYearComponent,
-                        timePickerComponent,
-                        actionRowComponent,
-                        customProps,
-                        hideOffsetDates,
-                        autoRange,
-                        noToday,
-                        noHoursOverlay,
-                        noMinutesOverlay,
-                        twoCalendarsSolo,
-                        disabledWeekDays,
-                        allowedDates,
-                        showNowButton,
-                        nowButtonLabel,
-                        monthChangeOnScroll,
-                        markers,
-                        uid,
-                        modeHeight,
-                        enableSeconds,
-                        secondsIncrement,
-                        secondsGridIncrement,
-                        noSecondsOverlay,
-                        escClose,
-                        spaceConfirm,
-                        monthChangeOnArrows,
-                    }"
-                    v-model:internalModelValue="internalModelValue"
-                    @close-picker="closeMenu"
-                    @select-date="selectDate"
-                    @dp-open="recalculatePosition"
-                    @auto-apply="autoApplyValue"
-                    @time-update="timeUpdate"
-                >
-                    <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
-                        <slot :name="slot" v-bind="{ ...args }" />
-                    </template>
-                </DatepickerMenu>
-            </teleport>
-        </transition>
+        <teleport :to="teleport" :disabled="inline" v-if="isOpen">
+            <DatepickerMenu
+                v-if="isOpen"
+                ref="dpMenuRef"
+                :class="theme"
+                :style="menuPosition"
+                v-bind="{
+                    weekNumbers,
+                    weekStart,
+                    disableMonthYearSelect,
+                    menuClassName,
+                    calendarClassName,
+                    yearRange,
+                    range,
+                    twoCalendars,
+                    calendarCellClassName,
+                    enableTimePicker,
+                    is24,
+                    hoursIncrement,
+                    minutesIncrement,
+                    hoursGridIncrement,
+                    minutesGridIncrement,
+                    minDate,
+                    maxDate,
+                    autoApply,
+                    selectText,
+                    cancelText,
+                    previewFormat: previewFormatDefault,
+                    locale,
+                    weekNumName,
+                    disabledDates,
+                    filters: defaultFilters,
+                    minTime,
+                    maxTime,
+                    inline,
+                    openOnTop,
+                    monthPicker,
+                    timePicker,
+                    monthNameFormat,
+                    startDate,
+                    startTime: defaultStartTime,
+                    monthYearComponent,
+                    timePickerComponent,
+                    actionRowComponent,
+                    customProps,
+                    hideOffsetDates,
+                    autoRange,
+                    noToday,
+                    noHoursOverlay,
+                    noMinutesOverlay,
+                    twoCalendarsSolo,
+                    disabledWeekDays,
+                    allowedDates,
+                    showNowButton,
+                    nowButtonLabel,
+                    monthChangeOnScroll,
+                    markers,
+                    uid,
+                    modeHeight,
+                    enableSeconds,
+                    secondsIncrement,
+                    secondsGridIncrement,
+                    noSecondsOverlay,
+                    escClose,
+                    spaceConfirm,
+                    monthChangeOnArrows,
+                }"
+                v-model:internalModelValue="internalModelValue"
+                @close-picker="closeMenu"
+                @select-date="selectDate"
+                @dp-open="recalculatePosition"
+                @auto-apply="autoApplyValue"
+                @time-update="timeUpdate"
+            >
+                <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
+                    <slot :name="slot" v-bind="{ ...args }" />
+                </template>
+            </DatepickerMenu>
+        </teleport>
     </div>
 </template>
 
