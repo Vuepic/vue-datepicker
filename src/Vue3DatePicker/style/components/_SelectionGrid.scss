@@ -58,7 +58,7 @@
 .dp__overlay_col {
   box-sizing: border-box;
   width: 33%;
-  padding: 3px;
+  padding: $dp__overlay_col_padding;
   white-space: nowrap;
 }
 

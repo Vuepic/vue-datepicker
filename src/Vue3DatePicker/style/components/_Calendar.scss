@@ -4,6 +4,7 @@
   align-items: center;
   flex-direction: column;
   font-family: $dp__font_family;
+  flex: 0;
 }
 
 .db__calendar_header {
@@ -29,7 +30,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 5px 0;
+  margin: $dp__row_margin;
 }
 
 .dp__calendar_item {
@@ -49,7 +50,7 @@
 
 .dp__calendar_header_cell {
   border-bottom: thin solid var(--dp-border-color);
-  padding: 0.5rem;
+  padding: $dp__calendar_header_cell_padding;
 }
 
 .dp__cell_inner {
@@ -177,7 +178,7 @@
 }
 
 .dp__calendar_next {
-  margin-left: 10px;
+  margin-left: $dp__two_calendars_spacing;
 }
 
 %__dp_marker {

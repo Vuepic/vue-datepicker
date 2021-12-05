@@ -12,13 +12,14 @@
 .dp__input {
   background-color: var(--dp-background-color);
   border-radius: $dp__border_radius;
+  font-family: $dp__font_family;
   border: 1px solid var(--dp-border-color);
   outline: none;
   transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
   width: 100%;
   font-size: $dp__font_size;
   line-height: $dp__font_size * 1.5;
-  padding: 6px 12px;
+  padding: $dp__input_padding;
   color: var(--dp-text-color);
   box-sizing: border-box;
 
@@ -50,7 +51,7 @@
   stroke-width: 0;
   font-size: $dp__font_size;
   line-height: $dp__font_size * 1.5;
-  padding: 6px 12px;
+  padding: $dp__input_padding;
   color: var(--dp-icon-color);
   box-sizing: content-box;
 }
@@ -73,11 +74,11 @@
 }
 
 .dp__input_icon_pad {
-  padding-left: 35px;
+  padding-left: $dp__input_icon_padding;
 }
 
 .dp__input_valid {
-  box-shadow: 0 0 4px var(--dp-success-color);
+  box-shadow: 0 0 $dp__border_radius var(--dp-success-color);
   border-color: var(--dp-success-color);
 
   &:hover {
@@ -86,7 +87,7 @@
 }
 
 .dp__input_invalid {
-  box-shadow: 0 0 4px var(--dp-danger-color);
+  box-shadow: 0 0 $dp__border_radius var(--dp-danger-color);
   border-color: var(--dp-danger-color);
 
   &:hover {

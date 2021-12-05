@@ -8,7 +8,7 @@
   background: var(--dp-background-color);
 
   svg {
-    height: 20px;
+    height: $dp__button_icon_height;
     width: auto;
   }
 }
@@ -27,7 +27,7 @@
 .dp__action {
   font-weight: bold;
   cursor: pointer;
-  padding: 2px 5px;
+  padding: $dp__action_buttons_padding;
   border-radius: $dp__border_radius;
   display: inline-flex;
   align-items: center;

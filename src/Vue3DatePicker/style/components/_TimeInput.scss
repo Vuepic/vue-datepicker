@@ -51,8 +51,8 @@
 .dp__inc_dec_button {
   padding: 5px;
   margin: 0;
-  height: 32px;
-  width: 32px;
+  height: $dp__time_inc_dec_button_size;
+  width: $dp__time_inc_dec_button_size;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -62,8 +62,8 @@
   box-sizing: border-box;
 
   svg {
-    height: 32px;
-    width: 32px;
+    height: $dp__time_inc_dec_button_size;
+    width: $dp__time_inc_dec_button_size;
   }
 
   &:hover {

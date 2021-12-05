@@ -2,7 +2,7 @@
   position: absolute;
   background: var(--dp-background-color);
   border-radius: $dp__border_radius;
-  min-width: 260px;
+  min-width: $dp__menu_min_width;
   font-family: $dp__font_family;
   font-size: $dp__font_size;
   user-select: none;

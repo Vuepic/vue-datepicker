@@ -82,16 +82,15 @@
   justify-content: center;
   padding: $dp__common_padding;
   box-sizing: border-box;
-  height: 35px;
+  height: $dp__button_height;
 
   &:hover {
     background: var(--dp-hover-color);
     color: var(--dp-hover-icon-color);
   }
 
-  // todo - change selector
   svg {
-    height: 20px;
+    height: $dp__button_icon_height;
     width: auto;
   }
 }

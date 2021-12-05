@@ -10,16 +10,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 25px;
   cursor: pointer;
-  width: 25px;
+  height: $dp__month_year_row_button_size;
+  width: $dp__month_year_row_button_size;
   color: var(--dp-icon-color);
   text-align: center;
   border-radius: 50%;
 
   svg {
-    height: 20px;
-    width: 20px;
+    height: $dp__button_icon_height;
+    width: $dp__button_icon_height;
   }
 
   &:hover {
