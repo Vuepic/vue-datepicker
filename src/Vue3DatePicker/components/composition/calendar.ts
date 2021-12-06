@@ -133,7 +133,10 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
     const isDisabled = (date: Date): boolean => {
         const aboveMax = props.maxDate ? isDateAfter(date, props.maxDate) : false;
         const bellowMin = props.minDate ? isDateBefore(date, props.minDate) : false;
-        const inDisableArr = props.disabledDates.some((disabledDate: Date | string) => isDateEqual(disabledDate, date));
+        const inDisableArr =
+            typeof props.disabledDates === 'function'
+                ? props.disabledDates(date)
+                : props.disabledDates.some((disabledDate: Date | string) => isDateEqual(disabledDate, date));
         const disabledMonths = props.filters.months.length ? props.filters.months.map((month) => +month) : [];
         const inDisabledMonths = disabledMonths.includes(getDateMonth(date));
         const weekDayDisabled = props.disabledWeekDays.length

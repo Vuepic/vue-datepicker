@@ -143,6 +143,7 @@
         WeekStartStr,
         IMarker,
         ITransition,
+        IDisableDates,
     } from './interfaces';
     import { getDateHours, getDateMinutes, getDateSeconds, getDefaultPattern, isValidTime } from './utils/date-utils';
     import { getDefaultTextInputOptions, getDefaultFilters, mergeDefaultTransitions } from './utils/util';
@@ -210,7 +211,7 @@
         filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
         disableMonthYearSelect: { type: Boolean as PropType<boolean>, default: false },
         yearRange: { type: Array as PropType<number[]>, default: () => [1900, 2100] },
-        disabledDates: { type: Array as PropType<Date[] | string[]>, default: () => [] },
+        disabledDates: { type: [Array, Function] as PropType<Date[] | string[] | IDisableDates>, default: () => [] },
         disabledWeekDays: { type: Array as PropType<string[] | number[]>, default: () => [] },
         inline: { type: Boolean as PropType<boolean>, default: false },
         selectText: { type: String as PropType<string>, default: 'Select' },

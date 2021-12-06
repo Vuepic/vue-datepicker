@@ -86,7 +86,7 @@ export type UseCalendar = {
     minDate: Date | string;
     filters: IDateFilter;
     yearRange: number[];
-    disabledDates: string[] | Date[];
+    disabledDates: Date[] | string[] | IDisableDates;
     autoApply: boolean;
     monthPicker: boolean;
     timePicker: boolean;
@@ -140,5 +140,5 @@ export interface ITransition {
     next: string;
     previous: string;
 }
-
+export type IDisableDates = (date: Date) => boolean;
 export type ITimeType = 'hours' | 'minutes' | 'seconds';

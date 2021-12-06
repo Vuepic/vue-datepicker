@@ -111,7 +111,7 @@ interface Vue3DatePicker {
     };
     disableMonthYearSelect?: boolean;
     yearRange?: number[];
-    disabledDates?: Date[] | string[];
+    disabledDates?: Date[] | string[] | ((date: Date) => boolean);
     inline?: boolean;
     selectText?: string;
     cancelText?: string;
