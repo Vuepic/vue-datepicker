@@ -387,6 +387,7 @@
 
     const handleSpace = (event: Event): void => {
         event.stopImmediatePropagation();
+        event.preventDefault();
         if (props.spaceConfirm) {
             emit('selectDate');
         }
