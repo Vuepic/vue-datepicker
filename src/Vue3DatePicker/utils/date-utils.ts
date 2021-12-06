@@ -306,6 +306,8 @@ export const getNextYearMonth = (month: number, year: number): { month: number; 
     return { month: getMonth(date), year: getYear(date) };
 };
 
+export const addMonthsToDate = (date: Date | string, amount = 1): Date => addMonths(new Date(date), amount);
+
 export const getWeekDay = (date: string | Date): number => {
     return getDay(new Date(date));
 };

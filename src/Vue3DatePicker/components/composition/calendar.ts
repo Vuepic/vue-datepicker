@@ -1,6 +1,7 @@
 import { computed, onMounted, Ref, ref, UnwrapRef, watch } from 'vue';
 import { ICalendarDay, IMarker, InternalModuleValue, UseCalendar, VueEmit } from '../../interfaces';
 import {
+    addMonthsToDate,
     getAddedDays,
     getDateHours,
     getDateMinutes,
@@ -372,7 +373,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
 
     const handleNextMonthYear = (): void => {
         if (Array.isArray(modelValue.value) && modelValue.value.length === 2) {
-            const date = new Date(modelValue.value[1]);
+            const date = new Date(modelValue.value[1] ? modelValue.value[1] : addMonthsToDate(modelValue.value[0]));
             if ((monthNext.value === month.value && yearNext.value === year.value) || !props.twoCalendarsSolo) {
                 const date = getNextYearMonth(month.value, year.value);
                 monthNext.value = date.month;
