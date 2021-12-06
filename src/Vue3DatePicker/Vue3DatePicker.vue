@@ -98,6 +98,7 @@
                     escClose,
                     spaceConfirm,
                     monthChangeOnArrows,
+                    textInput,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @close-picker="closeMenu"

@@ -177,6 +177,7 @@
         escClose: { type: Boolean as PropType<boolean>, default: true },
         spaceConfirm: { type: Boolean as PropType<boolean>, default: true },
         monthChangeOnArrows: { type: Boolean as PropType<boolean>, default: true },
+        textInput: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
     const calendarWrapperRef = ref(null);
@@ -194,7 +195,7 @@
             nextTick(() => emit('dpOpen'));
         }
         const menu = unrefElement(dpMenuRef);
-        if (menu) {
+        if (menu && !props.textInput) {
             menu.focus();
             menu.addEventListener('pointerdown', (e) => {
                 e.stopImmediatePropagation();
