@@ -180,19 +180,15 @@
 
 <script lang="ts" setup>
     import { computed, PropType, ref } from 'vue';
+    import { getHours, getMinutes, getSeconds } from 'date-fns';
+
     import { ChevronUpIcon, ChevronDownIcon, ClockIcon } from '../Icons';
+
     import { DynamicClass, IDateFilter, IDefaultSelect, ITimeType } from '../../interfaces';
     import { getArrayInArray, hoursToAmPmHours } from '../../utils/util';
     import SelectionGrid from '../SelectionGrid.vue';
-    import {
-        addDateHours,
-        addDateMinutes,
-        addDateSeconds,
-        subDateHours,
-        subDateMinutes,
-        subDateSeconds,
-    } from '../../utils/date-utils';
     import { useTransitions } from '../composition/transition';
+    import { addTime, subTime } from '../../utils/date-utils';
 
     const emit = defineEmits(['setHours', 'setMinutes', 'update:hours', 'update:minutes', 'update:seconds']);
     const props = defineProps({
@@ -279,20 +275,20 @@
             hours:
                 type === 'hours'
                     ? inc
-                        ? addDateHours(props.hours, +props.hoursIncrement)
-                        : subDateHours(props.hours, +props.hoursIncrement)
+                        ? getHours(addTime({ hours: +props.hours }, { hours: +props.hoursIncrement }))
+                        : getHours(subTime({ hours: +props.hours }, { hours: +props.hoursIncrement }))
                     : props.hours,
             minutes:
                 type === 'minutes'
                     ? inc
-                        ? addDateMinutes(props.minutes, +props.minutesIncrement)
-                        : subDateMinutes(props.minutes, +props.minutesIncrement)
+                        ? getMinutes(addTime({ minutes: props.minutes }, { minutes: +props.minutesIncrement }))
+                        : getMinutes(subTime({ minutes: props.minutes }, { minutes: +props.minutesIncrement }))
                     : props.minutes,
             seconds:
                 type === 'seconds'
                     ? inc
-                        ? addDateSeconds(props.seconds, +props.secondsIncrement)
-                        : subDateSeconds(props.seconds, +props.secondsIncrement)
+                        ? getSeconds(addTime({ seconds: props.seconds }, { seconds: +props.secondsIncrement }))
+                        : getSeconds(subTime({ seconds: props.seconds }, { seconds: +props.secondsIncrement }))
                     : props.seconds,
         };
     };

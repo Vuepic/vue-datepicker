@@ -3,14 +3,14 @@ import { Ref, ref, watch } from 'vue';
 import {
     formatDate,
     getDefaultPattern,
-    getMonthForExternal,
     getTImeForExternal,
     isValidDate,
-    setDateTime,
     setDateMonthOrYear,
+    setDateTime,
 } from '../../utils/date-utils';
 import { IFormat, ModelValue, VueEmit } from '../../interfaces';
 import { isMonth, isRangeArray, isSingle, isTime, isTimeArray } from '../../utils/type-guard';
+import { getMonthVal } from '../../utils/date-utils';
 
 interface IExternalInternalMapper {
     parseExternalModelValue: (value: ModelValue) => void;
@@ -95,7 +95,7 @@ export const useExternalInternalMapper = (
         } else if (timePicker) {
             inputValue.value = format(getTImeForExternal(internalModelValue.value));
         } else if (monthPicker) {
-            inputValue.value = format(getMonthForExternal(internalModelValue.value as Date));
+            inputValue.value = format(getMonthVal(internalModelValue.value as Date));
         } else {
             inputValue.value = format(internalModelValue.value);
         }
@@ -117,7 +117,7 @@ export const useExternalInternalMapper = (
      */
     const emitModelValue = (): void => {
         if (monthPicker) {
-            emit('update:modelValue', getMonthForExternal(internalModelValue.value as Date));
+            emit('update:modelValue', getMonthVal(internalModelValue.value as Date));
         } else if (timePicker) {
             emit('update:modelValue', getTImeForExternal(internalModelValue.value));
         } else {

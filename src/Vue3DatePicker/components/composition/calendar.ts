@@ -1,18 +1,11 @@
 import { computed, onMounted, Ref, ref, UnwrapRef, watch } from 'vue';
+import { addDays, addMonths, getDay, getHours, getISOWeek, getMinutes, getMonth, getSeconds, getYear } from 'date-fns';
+
 import { ICalendarDay, IMarker, InternalModuleValue, UseCalendar, VueEmit } from '../../interfaces';
 import {
-    addMonthsToDate,
-    getAddedDays,
-    getDateHours,
-    getDateMinutes,
-    getDateMonth,
-    getDateSeconds,
-    getDateYear,
     getNextMonthYear,
     getNextYearMonth,
     getPreviousMonthYear,
-    getWeekDay,
-    getWeekNumber,
     isDateAfter,
     isDateBefore,
     isDateEqual,
@@ -56,12 +49,16 @@ interface IUseCalendar {
 export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => {
     const today = ref<Date>(new Date());
     const hoveredDate = ref<Date | null>();
-    const month = ref<number>(getDateMonth(new Date()));
-    const year = ref<number>(getDateYear(new Date()));
+    const month = ref<number>(getMonth(new Date()));
+    const year = ref<number>(getYear(new Date()));
     const monthNext = ref<number>(getNextMonthYear(new Date()).month);
     const yearNext = ref<number>(getNextMonthYear(new Date()).year);
-    const hours = ref<number | number[]>(props.range ? [getDateHours(), getDateHours()] : getDateHours());
-    const minutes = ref<number | number[]>(props.range ? [getDateMinutes(), getDateMinutes()] : getDateMinutes());
+    const hours = ref<number | number[]>(
+        props.range ? [getHours(new Date()), getHours(new Date())] : getHours(new Date()),
+    );
+    const minutes = ref<number | number[]>(
+        props.range ? [getMinutes(new Date()), getMinutes(new Date())] : getMinutes(new Date()),
+    );
     const seconds = ref<number | number[]>(props.range ? [0, 0] : 0);
 
     onMounted(() => {
@@ -69,8 +66,8 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
 
         if (!modelValue.value) {
             if (props.startDate) {
-                month.value = getDateMonth(new Date(props.startDate));
-                year.value = getDateYear(new Date(props.startDate));
+                month.value = getMonth(new Date(props.startDate));
+                year.value = getYear(new Date(props.startDate));
                 if (props.twoCalendars) {
                     monthNext.value = getNextMonthYear(new Date(props.startDate)).month;
                     yearNext.value = getNextMonthYear(new Date(props.startDate)).year;
@@ -144,15 +141,15 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
                       isDateEqual(sanitizeDate(new Date(disabledDate)), sanitizeDate(date)),
                   );
         const disabledMonths = props.filters.months.length ? props.filters.months.map((month) => +month) : [];
-        const inDisabledMonths = disabledMonths.includes(getDateMonth(date));
+        const inDisabledMonths = disabledMonths.includes(getMonth(date));
         const weekDayDisabled = props.disabledWeekDays.length
-            ? props.disabledWeekDays.some((day) => +day === getWeekDay(date))
+            ? props.disabledWeekDays.some((day) => +day === getDay(date))
             : false;
         const notInSpecific = props.allowedDates.length
             ? !props.allowedDates.some((dateVal) => isDateEqual(sanitizeDate(new Date(dateVal)), sanitizeDate(date)))
             : false;
 
-        const dateYear = getDateYear(date);
+        const dateYear = getYear(date);
 
         const outOfYearRange = dateYear < +props.yearRange[0] || dateYear > +props.yearRange[1];
 
@@ -204,8 +201,8 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
      * Extracted method to map month and year
      */
     const assignMonthAndYear = (date: Date): void => {
-        month.value = getDateMonth(date);
-        year.value = getDateYear(date);
+        month.value = getMonth(date);
+        year.value = getYear(date);
     };
 
     /**
@@ -216,18 +213,18 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
             if (isModelValueRange(modelValue.value)) {
                 if (modelValue.value.length === 2) {
                     assignMonthAndYear(modelValue.value[0]);
-                    hours.value = [getDateHours(modelValue.value[0]), getDateHours(modelValue.value[1])];
-                    minutes.value = [getDateMinutes(modelValue.value[0]), getDateMinutes(modelValue.value[1])];
-                    seconds.value = [getDateSeconds(modelValue.value[0]), getDateSeconds(modelValue.value[1])];
+                    hours.value = [getHours(modelValue.value[0]), getHours(modelValue.value[1])];
+                    minutes.value = [getMinutes(modelValue.value[0]), getMinutes(modelValue.value[1])];
+                    seconds.value = [getSeconds(modelValue.value[0]), getSeconds(modelValue.value[1])];
                 }
                 if (props.twoCalendars) {
                     handleNextMonthYear();
                 }
             } else {
                 assignMonthAndYear(modelValue.value);
-                hours.value = getDateHours(modelValue.value);
-                minutes.value = getDateMinutes(modelValue.value);
-                seconds.value = getDateSeconds(modelValue.value);
+                hours.value = getHours(modelValue.value);
+                minutes.value = getMinutes(modelValue.value);
+                seconds.value = getSeconds(modelValue.value);
             }
         } else {
             if (props.timePicker) {
@@ -255,8 +252,8 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
      * When using next calendar on auto range mode, adjust month and year for both calendars
      */
     const handleNextCalendarAutoRange = (date: string | Date) => {
-        const monthValue = getDateMonth(new Date(date));
-        const yearValue = getDateYear(new Date(date));
+        const monthValue = getMonth(new Date(date));
+        const yearValue = getYear(new Date(date));
         const next = getNextMonthYear(new Date(date));
         month.value = monthValue;
         year.value = yearValue;
@@ -289,7 +286,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
                 if (isNext) {
                     handleNextCalendarAutoRange(day.value);
                 }
-                rangeDate = [new Date(day.value), getAddedDays(new Date(day.value), +props.autoRange)];
+                rangeDate = [new Date(day.value), addDays(new Date(day.value), +props.autoRange)];
             } else {
                 if (!rangeDate[0]) {
                     rangeDate[0] = new Date(day.value);
@@ -320,7 +317,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
     const getWeekNum = (days: UnwrapRef<ICalendarDay[]>): string | number => {
         const firstCurrentData = days.find((day) => day.current);
         if (firstCurrentData) {
-            return getWeekNumber(firstCurrentData.value);
+            return getISOWeek(firstCurrentData.value);
         }
         return '';
     };
@@ -342,7 +339,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         if (props.autoRange) {
             if (hoveredDate.value) {
                 if (props.hideOffsetDates && !day.current) return false;
-                const rangeEnd = getAddedDays(hoveredDate.value, +props.autoRange);
+                const rangeEnd = addDays(hoveredDate.value, +props.autoRange);
                 return isDateEqual(rangeEnd, new Date(day.value));
             }
             return false;
@@ -356,7 +353,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
     const isAutoRangeInBetween = (day: UnwrapRef<ICalendarDay>): boolean => {
         if (props.autoRange) {
             if (hoveredDate.value) {
-                const rangeEnd = getAddedDays(hoveredDate.value, +props.autoRange);
+                const rangeEnd = addDays(hoveredDate.value, +props.autoRange);
                 if (props.hideOffsetDates && !day.current) return false;
                 return isDateAfter(day.value, hoveredDate.value) && isDateBefore(day.value, rangeEnd);
             }
@@ -378,15 +375,15 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
 
     const handleNextMonthYear = (): void => {
         if (Array.isArray(modelValue.value) && modelValue.value.length === 2) {
-            const date = new Date(modelValue.value[1] ? modelValue.value[1] : addMonthsToDate(modelValue.value[0]));
+            const date = new Date(modelValue.value[1] ? modelValue.value[1] : addMonths(modelValue.value[0], 1));
             if ((monthNext.value === month.value && yearNext.value === year.value) || !props.twoCalendarsSolo) {
                 const date = getNextYearMonth(month.value, year.value);
                 monthNext.value = date.month;
                 yearNext.value = date.year;
             } else {
-                if (getDateMonth(modelValue.value[0]) !== getDateMonth(modelValue.value[1])) {
-                    monthNext.value = getDateMonth(date);
-                    yearNext.value = getDateYear(date);
+                if (getMonth(modelValue.value[0]) !== getMonth(modelValue.value[1])) {
+                    monthNext.value = getMonth(date);
+                    yearNext.value = getYear(date);
                 }
             }
         }

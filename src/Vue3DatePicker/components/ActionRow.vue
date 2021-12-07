@@ -32,7 +32,7 @@
 <script lang="ts" setup>
     import { computed, PropType } from 'vue';
     import { IFormat, InternalModuleValue, ITimeValue } from '../interfaces';
-    import { formatDate, getMonthForExternal, getTImeForExternal, isValidTime } from '../utils/date-utils';
+    import { formatDate, getMonthVal, getTImeForExternal, isValidTime } from '../utils/date-utils';
     import { isModelValueRange } from '../utils/type-guard';
 
     const emit = defineEmits(['closePicker', 'selectDate']);
@@ -95,7 +95,7 @@
             return props.previewFormat(getTImeForExternal(props.internalModelValue));
         }
         if (props.monthPicker) {
-            return props.previewFormat(getMonthForExternal(props.internalModelValue as Date));
+            return props.previewFormat(getMonthVal(props.internalModelValue as Date));
         }
         return props.previewFormat(props.internalModelValue);
     });
