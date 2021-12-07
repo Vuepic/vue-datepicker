@@ -10,16 +10,15 @@ import {
     MaybeElementRef,
     WeekStartNum,
 } from '../interfaces';
-import { getAddedDays, getStartOfTheWeek, isDateEqual, resetDateTime } from './date-utils';
+import { getAddedDays, getDateMonth, getStartOfTheWeek, isDateEqual, resetDateTime } from './date-utils';
 
 // Get 7 days from the provided start date, month is used to check whether the date is from the specified month or in the offset
 const getWeekDays = (startDay: Date, month: number, hideOffsetDates: boolean): ICalendarDay[] => {
     const startDate = new Date(JSON.parse(JSON.stringify(startDay)));
     const dates = [];
     for (let i = 0; i < 7; i++) {
-        const next = new Date(new Date(JSON.parse(JSON.stringify(startDate))).getTime());
-        next.setDate(startDate.getDate() + i);
-        const isNext = JSON.parse(JSON.stringify(next.getMonth())) !== month;
+        const next = getAddedDays(startDate, i);
+        const isNext = getDateMonth(next) !== month;
         dates.push({
             text: hideOffsetDates && isNext ? '' : next.getDate(),
             value: next,
@@ -134,9 +133,8 @@ export const getDefaultTextInputOptions = (): ITextInputOptions => ({
 /**
  * Default filters to merge with user provided values
  */
-export const getDefaultFilters = (filters: Partial<IDateFilter>): IDateFilter => {
-    return Object.assign({ months: [], years: [], times: { hours: [], minutes: [], seconds: [] } }, filters);
-};
+export const getDefaultFilters = (filters: Partial<IDateFilter>): IDateFilter =>
+    Object.assign({ months: [], years: [], times: { hours: [], minutes: [], seconds: [] } }, filters);
 
 /**
  * For v-for loops randomize string value

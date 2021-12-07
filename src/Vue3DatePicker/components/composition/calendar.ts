@@ -16,6 +16,7 @@ import {
     isDateAfter,
     isDateBefore,
     isDateEqual,
+    sanitizeDate,
     setDateMonthOrYear,
     setDateTime,
 } from '../../utils/date-utils';
@@ -132,19 +133,23 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
      * Check if date is between max and min date, or if it is included in filters
      */
     const isDisabled = (date: Date): boolean => {
-        const aboveMax = props.maxDate ? isDateAfter(date, props.maxDate) : false;
-        const bellowMin = props.minDate ? isDateBefore(date, props.minDate) : false;
+        const aboveMax = props.maxDate ? isDateAfter(sanitizeDate(date), sanitizeDate(new Date(props.maxDate))) : false;
+        const bellowMin = props.minDate
+            ? isDateBefore(sanitizeDate(date), sanitizeDate(new Date(props.minDate)))
+            : false;
         const inDisableArr =
             typeof props.disabledDates === 'function'
                 ? props.disabledDates(date)
-                : props.disabledDates.some((disabledDate: Date | string) => isDateEqual(disabledDate, date));
+                : props.disabledDates.some((disabledDate: Date | string) =>
+                      isDateEqual(sanitizeDate(new Date(disabledDate)), sanitizeDate(date)),
+                  );
         const disabledMonths = props.filters.months.length ? props.filters.months.map((month) => +month) : [];
         const inDisabledMonths = disabledMonths.includes(getDateMonth(date));
         const weekDayDisabled = props.disabledWeekDays.length
             ? props.disabledWeekDays.some((day) => +day === getWeekDay(date))
             : false;
         const notInSpecific = props.allowedDates.length
-            ? !props.allowedDates.some((dateVal) => isDateEqual(new Date(dateVal), date))
+            ? !props.allowedDates.some((dateVal) => isDateEqual(sanitizeDate(new Date(dateVal)), sanitizeDate(date)))
             : false;
 
         const dateYear = getDateYear(date);
@@ -575,9 +580,10 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         }
     };
 
-    const getMarker = (date: UnwrapRef<ICalendarDay>): IMarker | undefined => {
-        return props.markers.find((marker) => isDateEqual(new Date(date.value), new Date(marker.date)));
-    };
+    const getMarker = (date: UnwrapRef<ICalendarDay>): IMarker | undefined =>
+        props.markers.find((marker) =>
+            isDateEqual(sanitizeDate(new Date(date.value)), sanitizeDate(new Date(marker.date))),
+        );
 
     const selectCurrentDate = (): void => {
         if (!props.range) {

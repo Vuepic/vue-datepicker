@@ -34,6 +34,8 @@ import {
 
 import { IMonthValue, InternalModuleValue, ITimeValue, WeekStartNum } from '../interfaces';
 
+export const sanitizeDate = (date: Date) => new Date(date.valueOf() + date.getTimezoneOffset() * 60 * 1000);
+
 /**
  * it will try to parse date based on pattern and parts of the text value
  */
@@ -59,9 +61,7 @@ export const resetDateTime = (value: Date | string): Date => {
 /**
  * Convert string value to date based on provided pattern
  */
-export const parseDate = (date: string, pattern: string): Date => {
-    return parse(date, pattern, new Date());
-};
+export const parseDate = (date: string, pattern: string): Date => parse(date, pattern, new Date());
 
 /**
  * Check if provided date(s) is valid
@@ -114,9 +114,8 @@ export const setDateMonthOrYear = (date: Date | null, month?: number | null, yea
     return dateCopy;
 };
 
-const getTimeFormat = (is24: boolean, seconds: boolean): string => {
-    return is24 ? `HH:mm${seconds ? ':ss' : ''}` : `hh:mm${seconds ? ':ss' : ''} aa`;
-};
+const getTimeFormat = (is24: boolean, seconds: boolean): string =>
+    is24 ? `HH:mm${seconds ? ':ss' : ''}` : `hh:mm${seconds ? ':ss' : ''} aa`;
 
 export const getDefaultPattern = (
     pattern: string | null,
@@ -142,19 +141,18 @@ export const getDefaultPattern = (
  * Extract time value from the date for time picker
  */
 export const getTimeVal = (date?: Date): ITimeValue => {
+    const dateValue = date || new Date();
     return {
-        hours: getHours(date || new Date()),
-        minutes: getMinutes(date || new Date()),
-        seconds: getSeconds(date || new Date()),
+        hours: getHours(dateValue),
+        minutes: getMinutes(dateValue),
+        seconds: getSeconds(dateValue),
     };
 };
 
 /**
  * Extract month value from the date for month picker
  */
-export const getMonthVal = (date: Date): IMonthValue => {
-    return { month: getMonth(date), year: getYear(date) };
-};
+export const getMonthVal = (date: Date): IMonthValue => ({ month: getMonth(date), year: getYear(date) });
 
 /**
  * Map internal date value to the value that will be passed to v-model external on time picker
@@ -169,9 +167,7 @@ export const getTImeForExternal = (date: Date | Date[]): ITimeValue | ITimeValue
 /**
  * Map internal date vale to the value that will be passed to v-model external on month picker
  */
-export const getMonthForExternal = (date: Date): IMonthValue => {
-    return getMonthVal(date);
-};
+export const getMonthForExternal = (date: Date): IMonthValue => getMonthVal(date);
 
 /**
  * Format date values for the input field based on provided pattern
@@ -187,16 +183,12 @@ export const formatDate = (value: Date | Date[], pattern: string): string => {
 /**
  * Get month value from the provided date
  */
-export const getDateMonth = (date: Date): number => {
-    return getMonth(date);
-};
+export const getDateMonth = (date: Date): number => getMonth(date);
 
 /**
  * Get year value from the provided date
  */
-export const getDateYear = (date: Date): number => {
-    return getYear(date);
-};
+export const getDateYear = (date: Date): number => getYear(date);
 
 /**
  * Check if the given date is after the provided date
@@ -231,23 +223,17 @@ export const isDateEqual = (date: Date | string | null, dateToCompare: Date | st
 /**
  * Return the ISO week number for the given date
  */
-export const getWeekNumber = (date: Date): number => {
-    return getISOWeek(new Date(date));
-};
+export const getWeekNumber = (date: Date): number => getISOWeek(new Date(date));
 
 /**
  * Get hours from given date, if none, will return current hours
  */
-export const getDateHours = (date?: Date): number => {
-    return getHours(date || new Date());
-};
+export const getDateHours = (date?: Date): number => getHours(date || new Date());
 
 /**
  * Get minutes from the given date, if none, will return current minutes
  */
-export const getDateMinutes = (date?: Date): number => {
-    return getMinutes(date || new Date());
-};
+export const getDateMinutes = (date?: Date): number => getMinutes(date || new Date());
 
 export const getDateSeconds = (date?: Date): number => {
     return getSeconds(date || new Date());
@@ -256,45 +242,37 @@ export const getDateSeconds = (date?: Date): number => {
 /**
  * Add n amount of days to a given date
  */
-export const getAddedDays = (date: Date, days: number): Date => {
-    return addDays(date, days);
-};
+export const getAddedDays = (date: Date, days: number): Date => addDays(date, days);
 
 /**
  * Add specific amount of hours to the previous hours
  */
-export const addDateHours = (hours: number, toAdd: number): number => {
-    return getHours(addHours(setHours(new Date(), hours), toAdd));
-};
+export const addDateHours = (hours: number, toAdd: number): number =>
+    getHours(addHours(setHours(new Date(), hours), toAdd));
 
 /**
  * Subtract specific amount of hours to the previous hours
  */
-export const subDateHours = (hours: number, toSub: number): number => {
-    return getHours(subHours(setHours(new Date(), hours), toSub));
-};
+export const subDateHours = (hours: number, toSub: number): number =>
+    getHours(subHours(setHours(new Date(), hours), toSub));
 
 /**
  * Add specific amount of minutes to the previous minutes
  */
-export const addDateMinutes = (minutes: number, toAdd: number): number => {
-    return getMinutes(addMinutes(setMinutes(new Date(), minutes), toAdd));
-};
+export const addDateMinutes = (minutes: number, toAdd: number): number =>
+    getMinutes(addMinutes(setMinutes(new Date(), minutes), toAdd));
 
 /**
  * Subtract specific amount of minutes to the previous minutes
  */
-export const subDateMinutes = (minutes: number, toSub: number): number => {
-    return getMinutes(subMinutes(setMinutes(new Date(), minutes), toSub));
-};
+export const subDateMinutes = (minutes: number, toSub: number): number =>
+    getMinutes(subMinutes(setMinutes(new Date(), minutes), toSub));
 
-export const addDateSeconds = (seconds: number, toAdd: number): number => {
-    return getSeconds(addSeconds(setSeconds(new Date(), seconds), toAdd));
-};
+export const addDateSeconds = (seconds: number, toAdd: number): number =>
+    getSeconds(addSeconds(setSeconds(new Date(), seconds), toAdd));
 
-export const subDateSeconds = (seconds: number, toSub: number): number => {
-    return getSeconds(subSeconds(setSeconds(new Date(), seconds), toSub));
-};
+export const subDateSeconds = (seconds: number, toSub: number): number =>
+    getSeconds(subSeconds(setSeconds(new Date(), seconds), toSub));
 
 export const getPreviousMonthYear = (month: number, year: number): { month: number; year: number } => {
     const date = subMonths(setYear(setMonth(new Date(), month), year), 1);
@@ -308,17 +286,12 @@ export const getNextYearMonth = (month: number, year: number): { month: number; 
 
 export const addMonthsToDate = (date: Date | string, amount = 1): Date => addMonths(new Date(date), amount);
 
-export const getWeekDay = (date: string | Date): number => {
-    return getDay(new Date(date));
-};
+export const getWeekDay = (date: string | Date): number => getDay(new Date(date));
 
-export const getStartOfTheWeek = (date: Date, start: WeekStartNum): Date => {
-    return startOfWeek(date, { weekStartsOn: start });
-};
+export const getStartOfTheWeek = (date: Date, start: WeekStartNum): Date => startOfWeek(date, { weekStartsOn: start });
 
-const setTimeValue = (date: Date): Date => {
-    return set(new Date(), { hours: getHours(date), minutes: getMinutes(date), seconds: getSeconds(date) });
-};
+const setTimeValue = (date: Date): Date =>
+    set(new Date(), { hours: getHours(date), minutes: getMinutes(date), seconds: getSeconds(date) });
 
 const getMinMaxTime = (time: ITimeValue): Date => {
     return set(new Date(), {
