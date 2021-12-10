@@ -26,7 +26,10 @@ import {
 
 import { IMonthValue, InternalModuleValue, ITimeValue } from '../interfaces';
 
-export const sanitizeDate = (date: Date) => new Date(date.valueOf() + date.getTimezoneOffset() * 60 * 1000);
+export const sanitizeDate = (date: Date) => {
+    const userTimezoneOffset = date.getTimezoneOffset() * 60000;
+    return new Date(date.getTime() - userTimezoneOffset);
+};
 
 export const parseFreeInput = (value: string, pattern: string): Date | null => {
     const parsedDate = parse(value, pattern.slice(0, value.length), new Date());
