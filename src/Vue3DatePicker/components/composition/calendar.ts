@@ -213,9 +213,18 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
             if (isModelValueRange(modelValue.value)) {
                 if (modelValue.value.length === 2) {
                     assignMonthAndYear(modelValue.value[0]);
-                    hours.value = [getHours(modelValue.value[0]), getHours(modelValue.value[1])];
-                    minutes.value = [getMinutes(modelValue.value[0]), getMinutes(modelValue.value[1])];
-                    seconds.value = [getSeconds(modelValue.value[0]), getSeconds(modelValue.value[1])];
+                    hours.value = [
+                        getHours(modelValue.value[0]),
+                        modelValue.value[1] ? getHours(modelValue.value[1]) : getHours(new Date()),
+                    ];
+                    minutes.value = [
+                        getMinutes(modelValue.value[0]),
+                        modelValue.value[1] ? getMinutes(modelValue.value[1]) : getMinutes(new Date()),
+                    ];
+                    seconds.value = [
+                        getSeconds(modelValue.value[0]),
+                        modelValue.value[1] ? getSeconds(modelValue.value[1]) : getSeconds(new Date()),
+                    ];
                 }
                 if (props.twoCalendars) {
                     handleNextMonthYear();
