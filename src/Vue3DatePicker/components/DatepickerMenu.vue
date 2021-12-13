@@ -196,7 +196,9 @@
         }
         const menu = unrefElement(dpMenuRef);
         if (menu && !props.textInput && !props.inline) {
-            menu.focus();
+            menu.focus({ preventScroll: true });
+        }
+        if (menu) {
             menu.addEventListener('pointerdown', (e) => {
                 e.stopImmediatePropagation();
             });
