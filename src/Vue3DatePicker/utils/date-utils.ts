@@ -206,14 +206,16 @@ export const isValidTime = (date: InternalModuleValue, maxTime: ITimeValue, minT
             isValid = selectedDateTime.getTime() <= maxDate.getTime();
         }
     }
+
     if (minTime) {
         const minDate = getMinMaxTime(minTime);
         if (Array.isArray(selectedDateTime)) {
             isValid =
                 (selectedDateTime[0] ? selectedDateTime[0].getTime() >= minDate.getTime() : true) &&
-                (selectedDateTime[1] ? selectedDateTime[1].getTime() >= minDate.getTime() : true);
+                (selectedDateTime[1] ? selectedDateTime[1].getTime() >= minDate.getTime() : true) &&
+                isValid;
         } else {
-            isValid = selectedDateTime.getTime() >= minDate.getTime();
+            isValid = selectedDateTime.getTime() >= minDate.getTime() && isValid;
         }
     }
     return isValid;
