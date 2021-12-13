@@ -195,7 +195,7 @@
             nextTick(() => emit('dpOpen'));
         }
         const menu = unrefElement(dpMenuRef);
-        if (menu && !props.textInput) {
+        if (menu && !props.textInput && !props.inline) {
             menu.focus();
             menu.addEventListener('pointerdown', (e) => {
                 e.stopImmediatePropagation();
