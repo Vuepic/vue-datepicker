@@ -54,7 +54,7 @@ export const useExternalInternalMapper = (
                 if (isTimeArray(value) && 'hours' in value[0] && 'minutes' in value[0]) {
                     mappedDate = [
                         setDateTime(null, +value[0].hours, +value[0].minutes, +value[0].seconds),
-                        setDateTime(null, +value[1].hours, +value[1].minutes, +value[0].seconds),
+                        setDateTime(null, +value[1].hours, +value[1].minutes, +value[1].seconds),
                     ];
                 } else if (isTime(value)) {
                     mappedDate = setDateTime(null, +value.hours, +value.minutes, +value.seconds);
