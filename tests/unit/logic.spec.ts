@@ -240,4 +240,24 @@ describe('Logic connection', () => {
         const actionRow = menu.findComponent(ActionRow);
         expect(actionRow.text().includes(format(selected))).toBeTruthy();
     });
+
+    it('Should format with locale', async () => {
+        const selected = new Date(0);
+        // The day of the week (E) is locale-sensitive in Japanese.
+        // Since epoch time zero (1970/1/1) was a Thursday, the 'Thu' must be localized to '木'.
+        const dp = mount(Datepicker, { props: { modelValue: null, format: 'E', locale: 'ja-JP' } });
+
+        dp.vm.openMenu();
+
+        await dp.vm.$nextTick();
+
+        const menu: VueWrapper<any> = dp.findComponent(DatepickerMenu);
+        const calendar = menu.findComponent(Calendar);
+        calendar.vm.$emit('selectDate', { value: selected, current: true });
+        await calendar.vm.$nextTick();
+        dp.vm.selectDate();
+        await dp.vm.$nextTick();
+
+        expect(dp.vm.inputValue).toEqual('木');
+    });
 });
