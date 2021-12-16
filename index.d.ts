@@ -172,6 +172,7 @@ interface Vue3DatePicker {
     openMenuOnFocus?: boolean;
     spaceConfirm?: boolean;
     monthChangeOnArrows?: boolean;
+    formatLocale?: Locale;
 }
 
 interface PublicMethods extends MethodOptions {

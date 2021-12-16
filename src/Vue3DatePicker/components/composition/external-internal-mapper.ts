@@ -1,4 +1,4 @@
-import { Ref, ref, watch } from 'vue';
+import { ComputedRef, Ref, ref, watch } from 'vue';
 
 import {
     formatDate,
@@ -11,6 +11,7 @@ import {
 import { IFormat, ModelValue, VueEmit } from '../../interfaces';
 import { isMonth, isRangeArray, isSingle, isTime, isTimeArray } from '../../utils/type-guard';
 import { getMonthVal } from '../../utils/date-utils';
+import { Locale } from 'date-fns';
 
 interface IExternalInternalMapper {
     parseExternalModelValue: (value: ModelValue) => void;
@@ -33,6 +34,7 @@ export const useExternalInternalMapper = (
     is24: boolean,
     enableTimePicker: boolean,
     enableSeconds: boolean,
+    formatLocale: ComputedRef<Locale>,
     emit: VueEmit,
 ): IExternalInternalMapper => {
     const inputValue = ref('');
@@ -91,7 +93,7 @@ export const useExternalInternalMapper = (
             inputValue.value = '';
         } else if (!format || typeof format === 'string') {
             const pattern = getDefaultPattern(format, is24, enableSeconds, monthPicker, timePicker, enableTimePicker);
-            inputValue.value = formatDate(internalModelValue.value, pattern);
+            inputValue.value = formatDate(internalModelValue.value, pattern, formatLocale?.value);
         } else if (timePicker) {
             inputValue.value = format(getTImeForExternal(internalModelValue.value));
         } else if (monthPicker) {

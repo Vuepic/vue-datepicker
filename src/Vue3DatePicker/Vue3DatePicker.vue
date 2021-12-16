@@ -128,7 +128,7 @@
         useSlots,
         watch,
     } from 'vue';
-    import { getHours, getMinutes, getSeconds } from 'date-fns';
+    import { getHours, getMinutes, getSeconds, Locale } from 'date-fns';
 
     import DatepickerInput from './components/DatepickerInput.vue';
     import DatepickerMenu from './components/DatepickerMenu.vue';
@@ -251,6 +251,7 @@
         escClose: { type: Boolean as PropType<boolean>, default: true },
         spaceConfirm: { type: Boolean as PropType<boolean>, default: true },
         monthChangeOnArrows: { type: Boolean as PropType<boolean>, default: true },
+        formatLocale: { type: Object as PropType<Locale>, default: null },
     });
     const slots = useSlots();
     const isOpen = ref(false);
@@ -258,6 +259,8 @@
     const dpMenuRef = ref(null);
     const inputRef = ref(null);
     provide('autoApply', props.autoApply);
+    const formatLocaleRef = computed(() => props.formatLocale);
+    provide('formatLocale', formatLocaleRef);
 
     onMounted(() => {
         parseExternalModelValue(props.modelValue);
@@ -306,6 +309,7 @@
             props.is24,
             props.enableTimePicker,
             props.enableSeconds,
+            formatLocaleRef,
             emit,
         );
 

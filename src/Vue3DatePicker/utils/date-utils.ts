@@ -22,6 +22,7 @@ import {
     set,
     add,
     sub,
+    Locale,
 } from 'date-fns';
 
 import { IMonthValue, InternalModuleValue, ITimeValue } from '../interfaces';
@@ -134,12 +135,19 @@ export const getTImeForExternal = (date: Date | Date[]): ITimeValue | ITimeValue
     return getTimeVal(date);
 };
 
-export const formatDate = (value: Date | Date[], pattern: string): string => {
+const formatFn = (value: Date, pattern: string, locale?: Locale | null): string => {
+    if (locale) {
+        return format(value, pattern, { locale });
+    }
+    return format(value, pattern);
+};
+
+export const formatDate = (value: Date | Date[], pattern: string, locale?: Locale | null): string => {
     if (Array.isArray(value)) {
-        return `${format(value[0], pattern)} - ${value[1] ? format(value[1], pattern) : ''}`;
+        return `${formatFn(value[0], pattern, locale)} - ${value[1] ? formatFn(value[1], pattern, locale) : ''}`;
     }
 
-    return format(value, pattern);
+    return formatFn(value, pattern, locale);
 };
 
 export const isDateAfter = (date: Date | string | null, dateToCompare: Date | string | null): boolean => {

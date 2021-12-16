@@ -30,7 +30,8 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, PropType } from 'vue';
+    import { computed, ComputedRef, inject, PropType } from 'vue';
+    import { Locale } from 'date-fns';
     import { IFormat, InternalModuleValue, ITimeValue } from '../interfaces';
     import { formatDate, getMonthVal, getTImeForExternal, isValidTime } from '../utils/date-utils';
     import { isModelValueRange } from '../utils/type-guard';
@@ -57,7 +58,7 @@
         maxTime: { type: Object as PropType<ITimeValue>, default: null },
         enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
     });
-
+    const formatLocale = inject<ComputedRef<Locale>>('formatLocale');
     const selectClass = computed(() => ({
         dp__action: true,
         dp__select: true,
@@ -77,19 +78,20 @@
             if (isModelValueRange(props.internalModelValue)) {
                 if (props.internalModelValue.length === 2 && props.internalModelValue[1]) {
                     if (props.twoCalendars) {
-                        return `${formatDate(props.internalModelValue[0], props.previewFormat)} - ${formatDate(
-                            props.internalModelValue[1],
+                        return `${formatDate(
+                            props.internalModelValue[0],
                             props.previewFormat,
-                        )}`;
+                            formatLocale?.value,
+                        )} - ${formatDate(props.internalModelValue[1], props.previewFormat, formatLocale?.value)}`;
                     }
                     return [
-                        formatDate(props.internalModelValue[0], props.previewFormat),
-                        formatDate(props.internalModelValue[1], props.previewFormat),
+                        formatDate(props.internalModelValue[0], props.previewFormat, formatLocale?.value),
+                        formatDate(props.internalModelValue[1], props.previewFormat, formatLocale?.value),
                     ];
                 }
-                return `${formatDate(props.internalModelValue[0], props.previewFormat)} -`;
+                return `${formatDate(props.internalModelValue[0], props.previewFormat, formatLocale?.value)} -`;
             }
-            return formatDate(props.internalModelValue, props.previewFormat);
+            return formatDate(props.internalModelValue, props.previewFormat, formatLocale?.value);
         }
         if (props.timePicker) {
             return props.previewFormat(getTImeForExternal(props.internalModelValue));
