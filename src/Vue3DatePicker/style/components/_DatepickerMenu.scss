@@ -24,6 +24,29 @@
   }
 }
 
+%__dp_menu_readonly_disabled {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99999;
+}
+
+.dp__menu_disabled {
+  @extend %__dp_menu_readonly_disabled;
+
+  background: rgb(255 255 255 / 50%);
+  cursor: not-allowed;
+}
+
+.dp__menu_readonly {
+  @extend %__dp_menu_readonly_disabled;
+
+  background: transparent;
+  cursor: default;
+}
+
 .dp__arrow_top {
   left: 50%;
   top: -1px;

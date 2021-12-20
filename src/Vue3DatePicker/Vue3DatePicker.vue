@@ -99,6 +99,8 @@
                     spaceConfirm,
                     monthChangeOnArrows,
                     textInput,
+                    disabled,
+                    readonly,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @close-picker="closeMenu"

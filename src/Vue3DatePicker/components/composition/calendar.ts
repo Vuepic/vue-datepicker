@@ -120,7 +120,9 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
             return props.internalModelValue;
         },
         set: (value: InternalModuleValue): void => {
-            emit('update:internalModelValue', value);
+            if (!props.readonly && !props.disabled) {
+                emit('update:internalModelValue', value);
+            }
         },
     });
 

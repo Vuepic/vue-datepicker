@@ -13,6 +13,7 @@
         @keydown.left="handleArrow('left', false)"
         @keydown.right="handleArrow('right', false)"
     >
+        <div :class="disabledReadonlyOverlay" v-if="(disabled || readonly) && inline"></div>
         <div :class="arrowClass" v-if="!inline"></div>
         <div :class="menuCalendarClassWrapper" ref="calendarWrapperRef" role="document">
             <Calendar
@@ -178,6 +179,8 @@
         spaceConfirm: { type: Boolean as PropType<boolean>, default: true },
         monthChangeOnArrows: { type: Boolean as PropType<boolean>, default: true },
         textInput: { type: Boolean as PropType<boolean>, default: false },
+        disabled: { type: Boolean as PropType<boolean>, default: false },
+        readonly: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
     const calendarWrapperRef = ref(null);
@@ -282,6 +285,10 @@
         }),
     );
 
+    const disabledReadonlyOverlay = computed(() => ({
+        dp__menu_disabled: props.disabled,
+        dp__menu_readonly: props.readonly,
+    }));
     /**
      * Array of the dates from which calendar is built.
      * It also sets classes depending on picker modes, active dates, today, v-model.
