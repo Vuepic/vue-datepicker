@@ -22,7 +22,7 @@
     "build": "run-s clean build:rollup build:css",
     "clean": "rimraf ./dist",
     "build:rollup": "cross-env NODE_ENV=production node_modules/.bin/rollup --config build/rollup.config.js",
-    "build:css": "cross-env NODE_ENV=production node_modules/.bin/sass src/Vue3DatePicker/style/main.scss dist/main.css --output-style compressed",
+    "build:css": "cross-env NODE_ENV=production node_modules/.bin/sass src/Vue3DatePicker/style/main.scss dist/main.css --style compressed",
     "test": "cross-env NODE_ENV=test node_modules/.bin/vue-cli-service test:unit",
     "lint": "run-s lint:style lint:vue",
     "lint:style": "stylelint --fix \"src/**/*.scss\"",
