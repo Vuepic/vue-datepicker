@@ -53,6 +53,7 @@ interface Vue3DatePicker {
     weekStart?: '0' | '1' | '2' | '3' | '4' | '5' | '6' | 0 | 1 | 2 | 3 | 4 | 5 | 6;
     disabled?: boolean;
     readonly?: boolean;
+    required?: boolean;
     format?:
         | string
         | ((

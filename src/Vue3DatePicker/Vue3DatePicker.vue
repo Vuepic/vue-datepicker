@@ -19,6 +19,7 @@
                 autoApply,
                 uid,
                 openMenuOnFocus,
+                required,
             }"
             v-model:input-value="inputValue"
             @clear="clearValue"
@@ -193,6 +194,7 @@
         weekStart: { type: [String, Number] as PropType<WeekStartNum | WeekStartStr>, default: 1 },
         disabled: { type: Boolean as PropType<boolean>, default: false },
         readonly: { type: Boolean as PropType<boolean>, default: false },
+        required: { type: Boolean as PropType<boolean>, default: false },
         monthNameFormat: { type: String as PropType<'long' | 'short'>, default: 'short' },
         weekNumName: { type: String as PropType<string>, default: 'W' },
         format: {

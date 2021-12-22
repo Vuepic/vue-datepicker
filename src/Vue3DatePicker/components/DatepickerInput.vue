@@ -23,7 +23,8 @@
                 :class="inputClass"
                 :placeholder="placeholder"
                 :disabled="disabled"
-                :readonly="!textInput"
+                :readonly="readonly"
+                :required="required"
                 :value="inputValue"
                 @input="handleInput"
                 @keydown.enter="handleEnter"
@@ -86,6 +87,7 @@
         pattern: { type: String as PropType<string>, default: '' },
         uid: { type: String as PropType<string>, default: null },
         openMenuOnFocus: { type: Boolean as PropType<boolean>, default: true },
+        required: { type: Boolean as PropType<boolean>, default: false },
     });
     const parsedDate = ref();
     const inputRef = ref(null);
