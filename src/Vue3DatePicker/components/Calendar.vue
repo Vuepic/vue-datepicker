@@ -247,6 +247,7 @@
     const monthProp = toRef(props, 'month');
     const yearProp = toRef(props, 'year');
     const prevDate = ref();
+    const startTransitions = ref(false);
 
     const weekDays = computed(() => {
         return getDayNames(props.locale, +props.weekStart);
@@ -268,10 +269,15 @@
                 ? transitions.value.next
                 : transitions.value.previous;
             prevDate.value = newDate;
-            showCalendar.value = false;
-            nextTick(() => {
-                showCalendar.value = true;
-            });
+            if (startTransitions.value) {
+                showCalendar.value = false;
+                nextTick(() => {
+                    showCalendar.value = true;
+                });
+            }
+        }
+        if (!startTransitions.value) {
+            startTransitions.value = true;
         }
     });
 
