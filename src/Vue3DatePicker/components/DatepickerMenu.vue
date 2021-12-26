@@ -1,6 +1,6 @@
 <template>
     <div
-        :id="uid ? `dp-menu-${uid}` : null"
+        :id="uid ? `dp-menu-${uid}` : undefined"
         tabindex="0"
         ref="dpMenuRef"
         role="dialog"

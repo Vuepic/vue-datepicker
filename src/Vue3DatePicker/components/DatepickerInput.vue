@@ -19,7 +19,7 @@
         <div v-if="!$slots.trigger && !$slots['dp-input'] && !inline" class="dp__input_wrap">
             <input
                 ref="inputRef"
-                :id="uid ? `dp-input-${uid}` : null"
+                :id="uid ? `dp-input-${uid}` : undefined"
                 :class="inputClass"
                 :placeholder="placeholder"
                 :disabled="disabled"
