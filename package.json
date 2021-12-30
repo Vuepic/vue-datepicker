@@ -1,6 +1,6 @@
 {
   "name": "vue3-date-time-picker",
-  "version": "2.4.4",
+  "version": "2.5.0",
   "description": "Datepicker component for Vue 3",
   "author": "Vuepic",
   "private": false,
@@ -36,10 +36,10 @@
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-node-resolve": "^13.1.1",
-    "@rollup/plugin-replace": "^3.0.0",
+    "@rollup/plugin-replace": "^3.0.1",
     "@types/jest": "^27.0.3",
-    "@typescript-eslint/eslint-plugin": "^5.8.0",
-    "@typescript-eslint/parser": "^5.8.0",
+    "@typescript-eslint/eslint-plugin": "^5.8.1",
+    "@typescript-eslint/parser": "^5.8.1",
     "@vue/cli-plugin-babel": "^5.0.0-rc.1",
     "@vue/cli-plugin-typescript": "^5.0.0-rc.1",
     "@vue/cli-plugin-unit-jest": "^5.0.0-rc.1",
@@ -75,7 +75,7 @@
     "vue-eslint-parser": "^8.0.1"
   },
   "dependencies": {
-    "date-fns": "^2.27.0"
+    "date-fns": "^2.28.0"
   },
   "peerDependencies": {
     "vue": ">=3.2.0"
