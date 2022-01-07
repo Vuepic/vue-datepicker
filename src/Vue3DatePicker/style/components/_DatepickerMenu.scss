@@ -6,7 +6,7 @@
   font-family: $dp__font_family;
   font-size: $dp__font_size;
   user-select: none;
-  border: 1px solid var(--dp-border-color);
+  border: 1px solid var(--dp-menu-border-color);
   z-index: 99999;
   box-sizing: border-box;
 
@@ -19,7 +19,7 @@
   }
 
   &:focus {
-    border: 1px solid var(--dp-border-color);
+    border: 1px solid var(--dp-menu-border-color);
     outline: none;
   }
 }
@@ -54,8 +54,8 @@
   width: 12px;
   background-color: var(--dp-background-color);
   position: absolute;
-  border-left: 1px solid var(--dp-border-color);
-  border-top: 1px solid var(--dp-border-color);
+  border-left: 1px solid var(--dp-menu-border-color);
+  border-top: 1px solid var(--dp-menu-border-color);
   transform: translate(-50%, -50%) rotate(45deg);
 }
 
@@ -66,8 +66,8 @@
   width: 12px;
   background-color: var(--dp-background-color);
   position: absolute;
-  border-right: 1px solid var(--dp-border-color);
-  border-bottom: 1px solid var(--dp-border-color);
+  border-right: 1px solid var(--dp-menu-border-color);
+  border-bottom: 1px solid var(--dp-menu-border-color);
   transform: translate(-50%, 50%) rotate(45deg);
 }
 
