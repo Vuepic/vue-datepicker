@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { DefineComponent, ComputedOptions, ComponentOptionsMixin, MethodOptions } from 'vue';
+import { Locale } from 'date-fns';
 
 type EmitEvents =
     | 'update:modelValue'
