@@ -47,7 +47,8 @@
                     calendarClassName,
                     yearRange,
                     range,
-                    twoCalendars,
+                    multiCalendars: multiCalendarDefault,
+                    multiCalendarsSolo,
                     calendarCellClassName,
                     enableTimePicker,
                     is24,
@@ -83,7 +84,6 @@
                     noToday,
                     noHoursOverlay,
                     noMinutesOverlay,
-                    twoCalendarsSolo,
                     disabledWeekDays,
                     allowedDates,
                     showNowButton,
@@ -174,8 +174,8 @@
         enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
         locale: { type: String as PropType<string>, default: 'en-US' },
         range: { type: Boolean as PropType<boolean>, default: false },
-        twoCalendars: { type: Boolean as PropType<boolean>, default: false },
-        twoCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
+        multiCalendars: { type: [Boolean, Number, String] as PropType<boolean | number | string>, default: null },
+        multiCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
         modelValue: { type: [String, Date, Array, Object] as PropType<ModelValue>, default: null },
         position: { type: String as PropType<OpenPosition>, default: 'center' },
         placeholder: { type: String as PropType<string>, default: null },
@@ -378,6 +378,12 @@
             return null;
         }
         return props.startTime && !Array.isArray(props.startTime) ? assignDefaultTime(props.startTime) : null;
+    });
+
+    const multiCalendarDefault = computed((): number => {
+        if (props.multiCalendars === null) return 0;
+        if (typeof props.multiCalendars === 'boolean') return props.multiCalendars ? 2 : 0;
+        return +props.multiCalendars >= 2 ? +props.multiCalendars : 2;
     });
 
     /**

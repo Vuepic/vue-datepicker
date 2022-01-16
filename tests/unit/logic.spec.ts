@@ -95,7 +95,7 @@ describe('Logic connection', () => {
     it('Should select range from 2 calendars', async () => {
         const start = setSeconds(addDays(new Date(), 1), 0);
         const end = setSeconds(addMonths(start, 1), 0);
-        const dp = mount(Datepicker, { props: { modelValue: null, range: true, twoCalendars: true } });
+        const dp = mount(Datepicker, { props: { modelValue: null, range: true, multiCalendars: true } });
 
         dp.vm.openMenu();
 

@@ -1,11 +1,22 @@
-import { computed, onMounted, Ref, ref, UnwrapRef, watch } from 'vue';
-import { addDays, addMonths, getDay, getHours, getISOWeek, getMinutes, getMonth, getSeconds, getYear } from 'date-fns';
+import { computed, ComputedRef, onMounted, Ref, ref, UnwrapRef, watch } from 'vue';
+import {
+    add,
+    addDays,
+    addMonths,
+    getDay,
+    getHours,
+    getISOWeek,
+    getMinutes,
+    getMonth,
+    getSeconds,
+    getYear,
+    set,
+    subMonths,
+} from 'date-fns';
 
 import { ICalendarDay, IMarker, InternalModuleValue, UseCalendar, VueEmit } from '../../interfaces';
 import {
     getNextMonthYear,
-    getNextYearMonth,
-    getPreviousMonthYear,
     isDateAfter,
     isDateBefore,
     isDateEqual,
@@ -23,7 +34,7 @@ interface IUseCalendar {
     getWeekNum: (days: UnwrapRef<ICalendarDay[]>) => string | number;
     setHoverDate: (day: UnwrapRef<ICalendarDay>) => void;
     updateTime: (value: number | number[], isHours?: boolean, isSeconds?: boolean) => void;
-    updateMonthYear: (value: number, isMonth?: boolean, isNext?: boolean) => void;
+    updateMonthYear: (instance: number, value: number, isMonth?: boolean) => void;
     isHoverRangeEnd: (day: UnwrapRef<ICalendarDay>) => boolean;
     isAutoRangeInBetween: (day: UnwrapRef<ICalendarDay>) => boolean;
     isAutoRangeStart: (day: UnwrapRef<ICalendarDay>) => boolean;
@@ -32,27 +43,28 @@ interface IUseCalendar {
     isHoverDateStartEnd: (isHovered: boolean, calendarDay: UnwrapRef<ICalendarDay>, start: boolean) => boolean;
     monthYearSelect: (isYear?: boolean) => void;
     clearHoverDate: () => void;
-    handleScroll: (event: WheelEvent, isNext?: boolean) => void;
-    handleArrow: (arrow: 'left' | 'right', isNext?: boolean) => void;
+    handleScroll: (event: WheelEvent, instance: number) => void;
+    handleArrow: (arrow: 'left' | 'right', instance: number) => void;
     getMarker: (day: UnwrapRef<ICalendarDay>) => IMarker | undefined;
     selectCurrentDate: () => void;
     today: Ref<Date>;
-    month: Ref<number>;
-    year: Ref<number>;
-    monthNext: Ref<number>;
-    yearNext: Ref<number>;
+    month: ComputedRef<(instance: number) => number>;
+    year: ComputedRef<(instance: number) => number>;
     hours: Ref<number | number[]>;
     minutes: Ref<number | number[]>;
     seconds: Ref<number | number[]>;
 }
 
+interface ICalendarData {
+    month: number;
+    year: number;
+}
+
 export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => {
     const today = ref<Date>(new Date());
     const hoveredDate = ref<Date | null>();
-    const month = ref<number>(getMonth(new Date()));
-    const year = ref<number>(getYear(new Date()));
-    const monthNext = ref<number>(getNextMonthYear(new Date()).month);
-    const yearNext = ref<number>(getNextMonthYear(new Date()).year);
+    // Calendar data per instance
+    const calendars = ref<ICalendarData[]>([{ month: getMonth(new Date()), year: getYear(new Date()) }]);
     const hours = ref<number | number[]>(
         props.range ? [getHours(new Date()), getHours(new Date())] : getHours(new Date()),
     );
@@ -66,11 +78,10 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
 
         if (!modelValue.value) {
             if (props.startDate) {
-                month.value = getMonth(new Date(props.startDate));
-                year.value = getYear(new Date(props.startDate));
-                if (props.twoCalendars) {
-                    monthNext.value = getNextMonthYear(new Date(props.startDate)).month;
-                    yearNext.value = getNextMonthYear(new Date(props.startDate)).year;
+                calendars.value[0].month = getMonth(new Date(props.startDate));
+                calendars.value[0].year = getYear(new Date(props.startDate));
+                if (props.multiCalendars) {
+                    autoChangeMultiCalendars(0);
                 }
             }
             if (props.startTime) {
@@ -78,6 +89,27 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
             }
         }
     });
+
+    const month = computed(
+        () =>
+            (instance: number): number =>
+                calendars.value[instance] ? calendars.value[instance].month : 0,
+    );
+
+    const year = computed(
+        () =>
+            (instance: number): number =>
+                calendars.value[instance] ? calendars.value[instance].year : 0,
+    );
+
+    const setCalendarMonthYear = (instance: number, month: number, year: number): void => {
+        calendars.value[instance].month = month;
+        calendars.value[instance].year = year;
+    };
+
+    const setCalendarMonth = (instance: number, value: number) => (calendars.value[instance].month = value);
+
+    const setCalendarYear = (instance: number, value: number) => (calendars.value[instance].year = value);
 
     const getSecondsValue = (getFirst = true): number | null => {
         if (props.enableSeconds) {
@@ -203,8 +235,25 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
      * Extracted method to map month and year
      */
     const assignMonthAndYear = (date: Date): void => {
-        month.value = getMonth(date);
-        year.value = getYear(date);
+        setCalendarMonth(0, getMonth(date));
+        setCalendarYear(0, getYear(date));
+        if (props.multiCalendars) {
+            for (let i = 1; i < props.multiCalendars; i++) {
+                const prevDate = set(new Date(), { month: month.value(i - 1), year: year.value(i - 1) });
+                const nextMonth = add(prevDate, { months: 1 });
+                calendars.value.push({ month: getMonth(nextMonth), year: getYear(nextMonth) });
+            }
+        }
+    };
+
+    const handleNextMonthYear = (): void => {
+        if (Array.isArray(modelValue.value) && modelValue.value.length === 2) {
+            const date = new Date(modelValue.value[1] ? modelValue.value[1] : addMonths(modelValue.value[0], 1));
+            if (getMonth(modelValue.value[0]) !== getMonth(modelValue.value[1]) && props.multiCalendarsSolo) {
+                setCalendarMonth(1, getMonth(date));
+                setCalendarYear(1, getYear(date));
+            }
+        }
     };
 
     /**
@@ -228,7 +277,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
                         modelValue.value[1] ? getSeconds(modelValue.value[1]) : getSeconds(new Date()),
                     ];
                 }
-                if (props.twoCalendars) {
+                if (props.multiCalendars && props.multiCalendarsSolo) {
                     handleNextMonthYear();
                 }
             } else {
@@ -254,7 +303,9 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
                     ];
                 }
             } else if (props.monthPicker) {
-                modelValue.value = setDateMonthOrYear(new Date(), month.value, year.value);
+                modelValue.value = setDateMonthOrYear(new Date(), month.value(0), year.value(0));
+            } else if (props.multiCalendars) {
+                assignMonthAndYear(new Date());
             }
         }
     };
@@ -265,11 +316,17 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
     const handleNextCalendarAutoRange = (date: string | Date) => {
         const monthValue = getMonth(new Date(date));
         const yearValue = getYear(new Date(date));
-        const next = getNextMonthYear(new Date(date));
-        month.value = monthValue;
-        year.value = yearValue;
-        monthNext.value = next.month;
-        yearNext.value = next.year;
+        setCalendarMonth(0, monthValue);
+        setCalendarYear(0, yearValue);
+        if (props.multiCalendars > 0) {
+            for (let i = 1; i < props.multiCalendars; i++) {
+                const next = getNextMonthYear(
+                    set(new Date(date), { year: month.value(i - 1), month: year.value(i - 1) }),
+                );
+                setCalendarMonth(i, next.month);
+                setCalendarYear(i, next.year);
+            }
+        }
     };
 
     /**
@@ -384,61 +441,31 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         return false;
     };
 
-    const handleNextMonthYear = (): void => {
-        if (Array.isArray(modelValue.value) && modelValue.value.length === 2) {
-            const date = new Date(modelValue.value[1] ? modelValue.value[1] : addMonths(modelValue.value[0], 1));
-            if ((monthNext.value === month.value && yearNext.value === year.value) || !props.twoCalendarsSolo) {
-                const date = getNextYearMonth(month.value, year.value);
-                monthNext.value = date.month;
-                yearNext.value = date.year;
-            } else {
-                if (getMonth(modelValue.value[0]) !== getMonth(modelValue.value[1])) {
-                    monthNext.value = getMonth(date);
-                    yearNext.value = getYear(date);
-                }
-            }
+    const autoChangeMultiCalendars = (instance: number): void => {
+        for (let i = instance - 1; i >= 0; i--) {
+            const date = subMonths(set(new Date(), { month: month.value(i + 1), year: year.value(i + 1) }), 1);
+            setCalendarMonthYear(i, getMonth(date), getYear(date));
+        }
+        for (let i = instance + 1; i <= props.multiCalendars - 1; i++) {
+            const date = addMonths(set(new Date(), { month: month.value(i - 1), year: year.value(i - 1) }), 1);
+            setCalendarMonthYear(i, getMonth(date), getYear(date));
         }
     };
 
-    const handlePreviousCalendarChange = (monthVal: number, yearVal: number): void => {
-        if (!props.twoCalendarsSolo) {
-            const date = getPreviousMonthYear(monthVal, yearVal);
-            month.value = date.month;
-            year.value = date.year;
-        }
-    };
-
-    const handleNextCalendarChange = (monthVal: number, yearVal: number): void => {
-        if (!props.twoCalendarsSolo) {
-            const date = getNextYearMonth(monthVal, yearVal);
-            monthNext.value = date.month;
-            yearNext.value = date.year;
-        }
-    };
-
-    const updateMonthYear = (value: number, isMonth = true, isNext = false): void => {
+    const updateMonthYear = (instance: number, value: number, isMonth = true): void => {
         if (isMonth) {
-            if (isNext) {
-                handlePreviousCalendarChange(value, yearNext.value);
-                monthNext.value = value;
-            } else {
-                handleNextCalendarChange(value, year.value);
-                month.value = value;
-            }
+            setCalendarMonth(instance, value);
         } else {
-            if (isNext) {
-                handlePreviousCalendarChange(monthNext.value, value);
-                yearNext.value = value;
-            } else {
-                handleNextCalendarChange(month.value, value);
-                year.value = value;
-            }
+            setCalendarYear(instance, value);
+        }
+        if (props.multiCalendars && !props.multiCalendarsSolo) {
+            autoChangeMultiCalendars(instance);
         }
         if (props.monthPicker) {
             if (modelValue.value) {
-                modelValue.value = setDateMonthOrYear(modelValue.value as Date, month.value, year.value);
+                modelValue.value = setDateMonthOrYear(modelValue.value as Date, month.value(0), year.value(0));
             } else {
-                modelValue.value = setDateMonthOrYear(new Date(), month.value, year.value);
+                modelValue.value = setDateMonthOrYear(new Date(), month.value(0), year.value(0));
             }
         }
     };
@@ -569,22 +596,24 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         }
     };
 
-    const autoChangeMonth = (increment: number, isNext: boolean) => {
-        const yearMonth: [number, number] = isNext ? [monthNext.value, yearNext.value] : [month.value, year.value];
-        const dates = increment < 0 ? getNextYearMonth(...yearMonth) : getPreviousMonthYear(...yearMonth);
-        updateMonthYear(dates.month, true, isNext);
-        updateMonthYear(dates.year, false, isNext);
-    };
-
-    const handleScroll = (event: WheelEvent, isNext = false): void => {
-        if (props.monthChangeOnScroll) {
-            autoChangeMonth(props.monthChangeOnScroll === 'inverse' ? -event.deltaY : event.deltaY, isNext);
+    const autoChangeMonth = (increment: number, instance: number) => {
+        const initialDate = set(new Date(), { month: month.value(instance), year: year.value(instance) });
+        const date = increment < 0 ? addMonths(initialDate, 1) : subMonths(initialDate, 1);
+        setCalendarMonthYear(instance, getMonth(date), getYear(date));
+        if (props.multiCalendars && !props.multiCalendarsSolo) {
+            autoChangeMultiCalendars(instance);
         }
     };
 
-    const handleArrow = (arrow: 'left' | 'right', isNext = false): void => {
+    const handleScroll = (event: WheelEvent, instance: number): void => {
+        if (props.monthChangeOnScroll) {
+            autoChangeMonth(props.monthChangeOnScroll === 'inverse' ? -event.deltaY : event.deltaY, instance);
+        }
+    };
+
+    const handleArrow = (arrow: 'left' | 'right', instance: number): void => {
         if (props.monthChangeOnArrows) {
-            autoChangeMonth(arrow === 'right' ? -1 : 1, isNext);
+            autoChangeMonth(arrow === 'right' ? -1 : 1, instance);
         }
     };
 
@@ -613,12 +642,10 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
     return {
         today,
         hours,
-        month,
-        year,
-        monthNext,
-        yearNext,
         minutes,
         seconds,
+        month,
+        year,
         monthYearSelect,
         isDisabled,
         updateTime,

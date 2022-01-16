@@ -17,7 +17,6 @@ import {
     isBefore,
     isEqual,
     addMonths,
-    subMonths,
     getSeconds,
     set,
     add,
@@ -174,16 +173,6 @@ export const isDateEqual = (date: Date | string | null, dateToCompare: Date | st
 export const addTime = (initial: Record<string, number>, toAdd: Duration) => add(set(new Date(), initial), toAdd);
 
 export const subTime = (initial: Record<string, number>, toSub: Duration) => sub(set(new Date(), initial), toSub);
-
-export const getPreviousMonthYear = (month: number, year: number): { month: number; year: number } => {
-    const date = subMonths(setYear(setMonth(new Date(), month), year), 1);
-    return { month: getMonth(date), year: getYear(date) };
-};
-
-export const getNextYearMonth = (month: number, year: number): { month: number; year: number } => {
-    const date = addMonths(setYear(setMonth(new Date(), month), year), 1);
-    return { month: getMonth(date), year: getYear(date) };
-};
 
 const setTimeValue = (date: Date): Date =>
     set(new Date(), { hours: getHours(date), minutes: getMinutes(date), seconds: getSeconds(date) });

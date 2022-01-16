@@ -13,13 +13,12 @@
             <ClockIcon v-if="!$slots['clock-icon']" />
         </div>
         <transition :name="transitionName(showTimePicker)" :css="showTransition">
-            <div v-if="showTimePicker || timePicker" class="dp__overlay">
+            <div v-if="showTimePicker || timePicker" class="dp__overlay" :style="`bottom: ${bottomOffset}`">
                 <div class="dp__overlay_container">
                     <slot
                         name="time-picker-overlay"
                         v-if="$slots['time-picker-overlay']"
                         :range="range"
-                        :instance="instance"
                         :hours="hours"
                         :minutes="minutes"
                         :seconds="seconds"
@@ -46,7 +45,6 @@
                             </template>
                             <template v-if="range">
                                 <TimeInput
-                                    v-if="twoCalendars ? instance === 1 : true"
                                     :hours="hours[0]"
                                     :minutes="minutes[0]"
                                     v-bind="timeInputProps"
@@ -58,7 +56,6 @@
                                     </template>
                                 </TimeInput>
                                 <TimeInput
-                                    v-if="twoCalendars ? instance === 2 : true"
                                     :hours="hours[1]"
                                     :minutes="minutes[1]"
                                     v-bind="timeInputProps"
@@ -96,9 +93,10 @@
     import { ClockIcon, CalendarIcon } from '../Icons';
     import TimeInput from './TimeInput.vue';
 
-    import { IDateFilter } from '../../interfaces';
+    import { IDateFilter, MaybeElementRef } from '../../interfaces';
     import { mapSlots } from '../composition/slots';
     import { useTransitions } from '../composition/transition';
+    import { unrefElement } from '../../utils/util';
 
     const emit = defineEmits(['update:hours', 'update:minutes', 'update:seconds']);
 
@@ -116,13 +114,12 @@
         hours: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         minutes: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         seconds: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
-        instance: { type: [Number, Array] as PropType<number | number[]>, default: 1 },
-        twoCalendars: { type: Boolean as PropType<boolean>, default: false },
         noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
         noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
         noSecondsOverlay: { type: Boolean as PropType<boolean>, default: false },
         customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
         enableSeconds: { type: Boolean as PropType<boolean>, default: false },
+        actionRowRef: { type: Object as PropType<MaybeElementRef>, default: null },
     });
     const slots = useSlots();
     const autoApply = inject('autoApply', false);
@@ -130,8 +127,16 @@
     const { transitionName, showTransition } = useTransitions();
 
     const showTimePicker = ref(false);
+    const bottomOffset = ref('0px');
 
     const toggleTimePicker = (show: boolean): void => {
+        if (show && props.actionRowRef) {
+            const el = unrefElement(props.actionRowRef);
+            if (el) {
+                const { height } = el.getBoundingClientRect();
+                bottomOffset.value = `${height}px`;
+            }
+        }
         showTimePicker.value = show;
     };
 

@@ -12,8 +12,8 @@
                     month,
                     year,
                     customProps,
-                    twoCalendars,
-                    twoCalendarsSolo,
+                    multiCalendars,
+                    multiCalendarsSolo,
                     instance,
                 }"
                 @update:month="$emit('update:month', $event)"
@@ -113,39 +113,6 @@
                     </div>
                 </transition>
             </div>
-            <component
-                v-if="enableTimePicker"
-                :is="timePickerComponent ? timePickerComponent : TimePickerCmp"
-                v-bind="{
-                    is24,
-                    hoursIncrement,
-                    minutesIncrement,
-                    hoursGridIncrement,
-                    secondsIncrement,
-                    minutesGridIncrement,
-                    secondsGridIncrement,
-                    noHoursOverlay,
-                    noMinutesOverlay,
-                    noSecondsOverlay,
-                    range,
-                    filters,
-                    timePicker,
-                    hours,
-                    minutes,
-                    seconds,
-                    customProps,
-                    twoCalendars,
-                    instance,
-                    enableSeconds,
-                }"
-                @update:hours="$emit('update:hours', $event)"
-                @update:minutes="$emit('update:minutes', $event)"
-                @update:seconds="$emit('update:seconds', $event)"
-            >
-                <template v-for="(slot, i) in timePickerSlots" #[slot]="args" :key="i">
-                    <slot :name="slot" v-bind="args" />
-                </template>
-            </component>
         </div>
     </div>
 </template>
@@ -166,7 +133,6 @@
         watch,
     } from 'vue';
 
-    import TimePickerCmp from './TimePicker/TimePicker.vue';
     import MonthYearInput from './MonthYearInput.vue';
 
     import {
@@ -183,9 +149,6 @@
     import { isDateAfter, isDateEqual, setDateMonthOrYear } from '../utils/date-utils';
 
     const emit = defineEmits([
-        'update:hours',
-        'update:minutes',
-        'update:seconds',
         'selectDate',
         'setHoverDate',
         'update:month',
@@ -203,19 +166,9 @@
         enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
         timePickerComponent: { type: Object as PropType<DefineComponent>, default: null },
         monthYearComponent: { type: Object as PropType<DefineComponent>, default: null },
-        is24: { type: Boolean as PropType<boolean>, default: true },
-        hoursIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
-        minutesIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
-        secondsIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
-        hoursGridIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
-        minutesGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 },
-        secondsGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 },
         range: { type: Boolean as PropType<boolean>, default: false },
         filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
         customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
-        hours: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
-        minutes: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
-        seconds: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         calendarClassName: { type: String as PropType<string>, default: null },
         monthPicker: { type: Boolean as PropType<boolean>, default: false },
         timePicker: { type: Boolean as PropType<boolean>, default: false },
@@ -225,17 +178,13 @@
             default: () => '',
         },
         instance: { type: Number as PropType<number>, default: 1 },
-        twoCalendars: { type: Boolean as PropType<boolean>, default: false },
+        multiCalendars: { type: Number as PropType<number>, default: 0 },
+        multiCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
         years: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
         months: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
         month: { type: Number as PropType<number>, default: 0 },
         year: { type: Number as PropType<number>, default: 0 },
-        noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
-        noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
-        noSecondsOverlay: { type: Boolean as PropType<boolean>, default: false },
-        twoCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
         modeHeight: { type: [Number, String] as PropType<number | string>, default: 255 },
-        enableSeconds: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
     const showMakerTooltip = ref<Date | null>(null);
@@ -257,7 +206,6 @@
         prevDate.value = setDateMonthOrYear(new Date(), props.month, props.year);
     });
 
-    const timePickerSlots = mapSlots(slots, 'timePicker');
     const monthYearSlots = mapSlots(slots, 'monthYear');
 
     const specificMode = computed(() => props.monthPicker || props.timePicker);
@@ -301,14 +249,13 @@
 
     const calendarParentClass = computed(() => ({
         dp__calendar: true,
-        dp__calendar_next: props.instance === 2,
+        dp__calendar_next: props.multiCalendars > 0 && props.instance !== 0,
     }));
 
     // Wrapper class for the wrapper div
     const contentWrapClass = computed(
         (): DynamicClass => ({
             dp__calendar_content_wrap: true,
-            // dp_calendar_fixed: specificMode.value,
         }),
     );
 

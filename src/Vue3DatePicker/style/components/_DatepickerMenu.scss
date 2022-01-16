@@ -36,7 +36,7 @@
 .dp__menu_disabled {
   @extend %__dp_menu_readonly_disabled;
 
-  background: rgba(255, 255, 255, 0.5);
+  background: rgb(255 255 255 / 50%);
   cursor: not-allowed;
 }
 

@@ -91,8 +91,8 @@ export type UseCalendar = {
     monthPicker: boolean;
     timePicker: boolean;
     hideOffsetDates: boolean;
-    twoCalendars: boolean;
-    twoCalendarsSolo: boolean;
+    multiCalendars: number;
+    multiCalendarsSolo: boolean;
     autoRange: number | string;
     disabledWeekDays: number[] | string[];
     allowedDates: Date[] | string[];

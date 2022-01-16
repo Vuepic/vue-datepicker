@@ -174,8 +174,8 @@
         monthPicker: { type: Boolean as PropType<boolean>, default: false },
         instance: { type: Number as PropType<number>, default: 1 },
         customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
-        twoCalendars: { type: Boolean as PropType<boolean>, default: false },
-        twoCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
+        multiCalendars: { type: Number as PropType<number>, default: 0 },
+        multiCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
     });
 
     const { transitionName, showTransition } = useTransitions();
@@ -220,15 +220,15 @@
     });
 
     const showLeftIcon = computed(() => {
-        if (props.twoCalendars) {
-            return !props.twoCalendarsSolo ? props.instance === 1 : true;
+        if (props.multiCalendars) {
+            return !props.multiCalendarsSolo ? props.instance === 0 : true;
         }
         return true;
     });
 
     const showRightIcon = computed((): boolean => {
-        if (props.twoCalendars) {
-            return !props.twoCalendarsSolo ? props.instance === 2 : true;
+        if (props.multiCalendars) {
+            return !props.multiCalendarsSolo ? props.instance === props.multiCalendars - 1 : true;
         }
         return true;
     });

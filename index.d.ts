@@ -17,8 +17,8 @@ interface Vue3DatePicker {
     is24?: boolean;
     enableTimePicker?: boolean;
     range?: boolean;
-    twoCalendars?: boolean;
-    twoCalendarsSolo?: boolean;
+    multiCalendars?: boolean | number | string;
+    multiCalendarsSolo?: boolean;
     modelValue?:
         | Date
         | Date[]

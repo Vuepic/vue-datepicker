@@ -50,7 +50,7 @@
         inline: { type: Boolean as PropType<boolean>, default: false },
         monthPicker: { type: Boolean as PropType<boolean>, default: false },
         timePicker: { type: Boolean as PropType<boolean>, default: false },
-        twoCalendars: { type: Boolean as PropType<boolean>, default: false },
+        multiCalendars: { type: Number as PropType<number>, default: 0 },
         calendarWidth: { type: Number as PropType<number>, default: 0 },
         menuMount: { type: Boolean as PropType<boolean>, default: false },
         customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
@@ -77,7 +77,7 @@
         if (typeof props.previewFormat === 'string') {
             if (isModelValueRange(props.internalModelValue)) {
                 if (props.internalModelValue.length === 2 && props.internalModelValue[1]) {
-                    if (props.twoCalendars) {
+                    if (props.multiCalendars > 0) {
                         return `${formatDate(
                             props.internalModelValue[0],
                             props.previewFormat,
