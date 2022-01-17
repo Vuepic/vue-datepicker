@@ -16,7 +16,7 @@
             :onEnter="handleEnter"
             :onTab="handleTab"
         />
-        <div v-if="!$slots.trigger && !$slots['dp-input'] && !inline" class="dp__input_wrap">
+        <div v-if="!$slots.trigger && !$slots['dp-input'] && (!inline || inlineWithInput)" class="dp__input_wrap">
             <input
                 ref="inputRef"
                 :id="uid ? `dp-input-${uid}` : undefined"
@@ -82,6 +82,7 @@
         state: { type: Boolean as PropType<boolean>, default: null },
         inputClassName: { type: String as PropType<string>, default: null },
         inline: { type: Boolean as PropType<boolean>, default: false },
+        inlineWithInput: { type: Boolean as PropType<boolean>, default: false },
         textInput: { type: Boolean as PropType<boolean>, default: false },
         textInputOptions: { type: Object as PropType<ITextInputOptions>, default: () => null },
         isMenuOpen: { type: Boolean as PropType<boolean>, default: false },
@@ -158,12 +159,14 @@
     };
 
     const handleFocus = (): void => {
-        isFocused.value = true;
-        if (props.openMenuOnFocus && !props.isMenuOpen) {
-            emit('open');
-        } else if (props.isMenuOpen) {
-            unFocus();
-            emit('close');
+        if (!props.inline) {
+            isFocused.value = true;
+            if (props.openMenuOnFocus && !props.isMenuOpen) {
+                emit('open');
+            } else if (props.isMenuOpen) {
+                unFocus();
+                emit('close');
+            }
         }
     };
 

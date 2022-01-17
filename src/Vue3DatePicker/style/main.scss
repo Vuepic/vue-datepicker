@@ -107,6 +107,11 @@
   position: relative;
 }
 
+.dp__flex_display_with_input {
+  flex-direction: column;
+  align-items: start;
+}
+
 .dp__relative {
   position: relative;
 }

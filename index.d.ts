@@ -116,6 +116,7 @@ interface Vue3DatePicker {
     yearRange?: number[];
     disabledDates?: Date[] | string[] | ((date: Date) => boolean);
     inline?: boolean;
+    inlineWithInput?: boolean;
     selectText?: string;
     cancelText?: string;
     weekNumName?: string;

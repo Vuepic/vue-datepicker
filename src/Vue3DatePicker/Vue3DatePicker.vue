@@ -11,6 +11,7 @@
                 clearable,
                 state,
                 inline,
+                inlineWithInput,
                 textInput,
                 textInputOptions: inputDefaultOptions,
                 range,
@@ -222,6 +223,7 @@
         disabledDates: { type: [Array, Function] as PropType<Date[] | string[] | IDisableDates>, default: () => [] },
         disabledWeekDays: { type: Array as PropType<string[] | number[]>, default: () => [] },
         inline: { type: Boolean as PropType<boolean>, default: false },
+        inlineWithInput: { type: Boolean as PropType<boolean>, default: false },
         selectText: { type: String as PropType<string>, default: 'Select' },
         cancelText: { type: String as PropType<string>, default: 'Cancel' },
         autoPosition: { type: Boolean as PropType<boolean>, default: true },
@@ -325,6 +327,7 @@
             dp__theme_dark: props.dark,
             dp__theme_light: !props.dark,
             dp__flex_display: props.inline,
+            dp__flex_display_with_input: props.inlineWithInput,
         }),
     );
 
