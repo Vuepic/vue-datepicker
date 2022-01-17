@@ -43,7 +43,6 @@ const external = ['vue', 'date-fns'];
 
 const globals = {
     vue: 'Vue',
-    'date-fns': 'dateFns',
 };
 
 // Customize configs for individual targets
@@ -88,7 +87,7 @@ if (!argv.format || argv.format === 'cjs') {
             format: 'cjs',
             name: 'Vue3DatePicker',
             exports: 'auto',
-            globals,
+            globals: { ...globals, 'date-fns': 'dateFns' },
         },
         plugins: [
             replace(baseConfig.plugins.replace),
@@ -109,7 +108,7 @@ if (!argv.format || argv.format === 'cjs') {
 if (!argv.format || argv.format === 'iife') {
     const unpkgConfig = {
         ...baseConfig,
-        external,
+        external: external.filter((lib) => lib !== 'date-fns'),
         output: {
             compact: true,
             file: 'dist/vue3-date-time-picker.min.js',
