@@ -14,6 +14,7 @@ type EmitEvents =
 
 interface Vue3DatePicker {
     uid?: string;
+    name?: string;
     is24?: boolean;
     enableTimePicker?: boolean;
     range?: boolean;

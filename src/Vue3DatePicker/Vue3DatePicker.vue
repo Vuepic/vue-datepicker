@@ -20,6 +20,7 @@
                 uid,
                 openMenuOnFocus,
                 required,
+                name,
             }"
             v-model:input-value="inputValue"
             @clear="clearValue"
@@ -170,6 +171,7 @@
     ]);
     const props = defineProps({
         uid: { type: String as PropType<string>, default: null },
+        name: { type: String as PropType<string>, default: null },
         is24: { type: Boolean as PropType<boolean>, default: true },
         enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
         locale: { type: String as PropType<string>, default: 'en-US' },

@@ -20,6 +20,7 @@
             <input
                 ref="inputRef"
                 :id="uid ? `dp-input-${uid}` : undefined"
+                :name="name"
                 :class="inputClass"
                 :placeholder="placeholder"
                 :disabled="disabled"
@@ -70,6 +71,7 @@
     ]);
 
     const props = defineProps({
+        name: { type: String as PropType<string>, default: null },
         inputValue: { type: String as PropType<string>, default: '' },
         placeholder: { type: String as PropType<string>, default: '' },
         hideInputIcon: { type: Boolean as PropType<boolean>, default: false },
