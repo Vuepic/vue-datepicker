@@ -352,6 +352,7 @@
         years: years.value,
         multiCalendarsSolo: props.multiCalendarsSolo,
         modeHeight: props.modeHeight,
+        internalModelValue: props.internalModelValue,
     }));
 
     const dpMenuClass = computed(

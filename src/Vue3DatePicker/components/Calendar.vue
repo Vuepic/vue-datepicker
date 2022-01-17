@@ -143,6 +143,7 @@
         IDefaultSelect,
         IMarker,
         ITransition,
+        InternalModuleValue,
     } from '../interfaces';
     import { getDayNames, getDefaultMarker, unrefElement } from '../utils/util';
     import { mapSlots } from './composition/slots';
@@ -185,6 +186,7 @@
         month: { type: Number as PropType<number>, default: 0 },
         year: { type: Number as PropType<number>, default: 0 },
         modeHeight: { type: [Number, String] as PropType<number | string>, default: 255 },
+        internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
     });
     const slots = useSlots();
     const showMakerTooltip = ref<Date | null>(null);
@@ -203,6 +205,9 @@
     });
 
     onMounted(() => {
+        if (!props.internalModelValue) {
+            startTransitions.value = true;
+        }
         prevDate.value = setDateMonthOrYear(new Date(), props.month, props.year);
     });
 
