@@ -12,6 +12,10 @@
   box-sizing: border-box;
 }
 
+.dp__overlay_full {
+  height: 100%;
+}
+
 .dp__overlay::-webkit-scrollbar-track {
   box-shadow: var(--dp-scroll-bar-background);
   background-color: var(--dp-scroll-bar-background);

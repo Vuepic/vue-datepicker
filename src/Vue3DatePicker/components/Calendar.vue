@@ -15,6 +15,7 @@
                     multiCalendars,
                     multiCalendarsSolo,
                     instance,
+                    timePickerRef,
                 }"
                 @update:month="$emit('update:month', $event)"
                 @update:year="$emit('update:year', $event)"
@@ -144,6 +145,7 @@
         IMarker,
         ITransition,
         InternalModuleValue,
+        MaybeElementRef,
     } from '../interfaces';
     import { getDayNames, getDefaultMarker, unrefElement } from '../utils/util';
     import { mapSlots } from './composition/slots';
@@ -164,7 +166,6 @@
         weekStart: { type: [Number, String] as PropType<number | string>, default: 1 },
         weekNumbers: { type: Boolean as PropType<boolean>, default: false },
         mappedDates: { type: Array as PropType<ICalendarDate[]>, default: () => [] },
-        enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
         timePickerComponent: { type: Object as PropType<DefineComponent>, default: null },
         monthYearComponent: { type: Object as PropType<DefineComponent>, default: null },
         range: { type: Boolean as PropType<boolean>, default: false },
@@ -187,6 +188,7 @@
         year: { type: Number as PropType<number>, default: 0 },
         modeHeight: { type: [Number, String] as PropType<number | string>, default: 255 },
         internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
+        timePickerRef: { type: Object as PropType<MaybeElementRef>, default: null },
     });
     const slots = useSlots();
     const showMakerTooltip = ref<Date | null>(null);

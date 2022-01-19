@@ -13,7 +13,7 @@
             <ClockIcon v-if="!$slots['clock-icon']" />
         </div>
         <transition :name="transitionName(showTimePicker)" :css="showTransition">
-            <div v-if="showTimePicker || timePicker" class="dp__overlay" :style="`bottom: ${bottomOffset}`">
+            <div v-if="showTimePicker || timePicker" class="dp__overlay" :style="`bottom: ${overlayBottom}`">
                 <div class="dp__overlay_container">
                     <slot
                         name="time-picker-overlay"
@@ -127,18 +127,21 @@
     const { transitionName, showTransition } = useTransitions();
 
     const showTimePicker = ref(false);
-    const bottomOffset = ref('0px');
 
     const toggleTimePicker = (show: boolean): void => {
-        if (show && props.actionRowRef) {
+        showTimePicker.value = show;
+    };
+
+    const overlayBottom = computed(() => {
+        if (props.actionRowRef) {
             const el = unrefElement(props.actionRowRef);
             if (el) {
                 const { height } = el.getBoundingClientRect();
-                bottomOffset.value = `${height}px`;
+                return `${height}px`;
             }
         }
-        showTimePicker.value = show;
-    };
+        return `0px`;
+    });
 
     const toggleButtonClass = computed(() => ({
         dp__button: true,

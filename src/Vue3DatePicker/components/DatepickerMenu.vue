@@ -53,6 +53,7 @@
         <component
             v-if="enableTimePicker"
             :is="timePickerComponent ? timePickerComponent : TimePickerCmp"
+            ref="timePickerRef"
             v-bind="{
                 is24,
                 hoursIncrement,
@@ -157,7 +158,7 @@
         multiCalendars: { type: Number as PropType<number>, default: 0 },
         multiCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
         calendarCellClassName: { type: String as PropType<string>, default: null },
-        enableTimePicker: { type: Boolean as PropType<boolean>, default: false },
+        enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
         is24: { type: Boolean as PropType<boolean>, default: true },
         hoursIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
         minutesIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
@@ -219,6 +220,7 @@
     const calendarWidth = ref(0);
     const menuMount = ref(false);
     const actionRowRef = ref();
+    const timePickerRef = ref();
 
     onMounted(() => {
         menuMount.value = true;
@@ -353,6 +355,7 @@
         multiCalendarsSolo: props.multiCalendarsSolo,
         modeHeight: props.modeHeight,
         internalModelValue: props.internalModelValue,
+        timePickerRef,
     }));
 
     const dpMenuClass = computed(

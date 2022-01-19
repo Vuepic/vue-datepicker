@@ -43,7 +43,7 @@
             <transition :name="transitionName(showMonthPicker)" :css="showTransition">
                 <SelectionGrid
                     v-if="showMonthPicker"
-                    v-bind="{ modelValue: month, items: groupedMonths, disabledValues: filters.months }"
+                    v-bind="{ modelValue: month, items: groupedMonths, disabledValues: filters.months, timePickerRef }"
                     @update:model-value="onMonthUpdate"
                     @toggle="toggleMonthPicker"
                 >
@@ -59,7 +59,7 @@
             <transition :name="transitionName(showYearPicker)" :css="showTransition">
                 <SelectionGrid
                     v-if="showYearPicker"
-                    v-bind="{ modelValue: year, items: groupedYears, disabledValues: filters.years }"
+                    v-bind="{ modelValue: year, items: groupedYears, disabledValues: filters.years, timePickerRef }"
                     @update:model-value="onYearUpdate"
                     @toggle="toggleYearPicker"
                     ><template #button-icon>
@@ -160,7 +160,7 @@
     import { ChevronLeftIcon, ChevronRightIcon, CalendarIcon } from './Icons';
     import SelectionGrid from './SelectionGrid.vue';
 
-    import { IDateFilter, IDefaultSelect } from '../interfaces';
+    import { IDateFilter, IDefaultSelect, MaybeElementRef } from '../interfaces';
     import { useMontYearPick } from './composition/month-year';
     import { useTransitions } from './composition/transition';
 
@@ -176,6 +176,7 @@
         customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
         multiCalendars: { type: Number as PropType<number>, default: 0 },
         multiCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
+        timePickerRef: { type: Object as PropType<MaybeElementRef>, default: null },
     });
 
     const { transitionName, showTransition } = useTransitions();
