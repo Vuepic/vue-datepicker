@@ -151,6 +151,7 @@
         IMarker,
         ITransition,
         IDisableDates,
+        AltPosition,
     } from './interfaces';
     import { getDefaultPattern, isValidTime } from './utils/date-utils';
     import { getDefaultTextInputOptions, getDefaultFilters, mergeDefaultTransitions } from './utils/util';
@@ -169,6 +170,7 @@
         'focus',
         'blur',
         'internalModelChange',
+        'recalculatePosition',
     ]);
     const props = defineProps({
         uid: { type: String as PropType<string>, default: null },
@@ -245,7 +247,7 @@
         noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
         noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
         noSecondsOverlay: { type: Boolean as PropType<boolean>, default: false },
-        altPosition: { type: Boolean as PropType<boolean>, default: false },
+        altPosition: { type: [Boolean, Function] as PropType<AltPosition>, default: false },
         allowedDates: { type: Array as PropType<string[] | Date[]>, default: () => [] },
         showNowButton: { type: Boolean as PropType<boolean>, default: false },
         nowButtonLabel: { type: String as PropType<string>, default: 'Now' },
@@ -305,6 +307,7 @@
         props.altPosition,
         dpMenuRef,
         inputRef,
+        emit,
     );
 
     const { internalModelValue, inputValue, parseExternalModelValue, emitModelValue, checkBeforeEmit } =

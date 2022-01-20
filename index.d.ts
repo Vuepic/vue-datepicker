@@ -10,7 +10,8 @@ type EmitEvents =
     | 'open'
     | 'focus'
     | 'blur'
-    | 'internalModelChange';
+    | 'internalModelChange'
+    | 'recalculatePosition';
 
 interface Vue3DatePicker {
     uid?: string;
@@ -156,7 +157,7 @@ interface Vue3DatePicker {
     noHoursOverlay?: boolean;
     noMinutesOverlay?: boolean;
     noSecondsOverlay?: boolean;
-    altPosition?: boolean;
+    altPosition?: boolean | ((el: HTMLElement | undefined) => { top: string; left: string; transform: string });
     disabledWeekDays?: number[] | string[];
     allowedDates?: string[] | Date[];
     showNowButton?: boolean;

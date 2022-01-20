@@ -142,3 +142,5 @@ export interface ITransition {
 }
 export type IDisableDates = (date: Date) => boolean;
 export type ITimeType = 'hours' | 'minutes' | 'seconds';
+
+export type AltPosition = boolean | ((el: HTMLElement | undefined) => { top: string; left: string; transform: string });

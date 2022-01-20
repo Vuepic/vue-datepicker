@@ -1,5 +1,5 @@
 import { ref, Ref } from 'vue';
-import { OpenPosition } from '../../interfaces';
+import { AltPosition, OpenPosition, VueEmit } from '../../interfaces';
 import { unrefElement } from '../../utils/util';
 
 interface IUsePosition {
@@ -16,9 +16,10 @@ type ComponentRef = Ref<HTMLElement | null>;
  */
 export const usePosition = (
     openPosition: OpenPosition,
-    altPosition: boolean,
+    altPosition: AltPosition,
     menuRef: ComponentRef,
     inputRef: ComponentRef,
+    emit: VueEmit,
 ): IUsePosition => {
     const menuPosition = ref({ top: '0', left: '0', transform: 'none' });
     const openOnTop = ref(false);
@@ -55,7 +56,9 @@ export const usePosition = (
      */
     const setMenuPosition = (recalculate = true): void => {
         const el = unrefElement(inputRef);
-        if (el) {
+        if (altPosition && typeof altPosition !== 'boolean') {
+            menuPosition.value = altPosition(el);
+        } else if (el) {
             const { left, width, height } = el.getBoundingClientRect();
             const { top: offset } = altPosition ? getOffsetAlt(el) : getOffset(el);
             const position = { top: `${height + offset + diagonal}px`, left: '', transform: 'none' };
@@ -112,6 +115,7 @@ export const usePosition = (
                 }
             }
         }
+        emit('recalculatePosition');
     };
 
     return { openOnTop, menuPosition, setMenuPosition, recalculatePosition };
