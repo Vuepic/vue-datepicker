@@ -27,6 +27,7 @@
                 :readonly="readonly"
                 :required="required"
                 :value="inputValue"
+                :autocomplete="autocomplete"
                 @input="handleInput"
                 @keydown.enter="handleEnter"
                 @keydown.tab="handleTab"
@@ -91,6 +92,7 @@
         uid: { type: String as PropType<string>, default: null },
         openMenuOnFocus: { type: Boolean as PropType<boolean>, default: true },
         required: { type: Boolean as PropType<boolean>, default: false },
+        autocomplete: { type: String as PropType<string>, default: 'off' },
     });
     const parsedDate = ref();
     const inputRef = ref(null);

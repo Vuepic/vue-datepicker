@@ -22,6 +22,7 @@
                 openMenuOnFocus,
                 required,
                 name,
+                autocomplete,
             }"
             v-model:input-value="inputValue"
             @clear="clearValue"
@@ -262,6 +263,7 @@
         spaceConfirm: { type: Boolean as PropType<boolean>, default: true },
         monthChangeOnArrows: { type: Boolean as PropType<boolean>, default: true },
         formatLocale: { type: Object as PropType<Locale>, default: null },
+        autocomplete: { type: String as PropType<string>, default: null },
     });
     const slots = useSlots();
     const isOpen = ref(false);
