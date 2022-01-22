@@ -51,7 +51,7 @@
             </button>
         </div>
         <component
-            v-if="enableTimePicker"
+            v-if="enableTimePicker && !monthPicker"
             :is="timePickerComponent ? timePickerComponent : TimePickerCmp"
             ref="timePickerRef"
             v-bind="{

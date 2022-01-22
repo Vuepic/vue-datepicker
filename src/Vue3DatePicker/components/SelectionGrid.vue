@@ -87,7 +87,7 @@
                 return { bottom: `-${height}px` };
             }
         }
-        return undefined;
+        return { bottom: '0px' };
     });
 
     // Dynamic class  for the overlay
