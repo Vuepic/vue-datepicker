@@ -4,5 +4,6 @@
     "selector-class-pattern": "[^ ]",
     "scss/dollar-variable-pattern": "[^ ]",
     "scss/percent-placeholder-pattern": "[^ ]"
-  }
+  },
+  "ignoreFiles": ["**/*.vue"]
 }
