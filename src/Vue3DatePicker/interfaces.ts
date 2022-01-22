@@ -44,15 +44,6 @@ export interface IMonthYearHook {
     onPrev(): void;
 }
 
-export interface TimeGridValues {
-    value: '';
-    text: '';
-}
-
-export interface TimeGridProps {
-    values: TimeGridValues;
-}
-
 export interface ITextInputOptions {
     enterSubmit: boolean;
     tabSubmit: boolean;
