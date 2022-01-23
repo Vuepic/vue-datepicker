@@ -1,30 +1,6 @@
 <template>
     <div :class="calendarParentClass">
-        <div :class="contentWrapClass" :style="contentWrapStyle">
-            <component
-                :is="monthYearComponent ? monthYearComponent : MonthYearInput"
-                v-if="!disableMonthYearSelect && !timePicker"
-                v-bind="{
-                    months,
-                    years,
-                    filters,
-                    monthPicker,
-                    month,
-                    year,
-                    customProps,
-                    multiCalendars,
-                    multiCalendarsSolo,
-                    instance,
-                    timePickerRef,
-                }"
-                @update:month="$emit('update:month', $event)"
-                @update:year="$emit('update:year', $event)"
-                @month-year-select="$emit('monthYearSelect', $event)"
-            >
-                <template v-for="(slot, i) in monthYearSlots" #[slot]="args" :key="i">
-                    <slot :name="slot" v-bind="args" />
-                </template>
-            </component>
+        <div :style="contentWrapStyle">
             <div
                 v-if="!specificMode"
                 :class="calendarWrapClass"
@@ -130,11 +106,8 @@
         ref,
         toRef,
         UnwrapRef,
-        useSlots,
         watch,
     } from 'vue';
-
-    import MonthYearInput from './MonthYearInput.vue';
 
     import {
         DynamicClass,
@@ -145,20 +118,11 @@
         IMarker,
         ITransition,
         InternalModuleValue,
-        MaybeElementRef,
     } from '../interfaces';
     import { getDayNames, getDefaultMarker, unrefElement } from '../utils/util';
-    import { mapSlots } from './composition/slots';
     import { isDateAfter, isDateEqual, setDateMonthOrYear } from '../utils/date-utils';
 
-    const emit = defineEmits([
-        'selectDate',
-        'setHoverDate',
-        'update:month',
-        'update:year',
-        'monthYearSelect',
-        'handleScroll',
-    ]);
+    const emit = defineEmits(['selectDate', 'setHoverDate', 'handleScroll']);
 
     const props = defineProps({
         locale: { type: String as PropType<string>, default: 'en-Us' },
@@ -166,7 +130,6 @@
         weekStart: { type: [Number, String] as PropType<number | string>, default: 1 },
         weekNumbers: { type: Boolean as PropType<boolean>, default: false },
         mappedDates: { type: Array as PropType<ICalendarDate[]>, default: () => [] },
-        timePickerComponent: { type: Object as PropType<DefineComponent>, default: null },
         monthYearComponent: { type: Object as PropType<DefineComponent>, default: null },
         range: { type: Boolean as PropType<boolean>, default: false },
         filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
@@ -188,9 +151,8 @@
         year: { type: Number as PropType<number>, default: 0 },
         modeHeight: { type: [Number, String] as PropType<number | string>, default: 255 },
         internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
-        timePickerRef: { type: Object as PropType<MaybeElementRef>, default: null },
     });
-    const slots = useSlots();
+
     const showMakerTooltip = ref<Date | null>(null);
     const markerTooltipStyle = ref({ bottom: '', left: '', transform: '' });
     const dayRefs = ref([]);
@@ -212,8 +174,6 @@
         }
         prevDate.value = setDateMonthOrYear(new Date(), props.month, props.year);
     });
-
-    const monthYearSlots = mapSlots(slots, 'monthYear');
 
     const specificMode = computed(() => props.monthPicker || props.timePicker);
 
@@ -258,13 +218,6 @@
         dp__calendar: true,
         dp__calendar_next: props.multiCalendars > 0 && props.instance !== 0,
     }));
-
-    // Wrapper class for the wrapper div
-    const contentWrapClass = computed(
-        (): DynamicClass => ({
-            dp__calendar_content_wrap: true,
-        }),
-    );
 
     const contentWrapStyle = computed(() => (specificMode.value ? { height: `${props.modeHeight}px` } : null));
 

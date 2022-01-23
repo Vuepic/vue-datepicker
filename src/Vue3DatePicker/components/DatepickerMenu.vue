@@ -15,28 +15,85 @@
     >
         <div :class="disabledReadonlyOverlay" v-if="(disabled || readonly) && inline"></div>
         <div :class="arrowClass" v-if="!inline"></div>
-        <div :class="menuCalendarClassWrapper" ref="calendarWrapperRef" role="document">
-            <Calendar
-                v-for="instance in calendarAmm"
-                v-bind="calendarProps"
-                :key="instance"
-                :instance="instance"
-                :mapped-dates="mappedDates(instance)"
-                :month="month(instance)"
-                :year="year(instance)"
-                :month-year-component="monthYearComponent"
-                :time-picker-component="timePickerComponent"
-                @update:month="updateMonthYear(instance, $event, true)"
-                @update:year="updateMonthYear(instance, $event, false)"
-                @month-year-select="monthYearSelect"
-                @select-date="selectDate($event, !isFirstInstance(instance))"
-                @set-hover-date="setHoverDate($event)"
-                @handle-scroll="handleScroll($event, instance)"
-            >
-                <template v-for="(slot, i) in calendarSlots" #[slot]="args" :key="i">
-                    <slot :name="slot" v-bind="{ ...args }" />
-                </template>
-            </Calendar>
+        <div style="position: relative" ref="calendarWrapperRef" role="document">
+            <div :class="menuCalendarClassWrapper">
+                <div v-for="instance in calendarAmm" :key="instance" :class="calendarInstanceClassWrapper">
+                    <component
+                        :is="monthYearComponent ? monthYearComponent : MonthYearInput"
+                        v-if="!disableMonthYearSelect && !timePicker"
+                        v-bind="{
+                            months,
+                            years,
+                            filters,
+                            monthPicker,
+                            month: month(instance),
+                            year: year(instance),
+                            customProps,
+                            multiCalendars,
+                            multiCalendarsSolo,
+                            instance,
+                            minDate,
+                            maxDate,
+                        }"
+                        @update:month="updateMonthYear(instance, $event, true)"
+                        @update:year="updateMonthYear(instance, $event, false)"
+                        @month-year-select="monthYearSelect"
+                    >
+                        <template v-for="(slot, i) in monthYearSlots" #[slot]="args" :key="i">
+                            <slot :name="slot" v-bind="args" />
+                        </template>
+                    </component>
+                    <Calendar
+                        v-bind="calendarProps"
+                        :instance="instance"
+                        :mapped-dates="mappedDates(instance)"
+                        :month="month(instance)"
+                        :year="year(instance)"
+                        :month-year-component="monthYearComponent"
+                        @select-date="selectDate($event, !isFirstInstance(instance))"
+                        @set-hover-date="setHoverDate($event)"
+                        @handle-scroll="handleScroll($event, instance)"
+                    >
+                        <template v-for="(slot, i) in calendarSlots" #[slot]="args" :key="i">
+                            <slot :name="slot" v-bind="{ ...args }" />
+                        </template>
+                    </Calendar>
+                </div>
+            </div>
+            <div>
+                <component
+                    v-if="enableTimePicker && !monthPicker"
+                    :is="timePickerComponent ? timePickerComponent : TimePickerCmp"
+                    ref="timePickerRef"
+                    v-bind="{
+                        is24,
+                        hoursIncrement,
+                        minutesIncrement,
+                        hoursGridIncrement,
+                        secondsIncrement,
+                        minutesGridIncrement,
+                        secondsGridIncrement,
+                        noHoursOverlay,
+                        noMinutesOverlay,
+                        noSecondsOverlay,
+                        range,
+                        filters,
+                        timePicker,
+                        hours,
+                        minutes,
+                        seconds,
+                        customProps,
+                        enableSeconds,
+                    }"
+                    @update:hours="updateTime($event)"
+                    @update:minutes="updateTime($event, false)"
+                    @update:seconds="updateTime($event, false, true)"
+                >
+                    <template v-for="(slot, i) in timePickerSlots" #[slot]="args" :key="i">
+                        <slot :name="slot" v-bind="args" />
+                    </template>
+                </component>
+            </div>
         </div>
         <div class="dp__now_wrap" v-if="showNowButton">
             <slot name="now-button" v-if="$slots['now-button']" :selectCurrentDate="selectCurrentDate" />
@@ -51,41 +108,7 @@
             </button>
         </div>
         <component
-            v-if="enableTimePicker && !monthPicker"
-            :is="timePickerComponent ? timePickerComponent : TimePickerCmp"
-            ref="timePickerRef"
-            v-bind="{
-                is24,
-                hoursIncrement,
-                minutesIncrement,
-                hoursGridIncrement,
-                secondsIncrement,
-                minutesGridIncrement,
-                secondsGridIncrement,
-                noHoursOverlay,
-                noMinutesOverlay,
-                noSecondsOverlay,
-                range,
-                filters,
-                timePicker,
-                hours,
-                minutes,
-                seconds,
-                customProps,
-                enableSeconds,
-                actionRowRef,
-            }"
-            @update:hours="updateTime($event)"
-            @update:minutes="updateTime($event, false)"
-            @update:seconds="updateTime($event, false, true)"
-        >
-            <template v-for="(slot, i) in timePickerSlots" #[slot]="args" :key="i">
-                <slot :name="slot" v-bind="args" />
-            </template>
-        </component>
-        <component
             v-if="!autoApply"
-            ref="actionRowRef"
             :is="actionRowComponent ? actionRowComponent : ActionRow"
             v-bind="{
                 calendarWidth,
@@ -119,6 +142,7 @@
     import Calendar from './Calendar.vue';
     import ActionRow from './ActionRow.vue';
     import TimePickerCmp from './TimePicker/TimePicker.vue';
+    import MonthYearInput from './MonthYearInput.vue';
 
     import {
         DynamicClass,
@@ -219,8 +243,6 @@
     const dpMenuRef = ref(null);
     const calendarWidth = ref(0);
     const menuMount = ref(false);
-    const actionRowRef = ref();
-    const timePickerRef = ref();
 
     onMounted(() => {
         menuMount.value = true;
@@ -274,6 +296,7 @@
     const calendarSlots = mapSlots(slots, 'calendar');
     const actionSlots = mapSlots(slots, 'action');
     const timePickerSlots = mapSlots(slots, 'timePicker');
+    const monthYearSlots = mapSlots(slots, 'monthYear');
 
     const arrowClass = computed(() => (!props.openOnTop ? 'dp__arrow_top' : 'dp__arrow_bottom'));
 
@@ -313,10 +336,13 @@
 
     const menuCalendarClassWrapper = computed(
         (): DynamicClass => ({
-            dp__calendar_wrapper: true,
             dp__flex_display: props.multiCalendars > 0,
         }),
     );
+
+    const calendarInstanceClassWrapper = computed(() => ({
+        dp__instance_calendar: props.multiCalendars > 0,
+    }));
 
     const disabledReadonlyOverlay = computed(() => ({
         dp__menu_disabled: props.disabled,
@@ -345,6 +371,8 @@
         filters: props.filters,
         minTime: props.minTime,
         maxTime: props.maxTime,
+        minDate: props.minDate,
+        maxDate: props.maxDate,
         customProps: props.customProps,
         calendarClassName: props.calendarClassName,
         specificMode: specificMode.value,
@@ -355,7 +383,6 @@
         multiCalendarsSolo: props.multiCalendarsSolo,
         modeHeight: props.modeHeight,
         internalModelValue: props.internalModelValue,
-        timePickerRef,
     }));
 
     const dpMenuClass = computed(

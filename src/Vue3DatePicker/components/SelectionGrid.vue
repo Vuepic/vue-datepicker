@@ -1,5 +1,5 @@
 <template>
-    <div ref="gridWrapRef" :class="dpOverlayClass" role="dialog" tabindex="0" :style="overlayStyle">
+    <div ref="gridWrapRef" :class="dpOverlayClass" role="dialog" tabindex="0">
         <div class="dp__overlay_container" role="grid">
             <div class="dp__selection_grid_header"><slot name="header"></slot></div>
             <div class="dp__overlay_row" v-for="(row, i) in mappedItems" :key="getKey(i)" role="row">
@@ -44,7 +44,7 @@
 <script lang="ts" setup>
     import { computed, inject, onBeforeUpdate, onMounted, PropType, ref } from 'vue';
 
-    import { IDefaultSelect, DynamicClass, MaybeElementRef } from '../interfaces';
+    import { IDefaultSelect, DynamicClass } from '../interfaces';
     import { getKey, unrefElement } from '../utils/util';
 
     const emit = defineEmits(['update:modelValue', 'selected', 'toggle']);
@@ -55,7 +55,6 @@
         disabledValues: { type: Array as PropType<number[]>, default: () => [] },
         minValue: { type: [Number, String] as PropType<number | string>, default: null },
         maxValue: { type: [Number, String] as PropType<number | string>, default: null },
-        timePickerRef: { type: Object as PropType<MaybeElementRef>, default: null },
     });
 
     const scrollable = ref(false);
@@ -79,22 +78,10 @@
         }
     });
 
-    const overlayStyle = computed(() => {
-        if (props.timePickerRef) {
-            const el = unrefElement(props.timePickerRef);
-            if (el) {
-                const { height } = el.getBoundingClientRect();
-                return { bottom: `-${height}px` };
-            }
-        }
-        return { bottom: '0px' };
-    });
-
     // Dynamic class  for the overlay
     const dpOverlayClass = computed(
         (): DynamicClass => ({
             dp__overlay: true,
-            dp__overlay_full: !props.timePickerRef,
         }),
     );
 

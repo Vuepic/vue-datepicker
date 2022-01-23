@@ -13,7 +13,7 @@
             <ClockIcon v-if="!$slots['clock-icon']" />
         </div>
         <transition :name="transitionName(showTimePicker)" :css="showTransition">
-            <div v-if="showTimePicker || timePicker" class="dp__overlay" :style="`bottom: ${overlayBottom}`">
+            <div v-if="showTimePicker || timePicker" class="dp__overlay">
                 <div class="dp__overlay_container">
                     <slot
                         name="time-picker-overlay"
@@ -93,10 +93,9 @@
     import { ClockIcon, CalendarIcon } from '../Icons';
     import TimeInput from './TimeInput.vue';
 
-    import { IDateFilter, MaybeElementRef } from '../../interfaces';
+    import { IDateFilter } from '../../interfaces';
     import { mapSlots } from '../composition/slots';
     import { useTransitions } from '../composition/transition';
-    import { unrefElement } from '../../utils/util';
 
     const emit = defineEmits(['update:hours', 'update:minutes', 'update:seconds']);
 
@@ -119,7 +118,6 @@
         noSecondsOverlay: { type: Boolean as PropType<boolean>, default: false },
         customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
         enableSeconds: { type: Boolean as PropType<boolean>, default: false },
-        actionRowRef: { type: Object as PropType<MaybeElementRef>, default: null },
     });
     const slots = useSlots();
     const autoApply = inject('autoApply', false);
@@ -131,17 +129,6 @@
     const toggleTimePicker = (show: boolean): void => {
         showTimePicker.value = show;
     };
-
-    const overlayBottom = computed(() => {
-        if (props.actionRowRef) {
-            const el = unrefElement(props.actionRowRef);
-            if (el) {
-                const { height } = el.getBoundingClientRect();
-                return `${height}px`;
-            }
-        }
-        return `0px`;
-    });
 
     const toggleButtonClass = computed(() => ({
         dp__button: true,

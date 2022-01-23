@@ -44,10 +44,6 @@
   position: relative;
 }
 
-.dp__calendar_content_wrap {
-  position: relative;
-}
-
 .dp__calendar_header_cell {
   border-bottom: thin solid var(--dp-border-color);
   padding: $dp__calendar_header_cell_padding;
@@ -245,4 +241,8 @@
   border-right: 1px solid var(--dp-border-color);
   border-bottom: 1px solid var(--dp-border-color);
   transform: translate(-50%, 50%) rotate(45deg);
+}
+
+.dp__instance_calendar {
+  position: relative;
 }

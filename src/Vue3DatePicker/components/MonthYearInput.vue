@@ -43,7 +43,7 @@
             <transition :name="transitionName(showMonthPicker)" :css="showTransition">
                 <SelectionGrid
                     v-if="showMonthPicker"
-                    v-bind="{ modelValue: month, items: groupedMonths, disabledValues: filters.months, timePickerRef }"
+                    v-bind="{ modelValue: month, items: groupedMonths, disabledValues: filters.months }"
                     @update:model-value="onMonthUpdate"
                     @toggle="toggleMonthPicker"
                 >
@@ -59,7 +59,7 @@
             <transition :name="transitionName(showYearPicker)" :css="showTransition">
                 <SelectionGrid
                     v-if="showYearPicker"
-                    v-bind="{ modelValue: year, items: groupedYears, disabledValues: filters.years, timePickerRef }"
+                    v-bind="{ modelValue: year, items: groupedYears, disabledValues: filters.years }"
                     @update:model-value="onYearUpdate"
                     @toggle="toggleYearPicker"
                     ><template #button-icon>
@@ -86,7 +86,7 @@
         </template>
         <template v-if="monthPicker">
             <SelectionGrid
-                v-bind="{ modelValue: month, items: groupedMonths, disabledValues: filters.months }"
+                v-bind="{ modelValue: month, items: groupedMonths, disabledValues: filters.months, minValue: minMonth }"
                 @update:model-value="onMonthUpdate"
                 @toggle="toggleMonthPicker"
             >
@@ -136,6 +136,8 @@
                                 modelValue: year,
                                 items: groupedYears,
                                 disabledValues: filters.years,
+                                minValue: minYear,
+                                maxValue: maxYear,
                             }"
                             @update:model-value="onYearUpdate"
                             @toggle="toggleYearPicker"
@@ -160,9 +162,10 @@
     import { ChevronLeftIcon, ChevronRightIcon, CalendarIcon } from './Icons';
     import SelectionGrid from './SelectionGrid.vue';
 
-    import { IDateFilter, IDefaultSelect, MaybeElementRef } from '../interfaces';
+    import { IDateFilter, IDefaultSelect } from '../interfaces';
     import { useMontYearPick } from './composition/month-year';
     import { useTransitions } from './composition/transition';
+    import { getMonth, getYear } from 'date-fns';
 
     const emit = defineEmits(['update:month', 'update:year', 'monthYearSelect']);
     const props = defineProps({
@@ -176,7 +179,8 @@
         customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
         multiCalendars: { type: Number as PropType<number>, default: 0 },
         multiCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
-        timePickerRef: { type: Object as PropType<MaybeElementRef>, default: null },
+        minDate: { type: [Date, String] as PropType<Date | string>, default: null },
+        maxDate: { type: [Date, String] as PropType<Date | string>, default: null },
     });
 
     const { transitionName, showTransition } = useTransitions();
@@ -196,6 +200,19 @@
         emit('monthYearSelect', true);
         toggleYearPicker();
     };
+
+    // todo - work in progress, might be changed ↓
+    const minYear = computed(() => (props.minDate ? getYear(new Date(props.minDate)) : null));
+    const maxYear = computed(() => (props.maxDate ? getYear(new Date(props.maxDate)) : null));
+
+    const minMonth = computed(() => {
+        if (props.minDate && minYear.value) {
+            if (minYear.value > props.year) return 12;
+            if (minYear.value === props.year) return getMonth(new Date(props.minDate));
+        }
+        return null;
+    });
+    // todo - work in progress, might be changed ↑
 
     const getGroupedList = (items: IDefaultSelect[]): IDefaultSelect[][] => {
         const list = [];
@@ -243,12 +260,6 @@
     };
 
     const handleYear = (increment = false): void => {
-        if (increment) {
-            const yr = props.year + 1;
-            emit('update:year', yr);
-        } else {
-            const yr = props.year - 1;
-            emit('update:year', yr);
-        }
+        emit('update:year', increment ? props.year + 1 : props.year - 1);
     };
 </script>
