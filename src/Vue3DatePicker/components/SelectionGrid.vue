@@ -97,14 +97,15 @@
             return item
                 .filter((exists) => exists)
                 .map((itemVal) => {
+                    const disabled =
+                        props.disabledValues.some((val) => val === itemVal.value) || checkMinMaxValue(itemVal.value);
                     return {
                         ...itemVal,
                         className: {
                             dp__overlay_cell_active: itemVal.value === props.modelValue,
                             dp__overlay_cell: itemVal.value !== props.modelValue,
-                            dp__overlay_cell_disabled:
-                                props.disabledValues.some((val) => val === itemVal.value) ||
-                                checkMinMaxValue(itemVal.value),
+                            dp__overlay_cell_disabled: disabled,
+                            dp__overlay_cell_active_disabled: disabled && itemVal.value === props.modelValue,
                             dp__overlay_cell_pad: true,
                         },
                     };

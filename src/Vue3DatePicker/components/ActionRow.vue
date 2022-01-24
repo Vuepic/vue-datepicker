@@ -33,7 +33,7 @@
     import { computed, ComputedRef, inject, PropType } from 'vue';
     import { Locale } from 'date-fns';
     import { IFormat, InternalModuleValue, ITimeValue } from '../interfaces';
-    import { formatDate, getMonthVal, getTImeForExternal, isValidTime } from '../utils/date-utils';
+    import { formatDate, getMonthVal, getTImeForExternal, isMonthWithinRange, isValidTime } from '../utils/date-utils';
     import { isModelValueRange } from '../utils/type-guard';
 
     const emit = defineEmits(['closePicker', 'selectDate']);
@@ -57,19 +57,24 @@
         minTime: { type: Object as PropType<ITimeValue>, default: null },
         maxTime: { type: Object as PropType<ITimeValue>, default: null },
         enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
+        minDate: { type: [Date, String] as PropType<Date | string>, default: null },
+        maxDate: { type: [Date, String] as PropType<Date | string>, default: null },
     });
     const formatLocale = inject<ComputedRef<Locale>>('formatLocale');
     const selectClass = computed(() => ({
         dp__action: true,
         dp__select: true,
-        dp__action_disabled: !isTimeValid.value,
+        dp__action_disabled: !isTimeValid.value || !isMonthValid.value,
     }));
 
     const isTimeValid = computed((): boolean => {
-        if (!props.enableTimePicker) {
-            return true;
-        }
+        if (!props.enableTimePicker) return true;
         return isValidTime(props.internalModelValue, props.maxTime, props.minTime);
+    });
+
+    const isMonthValid = computed((): boolean => {
+        if (!props.monthPicker) return true;
+        return isMonthWithinRange(props.internalModelValue as Date, props.minDate, props.maxDate);
     });
 
     const previewValue = computed((): string | string[] => {
@@ -103,7 +108,7 @@
     });
 
     const selectDate = (): void => {
-        if (isTimeValid.value) {
+        if (isTimeValid.value && isMonthValid.value) {
             emit('selectDate');
         }
     };

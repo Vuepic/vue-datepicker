@@ -86,7 +86,13 @@
         </template>
         <template v-if="monthPicker">
             <SelectionGrid
-                v-bind="{ modelValue: month, items: groupedMonths, disabledValues: filters.months, minValue: minMonth }"
+                v-bind="{
+                    modelValue: month,
+                    items: groupedMonths,
+                    disabledValues: filters.months,
+                    minValue: minMonth,
+                    maxValue: maxMonth,
+                }"
                 @update:model-value="onMonthUpdate"
                 @toggle="toggleMonthPicker"
             >
@@ -201,7 +207,6 @@
         toggleYearPicker();
     };
 
-    // todo - work in progress, might be changed ↓
     const minYear = computed(() => (props.minDate ? getYear(new Date(props.minDate)) : null));
     const maxYear = computed(() => (props.maxDate ? getYear(new Date(props.maxDate)) : null));
 
@@ -212,7 +217,14 @@
         }
         return null;
     });
-    // todo - work in progress, might be changed ↑
+
+    const maxMonth = computed(() => {
+        if (props.maxDate && maxYear.value) {
+            if (maxYear.value < props.year) return -1;
+            if (maxYear.value === props.year) return getMonth(new Date(props.maxDate));
+        }
+        return null;
+    });
 
     const getGroupedList = (items: IDefaultSelect[]): IDefaultSelect[][] => {
         const list = [];

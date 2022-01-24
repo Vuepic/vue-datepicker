@@ -126,6 +126,8 @@
                 maxTime,
                 minTime,
                 enableTimePicker,
+                minDate,
+                maxDate,
             }"
             @close-picker="$emit('closePicker')"
             @select-date="$emit('selectDate')"

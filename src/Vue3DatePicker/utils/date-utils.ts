@@ -217,3 +217,22 @@ export const isValidTime = (date: InternalModuleValue, maxTime: ITimeValue, minT
     }
     return isValid;
 };
+
+export const isMonthWithinRange = (
+    date: Date | string,
+    minDate: Date | string | null,
+    maxDate: Date | string | null,
+): boolean => {
+    let valid = true;
+    if (minDate && maxDate) {
+        valid = isDateAfter(new Date(date), new Date(minDate)) && isDateBefore(new Date(date), new Date(maxDate));
+    }
+    if (minDate) {
+        valid = isDateAfter(new Date(date), new Date(minDate));
+    }
+    if (maxDate) {
+        valid = isDateBefore(new Date(date), new Date(maxDate));
+    }
+
+    return valid;
+};
