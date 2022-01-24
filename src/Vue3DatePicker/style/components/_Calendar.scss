@@ -246,3 +246,9 @@
 .dp__instance_calendar {
   position: relative;
 }
+
+@media only screen and (max-width: 600px) {
+  .dp__flex_display {
+    flex-direction: column;
+  }
+}

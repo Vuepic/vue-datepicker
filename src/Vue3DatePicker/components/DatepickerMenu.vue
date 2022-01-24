@@ -15,7 +15,7 @@
     >
         <div :class="disabledReadonlyOverlay" v-if="(disabled || readonly) && inline"></div>
         <div :class="arrowClass" v-if="!inline"></div>
-        <div style="position: relative" ref="calendarWrapperRef" role="document">
+        <div class="dp__instance_calendar" ref="calendarWrapperRef" role="document">
             <div :class="menuCalendarClassWrapper">
                 <div v-for="instance in calendarAmm" :key="instance" :class="calendarInstanceClassWrapper">
                     <component
@@ -140,7 +140,17 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, onMounted, PropType, nextTick, DefineComponent, useSlots, ComputedRef, ref } from 'vue';
+    import {
+        computed,
+        onMounted,
+        PropType,
+        nextTick,
+        DefineComponent,
+        useSlots,
+        ComputedRef,
+        ref,
+        onUnmounted,
+    } from 'vue';
     import Calendar from './Calendar.vue';
     import ActionRow from './ActionRow.vue';
     import TimePickerCmp from './TimePicker/TimePicker.vue';
@@ -248,10 +258,6 @@
 
     onMounted(() => {
         menuMount.value = true;
-        const el = unrefElement(calendarWrapperRef);
-        if (el) {
-            calendarWidth.value = el.getBoundingClientRect().width;
-        }
         if (!props.inline) {
             nextTick(() => emit('dpOpen'));
         }
@@ -266,6 +272,11 @@
                 e.stopImmediatePropagation();
             });
         }
+        document.addEventListener('resize', getCalendarWidth);
+    });
+
+    onUnmounted(() => {
+        document.removeEventListener('resize', getCalendarWidth);
     });
 
     const {
@@ -313,6 +324,13 @@
     const months = computed((): IDefaultSelect[] => {
         return getMonths(props.locale, props.monthNameFormat);
     });
+
+    const getCalendarWidth = (): void => {
+        const el = unrefElement(calendarWrapperRef);
+        if (el) {
+            calendarWidth.value = el.getBoundingClientRect().width;
+        }
+    };
 
     // Get dates for the currently selected month and year
     const dates = computed(
