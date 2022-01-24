@@ -73,6 +73,18 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
     );
     const seconds = ref<number | number[]>(props.range ? [0, 0] : 0);
 
+    watch(
+        calendars,
+        () => {
+            setTimeout(() => {
+                if (props.openOnTop) {
+                    emit('dpOpen');
+                }
+            }, 0);
+        },
+        { deep: true },
+    );
+
     onMounted(() => {
         mapInternalModuleValues();
 
