@@ -259,6 +259,8 @@
         }
         if (menu) {
             menu.addEventListener('pointerdown', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
                 e.stopImmediatePropagation();
             });
         }
@@ -438,6 +440,8 @@
     };
 
     const handleDpMenuClick = (e: Event) => {
+        e.stopPropagation();
+        e.preventDefault();
         e.stopImmediatePropagation();
     };
 
