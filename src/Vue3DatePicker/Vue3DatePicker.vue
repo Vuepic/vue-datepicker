@@ -273,6 +273,7 @@
     provide('autoApply', props.autoApply);
     const formatLocaleRef = computed(() => props.formatLocale);
     provide('formatLocale', formatLocaleRef);
+    provide('textInput', toRef(props, 'textInput'));
 
     onMounted(() => {
         parseExternalModelValue(props.modelValue);

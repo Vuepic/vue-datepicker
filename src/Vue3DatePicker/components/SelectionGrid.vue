@@ -61,6 +61,7 @@
     const selectionActiveRef = ref(null);
     const gridWrapRef = ref(null);
     const autoApply = inject('autoApply', false);
+    const textInput = inject('textInput', ref(false));
 
     onBeforeUpdate(() => {
         selectionActiveRef.value = null;
@@ -73,7 +74,9 @@
         setScrollPosition();
         const elm = unrefElement(gridWrapRef);
         if (elm) {
-            elm.focus();
+            if (!textInput.value) {
+                elm.focus();
+            }
             scrollable.value = elm.clientHeight < elm.scrollHeight;
         }
     });
