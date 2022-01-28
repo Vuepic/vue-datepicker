@@ -268,7 +268,6 @@
         if (menu) {
             menu.addEventListener('pointerdown', (e) => {
                 e.stopPropagation();
-                e.preventDefault();
                 e.stopImmediatePropagation();
             });
         }
