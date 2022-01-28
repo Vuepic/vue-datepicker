@@ -39,11 +39,6 @@ export interface ICalendarDate {
     days: ICalendarDay[];
 }
 
-export interface IMonthYearHook {
-    onNext(): void;
-    onPrev(): void;
-}
-
 export interface ITextInputOptions {
     enterSubmit: boolean;
     tabSubmit: boolean;

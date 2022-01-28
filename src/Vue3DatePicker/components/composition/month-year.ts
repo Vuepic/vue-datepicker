@@ -1,75 +1,46 @@
-import { IMonthYearHook, UseMonthYearPick, VueEmit } from '../../interfaces';
+import { addMonths, addYears, getMonth, getYear, set, subMonths, subYears } from 'date-fns';
+import { UseMonthYearPick, VueEmit } from '../../interfaces';
 
-export const useMontYearPick = (props: UseMonthYearPick, emit: VueEmit): IMonthYearHook => {
-    const months = props.months.map((month) => month.value);
-    const years = props.years.map((year) => year.value);
-    const excludedMonths = months.filter((month: number) => !props.filters.months.some((mon: number) => mon === month));
-    const excludedYears = years.filter((year: number) => !props.filters.years.some((yr: number) => yr === year));
-
-    const onNext = (): void => {
-        let tempMonth;
-        let month = props.month;
-        let year = props.year;
-        if (props.month === 11) {
-            month = 0;
-            year = props.year + 1;
-        } else {
-            month += 1;
+export const useMontYearPick = (
+    props: UseMonthYearPick,
+    emit: VueEmit,
+): { handleMonthYearChange(isNext: boolean): void } => {
+    const recursiveMonthAdjust = (date: Date, increment: boolean): Date => {
+        let monthDate = date;
+        if (props.filters.months.includes(getMonth(monthDate))) {
+            monthDate = increment ? addMonths(date, 1) : subMonths(date, 1);
+            return recursiveMonthAdjust(monthDate, increment);
         }
-        if (props.filters.months.includes(month)) {
-            if (month === 0) {
-                month = Math.min(...excludedMonths);
-            } else {
-                month = Math.max(...excludedMonths);
-            }
-            tempMonth = month;
-        }
-        if (month === tempMonth) {
-            month = Math.min(...excludedMonths);
-            year = props.year + 1;
-        }
-        if (props.filters.years.includes(year)) {
-            const foundYear = excludedYears.find((availableYear: number) => availableYear > year);
-            if (foundYear) {
-                year = foundYear;
-            }
-        }
-        if (year <= years[years.length - 1]) {
-            updateMonthYear(month, year);
-        }
+        return monthDate;
     };
 
-    const onPrev = (): void => {
-        let tempMonth;
-        let month = props.month;
-        let year = props.year;
-        if (props.month === 0) {
-            month = 11;
-            year = props.year - 1;
-        } else {
-            month -= 1;
+    const recursiveYearAdjust = (date: Date, increment: boolean): Date => {
+        let yearDate = date;
+        if (props.filters.years.includes(getYear(yearDate))) {
+            yearDate = increment ? addYears(date, 1) : subYears(date, 1);
+            return recursiveYearAdjust(yearDate, increment);
         }
+        return yearDate;
+    };
+
+    const handleMonthYearChange = (isNext: boolean): void => {
+        const initialDate = set(new Date(), { month: props.month, year: props.year });
+        let date = isNext ? addMonths(initialDate, 1) : subMonths(initialDate, 1);
+
+        let month = getMonth(date);
+        let year = getYear(date);
+
         if (props.filters.months.includes(month)) {
-            if (month === 11) {
-                month = Math.max(...excludedMonths);
-            } else {
-                month = Math.min(...excludedMonths);
-            }
-            tempMonth = month;
+            date = recursiveMonthAdjust(date, isNext);
+            month = getMonth(date);
+            year = getYear(date);
         }
-        if (month === tempMonth) {
-            month = Math.max(...excludedMonths);
-            year = props.year - 1;
-        }
+
         if (props.filters.years.includes(year)) {
-            const foundYear = excludedYears.reverse().find((availableYear: number) => availableYear < year);
-            if (foundYear) {
-                year = foundYear;
-            }
+            date = recursiveYearAdjust(date, isNext);
+            year = getYear(date);
         }
-        if (year >= years[0]) {
-            updateMonthYear(month, year);
-        }
+        updateMonthYear(month, year);
     };
 
     const updateMonthYear = (month: number, year: number): void => {
@@ -77,5 +48,5 @@ export const useMontYearPick = (props: UseMonthYearPick, emit: VueEmit): IMonthY
         emit('update:year', year);
     };
 
-    return { onNext, onPrev };
+    return { handleMonthYearChange };
 };

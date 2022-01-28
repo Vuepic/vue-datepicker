@@ -3,8 +3,8 @@
         <template v-if="!monthPicker">
             <div
                 class="dp__month_year_col_nav"
-                @click="onPrev"
-                @keydown.enter="onPrev"
+                @click="handleMonthYearChange(false)"
+                @keydown.enter="handleMonthYearChange(false)"
                 v-if="showLeftIcon"
                 tabindex="0"
             >
@@ -73,9 +73,9 @@
             </transition>
             <div
                 class="dp__month_year_col_nav"
-                @click="onNext"
+                @click="handleMonthYearChange(true)"
                 v-if="showRightIcon"
-                @keydown.enter="onNext"
+                @keydown.enter="handleMonthYearChange(true)"
                 tabindex="0"
             >
                 <div class="dp__inner_nav" role="button" aria-label="Next month">
@@ -193,7 +193,7 @@
 
     const showMonthPicker = ref(false);
     const showYearPicker = ref(false);
-    const { onNext, onPrev } = useMontYearPick(props, emit);
+    const { handleMonthYearChange } = useMontYearPick(props, emit);
 
     const onMonthUpdate = (month: number): void => {
         emit('update:month', month);
