@@ -73,6 +73,6 @@ You can also make a financial contribution via sponsoring this project or one ti
 
 ## License
 
-Copyright © 2021 [Vuepic](https://github.com/Vuepic)
+Copyright © 2021-present [Vuepic](https://github.com/Vuepic)
 
 [MIT](https://github.com/Vuepic/vue3-date-time-picker/blob/master/LICENSE)
