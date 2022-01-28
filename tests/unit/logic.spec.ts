@@ -6,10 +6,11 @@ import { ja } from 'date-fns/locale';
 import Datepicker from '../../src/Vue3DatePicker/Vue3DatePicker.vue';
 import DatepickerMenu from '../../src/Vue3DatePicker/components/DatepickerMenu.vue';
 import Calendar from '../../src/Vue3DatePicker/components/Calendar.vue';
+import TimePicker from '../../src/Vue3DatePicker/components/TimePicker/TimePicker.vue';
+import MonthYearInput from '../../src/Vue3DatePicker/components/MonthYearInput.vue';
 import ActionRow from '../../src/Vue3DatePicker/components/ActionRow.vue';
 
-import { getNextMonthYear } from '../../src/Vue3DatePicker/utils/date-utils';
-import { setSeconds, addMonths } from 'date-fns';
+import { setSeconds } from 'date-fns';
 
 const format = (date: Date): string => {
     return `Selected year is ${date.getFullYear()}`;
@@ -26,10 +27,10 @@ describe('Logic connection', () => {
 
         const menu: VueWrapper<any> = dp.findComponent(DatepickerMenu);
 
-        expect(menu.vm.month).toEqual(date.getMonth());
-        expect(menu.vm.year).toEqual(date.getFullYear());
-        expect(menu.vm.monthNext).toEqual(getNextMonthYear(date).month);
-        expect(menu.vm.yearNext).toEqual(getNextMonthYear(date).year);
+        await menu.vm.$nextTick();
+
+        expect(menu.vm.month(0)).toEqual(date.getMonth());
+        expect(menu.vm.year(0)).toEqual(date.getFullYear());
         expect(menu.vm.hours).toEqual(date.getHours());
         expect(menu.vm.minutes).toEqual(date.getMinutes());
     });
@@ -92,28 +93,6 @@ describe('Logic connection', () => {
         expect(menu.vm.internalModelValue[1]).toEqual(end);
     });
 
-    it('Should select range from 2 calendars', async () => {
-        const start = setSeconds(addDays(new Date(), 1), 0);
-        const end = setSeconds(addMonths(start, 1), 0);
-        const dp = mount(Datepicker, { props: { modelValue: null, range: true, multiCalendars: true } });
-
-        dp.vm.openMenu();
-
-        await dp.vm.$nextTick();
-
-        const menu: VueWrapper<any> = dp.findComponent(DatepickerMenu);
-        const calendar = menu.findComponent(Calendar);
-
-        calendar.vm.$emit('selectDate', { value: start, current: true });
-        await calendar.vm.$nextTick();
-        calendar.vm.$emit('selectDate', { value: end, current: true }, true);
-        await calendar.vm.$nextTick();
-
-        expect(menu.vm.internalModelValue).toHaveLength(2);
-        expect(menu.vm.internalModelValue[0]).toEqual(start);
-        expect(menu.vm.internalModelValue[1]).toEqual(end);
-    });
-
     it('Should select auto range', async () => {
         const start = setSeconds(new Date(), 0);
         const end = setSeconds(addDays(start, 7), 0);
@@ -144,11 +123,11 @@ describe('Logic connection', () => {
         await dp.vm.$nextTick();
 
         const menu: VueWrapper<any> = dp.findComponent(DatepickerMenu);
-        const calendar = menu.findComponent(Calendar);
-        calendar.vm.$emit('update:hours', val);
-        await calendar.vm.$nextTick();
-        calendar.vm.$emit('update:minutes', val);
-        await calendar.vm.$nextTick();
+        const timePicker = menu.findComponent(TimePicker);
+        timePicker.vm.$emit('update:hours', val);
+        await timePicker.vm.$nextTick();
+        timePicker.vm.$emit('update:minutes', val);
+        await timePicker.vm.$nextTick();
 
         expect(menu.vm.internalModelValue.getHours()).toEqual(val);
         expect(menu.vm.internalModelValue.getMinutes()).toEqual(val);
@@ -165,11 +144,11 @@ describe('Logic connection', () => {
         await dp.vm.$nextTick();
 
         const menu: VueWrapper<any> = dp.findComponent(DatepickerMenu);
-        const calendar = menu.findComponent(Calendar);
-        calendar.vm.$emit('update:hours', [start.getHours(), val]);
-        await calendar.vm.$nextTick();
-        calendar.vm.$emit('update:minutes', [val, end.getMinutes()]);
-        await calendar.vm.$nextTick();
+        const timePicker = menu.findComponent(TimePicker);
+        timePicker.vm.$emit('update:hours', [start.getHours(), val]);
+        await timePicker.vm.$nextTick();
+        timePicker.vm.$emit('update:minutes', [val, end.getMinutes()]);
+        await timePicker.vm.$nextTick();
 
         expect(menu.vm.internalModelValue[1].getHours()).toEqual(val);
         expect(menu.vm.internalModelValue[0].getMinutes()).toEqual(val);
@@ -184,10 +163,10 @@ describe('Logic connection', () => {
         await dp.vm.$nextTick();
 
         const menu: VueWrapper<any> = dp.findComponent(DatepickerMenu);
-        const calendar = menu.findComponent(Calendar);
-        calendar.vm.$emit('update:month', month);
+        const monthYearInput = menu.findComponent(MonthYearInput);
+        monthYearInput.vm.$emit('update:month', month);
 
-        expect(menu.vm.month).toEqual(month);
+        expect(menu.vm.month(0)).toEqual(month);
     });
 
     it('Should set year', async () => {
@@ -199,10 +178,10 @@ describe('Logic connection', () => {
         await dp.vm.$nextTick();
 
         const menu: VueWrapper<any> = dp.findComponent(DatepickerMenu);
-        const calendar = menu.findComponent(Calendar);
-        calendar.vm.$emit('update:year', year);
+        const monthYearInput = menu.findComponent(MonthYearInput);
+        monthYearInput.vm.$emit('update:year', year);
 
-        expect(menu.vm.year).toEqual(year);
+        expect(menu.vm.year(0)).toEqual(year);
     });
 
     it('Should format with custom function', async () => {
@@ -210,7 +189,7 @@ describe('Logic connection', () => {
 
         const dp = mount(Datepicker, { props: { modelValue: null, format } });
 
-        await dp.vm.openMenu();
+        dp.vm.openMenu();
 
         await dp.vm.$nextTick();
 
