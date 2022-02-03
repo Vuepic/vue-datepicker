@@ -5,8 +5,7 @@
             <template v-if="!$slots['action-preview']">
                 <template v-if="!Array.isArray(previewValue)">{{ previewValue }}</template>
                 <template v-if="Array.isArray(previewValue)">
-                    <div>{{ previewValue[0] }}</div>
-                    <div>{{ previewValue[1] }}</div>
+                    <div v-for="(preview, i) in previewValue" :key="i">{{ preview }}</div>
                 </template>
             </template>
         </div>
@@ -59,6 +58,7 @@
         enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
         minDate: { type: [Date, String] as PropType<Date | string>, default: null },
         maxDate: { type: [Date, String] as PropType<Date | string>, default: null },
+        multiDates: { type: Boolean as PropType<boolean>, default: false },
     });
     const formatLocale = inject<ComputedRef<Locale>>('formatLocale');
     const selectClass = computed(() => ({
@@ -77,24 +77,26 @@
         return isMonthWithinRange(props.internalModelValue as Date, props.minDate, props.maxDate);
     });
 
+    const formatWrap = (date: Date | Date[]): string => {
+        return formatDate(date, props.previewFormat as string, formatLocale?.value);
+    };
+
     const previewValue = computed((): string | string[] => {
         if (!props.internalModelValue || !props.menuMount) return '';
         if (typeof props.previewFormat === 'string') {
             if (isModelValueRange(props.internalModelValue)) {
                 if (props.internalModelValue.length === 2 && props.internalModelValue[1]) {
                     if (props.multiCalendars > 0) {
-                        return `${formatDate(
-                            props.internalModelValue[0],
-                            props.previewFormat,
-                            formatLocale?.value,
-                        )} - ${formatDate(props.internalModelValue[1], props.previewFormat, formatLocale?.value)}`;
+                        return `${formatWrap(props.internalModelValue[0])} - ${formatWrap(
+                            props.internalModelValue[1],
+                        )}`;
                     }
-                    return [
-                        formatDate(props.internalModelValue[0], props.previewFormat, formatLocale?.value),
-                        formatDate(props.internalModelValue[1], props.previewFormat, formatLocale?.value),
-                    ];
+                    return [formatWrap(props.internalModelValue[0]), formatWrap(props.internalModelValue[1])];
                 }
-                return `${formatDate(props.internalModelValue[0], props.previewFormat, formatLocale?.value)} -`;
+                if (props.multiDates) {
+                    return props.internalModelValue.map((date) => `${formatWrap(date)}`);
+                }
+                return `${formatWrap(props.internalModelValue[0])} -`;
             }
             return formatDate(props.internalModelValue, props.previewFormat, formatLocale?.value);
         }

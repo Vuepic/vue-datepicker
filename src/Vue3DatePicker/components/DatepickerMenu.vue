@@ -128,6 +128,7 @@
                 enableTimePicker,
                 minDate,
                 maxDate,
+                multiDates,
             }"
             @close-picker="$emit('closePicker')"
             @select-date="$emit('selectDate')"
@@ -249,6 +250,7 @@
         textInput: { type: Boolean as PropType<boolean>, default: false },
         disabled: { type: Boolean as PropType<boolean>, default: false },
         readonly: { type: Boolean as PropType<boolean>, default: false },
+        multiDates: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
     const calendarWrapperRef = ref(null);

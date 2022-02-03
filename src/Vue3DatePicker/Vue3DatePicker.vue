@@ -105,6 +105,7 @@
                     textInput,
                     disabled,
                     readonly,
+                    multiDates,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @close-picker="closeMenu"
@@ -264,6 +265,7 @@
         monthChangeOnArrows: { type: Boolean as PropType<boolean>, default: true },
         formatLocale: { type: Object as PropType<Locale>, default: null },
         autocomplete: { type: String as PropType<string>, default: null },
+        multiDates: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
     const isOpen = ref(false);
@@ -324,6 +326,7 @@
             props.enableTimePicker,
             props.enableSeconds,
             formatLocaleRef,
+            props.multiDates,
             emit,
         );
 

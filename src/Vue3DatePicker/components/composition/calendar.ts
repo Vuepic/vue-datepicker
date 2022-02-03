@@ -217,6 +217,9 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         if (!modelValue.value) return false;
         if (props.hideOffsetDates && !calendarDay.current) return false;
         if (!props.range) {
+            if (props.multiDates && Array.isArray(modelValue.value)) {
+                return modelValue.value.some((dateVal) => isDateEqual(dateVal, calendarDay.value));
+            }
             return isDateEqual(calendarDay.value, modelValue.value ? (modelValue.value as Date) : today.value);
         }
         return false;
@@ -268,13 +271,27 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         }
     };
 
+    const assignMonthYearAndTime = (date: Date): void => {
+        assignMonthAndYear(date);
+        hours.value = getHours(date);
+        minutes.value = getMinutes(date);
+        seconds.value = getSeconds(date);
+    };
+
+    const multiDatesLast = (): Date | null => {
+        if (Array.isArray(modelValue.value) && modelValue.value.length) {
+            return modelValue.value[modelValue.value.length - 1];
+        }
+        return null;
+    };
+
     /**
      * Values for times, month and year are managed separately, here we map those values from passed v-model
      */
     const mapInternalModuleValues = (): void => {
         if (modelValue.value) {
             if (isModelValueRange(modelValue.value)) {
-                if (modelValue.value.length === 2) {
+                if (modelValue.value.length === 2 && !props.multiDates) {
                     assignMonthAndYear(modelValue.value[0]);
                     hours.value = [
                         getHours(modelValue.value[0]),
@@ -288,15 +305,17 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
                         getSeconds(modelValue.value[0]),
                         modelValue.value[1] ? getSeconds(modelValue.value[1]) : getSeconds(new Date()),
                     ];
+                } else if (isModelValueRange(modelValue.value) && props.multiDates) {
+                    const lastEntry = modelValue.value[modelValue.value.length - 1];
+                    if (lastEntry) {
+                        assignMonthYearAndTime(lastEntry);
+                    }
                 }
                 if (props.multiCalendars && props.multiCalendarsSolo) {
                     handleNextMonthYear();
                 }
             } else {
-                assignMonthAndYear(modelValue.value);
-                hours.value = getHours(modelValue.value);
-                minutes.value = getMinutes(modelValue.value);
-                seconds.value = getSeconds(modelValue.value);
+                assignMonthYearAndTime(modelValue.value);
             }
         } else {
             if (props.timePicker) {
@@ -341,6 +360,19 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         }
     };
 
+    const handleMultiDateSelect = (date: Date): void => {
+        if (modelValue.value && Array.isArray(modelValue.value)) {
+            if (modelValue.value.some((dateVal) => isDateEqual(date, dateVal))) {
+                const value = modelValue.value.filter((dateVal) => !isDateEqual(dateVal, date));
+                modelValue.value = !value.length ? null : value;
+            } else {
+                modelValue.value.push(date);
+            }
+        } else {
+            modelValue.value = [date];
+        }
+    };
+
     /**
      * Called when the date in the calendar is clicked
      * Do a necessary formatting and assign value to internal
@@ -353,11 +385,16 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
             return;
         }
         if (!props.range && !isNumberArray(hours.value) && !isNumberArray(minutes.value)) {
-            modelValue.value = setDateTime(new Date(day.value), hours.value, minutes.value, getSecondsValue());
+            const date = setDateTime(new Date(day.value), hours.value, minutes.value, getSecondsValue());
+            if (props.multiDates) {
+                handleMultiDateSelect(date);
+            } else {
+                modelValue.value = date;
+            }
             if (props.autoApply) {
                 emit('autoApply');
             }
-        } else if (isNumberArray(hours.value) && isNumberArray(minutes.value)) {
+        } else if (isNumberArray(hours.value) && isNumberArray(minutes.value) && !props.multiDates) {
             let rangeDate = modelValue.value ? (modelValue.value as Date[]).slice() : [];
             if (rangeDate.length === 2) {
                 rangeDate = [];
@@ -482,6 +519,10 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         }
     };
 
+    const getSetDateTime = (dateValue: Date): Date => {
+        return setDateTime(dateValue, hours.value as number, minutes.value as number, getSecondsValue());
+    };
+
     /**
      * Same logic done twice with the time update, however some checks before applying are done
      */
@@ -503,13 +544,10 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
                     getSecondsValue(false),
                 );
             }
+        } else if (props.multiDates && Array.isArray(modelValue.value)) {
+            modelValue.value[modelValue.value.length - 1] = getSetDateTime(dateValue as Date);
         } else if (!props.range && !isRange(dateValue)) {
-            modelValue.value = setDateTime(
-                dateValue as Date,
-                hours.value as number,
-                minutes.value as number,
-                getSecondsValue(),
-            );
+            modelValue.value = getSetDateTime(dateValue);
         }
         emit('timeUpdate');
     };
@@ -526,7 +564,14 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
             seconds.value = value;
         }
         if (modelValue.value) {
-            handleTimeUpdate(modelValue.value);
+            if (props.multiDates) {
+                const lastEntry = multiDatesLast();
+                if (lastEntry) {
+                    handleTimeUpdate(lastEntry);
+                }
+            } else {
+                handleTimeUpdate(modelValue.value);
+            }
         } else if (props.timePicker) {
             handleTimeUpdate(props.range ? [new Date(), new Date()] : new Date());
         }

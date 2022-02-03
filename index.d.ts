@@ -179,6 +179,7 @@ interface Vue3DatePicker {
     monthChangeOnArrows?: boolean;
     formatLocale?: Locale;
     autocomplete?: string;
+    multiDates?: boolean;
 }
 
 interface PublicMethods extends MethodOptions {

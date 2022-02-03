@@ -86,6 +86,7 @@ export type UseCalendar = {
     markers: IMarker[];
     enableSeconds: boolean;
     monthChangeOnArrows: boolean;
+    multiDates: boolean;
 } & { [key: string]: unknown };
 
 export interface UseMonthYearPick {

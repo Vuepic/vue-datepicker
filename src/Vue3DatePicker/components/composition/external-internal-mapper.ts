@@ -35,6 +35,7 @@ export const useExternalInternalMapper = (
     enableTimePicker: boolean,
     enableSeconds: boolean,
     formatLocale: ComputedRef<Locale>,
+    multiDates: boolean,
     emit: VueEmit,
 ): IExternalInternalMapper => {
     const inputValue = ref('');
@@ -65,6 +66,8 @@ export const useExternalInternalMapper = (
                 if (isMonth(value) && 'month' in value && 'year' in value) {
                     mappedDate = setDateMonthOrYear(null, +value.month, +value.year);
                 }
+            } else if (multiDates && Array.isArray(value)) {
+                mappedDate = value.map((date) => new Date(date as string));
             } else if (range) {
                 if (isRangeArray(value, partialRange)) {
                     mappedDate = [new Date(value[0]), value[1] ? new Date(value[1]) : (null as unknown as Date)];
@@ -93,7 +96,13 @@ export const useExternalInternalMapper = (
             inputValue.value = '';
         } else if (!format || typeof format === 'string') {
             const pattern = getDefaultPattern(format, is24, enableSeconds, monthPicker, timePicker, enableTimePicker);
-            inputValue.value = formatDate(internalModelValue.value, pattern, formatLocale?.value);
+            if (Array.isArray(internalModelValue.value) && multiDates) {
+                inputValue.value = internalModelValue.value
+                    .map((date) => formatDate(date, pattern, formatLocale?.value))
+                    .join('; ');
+            } else {
+                inputValue.value = formatDate(internalModelValue.value, pattern, formatLocale?.value);
+            }
         } else if (timePicker) {
             inputValue.value = format(getTImeForExternal(internalModelValue.value));
         } else if (monthPicker) {
