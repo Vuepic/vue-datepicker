@@ -197,18 +197,21 @@ describe('Logic connection', () => {
         const dates = [new Date(), addDays(new Date(), 1), addDays(new Date(), 2), addDays(new Date(), 3)];
         const { dp, menu } = await mountDatepicker({ modeValue: null, multiDates: true });
 
+        const selectDates = async (): Promise<void> => {
+            for (const date of dates) {
+                calendar.vm.$emit('selectDate', { value: setSeconds(date, 0), current: true });
+                await calendar.vm.$nextTick();
+            }
+        };
+
         const calendar = menu.findComponent(Calendar);
-        for (const date of dates) {
-            calendar.vm.$emit('selectDate', { value: setSeconds(date, 0), current: true });
-            await calendar.vm.$nextTick();
-        }
+        // select all dates
+        await selectDates();
         expect(dp.vm.internalModelValue).toHaveLength(4);
         expect(dp.vm.internalModelValue[0]).toEqual(setSeconds(dates[0], 0));
 
-        for (const date of dates) {
-            calendar.vm.$emit('selectDate', { value: setSeconds(date, 0), current: true });
-            await calendar.vm.$nextTick();
-        }
+        // deselect all dates
+        await selectDates();
         expect(dp.vm.internalModelValue).toBeNull();
     });
 });
