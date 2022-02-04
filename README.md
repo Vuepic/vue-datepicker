@@ -40,7 +40,7 @@ Import and register component
 **Global**
 
 ```js
-import { createApp } from "vue";
+import { createApp } from 'vue';
 import App from './App.vue';
 
 import Datepicker from 'vue3-date-time-picker';
