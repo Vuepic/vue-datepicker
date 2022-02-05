@@ -180,6 +180,7 @@ interface Vue3DatePicker {
     formatLocale?: Locale;
     autocomplete?: string;
     multiDates?: boolean;
+    presetRanges?: { label: string; range: Date[] | string[] }[];
 }
 
 interface PublicMethods extends MethodOptions {

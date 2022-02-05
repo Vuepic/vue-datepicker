@@ -46,6 +46,7 @@ interface IUseCalendar {
     handleScroll: (event: WheelEvent, instance: number) => void;
     handleArrow: (arrow: 'left' | 'right', instance: number) => void;
     getMarker: (day: UnwrapRef<ICalendarDay>) => IMarker | undefined;
+    presetDateRange: (dates: Date[] | string[]) => void;
     selectCurrentDate: () => void;
     today: Ref<Date>;
     month: ComputedRef<(instance: number) => number>;
@@ -696,6 +697,13 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         }
     };
 
+    const presetDateRange = (dates: Date[] | string[]): void => {
+        modelValue.value = dates.map((date) => new Date(date));
+        if (props.autoApply) {
+            emit('selectDate');
+        }
+    };
+
     return {
         today,
         hours,
@@ -723,5 +731,6 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         selectCurrentDate,
         isHoverDate,
         isHoverDateStartEnd,
+        presetDateRange,
     };
 };

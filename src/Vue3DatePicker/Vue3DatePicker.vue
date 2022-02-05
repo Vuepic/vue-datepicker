@@ -106,6 +106,7 @@
                     disabled,
                     readonly,
                     multiDates,
+                    presetRanges,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @close-picker="closeMenu"
@@ -154,6 +155,7 @@
         ITransition,
         IDisableDates,
         AltPosition,
+        PresetRange,
     } from './interfaces';
     import { getDefaultPattern, isValidTime } from './utils/date-utils';
     import { getDefaultTextInputOptions, getDefaultFilters, mergeDefaultTransitions } from './utils/util';
@@ -266,6 +268,7 @@
         formatLocale: { type: Object as PropType<Locale>, default: null },
         autocomplete: { type: String as PropType<string>, default: null },
         multiDates: { type: Boolean as PropType<boolean>, default: false },
+        presetRanges: { type: Array as PropType<PresetRange[]>, default: () => [] },
     });
     const slots = useSlots();
     const isOpen = ref(false);

@@ -86,3 +86,20 @@
   cursor: pointer;
   background: transparent;
 }
+
+.dp__preset_ranges {
+  padding: 5px;
+  border-right: 1px solid var(--dp-border-color);
+}
+
+.dp__preset_range {
+  padding: 5px;
+  &:hover {
+    background-color: var(--dp-hover-color);
+    cursor: pointer;
+  }
+}
+
+.dp__menu_content_wrapper {
+  display: flex;
+}
