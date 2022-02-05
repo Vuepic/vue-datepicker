@@ -31,22 +31,24 @@ const mountDatepicker = async (props: any = {}): Promise<{ dp: VueWrapper<any>; 
 describe('Logic connection', () => {
     it('Should properly define initial values', async () => {
         const date = new Date();
-        const { menu } = await mountDatepicker({ modelValue: date });
+        const { dp, menu } = await mountDatepicker({ modelValue: date });
 
         expect(menu.vm.month(0)).toEqual(date.getMonth());
         expect(menu.vm.year(0)).toEqual(date.getFullYear());
         expect(menu.vm.hours).toEqual(date.getHours());
         expect(menu.vm.minutes).toEqual(date.getMinutes());
+        dp.unmount();
     });
 
     it('Should properly map initial values for range picker', async () => {
         const start = new Date();
         const end = addDays(start, 7);
-        const { menu } = await mountDatepicker({ modelValue: [start, end], range: true });
+        const { dp, menu } = await mountDatepicker({ modelValue: [start, end], range: true });
 
         expect(menu.vm.hours).toHaveLength(2);
         expect(menu.vm.minutes).toHaveLength(2);
         expect(menu.vm.hours[0]).toEqual(start.getHours());
+        dp.unmount();
     });
 
     it('Should select date', async () => {
@@ -59,12 +61,13 @@ describe('Logic connection', () => {
         await calendar.vm.$nextTick();
 
         expect(dp.vm.internalModelValue).toEqual(tomorrow);
+        dp.unmount();
     });
 
     it('Should select range', async () => {
         const start = setSeconds(addDays(new Date(), 1), 0);
         const end = setSeconds(addDays(start, 7), 0);
-        const { menu } = await mountDatepicker({ modelValue: null, range: true });
+        const { dp, menu } = await mountDatepicker({ modelValue: null, range: true });
 
         const calendar = menu.findComponent(Calendar);
         calendar.vm.$emit('selectDate', { value: start, current: true });
@@ -78,12 +81,13 @@ describe('Logic connection', () => {
         expect(menu.vm.internalModelValue).toHaveLength(2);
         expect(menu.vm.internalModelValue[0]).toEqual(start);
         expect(menu.vm.internalModelValue[1]).toEqual(end);
+        dp.unmount();
     });
 
     it('Should select auto range', async () => {
         const start = setSeconds(new Date(), 0);
         const end = setSeconds(addDays(start, 7), 0);
-        const { menu } = await mountDatepicker({ modelValue: null, range: true, autoRange: 7 });
+        const { dp, menu } = await mountDatepicker({ modelValue: null, range: true, autoRange: 7 });
 
         const calendar = menu.findComponent(Calendar);
 
@@ -93,12 +97,13 @@ describe('Logic connection', () => {
         expect(menu.vm.internalModelValue).toHaveLength(2);
         expect(menu.vm.internalModelValue[0]).toEqual(start);
         expect(menu.vm.internalModelValue[1]).toEqual(end);
+        dp.unmount();
     });
 
     it('Should update time', async () => {
         const val = 15;
         const date = new Date();
-        const { menu } = await mountDatepicker({ modelValue: date });
+        const { dp, menu } = await mountDatepicker({ modelValue: date });
 
         const timePicker = menu.findComponent(TimePicker);
         timePicker.vm.$emit('update:hours', val);
@@ -108,13 +113,14 @@ describe('Logic connection', () => {
 
         expect(menu.vm.internalModelValue.getHours()).toEqual(val);
         expect(menu.vm.internalModelValue.getMinutes()).toEqual(val);
+        dp.unmount();
     });
 
     it('Should update range time', async () => {
         const val = 15;
         const start = new Date();
         const end = addDays(new Date(), 7);
-        const { menu } = await mountDatepicker({ modelValue: [start, end], range: true });
+        const { dp, menu } = await mountDatepicker({ modelValue: [start, end], range: true });
 
         const timePicker = menu.findComponent(TimePicker);
         timePicker.vm.$emit('update:hours', [start.getHours(), val]);
@@ -124,26 +130,29 @@ describe('Logic connection', () => {
 
         expect(menu.vm.internalModelValue[1].getHours()).toEqual(val);
         expect(menu.vm.internalModelValue[0].getMinutes()).toEqual(val);
+        dp.unmount();
     });
 
     it('Should set month', async () => {
         const month = 0;
-        const { menu } = await mountDatepicker({ modelValue: null, range: true });
+        const { dp, menu } = await mountDatepicker({ modelValue: null, range: true });
 
         const monthYearInput = menu.findComponent(MonthYearInput);
         monthYearInput.vm.$emit('update:month', month);
 
         expect(menu.vm.month(0)).toEqual(month);
+        dp.unmount();
     });
 
     it('Should set year', async () => {
         const year = 2022;
-        const { menu } = await mountDatepicker({ modelValue: null, range: true });
+        const { dp, menu } = await mountDatepicker({ modelValue: null, range: true });
 
         const monthYearInput = menu.findComponent(MonthYearInput);
         monthYearInput.vm.$emit('update:year', year);
 
         expect(menu.vm.year(0)).toEqual(year);
+        dp.unmount();
     });
 
     it('Should format with custom function', async () => {
@@ -158,12 +167,13 @@ describe('Logic connection', () => {
         await dp.vm.$nextTick();
 
         expect(dp.vm.inputValue).toEqual(format(selected));
+        dp.unmount();
     });
 
     it('Should display preview format from function', async () => {
         const selected = new Date();
 
-        const { menu } = await mountDatepicker({ modelValue: null, previewFormat: format });
+        const { dp, menu } = await mountDatepicker({ modelValue: null, previewFormat: format });
 
         const calendar = menu.findComponent(Calendar);
         calendar.vm.$emit('selectDate', { value: selected, current: true });
@@ -171,6 +181,7 @@ describe('Logic connection', () => {
 
         const actionRow = menu.findComponent(ActionRow);
         expect(actionRow.text().includes(format(selected))).toBeTruthy();
+        dp.unmount();
     });
 
     it('Should format with locale', async () => {
@@ -191,6 +202,7 @@ describe('Logic connection', () => {
         await dp.vm.$nextTick();
 
         expect(dp.vm.inputValue).toEqual('木');
+        dp.unmount();
     });
 
     it('Should select multiple dates', async () => {
@@ -213,5 +225,21 @@ describe('Logic connection', () => {
         // deselect all dates
         await selectDates();
         expect(dp.vm.internalModelValue).toBeNull();
+        dp.unmount();
+    });
+
+    it('Should preset range from preset-dates', async () => {
+        const range = [new Date(), new Date()];
+        const { dp, menu } = await mountDatepicker({
+            modeValue: null,
+            range: true,
+            presetDates: [{ label: 'Today', range }],
+        });
+
+        menu.vm.presetDateRange(range);
+
+        expect(dp.vm.internalModelValue).toHaveLength(2);
+        expect(dp.vm.internalModelValue).toEqual(range);
+        dp.unmount();
     });
 });
