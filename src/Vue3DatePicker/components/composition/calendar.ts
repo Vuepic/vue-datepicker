@@ -698,9 +698,11 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
     };
 
     const presetDateRange = (dates: Date[] | string[]): void => {
-        modelValue.value = dates.map((date) => new Date(date));
-        if (props.autoApply) {
-            emit('selectDate');
+        if (dates.length && dates.length <= 2 && props.range) {
+            modelValue.value = dates.map((date) => new Date(date));
+            if (props.autoApply) {
+                emit('selectDate');
+            }
         }
     };
 
