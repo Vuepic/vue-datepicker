@@ -34,9 +34,11 @@
                                     :minutes="minutes"
                                     :seconds="seconds"
                                     v-bind="timeInputProps"
+                                    ref="timeInputRef"
                                     @update:hours="updateHours($event)"
                                     @update:minutes="updateMinutes($event)"
                                     @update:seconds="updateSeconds($event)"
+                                    @reset-flow="$emit('reset-flow')"
                                 >
                                     <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
                                         <slot :name="slot" v-bind="args" />
@@ -88,16 +90,16 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, inject, PropType, ref, useSlots } from 'vue';
+    import { computed, inject, nextTick, onMounted, PropType, ref, useSlots } from 'vue';
 
     import { ClockIcon, CalendarIcon } from '../Icons';
     import TimeInput from './TimeInput.vue';
 
-    import { IDateFilter } from '../../interfaces';
+    import { IDateFilter, TimeInputRef } from '../../interfaces';
     import { mapSlots } from '../composition/slots';
     import { useTransitions } from '../composition/transition';
 
-    const emit = defineEmits(['update:hours', 'update:minutes', 'update:seconds']);
+    const emit = defineEmits(['update:hours', 'update:minutes', 'update:seconds', 'mount', 'reset-flow']);
 
     const props = defineProps({
         hoursIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
@@ -121,13 +123,27 @@
     });
     const slots = useSlots();
     const autoApply = inject('autoApply', false);
+    const timeInputRef = ref<TimeInputRef | null>(null);
 
     const { transitionName, showTransition } = useTransitions();
 
+    onMounted(() => {
+        emit('mount');
+    });
+
     const showTimePicker = ref(false);
 
-    const toggleTimePicker = (show: boolean): void => {
+    const toggleTimePicker = (show: boolean, flow = false, childOpen = ''): void => {
+        if (!flow) {
+            emit('reset-flow');
+        }
         showTimePicker.value = show;
+
+        nextTick(() => {
+            if (childOpen !== '' && timeInputRef.value) {
+                timeInputRef.value.openChildCmp(childOpen);
+            }
+        });
     };
 
     const toggleButtonClass = computed(() => ({
@@ -163,4 +179,6 @@
     const updateSeconds = (seconds: number | number[]): void => {
         emit('update:seconds', seconds);
     };
+
+    defineExpose({ toggleTimePicker });
 </script>

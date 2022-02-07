@@ -129,6 +129,7 @@
                 @update:model-value="$emit('update:hours', $event)"
                 @selected="toggleHourOverlay"
                 @toggle="toggleHourOverlay"
+                @reset-flow="$emit('reset-flow')"
             >
                 <template #button-icon>
                     <slot name="clock-icon" v-if="$slots['clock-icon']" />
@@ -147,6 +148,7 @@
                 @update:model-value="$emit('update:minutes', $event)"
                 @selected="toggleMinuteOverlay"
                 @toggle="toggleMinuteOverlay"
+                @reset-flow="$emit('reset-flow')"
             >
                 <template #button-icon>
                     <slot name="clock-icon" v-if="$slots['clock-icon']" />
@@ -165,6 +167,7 @@
                 @update:model-value="$emit('update:seconds', $event)"
                 @selected="toggleSecondsOverlay"
                 @toggle="toggleSecondsOverlay"
+                @reset-flow="$emit('reset-flow')"
             >
                 <template #button-icon>
                     <slot name="clock-icon" v-if="$slots['clock-icon']" />
@@ -190,7 +193,14 @@
     import { useTransitions } from '../composition/transition';
     import { addTime, subTime } from '../../utils/date-utils';
 
-    const emit = defineEmits(['setHours', 'setMinutes', 'update:hours', 'update:minutes', 'update:seconds']);
+    const emit = defineEmits([
+        'setHours',
+        'setMinutes',
+        'update:hours',
+        'update:minutes',
+        'update:seconds',
+        'reset-flow',
+    ]);
     const props = defineProps({
         hours: { type: Number as PropType<number>, default: 0 },
         minutes: { type: Number as PropType<number>, default: 0 },
@@ -324,4 +334,19 @@
             emit('update:hours', props.hours + 12);
         }
     };
+
+    const openChildCmp = (child: string): void => {
+        switch (child) {
+            case 'hours':
+                hourOverlay.value = true;
+                break;
+            case 'minutes':
+                minuteOverlay.value = true;
+                break;
+            case 'seconds':
+                secondsOverlay.value = true;
+        }
+    };
+
+    defineExpose({ openChildCmp });
 </script>

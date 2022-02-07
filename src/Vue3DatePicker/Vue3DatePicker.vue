@@ -107,6 +107,7 @@
                     readonly,
                     multiDates,
                     presetRanges,
+                    flow,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @close-picker="closeMenu"
@@ -114,6 +115,7 @@
                 @dp-open="recalculatePosition"
                 @auto-apply="autoApplyValue"
                 @time-update="timeUpdate"
+                @flow-step="$emit('flow-step', $event)"
             >
                 <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
                     <slot :name="slot" v-bind="{ ...args }" />
@@ -156,6 +158,7 @@
         IDisableDates,
         AltPosition,
         PresetRange,
+        Flow,
     } from './interfaces';
     import { getDefaultPattern, isValidTime } from './utils/date-utils';
     import { getDefaultTextInputOptions, getDefaultFilters, mergeDefaultTransitions } from './utils/util';
@@ -175,6 +178,7 @@
         'blur',
         'internalModelChange',
         'recalculatePosition',
+        'flow-step',
     ]);
     const props = defineProps({
         uid: { type: String as PropType<string>, default: null },
@@ -269,6 +273,7 @@
         autocomplete: { type: String as PropType<string>, default: null },
         multiDates: { type: Boolean as PropType<boolean>, default: false },
         presetRanges: { type: Array as PropType<PresetRange[]>, default: () => [] },
+        flow: { type: Array as PropType<Flow>, default: () => [] },
     });
     const slots = useSlots();
     const isOpen = ref(false);

@@ -11,7 +11,8 @@ type EmitEvents =
     | 'focus'
     | 'blur'
     | 'internalModelChange'
-    | 'recalculatePosition';
+    | 'recalculatePosition'
+    | 'flow-step';
 
 interface Vue3DatePicker {
     uid?: string;
@@ -181,6 +182,7 @@ interface Vue3DatePicker {
     autocomplete?: string;
     multiDates?: boolean;
     presetRanges?: { label: string; range: Date[] | string[] }[];
+    flow: ('month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds')[];
 }
 
 interface PublicMethods extends MethodOptions {

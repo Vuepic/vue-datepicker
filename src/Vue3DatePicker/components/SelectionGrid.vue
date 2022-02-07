@@ -32,8 +32,8 @@
                 aria-label="Toggle overlay"
                 :class="actionButtonClass"
                 tabindex="0"
-                @click="$emit('toggle')"
-                @keydown.enter="$emit('toggle')"
+                @click="toggle"
+                @keydown.enter="toggle"
             >
                 <slot name="button-icon" />
             </div>
@@ -47,7 +47,7 @@
     import { IDefaultSelect, DynamicClass } from '../interfaces';
     import { getKey, unrefElement } from '../utils/util';
 
-    const emit = defineEmits(['update:modelValue', 'selected', 'toggle']);
+    const emit = defineEmits(['update:modelValue', 'selected', 'toggle', 'reset-flow']);
 
     const props = defineProps({
         items: { type: Array as PropType<IDefaultSelect[][]>, default: () => [] },
@@ -166,5 +166,10 @@
             emit('update:modelValue', val);
             emit('selected');
         }
+    };
+
+    const toggle = () => {
+        emit('toggle');
+        emit('reset-flow');
     };
 </script>

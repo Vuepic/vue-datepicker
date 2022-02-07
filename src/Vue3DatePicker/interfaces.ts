@@ -133,3 +133,19 @@ export type ITimeType = 'hours' | 'minutes' | 'seconds';
 export type AltPosition = boolean | ((el: HTMLElement | undefined) => { top: string; left: string; transform: string });
 
 export type PresetRange = { label: string; range: Date[] | string[] };
+
+export type Flow = ('month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds')[];
+export type MenuChildCmp = 'timePicker' | 'monthYearInput' | 'calendar';
+
+export interface MonthYearInputRef {
+    toggleMonthPicker: (auto: boolean) => void;
+    toggleYearPicker: (auto: boolean) => void;
+}
+
+export interface TimePickerRef {
+    toggleTimePicker: (show: boolean, flow: boolean, child?: 'hours' | 'minutes' | 'seconds') => void;
+}
+
+export interface TimeInputRef {
+    openChildCmp: (child: string) => void;
+}

@@ -163,7 +163,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, PropType, ref } from 'vue';
+    import { computed, onMounted, PropType, ref } from 'vue';
 
     import { ChevronLeftIcon, ChevronRightIcon, CalendarIcon } from './Icons';
     import SelectionGrid from './SelectionGrid.vue';
@@ -173,7 +173,7 @@
     import { useTransitions } from './composition/transition';
     import { getMonth, getYear } from 'date-fns';
 
-    const emit = defineEmits(['update:month', 'update:year', 'monthYearSelect']);
+    const emit = defineEmits(['update:month', 'update:year', 'monthYearSelect', 'mount', 'reset-flow']);
     const props = defineProps({
         months: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
         years: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
@@ -195,16 +195,20 @@
     const showYearPicker = ref(false);
     const { handleMonthYearChange } = useMontYearPick(props, emit);
 
+    onMounted(() => {
+        emit('mount');
+    });
+
     const onMonthUpdate = (month: number): void => {
         emit('update:month', month);
         emit('monthYearSelect');
-        toggleMonthPicker();
+        toggleMonthPicker(true);
     };
 
     const onYearUpdate = (year: number): void => {
         emit('update:year', year);
         emit('monthYearSelect', true);
-        toggleYearPicker();
+        toggleYearPicker(true);
     };
 
     const minYear = computed(() => (props.minDate ? getYear(new Date(props.minDate)) : null));
@@ -263,15 +267,28 @@
         return true;
     });
 
-    const toggleMonthPicker = (): void => {
+    const toggleMonthPicker = (flow = false): void => {
+        checkFlow(flow);
         showMonthPicker.value = !showMonthPicker.value;
     };
 
-    const toggleYearPicker = (): void => {
+    const toggleYearPicker = (flow = false): void => {
+        checkFlow(flow);
         showYearPicker.value = !showYearPicker.value;
+    };
+
+    const checkFlow = (flow: boolean): void => {
+        if (!flow) {
+            emit('reset-flow');
+        }
     };
 
     const handleYear = (increment = false): void => {
         emit('update:year', increment ? props.year + 1 : props.year - 1);
     };
+
+    defineExpose({
+        toggleMonthPicker,
+        toggleYearPicker,
+    });
 </script>

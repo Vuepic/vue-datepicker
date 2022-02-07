@@ -122,7 +122,7 @@
     import { getDayNames, getDefaultMarker, unrefElement } from '../utils/util';
     import { isDateAfter, isDateEqual, setDateMonthOrYear } from '../utils/date-utils';
 
-    const emit = defineEmits(['selectDate', 'setHoverDate', 'handleScroll']);
+    const emit = defineEmits(['selectDate', 'setHoverDate', 'handleScroll', 'mount']);
 
     const props = defineProps({
         locale: { type: String as PropType<string>, default: 'en-Us' },
@@ -173,6 +173,7 @@
             startTransitions.value = true;
         }
         prevDate.value = setDateMonthOrYear(new Date(), props.month, props.year);
+        emit('mount');
     });
 
     const specificMode = computed(() => props.monthPicker || props.timePicker);

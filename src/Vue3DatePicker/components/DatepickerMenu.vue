@@ -28,9 +28,14 @@
             </div>
             <div class="dp__instance_calendar" ref="calendarWrapperRef" role="document">
                 <div :class="menuCalendarClassWrapper">
-                    <div v-for="instance in calendarAmm" :key="instance" :class="calendarInstanceClassWrapper">
+                    <div v-for="(instance, i) in calendarAmm" :key="instance" :class="calendarInstanceClassWrapper">
                         <component
                             :is="monthYearComponent ? monthYearComponent : MonthYearInput"
+                            :ref="
+                                (el) => {
+                                    if (el) monthYearInputRefs[i] = el;
+                                }
+                            "
                             v-if="!disableMonthYearSelect && !timePicker"
                             v-bind="{
                                 months,
@@ -46,6 +51,8 @@
                                 minDate,
                                 maxDate,
                             }"
+                            @mount="childMount('monthYearInput')"
+                            @reset-flow="resetFlow"
                             @update:month="updateMonthYear(instance, $event, true)"
                             @update:year="updateMonthYear(instance, $event, false)"
                             @month-year-select="monthYearSelect"
@@ -56,6 +63,7 @@
                         </component>
                         <Calendar
                             v-bind="calendarProps"
+                            v-model:flow-step="flowStep"
                             :instance="instance"
                             :mapped-dates="mappedDates(instance)"
                             :month="month(instance)"
@@ -64,6 +72,8 @@
                             @select-date="selectDate($event, !isFirstInstance(instance))"
                             @set-hover-date="setHoverDate($event)"
                             @handle-scroll="handleScroll($event, instance)"
+                            @mount="childMount('calendar')"
+                            @reset-flow="resetFlow"
                         >
                             <template v-for="(slot, i) in calendarSlots" #[slot]="args" :key="i">
                                 <slot :name="slot" v-bind="{ ...args }" />
@@ -96,9 +106,11 @@
                             customProps,
                             enableSeconds,
                         }"
+                        @mount="childMount('timePicker')"
                         @update:hours="updateTime($event)"
                         @update:minutes="updateTime($event, false)"
                         @update:seconds="updateTime($event, false, true)"
+                        @reset-flow="resetFlow"
                     >
                         <template v-for="(slot, i) in timePickerSlots" #[slot]="args" :key="i">
                             <slot :name="slot" v-bind="args" />
@@ -163,6 +175,7 @@
         ComputedRef,
         ref,
         onUnmounted,
+        reactive,
     } from 'vue';
     import Calendar from './Calendar.vue';
     import ActionRow from './ActionRow.vue';
@@ -171,6 +184,7 @@
 
     import {
         DynamicClass,
+        Flow,
         ICalendarDate,
         IDateFilter,
         IDefaultSelect,
@@ -179,7 +193,10 @@
         IMarker,
         InternalModuleValue,
         ITimeValue,
+        MenuChildCmp,
+        MonthYearInputRef,
         PresetRange,
+        TimePickerRef,
         WeekStartNum,
         WeekStartStr,
     } from '../interfaces';
@@ -195,6 +212,7 @@
         'dpOpen',
         'autoApply',
         'timeUpdate',
+        'flow-step',
     ]);
     const props = defineProps({
         internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
@@ -265,12 +283,17 @@
         readonly: { type: Boolean as PropType<boolean>, default: false },
         multiDates: { type: Boolean as PropType<boolean>, default: false },
         presetRanges: { type: Array as PropType<PresetRange[]>, default: () => [] },
+        flow: { type: Array as PropType<Flow>, default: () => [] },
     });
     const slots = useSlots();
     const calendarWrapperRef = ref(null);
+    const childrenMounted = reactive({ timePicker: false, monthYearInput: false, calendar: false });
+    const monthYearInputRefs = ref<MonthYearInputRef[]>([]);
+    const timePickerRef = ref<TimePickerRef | null>(null);
     const dpMenuRef = ref(null);
     const calendarWidth = ref(0);
     const menuMount = ref(false);
+    const flowStep = ref(0);
 
     onMounted(() => {
         menuMount.value = true;
@@ -293,6 +316,18 @@
     onUnmounted(() => {
         document.removeEventListener('resize', getCalendarWidth);
     });
+
+    const updateFlowStep = (): void => {
+        if (props.flow?.length && flowStep.value !== -1) {
+            flowStep.value += 1;
+            emit('flow-step', flowStep.value);
+            handleFlow();
+        }
+    };
+
+    const resetFlow = (): void => {
+        flowStep.value = -1;
+    };
 
     const {
         updateTime,
@@ -322,7 +357,7 @@
         isHoverDateStartEnd,
         isHoverDate,
         presetDateRange,
-    } = useCalendar(props, emit);
+    } = useCalendar(props, emit, updateFlowStep);
 
     const calendarSlots = mapSlots(slots, 'calendar');
     const actionSlots = mapSlots(slots, 'action');
@@ -492,6 +527,45 @@
         event.preventDefault();
         if (props.spaceConfirm) {
             emit('selectDate');
+        }
+    };
+
+    const childMount = (cmp: MenuChildCmp): void => {
+        if (props.flow?.length) {
+            childrenMounted[cmp] = true;
+
+            if (!Object.keys(childrenMounted).filter((key) => !childrenMounted[key as MenuChildCmp]).length) {
+                handleFlow();
+            }
+        }
+    };
+
+    const handleFlow = (): void => {
+        if (props.flow[flowStep.value] === 'month') {
+            if (monthYearInputRefs.value[0]) {
+                monthYearInputRefs.value[0].toggleMonthPicker(true);
+            }
+        }
+        if (props.flow[flowStep.value] === 'year') {
+            if (monthYearInputRefs.value) {
+                monthYearInputRefs.value[0].toggleYearPicker(true);
+            }
+        }
+        if (props.flow[flowStep.value] === 'calendar') {
+            if (timePickerRef.value) {
+                timePickerRef.value.toggleTimePicker(false, true);
+            }
+        }
+        if (props.flow[flowStep.value] === 'time') {
+            if (timePickerRef.value) {
+                timePickerRef.value.toggleTimePicker(true, true);
+            }
+        }
+        const flowValue = props.flow[flowStep.value];
+        if (flowValue === 'hours' || flowValue === 'minutes' || flowValue === 'seconds') {
+            if (timePickerRef.value) {
+                timePickerRef.value.toggleTimePicker(true, true, flowValue);
+            }
         }
     };
 </script>

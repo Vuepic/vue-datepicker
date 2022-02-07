@@ -61,7 +61,7 @@ interface ICalendarData {
     year: number;
 }
 
-export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => {
+export const useCalendar = (props: UseCalendar, emit: VueEmit, updateFlow: () => void): IUseCalendar => {
     const today = ref<Date>(new Date());
     const hoveredDate = ref<Date | null>();
     // Calendar data per instance
@@ -392,6 +392,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
             } else {
                 modelValue.value = date;
             }
+            updateFlow();
             if (props.autoApply) {
                 emit('autoApply');
             }
@@ -421,6 +422,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
             } else {
                 rangeDate[0] = setDateTime(rangeDate[0], hours.value[0], minutes.value[0], getSecondsValue());
                 rangeDate[1] = setDateTime(rangeDate[1], hours.value[1], minutes.value[1], getSecondsValue(false));
+                updateFlow();
             }
             modelValue.value = rangeDate;
             if (rangeDate[0] && rangeDate[1] && props.autoApply) {
@@ -518,6 +520,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
                 modelValue.value = setDateMonthOrYear(new Date(), month.value(0), year.value(0));
             }
         }
+        updateFlow();
     };
 
     const getSetDateTime = (dateValue: Date): Date => {
@@ -576,6 +579,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit): IUseCalendar => 
         } else if (props.timePicker) {
             handleTimeUpdate(props.range ? [new Date(), new Date()] : new Date());
         }
+        updateFlow();
     };
 
     // When mouse leaves the menu clear the hover date data
