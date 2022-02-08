@@ -49,9 +49,11 @@
                                 <TimeInput
                                     :hours="hours[0]"
                                     :minutes="minutes[0]"
+                                    :seconds="seconds[0]"
                                     v-bind="timeInputProps"
                                     @update:hours="updateHours([$event, hours[1]])"
                                     @update:minutes="updateMinutes([$event, minutes[1]])"
+                                    @update:seconds="updateSeconds([$event, seconds[1]])"
                                 >
                                     <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
                                         <slot :name="slot" v-bind="args" />
@@ -60,9 +62,11 @@
                                 <TimeInput
                                     :hours="hours[1]"
                                     :minutes="minutes[1]"
+                                    :seconds="seconds[1]"
                                     v-bind="timeInputProps"
                                     @update:hours="updateHours([hours[0], $event])"
                                     @update:minutes="updateMinutes([minutes[0], $event])"
+                                    @update:seconds="updateSeconds([seconds[0], $event])"
                                 >
                                     <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
                                         <slot :name="slot" v-bind="args" />
