@@ -182,7 +182,7 @@ interface Vue3DatePicker {
     autocomplete?: string;
     multiDates?: boolean;
     presetRanges?: { label: string; range: Date[] | string[] }[];
-    flow: ('month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds')[];
+    flow?: ('month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds')[];
 }
 
 interface PublicMethods extends MethodOptions {
