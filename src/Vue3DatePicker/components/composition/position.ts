@@ -17,6 +17,7 @@ type ComponentRef = Ref<HTMLElement | null>;
 export const usePosition = (
     openPosition: OpenPosition,
     altPosition: AltPosition,
+    autoPosition: boolean,
     menuRef: ComponentRef,
     inputRef: ComponentRef,
     emit: VueEmit,
@@ -76,7 +77,7 @@ export const usePosition = (
                 position.transform = `translateX(-50%)`;
             }
             menuPosition.value = position;
-            if (recalculate) {
+            if (recalculate && autoPosition) {
                 recalculatePosition();
             }
         }
@@ -88,7 +89,7 @@ export const usePosition = (
      */
     const recalculatePosition = (): void => {
         const el = unrefElement(inputRef);
-        if (el) {
+        if (el && autoPosition) {
             const { height: inputHeight, top } = el.getBoundingClientRect();
             const { top: offset } = altPosition ? getOffsetAlt(el) : getOffset(el);
             const fullHeight = window.innerHeight;

@@ -318,6 +318,7 @@
     const { openOnTop, menuPosition, setMenuPosition, recalculatePosition } = usePosition(
         props.position,
         props.altPosition,
+        props.autoPosition,
         dpMenuRef,
         inputRef,
         emit,
