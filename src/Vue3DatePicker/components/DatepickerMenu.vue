@@ -297,6 +297,7 @@
 
     onMounted(() => {
         menuMount.value = true;
+        getCalendarWidth();
         if (!props.inline) {
             nextTick(() => emit('dpOpen'));
         }
