@@ -43,7 +43,13 @@
             <transition :name="transitionName(showMonthPicker)" :css="showTransition">
                 <SelectionGrid
                     v-if="showMonthPicker"
-                    v-bind="{ modelValue: month, items: groupedMonths, disabledValues: filters.months }"
+                    v-bind="{
+                        modelValue: month,
+                        items: groupedMonths,
+                        disabledValues: filters.months,
+                        minValue: minMonth,
+                        maxValue: maxMonth,
+                    }"
                     @update:model-value="onMonthUpdate"
                     @toggle="toggleMonthPicker"
                 >
@@ -59,7 +65,13 @@
             <transition :name="transitionName(showYearPicker)" :css="showTransition">
                 <SelectionGrid
                     v-if="showYearPicker"
-                    v-bind="{ modelValue: year, items: groupedYears, disabledValues: filters.years }"
+                    v-bind="{
+                        modelValue: year,
+                        items: groupedYears,
+                        disabledValues: filters.years,
+                        minValue: minYear,
+                        maxValue: maxYear,
+                    }"
                     @update:model-value="onYearUpdate"
                     @toggle="toggleYearPicker"
                     ><template #button-icon>
@@ -187,6 +199,7 @@
         multiCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
         minDate: { type: [Date, String] as PropType<Date | string>, default: null },
         maxDate: { type: [Date, String] as PropType<Date | string>, default: null },
+        preventMinMaxNavigation: { type: Boolean as PropType<boolean>, default: false },
     });
 
     const { transitionName, showTransition } = useTransitions();
@@ -225,7 +238,7 @@
     const maxMonth = computed(() => {
         if (props.maxDate && maxYear.value) {
             if (maxYear.value < props.year) return -1;
-            if (maxYear.value === props.year) return getMonth(new Date(props.maxDate));
+            if (maxYear.value === props.year) return getMonth(new Date(props.maxDate)) - 1;
         }
         return null;
     });

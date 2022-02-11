@@ -50,6 +50,7 @@
                                 instance,
                                 minDate,
                                 maxDate,
+                                preventMinMaxNavigation,
                             }"
                             @mount="childMount('monthYearInput')"
                             @reset-flow="resetFlow"
@@ -284,6 +285,7 @@
         multiDates: { type: Boolean as PropType<boolean>, default: false },
         presetRanges: { type: Array as PropType<PresetRange[]>, default: () => [] },
         flow: { type: Array as PropType<Flow>, default: () => [] },
+        preventMinMaxNavigation: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
     const calendarWrapperRef = ref(null);

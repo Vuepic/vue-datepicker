@@ -183,6 +183,7 @@ interface Vue3DatePicker {
     multiDates?: boolean;
     presetRanges?: { label: string; range: Date[] | string[] }[];
     flow?: ('month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds')[];
+    preventMinMaxNavigation?: boolean;
 }
 
 interface PublicMethods extends MethodOptions {

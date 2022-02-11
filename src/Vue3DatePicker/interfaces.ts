@@ -95,6 +95,9 @@ export interface UseMonthYearPick {
     filters: IDateFilter;
     year: number;
     month: number;
+    preventMinMaxNavigation: boolean;
+    maxDate: Date | string;
+    minDate: Date | string;
 }
 
 export type MaybeRef<T> = T | Ref<T>;
