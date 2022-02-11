@@ -132,7 +132,7 @@ export const useExternalInternalMapper = (
         } else if (timePicker) {
             emit('update:modelValue', getTImeForExternal(internalModelValue.value));
         } else {
-            if (range && partialRange && internalModelValue.value.length === 1) {
+            if (internalModelValue.value && range && partialRange && internalModelValue.value.length === 1) {
                 internalModelValue.value.push(null);
             }
             emit('update:modelValue', internalModelValue.value);
