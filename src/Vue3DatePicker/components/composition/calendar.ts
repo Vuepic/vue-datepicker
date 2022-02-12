@@ -3,6 +3,7 @@ import {
     add,
     addDays,
     addMonths,
+    differenceInDays,
     getDay,
     getHours,
     getISOWeek,
@@ -374,6 +375,29 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit, updateFlow: () =>
         }
     };
 
+    const checkMinMaxRange = (secondDate: Date): boolean => {
+        if (Array.isArray(modelValue.value) && modelValue.value[0]) {
+            const diff = Math.abs(differenceInDays(modelValue.value[0], secondDate));
+            if (props.minRange && props.maxRange) return diff >= +props.minRange && diff <= +props.maxRange;
+            if (props.minRange) return diff >= +props.minRange;
+            if (props.maxRange) return diff <= +props.maxRange;
+        }
+        return true;
+    };
+
+    const getRangeWithFixedDate = (date: Date): Date[] => {
+        if (Array.isArray(modelValue.value) && modelValue.value.length === 2) {
+            if (props.fixedStart && isDateAfter(date, modelValue.value[0])) {
+                return [modelValue.value[0], date];
+            }
+            if (props.fixedEnd && isDateBefore(date, modelValue.value[1])) {
+                return [date, modelValue.value[1]];
+            }
+            return modelValue.value;
+        }
+        return [];
+    };
+
     /**
      * Called when the date in the calendar is clicked
      * Do a necessary formatting and assign value to internal
@@ -398,7 +422,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit, updateFlow: () =>
             }
         } else if (isNumberArray(hours.value) && isNumberArray(minutes.value) && !props.multiDates) {
             let rangeDate = modelValue.value ? (modelValue.value as Date[]).slice() : [];
-            if (rangeDate.length === 2) {
+            if (rangeDate.length === 2 && !(props.fixedStart || props.fixedEnd)) {
                 rangeDate = [];
             }
             if (props.autoRange) {
@@ -406,10 +430,12 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit, updateFlow: () =>
                     handleNextCalendarAutoRange(day.value);
                 }
                 rangeDate = [new Date(day.value), addDays(new Date(day.value), +props.autoRange)];
+            } else if (props.fixedStart || props.fixedEnd) {
+                rangeDate = getRangeWithFixedDate(new Date(day.value));
             } else {
                 if (!rangeDate[0]) {
                     rangeDate[0] = new Date(day.value);
-                } else {
+                } else if (checkMinMaxRange(new Date(day.value))) {
                     if (isDateBefore(new Date(day.value), new Date(rangeDate[0]))) {
                         rangeDate.unshift(new Date(day.value));
                     } else {

@@ -286,6 +286,10 @@
         presetRanges: { type: Array as PropType<PresetRange[]>, default: () => [] },
         flow: { type: Array as PropType<Flow>, default: () => [] },
         preventMinMaxNavigation: { type: Boolean as PropType<boolean>, default: false },
+        minRange: { type: [Number, String] as PropType<number | string>, default: null },
+        maxRange: { type: [Number, String] as PropType<number | string>, default: null },
+        fixedStart: { type: Boolean as PropType<boolean>, default: false },
+        fixedEnd: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
     const calendarWrapperRef = ref(null);

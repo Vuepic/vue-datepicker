@@ -87,6 +87,10 @@ export type UseCalendar = {
     enableSeconds: boolean;
     monthChangeOnArrows: boolean;
     multiDates: boolean;
+    minRange: number | string;
+    maxRange: number | string;
+    fixedStart: boolean;
+    fixedEnd: boolean;
 } & { [key: string]: unknown };
 
 export interface UseMonthYearPick {
