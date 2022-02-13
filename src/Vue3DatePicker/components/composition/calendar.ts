@@ -3,7 +3,7 @@ import {
     add,
     addDays,
     addMonths,
-    differenceInDays,
+    differenceInCalendarDays,
     getDay,
     getHours,
     getISOWeek,
@@ -377,7 +377,8 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit, updateFlow: () =>
 
     const checkMinMaxRange = (secondDate: Date): boolean => {
         if (Array.isArray(modelValue.value) && modelValue.value[0]) {
-            const diff = Math.abs(differenceInDays(modelValue.value[0], secondDate));
+            const absoluteDiff = differenceInCalendarDays(secondDate, modelValue.value[0]);
+            const diff = Math.abs(absoluteDiff < 0 ? absoluteDiff + 1 : absoluteDiff - 1);
             if (props.minRange && props.maxRange) return diff >= +props.minRange && diff <= +props.maxRange;
             if (props.minRange) return diff >= +props.minRange;
             if (props.maxRange) return diff <= +props.maxRange;
