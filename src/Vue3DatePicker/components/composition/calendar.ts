@@ -387,10 +387,13 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit, updateFlow: () =>
 
     const getRangeWithFixedDate = (date: Date): Date[] => {
         if (Array.isArray(modelValue.value) && modelValue.value.length === 2) {
-            if (props.fixedStart && isDateAfter(date, modelValue.value[0])) {
+            if (
+                props.fixedStart &&
+                (isDateAfter(date, modelValue.value[0]) || isDateEqual(date, modelValue.value[0]))
+            ) {
                 return [modelValue.value[0], date];
             }
-            if (props.fixedEnd && isDateBefore(date, modelValue.value[1])) {
+            if (props.fixedEnd && (isDateBefore(date, modelValue.value[1]) || isDateEqual(date, modelValue.value[1]))) {
                 return [date, modelValue.value[1]];
             }
             return modelValue.value;
