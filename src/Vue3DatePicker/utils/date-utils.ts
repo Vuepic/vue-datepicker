@@ -236,3 +236,16 @@ export const isMonthWithinRange = (
 
     return valid;
 };
+
+export const dateToUtc = (date: Date): string => {
+    const utcDate = Date.UTC(
+        date.getUTCFullYear(),
+        date.getUTCMonth(),
+        date.getUTCDate(),
+        date.getUTCHours(),
+        date.getUTCMinutes(),
+        date.getUTCSeconds(),
+    );
+
+    return new Date(utcDate).toISOString();
+};

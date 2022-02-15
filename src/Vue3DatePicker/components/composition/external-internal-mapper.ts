@@ -1,6 +1,7 @@
 import { ComputedRef, Ref, ref, watch } from 'vue';
 
 import {
+    dateToUtc,
     formatDate,
     getDefaultPattern,
     getTImeForExternal,
@@ -36,6 +37,7 @@ export const useExternalInternalMapper = (
     enableSeconds: boolean,
     formatLocale: ComputedRef<Locale>,
     multiDates: boolean,
+    utc: boolean,
     emit: VueEmit,
 ): IExternalInternalMapper => {
     const inputValue = ref('');
@@ -135,7 +137,12 @@ export const useExternalInternalMapper = (
             if (internalModelValue.value && range && partialRange && internalModelValue.value.length === 1) {
                 internalModelValue.value.push(null);
             }
-            emit('update:modelValue', internalModelValue.value);
+            const zonedDate = utc
+                ? Array.isArray(internalModelValue.value)
+                    ? internalModelValue.value.map((date) => (date ? dateToUtc(date) : date))
+                    : dateToUtc(internalModelValue.value)
+                : internalModelValue.value;
+            emit('update:modelValue', zonedDate);
         }
         formatInputValue();
     };

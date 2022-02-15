@@ -284,6 +284,7 @@
         maxRange: { type: [Number, String] as PropType<number | string>, default: null },
         fixedStart: { type: Boolean as PropType<boolean>, default: false },
         fixedEnd: { type: Boolean as PropType<boolean>, default: false },
+        utc: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
     const isOpen = ref(false);
@@ -296,6 +297,7 @@
     provide('textInput', toRef(props, 'textInput'));
 
     onMounted(() => {
+        // store.setTimezone(props.timezone);
         parseExternalModelValue(props.modelValue);
         if (!props.inline) {
             window.addEventListener('scroll', onScroll);
@@ -346,6 +348,7 @@
             props.enableSeconds,
             formatLocaleRef,
             props.multiDates,
+            props.utc,
             emit,
         );
 

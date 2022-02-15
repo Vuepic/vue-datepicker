@@ -188,6 +188,7 @@ interface Vue3DatePicker {
     maxRange?: number | string;
     fixedStart?: boolean;
     fixedEnd?: boolean;
+    utc?: boolean;
 }
 
 interface PublicMethods extends MethodOptions {
