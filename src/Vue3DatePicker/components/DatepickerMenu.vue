@@ -315,6 +315,7 @@
         }
         if (menu) {
             menu.addEventListener('pointerdown', (e) => {
+                e.preventDefault();
                 e.stopPropagation();
                 e.stopImmediatePropagation();
             });
