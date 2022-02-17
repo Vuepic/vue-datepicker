@@ -8,16 +8,18 @@
         :aria-readonly="readonly"
     >
         <slot v-if="$slots.trigger && !$slots['dp-input'] && !inline" name="trigger" />
-        <slot
-            v-if="$slots['dp-input'] && !$slots.trigger && !inline"
-            name="dp-input"
-            :value="inputValue"
-            :onInput="handleInput"
-            :onEnter="handleEnter"
-            :onTab="handleTab"
-        />
-        <div v-if="!$slots.trigger && !$slots['dp-input'] && (!inline || inlineWithInput)" class="dp__input_wrap">
+        <div v-if="!$slots.trigger && (!inline || inlineWithInput)" class="dp__input_wrap">
+            <slot
+                v-if="$slots['dp-input'] && !$slots.trigger && !inline"
+                name="dp-input"
+                :value="inputValue"
+                :onInput="handleInput"
+                :onEnter="handleEnter"
+                :onTab="handleTab"
+                :onClear="onClear"
+            />
             <input
+                v-if="!$slots['dp-input']"
                 ref="inputRef"
                 :id="uid ? `dp-input-${uid}` : undefined"
                 :name="name"
@@ -38,7 +40,7 @@
                 ><slot name="input-icon"
             /></span>
             <CalendarIcon
-                v-if="!$slots['input-icon'] && !hideInputIcon"
+                v-if="!$slots['input-icon'] && !hideInputIcon && !$slots['dp-input']"
                 class="dp__input_icon dp__input_icons"
                 @click="stopPropagation"
             />
