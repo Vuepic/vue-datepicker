@@ -1,6 +1,6 @@
 import { addMonths, addYears, getMonth, getYear, set, subMonths, subYears } from 'date-fns';
 import { UseMonthYearPick, VueEmit } from '../../interfaces';
-import { isDateAfter, isDateBefore } from '../../utils/date-utils';
+import { isDateAfter, isDateBefore, isDateEqual } from '../../utils/date-utils';
 
 export const useMontYearPick = (
     props: UseMonthYearPick,
@@ -28,12 +28,19 @@ export const useMontYearPick = (
         return [new Date(props[propValue]), set(new Date(), { month, year })];
     };
 
-    const validateMonthYear = (month: number, year: number, isNext: boolean): void => {
+    const validateMonthYear = (month: number, year: number): void => {
         if (props.preventMinMaxNavigation && (props.minDate || props.maxDate)) {
-            if (props.maxDate && isNext && isDateAfter(...getDateForCompare('maxDate', month, year))) {
+            if (
+                props.maxDate &&
+                (isDateAfter(...getDateForCompare('maxDate', month, year)) ||
+                    isDateEqual(...getDateForCompare('maxDate', month, year)))
+            ) {
                 updateMonthYear(month, year);
             }
-            if (props.minDate && !isNext && isDateBefore(...getDateForCompare('minDate', month, year))) {
+            if (
+                (props.minDate && isDateBefore(...getDateForCompare('minDate', month, year))) ||
+                isDateEqual(...getDateForCompare('minDate', month, year))
+            ) {
                 updateMonthYear(month, year);
             }
         } else {
@@ -58,7 +65,7 @@ export const useMontYearPick = (
             date = recursiveYearAdjust(date, isNext);
             year = getYear(date);
         }
-        validateMonthYear(month, year, isNext);
+        validateMonthYear(month, year);
     };
 
     const updateMonthYear = (month: number, year: number): void => {
