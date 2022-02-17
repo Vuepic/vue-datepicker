@@ -71,6 +71,10 @@ Please ⭐️ this repository if you like the component!
 
 You can also make a financial contribution via sponsoring this project or one time donation. [Become a sponsor](https://github.com/sponsors/Vuepic)
 
+Special thanks to our sponsors 🙏
+
+[![Hapio](https://avatars.githubusercontent.com/u/99868704?s=200&v=4)](https://hapio.io/)
+
 ## License
 
 Copyright © 2021-present [Vuepic](https://github.com/Vuepic)
