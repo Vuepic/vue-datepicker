@@ -1,5 +1,5 @@
 <template>
-    <div class="dp__time_input">
+    <div class="dp__time_input" v-if="!disabled">
         <div :class="timeColClass">
             <div
                 class="dp__inc_dec_button"
@@ -217,6 +217,7 @@
         noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
         noSecondsOverlay: { type: Boolean as PropType<boolean>, default: false },
         enableSeconds: { type: Boolean as PropType<boolean>, default: false },
+        disabled: { type: Boolean as PropType<boolean>, default: false },
     });
 
     const hourOverlay = ref(false);

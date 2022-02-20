@@ -28,51 +28,22 @@
                     ></slot>
                     <template v-if="!$slots['time-picker-overlay']">
                         <div class="dp__overlay_row">
-                            <template v-if="!range">
-                                <TimeInput
-                                    :hours="hours"
-                                    :minutes="minutes"
-                                    :seconds="seconds"
-                                    v-bind="timeInputProps"
-                                    ref="timeInputRef"
-                                    @update:hours="updateHours($event)"
-                                    @update:minutes="updateMinutes($event)"
-                                    @update:seconds="updateSeconds($event)"
-                                    @reset-flow="$emit('reset-flow')"
-                                >
-                                    <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
-                                        <slot :name="slot" v-bind="args" />
-                                    </template>
-                                </TimeInput>
-                            </template>
-                            <template v-if="range">
-                                <TimeInput
-                                    :hours="hours[0]"
-                                    :minutes="minutes[0]"
-                                    :seconds="seconds[0]"
-                                    v-bind="timeInputProps"
-                                    @update:hours="updateHours([$event, hours[1]])"
-                                    @update:minutes="updateMinutes([$event, minutes[1]])"
-                                    @update:seconds="updateSeconds([$event, seconds[1]])"
-                                >
-                                    <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
-                                        <slot :name="slot" v-bind="args" />
-                                    </template>
-                                </TimeInput>
-                                <TimeInput
-                                    :hours="hours[1]"
-                                    :minutes="minutes[1]"
-                                    :seconds="seconds[1]"
-                                    v-bind="timeInputProps"
-                                    @update:hours="updateHours([hours[0], $event])"
-                                    @update:minutes="updateMinutes([minutes[0], $event])"
-                                    @update:seconds="updateSeconds([seconds[0], $event])"
-                                >
-                                    <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
-                                        <slot :name="slot" v-bind="args" />
-                                    </template>
-                                </TimeInput>
-                            </template>
+                            <TimeInput
+                                v-for="(tInput, index) in timeInputs"
+                                :key="index"
+                                :disabled="index === 0 ? fixedStart : fixedEnd"
+                                :hours="tInput.hours"
+                                :minutes="tInput.minutes"
+                                :seconds="tInput.seconds"
+                                v-bind="timeInputProps"
+                                @update:hours="updateHours(getEvent($event, index, 'hours'))"
+                                @update:minutes="updateMinutes(getEvent($event, index, 'minutes'))"
+                                @update:seconds="updateSeconds(getEvent($event, index, 'seconds'))"
+                            >
+                                <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
+                                    <slot :name="slot" v-bind="args" />
+                                </template>
+                            </TimeInput>
                         </div>
                     </template>
                     <div
@@ -124,6 +95,8 @@
         noSecondsOverlay: { type: Boolean as PropType<boolean>, default: false },
         customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
         enableSeconds: { type: Boolean as PropType<boolean>, default: false },
+        fixedStart: { type: Boolean as PropType<boolean>, default: false },
+        fixedEnd: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
     const autoApply = inject('autoApply', false);
@@ -136,6 +109,26 @@
     });
 
     const showTimePicker = ref(false);
+
+    const getTimeInput = (i: number) => {
+        return {
+            hours: Array.isArray(props.hours) ? props.hours[i] : props.hours,
+            minutes: Array.isArray(props.minutes) ? props.minutes[i] : props.minutes,
+            seconds: Array.isArray(props.seconds) ? props.seconds[i] : props.seconds,
+        };
+    };
+
+    const timeInputs = computed((): { hours: number; minutes: number; seconds: number }[] => {
+        const arr = [];
+        if (props.range) {
+            for (let i = 0; i < 2; i++) {
+                arr.push(getTimeInput(i));
+            }
+        } else {
+            arr.push(getTimeInput(0));
+        }
+        return arr;
+    });
 
     const toggleTimePicker = (show: boolean, flow = false, childOpen = ''): void => {
         if (!flow) {
@@ -171,6 +164,13 @@
         noSecondsOverlay: props.noSecondsOverlay,
         enableSeconds: props.enableSeconds,
     }));
+
+    const getEvent = (event: number, index: number, property: 'hours' | 'minutes' | 'seconds') => {
+        if (index === 0) {
+            return [event, timeInputs.value[1][property]];
+        }
+        return [timeInputs.value[0][property], event];
+    };
 
     const updateHours = (hours: number | number[]): void => {
         emit('update:hours', hours);
