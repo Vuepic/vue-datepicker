@@ -129,7 +129,7 @@ export const getDefaultTextInputOptions = (): ITextInputOptions => ({
     enterSubmit: true,
     tabSubmit: true,
     openMenu: true,
-    rangeSeparator: '-',
+    rangeSeparator: ' - ',
 });
 
 /**

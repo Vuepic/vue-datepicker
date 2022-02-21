@@ -141,9 +141,16 @@ const formatFn = (value: Date, pattern: string, locale?: Locale | null): string 
     return format(value, pattern);
 };
 
-export const formatDate = (value: Date | Date[], pattern: string, locale?: Locale | null): string => {
+export const formatDate = (
+    value: Date | Date[],
+    pattern: string,
+    locale?: Locale | null,
+    textInputSeparator?: string,
+): string => {
     if (Array.isArray(value)) {
-        return `${formatFn(value[0], pattern, locale)} - ${value[1] ? formatFn(value[1], pattern, locale) : ''}`;
+        return `${formatFn(value[0], pattern, locale)} ${textInputSeparator ? textInputSeparator : '-'} ${
+            value[1] ? formatFn(value[1], pattern, locale) : ''
+        }`;
     }
 
     return formatFn(value, pattern, locale);

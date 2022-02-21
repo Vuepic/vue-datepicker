@@ -349,6 +349,7 @@
             formatLocaleRef,
             props.multiDates,
             props.utc,
+            props.textInputOptions,
             emit,
         );
 

@@ -9,7 +9,7 @@ import {
     setDateMonthOrYear,
     setDateTime,
 } from '../../utils/date-utils';
-import { IFormat, ModelValue, VueEmit } from '../../interfaces';
+import { IFormat, ITextInputOptions, ModelValue, VueEmit } from '../../interfaces';
 import { isMonth, isRangeArray, isSingle, isTime, isTimeArray } from '../../utils/type-guard';
 import { getMonthVal } from '../../utils/date-utils';
 import { Locale } from 'date-fns';
@@ -38,6 +38,7 @@ export const useExternalInternalMapper = (
     formatLocale: ComputedRef<Locale>,
     multiDates: boolean,
     utc: boolean,
+    textInputOptions: ITextInputOptions,
     emit: VueEmit,
 ): IExternalInternalMapper => {
     const inputValue = ref('');
@@ -103,7 +104,12 @@ export const useExternalInternalMapper = (
                     .map((date) => formatDate(date, pattern, formatLocale?.value))
                     .join('; ');
             } else {
-                inputValue.value = formatDate(internalModelValue.value, pattern, formatLocale?.value);
+                inputValue.value = formatDate(
+                    internalModelValue.value,
+                    pattern,
+                    formatLocale?.value,
+                    textInputOptions.rangeSeparator,
+                );
             }
         } else if (timePicker) {
             inputValue.value = format(getTImeForExternal(internalModelValue.value));
