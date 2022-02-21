@@ -106,6 +106,8 @@
                             seconds,
                             customProps,
                             enableSeconds,
+                            fixedStart,
+                            fixedEnd,
                         }"
                         @mount="childMount('timePicker')"
                         @update:hours="updateTime($event)"

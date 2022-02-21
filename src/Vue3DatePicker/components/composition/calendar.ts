@@ -11,6 +11,8 @@ import {
     getMonth,
     getSeconds,
     getYear,
+    isAfter,
+    isBefore,
     set,
     subMonths,
 } from 'date-fns';
@@ -590,13 +592,28 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit, updateFlow: () =>
      * Called on event when time value is changed
      */
     const updateTime = (value: number | number[], isHours = true, isSeconds = false) => {
-        if (isHours) {
-            hours.value = value;
-        } else if (!isHours && !isSeconds) {
-            minutes.value = value;
-        } else if (isSeconds) {
-            seconds.value = value;
+        const hoursCp = isHours ? value : hours.value;
+        const minutesCp = !isHours && !isSeconds ? value : minutes.value;
+        const secondsCp = isSeconds ? value : seconds.value;
+        if (
+            props.range &&
+            isRange(modelValue.value) &&
+            isNumberArray(hoursCp) &&
+            isNumberArray(minutesCp) &&
+            isNumberArray(secondsCp)
+        ) {
+            const setTime = (index: number) =>
+                setDateTime((modelValue.value as Date[])[index], hoursCp[index], minutesCp[index], secondsCp[index]);
+            if (
+                isDateEqual(modelValue.value[0], modelValue.value[1]) &&
+                (isAfter(setTime(0), modelValue.value[1]) || isBefore(setTime(1), modelValue.value[0]))
+            ) {
+                return;
+            }
         }
+        hours.value = hoursCp;
+        minutes.value = minutesCp;
+        seconds.value = secondsCp;
         if (modelValue.value) {
             if (props.multiDates) {
                 const lastEntry = multiDatesLast();
