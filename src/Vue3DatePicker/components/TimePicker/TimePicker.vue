@@ -166,6 +166,9 @@
     }));
 
     const getEvent = (event: number, index: number, property: 'hours' | 'minutes' | 'seconds') => {
+        if (!props.range) {
+            return event;
+        }
         if (index === 0) {
             return [event, timeInputs.value[1][property]];
         }
