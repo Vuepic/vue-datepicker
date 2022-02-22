@@ -74,7 +74,7 @@ export const setDateTime = (
     if (seconds || seconds === 0) {
         dateCopy = setSeconds(dateCopy, +seconds);
     }
-    return dateCopy;
+    return setMilliseconds(dateCopy, 0);
 };
 
 export const getNextMonthYear = (date: Date): { month: number; year: number } => {
