@@ -316,11 +316,12 @@
             menu.focus({ preventScroll: true });
         }
         if (menu) {
-            menu.addEventListener('pointerdown', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                e.stopImmediatePropagation();
-            });
+            const stopDefault = (event: Event) => {
+                event.stopImmediatePropagation();
+                event.stopPropagation();
+            };
+            menu.addEventListener('pointerdown', stopDefault);
+            menu.addEventListener('mousedown', stopDefault);
         }
         document.addEventListener('resize', getCalendarWidth);
     });
