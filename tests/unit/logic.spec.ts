@@ -10,7 +10,7 @@ import TimePicker from '../../src/Vue3DatePicker/components/TimePicker/TimePicke
 import MonthYearInput from '../../src/Vue3DatePicker/components/MonthYearInput.vue';
 import ActionRow from '../../src/Vue3DatePicker/components/ActionRow.vue';
 
-import { setSeconds } from 'date-fns';
+import { setMilliseconds, setSeconds } from 'date-fns';
 
 const format = (date: Date): string => {
     return `Selected year is ${date.getFullYear()}`;
@@ -52,7 +52,7 @@ describe('Logic connection', () => {
     });
 
     it('Should select date', async () => {
-        const tomorrow = setSeconds(addDays(new Date(), 1), 0);
+        const tomorrow = setMilliseconds(setSeconds(addDays(new Date(), 1), 0), 0);
         const { dp, menu } = await mountDatepicker({ modelValue: null });
 
         const calendar = menu.findComponent(Calendar);
@@ -65,8 +65,8 @@ describe('Logic connection', () => {
     });
 
     it('Should select range', async () => {
-        const start = setSeconds(addDays(new Date(), 1), 0);
-        const end = setSeconds(addDays(start, 7), 0);
+        const start = setMilliseconds(setSeconds(addDays(new Date(), 1), 0), 0);
+        const end = setMilliseconds(setSeconds(addDays(start, 7), 0), 0);
         const { dp, menu } = await mountDatepicker({ modelValue: null, range: true });
 
         const calendar = menu.findComponent(Calendar);
@@ -85,8 +85,8 @@ describe('Logic connection', () => {
     });
 
     it('Should select auto range', async () => {
-        const start = setSeconds(new Date(), 0);
-        const end = setSeconds(addDays(start, 7), 0);
+        const start = setMilliseconds(setSeconds(new Date(), 0), 0);
+        const end = setMilliseconds(setSeconds(addDays(start, 7), 0), 0);
         const { dp, menu } = await mountDatepicker({ modelValue: null, range: true, autoRange: 7 });
 
         const calendar = menu.findComponent(Calendar);
@@ -220,7 +220,7 @@ describe('Logic connection', () => {
         // select all dates
         await selectDates();
         expect(dp.vm.internalModelValue).toHaveLength(4);
-        expect(dp.vm.internalModelValue[0]).toEqual(setSeconds(dates[0], 0));
+        expect(dp.vm.internalModelValue[0]).toEqual(setMilliseconds(setSeconds(dates[0], 0), 0));
 
         // deselect all dates
         await selectDates();
