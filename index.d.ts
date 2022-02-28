@@ -12,7 +12,8 @@ type EmitEvents =
     | 'blur'
     | 'internalModelChange'
     | 'recalculatePosition'
-    | 'flow-step';
+    | 'flow-step'
+    | 'updateMonthYear';
 
 interface Vue3DatePicker {
     uid?: string;

@@ -553,6 +553,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit, updateFlow: () =>
             }
         }
         updateFlow();
+        emit('updateMonthYear', { instance, value, isMonth });
     };
 
     const getSetDateTime = (dateValue: Date): Date => {

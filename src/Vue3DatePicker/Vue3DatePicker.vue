@@ -121,6 +121,7 @@
                 @auto-apply="autoApplyValue"
                 @time-update="timeUpdate"
                 @flow-step="$emit('flow-step', $event)"
+                @update-month-year="$emit('updateMonthYear', $event)"
             >
                 <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
                     <slot :name="slot" v-bind="{ ...args }" />
@@ -184,6 +185,7 @@
         'internalModelChange',
         'recalculatePosition',
         'flow-step',
+        'updateMonthYear',
     ]);
     const props = defineProps({
         uid: { type: String as PropType<string>, default: null },

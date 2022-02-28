@@ -216,6 +216,7 @@
         'autoApply',
         'timeUpdate',
         'flow-step',
+        'updateMonthYear',
     ]);
     const props = defineProps({
         internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
