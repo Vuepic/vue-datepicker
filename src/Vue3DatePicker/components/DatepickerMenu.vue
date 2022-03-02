@@ -293,6 +293,7 @@
         maxRange: { type: [Number, String] as PropType<number | string>, default: null },
         fixedStart: { type: Boolean as PropType<boolean>, default: false },
         fixedEnd: { type: Boolean as PropType<boolean>, default: false },
+        multiDatesLimit: { type: [Number, String] as PropType<number | string>, default: null },
     });
     const slots = useSlots();
     const calendarWrapperRef = ref(null);

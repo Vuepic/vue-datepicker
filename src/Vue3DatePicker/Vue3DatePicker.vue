@@ -113,6 +113,7 @@
                     maxRange,
                     fixedStart,
                     fixedEnd,
+                    multiDatesLimit,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @close-picker="closeMenu"
@@ -287,6 +288,7 @@
         fixedStart: { type: Boolean as PropType<boolean>, default: false },
         fixedEnd: { type: Boolean as PropType<boolean>, default: false },
         utc: { type: Boolean as PropType<boolean>, default: false },
+        multiDatesLimit: { type: [Number, String] as PropType<number | string>, default: null },
     });
     const slots = useSlots();
     const isOpen = ref(false);

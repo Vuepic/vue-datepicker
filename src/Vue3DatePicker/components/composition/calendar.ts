@@ -370,7 +370,12 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit, updateFlow: () =>
                 const value = modelValue.value.filter((dateVal) => !isDateEqual(dateVal, date));
                 modelValue.value = !value.length ? null : value;
             } else {
-                modelValue.value.push(date);
+                if (
+                    (props.multiDatesLimit && +props.multiDatesLimit >= modelValue.value.length) ||
+                    !props.multiDatesLimit
+                ) {
+                    modelValue.value.push(date);
+                }
             }
         } else {
             modelValue.value = [date];

@@ -190,6 +190,7 @@ interface Vue3DatePicker {
     fixedStart?: boolean;
     fixedEnd?: boolean;
     utc?: boolean;
+    multiDatesLimit?: number | string;
 }
 
 interface PublicMethods extends MethodOptions {

@@ -91,6 +91,7 @@ export type UseCalendar = {
     maxRange: number | string;
     fixedStart: boolean;
     fixedEnd: boolean;
+    multiDatesLimit: number | string;
 } & { [key: string]: unknown };
 
 export interface UseMonthYearPick {
