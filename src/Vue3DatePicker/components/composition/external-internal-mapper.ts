@@ -4,14 +4,14 @@ import {
     dateToUtc,
     formatDate,
     getDefaultPattern,
+    getMonthValForExternal,
     getTImeForExternal,
     isValidDate,
     setDateMonthOrYear,
     setDateTime,
 } from '../../utils/date-utils';
 import { IFormat, ITextInputOptions, ModelValue, VueEmit } from '../../interfaces';
-import { isMonth, isRangeArray, isSingle, isTime, isTimeArray } from '../../utils/type-guard';
-import { getMonthVal } from '../../utils/date-utils';
+import { isMonth, isMonthArray, isRangeArray, isSingle, isTime, isTimeArray } from '../../utils/type-guard';
 import { Locale } from 'date-fns';
 
 interface IExternalInternalMapper {
@@ -66,7 +66,12 @@ export const useExternalInternalMapper = (
                     mappedDate = setDateTime(null, +value.hours, +value.minutes, +value.seconds);
                 }
             } else if (monthPicker) {
-                if (isMonth(value) && 'month' in value && 'year' in value) {
+                if (isMonthArray(value) && 'month' in value[0] && 'year' in value[0]) {
+                    mappedDate = [
+                        setDateMonthOrYear(null, +value[0].month, +value[0].year),
+                        setDateMonthOrYear(null, +value[1].month, +value[1].year),
+                    ];
+                } else if (isMonth(value) && 'month' in value && 'year' in value) {
                     mappedDate = setDateMonthOrYear(null, +value.month, +value.year);
                 }
             } else if (multiDates && Array.isArray(value)) {
@@ -114,7 +119,7 @@ export const useExternalInternalMapper = (
         } else if (timePicker) {
             inputValue.value = format(getTImeForExternal(internalModelValue.value));
         } else if (monthPicker) {
-            inputValue.value = format(getMonthVal(internalModelValue.value as Date));
+            inputValue.value = format(getMonthValForExternal(internalModelValue.value));
         } else {
             inputValue.value = format(internalModelValue.value);
         }
@@ -136,7 +141,7 @@ export const useExternalInternalMapper = (
      */
     const emitModelValue = (): void => {
         if (monthPicker) {
-            emit('update:modelValue', getMonthVal(internalModelValue.value as Date));
+            emit('update:modelValue', getMonthValForExternal(internalModelValue.value));
         } else if (timePicker) {
             emit('update:modelValue', getTImeForExternal(internalModelValue.value));
         } else {

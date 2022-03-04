@@ -85,6 +85,11 @@
   }
 }
 
+.dp__cell_in_between {
+  background: var(--dp-hover-color);
+  color: var(--dp-hover-text-color);
+}
+
 .dp__overlay_action {
   position: sticky;
   bottom: 0;

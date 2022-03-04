@@ -104,6 +104,8 @@
                     disabledValues: filters.months,
                     minValue: minMonth,
                     maxValue: maxMonth,
+                    multiModelValue,
+                    year,
                 }"
                 @update:model-value="onMonthUpdate"
                 @toggle="toggleMonthPicker"
@@ -176,14 +178,14 @@
 
 <script lang="ts" setup>
     import { computed, onMounted, PropType, ref } from 'vue';
+    import { getMonth, getYear } from 'date-fns';
 
     import { ChevronLeftIcon, ChevronRightIcon, CalendarIcon } from './Icons';
     import SelectionGrid from './SelectionGrid.vue';
 
-    import { IDateFilter, IDefaultSelect } from '../interfaces';
+    import { IDateFilter, IDefaultSelect, InternalModuleValue } from '../interfaces';
     import { useMontYearPick } from './composition/month-year';
     import { useTransitions } from './composition/transition';
-    import { getMonth, getYear } from 'date-fns';
 
     const emit = defineEmits(['update:month', 'update:year', 'monthYearSelect', 'mount', 'reset-flow']);
     const props = defineProps({
@@ -200,6 +202,8 @@
         minDate: { type: [Date, String] as PropType<Date | string>, default: null },
         maxDate: { type: [Date, String] as PropType<Date | string>, default: null },
         preventMinMaxNavigation: { type: Boolean as PropType<boolean>, default: false },
+        internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
+        range: { type: Boolean as PropType<boolean>, default: false },
     });
 
     const { transitionName, showTransition } = useTransitions();
@@ -241,6 +245,10 @@
             if (maxYear.value === props.year) return getMonth(new Date(props.maxDate));
         }
         return null;
+    });
+
+    const multiModelValue = computed(() => {
+        return props.range && props.internalModelValue && props.monthPicker ? (props.internalModelValue as Date[]) : [];
     });
 
     const getGroupedList = (items: IDefaultSelect[]): IDefaultSelect[][] => {

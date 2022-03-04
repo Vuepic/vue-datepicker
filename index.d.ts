@@ -39,6 +39,7 @@ interface Vue3DatePicker {
               seconds?: number | string;
           }[]
         | { month: number | string; year: number | string }
+        | { month: number | string; year: number | string }[]
         | null;
     locale?: string;
     position?: 'left' | 'center' | 'right';

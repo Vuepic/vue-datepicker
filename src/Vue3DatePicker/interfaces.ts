@@ -17,7 +17,9 @@ export enum OpenPosition {
     right = 'right',
 }
 
-export type IFormat = string | ((date: Date | Date[] | ITimeValue | ITimeValue[] | IMonthValue) => string);
+export type IFormat =
+    | string
+    | ((date: Date | Date[] | ITimeValue | ITimeValue[] | IMonthValue | IMonthValue[]) => string);
 
 export type InternalModuleValue = Date | Date[] | null;
 
@@ -58,7 +60,16 @@ export interface ITimeValue {
     seconds: number | string;
 }
 
-export type ModelValue = Date | Date[] | string | string[] | ITimeValue | ITimeValue[] | IMonthValue | null;
+export type ModelValue =
+    | Date
+    | Date[]
+    | string
+    | string[]
+    | ITimeValue
+    | ITimeValue[]
+    | IMonthValue
+    | IMonthValue[]
+    | null;
 
 export type WeekStartNum = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 export type WeekStartStr = '0' | '1' | '2' | '3' | '4' | '5' | '6';

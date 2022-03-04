@@ -19,6 +19,7 @@
                     tabindex="0"
                     @click="onClick(col.value)"
                     @keydown.enter="onClick(col.value)"
+                    @mouseover="hoverValue = col.value"
                 >
                     <div :class="col.className">
                         <slot v-if="$slots.item" name="item" :item="col" />
@@ -43,18 +44,22 @@
 
 <script lang="ts" setup>
     import { computed, inject, onBeforeUpdate, onMounted, PropType, ref } from 'vue';
+    import { setMonth, setYear } from 'date-fns';
 
     import { IDefaultSelect, DynamicClass } from '../interfaces';
     import { getKey, unrefElement } from '../utils/util';
+    import { isDateBetween, isDateEqual } from '../utils/date-utils';
 
     const emit = defineEmits(['update:modelValue', 'selected', 'toggle', 'reset-flow']);
 
     const props = defineProps({
         items: { type: Array as PropType<IDefaultSelect[][]>, default: () => [] },
         modelValue: { type: [String, Number] as PropType<string | number>, default: null },
+        multiModelValue: { type: Array as PropType<Date[]>, default: () => [] },
         disabledValues: { type: Array as PropType<number[]>, default: () => [] },
         minValue: { type: [Number, String] as PropType<number | string>, default: null },
         maxValue: { type: [Number, String] as PropType<number | string>, default: null },
+        year: { type: Number as PropType<number>, default: 0 },
     });
 
     const scrollable = ref(false);
@@ -62,6 +67,7 @@
     const gridWrapRef = ref(null);
     const autoApply = inject('autoApply', false);
     const textInput = inject('textInput', ref(false));
+    const hoverValue = ref();
 
     onBeforeUpdate(() => {
         selectionActiveRef.value = null;
@@ -102,14 +108,21 @@
                 .map((itemVal) => {
                     const disabled =
                         props.disabledValues.some((val) => val === itemVal.value) || checkMinMaxValue(itemVal.value);
+                    const active = props.multiModelValue?.length
+                        ? props.multiModelValue?.some((value) =>
+                              isDateEqual(value, setYear(setMonth(new Date(), itemVal.value), props.year)),
+                          )
+                        : itemVal.value === props.modelValue;
+
                     return {
                         ...itemVal,
                         className: {
-                            dp__overlay_cell_active: itemVal.value === props.modelValue,
-                            dp__overlay_cell: itemVal.value !== props.modelValue,
+                            dp__overlay_cell_active: active,
+                            dp__overlay_cell: !active,
                             dp__overlay_cell_disabled: disabled,
-                            dp__overlay_cell_active_disabled: disabled && itemVal.value === props.modelValue,
+                            dp__overlay_cell_active_disabled: disabled && active,
                             dp__overlay_cell_pad: true,
+                            dp__cell_in_between: props.multiModelValue?.length ? rangeActive(itemVal.value) : false,
                         },
                     };
                 });
@@ -166,6 +179,14 @@
             emit('update:modelValue', val);
             emit('selected');
         }
+    };
+
+    const rangeActive = (value: number): boolean => {
+        return isDateBetween(
+            props.multiModelValue,
+            setYear(setMonth(new Date(), hoverValue.value || 0), props.year),
+            setYear(setMonth(new Date(), value), props.year),
+        );
     };
 
     const toggle = () => {

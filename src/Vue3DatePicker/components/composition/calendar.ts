@@ -22,6 +22,7 @@ import {
     getNextMonthYear,
     isDateAfter,
     isDateBefore,
+    isDateBetween,
     isDateEqual,
     sanitizeDate,
     setDateMonthOrYear,
@@ -233,21 +234,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit, updateFlow: () =>
      * If range mode used, this will check if the calendar day is between 2 active dates
      */
     const rangeActive = (calendarDay: ICalendarDay): boolean => {
-        if (isModelValueRange(modelValue.value) && modelValue.value[0] && modelValue.value[1]) {
-            return (
-                isDateAfter(calendarDay.value, modelValue.value[0]) &&
-                isDateBefore(calendarDay.value, modelValue.value[1])
-            );
-        }
-        if (isModelValueRange(modelValue.value) && modelValue.value[0] && hoveredDate.value) {
-            return (
-                (isDateAfter(calendarDay.value, modelValue.value[0]) &&
-                    isDateBefore(calendarDay.value, hoveredDate.value)) ||
-                (isDateBefore(calendarDay.value, modelValue.value[0]) &&
-                    isDateAfter(calendarDay.value, hoveredDate.value))
-            );
-        }
-        return false;
+        return isDateBetween(modelValue.value as Date[], hoveredDate.value as Date, calendarDay.value);
     };
 
     /**
@@ -337,7 +324,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit, updateFlow: () =>
                         setDateTime(new Date(), hours.value[1], minutes.value[1], getSecondsValue(false)),
                     ];
                 }
-            } else if (props.monthPicker) {
+            } else if (props.monthPicker && !props.range) {
                 modelValue.value = setDateMonthOrYear(new Date(), month.value(0), year.value(0));
             } else if (props.multiCalendars) {
                 assignMonthAndYear(new Date());
@@ -541,6 +528,10 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit, updateFlow: () =>
         }
     };
 
+    const getMonthValue = (instance: number): Date => {
+        return setDateMonthOrYear(new Date(), month.value(instance), year.value(instance));
+    };
+
     const updateMonthYear = (instance: number, value: number, isMonth = true): void => {
         if (isMonth) {
             setCalendarMonth(instance, value);
@@ -551,10 +542,25 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit, updateFlow: () =>
             autoChangeMultiCalendars(instance);
         }
         if (props.monthPicker) {
-            if (modelValue.value) {
-                modelValue.value = setDateMonthOrYear(modelValue.value as Date, month.value(0), year.value(0));
+            if (props.range) {
+                if (isMonth) {
+                    let rangeDate = modelValue.value ? (modelValue.value as Date[]).slice() : [];
+                    if (rangeDate.length === 2) {
+                        rangeDate = [];
+                    }
+                    if (!rangeDate.length) {
+                        rangeDate = [getMonthValue(instance)];
+                    } else {
+                        if (isDateBefore(getMonthValue(instance), rangeDate[0])) {
+                            rangeDate.unshift(getMonthValue(instance));
+                        } else {
+                            rangeDate.push(getMonthValue(instance));
+                        }
+                    }
+                    modelValue.value = rangeDate;
+                }
             } else {
-                modelValue.value = setDateMonthOrYear(new Date(), month.value(0), year.value(0));
+                modelValue.value = getMonthValue(instance);
             }
         }
         updateFlow();

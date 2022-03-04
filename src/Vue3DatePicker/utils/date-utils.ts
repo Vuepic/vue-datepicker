@@ -127,6 +127,13 @@ export const getTimeVal = (date?: Date): ITimeValue => {
 
 export const getMonthVal = (date: Date): IMonthValue => ({ month: getMonth(date), year: getYear(date) });
 
+export const getMonthValForExternal = (date: Date | Date[]): IMonthValue | IMonthValue[] => {
+    if (Array.isArray(date)) {
+        return [getMonthVal(date[0]), getMonthVal(date[1])];
+    }
+    return getMonthVal(date);
+};
+
 export const getTImeForExternal = (date: Date | Date[]): ITimeValue | ITimeValue[] => {
     if (Array.isArray(date)) {
         return [getTimeVal(date[0]), getTimeVal(date[1])];
@@ -255,4 +262,17 @@ export const dateToUtc = (date: Date): string => {
     );
 
     return new Date(utcDate).toISOString();
+};
+
+export const isDateBetween = (range: Date[], hoverDate: Date, dateToCheck: Date): boolean => {
+    if (range[0] && range[1]) {
+        return isDateAfter(dateToCheck, range[0]) && isDateBefore(dateToCheck, range[1]);
+    }
+    if (range[0] && hoverDate) {
+        return (
+            (isDateAfter(dateToCheck, range[0]) && isDateBefore(dateToCheck, hoverDate)) ||
+            (isDateBefore(dateToCheck, range[0]) && isDateAfter(dateToCheck, hoverDate))
+        );
+    }
+    return false;
 };

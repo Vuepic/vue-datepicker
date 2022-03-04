@@ -51,6 +51,8 @@
                                 minDate,
                                 maxDate,
                                 preventMinMaxNavigation,
+                                internalModelValue,
+                                range,
                             }"
                             @mount="childMount('monthYearInput')"
                             @reset-flow="resetFlow"

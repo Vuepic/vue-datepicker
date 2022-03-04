@@ -18,6 +18,10 @@ export const isTimeArray = (value: ModelValue): value is ITimeValue[] => {
     return Array.isArray(value) && value.length === 2;
 };
 
+export const isMonthArray = (value: ModelValue): value is IMonthValue[] => {
+    return Array.isArray(value);
+};
+
 export const isMonth = (value: ModelValue): value is IMonthValue => {
     return typeof value === 'object';
 };
