@@ -116,6 +116,7 @@
                     multiDatesLimit,
                     reverseYears,
                     keepActionRow,
+                    weekPicker,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @close-picker="closeMenu"
@@ -293,6 +294,7 @@
         multiDatesLimit: { type: [Number, String] as PropType<number | string>, default: null },
         reverseYears: { type: Boolean as PropType<boolean>, default: false },
         keepActionRow: { type: Boolean as PropType<boolean>, default: false },
+        weekPicker: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
     const isOpen = ref(false);
@@ -357,6 +359,7 @@
             formatLocaleRef,
             props.multiDates,
             props.utc,
+            props.weekPicker,
             props.textInputOptions,
             emit,
         );
@@ -380,6 +383,7 @@
                   props.enableSeconds,
                   props.monthPicker,
                   props.timePicker,
+                  props.weekPicker,
                   props.enableTimePicker,
               );
     });

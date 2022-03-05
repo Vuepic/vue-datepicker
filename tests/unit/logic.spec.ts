@@ -11,6 +11,7 @@ import MonthYearInput from '../../src/Vue3DatePicker/components/MonthYearInput.v
 import ActionRow from '../../src/Vue3DatePicker/components/ActionRow.vue';
 
 import { setMilliseconds, setSeconds } from 'date-fns';
+import { getWeekFromDate } from '../../src/Vue3DatePicker/utils/date-utils';
 
 const format = (date: Date): string => {
     return `Selected year is ${date.getFullYear()}`;
@@ -241,5 +242,17 @@ describe('Logic connection', () => {
         expect(dp.vm.internalModelValue).toHaveLength(2);
         expect(dp.vm.internalModelValue).toEqual(range);
         dp.unmount();
+    });
+
+    it('Should select week', async () => {
+        const today = new Date();
+        const weekRange = getWeekFromDate(today, 1);
+        const { dp, menu } = await mountDatepicker({ modelValue: null, weekPicker: true });
+
+        const calendar = menu.findComponent(Calendar);
+        calendar.vm.$emit('selectDate', { value: today, current: true });
+
+        expect(dp.vm.internalModelValue).toHaveLength(2);
+        expect(dp.vm.internalModelValue).toEqual(weekRange);
     });
 });

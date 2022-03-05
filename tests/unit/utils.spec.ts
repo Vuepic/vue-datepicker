@@ -63,8 +63,8 @@ describe('Utils and date utils formatting', () => {
     });
 
     it('Should get default pattern', () => {
-        const patternDef = getDefaultPattern(null, true, false, false, false, true);
-        const patternMonthPicker = getDefaultPattern(null, true, false, true, false, false);
+        const patternDef = getDefaultPattern(null, true, false, false, false, false, true);
+        const patternMonthPicker = getDefaultPattern(null, true, false, true, false, false, false);
 
         expect(patternDef).toEqual('MM/dd/yyyy, HH:mm');
         expect(patternMonthPicker).toEqual('MM/yyyy');

@@ -38,6 +38,7 @@ export const useExternalInternalMapper = (
     formatLocale: ComputedRef<Locale>,
     multiDates: boolean,
     utc: boolean,
+    weekPicker: boolean,
     textInputOptions: ITextInputOptions,
     emit: VueEmit,
 ): IExternalInternalMapper => {
@@ -76,6 +77,8 @@ export const useExternalInternalMapper = (
                 }
             } else if (multiDates && Array.isArray(value)) {
                 mappedDate = value.map((date) => new Date(date as string));
+            } else if (weekPicker && Array.isArray(value)) {
+                mappedDate = [new Date(value[0] as string), new Date(value[1] as string)];
             } else if (range) {
                 if (isRangeArray(value, partialRange)) {
                     mappedDate = [new Date(value[0]), value[1] ? new Date(value[1]) : (null as unknown as Date)];
@@ -103,7 +106,15 @@ export const useExternalInternalMapper = (
         if (!internalModelValue.value) {
             inputValue.value = '';
         } else if (!format || typeof format === 'string') {
-            const pattern = getDefaultPattern(format, is24, enableSeconds, monthPicker, timePicker, enableTimePicker);
+            const pattern = getDefaultPattern(
+                format,
+                is24,
+                enableSeconds,
+                monthPicker,
+                timePicker,
+                weekPicker,
+                enableTimePicker,
+            );
             if (Array.isArray(internalModelValue.value) && multiDates) {
                 inputValue.value = internalModelValue.value
                     .map((date) => formatDate(date, pattern, formatLocale?.value))
@@ -144,6 +155,8 @@ export const useExternalInternalMapper = (
             emit('update:modelValue', getMonthValForExternal(internalModelValue.value));
         } else if (timePicker) {
             emit('update:modelValue', getTImeForExternal(internalModelValue.value));
+        } else if (weekPicker) {
+            emit('update:modelValue', internalModelValue.value);
         } else {
             if (internalModelValue.value && range && partialRange && internalModelValue.value.length === 1) {
                 internalModelValue.value.push(null);

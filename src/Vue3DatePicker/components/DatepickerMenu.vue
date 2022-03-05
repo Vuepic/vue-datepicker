@@ -87,7 +87,7 @@
                 </div>
                 <div>
                     <component
-                        v-if="enableTimePicker && !monthPicker"
+                        v-if="enableTimePicker && !monthPicker && !weekPicker"
                         :is="timePickerComponent ? timePickerComponent : TimePickerCmp"
                         ref="timePickerRef"
                         v-bind="{
@@ -299,6 +299,7 @@
         multiDatesLimit: { type: [Number, String] as PropType<number | string>, default: null },
         reverseYears: { type: Boolean as PropType<boolean>, default: false },
         keepActionRow: { type: Boolean as PropType<boolean>, default: false },
+        weekPicker: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
     const calendarWrapperRef = ref(null);
@@ -502,7 +503,7 @@
                         dp__date_hover_start: isHoverDateStartEnd(dateHover, calendarDay, true),
                         dp__date_hover_end: isHoverDateStartEnd(dateHover, calendarDay, false),
                         dp__range_between:
-                            props.range &&
+                            (props.range || props.weekPicker) &&
                             (props.multiCalendars > 0 ? calendarDay.current : true) &&
                             !disabled &&
                             !(!calendarDay.current && props.hideOffsetDates) &&

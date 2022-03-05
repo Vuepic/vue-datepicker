@@ -103,6 +103,8 @@ export type UseCalendar = {
     fixedStart: boolean;
     fixedEnd: boolean;
     multiDatesLimit: number | string;
+    weekPicker: boolean;
+    weekStart: WeekStartNum | WeekStartStr;
 } & { [key: string]: unknown };
 
 export interface UseMonthYearPick {

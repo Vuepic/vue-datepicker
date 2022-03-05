@@ -22,9 +22,11 @@ import {
     add,
     sub,
     Locale,
+    startOfWeek,
+    endOfWeek,
 } from 'date-fns';
 
-import { IMonthValue, InternalModuleValue, ITimeValue } from '../interfaces';
+import { IMonthValue, InternalModuleValue, ITimeValue, WeekStartNum } from '../interfaces';
 
 export const sanitizeDate = (date: Date) => {
     const userTimezoneOffset = date.getTimezoneOffset() * 60000;
@@ -102,6 +104,7 @@ export const getDefaultPattern = (
     enableSeconds: boolean,
     monthPicker: boolean,
     timePicker: boolean,
+    weekPicker: boolean,
     enableTimePicker: boolean,
 ): string => {
     if (pattern) {
@@ -112,6 +115,9 @@ export const getDefaultPattern = (
     }
     if (timePicker) {
         return getTimeFormat(is24, enableSeconds);
+    }
+    if (weekPicker) {
+        return 'MM/dd/yyyy';
     }
     return enableTimePicker ? `MM/dd/yyyy, ${getTimeFormat(is24, enableSeconds)}` : 'MM/dd/yyyy';
 };
@@ -265,14 +271,20 @@ export const dateToUtc = (date: Date): string => {
 };
 
 export const isDateBetween = (range: Date[], hoverDate: Date, dateToCheck: Date): boolean => {
-    if (range[0] && range[1]) {
+    if (range && range[0] && range[1]) {
         return isDateAfter(dateToCheck, range[0]) && isDateBefore(dateToCheck, range[1]);
     }
-    if (range[0] && hoverDate) {
+    if (range && range[0] && hoverDate) {
         return (
             (isDateAfter(dateToCheck, range[0]) && isDateBefore(dateToCheck, hoverDate)) ||
             (isDateBefore(dateToCheck, range[0]) && isDateAfter(dateToCheck, hoverDate))
         );
     }
     return false;
+};
+
+export const getWeekFromDate = (date: Date, weekStartsOn: WeekStartNum): [Date, Date] => {
+    const start = startOfWeek(date, { weekStartsOn });
+    const end = endOfWeek(date, { weekStartsOn });
+    return [start, end];
 };

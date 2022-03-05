@@ -17,9 +17,10 @@ import {
     subMonths,
 } from 'date-fns';
 
-import { ICalendarDay, IMarker, InternalModuleValue, UseCalendar, VueEmit } from '../../interfaces';
+import { ICalendarDay, IMarker, InternalModuleValue, UseCalendar, VueEmit, WeekStartNum } from '../../interfaces';
 import {
     getNextMonthYear,
+    getWeekFromDate,
     isDateAfter,
     isDateBefore,
     isDateBetween,
@@ -396,6 +397,12 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit, updateFlow: () =>
         return [];
     };
 
+    const autoApply = (): void => {
+        if (props.autoApply) {
+            emit('autoApply');
+        }
+    };
+
     /**
      * Called when the date in the calendar is clicked
      * Do a necessary formatting and assign value to internal
@@ -407,6 +414,10 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit, updateFlow: () =>
         if (!day.current && props.hideOffsetDates) {
             return;
         }
+        if (props.weekPicker) {
+            modelValue.value = getWeekFromDate(new Date(day.value), +props.weekStart as WeekStartNum);
+            return autoApply();
+        }
         if (!props.range && !isNumberArray(hours.value) && !isNumberArray(minutes.value)) {
             const date = setDateTime(new Date(day.value), hours.value, minutes.value, getSecondsValue());
             if (props.multiDates) {
@@ -415,9 +426,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit, updateFlow: () =>
                 modelValue.value = date;
             }
             updateFlow();
-            if (props.autoApply) {
-                emit('autoApply');
-            }
+            autoApply();
         } else if (isNumberArray(hours.value) && isNumberArray(minutes.value) && !props.multiDates) {
             let rangeDate = modelValue.value ? (modelValue.value as Date[]).slice() : [];
             if (rangeDate.length === 2 && !(props.fixedStart || props.fixedEnd)) {
@@ -480,11 +489,14 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit, updateFlow: () =>
      * Check if range ends on the given day
      */
     const isHoverRangeEnd = (day: UnwrapRef<ICalendarDay>): boolean => {
-        if (props.autoRange) {
+        if (props.autoRange || props.weekPicker) {
             if (hoveredDate.value) {
                 if (props.hideOffsetDates && !day.current) return false;
                 const rangeEnd = addDays(hoveredDate.value, +props.autoRange);
-                return isDateEqual(rangeEnd, new Date(day.value));
+                const range = getWeekFromDate(new Date(hoveredDate.value), +props.weekStart as WeekStartNum);
+                return props.weekPicker
+                    ? isDateEqual(range[1], new Date(day.value))
+                    : isDateEqual(rangeEnd, new Date(day.value));
             }
             return false;
         }
@@ -495,11 +507,14 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit, updateFlow: () =>
      * Check if date in auto range preview is in between
      */
     const isAutoRangeInBetween = (day: UnwrapRef<ICalendarDay>): boolean => {
-        if (props.autoRange) {
+        if (props.autoRange || props.weekPicker) {
             if (hoveredDate.value) {
                 const rangeEnd = addDays(hoveredDate.value, +props.autoRange);
                 if (props.hideOffsetDates && !day.current) return false;
-                return isDateAfter(day.value, hoveredDate.value) && isDateBefore(day.value, rangeEnd);
+                const range = getWeekFromDate(new Date(hoveredDate.value), +props.weekStart as WeekStartNum);
+                return props.weekPicker
+                    ? isDateAfter(day.value, range[0]) && isDateBefore(day.value, range[1])
+                    : isDateAfter(day.value, hoveredDate.value) && isDateBefore(day.value, rangeEnd);
             }
             return false;
         }
@@ -507,10 +522,11 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit, updateFlow: () =>
     };
 
     const isAutoRangeStart = (day: UnwrapRef<ICalendarDay>): boolean => {
-        if (props.autoRange) {
+        if (props.autoRange || props.weekPicker) {
             if (hoveredDate.value) {
                 if (props.hideOffsetDates && !day.current) return false;
-                return isDateEqual(hoveredDate.value, day.value);
+                const range = getWeekFromDate(new Date(hoveredDate.value), +props.weekStart as WeekStartNum);
+                return props.weekPicker ? isDateEqual(range[0], day.value) : isDateEqual(hoveredDate.value, day.value);
             }
             return false;
         }
@@ -659,7 +675,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit, updateFlow: () =>
      * Check when to add a proper active start/end date class on range picker
      */
     const rangeActiveStartEnd = (day: UnwrapRef<ICalendarDay>, isStart = true): boolean => {
-        if (props.range && isRange(modelValue.value)) {
+        if ((props.range || props.weekPicker) && isRange(modelValue.value)) {
             if (props.hideOffsetDates && !day.current) return false;
             return isDateEqual(new Date(day.value), modelValue.value[isStart ? 0 : 1]);
         } else if (props.range) {
@@ -687,7 +703,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit, updateFlow: () =>
     };
 
     const isHoverDate = (disabled: boolean, calendarDay: ICalendarDay) => {
-        return Array.isArray(props.internalModelValue) && props.internalModelValue.length
+        return (Array.isArray(props.internalModelValue) && props.internalModelValue.length) || props.weekPicker
             ? false
             : !disabled &&
                   !isActiveDate(calendarDay) &&

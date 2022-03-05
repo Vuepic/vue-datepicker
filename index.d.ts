@@ -194,6 +194,7 @@ interface Vue3DatePicker {
     multiDatesLimit?: number | string;
     reverseYears?: boolean;
     keepActionRow?: boolean;
+    weekPicker?: boolean;
 }
 
 interface PublicMethods extends MethodOptions {
