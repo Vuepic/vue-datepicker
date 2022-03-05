@@ -138,7 +138,7 @@
             </div>
         </div>
         <component
-            v-if="!autoApply"
+            v-if="!autoApply || keepActionRow"
             :is="actionRowComponent ? actionRowComponent : ActionRow"
             v-bind="{
                 calendarWidth,
@@ -298,6 +298,7 @@
         fixedEnd: { type: Boolean as PropType<boolean>, default: false },
         multiDatesLimit: { type: [Number, String] as PropType<number | string>, default: null },
         reverseYears: { type: Boolean as PropType<boolean>, default: false },
+        keepActionRow: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
     const calendarWrapperRef = ref(null);

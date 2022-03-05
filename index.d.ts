@@ -193,6 +193,7 @@ interface Vue3DatePicker {
     utc?: boolean;
     multiDatesLimit?: number | string;
     reverseYears?: boolean;
+    keepActionRow?: boolean;
 }
 
 interface PublicMethods extends MethodOptions {
