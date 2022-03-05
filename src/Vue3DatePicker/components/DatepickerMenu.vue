@@ -53,6 +53,7 @@
                                 preventMinMaxNavigation,
                                 internalModelValue,
                                 range,
+                                reverseYears,
                             }"
                             @mount="childMount('monthYearInput')"
                             @reset-flow="resetFlow"
@@ -296,6 +297,7 @@
         fixedStart: { type: Boolean as PropType<boolean>, default: false },
         fixedEnd: { type: Boolean as PropType<boolean>, default: false },
         multiDatesLimit: { type: [Number, String] as PropType<number | string>, default: null },
+        reverseYears: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
     const calendarWrapperRef = ref(null);

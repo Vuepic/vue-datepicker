@@ -114,6 +114,7 @@
                     fixedStart,
                     fixedEnd,
                     multiDatesLimit,
+                    reverseYears,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @close-picker="closeMenu"
@@ -289,6 +290,7 @@
         fixedEnd: { type: Boolean as PropType<boolean>, default: false },
         utc: { type: Boolean as PropType<boolean>, default: false },
         multiDatesLimit: { type: [Number, String] as PropType<number | string>, default: null },
+        reverseYears: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
     const isOpen = ref(false);

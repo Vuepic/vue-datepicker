@@ -204,6 +204,7 @@
         preventMinMaxNavigation: { type: Boolean as PropType<boolean>, default: false },
         internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
         range: { type: Boolean as PropType<boolean>, default: false },
+        reverseYears: { type: Boolean as PropType<boolean>, default: false },
     });
 
     const { transitionName, showTransition } = useTransitions();
@@ -255,7 +256,8 @@
         const list = [];
 
         for (let i = 0; i < items.length; i += 3) {
-            list.push([items[i], items[i + 1], items[i + 2]]);
+            const listItems = [items[i], items[i + 1], items[i + 2]];
+            list.push(props.reverseYears ? listItems.reverse() : listItems);
         }
         return list;
     };
@@ -271,7 +273,8 @@
     });
 
     const groupedYears = computed((): IDefaultSelect[][] => {
-        return getGroupedList(props.years);
+        const list = getGroupedList(props.years);
+        return props.reverseYears ? list.reverse() : list;
     });
 
     const showLeftIcon = computed(() => {
