@@ -1,4 +1,5 @@
-import { ComputedRef, Ref, ref, watch } from 'vue';
+import { ComputedRef, ref, watch } from 'vue';
+import { Locale } from 'date-fns';
 
 import {
     dateToUtc,
@@ -12,16 +13,6 @@ import {
 } from '../../utils/date-utils';
 import { IFormat, ITextInputOptions, ModelValue, VueEmit } from '../../interfaces';
 import { isMonth, isMonthArray, isRangeArray, isSingle, isTime, isTimeArray } from '../../utils/type-guard';
-import { Locale } from 'date-fns';
-
-interface IExternalInternalMapper {
-    parseExternalModelValue: (value: ModelValue) => void;
-    internalModelValue: Ref<Date | Date[] | null>;
-    inputValue: Ref<string>;
-    formatInputValue: () => void;
-    emitModelValue: () => void;
-    checkBeforeEmit: () => boolean;
-}
 
 /**
  * Handles values from external to internal and vise versa
@@ -41,7 +32,7 @@ export const useExternalInternalMapper = (
     weekPicker: boolean,
     textInputOptions: ITextInputOptions,
     emit: VueEmit,
-): IExternalInternalMapper => {
+) => {
     const inputValue = ref('');
     const internalModelValue = ref();
 

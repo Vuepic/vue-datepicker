@@ -109,48 +109,29 @@
         watch,
     } from 'vue';
 
-    import {
-        DynamicClass,
-        IDateFilter,
-        ICalendarDate,
-        ICalendarDay,
-        IDefaultSelect,
-        IMarker,
-        ITransition,
-        InternalModuleValue,
-    } from '../interfaces';
+    import { DynamicClass, ICalendarDate, ICalendarDay, IMarker, ITransition } from '../interfaces';
     import { getDayNames, getDefaultMarker, unrefElement } from '../utils/util';
     import { isDateAfter, isDateEqual, setDateMonthOrYear } from '../utils/date-utils';
+    import { MonthCalendarSharedProps } from '../utils/props';
 
     const emit = defineEmits(['selectDate', 'setHoverDate', 'handleScroll', 'mount']);
 
     const props = defineProps({
+        ...MonthCalendarSharedProps,
         locale: { type: String as PropType<string>, default: 'en-Us' },
         weekNumName: { type: String as PropType<string>, default: 'W' },
         weekStart: { type: [Number, String] as PropType<number | string>, default: 1 },
         weekNumbers: { type: Boolean as PropType<boolean>, default: false },
         mappedDates: { type: Array as PropType<ICalendarDate[]>, default: () => [] },
         monthYearComponent: { type: Object as PropType<DefineComponent>, default: null },
-        range: { type: Boolean as PropType<boolean>, default: false },
-        filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
-        customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
         calendarClassName: { type: String as PropType<string>, default: null },
-        monthPicker: { type: Boolean as PropType<boolean>, default: false },
         timePicker: { type: Boolean as PropType<boolean>, default: false },
         disableMonthYearSelect: { type: Boolean as PropType<boolean>, default: false },
         getWeekNum: {
             type: Function as PropType<(dates: UnwrapRef<ICalendarDay[]>) => string | number>,
             default: () => '',
         },
-        instance: { type: Number as PropType<number>, default: 1 },
-        multiCalendars: { type: Number as PropType<number>, default: 0 },
-        multiCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
-        years: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
-        months: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
-        month: { type: Number as PropType<number>, default: 0 },
-        year: { type: Number as PropType<number>, default: 0 },
         modeHeight: { type: [Number, String] as PropType<number | string>, default: 255 },
-        internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
     });
 
     const showMakerTooltip = ref<Date | null>(null);

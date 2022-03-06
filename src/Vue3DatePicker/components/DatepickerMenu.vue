@@ -61,7 +61,7 @@
                             @update:year="updateMonthYear(instance, $event, false)"
                             @month-year-select="monthYearSelect"
                         >
-                            <template v-for="(slot, i) in monthYearSlots" #[slot]="args" :key="i">
+                            <template v-for="(slot, j) in monthYearSlots" #[slot]="args" :key="j">
                                 <slot :name="slot" v-bind="args" />
                             </template>
                         </component>
@@ -79,7 +79,7 @@
                             @mount="childMount('calendar')"
                             @reset-flow="resetFlow"
                         >
-                            <template v-for="(slot, i) in calendarSlots" #[slot]="args" :key="i">
+                            <template v-for="(slot, j) in calendarSlots" #[slot]="args" :key="j">
                                 <slot :name="slot" v-bind="{ ...args }" />
                             </template>
                         </Calendar>
@@ -171,18 +171,7 @@
 </template>
 
 <script lang="ts" setup>
-    import {
-        computed,
-        onMounted,
-        PropType,
-        nextTick,
-        DefineComponent,
-        useSlots,
-        ComputedRef,
-        ref,
-        onUnmounted,
-        reactive,
-    } from 'vue';
+    import { computed, onMounted, PropType, nextTick, useSlots, ComputedRef, ref, onUnmounted, reactive } from 'vue';
     import Calendar from './Calendar.vue';
     import ActionRow from './ActionRow.vue';
     import TimePickerCmp from './TimePicker/TimePicker.vue';
@@ -190,26 +179,21 @@
 
     import {
         DynamicClass,
-        Flow,
         ICalendarDate,
         IDateFilter,
         IDefaultSelect,
-        IDisableDates,
         IFormat,
-        IMarker,
         InternalModuleValue,
-        ITimeValue,
         MenuChildCmp,
         MonthYearInputRef,
-        PresetRange,
         TimePickerRef,
         WeekStartNum,
-        WeekStartStr,
     } from '../interfaces';
     import { mapSlots } from './composition/slots';
     import { getCalendarDays, getMonths, getYears, unrefElement } from '../utils/util';
     import { useCalendar } from './composition/calendar';
     import { isDateEqual } from '../utils/date-utils';
+    import { CommonProps } from '../utils/props';
 
     const emit = defineEmits([
         'update:internalModelValue',
@@ -222,84 +206,15 @@
         'updateMonthYear',
     ]);
     const props = defineProps({
+        ...CommonProps,
         internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
-        weekNumbers: { type: Boolean as PropType<boolean>, default: false },
-        weekStart: { type: [Number, String] as PropType<WeekStartNum | WeekStartStr>, default: 1 },
-        disableMonthYearSelect: { type: Boolean as PropType<boolean>, default: false },
-        menuClassName: { type: String as PropType<string>, default: null },
-        calendarClassName: { type: String as PropType<string>, default: null },
-        yearRange: { type: Array as PropType<number[]>, default: () => [1970, 2100] },
-        range: { type: Boolean as PropType<boolean>, default: false },
         multiCalendars: { type: Number as PropType<number>, default: 0 },
-        multiCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
-        calendarCellClassName: { type: String as PropType<string>, default: null },
-        enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
-        is24: { type: Boolean as PropType<boolean>, default: true },
-        hoursIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
-        minutesIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
-        secondsIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
-        hoursGridIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
-        secondsGridIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
-        minutesGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 },
-        minDate: { type: [Date, String] as PropType<Date | string>, default: null },
-        maxDate: { type: [Date, String] as PropType<Date | string>, default: null },
-        autoApply: { type: Boolean as PropType<boolean>, default: false },
-        selectText: { type: String as PropType<string>, default: 'Select' },
-        cancelText: { type: String as PropType<string>, default: 'Cancel' },
         previewFormat: {
             type: [String, Function] as PropType<IFormat>,
             default: () => null,
         },
-        locale: { type: String as PropType<string>, default: 'en-US' },
-        weekNumName: { type: String as PropType<string>, default: 'W' },
-        disabledDates: { type: [Array, Function] as PropType<Date[] | string[] | IDisableDates>, default: () => [] },
         filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
-        minTime: { type: Object as PropType<ITimeValue>, default: null },
-        maxTime: { type: Object as PropType<ITimeValue>, default: null },
-        inline: { type: Boolean as PropType<boolean>, default: false },
         openOnTop: { type: Boolean as PropType<boolean>, default: false },
-        monthPicker: { type: Boolean as PropType<boolean>, default: false },
-        timePicker: { type: Boolean as PropType<boolean>, default: false },
-        monthNameFormat: { type: String as PropType<'long' | 'short'>, default: 'short' },
-        startDate: { type: [Date, String] as PropType<string | Date>, default: null },
-        startTime: { type: [Object, Array] as PropType<ITimeValue | ITimeValue[] | null>, default: null },
-        monthYearComponent: { type: Object as PropType<DefineComponent>, default: null },
-        timePickerComponent: { type: Object as PropType<DefineComponent>, default: null },
-        actionRowComponent: { type: Object as PropType<DefineComponent>, default: null },
-        customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
-        hideOffsetDates: { type: Boolean as PropType<boolean>, default: false },
-        autoRange: { type: [Number, String] as PropType<number | string>, default: null },
-        noToday: { type: Boolean as PropType<boolean>, default: false },
-        noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
-        noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
-        noSecondsOverlay: { type: Boolean as PropType<boolean>, default: false },
-        disabledWeekDays: { type: Array as PropType<string[] | number[]>, default: () => [] },
-        allowedDates: { type: Array as PropType<string[] | Date[]>, default: () => [] },
-        showNowButton: { type: Boolean as PropType<boolean>, default: false },
-        nowButtonLabel: { type: String as PropType<string>, default: 'Now' },
-        monthChangeOnScroll: { type: [Boolean, String] as PropType<boolean | 'inverse'>, default: true },
-        markers: { type: Array as PropType<IMarker[]>, default: () => [] },
-        uid: { type: String as PropType<string>, default: null },
-        modeHeight: { type: [Number, String] as PropType<number | string>, default: 255 },
-        enableSeconds: { type: Boolean as PropType<boolean>, default: false },
-        escClose: { type: Boolean as PropType<boolean>, default: true },
-        spaceConfirm: { type: Boolean as PropType<boolean>, default: true },
-        monthChangeOnArrows: { type: Boolean as PropType<boolean>, default: true },
-        textInput: { type: Boolean as PropType<boolean>, default: false },
-        disabled: { type: Boolean as PropType<boolean>, default: false },
-        readonly: { type: Boolean as PropType<boolean>, default: false },
-        multiDates: { type: Boolean as PropType<boolean>, default: false },
-        presetRanges: { type: Array as PropType<PresetRange[]>, default: () => [] },
-        flow: { type: Array as PropType<Flow>, default: () => [] },
-        preventMinMaxNavigation: { type: Boolean as PropType<boolean>, default: false },
-        minRange: { type: [Number, String] as PropType<number | string>, default: null },
-        maxRange: { type: [Number, String] as PropType<number | string>, default: null },
-        fixedStart: { type: Boolean as PropType<boolean>, default: false },
-        fixedEnd: { type: Boolean as PropType<boolean>, default: false },
-        multiDatesLimit: { type: [Number, String] as PropType<number | string>, default: null },
-        reverseYears: { type: Boolean as PropType<boolean>, default: false },
-        keepActionRow: { type: Boolean as PropType<boolean>, default: false },
-        weekPicker: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
     const calendarWrapperRef = ref(null);

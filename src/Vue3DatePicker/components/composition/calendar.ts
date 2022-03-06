@@ -1,4 +1,4 @@
-import { computed, ComputedRef, onMounted, Ref, ref, UnwrapRef, watch } from 'vue';
+import { computed, onMounted, ref, UnwrapRef, watch } from 'vue';
 import {
     add,
     addDays,
@@ -17,7 +17,15 @@ import {
     subMonths,
 } from 'date-fns';
 
-import { ICalendarDay, IMarker, InternalModuleValue, UseCalendar, VueEmit, WeekStartNum } from '../../interfaces';
+import {
+    ICalendarData,
+    ICalendarDay,
+    IMarker,
+    InternalModuleValue,
+    MenuProps,
+    VueEmit,
+    WeekStartNum,
+} from '../../interfaces';
 import {
     getNextMonthYear,
     getWeekFromDate,
@@ -31,42 +39,7 @@ import {
 } from '../../utils/date-utils';
 import { isModelValueRange, isNumberArray, isRange, isTimeArr, modelValueIsRange } from '../../utils/type-guard';
 
-interface IUseCalendar {
-    isDisabled: (date: Date) => boolean;
-    isActiveDate: (day: ICalendarDay) => boolean;
-    rangeActive: (day: ICalendarDay) => boolean;
-    selectDate: (day: UnwrapRef<ICalendarDay>, isNext?: boolean) => void;
-    getWeekNum: (days: UnwrapRef<ICalendarDay[]>) => string | number;
-    setHoverDate: (day: UnwrapRef<ICalendarDay>) => void;
-    updateTime: (value: number | number[], isHours?: boolean, isSeconds?: boolean) => void;
-    updateMonthYear: (instance: number, value: number, isMonth?: boolean) => void;
-    isHoverRangeEnd: (day: UnwrapRef<ICalendarDay>) => boolean;
-    isAutoRangeInBetween: (day: UnwrapRef<ICalendarDay>) => boolean;
-    isAutoRangeStart: (day: UnwrapRef<ICalendarDay>) => boolean;
-    rangeActiveStartEnd: (day: UnwrapRef<ICalendarDay>, isStart?: boolean) => boolean;
-    isHoverDate: (disabled: boolean, day: UnwrapRef<ICalendarDay>) => boolean;
-    isHoverDateStartEnd: (isHovered: boolean, calendarDay: UnwrapRef<ICalendarDay>, start: boolean) => boolean;
-    monthYearSelect: (isYear?: boolean) => void;
-    clearHoverDate: () => void;
-    handleScroll: (event: WheelEvent, instance: number) => void;
-    handleArrow: (arrow: 'left' | 'right', instance: number) => void;
-    getMarker: (day: UnwrapRef<ICalendarDay>) => IMarker | undefined;
-    presetDateRange: (dates: Date[] | string[]) => void;
-    selectCurrentDate: () => void;
-    today: Ref<Date>;
-    month: ComputedRef<(instance: number) => number>;
-    year: ComputedRef<(instance: number) => number>;
-    hours: Ref<number | number[]>;
-    minutes: Ref<number | number[]>;
-    seconds: Ref<number | number[]>;
-}
-
-interface ICalendarData {
-    month: number;
-    year: number;
-}
-
-export const useCalendar = (props: UseCalendar, emit: VueEmit, updateFlow: () => void): IUseCalendar => {
+export const useCalendar = (props: MenuProps, emit: VueEmit, updateFlow: () => void) => {
     const today = ref<Date>(new Date());
     const hoveredDate = ref<Date | null>();
     // Calendar data per instance
@@ -359,7 +332,7 @@ export const useCalendar = (props: UseCalendar, emit: VueEmit, updateFlow: () =>
                 modelValue.value = !value.length ? null : value;
             } else {
                 if (
-                    (props.multiDatesLimit && +props.multiDatesLimit >= modelValue.value.length) ||
+                    (props.multiDatesLimit && +props.multiDatesLimit > modelValue.value.length) ||
                     !props.multiDatesLimit
                 ) {
                     modelValue.value.push(date);

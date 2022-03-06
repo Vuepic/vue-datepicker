@@ -1,11 +1,9 @@
 import { addMonths, addYears, getMonth, getYear, set, subMonths, subYears } from 'date-fns';
+
 import { UseMonthYearPick, VueEmit } from '../../interfaces';
 import { isDateAfter, isDateBefore, isDateEqual } from '../../utils/date-utils';
 
-export const useMontYearPick = (
-    props: UseMonthYearPick,
-    emit: VueEmit,
-): { handleMonthYearChange(isNext: boolean): void } => {
+export const useMontYearPick = (props: UseMonthYearPick, emit: VueEmit) => {
     const recursiveMonthAdjust = (date: Date, increment: boolean): Date => {
         let monthDate = date;
         if (props.filters.months.includes(getMonth(monthDate))) {

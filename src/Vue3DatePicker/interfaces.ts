@@ -1,4 +1,5 @@
-import { ComponentPublicInstance, Ref } from 'vue';
+import { ComponentPublicInstance, ExtractPropTypes, Ref } from 'vue';
+import { CommonProps } from './utils/props';
 
 export type DynamicClass = Record<string, boolean>;
 
@@ -74,38 +75,14 @@ export type ModelValue =
 export type WeekStartNum = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 export type WeekStartStr = '0' | '1' | '2' | '3' | '4' | '5' | '6';
 
-export type UseCalendar = {
-    range: boolean;
-    startDate: Date | string;
-    startTime: ITimeValue | ITimeValue[] | null;
+export interface MenuPropsWithExtend extends ExtractPropTypes<typeof CommonProps> {
     internalModelValue: InternalModuleValue;
-    maxDate: Date | string;
-    minDate: Date | string;
-    filters: IDateFilter;
-    yearRange: number[];
-    disabledDates: Date[] | string[] | IDisableDates;
-    autoApply: boolean;
-    monthPicker: boolean;
-    timePicker: boolean;
-    hideOffsetDates: boolean;
     multiCalendars: number;
-    multiCalendarsSolo: boolean;
-    autoRange: number | string;
-    disabledWeekDays: number[] | string[];
-    allowedDates: Date[] | string[];
-    monthChangeOnScroll: boolean | 'inverse';
-    markers: IMarker[];
-    enableSeconds: boolean;
-    monthChangeOnArrows: boolean;
-    multiDates: boolean;
-    minRange: number | string;
-    maxRange: number | string;
-    fixedStart: boolean;
-    fixedEnd: boolean;
-    multiDatesLimit: number | string;
-    weekPicker: boolean;
-    weekStart: WeekStartNum | WeekStartStr;
-} & { [key: string]: unknown };
+    filters: IDateFilter;
+    openOnTop: boolean;
+}
+
+export type MenuProps = MenuPropsWithExtend & { [key: string]: unknown };
 
 export interface UseMonthYearPick {
     months: IDefaultSelect[];
@@ -170,3 +147,10 @@ export interface TimePickerRef {
 export interface TimeInputRef {
     openChildCmp: (child: string) => void;
 }
+
+export interface ICalendarData {
+    month: number;
+    year: number;
+}
+
+export type ComponentRef = Ref<HTMLElement | null>;

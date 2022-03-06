@@ -1,15 +1,7 @@
-import { ref, Ref } from 'vue';
-import { AltPosition, OpenPosition, VueEmit } from '../../interfaces';
+import { ref } from 'vue';
+
+import { AltPosition, ComponentRef, OpenPosition, VueEmit } from '../../interfaces';
 import { unrefElement } from '../../utils/util';
-
-interface IUsePosition {
-    menuPosition: Ref<{ top: string; left: string; transform: string }>;
-    openOnTop: Ref<boolean>;
-    setMenuPosition: (recalculate?: boolean) => void;
-    recalculatePosition: () => void;
-}
-
-type ComponentRef = Ref<HTMLElement | null>;
 
 /**
  * Extracted code from the main component, used for calculating the position of the menu
@@ -21,7 +13,7 @@ export const usePosition = (
     menuRef: ComponentRef,
     inputRef: ComponentRef,
     emit: VueEmit,
-): IUsePosition => {
+) => {
     const menuPosition = ref({ top: '0', left: '0', transform: 'none' });
     const openOnTop = ref(false);
     const diagonal = 10; // arrow square diagonal + 1

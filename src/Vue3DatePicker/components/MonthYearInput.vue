@@ -183,27 +183,17 @@
     import { ChevronLeftIcon, ChevronRightIcon, CalendarIcon } from './Icons';
     import SelectionGrid from './SelectionGrid.vue';
 
-    import { IDateFilter, IDefaultSelect, InternalModuleValue } from '../interfaces';
+    import { IDefaultSelect } from '../interfaces';
     import { useMontYearPick } from './composition/month-year';
     import { useTransitions } from './composition/transition';
+    import { MonthCalendarSharedProps } from '../utils/props';
 
     const emit = defineEmits(['update:month', 'update:year', 'monthYearSelect', 'mount', 'reset-flow']);
     const props = defineProps({
-        months: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
-        years: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
-        year: { type: Number as PropType<number>, default: 0 },
-        month: { type: Number as PropType<number>, default: 0 },
-        filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
-        monthPicker: { type: Boolean as PropType<boolean>, default: false },
-        instance: { type: Number as PropType<number>, default: 1 },
-        customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
-        multiCalendars: { type: Number as PropType<number>, default: 0 },
-        multiCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
+        ...MonthCalendarSharedProps,
         minDate: { type: [Date, String] as PropType<Date | string>, default: null },
         maxDate: { type: [Date, String] as PropType<Date | string>, default: null },
         preventMinMaxNavigation: { type: Boolean as PropType<boolean>, default: false },
-        internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
-        range: { type: Boolean as PropType<boolean>, default: false },
         reverseYears: { type: Boolean as PropType<boolean>, default: false },
     });
 
