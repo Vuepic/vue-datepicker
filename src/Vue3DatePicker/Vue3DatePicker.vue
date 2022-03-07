@@ -36,6 +36,7 @@
                 <slot :name="slot" v-bind="args" />
             </template>
         </DatepickerInput>
+        <span tabindex="-1" ref="focusRef"></span>
         <teleport :to="teleport" :disabled="inline" v-if="isOpen">
             <DatepickerMenu
                 v-if="isOpen"
@@ -148,6 +149,7 @@
     const modelValueMap = toRef(props, 'modelValue');
     const dpMenuRef = ref(null);
     const inputRef = ref(null);
+    const focusRef = ref<HTMLElement | null>(null);
     provide('autoApply', props.autoApply);
     const formatLocaleRef = computed(() => props.formatLocale);
     provide('formatLocale', formatLocaleRef);
@@ -387,6 +389,7 @@
             if (inputRef.value) {
                 (inputRef.value as { unFocus: () => void }).unFocus();
             }
+            setSoftFocus();
         }
     };
 
@@ -405,6 +408,13 @@
     const timeUpdate = (): void => {
         if (props.autoApply && isValidTime(internalModelValue.value, props.maxTime, props.minTime)) {
             emitModelValue();
+        }
+    };
+
+    // When menu is close, allows user interaction via keyboard down the DOM tree, focus the span el after dp
+    const setSoftFocus = (): void => {
+        if (focusRef.value) {
+            focusRef.value.focus({ preventScroll: true });
         }
     };
 
