@@ -7,7 +7,6 @@
   font-size: $dp__font_size;
   user-select: none;
   border: 1px solid var(--dp-menu-border-color);
-  z-index: 99999;
   box-sizing: border-box;
 
   &::after {
@@ -24,13 +23,17 @@
   }
 }
 
+.dp__menu_index {
+  z-index: 99999;
+}
+
 %__dp_menu_readonly_disabled {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 99999;
+  z-index: 1;
 }
 
 .dp__menu_disabled {

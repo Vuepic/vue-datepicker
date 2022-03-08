@@ -397,8 +397,9 @@
     const dpMenuClass = computed(
         (): DynamicClass => ({
             dp__menu: true,
-            [props.menuClassName]: !!props.menuClassName,
+            dp__menu_index: !props.inline,
             dp__relative: props.inline,
+            [props.menuClassName]: !!props.menuClassName,
         }),
     );
 
