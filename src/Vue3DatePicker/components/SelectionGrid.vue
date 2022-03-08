@@ -60,6 +60,7 @@
         minValue: { type: [Number, String] as PropType<number | string>, default: null },
         maxValue: { type: [Number, String] as PropType<number | string>, default: null },
         year: { type: Number as PropType<number>, default: 0 },
+        skipActive: { type: Boolean as PropType<boolean>, default: false },
     });
 
     const scrollable = ref(false);
@@ -112,6 +113,8 @@
                         ? props.multiModelValue?.some((value) =>
                               isDateEqual(value, setYear(setMonth(new Date(), itemVal.value), props.year)),
                           )
+                        : props.skipActive
+                        ? false
                         : itemVal.value === props.modelValue;
 
                     return {

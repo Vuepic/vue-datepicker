@@ -106,6 +106,7 @@
                     maxValue: maxMonth,
                     multiModelValue,
                     year,
+                    skipActive: props.range,
                 }"
                 @update:model-value="onMonthUpdate"
                 @toggle="toggleMonthPicker"
