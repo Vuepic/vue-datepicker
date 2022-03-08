@@ -384,6 +384,9 @@
                 isOpen.value = false;
                 emit('closed');
                 emit('blur');
+                if (inputValue.value) {
+                    parseExternalModelValue(modelValueMap.value);
+                }
             }
             clearInternalValues();
             if (inputRef.value) {
