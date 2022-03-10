@@ -135,7 +135,7 @@ export const getMonthVal = (date: Date): IMonthValue => ({ month: getMonth(date)
 
 export const getMonthValForExternal = (date: Date | Date[]): IMonthValue | IMonthValue[] => {
     if (Array.isArray(date)) {
-        return [getMonthVal(date[0]), getMonthVal(date[1])];
+        return [getMonthVal(date[0]), date[1] ? getMonthVal(date[1]) : (null as unknown as IMonthValue)];
     }
     return getMonthVal(date);
 };
