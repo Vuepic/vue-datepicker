@@ -14,6 +14,7 @@ import {
     isAfter,
     isBefore,
     set,
+    setMilliseconds,
     subMonths,
 } from 'date-fns';
 
@@ -605,9 +606,11 @@ export const useCalendar = (props: MenuProps, emit: VueEmit, updateFlow: () => v
         ) {
             const setTime = (index: number) =>
                 setDateTime((modelValue.value as Date[])[index], hoursCp[index], minutesCp[index], secondsCp[index]);
+
+            const resetMilliseconds = (index: number) => setMilliseconds((modelValue.value as Date[])[index], 0);
             if (
                 isDateEqual(modelValue.value[0], modelValue.value[1]) &&
-                (isAfter(setTime(0), modelValue.value[1]) || isBefore(setTime(1), modelValue.value[0]))
+                (isAfter(setTime(0), resetMilliseconds(1)) || isBefore(setTime(1), resetMilliseconds(0)))
             ) {
                 return;
             }
