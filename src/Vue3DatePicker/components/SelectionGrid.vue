@@ -82,7 +82,7 @@
         const elm = unrefElement(gridWrapRef);
         if (elm) {
             if (!textInput.value) {
-                elm.focus();
+                elm.focus({ preventScroll: true });
             }
             scrollable.value = elm.clientHeight < elm.scrollHeight;
         }
