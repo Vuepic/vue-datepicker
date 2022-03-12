@@ -195,23 +195,29 @@
         emit,
     );
 
-    const { internalModelValue, inputValue, parseExternalModelValue, emitModelValue, checkBeforeEmit } =
-        useExternalInternalMapper(
-            props.format,
-            props.timePicker,
-            props.monthPicker,
-            props.range,
-            props.partialRange,
-            props.is24,
-            props.enableTimePicker,
-            props.enableSeconds,
-            formatLocaleRef,
-            props.multiDates,
-            props.utc,
-            props.weekPicker,
-            props.textInputOptions,
-            emit,
-        );
+    const {
+        internalModelValue,
+        inputValue,
+        parseExternalModelValue,
+        emitModelValue,
+        checkBeforeEmit,
+        formatInputValue,
+    } = useExternalInternalMapper(
+        props.format,
+        props.timePicker,
+        props.monthPicker,
+        props.range,
+        props.partialRange,
+        props.is24,
+        props.enableTimePicker,
+        props.enableSeconds,
+        formatLocaleRef,
+        props.multiDates,
+        props.utc,
+        props.weekPicker,
+        props.textInputOptions,
+        emit,
+    );
 
     const wrapperClass = computed(
         (): DynamicClass => ({
@@ -429,5 +435,6 @@
         clearValue,
         openMenu,
         onScroll,
+        formatInputValue, // exposed for testing purposes
     });
 </script>

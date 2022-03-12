@@ -164,8 +164,7 @@ describe('Logic connection', () => {
         const calendar = menu.findComponent(Calendar);
         calendar.vm.$emit('selectDate', { value: selected, current: true });
         await calendar.vm.$nextTick();
-        dp.vm.selectDate();
-        await dp.vm.$nextTick();
+        await dp.vm.formatInputValue();
 
         expect(dp.vm.inputValue).toEqual(format(selected));
         dp.unmount();
@@ -199,8 +198,7 @@ describe('Logic connection', () => {
         const calendar = menu.findComponent(Calendar);
         calendar.vm.$emit('selectDate', { value: selected, current: true });
         await calendar.vm.$nextTick();
-        dp.vm.selectDate();
-        await dp.vm.$nextTick();
+        await dp.vm.formatInputValue();
 
         expect(dp.vm.inputValue).toEqual('木');
         dp.unmount();
