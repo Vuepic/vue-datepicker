@@ -1,39 +1,14 @@
 {
-    "compilerOptions": {
-        "target": "esnext",
-        "module": "esnext",
-        "strict": true,
-        "jsx": "preserve",
-        "importHelpers": true,
-        "moduleResolution": "node",
-        "skipLibCheck": true,
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "sourceMap": true,
-        "baseUrl": ".",
-        "types": [
-            "webpack-env",
-            "node",
-            "vue",
-            "jest"
-        ],
-        "lib": [
-            "esnext",
-            "dom",
-            "dom.iterable",
-            "scripthost"
-        ]
-    },
-    "include": [
-        "dev/**/*.ts",
-        "dev/**/*.vue",
-        "src/**/*.ts",
-        "src/**/*.vue",
-        "shims-vue.d.ts",
-        "tests/**/*.ts"
-    ],
-    "exclude": [
-        "node_modules",
-        "dist"
+    "files": [],
+    "references": [
+        {
+            "path": "./tsconfig.vite-config.json"
+        },
+        {
+            "path": "./tsconfig.app.json"
+        },
+        {
+            "path": "./tsconfig.vitest.json"
+        }
     ]
 }

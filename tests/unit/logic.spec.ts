@@ -1,17 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { mount, VueWrapper } from '@vue/test-utils';
+import { describe, it, expect } from 'vitest';
+import { setMilliseconds, setSeconds } from 'date-fns';
 import addDays from 'date-fns/addDays';
 import { ja } from 'date-fns/locale';
 
-import Datepicker from '../../src/Vue3DatePicker/Vue3DatePicker.vue';
-import DatepickerMenu from '../../src/Vue3DatePicker/components/DatepickerMenu.vue';
-import Calendar from '../../src/Vue3DatePicker/components/Calendar.vue';
-import TimePicker from '../../src/Vue3DatePicker/components/TimePicker/TimePicker.vue';
-import MonthYearInput from '../../src/Vue3DatePicker/components/MonthYearInput.vue';
-import ActionRow from '../../src/Vue3DatePicker/components/ActionRow.vue';
+import Datepicker from '../../src/VueDatePicker/VueDatePicker.vue';
+import DatepickerMenu from '../../src/VueDatePicker/components/DatepickerMenu.vue';
+import Calendar from '../../src/VueDatePicker/components/Calendar.vue';
+import TimePicker from '../../src/VueDatePicker/components/TimePicker/TimePicker.vue';
+import MonthYearInput from '../../src/VueDatePicker/components/MonthYearInput.vue';
+import ActionRow from '../../src/VueDatePicker/components/ActionRow.vue';
 
-import { setMilliseconds, setSeconds } from 'date-fns';
-import { getWeekFromDate } from '../../src/Vue3DatePicker/utils/date-utils';
+import { getWeekFromDate } from '@/VueDatePicker/utils/date-utils';
 
 const format = (date: Date): string => {
     return `Selected year is ${date.getFullYear()}`;

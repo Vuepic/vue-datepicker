@@ -15,7 +15,7 @@ type EmitEvents =
     | 'flow-step'
     | 'updateMonthYear';
 
-interface Vue3DatePicker {
+interface VueDatePicker {
     uid?: string;
     name?: string;
     is24?: boolean;
@@ -206,7 +206,7 @@ interface PublicMethods extends MethodOptions {
 }
 
 declare const _default: DefineComponent<
-    Vue3DatePicker,
+    VueDatePicker,
     {},
     {},
     ComputedOptions,
@@ -215,7 +215,7 @@ declare const _default: DefineComponent<
     ComponentOptionsMixin,
     EmitEvents[],
     EmitEvents,
-    Vue3DatePicker
+    VueDatePicker
 >;
 
 export default _default;

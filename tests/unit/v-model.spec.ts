@@ -1,9 +1,10 @@
 import { shallowMount } from '@vue/test-utils';
 import addDays from 'date-fns/addDays';
+import { describe, it, expect } from 'vitest';
 
-import Vue3Datepicker from '../../src/Vue3DatePicker/Vue3DatePicker.vue';
+import Vue3Datepicker from '../../src/VueDatePicker/VueDatePicker.vue';
 
-import { resetDateTime } from '../../src/Vue3DatePicker/utils/date-utils';
+import { resetDateTime } from '@/VueDatePicker/utils/date-utils';
 
 describe('v-model mapping', () => {
     it('Should accept null value v-model', () => {

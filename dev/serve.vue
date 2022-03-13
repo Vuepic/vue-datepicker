@@ -6,13 +6,13 @@
 
 <script lang="ts" setup>
     import { ref } from 'vue';
-    import Datepicker from '../src/Vue3DatePicker/Vue3DatePicker.vue';
+    import Datepicker from '../src/VueDatePicker/VueDatePicker.vue';
 
     const selectedDate = ref();
 </script>
 
 <style lang="scss">
-    @import 'src/Vue3DatePicker/style/main';
+    @import 'src/VueDatePicker/style/main';
     .wrapper {
         padding: 200px;
     }

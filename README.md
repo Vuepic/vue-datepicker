@@ -1,14 +1,14 @@
-## vue3-date-time-picker
+## @vuepic/vue-datepicker
 
 
 ### The most complete datepicker solution for Vue 3
 
-[![License](https://img.shields.io/github/license/vuepic/vue3-date-time-picker)](https://github.com/Vuepic/vue3-date-time-picker/blob/master/LICENSE) [![npm](https://img.shields.io/npm/v/vue3-date-time-picker.svg)](https://www.npmjs.com/package/vue3-date-time-picker) ![Downloads](https://img.shields.io/npm/dm/vue3-date-time-picker) [![Open issues](https://img.shields.io/github/issues-raw/vuepic/vue3-date-time-picker)](https://github.com/Vuepic/vue3-date-time-picker/issues) ![CI](https://github.com/Vuepic/vue3-date-time-picker/actions/workflows/node.js.yml/badge.svg) ![Release date](https://img.shields.io/github/release-date/vuepic/vue3-date-time-picker)
+[![License](https://img.shields.io/github/license/vuepic/vue-datepicker)](https://github.com/Vuepic/vue-datepicker/blob/master/LICENSE) [![npm](https://img.shields.io/npm/v/vue-datepicker.svg)](https://www.npmjs.com/package/@vuepic/vue-datepicker) ![Downloads](https://img.shields.io/npm/dm/vue3-date-time-picker) [![Open issues](https://img.shields.io/github/issues-raw/vuepic/vue3-date-time-picker)](https://github.com/Vuepic/vue-datepicker/issues) ![CI](https://github.com/Vuepic/vue-datepicker/actions/workflows/node.js.yml/badge.svg) ![Release date](https://img.shields.io/github/release-date/vuepic/vue-datepicker)
 
 [DOCUMENTATION](https://vue3datepicker.com/)
 
 
-[CodeSandbox Playground](https://codesandbox.io/s/vue3-date-time-picker-demo-5scsr?file=/src/components/Demo.vue)
+[StackBlitz Playground](https://stackblitz.com/edit/vuepic-vue-datepicker?file=src%2Fcomponents%2FPlayground.vue)
 
 ## Features
 
@@ -28,11 +28,11 @@
 ## Install
 
 ```shell
-yarn add vue3-date-time-picker
+yarn add @vuepic/vue-datepicker
 
 # or
 
-npm install vue3-date-time-picker
+npm install @vuepic/vue-datepicker
 ```
 
 Import and register component
@@ -43,8 +43,8 @@ Import and register component
 import { createApp } from 'vue';
 import App from './App.vue';
 
-import Datepicker from 'vue3-date-time-picker';
-import 'vue3-date-time-picker/dist/main.css';
+import Datepicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css';
 
 const app = createApp(App);
 app.component('Datepicker', Datepicker);
@@ -54,8 +54,8 @@ app.component('Datepicker', Datepicker);
 
 ```vue
 <script>
-    import Datepicker from 'vue3-date-time-picker';
-    import 'vue3-date-time-picker/dist/main.css';
+    import Datepicker from '@vuepic/vue-datepicker';
+    import '@vuepic/vue-datepicker/dist/main.css';
     
     export default {
         components: { Datepicker }
@@ -81,4 +81,4 @@ Special thanks to our sponsors 🙏
 
 Copyright © 2021-present [Vuepic](https://github.com/Vuepic)
 
-[MIT](https://github.com/Vuepic/vue3-date-time-picker/blob/master/LICENSE)
+[MIT](https://github.com/Vuepic/vue-datepicker/blob/master/LICENSE)

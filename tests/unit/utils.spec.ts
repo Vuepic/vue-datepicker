@@ -1,16 +1,7 @@
-import {
-    getArrayInArray,
-    getCalendarDays,
-    getDayNames,
-    getMonths,
-    getYears,
-} from '../../src/Vue3DatePicker/utils/util';
-import {
-    getDefaultPattern,
-    parseFreeInput,
-    resetDateTime,
-    setDateTime,
-} from '../../src/Vue3DatePicker/utils/date-utils';
+import { describe, it, expect } from 'vitest';
+
+import { getArrayInArray, getCalendarDays, getDayNames, getMonths, getYears } from '@/VueDatePicker/utils/util';
+import { getDefaultPattern, parseFreeInput, resetDateTime, setDateTime } from '@/VueDatePicker/utils/date-utils';
 
 describe('Utils and date utils formatting', () => {
     it('Should get calendar days', () => {

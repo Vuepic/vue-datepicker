@@ -1,4 +1,4 @@
-# Contributing to vue3-date-time-picker
+# Contributing to @vuepic/vue-datepicker
 
 As an open source project, the best way to support vue3-date-time-picker is to contribute to its development.
 You can start with reporting new issues, improving the docs, or - if you feel confident enough
@@ -8,11 +8,11 @@ to dive into the source code - send a pull request!
 
 ## Found a bug?
 
-If you find a bug in the source code, you can help by [submitting an issue](https://github.com/Vuepic/vue3-date-time-picker/issues/new?assignees=&labels=&template=bug_report.md&title=)
+If you find a bug in the source code, you can help by [submitting an issue](https://github.com/Vuepic/vue-datepicker/issues/new?assignees=&labels=&template=bug_report.md&title=)
 
 ## Missing a feature?
 
-You can *request* a new feature by [submitting a request issue](https://github.com/Vuepic/vue3-date-time-picker/issues/new?assignees=&labels=&template=feature_request.md&title=) to this GitHub
+You can *request* a new feature by [submitting a request issue](https://github.com/Vuepic/vue-datepicker/issues/new?assignees=&labels=&template=feature_request.md&title=) to this GitHub
 Repository. If you would like to *implement* a new feature, please submit an issue with a proposal for your work first,
 so we can discuss what is the best way to implement, as well as to be sure nobody else works on that already.
 
