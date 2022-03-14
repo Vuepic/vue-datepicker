@@ -6,6 +6,7 @@
   "private": false,
   "license": "MIT",
   "homepage": "https://vue3datepicker.com",
+  "types": "index.d.ts",
   "main": "dist/vue-datepicker.umd.js",
   "module": "dist/vue-datepicker.es.js",
   "browser": "dist/vue-datepicker.es.js",
@@ -17,12 +18,6 @@
     "src/**/*",
     "index.d.ts"
   ],
-  "exports": {
-    ".": {
-      "import": "./dist/vue-datepicker.es.js",
-      "require": "./dist/vue-datepicker.umd.js"
-    }
-  },
   "scripts": {
     "dev": "vite",
     "build": "run-s clean build:lib build:css",
@@ -83,7 +78,6 @@
     "type": "git",
     "url": "https://github.com/Vuepic/vue-datepicker.git"
   },
-  "types": "index.d.ts",
   "keywords": [
     "calendar",
     "vue",
