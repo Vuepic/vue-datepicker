@@ -1,6 +1,6 @@
 # Contributing to @vuepic/vue-datepicker
 
-As an open source project, the best way to support vue3-date-time-picker is to contribute to its development.
+As an open source project, the best way to support @vuepic/vue-datepicker is to contribute to its development.
 You can start with reporting new issues, improving the docs, or - if you feel confident enough
 to dive into the source code - send a pull request!
 
