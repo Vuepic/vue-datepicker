@@ -244,14 +244,14 @@
         return props.range && props.internalModelValue && props.monthPicker ? (props.internalModelValue as Date[]) : [];
     });
 
-    const getGroupedList = (items: IDefaultSelect[]): IDefaultSelect[][] => {
+    const getGroupedList = (items: IDefaultSelect[], reverse = false): IDefaultSelect[][] => {
         const list = [];
 
         for (let i = 0; i < items.length; i += 3) {
             const listItems = [items[i], items[i + 1], items[i + 2]];
-            list.push(props.reverseYears ? listItems.reverse() : listItems);
+            list.push(reverse ? listItems.reverse() : listItems);
         }
-        return list;
+        return reverse ? list.reverse() : list;
     };
 
     const getMonthDisplayVal = computed((): IDefaultSelect => {
@@ -265,8 +265,7 @@
     });
 
     const groupedYears = computed((): IDefaultSelect[][] => {
-        const list = getGroupedList(props.years);
-        return props.reverseYears ? list.reverse() : list;
+        return getGroupedList(props.years, props.reverseYears);
     });
 
     const showLeftIcon = computed(() => {
