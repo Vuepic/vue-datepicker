@@ -164,7 +164,7 @@
     };
 
     const handleFocus = (): void => {
-        if (!props.inline) {
+        if (!props.inline && (props.textInput ? props.textInput && props.textInputOptions?.openMenu : true)) {
             isFocused.value = true;
             if (props.openMenuOnFocus && !props.isMenuOpen) {
                 emit('open');
