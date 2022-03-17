@@ -231,7 +231,13 @@ export const useCalendar = (props: MenuProps, emit: VueEmit, updateFlow: () => v
     const handleNextMonthYear = (): void => {
         if (Array.isArray(modelValue.value) && modelValue.value.length === 2) {
             const date = new Date(modelValue.value[1] ? modelValue.value[1] : addMonths(modelValue.value[0], 1));
-            if (getMonth(modelValue.value[0]) !== getMonth(modelValue.value[1]) && props.multiCalendarsSolo) {
+            const [firstMonth, firstYear] = [getMonth(modelValue.value[0]), getYear(modelValue.value[0])];
+            const [secondMonth, secondYear] = [getMonth(modelValue.value[1]), getYear(modelValue.value[1])];
+
+            if (
+                (firstMonth !== secondMonth || (firstMonth === secondMonth && firstYear !== secondYear)) &&
+                props.multiCalendarsSolo
+            ) {
                 setCalendarMonth(1, getMonth(date));
                 setCalendarYear(1, getYear(date));
             }
