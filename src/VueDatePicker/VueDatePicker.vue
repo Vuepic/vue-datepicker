@@ -321,7 +321,7 @@
     const openMenu = (): void => {
         if (!props.disabled && !props.readonly) {
             setMenuPosition();
-            isOpen.value = !isOpen.value;
+            isOpen.value = true;
 
             if (!isOpen.value) {
                 clearInternalValues();
