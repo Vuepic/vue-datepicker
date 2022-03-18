@@ -28,11 +28,6 @@ import type { Locale } from 'date-fns';
 
 import type { IMonthValue, InternalModuleValue, ITimeValue, WeekStartNum } from '../interfaces';
 
-export const sanitizeDate = (date: Date) => {
-    const userTimezoneOffset = date.getTimezoneOffset() * 60000;
-    return new Date(date.getTime() - userTimezoneOffset);
-};
-
 export const parseFreeInput = (value: string, pattern: string): Date | null => {
     const parsedDate = parse(value, pattern.slice(0, value.length), new Date());
     if (isValid(parsedDate) && isDate(parsedDate)) {
@@ -50,8 +45,6 @@ export const resetDateTime = (value: Date | string): Date => {
 
     return dateParse;
 };
-
-export const parseDate = (date: string, pattern: string): Date => parse(date, pattern, new Date());
 
 export const isValidDate = (value: Date | Date[] | null): boolean => {
     if (Array.isArray(value)) {

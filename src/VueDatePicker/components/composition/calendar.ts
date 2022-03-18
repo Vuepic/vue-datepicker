@@ -29,13 +29,13 @@ import type {
     WeekStartNum,
 } from '../../interfaces';
 import {
+    dateToUtc,
     getNextMonthYear,
     getWeekFromDate,
     isDateAfter,
     isDateBefore,
     isDateBetween,
     isDateEqual,
-    sanitizeDate,
     setDateMonthOrYear,
     setDateTime,
 } from '../../utils/date-utils';
@@ -157,15 +157,13 @@ export const useCalendar = (props: MenuProps, emit: VueEmit, updateFlow: () => v
      * Check if date is between max and min date, or if it is included in filters
      */
     const isDisabled = (date: Date): boolean => {
-        const aboveMax = props.maxDate ? isDateAfter(sanitizeDate(date), sanitizeDate(new Date(props.maxDate))) : false;
-        const bellowMin = props.minDate
-            ? isDateBefore(sanitizeDate(date), sanitizeDate(new Date(props.minDate)))
-            : false;
+        const aboveMax = props.maxDate ? isDateAfter(dateToUtc(date), dateToUtc(new Date(props.maxDate))) : false;
+        const bellowMin = props.minDate ? isDateBefore(dateToUtc(date), dateToUtc(new Date(props.minDate))) : false;
         const inDisableArr =
             typeof props.disabledDates === 'function'
                 ? props.disabledDates(date)
                 : props.disabledDates.some((disabledDate: Date | string) =>
-                      isDateEqual(sanitizeDate(new Date(disabledDate)), sanitizeDate(date)),
+                      isDateEqual(dateToUtc(new Date(disabledDate)), dateToUtc(date)),
                   );
         const disabledMonths = props.filters.months.length ? props.filters.months.map((month) => +month) : [];
         const inDisabledMonths = disabledMonths.includes(getMonth(date));
@@ -173,7 +171,7 @@ export const useCalendar = (props: MenuProps, emit: VueEmit, updateFlow: () => v
             ? props.disabledWeekDays.some((day) => +day === getDay(date))
             : false;
         const notInSpecific = props.allowedDates.length
-            ? !props.allowedDates.some((dateVal) => isDateEqual(sanitizeDate(new Date(dateVal)), sanitizeDate(date)))
+            ? !props.allowedDates.some((dateVal) => isDateEqual(dateToUtc(new Date(dateVal)), dateToUtc(date)))
             : false;
 
         const dateYear = getYear(date);
@@ -738,9 +736,7 @@ export const useCalendar = (props: MenuProps, emit: VueEmit, updateFlow: () => v
     };
 
     const getMarker = (date: UnwrapRef<ICalendarDay>): IMarker | undefined =>
-        props.markers.find((marker) =>
-            isDateEqual(sanitizeDate(new Date(date.value)), sanitizeDate(new Date(marker.date))),
-        );
+        props.markers.find((marker) => isDateEqual(dateToUtc(new Date(date.value)), dateToUtc(new Date(marker.date))));
 
     const selectCurrentDate = (): void => {
         if (!props.range) {
