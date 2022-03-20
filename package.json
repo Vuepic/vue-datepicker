@@ -1,6 +1,6 @@
 {
   "name": "@vuepic/vue-datepicker",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Datepicker component for Vue 3",
   "author": "Vuepic",
   "private": false,
@@ -28,6 +28,7 @@
     "build:browser": "cross-env NODE_ENV=production vite -f iife build --mode production",
     "build:css": "cross-env NODE_ENV=production node_modules/.bin/sass src/VueDatePicker/style/main.scss dist/main.css --style compressed",
     "test": "cross-env NODE_ENV=test vitest --environment jsdom",
+    "test:coverage": "cross-env NODE_ENV=test vitest --environment jsdom run --coverage",
     "lint": "run-s lint:style lint:lib",
     "lint:style": "stylelint --fix \"src/**/*.scss\"",
     "lint:lib": "eslint --fix \"src/**\" --ignore-pattern \"src/**/*.scss\""
@@ -43,6 +44,7 @@
     "@vue/eslint-config-typescript": "^10.0.0",
     "@vue/test-utils": "^2.0.0-rc.18",
     "@vue/tsconfig": "^0.1.3",
+    "c8": "^7.11.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.11.0",
     "eslint-config-prettier": "^8.5.0",

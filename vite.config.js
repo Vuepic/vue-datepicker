@@ -20,6 +20,13 @@ export default defineConfig({
     esbuild: {
         minify: true,
     },
+    test: {
+        coverage: {
+            excludeNodeModules: true,
+            reporter: 'json',
+            reportsDirectory: './coverage',
+        },
+    },
     build: {
         minify: 'terser',
         emptyOutDir: false,
