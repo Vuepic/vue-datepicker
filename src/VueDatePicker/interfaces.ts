@@ -154,3 +154,5 @@ export interface ICalendarData {
 }
 
 export type ComponentRef = Ref<HTMLElement | null>;
+
+export type TimeOverlayCheck = 'noHoursOverlay' | 'noMinutesOverlay' | 'noSecondsOverlay';

@@ -35,7 +35,8 @@
                                 :hours="tInput.hours"
                                 :minutes="tInput.minutes"
                                 :seconds="tInput.seconds"
-                                v-bind="timeInputProps"
+                                :filters="filters"
+                                v-bind="passTimeInputProps($props)"
                                 @update:hours="updateHours(getEvent($event, index, 'hours'))"
                                 @update:minutes="updateMinutes(getEvent($event, index, 'minutes'))"
                                 @update:seconds="updateSeconds(getEvent($event, index, 'seconds'))"
@@ -74,30 +75,19 @@
     import type { IDateFilter, TimeInputRef } from '../../interfaces';
     import { mapSlots } from '../composition/slots';
     import { useTransitions } from '../composition/transition';
+    import { TimePickerProps, passTimeInputProps } from '../../utils/props';
 
     const emit = defineEmits(['update:hours', 'update:minutes', 'update:seconds', 'mount', 'reset-flow']);
 
     const props = defineProps({
-        hoursIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
-        minutesIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
-        secondsIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
-        is24: { type: Boolean as PropType<boolean>, default: true },
-        hoursGridIncrement: { type: [String, Number] as PropType<string | number>, default: 1 },
-        minutesGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 },
-        secondsGridIncrement: { type: [String, Number] as PropType<string | number>, default: 5 },
+        ...TimePickerProps,
         range: { type: Boolean as PropType<boolean>, default: false },
         filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
         timePicker: { type: Boolean as PropType<boolean>, default: false },
         hours: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         minutes: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         seconds: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
-        noHoursOverlay: { type: Boolean as PropType<boolean>, default: false },
-        noMinutesOverlay: { type: Boolean as PropType<boolean>, default: false },
-        noSecondsOverlay: { type: Boolean as PropType<boolean>, default: false },
         customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
-        enableSeconds: { type: Boolean as PropType<boolean>, default: false },
-        fixedStart: { type: Boolean as PropType<boolean>, default: false },
-        fixedEnd: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();
     const autoApply = inject('autoApply', false);
@@ -150,21 +140,6 @@
     }));
 
     const timeInputSlots = mapSlots(slots, 'timePicker');
-
-    const timeInputProps = computed(() => ({
-        is24: props.is24,
-        hoursGridIncrement: props.hoursGridIncrement,
-        minutesGridIncrement: props.minutesGridIncrement,
-        secondsGridIncrement: props.secondsGridIncrement,
-        hoursIncrement: props.hoursIncrement,
-        minutesIncrement: props.minutesIncrement,
-        secondsIncrement: props.secondsIncrement,
-        filters: props.filters,
-        noHoursOverlay: props.noHoursOverlay,
-        noMinutesOverlay: props.noMinutesOverlay,
-        noSecondsOverlay: props.noSecondsOverlay,
-        enableSeconds: props.enableSeconds,
-    }));
 
     const getEvent = (event: number, index: number, property: 'hours' | 'minutes' | 'seconds') => {
         if (!props.range) {
