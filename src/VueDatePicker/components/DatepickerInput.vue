@@ -59,10 +59,11 @@
 <script lang="ts" setup>
     import { computed, ref, useSlots } from 'vue';
     import type { PropType } from 'vue';
-    import type { DynamicClass, ITextInputOptions } from '../interfaces';
+    import type { DynamicClass } from '../interfaces';
     import { CalendarIcon, CancelIcon } from './Icons';
     import { isValidDate, parseFreeInput } from '../utils/date-utils';
     import { unrefElement } from '../utils/util';
+    import { ControlProps, InputProps, SharedProps } from '../utils/props';
 
     const emit = defineEmits([
         'clear',
@@ -75,27 +76,13 @@
     ]);
 
     const props = defineProps({
-        name: { type: String as PropType<string>, default: null },
+        ...InputProps,
+        ...ControlProps,
+        ...SharedProps,
         inputValue: { type: String as PropType<string>, default: '' },
-        placeholder: { type: String as PropType<string>, default: '' },
-        hideInputIcon: { type: Boolean as PropType<boolean>, default: false },
-        disabled: { type: Boolean as PropType<boolean>, default: true },
-        readonly: { type: Boolean as PropType<boolean>, default: true },
-        clearable: { type: Boolean as PropType<boolean>, default: true },
-        range: { type: Boolean as PropType<boolean>, default: false },
-        state: { type: Boolean as PropType<boolean>, default: null },
-        inputClassName: { type: String as PropType<string>, default: null },
         inline: { type: Boolean as PropType<boolean>, default: false },
-        inlineWithInput: { type: Boolean as PropType<boolean>, default: false },
-        textInput: { type: Boolean as PropType<boolean>, default: false },
-        textInputOptions: { type: Object as PropType<ITextInputOptions>, default: () => null },
         isMenuOpen: { type: Boolean as PropType<boolean>, default: false },
-        autoApply: { type: Boolean as PropType<boolean>, default: false },
         pattern: { type: String as PropType<string>, default: '' },
-        uid: { type: String as PropType<string>, default: null },
-        openMenuOnFocus: { type: Boolean as PropType<boolean>, default: true },
-        required: { type: Boolean as PropType<boolean>, default: false },
-        autocomplete: { type: String as PropType<string>, default: 'off' },
     });
     const parsedDate = ref();
     const inputRef = ref(null);

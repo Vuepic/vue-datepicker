@@ -44,12 +44,80 @@
                 :class="theme"
                 :style="menuPosition"
                 v-bind="{
-                    ...passCommonProps($props),
+                    weekNumbers,
+                    weekStart,
+                    disableMonthYearSelect,
+                    menuClassName,
+                    calendarClassName,
+                    yearRange,
+                    range,
                     multiCalendars: multiCalendarDefault,
+                    multiCalendarsSolo,
+                    calendarCellClassName,
+                    enableTimePicker,
+                    is24,
+                    hoursIncrement,
+                    minutesIncrement,
+                    hoursGridIncrement,
+                    minutesGridIncrement,
+                    minDate,
+                    maxDate,
+                    autoApply,
+                    selectText,
+                    cancelText,
                     previewFormat: previewFormatDefault,
+                    locale,
+                    weekNumName,
+                    disabledDates,
                     filters: defaultFilters,
+                    minTime,
+                    maxTime,
+                    inline,
                     openOnTop,
+                    monthPicker,
+                    timePicker,
+                    monthNameFormat,
+                    startDate,
                     startTime: defaultStartTime,
+                    monthYearComponent,
+                    timePickerComponent,
+                    actionRowComponent,
+                    customProps,
+                    hideOffsetDates,
+                    autoRange,
+                    noToday,
+                    noHoursOverlay,
+                    noMinutesOverlay,
+                    disabledWeekDays,
+                    allowedDates,
+                    showNowButton,
+                    nowButtonLabel,
+                    monthChangeOnScroll,
+                    markers,
+                    uid,
+                    modeHeight,
+                    enableSeconds,
+                    secondsIncrement,
+                    secondsGridIncrement,
+                    noSecondsOverlay,
+                    escClose,
+                    spaceConfirm,
+                    monthChangeOnArrows,
+                    textInput,
+                    disabled,
+                    readonly,
+                    multiDates,
+                    presetRanges,
+                    flow,
+                    preventMinMaxNavigation,
+                    minRange,
+                    maxRange,
+                    fixedStart,
+                    fixedEnd,
+                    multiDatesLimit,
+                    reverseYears,
+                    keepActionRow,
+                    weekPicker,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @close-picker="closeMenu"
@@ -70,24 +138,12 @@
 
 <script lang="ts" setup>
     import { computed, onMounted, onUnmounted, provide, ref, toRef, useSlots, watch } from 'vue';
-    import type { PropType } from 'vue';
     import { getHours, getMinutes, getSeconds } from 'date-fns';
-    import type { Locale } from 'date-fns';
 
     import DatepickerInput from './components/DatepickerInput.vue';
     import DatepickerMenu from './components/DatepickerMenu.vue';
 
-    import type {
-        IDateFilter,
-        OpenPosition,
-        DynamicClass,
-        IFormat,
-        ITextInputOptions,
-        ModelValue,
-        ITimeValue,
-        ITransition,
-        AltPosition,
-    } from './interfaces';
+    import type { DynamicClass, ITextInputOptions, ITimeValue, ITransition } from './interfaces';
     import { getDefaultPattern, isValidTime } from './utils/date-utils';
     import { getDefaultTextInputOptions, getDefaultFilters, mergeDefaultTransitions } from './utils/util';
     import { usePosition } from './components/composition/position';
@@ -95,7 +151,7 @@
     import { isString } from './utils/type-guard';
     import { mapSlots } from './components/composition/slots';
     import { onClickOutside } from './directives/clickOutside';
-    import { CommonProps, passCommonProps } from './utils/props';
+    import { AllProps } from './utils/props';
 
     const emit = defineEmits([
         'update:modelValue',
@@ -111,40 +167,7 @@
         'updateMonthYear',
     ]);
     const props = defineProps({
-        ...CommonProps,
-        name: { type: String as PropType<string>, default: null },
-        multiCalendars: { type: [Boolean, Number, String] as PropType<boolean | number | string>, default: null },
-        modelValue: { type: [String, Date, Array, Object] as PropType<ModelValue>, default: null },
-        position: { type: String as PropType<OpenPosition>, default: 'center' },
-        placeholder: { type: String as PropType<string>, default: null },
-        dark: { type: Boolean as PropType<boolean>, default: false },
-        required: { type: Boolean as PropType<boolean>, default: false },
-        format: {
-            type: [String, Function] as PropType<IFormat>,
-            default: () => null,
-        },
-        previewFormat: {
-            type: [String, Function] as PropType<IFormat>,
-            default: () => null,
-        },
-        inputClassName: { type: String as PropType<string>, default: null },
-        hideInputIcon: { type: Boolean as PropType<boolean>, default: false },
-        state: { type: Boolean as PropType<boolean>, default: null },
-        clearable: { type: Boolean as PropType<boolean>, default: true },
-        closeOnScroll: { type: Boolean as PropType<boolean>, default: false },
-        filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
-        inlineWithInput: { type: Boolean as PropType<boolean>, default: false },
-        autoPosition: { type: Boolean as PropType<boolean>, default: true },
-        closeOnAutoApply: { type: Boolean as PropType<boolean>, default: true },
-        textInputOptions: { type: Object as PropType<ITextInputOptions>, default: () => ({}) },
-        teleport: { type: String as PropType<string>, default: 'body' },
-        altPosition: { type: [Boolean, Function] as PropType<AltPosition>, default: false },
-        partialRange: { type: Boolean as PropType<boolean>, default: true },
-        transitions: { type: Boolean as PropType<boolean | ITransition>, default: true },
-        openMenuOnFocus: { type: Boolean as PropType<boolean>, default: true },
-        formatLocale: { type: Object as PropType<Locale>, default: null },
-        autocomplete: { type: String as PropType<string>, default: null },
-        utc: { type: Boolean as PropType<boolean>, default: false },
+        ...AllProps,
     });
     const slots = useSlots();
     const isOpen = ref(false);
@@ -158,7 +181,6 @@
     provide('textInput', toRef(props, 'textInput'));
 
     onMounted(() => {
-        // store.setTimezone(props.timezone);
         parseExternalModelValue(props.modelValue);
         if (!props.inline) {
             window.addEventListener('scroll', onScroll);

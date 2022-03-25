@@ -118,7 +118,7 @@ export const useExternalInternalMapper = (
                     internalModelValue.value,
                     pattern,
                     formatLocale?.value,
-                    textInputOptions.rangeSeparator,
+                    textInputOptions?.rangeSeparator,
                 );
             }
         } else if (timePicker) {

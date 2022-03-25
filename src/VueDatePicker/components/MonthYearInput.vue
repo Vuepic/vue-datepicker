@@ -188,13 +188,12 @@
     import type { IDefaultSelect } from '../interfaces';
     import { useMontYearPick } from './composition/month-year';
     import { useTransitions } from './composition/transition';
-    import { MonthCalendarSharedProps } from '../utils/props';
+    import { DateValidationProps, MonthCalendarSharedProps } from '../utils/props';
 
     const emit = defineEmits(['update:month', 'update:year', 'monthYearSelect', 'mount', 'reset-flow']);
     const props = defineProps({
         ...MonthCalendarSharedProps,
-        minDate: { type: [Date, String] as PropType<Date | string>, default: null },
-        maxDate: { type: [Date, String] as PropType<Date | string>, default: null },
+        ...DateValidationProps,
         preventMinMaxNavigation: { type: Boolean as PropType<boolean>, default: false },
         reverseYears: { type: Boolean as PropType<boolean>, default: false },
     });

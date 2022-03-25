@@ -181,9 +181,7 @@
     import type {
         DynamicClass,
         ICalendarDate,
-        IDateFilter,
         IDefaultSelect,
-        IFormat,
         InternalModuleValue,
         MenuChildCmp,
         MonthYearInputRef,
@@ -194,7 +192,7 @@
     import { getCalendarDays, getMonths, getYears, unrefElement } from '../utils/util';
     import { useCalendar } from './composition/calendar';
     import { isDateEqual } from '../utils/date-utils';
-    import { CommonProps } from '../utils/props';
+    import { ControlProps, MenuProps, SharedProps } from '../utils/props';
 
     const emit = defineEmits([
         'update:internalModelValue',
@@ -207,14 +205,11 @@
         'updateMonthYear',
     ]);
     const props = defineProps({
-        ...CommonProps,
+        ...MenuProps,
+        ...SharedProps,
+        ...ControlProps,
         internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
         multiCalendars: { type: Number as PropType<number>, default: 0 },
-        previewFormat: {
-            type: [String, Function] as PropType<IFormat>,
-            default: () => null,
-        },
-        filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
         openOnTop: { type: Boolean as PropType<boolean>, default: false },
     });
     const slots = useSlots();

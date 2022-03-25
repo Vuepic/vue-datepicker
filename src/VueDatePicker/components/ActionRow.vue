@@ -32,35 +32,31 @@
     import { computed, inject } from 'vue';
     import type { PropType, ComputedRef } from 'vue';
     import type { Locale } from 'date-fns';
-    import type { IFormat, InternalModuleValue, ITimeValue } from '../interfaces';
     import { formatDate, getMonthVal, getTImeForExternal, isMonthWithinRange, isValidTime } from '../utils/date-utils';
     import { isModelValueRange } from '../utils/type-guard';
+    import {
+        ActionRowProps,
+        DateValidationProps,
+        MenuNestedDownProps,
+        NestedInternalSharedProps,
+        TimeValidationProps,
+    } from '@/VueDatePicker/utils/props';
 
     const emit = defineEmits(['closePicker', 'selectDate']);
 
     const props = defineProps({
-        selectText: { type: String as PropType<string>, default: 'Select' },
-        cancelText: { type: String as PropType<string>, default: 'Cancel' },
-        internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
-        range: { type: Boolean as PropType<boolean>, default: false },
-        previewFormat: {
-            type: [String, Function] as PropType<IFormat>,
-            default: () => '',
-        },
+        ...ActionRowProps,
+        ...DateValidationProps,
+        ...TimeValidationProps,
+        ...MenuNestedDownProps,
+        ...NestedInternalSharedProps,
         inline: { type: Boolean as PropType<boolean>, default: false },
-        monthPicker: { type: Boolean as PropType<boolean>, default: false },
         timePicker: { type: Boolean as PropType<boolean>, default: false },
-        multiCalendars: { type: Number as PropType<number>, default: 0 },
         calendarWidth: { type: Number as PropType<number>, default: 0 },
         menuMount: { type: Boolean as PropType<boolean>, default: false },
-        customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
-        minTime: { type: Object as PropType<ITimeValue>, default: null },
-        maxTime: { type: Object as PropType<ITimeValue>, default: null },
         enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
-        minDate: { type: [Date, String] as PropType<Date | string>, default: null },
-        maxDate: { type: [Date, String] as PropType<Date | string>, default: null },
-        multiDates: { type: Boolean as PropType<boolean>, default: false },
     });
+
     const formatLocale = inject<ComputedRef<Locale>>('formatLocale');
     const selectClass = computed(() => ({
         dp__action: true,

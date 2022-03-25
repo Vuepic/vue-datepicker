@@ -96,26 +96,20 @@
 
 <script lang="ts" setup>
     import { computed, inject, nextTick, onMounted, ref, toRef, watch } from 'vue';
-    import type { PropType, UnwrapRef, DefineComponent, ComputedRef } from 'vue';
+    import type { PropType, UnwrapRef, ComputedRef } from 'vue';
 
     import type { DynamicClass, ICalendarDate, ICalendarDay, IMarker, ITransition } from '../interfaces';
     import { getDayNames, getDefaultMarker, unrefElement } from '../utils/util';
     import { isDateAfter, isDateEqual, setDateMonthOrYear } from '../utils/date-utils';
-    import { MonthCalendarSharedProps } from '../utils/props';
+    import { CalendarProps, MonthCalendarSharedProps } from '../utils/props';
 
     const emit = defineEmits(['selectDate', 'setHoverDate', 'handleScroll', 'mount']);
 
     const props = defineProps({
         ...MonthCalendarSharedProps,
-        locale: { type: String as PropType<string>, default: 'en-Us' },
-        weekNumName: { type: String as PropType<string>, default: 'W' },
-        weekStart: { type: [Number, String] as PropType<number | string>, default: 1 },
-        weekNumbers: { type: Boolean as PropType<boolean>, default: false },
+        ...CalendarProps,
         mappedDates: { type: Array as PropType<ICalendarDate[]>, default: () => [] },
-        monthYearComponent: { type: Object as PropType<DefineComponent>, default: null },
-        calendarClassName: { type: String as PropType<string>, default: null },
         timePicker: { type: Boolean as PropType<boolean>, default: false },
-        disableMonthYearSelect: { type: Boolean as PropType<boolean>, default: false },
         getWeekNum: {
             type: Function as PropType<(dates: UnwrapRef<ICalendarDay[]>) => string | number>,
             default: () => '',

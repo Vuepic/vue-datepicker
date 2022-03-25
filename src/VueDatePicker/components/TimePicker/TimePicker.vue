@@ -36,7 +36,20 @@
                                 :minutes="tInput.minutes"
                                 :seconds="tInput.seconds"
                                 :filters="filters"
-                                v-bind="passTimeInputProps($props)"
+                                v-bind="{
+                                    is24,
+                                    hoursGridIncrement,
+                                    minutesGridIncrement,
+                                    secondsGridIncrement,
+                                    hoursIncrement,
+                                    minutesIncrement,
+                                    secondsIncrement,
+                                    filters,
+                                    noHoursOverlay,
+                                    noMinutesOverlay,
+                                    noSecondsOverlay,
+                                    enableSeconds,
+                                }"
                                 @update:hours="updateHours(getEvent($event, index, 'hours'))"
                                 @update:minutes="updateMinutes(getEvent($event, index, 'minutes'))"
                                 @update:seconds="updateSeconds(getEvent($event, index, 'seconds'))"
@@ -75,7 +88,7 @@
     import type { IDateFilter, TimeInputRef } from '../../interfaces';
     import { mapSlots } from '../composition/slots';
     import { useTransitions } from '../composition/transition';
-    import { TimePickerProps, passTimeInputProps } from '../../utils/props';
+    import { TimePickerProps } from '../../utils/props';
 
     const emit = defineEmits(['update:hours', 'update:minutes', 'update:seconds', 'mount', 'reset-flow']);
 
@@ -83,7 +96,6 @@
         ...TimePickerProps,
         range: { type: Boolean as PropType<boolean>, default: false },
         filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
-        timePicker: { type: Boolean as PropType<boolean>, default: false },
         hours: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         minutes: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         seconds: { type: [Number, Array] as PropType<number | number[]>, default: 0 },

@@ -1,5 +1,5 @@
 import type { ComponentPublicInstance, ExtractPropTypes, Ref } from 'vue';
-import type { CommonProps } from './utils/props';
+import type { MenuProps } from './utils/props';
 
 export type DynamicClass = Record<string, boolean>;
 
@@ -75,7 +75,7 @@ export type ModelValue =
 export type WeekStartNum = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 export type WeekStartStr = '0' | '1' | '2' | '3' | '4' | '5' | '6';
 
-export interface MenuPropsWithExtend extends ExtractPropTypes<typeof CommonProps> {
+export interface MenuPropsWithExtend extends ExtractPropTypes<typeof MenuProps> {
     internalModelValue: InternalModuleValue;
     multiCalendars: number;
     filters: IDateFilter;
