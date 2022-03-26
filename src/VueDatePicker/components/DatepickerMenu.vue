@@ -30,7 +30,7 @@
                 <div :class="menuCalendarClassWrapper">
                     <div v-for="(instance, i) in calendarAmm" :key="instance" :class="calendarInstanceClassWrapper">
                         <component
-                            :is="monthYearComponent ? monthYearComponent : MonthYearInput"
+                            :is="monthYearComponent ? monthYearComponent : MonthYearPicker"
                             :ref="
                                 (el) => {
                                     if (el) monthYearInputRefs[i] = el;
@@ -176,7 +176,7 @@
     import Calendar from './Calendar.vue';
     import ActionRow from './ActionRow.vue';
     import TimePickerCmp from './TimePicker/TimePicker.vue';
-    import MonthYearInput from './MonthYearInput.vue';
+    import MonthYearPicker from './MonthYearPicker/MonthYearPicker.vue';
 
     import type {
         DynamicClass,
