@@ -72,7 +72,6 @@
                             :mapped-dates="mappedDates(instance)"
                             :month="month(instance)"
                             :year="year(instance)"
-                            :month-year-component="monthYearComponent"
                             @select-date="selectDate($event, !isFirstInstance(instance))"
                             @set-hover-date="setHoverDate($event)"
                             @handle-scroll="handleScroll($event, instance)"
@@ -368,24 +367,11 @@
         weekNumName: props.weekNumName,
         weekStart: props.weekStart,
         weekNumbers: props.weekNumbers,
-        enableTimePicker: props.enableTimePicker,
-        disableMonthYearSelect: props.disableMonthYearSelect,
-        monthPicker: props.monthPicker,
-        timePicker: props.timePicker,
-        range: props.range,
-        filters: props.filters,
-        minTime: props.minTime,
-        maxTime: props.maxTime,
-        minDate: props.minDate,
-        maxDate: props.maxDate,
         customProps: props.customProps,
         calendarClassName: props.calendarClassName,
         specificMode: specificMode.value,
         getWeekNum,
         multiCalendars: props.multiCalendars,
-        months: months.value,
-        years: years.value,
-        multiCalendarsSolo: props.multiCalendarsSolo,
         modeHeight: props.modeHeight,
         internalModelValue: props.internalModelValue,
     }));

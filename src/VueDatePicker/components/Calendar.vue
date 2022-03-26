@@ -109,12 +109,13 @@
         ...MonthCalendarSharedProps,
         ...CalendarProps,
         mappedDates: { type: Array as PropType<ICalendarDate[]>, default: () => [] },
-        timePicker: { type: Boolean as PropType<boolean>, default: false },
+        // timePicker: { type: Boolean as PropType<boolean>, default: false },
         getWeekNum: {
             type: Function as PropType<(dates: UnwrapRef<ICalendarDay[]>) => string | number>,
             default: () => '',
         },
         modeHeight: { type: [Number, String] as PropType<number | string>, default: 255 },
+        specificMode: { type: Boolean as PropType<boolean>, default: false },
     });
 
     const showMakerTooltip = ref<Date | null>(null);
@@ -139,8 +140,6 @@
         prevDate.value = setDateMonthOrYear(new Date(), props.month, props.year);
         emit('mount');
     });
-
-    const specificMode = computed(() => props.monthPicker || props.timePicker);
 
     watch([monthProp, yearProp], () => {
         if (transitions?.value) {
@@ -184,7 +183,7 @@
         dp__calendar_next: props.multiCalendars > 0 && props.instance !== 0,
     }));
 
-    const contentWrapStyle = computed(() => (specificMode.value ? { height: `${props.modeHeight}px` } : null));
+    const contentWrapStyle = computed(() => (props.specificMode ? { height: `${props.modeHeight}px` } : null));
 
     const onMouseOver = (day: UnwrapRef<ICalendarDay>, refIndex: number): void => {
         emit('setHoverDate', day);

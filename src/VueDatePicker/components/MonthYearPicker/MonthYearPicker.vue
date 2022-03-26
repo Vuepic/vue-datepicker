@@ -121,7 +121,7 @@
     import RegularPicker from './RegularPicker.vue';
     import SelectionGrid from '../SelectionGrid.vue';
 
-    import type { IDefaultSelect } from '../../interfaces';
+    import type { IDefaultSelect, IDateFilter } from '../../interfaces';
     import { useMontYearPick } from '../composition/month-year';
     import { useTransitions } from '../composition/transition';
     import { DateValidationProps, MonthCalendarSharedProps } from '../../utils/props';
@@ -132,6 +132,10 @@
         ...DateValidationProps,
         preventMinMaxNavigation: { type: Boolean as PropType<boolean>, default: false },
         reverseYears: { type: Boolean as PropType<boolean>, default: false },
+        years: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
+        months: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
+        filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
+        multiCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
     });
 
     const { transitionName, showTransition } = useTransitions();

@@ -2,7 +2,6 @@ import type { DefineComponent, PropType } from 'vue';
 import type {
     Flow,
     IDateFilter,
-    IDefaultSelect,
     IDisableDates,
     IMarker,
     InternalModuleValue,
@@ -176,15 +175,11 @@ export const NestedInternalSharedProps = {
     internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
 };
 
-// Shared props between MonthYearInput and Calendar components
+// Shared props between MonthYearPicker and Calendar components
 export const MonthCalendarSharedProps = {
     ...MenuNestedDownProps,
     ...NestedInternalSharedProps,
-    years: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
-    months: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
     month: { type: Number as PropType<number>, default: 0 },
     year: { type: Number as PropType<number>, default: 0 },
-    filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
     instance: { type: Number as PropType<number>, default: 1 },
-    multiCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
 };
