@@ -2,6 +2,7 @@
     <div :class="calendarParentClass">
         <div :style="contentWrapStyle">
             <div
+                ref="calendarWrapRef"
                 v-if="!specificMode"
                 :class="calendarWrapClass"
                 role="grid"
@@ -43,7 +44,7 @@
                                 "
                                 :aria-disabled="dayVal.classData.dp__cell_disabled"
                                 tabindex="0"
-                                @click="$emit('selectDate', dayVal)"
+                                @click.stop.prevent="$emit('selectDate', dayVal)"
                                 @keydown.enter="$emit('selectDate', dayVal)"
                                 @mouseover="onMouseOver(dayVal, dayInd + weekInd)"
                                 @mouseleave="onMouseLeave"
@@ -103,7 +104,7 @@
     import { isDateAfter, isDateEqual, resetDateTime, setDateMonthOrYear } from '../utils/date-utils';
     import { CalendarProps, MonthCalendarSharedProps } from '../utils/props';
 
-    const emit = defineEmits(['selectDate', 'setHoverDate', 'handleScroll', 'mount']);
+    const emit = defineEmits(['selectDate', 'setHoverDate', 'handleScroll', 'mount', 'handleSwipe']);
 
     const props = defineProps({
         ...MonthCalendarSharedProps,
@@ -120,15 +121,23 @@
     const showMakerTooltip = ref<Date | null>(null);
     const markerTooltipStyle = ref({ bottom: '', left: '', transform: '' });
     const dayRefs = ref([]);
+    const calendarWrapRef = ref<HTMLElement | null>(null);
     const showCalendar = ref(true);
     const transitions = inject<ComputedRef<ITransition>>('transitions');
     const transitionName = ref('');
+    const touch = ref({ startX: 0, endX: 0, startY: 0, endY: 0 });
     const weekDays = computed(() => {
         return getDayNames(props.locale, +props.weekStart);
     });
 
     onMounted(() => {
         emit('mount');
+        if (!props.noSwipe) {
+            if (calendarWrapRef.value) {
+                calendarWrapRef.value.addEventListener('touchstart', onTouchStart);
+                calendarWrapRef.value.addEventListener('touchend', onTouchEnd);
+            }
+        }
     });
 
     const triggerTransition = (month: number, year: number): void => {
@@ -188,6 +197,23 @@
 
     const onMouseLeave = (): void => {
         showMakerTooltip.value = null;
+    };
+
+    const onTouchStart = (ev: TouchEvent): void => {
+        touch.value.startX = ev.changedTouches[0].screenX;
+        touch.value.startY = ev.changedTouches[0].screenY;
+    };
+
+    const onTouchEnd = (ev: TouchEvent): void => {
+        touch.value.endX = ev.changedTouches[0].screenX;
+        touch.value.endY = ev.changedTouches[0].screenY;
+        handleTouch();
+    };
+
+    const handleTouch = () => {
+        if (touch.value.startX !== touch.value.endX) {
+            emit('handleSwipe', touch.value.startX > touch.value.endX ? 'right' : 'left');
+        }
     };
 
     defineExpose({ triggerTransition });

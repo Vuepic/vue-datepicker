@@ -195,6 +195,7 @@ interface VueDatePicker {
     reverseYears?: boolean;
     keepActionRow?: boolean;
     weekPicker?: boolean;
+    noSwipe?: boolean;
 }
 
 interface PublicMethods extends MethodOptions {

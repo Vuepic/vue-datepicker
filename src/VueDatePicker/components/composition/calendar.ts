@@ -737,7 +737,7 @@ export const useCalendar = (
         }
     };
 
-    const handleArrow = (arrow: 'left' | 'right', instance: number): void => {
+    const handleSwipeOrArrow = (arrow: 'left' | 'right', instance: number): void => {
         if (props.monthChangeOnArrows) {
             autoChangeMonth(arrow === 'right' ? -1 : 1, instance);
             triggerCalendarTransition(instance);
@@ -800,7 +800,7 @@ export const useCalendar = (
         rangeActiveStartEnd,
         handleScroll,
         getMarker,
-        handleArrow,
+        handleSwipeOrArrow,
         selectCurrentDate,
         isHoverDate,
         isHoverDateStartEnd,

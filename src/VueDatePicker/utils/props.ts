@@ -95,6 +95,7 @@ export const CalendarProps = {
     weekStart: { type: [Number, String] as PropType<WeekStartNum | WeekStartStr>, default: 1 },
     weekNumbers: { type: Boolean as PropType<boolean>, default: false },
     calendarClassName: { type: String as PropType<string>, default: null },
+    noSwipe: { type: Boolean as PropType<boolean>, default: false },
 };
 
 export const MenuProps = {

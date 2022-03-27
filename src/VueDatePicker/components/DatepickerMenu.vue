@@ -11,8 +11,8 @@
             @click="handleDpMenuClick"
             @keydown.esc="handleEsc"
             @keydown.space="handleSpace"
-            @keydown.left="handleArrow('left', 0)"
-            @keydown.right="handleArrow('right', 0)"
+            @keydown.left="handleSwipeOrArrow('left', 0)"
+            @keydown.right="handleSwipeOrArrow('right', 0)"
         >
             <div :class="disabledReadonlyOverlay" v-if="(disabled || readonly) && inline"></div>
             <div :class="arrowClass" v-if="!inline"></div>
@@ -81,6 +81,7 @@
                                 @select-date="selectDate($event, !isFirstInstance(instance))"
                                 @set-hover-date="setHoverDate($event)"
                                 @handle-scroll="handleScroll($event, instance)"
+                                @handle-swipe="handleSwipeOrArrow($event, instance)"
                                 @mount="childMount('calendar')"
                                 @reset-flow="resetFlow"
                             >
@@ -293,7 +294,7 @@
         rangeActiveStartEnd,
         monthYearSelect,
         handleScroll,
-        handleArrow,
+        handleSwipeOrArrow,
         getMarker,
         selectCurrentDate,
         isHoverDateStartEnd,
