@@ -171,6 +171,8 @@ export const mergeDefaultTransitions = (conf: Partial<ITransition>): ITransition
             close: 'dp-slide-up',
             next: 'calendar-next',
             previous: 'calendar-prev',
+            nextUp: 'dp-slide-up',
+            nextDown: 'dp-slide-down',
         },
         conf,
     );

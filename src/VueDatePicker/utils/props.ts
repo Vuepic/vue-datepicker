@@ -105,6 +105,7 @@ export const MenuProps = {
     ...DateValidationProps,
     ...CalendarProps,
     ...SharedProps,
+    vertical: { type: Boolean as PropType<boolean>, default: false },
     disableMonthYearSelect: { type: Boolean as PropType<boolean>, default: false },
     menuClassName: { type: String as PropType<string>, default: null },
     yearRange: { type: Array as PropType<number[]>, default: () => [1970, 2100] },
@@ -180,6 +181,7 @@ export const NestedInternalSharedProps = {
 export const MonthCalendarSharedProps = {
     ...MenuNestedDownProps,
     ...NestedInternalSharedProps,
+    vertical: { type: Boolean as PropType<boolean>, default: false },
     month: { type: Number as PropType<number>, default: 0 },
     year: { type: Number as PropType<number>, default: 0 },
     instance: { type: Number as PropType<number>, default: 1 },

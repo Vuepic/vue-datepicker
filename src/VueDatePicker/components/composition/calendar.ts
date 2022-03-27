@@ -732,13 +732,13 @@ export const useCalendar = (
 
     const handleScroll = (event: WheelEvent, instance: number): void => {
         if (props.monthChangeOnScroll) {
-            autoChangeMonth(props.monthChangeOnScroll === 'inverse' ? -event.deltaY : event.deltaY, instance);
+            autoChangeMonth(props.monthChangeOnScroll !== 'inverse' ? -event.deltaY : event.deltaY, instance);
             triggerCalendarTransition(instance);
         }
     };
 
-    const handleSwipeOrArrow = (arrow: 'left' | 'right', instance: number): void => {
-        if (props.monthChangeOnArrows) {
+    const handleSwipeOrArrow = (arrow: 'left' | 'right', instance: number, vertical = false): void => {
+        if (props.monthChangeOnArrows && props.vertical === vertical) {
             autoChangeMonth(arrow === 'right' ? -1 : 1, instance);
             triggerCalendarTransition(instance);
         }

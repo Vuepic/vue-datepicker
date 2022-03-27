@@ -1,7 +1,11 @@
 <template>
     <div class="dp__month_year_row">
         <template v-if="!monthPicker">
-            <ActionIcon aria-label="Previous month" @activate="handleMonthYearChange(false)" v-if="showLeftIcon">
+            <ActionIcon
+                aria-label="Previous month"
+                @activate="handleMonthYearChange(false)"
+                v-if="showLeftIcon && !vertical"
+            >
                 <slot name="arrow-left" v-if="$slots['arrow-left']" />
                 <ChevronLeftIcon v-if="!$slots['arrow-left']" />
             </ActionIcon>
@@ -37,9 +41,23 @@
                     <slot name="year-overlay" :text="item.text" :value="item.value" />
                 </template>
             </RegularPicker>
-            <ActionIcon arial-label="Previous month" @activate="handleMonthYearChange(true)" v-if="showRightIcon">
-                <slot name="arrow-right" v-if="$slots['arrow-right']" />
-                <ChevronRightIcon v-if="!$slots['arrow-right']" />
+            <ActionIcon
+                aria-label="Previous month"
+                @activate="handleMonthYearChange(false)"
+                v-if="showLeftIcon && vertical"
+            >
+                <slot name="arrow-up" v-if="$slots['arrow-up']" />
+                <ChevronUpIcon v-if="!$slots['arrow-up']" />
+            </ActionIcon>
+            <ActionIcon arial-label="Next month" @activate="handleMonthYearChange(true)" v-if="showRightIcon">
+                <slot
+                    :name="vertical ? 'arrow-right' : 'arrow-down'"
+                    v-if="$slots[vertical ? 'arrow-right' : 'arrow-down']"
+                />
+                <component
+                    :is="vertical ? ChevronDownIcon : ChevronRightIcon"
+                    v-if="!$slots[vertical ? 'arrow-right' : 'arrow-down']"
+                />
             </ActionIcon>
         </template>
         <template v-if="monthPicker">
@@ -116,7 +134,7 @@
     import type { PropType } from 'vue';
     import { getMonth, getYear } from 'date-fns';
 
-    import { ChevronLeftIcon, ChevronRightIcon, CalendarIcon } from '../Icons';
+    import { ChevronLeftIcon, ChevronRightIcon, CalendarIcon, ChevronDownIcon, ChevronUpIcon } from '../Icons';
     import ActionIcon from './ActionIcon.vue';
     import RegularPicker from './RegularPicker.vue';
     import SelectionGrid from '../SelectionGrid.vue';

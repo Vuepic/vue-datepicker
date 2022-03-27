@@ -196,6 +196,7 @@ interface VueDatePicker {
     keepActionRow?: boolean;
     weekPicker?: boolean;
     noSwipe?: boolean;
+    vertical?: boolean;
 }
 
 interface PublicMethods extends MethodOptions {

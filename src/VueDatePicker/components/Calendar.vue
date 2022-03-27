@@ -144,7 +144,11 @@
         if (transitions?.value) {
             const newDate = resetDateTime(setDateMonthOrYear(new Date(), props.month, props.year));
             transitionName.value = isDateAfter(resetDateTime(setDateMonthOrYear(new Date(), month, year)), newDate)
-                ? transitions.value.next
+                ? props.vertical
+                    ? transitions.value.nextUp
+                    : transitions.value.next
+                : props.vertical
+                ? transitions.value.nextDown
                 : transitions.value.previous;
             showCalendar.value = false;
             nextTick(() => {
@@ -200,19 +204,22 @@
     };
 
     const onTouchStart = (ev: TouchEvent): void => {
+        ev.preventDefault();
         touch.value.startX = ev.changedTouches[0].screenX;
         touch.value.startY = ev.changedTouches[0].screenY;
     };
 
     const onTouchEnd = (ev: TouchEvent): void => {
+        ev.preventDefault();
         touch.value.endX = ev.changedTouches[0].screenX;
         touch.value.endY = ev.changedTouches[0].screenY;
         handleTouch();
     };
 
     const handleTouch = () => {
-        if (touch.value.startX !== touch.value.endX) {
-            emit('handleSwipe', touch.value.startX > touch.value.endX ? 'right' : 'left');
+        const property = props.vertical ? 'Y' : 'X';
+        if (touch.value[`start${property}`] !== touch.value[`end${property}`]) {
+            emit('handleSwipe', touch.value[`start${property}`] > touch.value[`end${property}`] ? 'right' : 'left');
         }
     };
 

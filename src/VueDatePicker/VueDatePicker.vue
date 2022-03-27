@@ -118,6 +118,8 @@
                     reverseYears,
                     keepActionRow,
                     weekPicker,
+                    noSwipe,
+                    vertical,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @close-picker="closeMenu"

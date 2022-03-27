@@ -12,6 +12,8 @@
             @keydown.esc="handleEsc"
             @keydown.space="handleSpace"
             @keydown.left="handleSwipeOrArrow('left', 0)"
+            @keydown.up="handleSwipeOrArrow('left', 0, true)"
+            @keydown.down="handleSwipeOrArrow('right', 0, true)"
             @keydown.right="handleSwipeOrArrow('right', 0)"
         >
             <div :class="disabledReadonlyOverlay" v-if="(disabled || readonly) && inline"></div>
@@ -55,6 +57,7 @@
                                     internalModelValue,
                                     range,
                                     reverseYears,
+                                    vertical,
                                 }"
                                 @mount="childMount('monthYearInput')"
                                 @reset-flow="resetFlow"
@@ -386,6 +389,8 @@
         multiCalendars: props.multiCalendars,
         modeHeight: props.modeHeight,
         internalModelValue: props.internalModelValue,
+        noSwipe: props.noSwipe,
+        vertical: props.vertical,
     }));
 
     const dpMenuClass = computed(
