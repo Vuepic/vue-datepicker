@@ -183,10 +183,10 @@
 <script lang="ts" setup>
     import { computed, onMounted, nextTick, useSlots, ref, onUnmounted, reactive, inject } from 'vue';
     import type { PropType, ComputedRef } from 'vue';
-    import Calendar from './Calendar.vue';
-    import ActionRow from './ActionRow.vue';
-    import TimePickerCmp from './TimePicker/TimePicker.vue';
-    import MonthYearPicker from './MonthYearPicker/MonthYearPicker.vue';
+    import Calendar from '@components/Calendar.vue';
+    import ActionRow from '@components/ActionRow.vue';
+    import TimePickerCmp from '@components/TimePicker/TimePicker.vue';
+    import MonthYearPicker from '@components/MonthYearPicker/MonthYearPicker.vue';
 
     import type {
         CalendarRef,
@@ -199,12 +199,12 @@
         TimePickerRef,
         WeekStartNum,
         ITransition,
-    } from '../interfaces';
-    import { mapSlots } from './composition/slots';
-    import { getCalendarDays, getMonths, getYears, unrefElement } from '../utils/util';
-    import { useCalendar } from './composition/calendar';
-    import { isDateEqual } from '../utils/date-utils';
-    import { ControlProps, MenuProps, SharedProps } from '../utils/props';
+    } from '@/interfaces';
+    import { mapSlots } from '@components/composition/slots';
+    import { getCalendarDays, getMonths, getYears, unrefElement } from '@/utils/util';
+    import { useCalendar } from '@components/composition/calendar';
+    import { isDateEqual } from '@/utils/date-utils';
+    import { ControlProps, MenuProps, SharedProps } from '@/utils/props';
 
     const emit = defineEmits([
         'update:internalModelValue',

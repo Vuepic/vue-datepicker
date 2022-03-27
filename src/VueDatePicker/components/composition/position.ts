@@ -1,8 +1,8 @@
 import { ref } from 'vue';
 
-import { OpenPosition } from '../../interfaces';
-import type { AltPosition, ComponentRef, VueEmit } from '../../interfaces';
-import { unrefElement } from '../../utils/util';
+import { OpenPosition } from '@/interfaces';
+import type { AltPosition, ComponentRef, VueEmit } from '@/interfaces';
+import { unrefElement } from '@/utils/util';
 
 /**
  * Extracted code from the main component, used for calculating the position of the menu

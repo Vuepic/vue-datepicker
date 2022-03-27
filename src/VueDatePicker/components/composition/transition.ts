@@ -1,6 +1,7 @@
 import { computed, inject } from 'vue';
 import type { ComputedRef } from 'vue';
-import type { ITransition } from '../../interfaces';
+
+import type { ITransition } from '@/interfaces';
 
 export const useTransitions = () => {
     const transitions = inject<ComputedRef<ITransition>>('transitions');

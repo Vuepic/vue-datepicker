@@ -26,7 +26,7 @@ import {
 } from 'date-fns';
 import type { Locale } from 'date-fns';
 
-import type { IMonthValue, InternalModuleValue, ITimeValue, WeekStartNum } from '../interfaces';
+import type { IMonthValue, InternalModuleValue, ITimeValue, WeekStartNum } from '@/interfaces';
 
 export const parseFreeInput = (value: string, pattern: string): Date | null => {
     const parsedDate = parse(value, pattern.slice(0, value.length), new Date());

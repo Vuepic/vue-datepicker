@@ -9,10 +9,10 @@ import type {
     PresetRange,
     WeekStartNum,
     WeekStartStr,
-} from '../interfaces';
+} from '@/interfaces';
 
-import type { ITextInputOptions } from '../interfaces';
-import type { AltPosition, IFormat, ITransition, ModelValue, OpenPosition } from '../interfaces';
+import type { ITextInputOptions } from '@/interfaces';
+import type { AltPosition, IFormat, ITransition, ModelValue, OpenPosition } from '@/interfaces';
 import type { Locale } from 'date-fns';
 
 export const ControlProps = {

@@ -28,7 +28,7 @@ import type {
     MenuProps,
     VueEmit,
     WeekStartNum,
-} from '../../interfaces';
+} from '@/interfaces';
 import {
     dateToUtc,
     getNextMonthYear,
@@ -39,8 +39,8 @@ import {
     isDateEqual,
     setDateMonthOrYear,
     setDateTime,
-} from '../../utils/date-utils';
-import { isModelValueRange, isNumberArray, isRange, isTimeArr, modelValueIsRange } from '../../utils/type-guard';
+} from '@/utils/date-utils';
+import { isModelValueRange, isNumberArray, isRange, isTimeArr, modelValueIsRange } from '@/utils/type-guard';
 
 export const useCalendar = (
     props: MenuProps,

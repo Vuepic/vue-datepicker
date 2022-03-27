@@ -12,7 +12,7 @@ import type {
     ITransition,
     MaybeElementRef,
     WeekStartNum,
-} from '../interfaces';
+} from '@/interfaces';
 import { isDateEqual, resetDateTime } from './date-utils';
 
 // Get 7 days from the provided start date, month is used to check whether the date is from the specified month or in the offset

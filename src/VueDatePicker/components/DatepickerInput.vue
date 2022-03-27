@@ -59,11 +59,12 @@
 <script lang="ts" setup>
     import { computed, ref, useSlots } from 'vue';
     import type { PropType } from 'vue';
-    import type { DynamicClass } from '../interfaces';
-    import { CalendarIcon, CancelIcon } from './Icons';
-    import { isValidDate, parseFreeInput } from '../utils/date-utils';
-    import { unrefElement } from '../utils/util';
-    import { ControlProps, InputProps, SharedProps } from '../utils/props';
+
+    import type { DynamicClass } from '@/interfaces';
+    import { CalendarIcon, CancelIcon } from '@components/Icons';
+    import { isValidDate, parseFreeInput } from '@/utils/date-utils';
+    import { unrefElement } from '@/utils/util';
+    import { ControlProps, InputProps, SharedProps } from '@/utils/props';
 
     const emit = defineEmits([
         'clear',

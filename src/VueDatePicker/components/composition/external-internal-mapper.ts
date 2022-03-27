@@ -11,9 +11,9 @@ import {
     isValidDate,
     setDateMonthOrYear,
     setDateTime,
-} from '../../utils/date-utils';
-import type { IFormat, ITextInputOptions, ModelValue, VueEmit } from '../../interfaces';
-import { isMonth, isMonthArray, isRangeArray, isSingle, isTime, isTimeArray } from '../../utils/type-guard';
+} from '@/utils/date-utils';
+import type { IFormat, ITextInputOptions, ModelValue, VueEmit } from '@/interfaces';
+import { isMonth, isMonthArray, isRangeArray, isSingle, isTime, isTimeArray } from '@/utils/type-guard';
 
 /**
  * Handles values from external to internal and vise versa

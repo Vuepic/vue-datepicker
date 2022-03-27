@@ -134,15 +134,15 @@
     import type { PropType } from 'vue';
     import { getMonth, getYear } from 'date-fns';
 
-    import { ChevronLeftIcon, ChevronRightIcon, CalendarIcon, ChevronDownIcon, ChevronUpIcon } from '../Icons';
-    import ActionIcon from './ActionIcon.vue';
-    import RegularPicker from './RegularPicker.vue';
-    import SelectionGrid from '../SelectionGrid.vue';
+    import { ChevronLeftIcon, ChevronRightIcon, CalendarIcon, ChevronDownIcon, ChevronUpIcon } from '@components/Icons';
+    import ActionIcon from '@components/MonthYearPicker/ActionIcon.vue';
+    import RegularPicker from '@components/MonthYearPicker/RegularPicker.vue';
+    import SelectionGrid from '@components/SelectionGrid.vue';
 
-    import type { IDefaultSelect, IDateFilter } from '../../interfaces';
-    import { useMontYearPick } from '../composition/month-year';
-    import { useTransitions } from '../composition/transition';
-    import { DateValidationProps, MonthCalendarSharedProps } from '../../utils/props';
+    import type { IDefaultSelect, IDateFilter } from '@/interfaces';
+    import { useMontYearPick } from '@components/composition/month-year';
+    import { useTransitions } from '@components/composition/transition';
+    import { DateValidationProps, MonthCalendarSharedProps } from '@/utils/props';
 
     const emit = defineEmits(['update:month', 'update:year', 'monthYearSelect', 'mount', 'reset-flow']);
     const props = defineProps({

@@ -47,9 +47,9 @@
     import type { PropType } from 'vue';
     import { setMonth, setYear } from 'date-fns';
 
-    import type { IDefaultSelect, DynamicClass } from '../interfaces';
-    import { getKey, unrefElement } from '../utils/util';
-    import { isDateBetween, isDateEqual } from '../utils/date-utils';
+    import type { IDefaultSelect, DynamicClass } from '@/interfaces';
+    import { getKey, unrefElement } from '@/utils/util';
+    import { isDateBetween, isDateEqual } from '@/utils/date-utils';
 
     const emit = defineEmits(['update:modelValue', 'selected', 'toggle', 'reset-flow']);
 

@@ -89,14 +89,14 @@
     import type { PropType } from 'vue';
     import { getHours, getMinutes, getSeconds } from 'date-fns';
 
-    import { ChevronUpIcon, ChevronDownIcon, ClockIcon } from '../Icons';
+    import { ChevronUpIcon, ChevronDownIcon, ClockIcon } from '@components/Icons';
 
-    import type { DynamicClass, IDateFilter, IDefaultSelect, ITimeType, TimeOverlayCheck } from '../../interfaces';
-    import { getArrayInArray, hoursToAmPmHours } from '../../utils/util';
-    import SelectionGrid from '../SelectionGrid.vue';
-    import { useTransitions } from '../composition/transition';
-    import { addTime, subTime } from '../../utils/date-utils';
-    import { TimeInputProps } from '../../utils/props';
+    import type { DynamicClass, IDateFilter, IDefaultSelect, ITimeType, TimeOverlayCheck } from '@/interfaces';
+    import { getArrayInArray, hoursToAmPmHours } from '@/utils/util';
+    import SelectionGrid from '@components/SelectionGrid.vue';
+    import { useTransitions } from '@components/composition/transition';
+    import { addTime, subTime } from '@/utils/date-utils';
+    import { TimeInputProps } from '@/utils/props';
 
     const emit = defineEmits([
         'setHours',

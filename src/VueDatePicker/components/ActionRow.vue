@@ -32,15 +32,16 @@
     import { computed, inject } from 'vue';
     import type { PropType, ComputedRef } from 'vue';
     import type { Locale } from 'date-fns';
-    import { formatDate, getMonthVal, getTImeForExternal, isMonthWithinRange, isValidTime } from '../utils/date-utils';
-    import { isModelValueRange } from '../utils/type-guard';
+
+    import { formatDate, getMonthVal, getTImeForExternal, isMonthWithinRange, isValidTime } from '@/utils/date-utils';
+    import { isModelValueRange } from '@/utils/type-guard';
     import {
         ActionRowProps,
         DateValidationProps,
         MenuNestedDownProps,
         NestedInternalSharedProps,
         TimeValidationProps,
-    } from '@/VueDatePicker/utils/props';
+    } from '@/utils/props';
 
     const emit = defineEmits(['closePicker', 'selectDate']);
 

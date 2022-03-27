@@ -1,4 +1,4 @@
-import type { IMonthValue, ITimeValue, ModelValue } from '../interfaces';
+import type { IMonthValue, ITimeValue, ModelValue } from '@/interfaces';
 
 /**
  * =========================================================================================================================

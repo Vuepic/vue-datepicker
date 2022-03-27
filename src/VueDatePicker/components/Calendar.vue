@@ -99,10 +99,10 @@
     import { computed, inject, nextTick, onMounted, ref } from 'vue';
     import type { PropType, UnwrapRef, ComputedRef } from 'vue';
 
-    import type { DynamicClass, ICalendarDate, ICalendarDay, IMarker, ITransition } from '../interfaces';
-    import { getDayNames, getDefaultMarker, unrefElement } from '../utils/util';
-    import { isDateAfter, isDateEqual, resetDateTime, setDateMonthOrYear } from '../utils/date-utils';
-    import { CalendarProps, MonthCalendarSharedProps } from '../utils/props';
+    import type { DynamicClass, ICalendarDate, ICalendarDay, IMarker, ITransition } from '@/interfaces';
+    import { getDayNames, getDefaultMarker, unrefElement } from '@/utils/util';
+    import { isDateAfter, isDateEqual, resetDateTime, setDateMonthOrYear } from '@/utils/date-utils';
+    import { CalendarProps, MonthCalendarSharedProps } from '@/utils/props';
 
     const emit = defineEmits(['selectDate', 'setHoverDate', 'handleScroll', 'mount', 'handleSwipe']);
 
