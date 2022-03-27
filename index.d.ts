@@ -141,13 +141,13 @@ interface VueDatePicker {
     startDate?: string | Date;
     startTime?:
         | {
-              hours: number | string;
-              minutes: number | string;
+              hours?: number | string;
+              minutes?: number | string;
               seconds?: number | string;
           }
         | {
-              hours: number | string;
-              minutes: number | string;
+              hours?: number | string;
+              minutes?: number | string;
               seconds?: number | string;
           }[];
     monthYearComponent?: DefineComponent;
