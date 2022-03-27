@@ -5,14 +5,14 @@ import { setMilliseconds, setSeconds } from 'date-fns';
 import addDays from 'date-fns/addDays';
 import { ja } from 'date-fns/locale';
 
-import Datepicker from '../../src/VueDatePicker/VueDatePicker.vue';
-import DatepickerMenu from '../../src/VueDatePicker/components/DatepickerMenu.vue';
-import Calendar from '../../src/VueDatePicker/components/Calendar.vue';
-import TimePicker from '../../src/VueDatePicker/components/TimePicker/TimePicker.vue';
-import MonthYearInput from '../../src/VueDatePicker/components/MonthYearInput.vue';
-import ActionRow from '../../src/VueDatePicker/components/ActionRow.vue';
+import Datepicker from '@/VueDatePicker.vue';
+import DatepickerMenu from '@/components/DatepickerMenu.vue';
+import Calendar from '@/components/Calendar.vue';
+import TimePicker from '@/components/TimePicker/TimePicker.vue';
+import MonthYearInput from '@/components/MonthYearPicker/MonthYearPicker.vue';
+import ActionRow from '@/components/ActionRow.vue';
 
-import { getWeekFromDate } from '@/VueDatePicker/utils/date-utils';
+import { getWeekFromDate } from '@/utils/date-utils';
 
 const format = (date: Date): string => {
     return `Selected year is ${date.getFullYear()}`;
