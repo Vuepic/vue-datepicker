@@ -11,7 +11,8 @@ export default defineConfig({
     plugins: [vue()],
     resolve: {
         alias: {
-            '@': fileURLToPath(new URL('./src', import.meta.url)),
+            '@': fileURLToPath(new URL('./src/VueDatePicker', import.meta.url)),
+            '@components': fileURLToPath(new URL('./src/VueDatePicker/components', import.meta.url)),
         },
     },
     server: {

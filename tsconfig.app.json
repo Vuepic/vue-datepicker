@@ -6,7 +6,8 @@
     "composite": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/VueDatePicker/*"],
+      "@components/*": ["./src/VueDatePicker/components/*"]
     },
     "lib": ["esnext"],
     "target": "esnext"
