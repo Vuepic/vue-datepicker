@@ -121,7 +121,7 @@
 .calendar-next-leave-active,
 .calendar-prev-enter-active,
 .calendar-prev-leave-active, {
-  transition: all $dp__transition_duration cubic-bezier(0.19, 1, 0.22, 1);
+  transition: all $dp__transition_duration ease-out;
 }
 
 .calendar-next-enter-from {
