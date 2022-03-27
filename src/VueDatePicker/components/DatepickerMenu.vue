@@ -33,7 +33,7 @@
                             :is="monthYearComponent ? monthYearComponent : MonthYearPicker"
                             :ref="
                                 (el) => {
-                                    if (el) monthYearInputRefs[i] = el;
+                                    if (el) monthYearPickerRefs[i] = el;
                                 }
                             "
                             v-if="!disableMonthYearSelect && !timePicker"
@@ -66,6 +66,11 @@
                             </template>
                         </component>
                         <Calendar
+                            :ref="
+                                (el) => {
+                                    if (el) calendarRefs[i] = el;
+                                }
+                            "
                             v-bind="calendarProps"
                             v-model:flow-step="flowStep"
                             :instance="instance"
@@ -178,12 +183,13 @@
     import MonthYearPicker from './MonthYearPicker/MonthYearPicker.vue';
 
     import type {
+        CalendarRef,
         DynamicClass,
         ICalendarDate,
         IDefaultSelect,
         InternalModuleValue,
         MenuChildCmp,
-        MonthYearInputRef,
+        MonthYearPickerRef,
         TimePickerRef,
         WeekStartNum,
     } from '../interfaces';
@@ -214,7 +220,8 @@
     const slots = useSlots();
     const calendarWrapperRef = ref(null);
     const childrenMounted = reactive({ timePicker: !props.enableTimePicker, monthYearInput: false, calendar: false });
-    const monthYearInputRefs = ref<MonthYearInputRef[]>([]);
+    const monthYearPickerRefs = ref<MonthYearPickerRef[]>([]);
+    const calendarRefs = ref<CalendarRef[]>([]);
     const timePickerRef = ref<TimePickerRef | null>(null);
     const dpMenuRef = ref(null);
     const calendarWidth = ref(0);
@@ -288,7 +295,7 @@
         isHoverDateStartEnd,
         isHoverDate,
         presetDateRange,
-    } = useCalendar(props, emit, updateFlowStep);
+    } = useCalendar(props, emit, updateFlowStep, calendarRefs);
 
     const calendarSlots = mapSlots(slots, 'calendar');
     const actionSlots = mapSlots(slots, 'action');
@@ -461,13 +468,13 @@
 
     const handleFlow = (): void => {
         if (props.flow[flowStep.value] === 'month') {
-            if (monthYearInputRefs.value[0]) {
-                monthYearInputRefs.value[0].toggleMonthPicker(true);
+            if (monthYearPickerRefs.value[0]) {
+                monthYearPickerRefs.value[0].toggleMonthPicker(true);
             }
         }
         if (props.flow[flowStep.value] === 'year') {
-            if (monthYearInputRefs.value) {
-                monthYearInputRefs.value[0].toggleYearPicker(true);
+            if (monthYearPickerRefs.value) {
+                monthYearPickerRefs.value[0].toggleYearPicker(true);
             }
         }
         if (props.flow[flowStep.value] === 'calendar') {

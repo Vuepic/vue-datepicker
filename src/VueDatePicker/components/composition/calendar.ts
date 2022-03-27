@@ -1,5 +1,5 @@
 import { computed, onMounted, ref, watch } from 'vue';
-import type { UnwrapRef } from 'vue';
+import type { UnwrapRef, Ref } from 'vue';
 import {
     add,
     addDays,
@@ -20,6 +20,7 @@ import {
 } from 'date-fns';
 
 import type {
+    CalendarRef,
     ICalendarData,
     ICalendarDay,
     IMarker,
@@ -41,7 +42,12 @@ import {
 } from '../../utils/date-utils';
 import { isModelValueRange, isNumberArray, isRange, isTimeArr, modelValueIsRange } from '../../utils/type-guard';
 
-export const useCalendar = (props: MenuProps, emit: VueEmit, updateFlow: () => void) => {
+export const useCalendar = (
+    props: MenuProps,
+    emit: VueEmit,
+    updateFlow: () => void,
+    calendarRefs: Ref<CalendarRef[]>,
+) => {
     const today = ref<Date>(new Date());
     const hoveredDate = ref<Date | null>();
     // Calendar data per instance
@@ -560,6 +566,7 @@ export const useCalendar = (props: MenuProps, emit: VueEmit, updateFlow: () => v
         }
         updateFlow();
         emit('updateMonthYear', { instance, value, isMonth });
+        calendarRefs.value.forEach((refVal) => refVal.triggerTransition(month.value(instance), year.value(instance)));
     };
 
     const getSetDateTime = (dateValue: Date): Date => {

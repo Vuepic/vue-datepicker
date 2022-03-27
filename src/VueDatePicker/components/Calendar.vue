@@ -95,12 +95,12 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, inject, nextTick, onMounted, ref, toRef, watch } from 'vue';
+    import { computed, inject, nextTick, onMounted, ref } from 'vue';
     import type { PropType, UnwrapRef, ComputedRef } from 'vue';
 
     import type { DynamicClass, ICalendarDate, ICalendarDay, IMarker, ITransition } from '../interfaces';
     import { getDayNames, getDefaultMarker, unrefElement } from '../utils/util';
-    import { isDateAfter, isDateEqual, setDateMonthOrYear } from '../utils/date-utils';
+    import { isDateAfter, isDateEqual, resetDateTime, setDateMonthOrYear } from '../utils/date-utils';
     import { CalendarProps, MonthCalendarSharedProps } from '../utils/props';
 
     const emit = defineEmits(['selectDate', 'setHoverDate', 'handleScroll', 'mount']);
@@ -109,7 +109,6 @@
         ...MonthCalendarSharedProps,
         ...CalendarProps,
         mappedDates: { type: Array as PropType<ICalendarDate[]>, default: () => [] },
-        // timePicker: { type: Boolean as PropType<boolean>, default: false },
         getWeekNum: {
             type: Function as PropType<(dates: UnwrapRef<ICalendarDay[]>) => string | number>,
             default: () => '',
@@ -124,41 +123,26 @@
     const showCalendar = ref(true);
     const transitions = inject<ComputedRef<ITransition>>('transitions');
     const transitionName = ref('');
-    const monthProp = toRef(props, 'month');
-    const yearProp = toRef(props, 'year');
-    const prevDate = ref();
-    const startTransitions = ref(false);
-
     const weekDays = computed(() => {
         return getDayNames(props.locale, +props.weekStart);
     });
 
     onMounted(() => {
-        if (!props.internalModelValue) {
-            startTransitions.value = true;
-        }
-        prevDate.value = setDateMonthOrYear(new Date(), props.month, props.year);
         emit('mount');
     });
 
-    watch([monthProp, yearProp], () => {
+    const triggerTransition = (month: number, year: number): void => {
         if (transitions?.value) {
-            const newDate = setDateMonthOrYear(new Date(), props.month, props.year);
-            transitionName.value = isDateAfter(setDateMonthOrYear(new Date(), props.month, props.year), prevDate.value)
+            const newDate = resetDateTime(setDateMonthOrYear(new Date(), props.month, props.year));
+            transitionName.value = isDateAfter(resetDateTime(setDateMonthOrYear(new Date(), month, year)), newDate)
                 ? transitions.value.next
                 : transitions.value.previous;
-            prevDate.value = newDate;
-            if (startTransitions.value) {
-                showCalendar.value = false;
-                nextTick(() => {
-                    showCalendar.value = true;
-                });
-            }
+            showCalendar.value = false;
+            nextTick(() => {
+                showCalendar.value = true;
+            });
         }
-        if (!startTransitions.value) {
-            startTransitions.value = true;
-        }
-    });
+    };
 
     // Class object for calendar wrapper
     const calendarWrapClass = computed(
@@ -205,4 +189,6 @@
     const onMouseLeave = (): void => {
         showMakerTooltip.value = null;
     };
+
+    defineExpose({ triggerTransition });
 </script>

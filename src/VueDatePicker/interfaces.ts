@@ -135,9 +135,13 @@ export type PresetRange = { label: string; range: Date[] | string[] };
 export type Flow = ('month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds')[];
 export type MenuChildCmp = 'timePicker' | 'monthYearInput' | 'calendar';
 
-export interface MonthYearInputRef {
+export interface MonthYearPickerRef {
     toggleMonthPicker: (auto: boolean) => void;
     toggleYearPicker: (auto: boolean) => void;
+}
+
+export interface CalendarRef {
+    triggerTransition: (m: number, year: number) => void;
 }
 
 export interface TimePickerRef {
