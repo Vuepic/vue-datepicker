@@ -166,8 +166,9 @@ export const getDefaultMarker = (marker: IMarker): IMarker => Object.assign({ ty
 export const mergeDefaultTransitions = (conf: Partial<ITransition>): ITransition =>
     Object.assign(
         {
-            open: 'dp-open',
-            close: 'dp-close',
+            menuAppear: 'dp-slide-down',
+            open: 'dp-slide-down',
+            close: 'dp-slide-up',
             next: 'calendar-next',
             previous: 'calendar-prev',
         },

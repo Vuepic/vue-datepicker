@@ -18,7 +18,7 @@
                     </div>
                 </div>
                 <div class="dp__calendar_header_separator"></div>
-                <transition :name="transitionName" :css="!!transitions">
+                <transition :name="transitionName" :css="!!transitions" mode="out-in">
                     <div class="dp__calendar" role="grid" aria-label="Calendar days" v-if="showCalendar">
                         <div class="dp__calendar_row" role="row" v-for="(week, weekInd) in mappedDates" :key="weekInd">
                             <div role="gridcell" v-if="weekNumbers" class="dp__calendar_item dp__week_num">

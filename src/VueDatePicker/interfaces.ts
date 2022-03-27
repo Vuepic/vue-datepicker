@@ -120,6 +120,7 @@ export interface IMarker {
 }
 
 export interface ITransition {
+    menuAppear: string;
     open: string;
     close: string;
     next: string;
