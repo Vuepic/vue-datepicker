@@ -425,7 +425,7 @@
                             !isActiveDate(calendarDay)
                                 ? rangeActive(calendarDay)
                                 : false,
-                        dp__today: !props.noToday && isDateEqual(calendarDay.value, today.value),
+                        dp__today: !props.noToday && isDateEqual(calendarDay.value, today.value) && calendarDay.current,
                         dp__cell_disabled: disabled,
                         dp__cell_auto_range: isAutoRangeInBetween(calendarDay),
                         dp__cell_auto_range_start: isAutoRangeStart(calendarDay),
