@@ -125,8 +125,8 @@ export interface ITransition {
     close: string;
     next: string;
     previous: string;
-    nextUp: string;
-    nextDown: string;
+    vNext: string;
+    vPrevious: string;
 }
 export type IDisableDates = (date: Date) => boolean;
 export type ITimeType = 'hours' | 'minutes' | 'seconds';

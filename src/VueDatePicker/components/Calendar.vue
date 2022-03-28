@@ -145,10 +145,10 @@
             const newDate = resetDateTime(setDateMonthOrYear(new Date(), props.month, props.year));
             transitionName.value = isDateAfter(resetDateTime(setDateMonthOrYear(new Date(), month, year)), newDate)
                 ? props.vertical
-                    ? transitions.value.nextUp
+                    ? transitions.value.vNext
                     : transitions.value.next
                 : props.vertical
-                ? transitions.value.nextDown
+                ? transitions.value.vPrevious
                 : transitions.value.previous;
             showCalendar.value = false;
             nextTick(() => {
