@@ -2,7 +2,7 @@
     <div class="dp__month_year_row">
         <template v-if="!monthPicker">
             <ActionIcon
-                aria-label="Previous month"
+                :aria-label="ariaLabels.prevMonth"
                 @activate="handleMonthYearChange(false)"
                 v-if="showLeftIcon && !vertical"
             >
@@ -10,7 +10,7 @@
                 <ChevronLeftIcon v-if="!$slots['arrow-left']" />
             </ActionIcon>
             <RegularPicker
-                aria-label="Open months overlay"
+                :aria-label="ariaLabels.openMonthsOverlay"
                 slot-name="month-overlay"
                 v-model="monthModelBind"
                 v-bind="childProps('month')"
@@ -26,7 +26,7 @@
                 </template>
             </RegularPicker>
             <RegularPicker
-                aria-label="Open years overlay"
+                :aria-label="ariaLabels.openYearsOverlay"
                 slot-name="year-overlay"
                 v-model="yearModelBind"
                 v-bind="childProps('year')"
@@ -42,14 +42,18 @@
                 </template>
             </RegularPicker>
             <ActionIcon
-                aria-label="Previous month"
+                :aria-label="ariaLabels.prevMonth"
                 @activate="handleMonthYearChange(false)"
                 v-if="showLeftIcon && vertical"
             >
                 <slot name="arrow-up" v-if="$slots['arrow-up']" />
                 <ChevronUpIcon v-if="!$slots['arrow-up']" />
             </ActionIcon>
-            <ActionIcon arial-label="Next month" @activate="handleMonthYearChange(true)" v-if="showRightIcon">
+            <ActionIcon
+                :arial-label="ariaLabels.nextMonth"
+                @activate="handleMonthYearChange(true)"
+                v-if="showRightIcon"
+            >
                 <slot
                     :name="vertical ? 'arrow-right' : 'arrow-down'"
                     v-if="$slots[vertical ? 'arrow-right' : 'arrow-down']"
@@ -80,7 +84,7 @@
                             @click="handleYear(false)"
                             @keydown.enter="handleYear(false)"
                         >
-                            <div class="dp__inner_nav" role="button" aria-label="Previous month">
+                            <div class="dp__inner_nav" role="button" :aria-label="ariaLabels.prevMonth">
                                 <slot name="arrow-left" v-if="$slots['arrow-left']" />
                                 <ChevronLeftIcon v-if="!$slots['arrow-left']" />
                             </div>
@@ -88,7 +92,7 @@
                         <div
                             class="dp__pointer"
                             role="button"
-                            aria-label="Open years overlay"
+                            :aria-label="ariaLabels.openYearsOverlay"
                             tabindex="0"
                             @click="toggleYearPicker"
                             @keydown.enter="toggleYearPicker"
@@ -102,7 +106,7 @@
                             @click="handleYear(true)"
                             @keydown.enter="handleYear(true)"
                         >
-                            <div class="dp__inner_nav" role="button" aria-label="Next month">
+                            <div class="dp__inner_nav" role="button" :aria-label="ariaLabels.nextMonth">
                                 <slot name="arrow-right" v-if="$slots['arrow-right']" />
                                 <ChevronRightIcon v-if="!$slots['arrow-right']" />
                             </div>
@@ -130,8 +134,8 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, onMounted, ref } from 'vue';
-    import type { PropType } from 'vue';
+    import { computed, inject, onMounted, ref } from 'vue';
+    import type { PropType, ComputedRef } from 'vue';
     import { getMonth, getYear } from 'date-fns';
 
     import { ChevronLeftIcon, ChevronRightIcon, CalendarIcon, ChevronDownIcon, ChevronUpIcon } from '@components/Icons';
@@ -139,10 +143,10 @@
     import RegularPicker from '@components/MonthYearPicker/RegularPicker.vue';
     import SelectionGrid from '@components/SelectionGrid.vue';
 
-    import type { IDefaultSelect, IDateFilter } from '@/interfaces';
+    import type { IDefaultSelect, IDateFilter, AreaLabels } from '@/interfaces';
     import { useMontYearPick } from '@components/composition/month-year';
     import { useTransitions } from '@components/composition/transition';
-    import { DateValidationProps, MonthCalendarSharedProps } from '@/utils/props';
+    import { ariaLabelsKey, DateValidationProps, MonthCalendarSharedProps } from '@/utils/props';
 
     const emit = defineEmits(['update:month', 'update:year', 'monthYearSelect', 'mount', 'reset-flow']);
     const props = defineProps({
@@ -160,6 +164,8 @@
 
     const showMonthPicker = ref(false);
     const showYearPicker = ref(false);
+    const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
+
     const { handleMonthYearChange } = useMontYearPick(props, emit);
 
     onMounted(() => {

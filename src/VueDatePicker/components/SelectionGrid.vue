@@ -30,7 +30,7 @@
             <div
                 v-if="$slots['button-icon']"
                 role="button"
-                aria-label="Toggle overlay"
+                :aria-label="ariaLabels.toggleOverlay"
                 :class="actionButtonClass"
                 tabindex="0"
                 @click="toggle"
@@ -44,12 +44,13 @@
 
 <script lang="ts" setup>
     import { computed, inject, onBeforeUpdate, onMounted, ref } from 'vue';
-    import type { PropType } from 'vue';
+    import type { PropType, ComputedRef } from 'vue';
     import { setMonth, setYear } from 'date-fns';
 
-    import type { IDefaultSelect, DynamicClass } from '@/interfaces';
+    import type { IDefaultSelect, DynamicClass, AreaLabels } from '@/interfaces';
     import { getKey, unrefElement } from '@/utils/util';
     import { isDateBetween, isDateEqual } from '@/utils/date-utils';
+    import { ariaLabelsKey } from '@/utils/props';
 
     const emit = defineEmits(['update:modelValue', 'selected', 'toggle', 'reset-flow']);
 
@@ -69,6 +70,7 @@
     const gridWrapRef = ref(null);
     const autoApply = inject('autoApply', false);
     const textInput = inject('textInput', ref(false));
+    const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
     const hoverValue = ref();
 
     onBeforeUpdate(() => {

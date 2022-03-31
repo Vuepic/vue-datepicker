@@ -5,7 +5,7 @@
             tabindex="0"
             ref="dpMenuRef"
             role="dialog"
-            aria-label="Datepicker menu"
+            :aria-label="ariaLabels.menu"
             :class="dpMenuClass"
             @mouseleave="clearHoverDate"
             @click="handleDpMenuClick"
@@ -199,12 +199,13 @@
         TimePickerRef,
         WeekStartNum,
         ITransition,
+        AreaLabels,
     } from '@/interfaces';
     import { mapSlots } from '@components/composition/slots';
     import { getCalendarDays, getMonths, getYears, unrefElement } from '@/utils/util';
     import { useCalendar } from '@components/composition/calendar';
     import { isDateEqual } from '@/utils/date-utils';
-    import { ControlProps, MenuProps, SharedProps } from '@/utils/props';
+    import { ariaLabelsKey, ControlProps, MenuProps, SharedProps } from '@/utils/props';
 
     const emit = defineEmits([
         'update:internalModelValue',
@@ -235,6 +236,7 @@
     const menuMount = ref(false);
     const flowStep = ref(0);
     const transitions = inject<ComputedRef<ITransition>>('transitions');
+    const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
 
     onMounted(() => {
         menuMount.value = true;

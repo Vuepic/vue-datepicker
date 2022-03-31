@@ -1,4 +1,6 @@
 import type { DefineComponent, PropType } from 'vue';
+import type { Locale } from 'date-fns';
+
 import type {
     Flow,
     IDateFilter,
@@ -9,11 +11,16 @@ import type {
     PresetRange,
     WeekStartNum,
     WeekStartStr,
+    ITextInputOptions,
+    AreaLabels,
+    AltPosition,
+    IFormat,
+    ITransition,
+    ModelValue,
+    OpenPosition,
 } from '@/interfaces';
 
-import type { ITextInputOptions } from '@/interfaces';
-import type { AltPosition, IFormat, ITransition, ModelValue, OpenPosition } from '@/interfaces';
-import type { Locale } from 'date-fns';
+export const ariaLabelsKey = Symbol();
 
 export const ControlProps = {
     disabled: { type: Boolean as PropType<boolean>, default: false },
@@ -167,6 +174,7 @@ export const AllProps = {
     transitions: { type: Boolean as PropType<boolean | ITransition>, default: true },
     formatLocale: { type: Object as PropType<Locale>, default: null },
     utc: { type: Boolean as PropType<boolean>, default: false },
+    ariaLabels: { type: Object as PropType<Partial<AreaLabels>>, default: () => ({}) },
 };
 
 // These props bellow are for internal, since prop types may differ when sanitized than the exposed ones

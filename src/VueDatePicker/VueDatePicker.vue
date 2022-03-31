@@ -145,15 +145,20 @@
     import DatepickerInput from './components/DatepickerInput.vue';
     import DatepickerMenu from './components/DatepickerMenu.vue';
 
-    import type { DynamicClass, ITextInputOptions, ITimeValue, ITransition } from './interfaces';
+    import type { AreaLabels, DynamicClass, ITextInputOptions, ITimeValue, ITransition } from './interfaces';
     import { getDefaultPattern, isValidTime } from './utils/date-utils';
-    import { getDefaultTextInputOptions, getDefaultFilters, mergeDefaultTransitions } from './utils/util';
-    import { usePosition } from './components/composition/position';
-    import { useExternalInternalMapper } from './components/composition/external-internal-mapper';
+    import {
+        getDefaultTextInputOptions,
+        getDefaultFilters,
+        mergeDefaultTransitions,
+        defaultAriaLabels,
+    } from './utils/util';
+    import { usePosition } from '@components/composition/position';
+    import { useExternalInternalMapper } from '@components/composition/external-internal-mapper';
     import { isString } from './utils/type-guard';
-    import { mapSlots } from './components/composition/slots';
+    import { mapSlots } from '@components/composition/slots';
     import { onClickOutside } from './directives/clickOutside';
-    import { AllProps } from './utils/props';
+    import { AllProps, ariaLabelsKey } from './utils/props';
 
     const emit = defineEmits([
         'update:modelValue',
@@ -289,6 +294,9 @@
     const inputDefaultOptions = computed((): ITextInputOptions => {
         return Object.assign(getDefaultTextInputOptions(), props.textInputOptions);
     });
+
+    const areaLabelsDefault = computed((): AreaLabels => defaultAriaLabels(props.ariaLabels));
+    provide(ariaLabelsKey, areaLabelsDefault);
 
     const defaultFilters = computed(() => getDefaultFilters(props.filters));
 

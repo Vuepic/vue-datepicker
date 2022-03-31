@@ -6,7 +6,7 @@
                 v-if="!specificMode"
                 :class="calendarWrapClass"
                 role="grid"
-                aria-label="Calendar wrapper"
+                :aria-label="ariaLabels.calendarWrap"
                 @wheel.prevent="$emit('handleScroll', $event)"
             >
                 <div class="db__calendar_header" role="row">
@@ -20,7 +20,7 @@
                 </div>
                 <div class="dp__calendar_header_separator"></div>
                 <transition :name="transitionName" :css="!!transitions" mode="out-in">
-                    <div class="dp__calendar" role="grid" aria-label="Calendar days" v-if="showCalendar">
+                    <div class="dp__calendar" role="grid" :aria-label="ariaLabels.calendarDays" v-if="showCalendar">
                         <div class="dp__calendar_row" role="row" v-for="(week, weekInd) in mappedDates" :key="weekInd">
                             <div role="gridcell" v-if="weekNumbers" class="dp__calendar_item dp__week_num">
                                 <div class="dp__cell_inner">
@@ -99,10 +99,10 @@
     import { computed, inject, nextTick, onMounted, ref } from 'vue';
     import type { PropType, UnwrapRef, ComputedRef } from 'vue';
 
-    import type { DynamicClass, ICalendarDate, ICalendarDay, IMarker, ITransition } from '@/interfaces';
+    import type { DynamicClass, ICalendarDate, ICalendarDay, IMarker, ITransition, AreaLabels } from '@/interfaces';
     import { getDayNames, getDefaultMarker, unrefElement } from '@/utils/util';
     import { isDateAfter, isDateEqual, resetDateTime, setDateMonthOrYear } from '@/utils/date-utils';
-    import { CalendarProps, MonthCalendarSharedProps } from '@/utils/props';
+    import { ariaLabelsKey, CalendarProps, MonthCalendarSharedProps } from '@/utils/props';
 
     const emit = defineEmits(['selectDate', 'setHoverDate', 'handleScroll', 'mount', 'handleSwipe']);
 
@@ -124,6 +124,7 @@
     const calendarWrapRef = ref<HTMLElement | null>(null);
     const showCalendar = ref(true);
     const transitions = inject<ComputedRef<ITransition>>('transitions');
+    const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
     const transitionName = ref('');
     const touch = ref({ startX: 0, endX: 0, startY: 0, endY: 0 });
     const weekDays = computed(() => {

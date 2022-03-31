@@ -4,7 +4,7 @@
             v-if="!timePicker"
             :class="toggleButtonClass"
             role="button"
-            aria-label="Open time picker"
+            :aria-label="ariaLabels.openTimePicker"
             tabindex="0"
             @keydown.enter="toggleTimePicker(true)"
             @click="toggleTimePicker(true)"
@@ -64,7 +64,7 @@
                         v-if="!timePicker"
                         :class="toggleButtonClass"
                         role="button"
-                        aria-label="Close time picker"
+                        :aria-label="ariaLabels.closeTimePicker"
                         tabindex="0"
                         @keydown.enter="toggleTimePicker(false)"
                         @click="toggleTimePicker(false)"
@@ -80,15 +80,15 @@
 
 <script lang="ts" setup>
     import { computed, inject, nextTick, onMounted, ref, useSlots } from 'vue';
-    import type { PropType } from 'vue';
+    import type { PropType, ComputedRef } from 'vue';
 
     import { ClockIcon, CalendarIcon } from '@components/Icons';
     import TimeInput from '@components/TimePicker/TimeInput.vue';
 
-    import type { IDateFilter, TimeInputRef } from '@/interfaces';
+    import type { IDateFilter, TimeInputRef, AreaLabels } from '@/interfaces';
     import { mapSlots } from '@components/composition/slots';
     import { useTransitions } from '@components/composition/transition';
-    import { TimePickerProps } from '@/utils/props';
+    import { ariaLabelsKey, TimePickerProps } from '@/utils/props';
 
     const emit = defineEmits(['update:hours', 'update:minutes', 'update:seconds', 'mount', 'reset-flow']);
 
@@ -104,6 +104,7 @@
     const slots = useSlots();
     const autoApply = inject('autoApply', false);
     const timeInputRef = ref<TimeInputRef | null>(null);
+    const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
 
     const { transitionName, showTransition } = useTransitions();
 

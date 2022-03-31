@@ -197,6 +197,23 @@ interface VueDatePicker {
     weekPicker?: boolean;
     noSwipe?: boolean;
     vertical?: boolean;
+    ariaLabels?: {
+        toggleOverlay?: string;
+        menu?: string;
+        input?: string;
+        calendarWrap?: string;
+        calendarDays?: string;
+        openTimePicker?: string;
+        closeTimePicker?: string;
+        incrementValue?: (type: 'hours' | 'minutes' | 'seconds') => string;
+        decrementValue?: (type: 'hours' | 'minutes' | 'seconds') => string;
+        openTpOverlay?: (type: 'hours' | 'minutes' | 'seconds') => string;
+        amPmButton?: string;
+        openYearsOverlay?: string;
+        openMonthsOverlay?: string;
+        nextMonth?: string;
+        prevMonth?: string;
+    };
 }
 
 interface PublicMethods extends MethodOptions {

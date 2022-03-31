@@ -1,7 +1,7 @@
 <template>
     <div
         @click="handleOpen"
-        aria-label="Datepicker input"
+        :aria-label="ariaLabels.input"
         role="textbox"
         aria-multiline="false"
         :aria-disabled="disabled"
@@ -57,14 +57,14 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, ref, useSlots } from 'vue';
-    import type { PropType } from 'vue';
+    import { computed, inject, ref, useSlots } from 'vue';
+    import type { PropType, ComputedRef } from 'vue';
 
-    import type { DynamicClass } from '@/interfaces';
+    import type { DynamicClass, AreaLabels } from '@/interfaces';
     import { CalendarIcon, CancelIcon } from '@components/Icons';
     import { isValidDate, parseFreeInput } from '@/utils/date-utils';
     import { unrefElement } from '@/utils/util';
-    import { ControlProps, InputProps, SharedProps } from '@/utils/props';
+    import { ariaLabelsKey, ControlProps, InputProps, SharedProps } from '@/utils/props';
 
     const emit = defineEmits([
         'clear',
@@ -88,6 +88,7 @@
     const parsedDate = ref();
     const inputRef = ref(null);
     const isFocused = ref(false);
+    const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
     const slots = useSlots();
 
     const inputClass = computed(

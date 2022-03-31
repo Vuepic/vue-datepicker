@@ -128,6 +128,7 @@ export interface ITransition {
     vNext: string;
     vPrevious: string;
 }
+
 export type IDisableDates = (date: Date) => boolean;
 export type ITimeType = 'hours' | 'minutes' | 'seconds';
 
@@ -141,6 +142,24 @@ export type MenuChildCmp = 'timePicker' | 'monthYearInput' | 'calendar';
 export interface MonthYearPickerRef {
     toggleMonthPicker: (auto: boolean) => void;
     toggleYearPicker: (auto: boolean) => void;
+}
+
+export interface AreaLabels {
+    toggleOverlay: string;
+    menu: string;
+    input: string;
+    calendarWrap: string;
+    calendarDays: string;
+    openTimePicker: string;
+    closeTimePicker: string;
+    incrementValue: (type: ITimeType) => string;
+    decrementValue: (type: ITimeType) => string;
+    openTpOverlay: (type: ITimeType) => string;
+    amPmButton: string;
+    openYearsOverlay: string;
+    openMonthsOverlay: string;
+    nextMonth: string;
+    prevMonth: string;
 }
 
 export interface CalendarRef {

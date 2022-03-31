@@ -6,7 +6,7 @@
                 <div
                     class="dp__inc_dec_button"
                     role="button"
-                    :aria-label="`Increment ${timeInput.type}`"
+                    :aria-label="ariaLabels.incrementValue(timeInput.type)"
                     tabindex="0"
                     @keydown.enter="handleTimeValue(timeInput.type)"
                     @click="handleTimeValue(timeInput.type)"
@@ -16,7 +16,7 @@
                 </div>
                 <div
                     role="button"
-                    :aria-label="`Open ${timeInput.type} overlay`"
+                    :aria-label="ariaLabels.openTpOverlay(timeInput.type)"
                     :class="checkOverlayDisabled(timeInput.type) ? '' : 'dp__time_display'"
                     tabindex="0"
                     @keydown.enter="toggleOverlay(timeInput.type)"
@@ -33,7 +33,7 @@
                 <div
                     class="dp__inc_dec_button"
                     role="button"
-                    :aria-label="`Decrement ${timeInput.type}`"
+                    :aria-label="ariaLabels.decrementValue(timeInput.type)"
                     tabindex="0"
                     @keydown.enter="handleTimeValue(timeInput.type, false)"
                     @click="handleTimeValue(timeInput.type, false)"
@@ -49,7 +49,7 @@
                 v-if="!$slots['am-pm-button']"
                 class="dp__pm_am_button"
                 role="button"
-                aria-label="Switch AM/PM mode"
+                :aria-label="ariaLabels.amPmButton"
                 tabindex="0"
                 @click="setAmPm"
                 @keydown.enter="setAmPm"
@@ -85,19 +85,25 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, reactive, ref } from 'vue';
-    import type { PropType } from 'vue';
+    import { computed, inject, reactive, ref } from 'vue';
+    import type { PropType, ComputedRef } from 'vue';
     import { getHours, getMinutes, getSeconds } from 'date-fns';
 
     import { ChevronUpIcon, ChevronDownIcon, ClockIcon } from '@components/Icons';
 
-    import type { DynamicClass, IDateFilter, IDefaultSelect, ITimeType, TimeOverlayCheck } from '@/interfaces';
+    import type {
+        DynamicClass,
+        IDateFilter,
+        IDefaultSelect,
+        ITimeType,
+        TimeOverlayCheck,
+        AreaLabels,
+    } from '@/interfaces';
     import { getArrayInArray, hoursToAmPmHours } from '@/utils/util';
     import SelectionGrid from '@components/SelectionGrid.vue';
     import { useTransitions } from '@components/composition/transition';
     import { addTime, subTime } from '@/utils/date-utils';
-    import { TimeInputProps } from '@/utils/props';
-
+    import { ariaLabelsKey, TimeInputProps } from '@/utils/props';
     const emit = defineEmits([
         'setHours',
         'setMinutes',
@@ -121,6 +127,7 @@
         seconds: false,
     });
     const amPm = ref('AM');
+    const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
     const { transitionName, showTransition } = useTransitions();
 
     const timeColClass = computed(
