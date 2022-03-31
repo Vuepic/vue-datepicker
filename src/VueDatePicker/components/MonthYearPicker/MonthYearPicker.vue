@@ -138,14 +138,21 @@
     import type { PropType, ComputedRef } from 'vue';
     import { getMonth, getYear } from 'date-fns';
 
-    import { ChevronLeftIcon, ChevronRightIcon, CalendarIcon, ChevronDownIcon, ChevronUpIcon } from '@components/Icons';
-    import ActionIcon from '@components/MonthYearPicker/ActionIcon.vue';
-    import RegularPicker from '@components/MonthYearPicker/RegularPicker.vue';
-    import SelectionGrid from '@components/SelectionGrid.vue';
+    import {
+        ChevronLeftIcon,
+        ChevronRightIcon,
+        CalendarIcon,
+        ChevronDownIcon,
+        ChevronUpIcon,
+    } from '@/components/Icons';
+    import ActionIcon from '@/components/MonthYearPicker/ActionIcon.vue';
+    import RegularPicker from '@/components/MonthYearPicker/RegularPicker.vue';
+    import SelectionGrid from '@/components/SelectionGrid.vue';
+    import { useMontYearPick } from '@/components/composition/month-year';
+    import { useTransitions } from '@/components/composition/transition';
 
     import type { IDefaultSelect, IDateFilter, AreaLabels } from '@/interfaces';
-    import { useMontYearPick } from '@components/composition/month-year';
-    import { useTransitions } from '@components/composition/transition';
+
     import { ariaLabelsKey, DateValidationProps, MonthCalendarSharedProps } from '@/utils/props';
 
     const emit = defineEmits(['update:month', 'update:year', 'monthYearSelect', 'mount', 'reset-flow']);

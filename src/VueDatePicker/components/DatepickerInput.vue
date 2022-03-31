@@ -60,8 +60,10 @@
     import { computed, inject, ref, useSlots } from 'vue';
     import type { PropType, ComputedRef } from 'vue';
 
+    import { CalendarIcon, CancelIcon } from '@/components/Icons';
+
     import type { DynamicClass, AreaLabels } from '@/interfaces';
-    import { CalendarIcon, CancelIcon } from '@components/Icons';
+
     import { isValidDate, parseFreeInput } from '@/utils/date-utils';
     import { unrefElement } from '@/utils/util';
     import { ariaLabelsKey, ControlProps, InputProps, SharedProps } from '@/utils/props';

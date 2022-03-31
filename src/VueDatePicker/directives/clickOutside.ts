@@ -1,5 +1,6 @@
 // Following code is a port of @vueuse/core clickOutside hook
 import { unref, watch, getCurrentScope, onScopeDispose } from 'vue';
+
 import type { Fn, MaybeElementRef, MaybeRef, OnClickOutsideEvents, OnClickOutsideOptions } from '@/interfaces';
 import { unrefElement } from '@/utils/util';
 

@@ -89,7 +89,9 @@
     import type { PropType, ComputedRef } from 'vue';
     import { getHours, getMinutes, getSeconds } from 'date-fns';
 
-    import { ChevronUpIcon, ChevronDownIcon, ClockIcon } from '@components/Icons';
+    import { ChevronUpIcon, ChevronDownIcon, ClockIcon } from '@/components/Icons';
+    import SelectionGrid from '@/components/SelectionGrid.vue';
+    import { useTransitions } from '@/components/composition/transition';
 
     import type {
         DynamicClass,
@@ -99,11 +101,11 @@
         TimeOverlayCheck,
         AreaLabels,
     } from '@/interfaces';
+
     import { getArrayInArray, hoursToAmPmHours } from '@/utils/util';
-    import SelectionGrid from '@components/SelectionGrid.vue';
-    import { useTransitions } from '@components/composition/transition';
     import { addTime, subTime } from '@/utils/date-utils';
     import { ariaLabelsKey, TimeInputProps } from '@/utils/props';
+
     const emit = defineEmits([
         'setHours',
         'setMinutes',

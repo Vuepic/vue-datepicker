@@ -183,10 +183,14 @@
 <script lang="ts" setup>
     import { computed, onMounted, nextTick, useSlots, ref, onUnmounted, reactive, inject } from 'vue';
     import type { PropType, ComputedRef } from 'vue';
-    import Calendar from '@components/Calendar.vue';
-    import ActionRow from '@components/ActionRow.vue';
-    import TimePickerCmp from '@components/TimePicker/TimePicker.vue';
-    import MonthYearPicker from '@components/MonthYearPicker/MonthYearPicker.vue';
+
+    import Calendar from '@/components/Calendar.vue';
+    import ActionRow from '@/components/ActionRow.vue';
+    import TimePickerCmp from '@/components/TimePicker/TimePicker.vue';
+    import MonthYearPicker from '@/components/MonthYearPicker/MonthYearPicker.vue';
+
+    import { mapSlots } from '@/components/composition/slots';
+    import { useCalendar } from '@/components/composition/calendar';
 
     import type {
         CalendarRef,
@@ -201,9 +205,8 @@
         ITransition,
         AreaLabels,
     } from '@/interfaces';
-    import { mapSlots } from '@components/composition/slots';
+
     import { getCalendarDays, getMonths, getYears, unrefElement } from '@/utils/util';
-    import { useCalendar } from '@components/composition/calendar';
     import { isDateEqual } from '@/utils/date-utils';
     import { ariaLabelsKey, ControlProps, MenuProps, SharedProps } from '@/utils/props';
 

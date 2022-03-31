@@ -36,9 +36,10 @@
 <script lang="ts" setup>
     import type { PropType } from 'vue';
 
-    import SelectionGrid from '@components/SelectionGrid.vue';
-    import { CalendarIcon } from '@components/Icons';
-    import { useTransitions } from '@components/composition/transition';
+    import SelectionGrid from '@/components/SelectionGrid.vue';
+    import { CalendarIcon } from '@/components/Icons';
+    import { useTransitions } from '@/components/composition/transition';
+
     import type { IDefaultSelect } from '@/interfaces';
 
     defineEmits(['update:model-value', 'toggle']);

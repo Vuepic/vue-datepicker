@@ -82,12 +82,14 @@
     import { computed, inject, nextTick, onMounted, ref, useSlots } from 'vue';
     import type { PropType, ComputedRef } from 'vue';
 
-    import { ClockIcon, CalendarIcon } from '@components/Icons';
-    import TimeInput from '@components/TimePicker/TimeInput.vue';
+    import { ClockIcon, CalendarIcon } from '@/components/Icons';
+    import TimeInput from '@/components/TimePicker/TimeInput.vue';
+
+    import { mapSlots } from '@/components/composition/slots';
+    import { useTransitions } from '@/components/composition/transition';
 
     import type { IDateFilter, TimeInputRef, AreaLabels } from '@/interfaces';
-    import { mapSlots } from '@components/composition/slots';
-    import { useTransitions } from '@components/composition/transition';
+
     import { ariaLabelsKey, TimePickerProps } from '@/utils/props';
 
     const emit = defineEmits(['update:hours', 'update:minutes', 'update:seconds', 'mount', 'reset-flow']);
