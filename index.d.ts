@@ -136,7 +136,7 @@ interface VueDatePicker {
         rangeSeparator?: string;
         format?: null;
     };
-    teleport?: string;
+    teleport?: string | HTMLElement;
     monthNameFormat?: 'long' | 'short';
     startDate?: string | Date;
     startTime?:
@@ -173,7 +173,9 @@ interface VueDatePicker {
         tooltip?: { text: string; color?: string }[];
         color?: string;
     }[];
-    transitions?: boolean | { open?: string; close?: string; next?: string; previous?: string };
+    transitions?:
+        | boolean
+        | { open?: string; close?: string; next?: string; previous?: string; vNext?: string; vPrevious?: string };
     modeHeight?: string | number;
     enableSeconds?: boolean;
     escClose?: boolean;
