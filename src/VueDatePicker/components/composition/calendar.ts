@@ -566,7 +566,7 @@ export const useCalendar = (
         }
         updateFlow();
         emit('updateMonthYear', { instance, value, isMonth });
-        triggerCalendarTransition(instance);
+        triggerCalendarTransition();
     };
 
     const getSetDateTime = (dateValue: Date): Date => {
@@ -733,14 +733,14 @@ export const useCalendar = (
     const handleScroll = (event: WheelEvent, instance: number): void => {
         if (props.monthChangeOnScroll) {
             autoChangeMonth(props.monthChangeOnScroll !== 'inverse' ? -event.deltaY : event.deltaY, instance);
-            triggerCalendarTransition(instance);
+            triggerCalendarTransition();
         }
     };
 
     const handleSwipeOrArrow = (arrow: 'left' | 'right', instance: number, vertical = false): void => {
         if (props.monthChangeOnArrows && props.vertical === vertical) {
             autoChangeMonth(arrow === 'right' ? -1 : 1, instance);
-            triggerCalendarTransition(instance);
+            triggerCalendarTransition();
         }
     };
 
@@ -773,8 +773,8 @@ export const useCalendar = (
         }
     };
 
-    const triggerCalendarTransition = (instance: number): void => {
-        calendarRefs.value.forEach((refVal) => refVal.triggerTransition(month.value(instance), year.value(instance)));
+    const triggerCalendarTransition = (): void => {
+        calendarRefs.value.forEach((refVal, i) => refVal.triggerTransition(month.value(i), year.value(i)));
     };
 
     return {

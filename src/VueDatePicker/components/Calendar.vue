@@ -146,12 +146,8 @@
         if (transitions?.value) {
             const newDate = resetDateTime(setDateMonthOrYear(new Date(), props.month, props.year));
             transitionName.value = isDateAfter(resetDateTime(setDateMonthOrYear(new Date(), month, year)), newDate)
-                ? props.vertical
-                    ? transitions.value.vNext
-                    : transitions.value.next
-                : props.vertical
-                ? transitions.value.vPrevious
-                : transitions.value.previous;
+                ? transitions.value[props.vertical ? 'vNext' : 'next']
+                : transitions.value[props.vertical ? 'vPrevious' : 'previous'];
             showCalendar.value = false;
             nextTick(() => {
                 showCalendar.value = true;
