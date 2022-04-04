@@ -86,6 +86,7 @@
                                 @handle-scroll="handleScroll($event, instance)"
                                 @handle-swipe="handleSwipeOrArrow($event, instance)"
                                 @mount="childMount('calendar')"
+                                @dp-open="$emit('dpOpen')"
                                 @reset-flow="resetFlow"
                             >
                                 <template v-for="(slot, j) in calendarSlots" #[slot]="args" :key="j">
@@ -208,7 +209,7 @@
 
     import { getCalendarDays, getMonths, getYears, unrefElement } from '@/utils/util';
     import { isDateEqual } from '@/utils/date-utils';
-    import { ariaLabelsKey, ControlProps, MenuProps, SharedProps } from '@/utils/props';
+    import { ariaLabelsKey, ControlProps, MenuProps, SharedProps, transitionsKey } from '@/utils/props';
 
     const emit = defineEmits([
         'update:internalModelValue',
@@ -238,7 +239,7 @@
     const calendarWidth = ref(0);
     const menuMount = ref(false);
     const flowStep = ref(0);
-    const transitions = inject<ComputedRef<ITransition>>('transitions');
+    const transitions = inject<ComputedRef<ITransition>>(transitionsKey);
     const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
 
     onMounted(() => {
@@ -308,7 +309,7 @@
         isHoverDateStartEnd,
         isHoverDate,
         presetDateRange,
-    } = useCalendar(props, emit, updateFlowStep, calendarRefs);
+    } = useCalendar(props, emit, updateFlowStep, calendarRefs, transitions as ComputedRef<ITransition>);
 
     const calendarSlots = mapSlots(slots, 'calendar');
     const actionSlots = mapSlots(slots, 'action');

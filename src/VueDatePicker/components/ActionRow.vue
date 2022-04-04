@@ -38,6 +38,7 @@
     import {
         ActionRowProps,
         DateValidationProps,
+        formatLocaleKey,
         MenuNestedDownProps,
         NestedInternalSharedProps,
         TimeValidationProps,
@@ -58,7 +59,7 @@
         enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
     });
 
-    const formatLocale = inject<ComputedRef<Locale>>('formatLocale');
+    const formatLocale = inject<ComputedRef<Locale>>(formatLocaleKey);
     const selectClass = computed(() => ({
         dp__action: true,
         dp__select: true,

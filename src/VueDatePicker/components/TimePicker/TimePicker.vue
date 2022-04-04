@@ -90,7 +90,7 @@
 
     import type { IDateFilter, TimeInputRef, AreaLabels } from '@/interfaces';
 
-    import { ariaLabelsKey, TimePickerProps } from '@/utils/props';
+    import { ariaLabelsKey, autoApplyKey, TimePickerProps } from '@/utils/props';
 
     const emit = defineEmits(['update:hours', 'update:minutes', 'update:seconds', 'mount', 'reset-flow']);
 
@@ -104,7 +104,7 @@
         customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
     });
     const slots = useSlots();
-    const autoApply = inject('autoApply', false);
+    const autoApply = inject(autoApplyKey, false);
     const timeInputRef = ref<TimeInputRef | null>(null);
     const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
 

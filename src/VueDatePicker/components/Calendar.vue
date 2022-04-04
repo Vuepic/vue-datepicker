@@ -19,7 +19,7 @@
                     </div>
                 </div>
                 <div class="dp__calendar_header_separator"></div>
-                <transition :name="transitionName" :css="!!transitions" mode="out-in">
+                <transition :name="transitionName" :css="!!transitions" mode="out-in" @after-leave="handleTransition">
                     <div class="dp__calendar" role="grid" :aria-label="ariaLabels.calendarDays" v-if="showCalendar">
                         <div class="dp__calendar_row" role="row" v-for="(week, weekInd) in mappedDates" :key="weekInd">
                             <div role="gridcell" v-if="weekNumbers" class="dp__calendar_item dp__week_num">
@@ -103,9 +103,9 @@
 
     import { getDayNames, getDefaultMarker, unrefElement } from '@/utils/util';
     import { isDateAfter, isDateEqual, resetDateTime, setDateMonthOrYear } from '@/utils/date-utils';
-    import { ariaLabelsKey, CalendarProps, MonthCalendarSharedProps } from '@/utils/props';
+    import { ariaLabelsKey, CalendarProps, MonthCalendarSharedProps, transitionsKey } from '@/utils/props';
 
-    const emit = defineEmits(['selectDate', 'setHoverDate', 'handleScroll', 'mount', 'handleSwipe']);
+    const emit = defineEmits(['selectDate', 'setHoverDate', 'handleScroll', 'mount', 'handleSwipe', 'dpOpen']);
 
     const props = defineProps({
         ...MonthCalendarSharedProps,
@@ -124,7 +124,7 @@
     const dayRefs = ref([]);
     const calendarWrapRef = ref<HTMLElement | null>(null);
     const showCalendar = ref(true);
-    const transitions = inject<ComputedRef<ITransition>>('transitions');
+    const transitions = inject<ComputedRef<ITransition>>(transitionsKey);
     const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
     const transitionName = ref('');
     const touch = ref({ startX: 0, endX: 0, startY: 0, endY: 0 });
@@ -153,6 +153,10 @@
                 showCalendar.value = true;
             });
         }
+    };
+
+    const handleTransition = () => {
+        emit('dpOpen');
     };
 
     // Class object for calendar wrapper

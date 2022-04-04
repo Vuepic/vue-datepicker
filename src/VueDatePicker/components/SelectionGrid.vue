@@ -51,7 +51,7 @@
 
     import { getKey, unrefElement } from '@/utils/util';
     import { isDateBetween, isDateEqual } from '@/utils/date-utils';
-    import { ariaLabelsKey } from '@/utils/props';
+    import { ariaLabelsKey, autoApplyKey, textInputKey } from '@/utils/props';
 
     const emit = defineEmits(['update:modelValue', 'selected', 'toggle', 'reset-flow']);
 
@@ -69,8 +69,8 @@
     const scrollable = ref(false);
     const selectionActiveRef = ref(null);
     const gridWrapRef = ref(null);
-    const autoApply = inject('autoApply', false);
-    const textInput = inject('textInput', ref(false));
+    const autoApply = inject(autoApplyKey, false);
+    const textInput = inject(textInputKey, ref(false));
     const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
     const hoverValue = ref();
 

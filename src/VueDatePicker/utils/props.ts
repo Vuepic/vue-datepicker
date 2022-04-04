@@ -21,6 +21,10 @@ import type {
 } from '@/interfaces';
 
 export const ariaLabelsKey = Symbol();
+export const transitionsKey = Symbol();
+export const autoApplyKey = Symbol();
+export const textInputKey = Symbol();
+export const formatLocaleKey = Symbol();
 
 export const ControlProps = {
     disabled: { type: Boolean as PropType<boolean>, default: false },

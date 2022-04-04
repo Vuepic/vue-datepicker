@@ -160,7 +160,14 @@
     } from './utils/util';
     import { isString } from './utils/type-guard';
     import { onClickOutside } from './directives/clickOutside';
-    import { AllProps, ariaLabelsKey } from './utils/props';
+    import {
+        AllProps,
+        ariaLabelsKey,
+        autoApplyKey,
+        formatLocaleKey,
+        textInputKey,
+        transitionsKey,
+    } from './utils/props';
 
     const emit = defineEmits([
         'update:modelValue',
@@ -184,10 +191,10 @@
     const dpMenuRef = ref(null);
     const inputRef = ref(null);
     const focusRef = ref<HTMLElement | null>(null);
-    provide('autoApply', props.autoApply);
+    provide(autoApplyKey, props.autoApply);
     const formatLocaleRef = computed(() => props.formatLocale);
-    provide('formatLocale', formatLocaleRef);
-    provide('textInput', toRef(props, 'textInput'));
+    provide(formatLocaleKey, formatLocaleRef);
+    provide(textInputKey, toRef(props, 'textInput'));
 
     onMounted(() => {
         parseExternalModelValue(props.modelValue);
@@ -289,7 +296,7 @@
         }
         return mergeDefaultTransitions(props.transitions);
     });
-    provide('transitions', defaultTransitions);
+    provide(transitionsKey, defaultTransitions);
 
     const theme = computed(() => (props.dark ? 'dp__theme_dark' : 'dp__theme_light'));
 
