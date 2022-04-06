@@ -13,6 +13,7 @@ export const usePosition = (
     autoPosition: boolean,
     menuRef: ComponentRef,
     inputRef: ComponentRef,
+    inline: boolean,
     emit: VueEmit,
 ) => {
     const menuPosition = ref({ top: '0', left: '0', transform: 'none' });
@@ -84,16 +85,18 @@ export const usePosition = (
      * Recalculate param is added when the menu component is mounted so that we can check the correct space
      */
     const setMenuPosition = (recalculate = true): void => {
-        const el = unrefElement(inputRef);
-        if (altPosition && typeof altPosition !== 'boolean') {
-            menuPosition.value = altPosition(el);
-        } else if (el) {
-            const { left, width, height } = el.getBoundingClientRect();
-            const { top: offset } = altPosition ? getOffsetAlt(el) : getOffset(el);
-            menuPosition.value.top = `${height + offset + diagonal}px`;
-            setPositioning(left, width);
-            if (recalculate && autoPosition) {
-                recalculatePosition();
+        if (!inline) {
+            const el = unrefElement(inputRef);
+            if (altPosition && typeof altPosition !== 'boolean') {
+                menuPosition.value = altPosition(el);
+            } else if (el) {
+                const { left, width, height } = el.getBoundingClientRect();
+                const { top: offset } = altPosition ? getOffsetAlt(el) : getOffset(el);
+                menuPosition.value.top = `${height + offset + diagonal}px`;
+                setPositioning(left, width);
+                if (recalculate && autoPosition) {
+                    recalculatePosition();
+                }
             }
         }
     };
@@ -104,7 +107,7 @@ export const usePosition = (
      */
     const recalculatePosition = (): void => {
         const el = unrefElement(inputRef);
-        if (el && autoPosition) {
+        if (el && autoPosition && !inline) {
             const { height: inputHeight, top, left: inputLeft, width } = el.getBoundingClientRect();
             const { top: offset } = altPosition ? getOffsetAlt(el) : getOffset(el);
             const fullHeight = window.innerHeight;

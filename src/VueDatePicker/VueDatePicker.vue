@@ -232,6 +232,7 @@
         props.autoPosition,
         dpMenuRef,
         inputRef,
+        props.inline,
         emit,
     );
 
