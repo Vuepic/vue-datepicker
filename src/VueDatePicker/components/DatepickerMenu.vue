@@ -182,7 +182,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, onMounted, nextTick, useSlots, ref, onUnmounted, reactive, inject } from 'vue';
+    import { computed, onMounted, useSlots, ref, onUnmounted, reactive, inject } from 'vue';
     import type { PropType, ComputedRef } from 'vue';
 
     import Calendar from '@/components/Calendar.vue';
@@ -247,9 +247,7 @@
         if (!props.presetRanges?.length) {
             getCalendarWidth();
         }
-        if (!props.inline) {
-            nextTick(() => emit('dpOpen'));
-        }
+
         const menu = unrefElement(dpMenuRef);
         if (menu && !props.textInput && !props.inline) {
             menu.focus({ preventScroll: true });

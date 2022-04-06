@@ -139,7 +139,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, onMounted, onUnmounted, provide, ref, toRef, useSlots, watch } from 'vue';
+    import { computed, nextTick, onMounted, onUnmounted, provide, ref, toRef, useSlots, watch } from 'vue';
     import { getHours, getMinutes, getSeconds } from 'date-fns';
 
     import DatepickerInput from './components/DatepickerInput.vue';
@@ -226,7 +226,7 @@
         { deep: true },
     );
 
-    const { openOnTop, menuPosition, setMenuPosition, recalculatePosition } = usePosition(
+    const { openOnTop, menuPosition, setMenuPosition, recalculatePosition, setInitialPosition } = usePosition(
         props.position,
         props.altPosition,
         props.autoPosition,
@@ -361,8 +361,9 @@
 
     const openMenu = (): void => {
         if (!props.disabled && !props.readonly) {
-            setMenuPosition();
+            setInitialPosition();
             isOpen.value = true;
+            nextTick().then(() => setMenuPosition());
 
             if (!isOpen.value) {
                 clearInternalValues();
@@ -433,6 +434,7 @@
                 isOpen.value = false;
                 emit('closed');
                 emit('blur');
+                setInitialPosition();
                 if (inputValue.value) {
                     parseExternalModelValue(modelValueMap.value);
                 }

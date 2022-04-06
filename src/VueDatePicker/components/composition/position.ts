@@ -44,6 +44,41 @@ export const usePosition = (
         return { top: y, left: x };
     };
 
+    const setPositionRight = (left: number, width: number): void => {
+        menuPosition.value.left = `${left + width}px`;
+        menuPosition.value.transform = `translateX(-100%)`;
+    };
+
+    const setPositionLeft = (left: number): void => {
+        menuPosition.value.left = `${left}px`;
+        menuPosition.value.transform = `translateX(0)`;
+    };
+
+    const setPositioning = (left: number, width: number): void => {
+        if (openPosition === OpenPosition.left) {
+            setPositionLeft(left);
+        }
+
+        if (openPosition === OpenPosition.right) {
+            setPositionRight(left, width);
+        }
+
+        if (openPosition === OpenPosition.center) {
+            menuPosition.value.left = `${left + width / 2}px`;
+            menuPosition.value.transform = `translateX(-50%)`;
+        }
+    };
+
+    const setInitialPosition = () => {
+        const inputEl = unrefElement(inputRef);
+        if (inputEl) {
+            const { top: offset } = altPosition ? getOffsetAlt(inputEl) : getOffset(inputEl);
+            const { left, width } = inputEl.getBoundingClientRect();
+            menuPosition.value.top = `${offset}px`;
+            setPositioning(left, width);
+        }
+    };
+
     /**
      * Main call, when input is clicked, opens the menu on the first entry
      * Recalculate param is added when the menu component is mounted so that we can check the correct space
@@ -55,21 +90,8 @@ export const usePosition = (
         } else if (el) {
             const { left, width, height } = el.getBoundingClientRect();
             const { top: offset } = altPosition ? getOffsetAlt(el) : getOffset(el);
-            const position = { top: `${height + offset + diagonal}px`, left: '', transform: 'none' };
-            if (openPosition === OpenPosition.left) {
-                position.left = `${left}px`;
-            }
-
-            if (openPosition === OpenPosition.right) {
-                position.left = `${left + width}px`;
-                position.transform = `translateX(-100%)`;
-            }
-
-            if (openPosition === OpenPosition.center) {
-                position.left = `${left + width / 2}px`;
-                position.transform = `translateX(-50%)`;
-            }
-            menuPosition.value = position;
+            menuPosition.value.top = `${height + offset + diagonal}px`;
+            setPositioning(left, width);
             if (recalculate && autoPosition) {
                 recalculatePosition();
             }
@@ -83,7 +105,7 @@ export const usePosition = (
     const recalculatePosition = (): void => {
         const el = unrefElement(inputRef);
         if (el && autoPosition) {
-            const { height: inputHeight, top } = el.getBoundingClientRect();
+            const { height: inputHeight, top, left: inputLeft, width } = el.getBoundingClientRect();
             const { top: offset } = altPosition ? getOffsetAlt(el) : getOffset(el);
             const fullHeight = window.innerHeight;
             const freeSpaceBottom = fullHeight - top - inputHeight;
@@ -91,7 +113,7 @@ export const usePosition = (
             const menuEl = unrefElement(menuRef);
 
             if (menuEl) {
-                const { height } = menuEl.getBoundingClientRect();
+                const { height, left, right } = menuEl.getBoundingClientRect();
                 const menuHeight = height + inputHeight;
                 if (menuHeight > top && menuHeight > freeSpaceBottom) {
                     if (top < freeSpaceBottom) {
@@ -107,10 +129,16 @@ export const usePosition = (
                         openOnTop.value = false;
                     }
                 }
+
+                if (left < 0) {
+                    setPositionLeft(inputLeft);
+                } else if (right > document.documentElement.clientWidth) {
+                    setPositionRight(inputLeft, width);
+                }
             }
         }
         emit('recalculatePosition');
     };
 
-    return { openOnTop, menuPosition, setMenuPosition, recalculatePosition };
+    return { openOnTop, menuPosition, setMenuPosition, setInitialPosition, recalculatePosition };
 };
