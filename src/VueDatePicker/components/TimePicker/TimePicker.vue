@@ -22,9 +22,9 @@
                         :hours="hours"
                         :minutes="minutes"
                         :seconds="seconds"
-                        :setHours="updateHours"
-                        :setMinutes="updateMinutes"
-                        :setSeconds="updateSeconds"
+                        :set-hours="updateHours"
+                        :set-minutes="updateMinutes"
+                        :set-seconds="updateSeconds"
                     ></slot>
                     <template v-if="!$slots['time-picker-overlay']">
                         <div class="dp__overlay_row">

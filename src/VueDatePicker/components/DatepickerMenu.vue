@@ -135,7 +135,7 @@
                     </div>
                 </div>
                 <div class="dp__now_wrap" v-if="showNowButton">
-                    <slot name="now-button" v-if="$slots['now-button']" :selectCurrentDate="selectCurrentDate" />
+                    <slot name="now-button" v-if="$slots['now-button']" :select-current-date="selectCurrentDate" />
                     <button
                         v-if="!$slots['now-button']"
                         type="button"

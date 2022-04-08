@@ -13,10 +13,10 @@
                 v-if="$slots['dp-input'] && !$slots.trigger && !inline"
                 name="dp-input"
                 :value="inputValue"
-                :onInput="handleInput"
-                :onEnter="handleEnter"
-                :onTab="handleTab"
-                :onClear="onClear"
+                :on-input="handleInput"
+                :on-enter="handleEnter"
+                :on-tab="handleTab"
+                :on-clear="onClear"
             />
             <input
                 v-if="!$slots['dp-input']"
