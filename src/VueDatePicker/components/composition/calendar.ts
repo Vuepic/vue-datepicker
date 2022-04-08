@@ -568,7 +568,7 @@ export const useCalendar = (
         }
         updateFlow();
         emit('updateMonthYear', { instance, value, isMonth });
-        triggerCalendarTransition();
+        triggerCalendarTransition(props.multiCalendarsSolo ? instance : undefined);
     };
 
     const getSetDateTime = (dateValue: Date): Date => {
@@ -739,11 +739,15 @@ export const useCalendar = (
         }
     };
 
-    const handleSwipeOrArrow = (arrow: 'left' | 'right', instance: number, vertical = false): void => {
+    const handleArrow = (arrow: 'left' | 'right', instance: number, vertical = false): void => {
         if (props.monthChangeOnArrows && props.vertical === vertical) {
-            autoChangeMonth(arrow === 'right' ? -1 : 1, instance);
-            triggerCalendarTransition();
+            handleSwipe(arrow, instance);
         }
+    };
+
+    const handleSwipe = (direction: 'left' | 'right', instance: number): void => {
+        autoChangeMonth(direction === 'right' ? -1 : 1, instance);
+        triggerCalendarTransition();
     };
 
     const getMarker = (date: UnwrapRef<ICalendarDay>): IMarker | undefined =>
@@ -775,8 +779,12 @@ export const useCalendar = (
         }
     };
 
-    const triggerCalendarTransition = (): void => {
-        calendarRefs.value.forEach((refVal, i) => refVal.triggerTransition(month.value(i), year.value(i)));
+    const triggerCalendarTransition = (instance?: number): void => {
+        if (instance || instance === 0) {
+            calendarRefs.value[instance].triggerTransition(month.value(instance), year.value(instance));
+        } else {
+            calendarRefs.value.forEach((refVal, i) => refVal.triggerTransition(month.value(i), year.value(i)));
+        }
     };
 
     return {
@@ -802,7 +810,8 @@ export const useCalendar = (
         rangeActiveStartEnd,
         handleScroll,
         getMarker,
-        handleSwipeOrArrow,
+        handleArrow,
+        handleSwipe,
         selectCurrentDate,
         isHoverDate,
         isHoverDateStartEnd,
