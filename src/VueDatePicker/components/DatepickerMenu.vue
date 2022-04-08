@@ -86,7 +86,6 @@
                                 @handle-scroll="handleScroll($event, instance)"
                                 @handle-swipe="handleSwipe($event, instance)"
                                 @mount="childMount('calendar')"
-                                @dp-open="$emit('dpOpen')"
                                 @reset-flow="resetFlow"
                             >
                                 <template v-for="(slot, j) in calendarSlots" #[slot]="args" :key="j">

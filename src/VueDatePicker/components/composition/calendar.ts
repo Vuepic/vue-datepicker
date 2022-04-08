@@ -66,7 +66,7 @@ export const useCalendar = (
         calendars,
         () => {
             setTimeout(() => {
-                if (props.openOnTop && !transitions.value) {
+                if (props.openOnTop) {
                     emit('dpOpen');
                 }
             }, 0);
