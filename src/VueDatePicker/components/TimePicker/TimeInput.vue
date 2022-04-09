@@ -159,7 +159,7 @@
 
     const getGridItems = (type: ITimeType): IDefaultSelect[][] => {
         const max = type === 'hours' ? (props.is24 ? 24 : 12) : 60;
-        const increment = +props[`${type}Increment`];
+        const increment = +props[`${type}GridIncrement`];
 
         const generatedArray: IDefaultSelect[] = [];
 
