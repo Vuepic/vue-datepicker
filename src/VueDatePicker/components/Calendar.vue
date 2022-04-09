@@ -138,6 +138,7 @@
             if (calendarWrapRef.value) {
                 calendarWrapRef.value.addEventListener('touchstart', onTouchStart);
                 calendarWrapRef.value.addEventListener('touchend', onTouchEnd);
+                calendarWrapRef.value.addEventListener('touchmove', onTouchMove);
             }
         }
     });
@@ -202,21 +203,23 @@
     };
 
     const onTouchStart = (ev: TouchEvent): void => {
-        ev.preventDefault();
         touch.value.startX = ev.changedTouches[0].screenX;
         touch.value.startY = ev.changedTouches[0].screenY;
     };
 
     const onTouchEnd = (ev: TouchEvent): void => {
-        ev.preventDefault();
         touch.value.endX = ev.changedTouches[0].screenX;
         touch.value.endY = ev.changedTouches[0].screenY;
         handleTouch();
     };
 
+    const onTouchMove = (ev: TouchEvent): void => {
+        ev.preventDefault();
+    };
+
     const handleTouch = () => {
         const property = props.vertical ? 'Y' : 'X';
-        if (touch.value[`start${property}`] !== touch.value[`end${property}`]) {
+        if (Math.abs(touch.value[`start${property}`] - touch.value[`end${property}`]) > 10) {
             emit('handleSwipe', touch.value[`start${property}`] > touch.value[`end${property}`] ? 'right' : 'left');
         }
     };
