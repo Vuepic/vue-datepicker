@@ -55,12 +55,12 @@
                 v-if="showRightIcon"
             >
                 <slot
-                    :name="vertical ? 'arrow-right' : 'arrow-down'"
-                    v-if="$slots[vertical ? 'arrow-right' : 'arrow-down']"
+                    :name="vertical ? 'arrow-down' : 'arrow-right'"
+                    v-if="$slots[vertical ? 'arrow-down' : 'arrow-right']"
                 />
                 <component
                     :is="vertical ? ChevronDownIcon : ChevronRightIcon"
-                    v-if="!$slots[vertical ? 'arrow-right' : 'arrow-down']"
+                    v-if="!$slots[vertical ? 'arrow-down' : 'arrow-right']"
                 />
             </ActionIcon>
         </template>
