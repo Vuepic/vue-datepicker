@@ -25,6 +25,7 @@ export const transitionsKey = Symbol();
 export const autoApplyKey = Symbol();
 export const textInputKey = Symbol();
 export const formatLocaleKey = Symbol();
+export const arrowNavigationKey = Symbol();
 
 export const ControlProps = {
     disabled: { type: Boolean as PropType<boolean>, default: false },
@@ -154,6 +155,7 @@ export const MenuProps = {
     keepActionRow: { type: Boolean as PropType<boolean>, default: false },
     weekPicker: { type: Boolean as PropType<boolean>, default: false },
     filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
+    arrowNavigation: { type: Boolean as PropType<boolean>, default: false },
 };
 
 // Since many props are passed from the main component to the children, this is simply to reuse prop definitions and don't repeat the same code

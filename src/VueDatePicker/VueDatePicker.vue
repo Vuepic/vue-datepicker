@@ -120,6 +120,7 @@
                     weekPicker,
                     noSwipe,
                     vertical,
+                    arrowNavigation,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @close-picker="closeMenu"
@@ -163,11 +164,13 @@
     import {
         AllProps,
         ariaLabelsKey,
+        arrowNavigationKey,
         autoApplyKey,
         formatLocaleKey,
         textInputKey,
         transitionsKey,
     } from './utils/props';
+    import { useArrowNavigation } from '@/components/composition/arrow-navigate';
 
     const emit = defineEmits([
         'update:modelValue',
@@ -195,6 +198,7 @@
     const formatLocaleRef = computed(() => props.formatLocale);
     provide(formatLocaleKey, formatLocaleRef);
     provide(textInputKey, toRef(props, 'textInput'));
+    provide(arrowNavigationKey, toRef(props, 'arrowNavigation'));
 
     onMounted(() => {
         parseExternalModelValue(props.modelValue);
@@ -259,6 +263,8 @@
         props.textInputOptions,
         emit,
     );
+
+    const { clearArrowNav } = useArrowNavigation();
 
     const wrapperClass = computed(
         (): DynamicClass => ({
@@ -433,6 +439,7 @@
         if (!props.inline) {
             if (isOpen.value) {
                 isOpen.value = false;
+                clearArrowNav();
                 emit('closed');
                 emit('blur');
                 setInitialPosition();

@@ -6,6 +6,7 @@
         role="button"
         :aria-label="ariaLabel"
         tabindex="0"
+        ref="elRef"
     >
         <slot name="default" />
     </div>
@@ -19,6 +20,7 @@
                 minValue,
                 maxValue,
             }"
+            :header-refs="[]"
             @update:model-value="$emit('update:model-value', $event)"
             @toggle="$emit('toggle')"
         >
@@ -34,6 +36,7 @@
 </template>
 
 <script lang="ts" setup>
+    import { onMounted, ref } from 'vue';
     import type { PropType } from 'vue';
 
     import SelectionGrid from '@/components/SelectionGrid.vue';
@@ -42,7 +45,7 @@
 
     import type { IDefaultSelect } from '@/interfaces';
 
-    defineEmits(['update:model-value', 'toggle']);
+    const emit = defineEmits(['update:model-value', 'toggle', 'setRef']);
     defineProps({
         ariaLabel: { type: String as PropType<string>, default: '' },
         showSelectionGrid: { type: Boolean as PropType<boolean>, default: false },
@@ -52,7 +55,12 @@
         minValue: { type: Number as PropType<number>, default: null },
         maxValue: { type: Number as PropType<number>, default: null },
         slotName: { type: String as PropType<string>, default: '' },
+        headerRefs: { type: Array as PropType<HTMLElement[]>, default: () => [] },
     });
 
     const { transitionName, showTransition } = useTransitions();
+
+    const elRef = ref(null);
+
+    onMounted(() => emit('setRef', elRef));
 </script>

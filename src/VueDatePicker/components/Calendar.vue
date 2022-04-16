@@ -31,11 +31,7 @@
                                 v-for="(dayVal, dayInd) in week.days"
                                 role="gridcell"
                                 class="dp__calendar_item"
-                                :ref="
-                                    (el) => {
-                                        if (el) dayRefs[dayInd + weekInd] = el;
-                                    }
-                                "
+                                :ref="(el) => assignDayRef(el, weekInd, dayInd)"
                                 :key="dayInd + weekInd"
                                 :aria-selected="
                                     dayVal.classData.dp__active_date ||
@@ -46,7 +42,7 @@
                                 tabindex="0"
                                 @click.stop.prevent="$emit('selectDate', dayVal)"
                                 @keydown.enter="$emit('selectDate', dayVal)"
-                                @mouseover="onMouseOver(dayVal, dayInd + weekInd)"
+                                @mouseover="onMouseOver(dayVal, weekInd, dayInd)"
                                 @mouseleave="onMouseLeave"
                             >
                                 <div class="dp__cell_inner" :class="dayVal.classData">
@@ -97,13 +93,20 @@
 
 <script lang="ts" setup>
     import { computed, inject, nextTick, onMounted, ref } from 'vue';
-    import type { PropType, UnwrapRef, ComputedRef } from 'vue';
+    import type { PropType, UnwrapRef, ComputedRef, Ref } from 'vue';
 
     import type { DynamicClass, ICalendarDate, ICalendarDay, IMarker, ITransition, AreaLabels } from '@/interfaces';
 
     import { getDayNames, getDefaultMarker, unrefElement } from '@/utils/util';
     import { isDateAfter, isDateEqual, resetDateTime, setDateMonthOrYear } from '@/utils/date-utils';
-    import { ariaLabelsKey, CalendarProps, MonthCalendarSharedProps, transitionsKey } from '@/utils/props';
+    import {
+        ariaLabelsKey,
+        arrowNavigationKey,
+        CalendarProps,
+        MonthCalendarSharedProps,
+        transitionsKey,
+    } from '@/utils/props';
+    import { useArrowNavigation } from '@/components/composition/arrow-navigate';
 
     const emit = defineEmits(['selectDate', 'setHoverDate', 'handleScroll', 'mount', 'handleSwipe']);
 
@@ -121,19 +124,22 @@
 
     const showMakerTooltip = ref<Date | null>(null);
     const markerTooltipStyle = ref({ bottom: '', left: '', transform: '' });
-    const dayRefs = ref([]);
+    const dayRefs = ref<HTMLElement[][]>([]);
     const calendarWrapRef = ref<HTMLElement | null>(null);
     const showCalendar = ref(true);
     const transitions = inject<ComputedRef<ITransition>>(transitionsKey);
     const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
+    const arrowNavigation = inject<Ref<boolean>>(arrowNavigationKey);
     const transitionName = ref('');
     const touch = ref({ startX: 0, endX: 0, startY: 0, endY: 0 });
     const weekDays = computed(() => {
         return getDayNames(props.locale, +props.weekStart);
     });
 
+    const { buildMultiLevelMatrix } = useArrowNavigation();
+
     onMounted(() => {
-        emit('mount');
+        emit('mount', { cmp: 'calendar', refs: dayRefs });
         if (!props.noSwipe) {
             if (calendarWrapRef.value) {
                 calendarWrapRef.value.addEventListener('touchstart', onTouchStart);
@@ -181,10 +187,10 @@
 
     const contentWrapStyle = computed(() => (props.specificMode ? { height: `${props.modeHeight}px` } : null));
 
-    const onMouseOver = (day: UnwrapRef<ICalendarDay>, refIndex: number): void => {
+    const onMouseOver = (day: UnwrapRef<ICalendarDay>, weekInd: number, dayInd: number): void => {
         emit('setHoverDate', day);
         if (day.marker?.tooltip?.length) {
-            const el = unrefElement(dayRefs.value[refIndex]);
+            const el = unrefElement(dayRefs.value[weekInd][dayInd]);
             if (el) {
                 const { width, height } = el.getBoundingClientRect();
 
@@ -221,6 +227,19 @@
         const property = props.vertical ? 'Y' : 'X';
         if (Math.abs(touch.value[`start${property}`] - touch.value[`end${property}`]) > 10) {
             emit('handleSwipe', touch.value[`start${property}`] > touch.value[`end${property}`] ? 'right' : 'left');
+        }
+    };
+
+    const assignDayRef = (el: HTMLElement, weekInd: number, dayInd: number) => {
+        if (el) {
+            if (Array.isArray(dayRefs.value[weekInd])) {
+                dayRefs.value[weekInd][dayInd] = el;
+            } else {
+                dayRefs.value[weekInd] = [el];
+            }
+        }
+        if (arrowNavigation?.value) {
+            buildMultiLevelMatrix(dayRefs.value, 'calendar');
         }
     };
 

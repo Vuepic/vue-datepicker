@@ -11,10 +11,10 @@
             @click="handleDpMenuClick"
             @keydown.esc="handleEsc"
             @keydown.space="handleSpace"
-            @keydown.left="handleArrow('left', 0)"
-            @keydown.up="handleArrow('left', 0, true)"
-            @keydown.down="handleArrow('right', 0, true)"
-            @keydown.right="handleArrow('right', 0)"
+            @keydown.left="handleArrowKey('left')"
+            @keydown.up="handleArrowKey('up')"
+            @keydown.down="handleArrowKey('down')"
+            @keydown.right="handleArrowKey('right')"
         >
             <div :class="disabledReadonlyOverlay" v-if="(disabled || readonly) && inline"></div>
             <div :class="arrowClass" v-if="!inline"></div>
@@ -64,6 +64,7 @@
                                 @update:month="updateMonthYear(instance, $event, true)"
                                 @update:year="updateMonthYear(instance, $event, false)"
                                 @month-year-select="monthYearSelect"
+                                @overlay-closed="focusMenu"
                             >
                                 <template v-for="(slot, j) in monthYearSlots" #[slot]="args" :key="j">
                                     <slot :name="slot" v-bind="args" />
@@ -126,6 +127,7 @@
                             @update:minutes="updateTime($event, false)"
                             @update:seconds="updateTime($event, false, true)"
                             @reset-flow="resetFlow"
+                            @overlay-closed="focusMenu"
                         >
                             <template v-for="(slot, i) in timePickerSlots" #[slot]="args" :key="i">
                                 <slot :name="slot" v-bind="args" />
@@ -182,7 +184,7 @@
 
 <script lang="ts" setup>
     import { computed, onMounted, useSlots, ref, onUnmounted, reactive, inject } from 'vue';
-    import type { PropType, ComputedRef } from 'vue';
+    import type { PropType, ComputedRef, Ref } from 'vue';
 
     import Calendar from '@/components/Calendar.vue';
     import ActionRow from '@/components/ActionRow.vue';
@@ -208,7 +210,15 @@
 
     import { getCalendarDays, getMonths, getYears, unrefElement } from '@/utils/util';
     import { isDateEqual } from '@/utils/date-utils';
-    import { ariaLabelsKey, ControlProps, MenuProps, SharedProps, transitionsKey } from '@/utils/props';
+    import {
+        ariaLabelsKey,
+        arrowNavigationKey,
+        ControlProps,
+        MenuProps,
+        SharedProps,
+        transitionsKey,
+    } from '@/utils/props';
+    import { useArrowNavigation } from '@/components/composition/arrow-navigate';
 
     const emit = defineEmits([
         'update:internalModelValue',
@@ -240,6 +250,7 @@
     const flowStep = ref(0);
     const transitions = inject<ComputedRef<ITransition>>(transitionsKey);
     const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
+    const arrowNavigation = inject<Ref<boolean>>(arrowNavigationKey);
 
     onMounted(() => {
         menuMount.value = true;
@@ -249,7 +260,7 @@
 
         const menu = unrefElement(dpMenuRef);
         if (menu && !props.textInput && !props.inline) {
-            menu.focus({ preventScroll: true });
+            focusMenu();
         }
         if (menu) {
             const stopDefault = (event: Event) => {
@@ -265,6 +276,15 @@
     onUnmounted(() => {
         document.removeEventListener('resize', getCalendarWidth);
     });
+
+    const { arrowRight, arrowLeft, arrowDown, arrowUp } = useArrowNavigation();
+
+    const focusMenu = (): void => {
+        const menu = unrefElement(dpMenuRef);
+        if (menu) {
+            menu.focus({ preventScroll: true });
+        }
+    };
 
     const updateFlowStep = (): void => {
         if (props.flow?.length && flowStep.value !== -1) {
@@ -307,7 +327,7 @@
         isHoverDateStartEnd,
         isHoverDate,
         presetDateRange,
-    } = useCalendar(props, emit, updateFlowStep, calendarRefs, transitions as ComputedRef<ITransition>);
+    } = useCalendar(props, emit, updateFlowStep, calendarRefs);
 
     const calendarSlots = mapSlots(slots, 'calendar');
     const actionSlots = mapSlots(slots, 'action');
@@ -505,6 +525,21 @@
         if (flowValue === 'hours' || flowValue === 'minutes' || flowValue === 'seconds') {
             if (timePickerRef.value) {
                 timePickerRef.value.toggleTimePicker(true, true, flowValue);
+            }
+        }
+    };
+
+    const handleArrowKey = (arrow: 'up' | 'down' | 'left' | 'right'): void => {
+        if (arrowNavigation?.value) {
+            if (arrow === 'up') return arrowUp();
+            if (arrow === 'down') return arrowDown();
+            if (arrow === 'left') return arrowLeft();
+            if (arrow === 'right') return arrowRight();
+        } else {
+            if (arrow === 'left' || arrow === 'up') {
+                handleArrow('left', 0, arrow === 'up');
+            } else {
+                handleArrow('right', 0, arrow === 'down');
             }
         }
     };

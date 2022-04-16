@@ -10,6 +10,7 @@
                     tabindex="0"
                     @keydown.enter="handleTimeValue(timeInput.type)"
                     @click="handleTimeValue(timeInput.type)"
+                    :ref="(el) => assignRefs(el, i, 0)"
                 >
                     <slot name="arrow-up" v-if="$slots['arrow-up']" />
                     <ChevronUpIcon v-if="!$slots['arrow-up']" />
@@ -21,6 +22,7 @@
                     tabindex="0"
                     @keydown.enter="toggleOverlay(timeInput.type)"
                     @click="toggleOverlay(timeInput.type)"
+                    :ref="(el) => assignRefs(el, i, 1)"
                 >
                     <slot
                         v-if="$slots[timeInput.type]"
@@ -37,6 +39,7 @@
                     tabindex="0"
                     @keydown.enter="handleTimeValue(timeInput.type, false)"
                     @click="handleTimeValue(timeInput.type, false)"
+                    :ref="(el) => assignRefs(el, i, 2)"
                 >
                     <slot name="arrow-down" v-if="$slots['arrow-down']" />
                     <ChevronDownIcon v-if="!$slots['arrow-down']" />
@@ -85,8 +88,8 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, inject, reactive, ref } from 'vue';
-    import type { PropType, ComputedRef } from 'vue';
+    import { computed, inject, onMounted, reactive, ref } from 'vue';
+    import type { PropType, ComputedRef, Ref } from 'vue';
     import { getHours, getMinutes, getSeconds } from 'date-fns';
 
     import { ChevronUpIcon, ChevronDownIcon, ClockIcon } from '@/components/Icons';
@@ -104,7 +107,8 @@
 
     import { getArrayInArray, hoursToAmPmHours } from '@/utils/util';
     import { addTime, subTime } from '@/utils/date-utils';
-    import { ariaLabelsKey, TimeInputProps } from '@/utils/props';
+    import { ariaLabelsKey, arrowNavigationKey, TimeInputProps } from '@/utils/props';
+    import { useArrowNavigation } from '@/components/composition/arrow-navigate';
 
     const emit = defineEmits([
         'setHours',
@@ -113,6 +117,8 @@
         'update:minutes',
         'update:seconds',
         'reset-flow',
+        'mounted',
+        'overlay-closed',
     ]);
     const props = defineProps({
         ...TimeInputProps,
@@ -121,6 +127,8 @@
         seconds: { type: Number as PropType<number>, default: 0 },
         filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
         disabled: { type: Boolean as PropType<boolean>, default: false },
+        closeTimePickerBtn: { type: Object as PropType<HTMLElement>, default: null },
+        order: { type: Number as PropType<0 | 1>, default: 0 },
     });
 
     const overlays = reactive({
@@ -130,7 +138,16 @@
     });
     const amPm = ref('AM');
     const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
+    const arrowNavigation = inject<Ref<boolean>>(arrowNavigationKey);
+
+    const elementRefs = ref<HTMLElement[][]>([]);
+
     const { transitionName, showTransition } = useTransitions();
+    const { setTimePickerElements, setTimePickerBackRef } = useArrowNavigation();
+
+    onMounted(() => {
+        emit('mounted');
+    });
 
     const timeColClass = computed(
         (): DynamicClass => ({
@@ -177,6 +194,9 @@
     const toggleOverlay = (type: ITimeType): void => {
         if (!checkOverlayDisabled(type)) {
             overlays[type] = !overlays[type];
+            if (!overlays[type]) {
+                emit('overlay-closed');
+            }
         }
     };
 
@@ -210,6 +230,22 @@
 
     const openChildCmp = (child: ITimeType): void => {
         overlays[child] = true;
+    };
+
+    const assignRefs = (el: HTMLElement, col: number, pos: number): void => {
+        if (el && arrowNavigation?.value) {
+            if (Array.isArray(elementRefs.value[col])) {
+                elementRefs.value[col][pos] = el;
+            } else {
+                elementRefs.value[col] = [el];
+            }
+            let matrix = elementRefs.value.reduce(
+                (col, row) => row.map((_, i) => [...(col[i] || []), row[i]]),
+                [] as HTMLElement[][],
+            );
+            setTimePickerBackRef(props.closeTimePickerBtn);
+            setTimePickerElements(matrix, props.order);
+        }
     };
 
     defineExpose({ openChildCmp });

@@ -1,5 +1,5 @@
 import { computed, onMounted, ref, watch } from 'vue';
-import type { UnwrapRef, Ref, ComputedRef } from 'vue';
+import type { UnwrapRef, Ref } from 'vue';
 import {
     add,
     addDays,
@@ -28,7 +28,6 @@ import type {
     MenuProps,
     VueEmit,
     WeekStartNum,
-    ITransition,
 } from '@/interfaces';
 import {
     dateToUtc,
@@ -48,7 +47,6 @@ export const useCalendar = (
     emit: VueEmit,
     updateFlow: () => void,
     calendarRefs: Ref<CalendarRef[]>,
-    transitions: ComputedRef<ITransition>,
 ) => {
     const today = ref<Date>(new Date());
     const hoveredDate = ref<Date | null>();

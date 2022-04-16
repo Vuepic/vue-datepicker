@@ -157,7 +157,7 @@ export const getKey = (index: number): string => {
     return makeKey(len);
 };
 
-export const unrefElement = (elRef: MaybeElementRef): HTMLElement | undefined => {
+export const unrefElement = (elRef: MaybeElementRef): HTMLElement | null => {
     const plain = unref(elRef);
     return (plain as ComponentPublicInstance)?.$el ?? plain;
 };

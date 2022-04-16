@@ -4,18 +4,13 @@
             <div class="dp__selection_grid_header"><slot name="header"></slot></div>
             <div class="dp__overlay_row" v-for="(row, i) in mappedItems" :key="getKey(i)" role="row">
                 <div
-                    v-for="col in row"
+                    v-for="(col, ind) in row"
                     role="gridcell"
                     :class="cellClassName"
                     :key="col.value"
                     :aria-selected="col.value === modelValue && !disabledValues.includes(col.value)"
                     :aria-disabled="col.className.dp__overlay_cell_disabled"
-                    :ref="
-                        (el) => {
-                            if (col.value === modelValue && !disabledValues.includes(col.value))
-                                selectionActiveRef = el;
-                        }
-                    "
+                    :ref="(el) => assignRef(el, col, i, ind)"
                     tabindex="0"
                     @click="onClick(col.value)"
                     @keydown.enter="onClick(col.value)"
@@ -33,6 +28,7 @@
                 :aria-label="ariaLabels.toggleOverlay"
                 :class="actionButtonClass"
                 tabindex="0"
+                ref="toggleButton"
                 @click="toggle"
                 @keydown.enter="toggle"
             >
@@ -43,15 +39,16 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, inject, onBeforeUpdate, onMounted, ref } from 'vue';
-    import type { PropType, ComputedRef } from 'vue';
+    import { computed, inject, onBeforeUpdate, onMounted, onUnmounted, ref } from 'vue';
+    import type { PropType, ComputedRef, Ref } from 'vue';
     import { setMonth, setYear } from 'date-fns';
 
     import type { IDefaultSelect, DynamicClass, AreaLabels } from '@/interfaces';
 
     import { getKey, unrefElement } from '@/utils/util';
     import { isDateBetween, isDateEqual } from '@/utils/date-utils';
-    import { ariaLabelsKey, autoApplyKey, textInputKey } from '@/utils/props';
+    import { ariaLabelsKey, arrowNavigationKey, autoApplyKey, textInputKey } from '@/utils/props';
+    import { useArrowNavigation } from '@/components/composition/arrow-navigate';
 
     const emit = defineEmits(['update:modelValue', 'selected', 'toggle', 'reset-flow']);
 
@@ -64,15 +61,21 @@
         maxValue: { type: [Number, String] as PropType<number | string>, default: null },
         year: { type: Number as PropType<number>, default: 0 },
         skipActive: { type: Boolean as PropType<boolean>, default: false },
+        headerRefs: { type: Array as PropType<HTMLElement[]>, default: () => [] },
     });
 
     const scrollable = ref(false);
-    const selectionActiveRef = ref(null);
+    const selectionActiveRef = ref<HTMLElement | null>(null);
     const gridWrapRef = ref(null);
+    const elementRefs = ref<HTMLElement[][]>([]);
     const autoApply = inject(autoApplyKey, false);
     const textInput = inject(textInputKey, ref(false));
     const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
+    const arrowNavigation = inject<Ref<boolean>>(arrowNavigationKey);
     const hoverValue = ref();
+    const toggleButton = ref<HTMLElement | null>();
+
+    const { setSelectionGrid, buildMultiLevelMatrix, setMonthPicker } = useArrowNavigation();
 
     onBeforeUpdate(() => {
         selectionActiveRef.value = null;
@@ -83,6 +86,23 @@
      */
     onMounted(() => {
         setScrollPosition();
+        focusGrid();
+        handleArrowNav(true);
+    });
+
+    onUnmounted(() => handleArrowNav(false));
+
+    const handleArrowNav = (value: boolean): void => {
+        if (arrowNavigation?.value) {
+            if (props.headerRefs?.length) {
+                setMonthPicker(value);
+            } else {
+                setSelectionGrid(value);
+            }
+        }
+    };
+
+    const focusGrid = (): void => {
         const elm = unrefElement(gridWrapRef);
         if (elm) {
             if (!textInput.value) {
@@ -90,7 +110,7 @@
             }
             scrollable.value = elm.clientHeight < elm.scrollHeight;
         }
-    });
+    };
 
     // Dynamic class  for the overlay
     const dpOverlayClass = computed(
@@ -200,4 +220,26 @@
         emit('toggle');
         emit('reset-flow');
     };
+
+    const assignRef = (el: HTMLElement, col: IDefaultSelect, rowInd: number, colInd: number): void => {
+        if (el) {
+            if (col.value === +props.modelValue && !props.disabledValues.includes(col.value)) {
+                selectionActiveRef.value = el;
+            }
+            if (arrowNavigation?.value) {
+                if (Array.isArray(elementRefs.value[rowInd])) {
+                    elementRefs.value[rowInd][colInd] = el;
+                } else {
+                    elementRefs.value[rowInd] = [el];
+                }
+                const refs = props.headerRefs?.length
+                    ? [props.headerRefs].concat(elementRefs.value)
+                    : elementRefs.value.concat([[toggleButton.value as HTMLElement]]);
+
+                buildMultiLevelMatrix(refs, props.headerRefs?.length ? 'monthPicker' : 'selectionGrid');
+            }
+        }
+    };
+
+    defineExpose({ focusGrid });
 </script>

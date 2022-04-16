@@ -15,34 +15,43 @@
                 <span
                     v-if="!inline"
                     class="dp__action dp__cancel"
+                    ref="cancelButtonRef"
                     tabindex="0"
                     @click="$emit('closePicker')"
                     @keydown.enter="$emit('closePicker')"
                     >{{ cancelText }}</span
                 >
-                <span :class="selectClass" tabindex="0" @keydown.enter="selectDate" @click="selectDate">{{
-                    selectText
-                }}</span>
+                <span
+                    :class="selectClass"
+                    tabindex="0"
+                    @keydown.enter="selectDate"
+                    @click="selectDate"
+                    ref="selectButtonRef"
+                    >{{ selectText }}</span
+                >
             </template>
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
-    import { computed, inject } from 'vue';
-    import type { PropType, ComputedRef } from 'vue';
+    import { computed, inject, onMounted, ref } from 'vue';
+    import type { PropType, ComputedRef, Ref } from 'vue';
     import type { Locale } from 'date-fns';
 
     import { formatDate, getMonthVal, getTImeForExternal, isMonthWithinRange, isValidTime } from '@/utils/date-utils';
     import { isModelValueRange } from '@/utils/type-guard';
     import {
         ActionRowProps,
+        arrowNavigationKey,
         DateValidationProps,
         formatLocaleKey,
         MenuNestedDownProps,
         NestedInternalSharedProps,
         TimeValidationProps,
     } from '@/utils/props';
+    import { useArrowNavigation } from '@/components/composition/arrow-navigate';
+    import { unrefElement } from '@/utils/util';
 
     const emit = defineEmits(['closePicker', 'selectDate']);
 
@@ -59,7 +68,19 @@
         enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
     });
 
+    const { buildMatrix } = useArrowNavigation();
+
     const formatLocale = inject<ComputedRef<Locale>>(formatLocaleKey);
+    const arrowNavigation = inject<Ref<boolean>>(arrowNavigationKey);
+    const cancelButtonRef = ref(null);
+    const selectButtonRef = ref(null);
+
+    onMounted(() => {
+        if (arrowNavigation?.value) {
+            buildMatrix([unrefElement(cancelButtonRef), unrefElement(selectButtonRef)] as HTMLElement[], 'actionRow');
+        }
+    });
+
     const selectClass = computed(() => ({
         dp__action: true,
         dp__select: true,

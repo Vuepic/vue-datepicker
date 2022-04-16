@@ -5,6 +5,7 @@
                 :aria-label="ariaLabels.prevMonth"
                 @activate="handleMonthYearChange(false)"
                 v-if="showLeftIcon && !vertical"
+                @set-ref="setElRefs($event, 0)"
             >
                 <slot name="arrow-left" v-if="$slots['arrow-left']" />
                 <ChevronLeftIcon v-if="!$slots['arrow-left']" />
@@ -15,6 +16,7 @@
                 v-model="monthModelBind"
                 v-bind="childProps('month')"
                 @toggle="toggleMonthPicker"
+                @set-ref="setElRefs($event, 1)"
             >
                 <slot v-if="$slots.month" name="month" v-bind="getMonthDisplayVal" />
                 <template v-if="!$slots.month">{{ getMonthDisplayVal.text }}</template>
@@ -31,6 +33,7 @@
                 v-model="yearModelBind"
                 v-bind="childProps('year')"
                 @toggle="toggleYearPicker"
+                @set-ref="setElRefs($event, 2)"
             >
                 <slot v-if="$slots.year" name="year" :year="year" />
                 <template v-if="!$slots.year">{{ year }}</template>
@@ -52,7 +55,9 @@
             <ActionIcon
                 :arial-label="ariaLabels.nextMonth"
                 @activate="handleMonthYearChange(true)"
+                ref="rightIcon"
                 v-if="showRightIcon"
+                @set-ref="setElRefs($event, 3)"
             >
                 <slot
                     :name="vertical ? 'arrow-down' : 'arrow-right'"
@@ -72,6 +77,7 @@
                 :multi-model-value="multiModelValue"
                 v-model="monthModelBind"
                 @toggle="toggleMonthPicker"
+                @selected="$emit('overlay-closed')"
             >
                 <template v-if="$slots['month-overlay']" #item="{ item }">
                     <slot name="month-overlay" :text="item.text" :value="item.value" />
@@ -81,6 +87,7 @@
                         <div
                             class="dp__month_year_col_nav"
                             tabindex="0"
+                            ref="mpPrevIconRef"
                             @click="handleYear(false)"
                             @keydown.enter="handleYear(false)"
                         >
@@ -92,6 +99,7 @@
                         <div
                             class="dp__pointer"
                             role="button"
+                            ref="mpYearButtonRef"
                             :aria-label="ariaLabels.openYearsOverlay"
                             tabindex="0"
                             @click="toggleYearPicker"
@@ -103,6 +111,7 @@
                         <div
                             class="dp__month_year_col_nav"
                             tabindex="0"
+                            ref="mpNextIconRef"
                             @click="handleYear(true)"
                             @keydown.enter="handleYear(true)"
                         >
@@ -118,6 +127,7 @@
                             v-bind="childProps('year')"
                             v-model="yearModelBind"
                             @toggle="toggleYearPicker"
+                            @selected="$emit('overlay-closed')"
                             ><template #button-icon>
                                 <slot name="calendar-icon" v-if="$slots['calendar-icon']" />
                                 <CalendarIcon v-if="!$slots['calendar-icon']" />
@@ -135,7 +145,7 @@
 
 <script lang="ts" setup>
     import { computed, inject, onMounted, ref } from 'vue';
-    import type { PropType, ComputedRef } from 'vue';
+    import type { PropType, ComputedRef, Ref } from 'vue';
     import { getMonth, getYear } from 'date-fns';
 
     import {
@@ -153,9 +163,18 @@
 
     import type { IDefaultSelect, IDateFilter, AreaLabels } from '@/interfaces';
 
-    import { ariaLabelsKey, DateValidationProps, MonthCalendarSharedProps } from '@/utils/props';
+    import { ariaLabelsKey, arrowNavigationKey, DateValidationProps, MonthCalendarSharedProps } from '@/utils/props';
+    import { unrefElement } from '@/utils/util';
+    import { useArrowNavigation } from '@/components/composition/arrow-navigate';
 
-    const emit = defineEmits(['update:month', 'update:year', 'monthYearSelect', 'mount', 'reset-flow']);
+    const emit = defineEmits([
+        'update:month',
+        'update:year',
+        'monthYearSelect',
+        'mount',
+        'reset-flow',
+        'overlay-closed',
+    ]);
     const props = defineProps({
         ...MonthCalendarSharedProps,
         ...DateValidationProps,
@@ -168,10 +187,16 @@
     });
 
     const { transitionName, showTransition } = useTransitions();
+    const { buildMatrix } = useArrowNavigation();
 
     const showMonthPicker = ref(false);
     const showYearPicker = ref(false);
+    const elementRefs = ref<Array<HTMLElement | null>>([null, null, null, null]);
+    const mpPrevIconRef = ref<HTMLElement | null>(null);
+    const mpYearButtonRef = ref<HTMLElement | null>(null);
+    const mpNextIconRef = ref<HTMLElement | null>(null);
     const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
+    const arrowNavigation = inject<Ref<boolean>>(arrowNavigationKey);
 
     const { handleMonthYearChange } = useMontYearPick(props, emit);
 
@@ -203,6 +228,8 @@
             disabledValues: props.filters[isMonth ? 'months' : 'years'],
             minValue: (isMonth ? minMonth : minYear).value,
             maxValue: (isMonth ? maxMonth : maxYear).value,
+            headerRefs:
+                isMonth && props.monthPicker ? [mpPrevIconRef.value, mpYearButtonRef.value, mpNextIconRef.value] : [],
         };
     });
 
@@ -270,11 +297,17 @@
     const toggleMonthPicker = (flow = false): void => {
         checkFlow(flow);
         showMonthPicker.value = !showMonthPicker.value;
+        if (!showMonthPicker.value) {
+            emit('overlay-closed');
+        }
     };
 
     const toggleYearPicker = (flow = false): void => {
         checkFlow(flow);
         showYearPicker.value = !showYearPicker.value;
+        if (!showYearPicker.value) {
+            emit('overlay-closed');
+        }
     };
 
     const checkFlow = (flow: boolean): void => {
@@ -285,6 +318,13 @@
 
     const handleYear = (increment = false): void => {
         emit('update:year', increment ? props.year + 1 : props.year - 1);
+    };
+
+    const setElRefs = (el: HTMLElement, i: number): void => {
+        if (arrowNavigation?.value) {
+            elementRefs.value[i] = unrefElement(el);
+            buildMatrix(elementRefs.value as HTMLElement[], 'monthYear');
+        }
     };
 
     defineExpose({

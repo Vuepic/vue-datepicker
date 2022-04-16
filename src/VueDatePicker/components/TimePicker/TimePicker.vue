@@ -6,6 +6,7 @@
             role="button"
             :aria-label="ariaLabels.openTimePicker"
             tabindex="0"
+            ref="openTimePickerBtn"
             @keydown.enter="toggleTimePicker(true)"
             @click="toggleTimePicker(true)"
         >
@@ -13,7 +14,7 @@
             <ClockIcon v-if="!$slots['clock-icon']" />
         </div>
         <transition :name="transitionName(showTimePicker)" :css="showTransition">
-            <div v-if="showTimePicker || timePicker" class="dp__overlay">
+            <div v-if="showTimePicker || timePicker" class="dp__overlay" ref="overlayRef" tabindex="0">
                 <div class="dp__overlay_container">
                     <slot
                         name="time-picker-overlay"
@@ -49,10 +50,14 @@
                                     noMinutesOverlay,
                                     noSecondsOverlay,
                                     enableSeconds,
+                                    closeTimePickerBtn,
+                                    order: index,
                                 }"
                                 @update:hours="updateHours(getEvent($event, index, 'hours'))"
                                 @update:minutes="updateMinutes(getEvent($event, index, 'minutes'))"
                                 @update:seconds="updateSeconds(getEvent($event, index, 'seconds'))"
+                                @mounted="focusOverlay"
+                                @overlay-closed="focusOverlay"
                             >
                                 <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
                                     <slot :name="slot" v-bind="args" />
@@ -62,6 +67,7 @@
                     </template>
                     <div
                         v-if="!timePicker"
+                        ref="closeTimePickerBtn"
                         :class="toggleButtonClass"
                         role="button"
                         :aria-label="ariaLabels.closeTimePicker"
@@ -80,7 +86,7 @@
 
 <script lang="ts" setup>
     import { computed, inject, nextTick, onMounted, ref, useSlots } from 'vue';
-    import type { PropType, ComputedRef } from 'vue';
+    import type { PropType, ComputedRef, Ref } from 'vue';
 
     import { ClockIcon, CalendarIcon } from '@/components/Icons';
     import TimeInput from '@/components/TimePicker/TimeInput.vue';
@@ -90,9 +96,18 @@
 
     import type { IDateFilter, TimeInputRef, AreaLabels } from '@/interfaces';
 
-    import { ariaLabelsKey, autoApplyKey, TimePickerProps } from '@/utils/props';
+    import { ariaLabelsKey, arrowNavigationKey, autoApplyKey, TimePickerProps } from '@/utils/props';
+    import { useArrowNavigation } from '@/components/composition/arrow-navigate';
+    import { unrefElement } from '@/utils/util';
 
-    const emit = defineEmits(['update:hours', 'update:minutes', 'update:seconds', 'mount', 'reset-flow']);
+    const emit = defineEmits([
+        'update:hours',
+        'update:minutes',
+        'update:seconds',
+        'mount',
+        'reset-flow',
+        'overlay-closed',
+    ]);
 
     const props = defineProps({
         ...TimePickerProps,
@@ -104,14 +119,24 @@
         customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
     });
     const slots = useSlots();
+    const openTimePickerBtn = ref(null);
+    const closeTimePickerBtn = ref(null);
     const autoApply = inject(autoApplyKey, false);
     const timeInputRef = ref<TimeInputRef | null>(null);
+    const overlayRef = ref<HTMLElement | null>(null);
     const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
+    const arrowNavigation = inject<Ref<boolean>>(arrowNavigationKey);
 
     const { transitionName, showTransition } = useTransitions();
+    const { buildMatrix, setTimePicker } = useArrowNavigation();
 
     onMounted(() => {
         emit('mount');
+        if (!props.timePicker && arrowNavigation?.value) {
+            buildMatrix([unrefElement(openTimePickerBtn.value) as HTMLElement], 'time');
+        } else {
+            setTimePicker(true, props.timePicker);
+        }
     });
 
     const showTimePicker = ref(false);
@@ -141,6 +166,13 @@
             emit('reset-flow');
         }
         showTimePicker.value = show;
+
+        if (arrowNavigation?.value) {
+            setTimePicker(show);
+            if (!show) {
+                emit('overlay-closed');
+            }
+        }
 
         nextTick(() => {
             if (childOpen !== '' && timeInputRef.value) {
@@ -176,6 +208,12 @@
 
     const updateSeconds = (seconds: number | number[]): void => {
         emit('update:seconds', seconds);
+    };
+
+    const focusOverlay = () => {
+        if (overlayRef.value && arrowNavigation?.value) {
+            overlayRef.value.focus({ preventScroll: true });
+        }
     };
 
     defineExpose({ toggleTimePicker });
