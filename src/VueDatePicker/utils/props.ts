@@ -175,7 +175,7 @@ export const AllProps = {
     teleport: { type: [String, Object] as PropType<string | HTMLElement>, default: 'body' },
     altPosition: { type: [Boolean, Function] as PropType<AltPosition>, default: false },
     partialRange: { type: Boolean as PropType<boolean>, default: true },
-    transitions: { type: Boolean as PropType<boolean | ITransition>, default: true },
+    transitions: { type: [Boolean, Object] as PropType<boolean | ITransition>, default: true },
     formatLocale: { type: Object as PropType<Locale>, default: null },
     utc: { type: Boolean as PropType<boolean>, default: false },
     ariaLabels: { type: Object as PropType<Partial<AreaLabels>>, default: () => ({}) },
