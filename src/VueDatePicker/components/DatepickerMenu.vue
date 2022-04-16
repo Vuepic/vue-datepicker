@@ -11,10 +11,10 @@
             @click="handleDpMenuClick"
             @keydown.esc="handleEsc"
             @keydown.space="handleSpace"
-            @keydown.left="handleArrowKey('left')"
-            @keydown.up="handleArrowKey('up')"
-            @keydown.down="handleArrowKey('down')"
-            @keydown.right="handleArrowKey('right')"
+            @keydown.left.prevent="handleArrowKey('left')"
+            @keydown.up.prevent="handleArrowKey('up')"
+            @keydown.down.prevent="handleArrowKey('down')"
+            @keydown.right.prevent="handleArrowKey('right')"
         >
             <div :class="disabledReadonlyOverlay" v-if="(disabled || readonly) && inline"></div>
             <div :class="arrowClass" v-if="!inline"></div>

@@ -75,7 +75,7 @@ export const useArrowNavigation = () => {
             el = matrix.value[activeRow.value][selectedIndex.value];
         }
         if (el) {
-            el.focus();
+            el.focus({ preventScroll: !isSelectionGrid.value });
         } else {
             selectedIndex.value = increment ? selectedIndex.value - 1 : selectedIndex.value + 1;
         }
