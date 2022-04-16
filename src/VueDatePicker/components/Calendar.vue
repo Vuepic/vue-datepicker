@@ -9,7 +9,7 @@
                 :aria-label="ariaLabels.calendarWrap"
                 @wheel.prevent="$emit('handleScroll', $event)"
             >
-                <div class="db__calendar_header" role="row">
+                <div class="dp__calendar_header" role="row">
                     <div class="dp__calendar_header_item" role="gridcell" v-if="weekNumbers">{{ weekNumName }}</div>
                     <div class="dp__calendar_header_item" role="gridcell" v-for="(dayVal, i) in weekDays" :key="i">
                         <slot v-if="$slots['calendar-header']" name="calendar-header" :day="dayVal" :index="i" />
