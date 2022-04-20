@@ -26,7 +26,7 @@
                 :class="inputClass"
                 :placeholder="placeholder"
                 :disabled="disabled"
-                :readonly="readonly"
+                :readonly="readonly || !textInput"
                 :required="required"
                 :value="inputValue"
                 :autocomplete="autocomplete"
@@ -67,6 +67,7 @@
     import { isValidDate, parseFreeInput } from '@/utils/date-utils';
     import { unrefElement } from '@/utils/util';
     import { ariaLabelsKey, ControlProps, InputProps, SharedProps } from '@/utils/props';
+    import { useStore } from '@/components/composition/store';
 
     const emit = defineEmits([
         'clear',
@@ -76,6 +77,7 @@
         'close',
         'selectDate',
         'setEmptyDate',
+        'toggle',
     ]);
 
     const props = defineProps({
@@ -92,6 +94,7 @@
     const isFocused = ref(false);
     const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
     const slots = useSlots();
+    const { getStore } = useStore();
 
     const inputClass = computed(
         (): DynamicClass => ({
@@ -159,7 +162,7 @@
             isFocused.value = true;
             if (props.openMenuOnFocus && !props.isMenuOpen) {
                 emit('open');
-            } else if (props.isMenuOpen) {
+            } else if (props.isMenuOpen && !getStore().menuFocused) {
                 unFocus();
                 emit('close');
             }
@@ -171,7 +174,7 @@
             if (props.textInput && props.textInputOptions?.openMenu && !props.isMenuOpen) {
                 emit('open');
             } else if (!props.textInput) {
-                emit('open');
+                emit('toggle');
             }
         }
     };

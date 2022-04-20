@@ -30,6 +30,7 @@
             @set-input-date="setInputDate"
             @set-empty-date="emitModelValue"
             @select-date="selectDate"
+            @toggle="toggleMenu"
             @close="closeMenu"
         >
             <template v-for="(slot, i) in inputSlots" #[slot]="args" :key="i">
@@ -171,6 +172,7 @@
         transitionsKey,
     } from './utils/props';
     import { useArrowNavigation } from '@/components/composition/arrow-navigate';
+    import { useStore } from '@/components/composition/store';
 
     const emit = defineEmits([
         'update:modelValue',
@@ -265,6 +267,7 @@
     );
 
     const { clearArrowNav } = useArrowNavigation();
+    const { setMenuFocused } = useStore();
 
     const wrapperClass = computed(
         (): DynamicClass => ({
@@ -439,6 +442,7 @@
         if (!props.inline) {
             if (isOpen.value) {
                 isOpen.value = false;
+                setMenuFocused(false);
                 clearArrowNav();
                 emit('closed');
                 emit('blur');
@@ -478,6 +482,11 @@
         if (focusRef.value) {
             focusRef.value.focus({ preventScroll: true });
         }
+    };
+
+    const toggleMenu = (): void => {
+        if (isOpen.value) return closeMenu();
+        return openMenu();
     };
 
     onClickOutside(dpMenuRef, inputRef, closeMenu);

@@ -219,6 +219,7 @@
         transitionsKey,
     } from '@/utils/props';
     import { useArrowNavigation } from '@/components/composition/arrow-navigate';
+    import { useStore } from '@/components/composition/store';
 
     const emit = defineEmits([
         'update:internalModelValue',
@@ -252,6 +253,8 @@
     const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
     const arrowNavigation = inject<Ref<boolean>>(arrowNavigationKey);
 
+    const { setMenuFocused } = useStore();
+
     onMounted(() => {
         menuMount.value = true;
         if (!props.presetRanges?.length) {
@@ -260,6 +263,7 @@
 
         const menu = unrefElement(dpMenuRef);
         if (menu && !props.textInput && !props.inline) {
+            setMenuFocused(true);
             focusMenu();
         }
         if (menu) {
