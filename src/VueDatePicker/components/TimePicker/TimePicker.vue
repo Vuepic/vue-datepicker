@@ -37,6 +37,7 @@
                                 :minutes="tInput.minutes"
                                 :seconds="tInput.seconds"
                                 :filters="filters"
+                                ref="timeInputRefs"
                                 v-bind="{
                                     is24,
                                     hoursGridIncrement,
@@ -122,7 +123,7 @@
     const openTimePickerBtn = ref(null);
     const closeTimePickerBtn = ref(null);
     const autoApply = inject(autoApplyKey, false);
-    const timeInputRef = ref<TimeInputRef | null>(null);
+    const timeInputRefs = ref<TimeInputRef[]>([]);
     const overlayRef = ref<HTMLElement | null>(null);
     const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
     const arrowNavigation = inject<Ref<boolean>>(arrowNavigationKey);
@@ -175,8 +176,8 @@
         }
 
         nextTick(() => {
-            if (childOpen !== '' && timeInputRef.value) {
-                timeInputRef.value.openChildCmp(childOpen);
+            if (childOpen !== '' && timeInputRefs.value[0]) {
+                timeInputRefs.value[0].openChildCmp(childOpen);
             }
         });
     };

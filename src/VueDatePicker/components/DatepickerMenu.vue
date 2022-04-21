@@ -241,7 +241,11 @@
     });
     const slots = useSlots();
     const calendarWrapperRef = ref(null);
-    const childrenMounted = reactive({ timePicker: !props.enableTimePicker, monthYearInput: false, calendar: false });
+    const childrenMounted = reactive({
+        timePicker: !!(!props.enableTimePicker || props.timePicker || props.monthPicker),
+        monthYearInput: !!props.timePicker,
+        calendar: false,
+    });
     const monthYearPickerRefs = ref<MonthYearPickerRef[]>([]);
     const calendarRefs = ref<CalendarRef[]>([]);
     const timePickerRef = ref<TimePickerRef | null>(null);
