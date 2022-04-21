@@ -138,6 +138,14 @@
   border-bottom: 1px solid var(--dp-hover-color);
 }
 
+.dp__range_between_week {
+  background: var(--dp-primary-color);
+  color: var(--dp-primary-text-color);
+  border-radius: 0;
+  border-top: 1px solid var(--dp-primary-color);
+  border-bottom: 1px solid var(--dp-primary-color);
+}
+
 .dp__today {
   border: 1px solid var(--dp-primary-color);
 }

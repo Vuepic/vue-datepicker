@@ -437,6 +437,14 @@
                 days: date.days.map((calendarDay) => {
                     const disabled = isDisabled(calendarDay.value);
                     const dateHover = isHoverDate(disabled, calendarDay);
+                    const isBetween =
+                        (props.range || props.weekPicker) &&
+                        (props.multiCalendars > 0 ? calendarDay.current : true) &&
+                        !disabled &&
+                        !(!calendarDay.current && props.hideOffsetDates) &&
+                        !isActiveDate(calendarDay)
+                            ? rangeActive(calendarDay)
+                            : false;
                     calendarDay.marker = getMarker(calendarDay);
                     calendarDay.classData = {
                         dp__cell_offset: !calendarDay.current,
@@ -445,14 +453,8 @@
                         dp__date_hover: dateHover,
                         dp__date_hover_start: isHoverDateStartEnd(dateHover, calendarDay, true),
                         dp__date_hover_end: isHoverDateStartEnd(dateHover, calendarDay, false),
-                        dp__range_between:
-                            (props.range || props.weekPicker) &&
-                            (props.multiCalendars > 0 ? calendarDay.current : true) &&
-                            !disabled &&
-                            !(!calendarDay.current && props.hideOffsetDates) &&
-                            !isActiveDate(calendarDay)
-                                ? rangeActive(calendarDay)
-                                : false,
+                        dp__range_between: isBetween && !props.weekPicker,
+                        dp__range_between_week: isBetween && props.weekPicker,
                         dp__today: !props.noToday && isDateEqual(calendarDay.value, today.value) && calendarDay.current,
                         dp__cell_disabled: disabled,
                         dp__cell_auto_range: isAutoRangeInBetween(calendarDay),
