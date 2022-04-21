@@ -41,6 +41,7 @@ import {
     setDateTime,
 } from '@/utils/date-utils';
 import { isModelValueRange, isNumberArray, isRange, isTimeArr, modelValueIsRange } from '@/utils/type-guard';
+import { validateMonthYearInRange } from '@/components/composition/month-year';
 
 export const useCalendar = (
     props: MenuProps,
@@ -724,16 +725,18 @@ export const useCalendar = (
     const autoChangeMonth = (increment: number, instance: number) => {
         const initialDate = set(new Date(), { month: month.value(instance), year: year.value(instance) });
         const date = increment < 0 ? addMonths(initialDate, 1) : subMonths(initialDate, 1);
-        setCalendarMonthYear(instance, getMonth(date), getYear(date));
-        if (props.multiCalendars && !props.multiCalendarsSolo) {
-            autoChangeMultiCalendars(instance);
+        if (validateMonthYearInRange(props.minDate, props.maxDate, getMonth(date), getYear(date), increment < 0)) {
+            setCalendarMonthYear(instance, getMonth(date), getYear(date));
+            if (props.multiCalendars && !props.multiCalendarsSolo) {
+                autoChangeMultiCalendars(instance);
+            }
+            triggerCalendarTransition();
         }
     };
 
     const handleScroll = (event: WheelEvent, instance: number): void => {
         if (props.monthChangeOnScroll) {
             autoChangeMonth(props.monthChangeOnScroll !== 'inverse' ? -event.deltaY : event.deltaY, instance);
-            triggerCalendarTransition();
         }
     };
 
@@ -745,7 +748,6 @@ export const useCalendar = (
 
     const handleSwipe = (direction: 'left' | 'right', instance: number): void => {
         autoChangeMonth(direction === 'right' ? -1 : 1, instance);
-        triggerCalendarTransition();
     };
 
     const getMarker = (date: UnwrapRef<ICalendarDay>): IMarker | undefined =>
