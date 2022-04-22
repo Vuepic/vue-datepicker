@@ -78,6 +78,7 @@
         'selectDate',
         'setEmptyDate',
         'toggle',
+        'focus-prev',
     ]);
 
     const props = defineProps({
@@ -158,6 +159,11 @@
     };
 
     const handleFocus = (): void => {
+        if (getStore().shiftKeyInMenu && props.openMenuOnFocus) {
+            emit('close');
+            return emit('focus-prev');
+        }
+
         if (!props.inline && (props.textInput ? props.textInput && props.textInputOptions?.openMenu : true)) {
             isFocused.value = true;
             if (props.openMenuOnFocus && !props.isMenuOpen) {

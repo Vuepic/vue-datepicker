@@ -13,6 +13,7 @@ type EmitEvents =
     | 'internalModelChange'
     | 'recalculatePosition'
     | 'flow-step'
+    | 'focus-prev'
     | 'updateMonthYear';
 
 interface VueDatePicker {

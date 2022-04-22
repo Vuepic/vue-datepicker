@@ -15,6 +15,7 @@
             @keydown.up.prevent="handleArrowKey('up')"
             @keydown.down.prevent="handleArrowKey('down')"
             @keydown.right.prevent="handleArrowKey('right')"
+            @keydown="checkShiftKey"
         >
             <div :class="disabledReadonlyOverlay" v-if="(disabled || readonly) && inline"></div>
             <div :class="arrowClass" v-if="!inline"></div>
@@ -257,7 +258,7 @@
     const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
     const arrowNavigation = inject<Ref<boolean>>(arrowNavigationKey);
 
-    const { setMenuFocused } = useStore();
+    const { setMenuFocused, setShiftKey } = useStore();
 
     onMounted(() => {
         menuMount.value = true;
@@ -552,5 +553,9 @@
                 handleArrow('right', 0, arrow === 'down');
             }
         }
+    };
+
+    const checkShiftKey = (ev: KeyboardEvent) => {
+        setShiftKey(ev.shiftKey);
     };
 </script>

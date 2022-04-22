@@ -1,5 +1,6 @@
 <template>
     <div :class="wrapperClass">
+        <span tabindex="-1" ref="focusRefBefore"></span>
         <DatepickerInput
             ref="inputRef"
             v-bind="{
@@ -32,6 +33,7 @@
             @select-date="selectDate"
             @toggle="toggleMenu"
             @close="closeMenu"
+            @focus-prev="$emit('focus-prev')"
         >
             <template v-for="(slot, i) in inputSlots" #[slot]="args" :key="i">
                 <slot :name="slot" v-bind="args" />
@@ -185,6 +187,7 @@
         'internalModelChange',
         'recalculatePosition',
         'flow-step',
+        'focus-prev',
         'updateMonthYear',
     ]);
     const props = defineProps({
@@ -196,6 +199,7 @@
     const dpMenuRef = ref(null);
     const inputRef = ref(null);
     const focusRef = ref<HTMLElement | null>(null);
+    const focusRefBefore = ref<HTMLElement | null>(null);
     provide(autoApplyKey, props.autoApply);
     const formatLocaleRef = computed(() => props.formatLocale);
     provide(formatLocaleKey, formatLocaleRef);
@@ -267,7 +271,7 @@
     );
 
     const { clearArrowNav } = useArrowNavigation();
-    const { setMenuFocused } = useStore();
+    const { setMenuFocused, setShiftKey } = useStore();
 
     const wrapperClass = computed(
         (): DynamicClass => ({
@@ -443,6 +447,7 @@
             if (isOpen.value) {
                 isOpen.value = false;
                 setMenuFocused(false);
+                setShiftKey(false);
                 clearArrowNav();
                 emit('closed');
                 emit('blur');
