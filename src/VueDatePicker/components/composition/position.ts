@@ -19,6 +19,7 @@ export const usePosition = (
     const menuPosition = ref({ top: '0', left: '0', transform: 'none' });
     const openOnTop = ref(false);
     const diagonal = 10; // arrow square diagonal + 1
+    const maxHeight = 390;
 
     /**
      * Get correct offset of an element
@@ -73,9 +74,11 @@ export const usePosition = (
     const setInitialPosition = () => {
         const inputEl = unrefElement(inputRef);
         if (inputEl) {
+            const fullHeight = window.innerHeight;
             const { top: offset } = altPosition ? getOffsetAlt(inputEl) : getOffset(inputEl);
-            const { left, width } = inputEl.getBoundingClientRect();
-            menuPosition.value.top = `${offset}px`;
+            const { left, width, top, height } = inputEl.getBoundingClientRect();
+            const freeBottom = fullHeight - top - height;
+            menuPosition.value.top = top > freeBottom ? `${offset - maxHeight}px` : `${offset}px`;
             setPositioning(left, width);
         }
     };
