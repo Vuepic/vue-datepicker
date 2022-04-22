@@ -176,6 +176,10 @@
             } else if (!props.textInput) {
                 emit('toggle');
             }
+        } else {
+            if (isFocused.value) {
+                emit('toggle');
+            }
         }
     };
 
