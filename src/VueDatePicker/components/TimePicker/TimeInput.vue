@@ -70,7 +70,7 @@
                 v-if="overlays[timeInput.type]"
                 :items="getGridItems(timeInput.type)"
                 :disabled-values="filters.times[timeInput.type]"
-                @update:model-value="$emit(`update:${timeInput.type}`, $event)"
+                @update:model-value="handleTimeFromOverlay(timeInput.type, $event)"
                 @selected="toggleOverlay(timeInput.type)"
                 @toggle="toggleOverlay(timeInput.type)"
                 @reset-flow="$emit('reset-flow')"
@@ -246,6 +246,13 @@
             setTimePickerBackRef(props.closeTimePickerBtn);
             setTimePickerElements(matrix, props.order);
         }
+    };
+
+    const handleTimeFromOverlay = (type: ITimeType, value: number): void => {
+        if (type === 'hours' && !props.is24) {
+            return emit(`update:${type}`, amPm.value === 'PM' ? value + 12 : value);
+        }
+        return emit(`update:${type}`, value);
     };
 
     defineExpose({ openChildCmp });
