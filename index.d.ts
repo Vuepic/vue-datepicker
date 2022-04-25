@@ -135,7 +135,7 @@ interface VueDatePicker {
         tabSubmit?: boolean;
         openMenu?: boolean;
         rangeSeparator?: string;
-        format?: null;
+        format?: string;
     };
     teleport?: string | HTMLElement;
     monthNameFormat?: 'long' | 'short';
