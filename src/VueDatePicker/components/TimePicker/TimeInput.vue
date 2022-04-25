@@ -49,13 +49,15 @@
         <div v-if="!is24">
             <slot name="am-pm-button" v-if="$slots['am-pm-button']" :toggle="setAmPm" :value="amPm"></slot>
             <button
+                ref="amPmButton"
+                type="button"
                 v-if="!$slots['am-pm-button']"
                 class="dp__pm_am_button"
                 role="button"
                 :aria-label="ariaLabels.amPmButton"
                 tabindex="0"
                 @click="setAmPm"
-                @keydown.enter="setAmPm"
+                @keydown.enter.prevent="setAmPm"
             >
                 {{ amPm }}
             </button>
@@ -137,6 +139,7 @@
         seconds: false,
     });
     const amPm = ref('AM');
+    const amPmButton = ref<HTMLElement | null>(null);
     const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
     const arrowNavigation = inject<Ref<boolean>>(arrowNavigationKey);
 
@@ -244,6 +247,9 @@
                 [] as HTMLElement[][],
             );
             setTimePickerBackRef(props.closeTimePickerBtn);
+            if (amPmButton.value) {
+                matrix[1] = matrix[1].concat(amPmButton.value);
+            }
             setTimePickerElements(matrix, props.order);
         }
     };
