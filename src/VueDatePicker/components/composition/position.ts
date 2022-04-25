@@ -36,11 +36,12 @@ export const usePosition = (
      * Use alternative position calculation, for specific cases on nested relative elements
      */
     const getOffsetAlt = (el: HTMLElement): { top: number; left: number } => {
+        const rect = el.getBoundingClientRect();
         let x = 0;
         let y = 0;
         while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
             x += el.offsetLeft - el.scrollLeft;
-            y += el.offsetTop - el.scrollTop;
+            y = rect.top + el.scrollTop;
             el = el.offsetParent as HTMLElement;
         }
         return { top: y, left: x };
