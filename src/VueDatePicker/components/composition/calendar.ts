@@ -727,7 +727,16 @@ export const useCalendar = (
     const autoChangeMonth = (increment: number, instance: number) => {
         const initialDate = set(new Date(), { month: month.value(instance), year: year.value(instance) });
         const date = increment < 0 ? addMonths(initialDate, 1) : subMonths(initialDate, 1);
-        if (validateMonthYearInRange(props.minDate, props.maxDate, getMonth(date), getYear(date), increment < 0)) {
+        if (
+            validateMonthYearInRange(
+                props.minDate,
+                props.maxDate,
+                getMonth(date),
+                getYear(date),
+                increment < 0,
+                props.preventMinMaxNavigation,
+            )
+        ) {
             setCalendarMonthYear(instance, getMonth(date), getYear(date));
             if (props.multiCalendars && !props.multiCalendarsSolo) {
                 autoChangeMultiCalendars(instance);
