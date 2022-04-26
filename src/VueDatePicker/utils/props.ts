@@ -120,7 +120,7 @@ export const MenuProps = {
     vertical: { type: Boolean as PropType<boolean>, default: false },
     disableMonthYearSelect: { type: Boolean as PropType<boolean>, default: false },
     menuClassName: { type: String as PropType<string>, default: null },
-    yearRange: { type: Array as PropType<number[]>, default: () => [1970, 2100] },
+    yearRange: { type: Array as PropType<number[]>, default: () => [1900, 2100] },
     multiCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
     calendarCellClassName: { type: String as PropType<string>, default: null },
     enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
