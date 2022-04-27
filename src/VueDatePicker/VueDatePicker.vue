@@ -377,15 +377,18 @@
         if (!props.disabled && !props.readonly) {
             setInitialPosition();
             isOpen.value = true;
-            nextTick().then(() => setMenuPosition());
+            nextTick().then(() => {
+                setMenuPosition();
+                if (isOpen.value) {
+                    emit('open');
+                    emit('focus');
+                }
+            });
 
             if (!isOpen.value) {
                 clearInternalValues();
             }
-            if (isOpen.value) {
-                emit('open');
-                emit('focus');
-            }
+
             parseExternalModelValue(props.modelValue);
         }
     };
