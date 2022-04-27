@@ -218,6 +218,7 @@ interface VueDatePicker {
         prevMonth?: string;
     };
     arrowNavigation?: boolean;
+    yearPicker?: boolean;
 }
 
 interface PublicMethods extends MethodOptions {

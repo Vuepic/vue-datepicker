@@ -59,6 +59,7 @@
                                     range,
                                     reverseYears,
                                     vertical,
+                                    yearPicker,
                                 }"
                                 @mount="childMount('monthYearInput')"
                                 @reset-flow="resetFlow"
@@ -384,7 +385,7 @@
     );
 
     // If datepicker is using only month or time picker
-    const specificMode = computed((): boolean => props.monthPicker || props.timePicker);
+    const specificMode = computed((): boolean => props.monthPicker || props.timePicker || props.yearPicker);
 
     const menuCalendarClassWrapper = computed(
         (): DynamicClass => ({

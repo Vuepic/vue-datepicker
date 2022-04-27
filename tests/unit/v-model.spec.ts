@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import addDays from 'date-fns/addDays';
+import { getYear, addDays } from 'date-fns';
 import { describe, it, expect } from 'vitest';
 
 import Vue3Datepicker from '@/VueDatePicker.vue';
@@ -60,5 +60,11 @@ describe('v-model mapping', () => {
 
         expect(wrapper.vm.internalModelValue.getHours()).toEqual(modelValue.hours);
         expect(wrapper.vm.internalModelValue.getMinutes()).toEqual(modelValue.minutes);
+    });
+
+    it('Should map year-picker to date object', () => {
+        const modelValue = 2050;
+        const wrapper = shallowMount(Vue3Datepicker, { props: { modelValue, yearPicker: true } });
+        expect(getYear(wrapper.vm.internalModelValue)).toEqual(modelValue);
     });
 });

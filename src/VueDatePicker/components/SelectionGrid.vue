@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, inject, onBeforeUpdate, onMounted, onUnmounted, ref } from 'vue';
+    import { computed, inject, nextTick, onBeforeUpdate, onMounted, onUnmounted, ref } from 'vue';
     import type { PropType, ComputedRef, Ref } from 'vue';
     import { setMonth, setYear } from 'date-fns';
 
@@ -85,7 +85,7 @@
      * On mounted hook, set the scroll position, if any to a selected value when opening overlay
      */
     onMounted(() => {
-        setScrollPosition();
+        nextTick().then(() => setScrollPosition());
         focusGrid();
         handleArrowNav(true);
     });

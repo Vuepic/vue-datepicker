@@ -99,6 +99,7 @@ export const ActionRowProps = {
 export const MenuNestedDownProps = {
     monthPicker: { type: Boolean as PropType<boolean>, default: false },
     customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
+    yearPicker: { type: Boolean as PropType<boolean>, default: false },
 };
 
 export const CalendarProps = {
@@ -164,7 +165,7 @@ export const AllProps = {
     ...ControlProps,
     ...MenuProps,
     multiCalendars: { type: [Boolean, Number, String] as PropType<boolean | number | string>, default: null },
-    modelValue: { type: [String, Date, Array, Object] as PropType<ModelValue>, default: null },
+    modelValue: { type: [String, Date, Array, Object, Number] as PropType<ModelValue>, default: null },
     position: { type: String as PropType<OpenPosition>, default: 'center' },
     dark: { type: Boolean as PropType<boolean>, default: false },
     format: {

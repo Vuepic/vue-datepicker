@@ -1,6 +1,6 @@
 <template>
     <div class="dp__month_year_row">
-        <template v-if="!monthPicker">
+        <template v-if="!monthPicker && !yearPicker">
             <ActionIcon
                 :aria-label="ariaLabels.prevMonth"
                 @activate="handleMonthYearChange(false)"
@@ -140,6 +140,18 @@
                 </template>
             </SelectionGrid>
         </template>
+        <template v-if="yearPicker">
+            <SelectionGrid
+                v-bind="childProps('year')"
+                v-model="yearModelBind"
+                @toggle="toggleYearPicker"
+                @selected="$emit('overlay-closed')"
+            >
+                <template v-if="$slots['year-overlay']" #item="{ item }">
+                    <slot name="year-overlay" :text="item.text" :value="item.value" />
+                </template>
+            </SelectionGrid>
+        </template>
     </div>
 </template>
 
@@ -184,6 +196,7 @@
         months: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
         filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
         multiCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
+        yearPicker: { type: Boolean as PropType<boolean>, default: false },
     });
 
     const { transitionName, showTransition } = useTransitions();

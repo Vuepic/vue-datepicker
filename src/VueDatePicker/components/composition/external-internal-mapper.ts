@@ -14,6 +14,7 @@ import {
 } from '@/utils/date-utils';
 import type { IFormat, ITextInputOptions, ModelValue, VueEmit } from '@/interfaces';
 import { isMonth, isMonthArray, isRangeArray, isSingle, isTime, isTimeArray } from '@/utils/type-guard';
+import { getYear, setYear } from 'date-fns';
 
 /**
  * Handles values from external to internal and vise versa
@@ -31,6 +32,7 @@ export const useExternalInternalMapper = (
     multiDates: boolean,
     utc: boolean,
     weekPicker: boolean,
+    yearPicker: boolean,
     textInputOptions: ITextInputOptions,
     emit: VueEmit,
 ) => {
@@ -69,6 +71,8 @@ export const useExternalInternalMapper = (
                 } else if (isMonth(value) && 'month' in value && 'year' in value) {
                     mappedDate = setDateMonthOrYear(null, +value.month, +value.year);
                 }
+            } else if (yearPicker) {
+                mappedDate = setYear(new Date(), value as number);
             } else if (multiDates && Array.isArray(value)) {
                 mappedDate = value.map((date) => new Date(date as string));
             } else if (weekPicker && Array.isArray(value)) {
@@ -107,6 +111,7 @@ export const useExternalInternalMapper = (
                 monthPicker,
                 timePicker,
                 weekPicker,
+                yearPicker,
                 enableTimePicker,
             );
             if (Array.isArray(internalModelValue.value) && multiDates) {
@@ -151,6 +156,8 @@ export const useExternalInternalMapper = (
             emit('update:modelValue', getTImeForExternal(internalModelValue.value));
         } else if (weekPicker) {
             emit('update:modelValue', internalModelValue.value);
+        } else if (yearPicker) {
+            emit('update:modelValue', getYear(internalModelValue.value));
         } else {
             if (internalModelValue.value && range && partialRange && internalModelValue.value.length === 1) {
                 internalModelValue.value.push(null);

@@ -124,6 +124,7 @@
                     noSwipe,
                     vertical,
                     arrowNavigation,
+                    yearPicker,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @close-picker="closeMenu"
@@ -266,6 +267,7 @@
         props.multiDates,
         props.utc,
         props.weekPicker,
+        props.yearPicker,
         props.textInputOptions,
         emit,
     );
@@ -293,6 +295,7 @@
                   props.monthPicker,
                   props.timePicker,
                   props.weekPicker,
+                  props.yearPicker,
                   props.enableTimePicker,
               );
     });

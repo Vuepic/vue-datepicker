@@ -16,6 +16,7 @@ import {
     isBefore,
     set,
     setMilliseconds,
+    setYear,
     subMonths,
 } from 'date-fns';
 
@@ -317,6 +318,8 @@ export const useCalendar = (
                 modelValue.value = setDateMonthOrYear(new Date(), month.value(0), year.value(0));
             } else if (props.multiCalendars) {
                 assignMonthAndYear(new Date());
+            } else if (props.yearPicker) {
+                modelValue.value = new Date();
             }
         }
     };
@@ -719,6 +722,12 @@ export const useCalendar = (
     };
 
     const monthYearSelect = (isYear = false) => {
+        if (isYear && props.yearPicker) {
+            modelValue.value = setYear(new Date(), calendars.value[0].year);
+            if (props.autoApply) {
+                emit('autoApply');
+            }
+        }
         if (props.autoApply && props.monthPicker) {
             emit('autoApply', isYear);
         }

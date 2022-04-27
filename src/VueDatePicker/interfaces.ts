@@ -70,6 +70,7 @@ export type ModelValue =
     | ITimeValue[]
     | IMonthValue
     | IMonthValue[]
+    | number
     | null;
 
 export type WeekStartNum = 0 | 1 | 2 | 3 | 4 | 5 | 6;

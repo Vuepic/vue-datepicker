@@ -98,6 +98,7 @@ export const getDefaultPattern = (
     monthPicker: boolean,
     timePicker: boolean,
     weekPicker: boolean,
+    yearPicker: boolean,
     enableTimePicker: boolean,
 ): string => {
     if (pattern) {
@@ -111,6 +112,9 @@ export const getDefaultPattern = (
     }
     if (weekPicker) {
         return 'MM/dd/yyyy';
+    }
+    if (yearPicker) {
+        return 'yyyy';
     }
     return enableTimePicker ? `MM/dd/yyyy, ${getTimeFormat(is24, enableSeconds)}` : 'MM/dd/yyyy';
 };
