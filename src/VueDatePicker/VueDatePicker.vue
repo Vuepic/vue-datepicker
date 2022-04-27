@@ -155,7 +155,7 @@
 
     import type { AreaLabels, DynamicClass, ITextInputOptions, ITimeValue, ITransition } from './interfaces';
 
-    import { getDefaultPattern, isValidTime } from './utils/date-utils';
+    import { dateValidator, getDefaultPattern, isValidTime } from './utils/date-utils';
     import {
         getDefaultTextInputOptions,
         getDefaultFilters,
@@ -469,7 +469,16 @@
             internalModelValue.value = null;
             return;
         }
-        internalModelValue.value = date;
+        const { validate } = dateValidator(props.minDate, props.maxDate, props.disabledDates);
+        if (!Array.isArray(date) && validate(date)) {
+            internalModelValue.value = date;
+        } else if (Array.isArray(date)) {
+            if (date.length === 2 && validate(date[0]) && validate(date[1])) {
+                internalModelValue.value = date;
+            } else if (validate(date[0])) {
+                internalModelValue.value = date;
+            }
+        }
         if (submit) {
             selectDate();
             emit('textSubmit');

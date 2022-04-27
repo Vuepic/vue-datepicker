@@ -26,7 +26,7 @@ import {
 } from 'date-fns';
 import type { Locale } from 'date-fns';
 
-import type { IMonthValue, InternalModuleValue, ITimeValue, WeekStartNum } from '@/interfaces';
+import type { IDisableDates, IMonthValue, InternalModuleValue, ITimeValue, WeekStartNum } from '@/interfaces';
 
 export const parseFreeInput = (value: string, pattern: string): Date | null => {
     const parsedDate = parse(value, pattern.slice(0, value.length), new Date());
@@ -280,4 +280,51 @@ export const getWeekFromDate = (date: Date, weekStartsOn: WeekStartNum): [Date, 
     const start = startOfWeek(date, { weekStartsOn });
     const end = endOfWeek(date, { weekStartsOn });
     return [start, end];
+};
+
+const validateBefore = (dateOne: Date | string, dateTwo: Date | string) =>
+    isDateBefore(dateOne, dateTwo) || isDateEqual(dateOne, dateTwo);
+
+const validateAfter = (dateOne: Date | string, dateTwo: Date | string) =>
+    isDateAfter(dateOne, dateTwo) || isDateEqual(dateOne, dateTwo);
+
+const validateDate = (
+    date: Date,
+    minDate: Date | string,
+    maxDate: Date | string,
+    disabledDates: Date[] | string[] | IDisableDates,
+): boolean => {
+    let valid = false;
+    if (minDate || maxDate) {
+        if (minDate && maxDate) {
+            if (validateBefore(date, maxDate) && validateAfter(date, minDate)) {
+                valid = true;
+            }
+        } else if (minDate && validateAfter(date, minDate)) {
+            valid = true;
+        } else if (maxDate && validateBefore(date, maxDate)) {
+            valid = true;
+        }
+    } else if (disabledDates) {
+        if (Array.isArray(disabledDates) && !disabledDates.some((disabledDate) => isDateEqual(disabledDate, date))) {
+            valid = true;
+        } else if (typeof disabledDates === 'function' && !disabledDates(date)) {
+            valid = true;
+        }
+    } else {
+        valid = true;
+    }
+    return valid;
+};
+
+export const dateValidator = (
+    minDate: Date | string,
+    maxDate: Date | string,
+    disabledDates: Date[] | string[] | IDisableDates,
+) => {
+    const validate = (date: Date) => validateDate(date, minDate, maxDate, disabledDates);
+
+    return {
+        validate,
+    };
 };
