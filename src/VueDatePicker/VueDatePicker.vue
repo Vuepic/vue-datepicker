@@ -408,11 +408,28 @@
         closeMenu();
     };
 
+    const validateBeforeEmit = () => {
+        const { validate } = dateValidator(props.minDate, props.maxDate, props.disabledDates);
+        const date = internalModelValue.value;
+        if (!Array.isArray(date) && validate(date)) {
+            return true;
+        }
+        if (Array.isArray(date)) {
+            if (date.length === 2 && validate(date[0]) && validate(date[1])) {
+                return true;
+            } else if (validate(date[0])) {
+                return true;
+            }
+            return false;
+        }
+        return false;
+    };
+
     /**
      * Called when select button is clicked, emit update for the modelValue
      */
     const selectDate = (): void => {
-        if (checkBeforeEmit()) {
+        if (checkBeforeEmit() && validateBeforeEmit()) {
             emitModelValue();
             closeMenu();
         }
@@ -428,7 +445,7 @@
             const isTimeValid = !props.enableTimePicker
                 ? true
                 : isValidTime(internalModelValue.value, props.maxTime, props.minTime);
-            if (isTimeValid) {
+            if (isTimeValid && validateBeforeEmit()) {
                 emitModelValue();
                 if (props.closeOnAutoApply && !ignoreClose) {
                     closeMenu();
@@ -475,16 +492,7 @@
             internalModelValue.value = null;
             return;
         }
-        const { validate } = dateValidator(props.minDate, props.maxDate, props.disabledDates);
-        if (!Array.isArray(date) && validate(date)) {
-            internalModelValue.value = date;
-        } else if (Array.isArray(date)) {
-            if (date.length === 2 && validate(date[0]) && validate(date[1])) {
-                internalModelValue.value = date;
-            } else if (validate(date[0])) {
-                internalModelValue.value = date;
-            }
-        }
+        internalModelValue.value = date;
         if (submit) {
             selectDate();
             emit('textSubmit');
