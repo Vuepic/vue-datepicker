@@ -62,6 +62,7 @@
         year: { type: Number as PropType<number>, default: 0 },
         skipActive: { type: Boolean as PropType<boolean>, default: false },
         headerRefs: { type: Array as PropType<HTMLElement[]>, default: () => [] },
+        skipButtonRef: { type: Boolean as PropType<boolean>, default: false },
     });
 
     const scrollable = ref(false);
@@ -234,7 +235,7 @@
                 }
                 const refs = props.headerRefs?.length
                     ? [props.headerRefs].concat(elementRefs.value)
-                    : elementRefs.value.concat([[toggleButton.value as HTMLElement]]);
+                    : elementRefs.value.concat([props.skipButtonRef ? [] : [toggleButton.value as HTMLElement]]);
 
                 buildMultiLevelMatrix(refs, props.headerRefs?.length ? 'monthPicker' : 'selectionGrid');
             }

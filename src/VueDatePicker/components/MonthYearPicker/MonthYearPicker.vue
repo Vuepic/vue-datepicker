@@ -144,6 +144,7 @@
             <SelectionGrid
                 v-bind="childProps('year')"
                 v-model="yearModelBind"
+                skip-button-ref
                 @toggle="toggleYearPicker"
                 @selected="$emit('overlay-closed')"
             >
