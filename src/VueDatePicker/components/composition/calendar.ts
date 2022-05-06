@@ -1,4 +1,4 @@
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import type { UnwrapRef, Ref } from 'vue';
 import {
     add,
@@ -552,7 +552,7 @@ export const useCalendar = (
             if (props.range) {
                 if (isMonth) {
                     let rangeDate = modelValue.value ? (modelValue.value as Date[]).slice() : [];
-                    if (rangeDate.length === 2) {
+                    if (rangeDate.length === 2 && rangeDate[1] !== null) {
                         rangeDate = [];
                     }
                     if (!rangeDate.length) {
@@ -561,7 +561,7 @@ export const useCalendar = (
                         if (isDateBefore(getMonthValue(instance), rangeDate[0])) {
                             rangeDate.unshift(getMonthValue(instance));
                         } else {
-                            rangeDate.push(getMonthValue(instance));
+                            rangeDate[1] = getMonthValue(instance);
                         }
                     }
                     modelValue.value = rangeDate;
@@ -729,7 +729,13 @@ export const useCalendar = (
             }
         }
         if (props.autoApply && props.monthPicker) {
-            emit('autoApply', isYear);
+            nextTick().then(() => {
+                if (props.range) {
+                    emit('autoApply', isYear || !modelValue.value || (modelValue.value as Date[]).length === 1);
+                } else {
+                    emit('autoApply', isYear);
+                }
+            });
         }
     };
 

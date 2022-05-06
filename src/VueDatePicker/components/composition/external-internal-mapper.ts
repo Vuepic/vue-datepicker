@@ -62,12 +62,12 @@ export const useExternalInternalMapper = (
                 }
             } else if (monthPicker) {
                 if (isMonthArray(value) && 'month' in value[0] && 'year' in value[0]) {
-                    mappedDate = [
-                        setDateMonthOrYear(null, +value[0].month, +value[0].year),
-                        value[1]
-                            ? setDateMonthOrYear(null, +value[1].month, +value[1].year)
-                            : (null as unknown as Date),
-                    ];
+                    mappedDate = [setDateMonthOrYear(null, +value[0].month, +value[0].year)];
+                    if (value[1]) {
+                        mappedDate[1] = setDateMonthOrYear(null, +value[1].month, +value[1].year);
+                    } else if (!value[1] && partialRange) {
+                        mappedDate[1] = null as unknown as Date;
+                    }
                 } else if (isMonth(value) && 'month' in value && 'year' in value) {
                     mappedDate = setDateMonthOrYear(null, +value.month, +value.year);
                 }

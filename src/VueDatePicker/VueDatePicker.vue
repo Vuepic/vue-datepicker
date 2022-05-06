@@ -435,6 +435,13 @@
         }
     };
 
+    const emitOnAutoApply = (ignoreClose: boolean): void => {
+        emitModelValue();
+        if (props.closeOnAutoApply && !ignoreClose) {
+            closeMenu();
+        }
+    };
+
     /**
      * When value is selected it will emit an event that will call this function
      * ignoreClose is passed when time is picked or month and year, since they update the value and for
@@ -442,13 +449,19 @@
      */
     const autoApplyValue = (ignoreClose = false): void => {
         if (props.autoApply) {
-            const isTimeValid = !props.enableTimePicker
-                ? true
-                : isValidTime(internalModelValue.value, props.maxTime, props.minTime);
+            const isTimeValid =
+                !props.enableTimePicker || props.monthPicker || props.yearPicker
+                    ? true
+                    : isValidTime(internalModelValue.value, props.maxTime, props.minTime);
             if (isTimeValid && validateBeforeEmit()) {
-                emitModelValue();
-                if (props.closeOnAutoApply && !ignoreClose) {
-                    closeMenu();
+                if (props.range && Array.isArray(internalModelValue.value)) {
+                    if (props.partialRange) {
+                        emitOnAutoApply(ignoreClose);
+                    } else if (internalModelValue.value.length === 2) {
+                        emitOnAutoApply(ignoreClose);
+                    }
+                } else {
+                    emitOnAutoApply(ignoreClose);
                 }
             }
         }
