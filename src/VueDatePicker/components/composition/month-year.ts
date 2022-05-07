@@ -4,7 +4,7 @@ import type { UseMonthYearPick, VueEmit } from '@/interfaces';
 import { isDateAfter, isDateBefore, isDateEqual } from '@/utils/date-utils';
 
 const getDateForCompare = (date: Date | string, month: number, year: number): [Date, Date] => {
-    return [new Date(date), set(new Date(), { month, year, date: 1 })];
+    return [set(new Date(date), { date: 1 }), set(new Date(), { month, year, date: 1 })];
 };
 
 const validateMinDate = (minDate: Date | string, month: number, year: number): boolean => {
