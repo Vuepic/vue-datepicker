@@ -36,13 +36,13 @@
                 @blur="handleBlur"
                 @focus="handleFocus"
             />
-            <span class="dp__input_icon" v-if="$slots['input-icon'] && !hideInputIcon" @click="stopPropagation"
+            <span class="dp__input_icon" v-if="$slots['input-icon'] && !hideInputIcon" @click="emit('toggle')"
                 ><slot name="input-icon"
             /></span>
             <CalendarIcon
                 v-if="!$slots['input-icon'] && !hideInputIcon && !$slots['dp-input']"
                 class="dp__input_icon dp__input_icons"
-                @click="stopPropagation"
+                @click="emit('toggle')"
             />
             <span class="dp__clear_icon" v-if="$slots['clear-icon'] && inputValue && clearable && !disabled && !readonly"
                 ><slot name="clear-icon" :clear="onClear"
@@ -196,10 +196,6 @@
             emit('selectDate');
             parsedDate.value = null;
         }
-    };
-
-    const stopPropagation = (e: Event) => {
-        e.stopImmediatePropagation();
     };
 
     const onClear = () => {
