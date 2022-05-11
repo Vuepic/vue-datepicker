@@ -5,7 +5,6 @@ import {
     addDays,
     addMonths,
     differenceInCalendarDays,
-    getDay,
     getHours,
     getISOWeek,
     getMinutes,
@@ -32,6 +31,7 @@ import type {
 } from '@/interfaces';
 import {
     dateToUtc,
+    dateValidator,
     getNextMonthYear,
     getWeekFromDate,
     isDateAfter,
@@ -165,36 +165,17 @@ export const useCalendar = (
      * Check if date is between max and min date, or if it is included in filters
      */
     const isDisabled = (date: Date): boolean => {
-        const aboveMax = props.maxDate ? isDateAfter(dateToUtc(date), dateToUtc(new Date(props.maxDate))) : false;
-        const bellowMin = props.minDate ? isDateBefore(dateToUtc(date), dateToUtc(new Date(props.minDate))) : false;
-        const inDisableArr =
-            typeof props.disabledDates === 'function'
-                ? props.disabledDates(date)
-                : props.disabledDates.some((disabledDate: Date | string) =>
-                      isDateEqual(dateToUtc(new Date(disabledDate)), dateToUtc(date)),
-                  );
-        const disabledMonths = props.filters.months.length ? props.filters.months.map((month) => +month) : [];
-        const inDisabledMonths = disabledMonths.includes(getMonth(date));
-        const weekDayDisabled = props.disabledWeekDays.length
-            ? props.disabledWeekDays.some((day) => +day === getDay(date))
-            : false;
-        const notInSpecific = props.allowedDates.length
-            ? !props.allowedDates.some((dateVal) => isDateEqual(dateToUtc(new Date(dateVal)), dateToUtc(date)))
-            : false;
-
-        const dateYear = getYear(date);
-
-        const outOfYearRange = dateYear < +props.yearRange[0] || dateYear > +props.yearRange[1];
-
-        return (
-            aboveMax ||
-            bellowMin ||
-            inDisableArr ||
-            inDisabledMonths ||
-            outOfYearRange ||
-            weekDayDisabled ||
-            notInSpecific
+        const { validate } = dateValidator(
+            props.minDate,
+            props.maxDate,
+            props.disabledDates,
+            props.allowedDates,
+            props.filters,
+            props.disabledWeekDays,
+            props.yearRange,
         );
+
+        return !validate(date);
     };
 
     /**

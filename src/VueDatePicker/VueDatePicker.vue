@@ -409,7 +409,15 @@
     };
 
     const validateBeforeEmit = () => {
-        const { validate } = dateValidator(props.minDate, props.maxDate, props.disabledDates);
+        const { validate } = dateValidator(
+            props.minDate,
+            props.maxDate,
+            props.disabledDates,
+            props.allowedDates,
+            defaultFilters.value,
+            props.disabledWeekDays,
+            props.yearRange,
+        );
         const date = internalModelValue.value;
         if (!Array.isArray(date) && validate(date)) {
             return true;

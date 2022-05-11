@@ -23,10 +23,18 @@ import {
     sub,
     startOfWeek,
     endOfWeek,
+    getDay,
 } from 'date-fns';
 import type { Locale } from 'date-fns';
 
-import type { IDisableDates, IMonthValue, InternalModuleValue, ITimeValue, WeekStartNum } from '@/interfaces';
+import type {
+    IDisableDates,
+    IMonthValue,
+    InternalModuleValue,
+    ITimeValue,
+    WeekStartNum,
+    IDateFilter,
+} from '@/interfaces';
 
 export const parseFreeInput = (value: string, pattern: string): Date | null => {
     const parsedDate = parse(value, pattern.slice(0, value.length), new Date());
@@ -286,47 +294,57 @@ export const getWeekFromDate = (date: Date, weekStartsOn: WeekStartNum): [Date, 
     return [start, end];
 };
 
-const validateBefore = (dateOne: Date | string, dateTwo: Date | string) =>
-    isDateBefore(dateOne, dateTwo) || isDateEqual(dateOne, dateTwo);
-
-const validateAfter = (dateOne: Date | string, dateTwo: Date | string) =>
-    isDateAfter(dateOne, dateTwo) || isDateEqual(dateOne, dateTwo);
-
 const validateDate = (
     date: Date,
     minDate: Date | string,
     maxDate: Date | string,
     disabledDates: Date[] | string[] | IDisableDates,
+    allowedDates: Date[] | string[],
+    filters: IDateFilter,
+    disabledWeekDays: string[] | number[],
+    yearRange: number[],
 ): boolean => {
-    let valid = false;
-    if (minDate || maxDate) {
-        if (minDate && maxDate) {
-            if (validateBefore(date, maxDate) && validateAfter(date, minDate)) {
-                valid = true;
-            }
-        } else if (minDate && validateAfter(date, minDate)) {
-            valid = true;
-        } else if (maxDate && validateBefore(date, maxDate)) {
-            valid = true;
-        }
-    } else if (disabledDates) {
-        if (Array.isArray(disabledDates) && !disabledDates.some((disabledDate) => isDateEqual(disabledDate, date))) {
-            valid = true;
-        } else if (typeof disabledDates === 'function' && !disabledDates(date)) {
-            valid = true;
-        }
-    } else {
-        valid = true;
-    }
-    return valid;
+    const aboveMax = maxDate ? isDateAfter(dateToUtc(date), dateToUtc(new Date(maxDate))) : false;
+    const bellowMin = minDate ? isDateBefore(dateToUtc(date), dateToUtc(new Date(minDate))) : false;
+    const inDisableArr =
+        typeof disabledDates === 'function'
+            ? disabledDates(date)
+            : disabledDates.some((disabledDate: Date | string) =>
+                  isDateEqual(dateToUtc(new Date(disabledDate)), dateToUtc(date)),
+              );
+    const disabledMonths = filters.months.length ? filters.months.map((month) => +month) : [];
+    const inDisabledMonths = disabledMonths.includes(getMonth(date));
+    const weekDayDisabled = disabledWeekDays.length ? disabledWeekDays.some((day) => +day === getDay(date)) : false;
+    const notInSpecific = allowedDates.length
+        ? !allowedDates.some((dateVal) => isDateEqual(dateToUtc(new Date(dateVal)), dateToUtc(date)))
+        : false;
+
+    const dateYear = getYear(date);
+
+    const outOfYearRange = dateYear < +yearRange[0] || dateYear > +yearRange[1];
+
+    return !(
+        aboveMax ||
+        bellowMin ||
+        inDisableArr ||
+        inDisabledMonths ||
+        outOfYearRange ||
+        weekDayDisabled ||
+        notInSpecific
+    );
 };
 
 export const dateValidator = (
     minDate: Date | string,
     maxDate: Date | string,
     disabledDates: Date[] | string[] | IDisableDates,
+    allowedDates: Date[] | string[],
+    filters: IDateFilter,
+    disabledWeekDays: string[] | number[],
+    yearRange: number[],
 ) => {
-    const validate = (date: Date) => validateDate(date, minDate, maxDate, disabledDates);
+    const validate = (date: Date) =>
+        validateDate(date, minDate, maxDate, disabledDates, allowedDates, filters, disabledWeekDays, yearRange);
 
     return {
         validate,
