@@ -5,6 +5,7 @@ import {
     addDays,
     addMonths,
     differenceInCalendarDays,
+    eachDayOfInterval,
     getHours,
     getISOWeek,
     getMinutes,
@@ -375,6 +376,11 @@ export const useCalendar = (
         }
     };
 
+    const isDateRangeAllowed = (range: Date[]): boolean => {
+        const datesInBetween = eachDayOfInterval({ start: range[0], end: range[1] });
+        return !datesInBetween.some((date) => isDisabled(date));
+    };
+
     /**
      * Called when the date in the calendar is clicked
      * Do a necessary formatting and assign value to internal
@@ -405,10 +411,13 @@ export const useCalendar = (
                 rangeDate = [];
             }
             if (props.autoRange) {
-                if (isNext) {
-                    handleNextCalendarAutoRange(day.value);
+                const autoRange = [new Date(day.value), addDays(new Date(day.value), +props.autoRange)];
+                if (isDateRangeAllowed(autoRange)) {
+                    if (isNext) {
+                        handleNextCalendarAutoRange(day.value);
+                    }
+                    rangeDate = autoRange;
                 }
-                rangeDate = [new Date(day.value), addDays(new Date(day.value), +props.autoRange)];
             } else if (props.fixedStart || props.fixedEnd) {
                 rangeDate = getRangeWithFixedDate(new Date(day.value));
             } else {
@@ -422,16 +431,18 @@ export const useCalendar = (
                     }
                 }
             }
-            if (rangeDate[0] && !rangeDate[1]) {
-                rangeDate[0] = setDateTime(rangeDate[0], hours.value[0], minutes.value[0], getSecondsValue());
-            } else {
-                rangeDate[0] = setDateTime(rangeDate[0], hours.value[0], minutes.value[0], getSecondsValue());
-                rangeDate[1] = setDateTime(rangeDate[1], hours.value[1], minutes.value[1], getSecondsValue(false));
-                updateFlow();
-            }
-            modelValue.value = rangeDate;
-            if (rangeDate[0] && rangeDate[1] && props.autoApply) {
-                emit('autoApply');
+            if (rangeDate.length) {
+                if (rangeDate[0] && !rangeDate[1]) {
+                    rangeDate[0] = setDateTime(rangeDate[0], hours.value[0], minutes.value[0], getSecondsValue());
+                } else {
+                    rangeDate[0] = setDateTime(rangeDate[0], hours.value[0], minutes.value[0], getSecondsValue());
+                    rangeDate[1] = setDateTime(rangeDate[1], hours.value[1], minutes.value[1], getSecondsValue(false));
+                    updateFlow();
+                }
+                modelValue.value = rangeDate;
+                if (rangeDate[0] && rangeDate[1] && props.autoApply) {
+                    emit('autoApply');
+                }
             }
         }
     };
