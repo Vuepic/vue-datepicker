@@ -204,7 +204,7 @@ export const useCalendar = (
      * Extracted method to map month and year
      */
     const assignMonthAndYear = (date: Date): void => {
-        if (!props.multiCalendars || props.multiStatic) {
+        if (!props.multiCalendars || !props.multiStatic) {
             setCalendarMonth(0, getMonth(date));
             setCalendarYear(0, getYear(date));
         }
