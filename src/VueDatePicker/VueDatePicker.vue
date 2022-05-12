@@ -56,6 +56,7 @@
                     range,
                     multiCalendars: multiCalendarDefault,
                     multiCalendarsSolo,
+                    multiStatic,
                     calendarCellClassName,
                     enableTimePicker,
                     is24,

@@ -24,6 +24,7 @@ interface VueDatePicker {
     range?: boolean;
     multiCalendars?: boolean | number | string;
     multiCalendarsSolo?: boolean;
+    multiStatic?: boolean;
     modelValue?:
         | Date
         | Date[]
