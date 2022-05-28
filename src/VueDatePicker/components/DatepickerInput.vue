@@ -26,7 +26,7 @@
                 :class="inputClass"
                 :placeholder="placeholder"
                 :disabled="disabled"
-                :readonly="readonly || !textInput"
+                :readonly="readonly"
                 :required="required"
                 :value="inputValue"
                 :autocomplete="autocomplete"
@@ -35,6 +35,7 @@
                 @keydown.tab="handleTab"
                 @blur="handleBlur"
                 @focus="handleFocus"
+                @keypress="handleKeyPress"
             />
             <span class="dp__input_icon" v-if="$slots['input-icon'] && !hideInputIcon" @click="emit('toggle')"
                 ><slot name="input-icon"
@@ -103,6 +104,7 @@
         (): DynamicClass => ({
             dp__pointer: !props.disabled && !props.readonly && !props.textInput,
             dp__disabled: props.disabled,
+            dp__input_readonly: !props.textInput,
             dp__input: true,
             dp__input_icon_pad: !props.hideInputIcon,
             dp__input_valid: props.state,
@@ -209,6 +211,12 @@
         const el = unrefElement(inputRef);
         if (el) {
             el.blur();
+        }
+    };
+
+    const handleKeyPress = (ev: KeyboardEvent): boolean | void => {
+        if (!props.textInput) {
+            ev.preventDefault();
         }
     };
 
