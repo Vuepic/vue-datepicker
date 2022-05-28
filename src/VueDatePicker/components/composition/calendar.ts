@@ -76,7 +76,7 @@ export const useCalendar = (
     );
 
     onMounted(() => {
-        mapInternalModuleValues();
+        mapInternalModuleValues(true);
 
         if (!modelValue.value) {
             if (props.startDate) {
@@ -204,8 +204,8 @@ export const useCalendar = (
     /**
      * Extracted method to map month and year
      */
-    const assignMonthAndYear = (date: Date): void => {
-        if (!props.multiCalendars || !props.multiStatic) {
+    const assignMonthAndYear = (date: Date, fromMount = false): void => {
+        if (!props.multiCalendars || !props.multiStatic || fromMount) {
             setCalendarMonth(0, getMonth(date));
             setCalendarYear(0, getYear(date));
         }
@@ -251,11 +251,11 @@ export const useCalendar = (
     /**
      * Values for times, month and year are managed separately, here we map those values from passed v-model
      */
-    const mapInternalModuleValues = (): void => {
+    const mapInternalModuleValues = (fromMount = false): void => {
         if (modelValue.value) {
             if (isModelValueRange(modelValue.value)) {
                 if (modelValue.value.length === 2 && !props.multiDates) {
-                    assignMonthAndYear(modelValue.value[0]);
+                    assignMonthAndYear(modelValue.value[0], fromMount);
                     hours.value = [
                         getHours(modelValue.value[0]),
                         modelValue.value[1] ? getHours(modelValue.value[1]) : getHours(new Date()),
