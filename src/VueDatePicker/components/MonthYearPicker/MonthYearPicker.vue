@@ -262,6 +262,7 @@
         if (props.maxDate && maxYear.value) {
             if (maxYear.value < props.year) return -1;
             if (maxYear.value === props.year) return getMonth(new Date(props.maxDate));
+            return null;
         }
         return null;
     });

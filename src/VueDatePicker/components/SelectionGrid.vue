@@ -173,8 +173,10 @@
      * Check if value is within min-max range
      */
     const checkMinMaxValue = (value: number | string): boolean => {
-        const isAboveMax = props.maxValue ? +value > +props.maxValue : false;
-        const isBellowMin = props.minValue ? +value < +props.minValue : false;
+        if (props.maxValue === null && props.minValue === null) return false;
+
+        const isAboveMax = props.maxValue || +props.maxValue === 0 ? +value > +props.maxValue : false;
+        const isBellowMin = props.minValue || +props.minValue === 0 ? +value < +props.minValue : false;
 
         return isAboveMax || isBellowMin;
     };
@@ -199,11 +201,7 @@
      * Handle click on cell, if value is enabled (not in filters), emit value back to parent
      */
     const onClick = (val: string | number): void => {
-        if (
-            !props.disabledValues.some((value) => value === val) &&
-            (props.minValue ? +props.minValue <= val : true) &&
-            (props.maxValue ? +props.maxValue >= val : true)
-        ) {
+        if (!props.disabledValues.some((value) => value === val) && !checkMinMaxValue(val)) {
             emit('update:modelValue', val);
             emit('selected');
         }
