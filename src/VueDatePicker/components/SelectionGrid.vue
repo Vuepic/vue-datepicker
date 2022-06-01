@@ -173,12 +173,22 @@
      * Check if value is within min-max range
      */
     const checkMinMaxValue = (value: number | string): boolean => {
-        if (props.maxValue === null && props.minValue === null) return false;
+        const hasMax = props.maxValue || props.maxValue === 0;
+        const hasMin = props.minValue || props.minValue === 0;
+        if (!hasMax && !hasMin) return false;
 
-        const isAboveMax = props.maxValue || +props.maxValue === 0 ? +value > +props.maxValue : false;
-        const isBellowMin = props.minValue || +props.minValue === 0 ? +value < +props.minValue : false;
+        if (hasMax && hasMin) {
+            return +value > +props.maxValue || +value < +props.minValue;
+        }
+        if (hasMax) {
+            return +value > +props.maxValue;
+        }
 
-        return isAboveMax || isBellowMin;
+        if (hasMin) {
+            return +value < +props.minValue;
+        }
+
+        return false;
     };
 
     /**
