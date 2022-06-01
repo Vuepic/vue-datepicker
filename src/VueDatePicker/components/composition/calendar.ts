@@ -613,7 +613,7 @@ export const useCalendar = (
             isNumberArray(hoursCp) &&
             isNumberArray(minutesCp) &&
             isNumberArray(secondsCp) &&
-            !props.disableTimeValidation
+            !props.disableTimeRangeValidation
         ) {
             const setTime = (index: number) =>
                 setDateTime((modelValue.value as Date[])[index], hoursCp[index], minutesCp[index], secondsCp[index]);
