@@ -158,6 +158,7 @@ export const MenuProps = {
     filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
     arrowNavigation: { type: Boolean as PropType<boolean>, default: false },
     multiStatic: { type: Boolean as PropType<boolean>, default: true },
+    disableTimeValidation: { type: Boolean as PropType<boolean>, default: false },
 };
 
 // Since many props are passed from the main component to the children, this is simply to reuse prop definitions and don't repeat the same code

@@ -220,6 +220,7 @@ interface VueDatePicker {
     };
     arrowNavigation?: boolean;
     yearPicker?: boolean;
+    disableTimeValidation?: boolean;
 }
 
 interface PublicMethods extends MethodOptions {

@@ -126,6 +126,7 @@
                     vertical,
                     arrowNavigation,
                     yearPicker,
+                    disableTimeValidation,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @close-picker="closeMenu"
