@@ -110,6 +110,7 @@
             dp__input_valid: props.state,
             dp__input_invalid: props.state === false,
             dp__input_focus: isFocused.value || props.isMenuOpen,
+            dp__input_reg: !props.textInput,
             [props.inputClassName]: !!props.inputClassName,
         }),
     );

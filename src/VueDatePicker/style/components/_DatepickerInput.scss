@@ -32,6 +32,10 @@
   }
 }
 
+.dp__input_reg {
+  caret-color: transparent;
+}
+
 .dp__input_focus {
   border-color: var(--dp-border-color-hover);
 }
