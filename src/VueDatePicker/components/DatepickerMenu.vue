@@ -63,6 +63,7 @@
                                 }"
                                 @mount="childMount('monthYearInput')"
                                 @reset-flow="resetFlow"
+                                @update-month-year="updateMonthYear(instance, $event)"
                                 @update:month="updateMonthYear(instance, $event, true)"
                                 @update:year="updateMonthYear(instance, $event, false)"
                                 @month-year-select="monthYearSelect"

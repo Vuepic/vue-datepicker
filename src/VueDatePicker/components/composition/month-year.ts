@@ -93,8 +93,7 @@ export const useMontYearPick = (props: UseMonthYearPick, emit: VueEmit) => {
     };
 
     const updateMonthYear = (month: number, year: number): void => {
-        emit('update:month', month);
-        emit('update:year', year);
+        emit('update-month-year', { month, year });
     };
 
     return { handleMonthYearChange };

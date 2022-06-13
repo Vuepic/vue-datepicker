@@ -180,14 +180,7 @@
     import { unrefElement } from '@/utils/util';
     import { useArrowNavigation } from '@/components/composition/arrow-navigate';
 
-    const emit = defineEmits([
-        'update:month',
-        'update:year',
-        'monthYearSelect',
-        'mount',
-        'reset-flow',
-        'overlay-closed',
-    ]);
+    const emit = defineEmits(['update-month-year', 'monthYearSelect', 'mount', 'reset-flow', 'overlay-closed']);
     const props = defineProps({
         ...MonthCalendarSharedProps,
         ...DateValidationProps,
@@ -221,7 +214,8 @@
     const bindOptions = (type: 'month' | 'year') => ({
         get: () => props[type],
         set: (value: number) => {
-            emit(`update:${type}`, value);
+            const otherType = type === 'month' ? 'year' : 'month';
+            emit('update-month-year', { [type]: value, [otherType]: props[otherType] });
             emit('monthYearSelect', type === 'year');
             if (type === 'month') {
                 toggleMonthPicker(true);
@@ -332,7 +326,7 @@
     };
 
     const handleYear = (increment = false): void => {
-        emit('update:year', increment ? props.year + 1 : props.year - 1);
+        emit('update-month-year', { year: increment ? props.year + 1 : props.year - 1, month: props.month });
     };
 
     const setElRefs = (el: HTMLElement, i: number): void => {

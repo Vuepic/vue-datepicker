@@ -531,18 +531,18 @@ export const useCalendar = (
         return setDateMonthOrYear(new Date(), month.value(instance), year.value(instance));
     };
 
-    const updateMonthYear = (instance: number, value: number, isMonth = true): void => {
-        if (isMonth) {
-            setCalendarMonth(instance, value);
-        } else {
-            setCalendarYear(instance, value);
-        }
+    const updateMonthYear = (instance: number, val: { month: number; year: number }): void => {
+        const isMonthChange = month.value(instance) !== val.month;
+
+        setCalendarMonth(instance, val.month);
+        setCalendarYear(instance, val.year);
+
         if (props.multiCalendars && !props.multiCalendarsSolo) {
             autoChangeMultiCalendars(instance);
         }
         if (props.monthPicker) {
             if (props.range) {
-                if (isMonth) {
+                if (isMonthChange) {
                     let rangeDate = modelValue.value ? (modelValue.value as Date[]).slice() : [];
                     if (rangeDate.length === 2 && rangeDate[1] !== null) {
                         rangeDate = [];
@@ -563,7 +563,7 @@ export const useCalendar = (
             }
         }
         updateFlow();
-        emit('updateMonthYear', { instance, value, isMonth });
+        emit('updateMonthYear', { instance, month: val.month, year: val.year });
         triggerCalendarTransition(props.multiCalendarsSolo ? instance : undefined);
     };
 
