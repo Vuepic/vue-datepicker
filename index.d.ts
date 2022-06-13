@@ -221,6 +221,7 @@ interface VueDatePicker {
     arrowNavigation?: boolean;
     yearPicker?: boolean;
     disableTimeRangeValidation?: boolean;
+    dayNames?: ((lang: string, weekStart: number) => string[]) | string[];
 }
 
 interface PublicMethods extends MethodOptions {

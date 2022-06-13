@@ -426,6 +426,7 @@
         internalModelValue: props.internalModelValue,
         noSwipe: props.noSwipe,
         vertical: props.vertical,
+        dayNames: props.dayNames,
     }));
 
     const dpMenuClass = computed(

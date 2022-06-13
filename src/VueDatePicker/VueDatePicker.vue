@@ -127,6 +127,7 @@
                     arrowNavigation,
                     yearPicker,
                     disableTimeRangeValidation,
+                    dayNames,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @close-picker="closeMenu"

@@ -132,8 +132,13 @@
     const arrowNavigation = inject<Ref<boolean>>(arrowNavigationKey);
     const transitionName = ref('');
     const touch = ref({ startX: 0, endX: 0, startY: 0, endY: 0 });
+
     const weekDays = computed(() => {
-        return getDayNames(props.locale, +props.weekStart);
+        return props.dayNames
+            ? Array.isArray(props.dayNames)
+                ? props.dayNames
+                : props.dayNames(props.locale, +props.weekStart)
+            : getDayNames(props.locale, +props.weekStart);
     });
 
     const { buildMultiLevelMatrix } = useArrowNavigation();

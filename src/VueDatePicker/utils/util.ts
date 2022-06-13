@@ -80,9 +80,9 @@ export const getDayNames = (locale: string, weekStart: number): string[] => {
             .slice(0, 2);
     });
 
-    // Get days tha are in order before specified week start
+    // Get days that are in order before specified week start
     const beforeWeekStart = days.slice(0, weekStart);
-    // Get days tha are in order after specified week start
+    // Get days that are in order after specified week start
     const afterWeekStart = days.slice(weekStart + 1, days.length);
 
     // return them in correct order
