@@ -7,7 +7,7 @@
                 :class="calendarWrapClass"
                 role="grid"
                 :aria-label="ariaLabels.calendarWrap"
-                @wheel.prevent="$emit('handleScroll', $event)"
+                @wheel="onScroll"
             >
                 <div class="dp__calendar_header" role="row">
                     <div class="dp__calendar_header_item" role="gridcell" v-if="weekNumbers">{{ weekNumName }}</div>
@@ -245,6 +245,13 @@
         }
         if (arrowNavigation?.value) {
             buildMultiLevelMatrix(dayRefs.value, 'calendar');
+        }
+    };
+
+    const onScroll = (ev: WheelEvent) => {
+        if (props.monthChangeOnScroll) {
+            ev.preventDefault();
+            emit('handleScroll', ev);
         }
     };
 

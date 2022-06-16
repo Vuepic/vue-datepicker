@@ -109,6 +109,7 @@ export const CalendarProps = {
     weekNumbers: { type: Boolean as PropType<boolean>, default: false },
     calendarClassName: { type: String as PropType<string>, default: null },
     noSwipe: { type: Boolean as PropType<boolean>, default: false },
+    monthChangeOnScroll: { type: [Boolean, String] as PropType<boolean | 'inverse'>, default: true },
     dayNames: {
         type: [Function, Array] as PropType<((lang: string, weekStart: number) => string[]) | string[]>,
         default: null,
@@ -144,7 +145,6 @@ export const MenuProps = {
     allowedDates: { type: Array as PropType<string[] | Date[]>, default: () => [] },
     showNowButton: { type: Boolean as PropType<boolean>, default: false },
     nowButtonLabel: { type: String as PropType<string>, default: 'Now' },
-    monthChangeOnScroll: { type: [Boolean, String] as PropType<boolean | 'inverse'>, default: true },
     markers: { type: Array as PropType<IMarker[]>, default: () => [] },
     modeHeight: { type: [Number, String] as PropType<number | string>, default: 255 },
     escClose: { type: Boolean as PropType<boolean>, default: true },

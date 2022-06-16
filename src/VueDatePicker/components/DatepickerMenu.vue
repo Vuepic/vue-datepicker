@@ -427,6 +427,7 @@
         noSwipe: props.noSwipe,
         vertical: props.vertical,
         dayNames: props.dayNames,
+        monthChangeOnScroll: props.monthChangeOnScroll,
     }));
 
     const dpMenuClass = computed(
