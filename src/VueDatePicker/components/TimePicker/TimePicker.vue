@@ -15,7 +15,7 @@
         </div>
         <transition :name="transitionName(showTimePicker)" :css="showTransition">
             <div v-if="showTimePicker || timePicker" class="dp__overlay" ref="overlayRef" tabindex="0">
-                <div class="dp__overlay_container">
+                <div class="dp__overlay_container dp__container_flex">
                     <slot
                         name="time-picker-overlay"
                         v-if="$slots['time-picker-overlay']"

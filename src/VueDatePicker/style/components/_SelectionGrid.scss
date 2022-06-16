@@ -33,8 +33,15 @@
   outline: none;
 }
 
-.dp__overlay_container {
+.dp__container_flex {
   display: flex;
+}
+
+.dp__container_block {
+  display: block;
+}
+
+.dp__overlay_container {
   height: 100%;
   flex-direction: column;
 }

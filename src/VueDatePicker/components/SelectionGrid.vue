@@ -1,6 +1,6 @@
 <template>
     <div ref="gridWrapRef" :class="dpOverlayClass" role="dialog" tabindex="0">
-        <div class="dp__overlay_container" role="grid">
+        <div :class="containerClass" role="grid">
             <div class="dp__selection_grid_header"><slot name="header"></slot></div>
             <div class="dp__overlay_row" v-for="(row, i) in mappedItems" :key="getKey(i)" role="row">
                 <div
@@ -168,6 +168,12 @@
             dp__button_bottom: autoApply,
         }),
     );
+
+    const containerClass = computed(() => ({
+        dp__overlay_container: true,
+        dp__container_flex: props.items?.length <= 6,
+        dp__container_block: props.items?.length > 6,
+    }));
 
     /**
      * Check if value is within min-max range
