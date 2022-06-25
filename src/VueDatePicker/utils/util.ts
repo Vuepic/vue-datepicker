@@ -12,6 +12,7 @@ import type {
     ITextInputOptions,
     ITransition,
     MaybeElementRef,
+    ModelValue,
     WeekStartNum,
 } from '@/interfaces';
 import { isDateEqual, resetDateTime } from './date-utils';
@@ -199,4 +200,11 @@ export const defaultAriaLabels = (labels: Partial<AreaLabels>): AreaLabels => {
         },
         labels,
     );
+};
+
+export const isModelAuto = (modelValue: ModelValue): boolean => {
+    if (Array.isArray(modelValue)) {
+        return !!modelValue[0] && !!modelValue[1];
+    }
+    return false;
 };

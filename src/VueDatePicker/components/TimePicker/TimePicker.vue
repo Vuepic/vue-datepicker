@@ -33,6 +33,7 @@
                                 v-for="(tInput, index) in timeInputs"
                                 :key="index"
                                 :disabled="index === 0 ? fixedStart : fixedEnd"
+                                v-show="index === 0 ? true : shouldShowRangedInput"
                                 :hours="tInput.hours"
                                 :minutes="tInput.minutes"
                                 :seconds="tInput.seconds"
@@ -99,7 +100,8 @@
 
     import { ariaLabelsKey, arrowNavigationKey, autoApplyKey, TimePickerProps } from '@/utils/props';
     import { useArrowNavigation } from '@/components/composition/arrow-navigate';
-    import { unrefElement } from '@/utils/util';
+    import { isModelAuto, unrefElement } from '@/utils/util';
+    import type { InternalModuleValue } from '@/interfaces';
 
     const emit = defineEmits([
         'update:hours',
@@ -118,6 +120,8 @@
         minutes: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         seconds: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
+        modelAuto: { type: Boolean as PropType<boolean>, default: false },
+        internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
     });
     const slots = useSlots();
     const openTimePickerBtn = ref(null);
@@ -138,6 +142,11 @@
         } else {
             setTimePicker(true, props.timePicker);
         }
+    });
+
+    const shouldShowRangedInput = computed(() => {
+        if (props.range && props.modelAuto) return isModelAuto(props.internalModelValue);
+        return true;
     });
 
     const showTimePicker = ref(false);

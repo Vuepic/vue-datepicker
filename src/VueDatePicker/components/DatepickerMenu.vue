@@ -64,8 +64,8 @@
                                 @mount="childMount('monthYearInput')"
                                 @reset-flow="resetFlow"
                                 @update-month-year="updateMonthYear(instance, $event)"
-                                @update:month="updateMonthYear(instance, $event, true)"
-                                @update:year="updateMonthYear(instance, $event, false)"
+                                @update:month="updateMonthYear(instance, $event)"
+                                @update:year="updateMonthYear(instance, $event)"
                                 @month-year-select="monthYearSelect"
                                 @overlay-closed="focusMenu"
                             >
@@ -124,6 +124,8 @@
                                 enableSeconds,
                                 fixedStart,
                                 fixedEnd,
+                                modelAuto,
+                                internalModelValue,
                             }"
                             @mount="childMount('timePicker')"
                             @update:hours="updateTime($event)"
@@ -173,6 +175,7 @@
                     minDate,
                     maxDate,
                     multiDates,
+                    modelAuto,
                 }"
                 @close-picker="$emit('closePicker')"
                 @select-date="$emit('selectDate')"
@@ -211,7 +214,7 @@
         AreaLabels,
     } from '@/interfaces';
 
-    import { getCalendarDays, getMonths, getYears, unrefElement } from '@/utils/util';
+    import { getCalendarDays, getMonths, getYears, isModelAuto, unrefElement } from '@/utils/util';
     import { isDateEqual } from '@/utils/date-utils';
     import {
         ariaLabelsKey,
@@ -439,6 +442,18 @@
         }),
     );
 
+    const isSingleInModelAuto = (): boolean => {
+        if (props.modelAuto && Array.isArray(props.internalModelValue)) {
+            return !!props.internalModelValue[0];
+        }
+        return false;
+    };
+
+    const isModelAutoActive = () => {
+        if (props.modelAuto) return isModelAuto(props.internalModelValue);
+        return true;
+    };
+
     const mapDates = (dates: ComputedRef<(instance: number) => ICalendarDate[]>, instance: number): ICalendarDate[] => {
         return dates.value(instance).map((date) => {
             return {
@@ -450,6 +465,7 @@
                         (props.range || props.weekPicker) &&
                         (props.multiCalendars > 0 ? calendarDay.current : true) &&
                         !disabled &&
+                        isModelAutoActive() &&
                         !(!calendarDay.current && props.hideOffsetDates) &&
                         !isActiveDate(calendarDay)
                             ? rangeActive(calendarDay)
@@ -458,7 +474,11 @@
                     calendarDay.classData = {
                         dp__cell_offset: !calendarDay.current,
                         dp__pointer: !disabled && !(!calendarDay.current && props.hideOffsetDates),
-                        dp__active_date: props.range ? false : isActiveDate(calendarDay),
+                        dp__active_date: props.range
+                            ? props.modelAuto
+                                ? isSingleInModelAuto() && isActiveDate(calendarDay)
+                                : false
+                            : isActiveDate(calendarDay),
                         dp__date_hover: dateHover,
                         dp__date_hover_start: isHoverDateStartEnd(dateHover, calendarDay, true),
                         dp__date_hover_end: isHoverDateStartEnd(dateHover, calendarDay, false),
@@ -471,12 +491,12 @@
                         dp__cell_auto_range_end: isHoverRangeEnd(calendarDay),
                         dp__range_start:
                             props.multiCalendars > 0
-                                ? calendarDay.current && rangeActiveStartEnd(calendarDay)
-                                : rangeActiveStartEnd(calendarDay),
+                                ? calendarDay.current && rangeActiveStartEnd(calendarDay) && isModelAutoActive()
+                                : rangeActiveStartEnd(calendarDay) && isModelAutoActive(),
                         dp__range_end:
                             props.multiCalendars > 0
-                                ? calendarDay.current && rangeActiveStartEnd(calendarDay, false)
-                                : rangeActiveStartEnd(calendarDay, false),
+                                ? calendarDay.current && rangeActiveStartEnd(calendarDay, false) && isModelAutoActive()
+                                : rangeActiveStartEnd(calendarDay, false) && isModelAutoActive(),
                         [props.calendarCellClassName]: !!props.calendarCellClassName,
                     };
                     return calendarDay;

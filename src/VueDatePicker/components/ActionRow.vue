@@ -116,6 +116,9 @@
                 if (props.multiDates) {
                     return props.internalModelValue.map((date) => `${formatWrap(date)}`);
                 }
+                if (props.modelAuto) {
+                    return `${formatWrap(props.internalModelValue[0])}`;
+                }
                 return `${formatWrap(props.internalModelValue[0])} -`;
             }
             return formatDate(props.internalModelValue, props.previewFormat, formatLocale?.value);

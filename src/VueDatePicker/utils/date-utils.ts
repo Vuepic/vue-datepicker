@@ -164,11 +164,12 @@ export const formatDate = (
     pattern: string,
     locale?: Locale | null,
     textInputSeparator?: string,
+    modelAuto?: boolean,
 ): string => {
     if (Array.isArray(value)) {
-        return `${formatFn(value[0], pattern, locale)} ${textInputSeparator ? textInputSeparator : '-'} ${
-            value[1] ? formatFn(value[1], pattern, locale) : ''
-        }`;
+        return `${formatFn(value[0], pattern, locale)} ${
+            modelAuto && !value[1] ? '' : textInputSeparator ? textInputSeparator : '-'
+        } ${value[1] ? formatFn(value[1], pattern, locale) : ''}`;
     }
 
     return formatFn(value, pattern, locale);

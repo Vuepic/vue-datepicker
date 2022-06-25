@@ -128,6 +128,7 @@
                     yearPicker,
                     disableTimeRangeValidation,
                     dayNames,
+                    modelAuto,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @close-picker="closeMenu"
@@ -273,6 +274,7 @@
         props.yearPicker,
         props.textInputOptions,
         props.modelType,
+        props.modelAuto,
         emit,
     );
 

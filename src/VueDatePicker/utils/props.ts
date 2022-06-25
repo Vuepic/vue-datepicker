@@ -101,6 +101,7 @@ export const MenuNestedDownProps = {
     monthPicker: { type: Boolean as PropType<boolean>, default: false },
     customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
     yearPicker: { type: Boolean as PropType<boolean>, default: false },
+    modelAuto: { type: Boolean as PropType<boolean>, default: false },
 };
 
 export const CalendarProps = {

@@ -191,6 +191,9 @@ export const useCalendar = (
             }
             return isDateEqual(calendarDay.value, modelValue.value ? (modelValue.value as Date) : today.value);
         }
+        if (props.modelAuto && Array.isArray(modelValue.value)) {
+            return isDateEqual(calendarDay.value, modelValue.value[0] ? (modelValue.value[0] as Date) : today.value);
+        }
         return false;
     };
 

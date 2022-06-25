@@ -35,6 +35,7 @@ export const useExternalInternalMapper = (
     yearPicker: boolean,
     textInputOptions: ITextInputOptions,
     modelType: ModelType,
+    modelAuto: boolean,
     emit: VueEmit,
 ) => {
     const inputValue = ref('');
@@ -43,6 +44,10 @@ export const useExternalInternalMapper = (
     watch(internalModelValue, () => {
         emit('internalModelChange', internalModelValue.value);
     });
+
+    const mapArrayToValue = (value: Date[]): Date[] => {
+        return [parseModelType(value[0]), value[1] ? parseModelType(value[1]) : (null as unknown as Date)];
+    };
 
     /**
      * Map external values to dates that will be used internally by the datepicker
@@ -79,11 +84,14 @@ export const useExternalInternalMapper = (
             } else if (weekPicker && Array.isArray(value)) {
                 mappedDate = [new Date(value[0] as string), new Date(value[1] as string)];
             } else if (range) {
-                if (isRangeArray(value, partialRange)) {
-                    mappedDate = [
-                        parseModelType(value[0]),
-                        value[1] ? parseModelType(value[1]) : (null as unknown as Date),
-                    ];
+                if (modelAuto) {
+                    if (Array.isArray(value)) {
+                        mappedDate = mapArrayToValue(value as Date[]);
+                    } else {
+                        mappedDate = [parseModelType(value as Date), null as unknown as Date];
+                    }
+                } else if (isRangeArray(value, partialRange)) {
+                    mappedDate = mapArrayToValue(value);
                 }
             } else if (isSingle(value)) {
                 mappedDate = parseModelType(value);
@@ -132,6 +140,7 @@ export const useExternalInternalMapper = (
                     pattern,
                     formatLocale?.value,
                     textInputOptions?.rangeSeparator,
+                    modelAuto,
                 );
             }
         } else if (timePicker) {
@@ -182,6 +191,13 @@ export const useExternalInternalMapper = (
         emit('update:modelValue', value);
     };
 
+    const getRangeEmitValue = (): Date[] => {
+        return [
+            getModelValueType(internalModelValue.value[0] as Date),
+            internalModelValue.value[1] ? getModelValueType(internalModelValue.value[1] as Date) : null,
+        ] as Date[];
+    };
+
     /**
      * When date is selected, emit event to update modelValue on external
      */
@@ -199,17 +215,31 @@ export const useExternalInternalMapper = (
                 internalModelValue.value.push(null);
             }
             if (utc) {
-                const zonedDate = Array.isArray(internalModelValue.value)
-                    ? internalModelValue.value.map((date) => (date ? dateToUtc(date) : date))
-                    : dateToUtc(internalModelValue.value);
+                let zonedDate;
+                if (Array.isArray(internalModelValue.value)) {
+                    const mapDate = (date: Date) => (date ? dateToUtc(date) : date);
+                    if (modelAuto) {
+                        zonedDate = internalModelValue.value[1]
+                            ? internalModelValue.value.map(mapDate)
+                            : dateToUtc(internalModelValue.value[0]);
+                    } else {
+                        zonedDate = internalModelValue.value.map(mapDate);
+                    }
+                } else {
+                    zonedDate = dateToUtc(internalModelValue.value);
+                }
                 return emitValue(zonedDate);
             }
-
-            if (Array.isArray(internalModelValue)) {
-                emitValue([
-                    getModelValueType(internalModelValue.value[0] as Date),
-                    internalModelValue.value[1] ? getModelValueType(internalModelValue.value[1] as Date) : null,
-                ] as ModelValue);
+            if (Array.isArray(internalModelValue.value)) {
+                if (modelAuto) {
+                    emitValue(
+                        internalModelValue.value[1]
+                            ? getRangeEmitValue()
+                            : (getModelValueType(internalModelValue.value[0] as Date) as Date),
+                    );
+                } else {
+                    emitValue(getRangeEmitValue());
+                }
             } else {
                 emitValue(getModelValueType(internalModelValue.value));
             }

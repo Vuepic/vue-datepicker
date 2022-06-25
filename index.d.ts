@@ -225,6 +225,7 @@ interface VueDatePicker {
     disableTimeRangeValidation?: boolean;
     dayNames?: ((lang: string, weekStart: number) => string[]) | string[];
     modelType?: 'timestamp' | 'format' | string;
+    modelAuto?: boolean;
 }
 
 interface PublicMethods extends MethodOptions {
