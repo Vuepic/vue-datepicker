@@ -242,7 +242,7 @@
             } else {
                 elementRefs.value[col] = [el];
             }
-            let matrix = elementRefs.value.reduce(
+            const matrix = elementRefs.value.reduce(
                 (col, row) => row.map((_, i) => [...(col[i] || []), row[i]]),
                 [] as HTMLElement[][],
             );
