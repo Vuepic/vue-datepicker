@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { mount, VueWrapper } from '@vue/test-utils';
 import { describe, it, expect } from 'vitest';
-import { setMilliseconds, setSeconds } from 'date-fns';
+import { getMonth, getYear, setMilliseconds, setSeconds } from 'date-fns';
 import addDays from 'date-fns/addDays';
 import { ja } from 'date-fns/locale';
 
@@ -144,7 +144,7 @@ describe('Logic connection', () => {
         const { dp, menu } = await mountDatepicker({ modelValue: null, range: true });
 
         const monthYearInput = menu.findComponent(MonthYearInput);
-        monthYearInput.vm.$emit('update:month', month);
+        monthYearInput.vm.$emit('update:month', { month, year: getYear(new Date()) });
 
         expect(menu.vm.month(0)).toEqual(month);
         dp.unmount();
@@ -155,7 +155,7 @@ describe('Logic connection', () => {
         const { dp, menu } = await mountDatepicker({ modelValue: null, range: true });
 
         const monthYearInput = menu.findComponent(MonthYearInput);
-        monthYearInput.vm.$emit('update:year', year);
+        monthYearInput.vm.$emit('update-month-year', { month: getMonth(new Date()), year });
 
         expect(menu.vm.year(0)).toEqual(year);
         dp.unmount();
