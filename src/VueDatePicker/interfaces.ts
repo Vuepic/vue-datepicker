@@ -71,6 +71,7 @@ export type ModelValue =
     | IMonthValue
     | IMonthValue[]
     | number
+    | number[]
     | null;
 
 export type WeekStartNum = 0 | 1 | 2 | 3 | 4 | 5 | 6;
@@ -183,3 +184,7 @@ export interface ICalendarData {
 export type ComponentRef = Ref<HTMLElement | null>;
 
 export type TimeOverlayCheck = 'noHoursOverlay' | 'noMinutesOverlay' | 'noSecondsOverlay';
+
+export type ModelFormatType = 'timestamp' | 'format';
+
+export type ModelType = ModelFormatType | string;

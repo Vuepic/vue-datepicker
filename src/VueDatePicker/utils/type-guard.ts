@@ -48,7 +48,7 @@ export const isTimeArr = (value: ITimeValue | ITimeValue[]): value is ITimeValue
 };
 
 export const isSingle = (value: ModelValue): value is Date => {
-    return typeof value === 'string' || typeof value === 'object';
+    return typeof value === 'string' || typeof value === 'object' || typeof value === 'number';
 };
 
 export const isString = (value: unknown): value is string => {

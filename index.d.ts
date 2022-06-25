@@ -30,6 +30,8 @@ interface VueDatePicker {
         | Date[]
         | string
         | string[]
+        | number
+        | number[]
         | {
               hours: number | string;
               minutes: number | string;
@@ -222,6 +224,7 @@ interface VueDatePicker {
     yearPicker?: boolean;
     disableTimeRangeValidation?: boolean;
     dayNames?: ((lang: string, weekStart: number) => string[]) | string[];
+    modelType?: 'timestamp' | 'format' | string;
 }
 
 interface PublicMethods extends MethodOptions {

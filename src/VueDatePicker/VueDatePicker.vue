@@ -272,6 +272,7 @@
         props.weekPicker,
         props.yearPicker,
         props.textInputOptions,
+        props.modelType,
         emit,
     );
 

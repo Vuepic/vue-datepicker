@@ -18,6 +18,7 @@ import type {
     ITransition,
     ModelValue,
     OpenPosition,
+    ModelType,
 } from '@/interfaces';
 
 export const ariaLabelsKey = Symbol();
@@ -172,6 +173,7 @@ export const AllProps = {
     ...MenuProps,
     multiCalendars: { type: [Boolean, Number, String] as PropType<boolean | number | string>, default: null },
     modelValue: { type: [String, Date, Array, Object, Number] as PropType<ModelValue>, default: null },
+    modelType: { type: String as PropType<ModelType>, default: null },
     position: { type: String as PropType<OpenPosition>, default: 'center' },
     dark: { type: Boolean as PropType<boolean>, default: false },
     format: {

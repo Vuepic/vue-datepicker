@@ -1,4 +1,5 @@
 import { ref, watch } from 'vue';
+import { getYear, parse, setYear } from 'date-fns';
 import type { ComputedRef } from 'vue';
 import type { Locale } from 'date-fns';
 
@@ -12,9 +13,8 @@ import {
     setDateMonthOrYear,
     setDateTime,
 } from '@/utils/date-utils';
-import type { IFormat, ITextInputOptions, ModelValue, VueEmit } from '@/interfaces';
+import type { IFormat, ITextInputOptions, ModelType, ModelValue, VueEmit } from '@/interfaces';
 import { isMonth, isMonthArray, isRangeArray, isSingle, isTime, isTimeArray } from '@/utils/type-guard';
-import { getYear, setYear } from 'date-fns';
 
 /**
  * Handles values from external to internal and vise versa
@@ -34,6 +34,7 @@ export const useExternalInternalMapper = (
     weekPicker: boolean,
     yearPicker: boolean,
     textInputOptions: ITextInputOptions,
+    modelType: ModelType,
     emit: VueEmit,
 ) => {
     const inputValue = ref('');
@@ -79,10 +80,13 @@ export const useExternalInternalMapper = (
                 mappedDate = [new Date(value[0] as string), new Date(value[1] as string)];
             } else if (range) {
                 if (isRangeArray(value, partialRange)) {
-                    mappedDate = [new Date(value[0]), value[1] ? new Date(value[1]) : (null as unknown as Date)];
+                    mappedDate = [
+                        parseModelType(value[0]),
+                        value[1] ? parseModelType(value[1]) : (null as unknown as Date),
+                    ];
                 }
             } else if (isSingle(value)) {
-                mappedDate = new Date(value);
+                mappedDate = parseModelType(value);
             }
         } else {
             mappedDate = null;
@@ -97,6 +101,19 @@ export const useExternalInternalMapper = (
         }
     };
 
+    const getPattern = (): string => {
+        return getDefaultPattern(
+            format as string,
+            is24,
+            enableSeconds,
+            monthPicker,
+            timePicker,
+            weekPicker,
+            yearPicker,
+            enableTimePicker,
+        );
+    };
+
     /**
      * Map the date value(s) to the human-readable text for the input field
      */
@@ -104,16 +121,7 @@ export const useExternalInternalMapper = (
         if (!internalModelValue.value) {
             inputValue.value = '';
         } else if (!format || typeof format === 'string') {
-            const pattern = getDefaultPattern(
-                format,
-                is24,
-                enableSeconds,
-                monthPicker,
-                timePicker,
-                weekPicker,
-                yearPicker,
-                enableTimePicker,
-            );
+            const pattern = getPattern();
             if (Array.isArray(internalModelValue.value) && multiDates) {
                 inputValue.value = internalModelValue.value
                     .map((date) => formatDate(date, pattern, formatLocale?.value))
@@ -146,28 +154,65 @@ export const useExternalInternalMapper = (
         return false;
     };
 
+    const parseModelType = (value: string | number | Date): Date => {
+        if (modelType) {
+            if (modelType === 'date' || modelType === 'timestamp') return new Date(value);
+
+            if (modelType === 'format' && (typeof format === 'string' || !format))
+                return parse(value as string, getPattern(), new Date());
+
+            return parse(value as string, modelType, new Date());
+        }
+        return new Date(value);
+    };
+
+    const getModelValueType = (val: Date): string | number | Date => {
+        if (modelType) {
+            if (modelType === 'timestamp') return +val;
+
+            if (modelType === 'format' && (typeof format === 'string' || !format))
+                return formatDate(val, getPattern(), formatLocale?.value, textInputOptions?.rangeSeparator);
+
+            return formatDate(val, modelType, formatLocale?.value, textInputOptions?.rangeSeparator);
+        }
+        return val;
+    };
+
+    const emitValue = (value: ModelValue): void => {
+        emit('update:modelValue', value);
+    };
+
     /**
      * When date is selected, emit event to update modelValue on external
      */
     const emitModelValue = (): void => {
         if (monthPicker) {
-            emit('update:modelValue', getMonthValForExternal(internalModelValue.value));
+            emitValue(getMonthValForExternal(internalModelValue.value));
         } else if (timePicker) {
-            emit('update:modelValue', getTImeForExternal(internalModelValue.value));
+            emitValue(getTImeForExternal(internalModelValue.value));
         } else if (weekPicker) {
-            emit('update:modelValue', internalModelValue.value);
+            emitValue(internalModelValue.value);
         } else if (yearPicker) {
-            emit('update:modelValue', getYear(internalModelValue.value));
+            emitValue(getYear(internalModelValue.value));
         } else {
             if (internalModelValue.value && range && partialRange && internalModelValue.value.length === 1) {
                 internalModelValue.value.push(null);
             }
-            const zonedDate = utc
-                ? Array.isArray(internalModelValue.value)
+            if (utc) {
+                const zonedDate = Array.isArray(internalModelValue.value)
                     ? internalModelValue.value.map((date) => (date ? dateToUtc(date) : date))
-                    : dateToUtc(internalModelValue.value)
-                : internalModelValue.value;
-            emit('update:modelValue', zonedDate);
+                    : dateToUtc(internalModelValue.value);
+                return emitValue(zonedDate);
+            }
+
+            if (Array.isArray(internalModelValue)) {
+                emitValue([
+                    getModelValueType(internalModelValue.value[0] as Date),
+                    internalModelValue.value[1] ? getModelValueType(internalModelValue.value[1] as Date) : null,
+                ] as ModelValue);
+            } else {
+                emitValue(getModelValueType(internalModelValue.value));
+            }
         }
         formatInputValue();
     };
