@@ -773,7 +773,7 @@ export const useCalendar = (
     };
 
     const getMarker = (date: UnwrapRef<ICalendarDay>): IMarker | undefined =>
-        props.markers.find((marker) => isDateEqual(dateToUtc(new Date(date.value)), dateToUtc(new Date(marker.date))));
+        props.markers.find((marker) => isDateEqual(dateToUtc(date.value), dateToUtc(marker.date)));
 
     const selectCurrentDate = (): void => {
         if (!props.range) {

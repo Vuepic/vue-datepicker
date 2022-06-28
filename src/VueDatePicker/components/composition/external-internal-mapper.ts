@@ -228,7 +228,7 @@ export const useExternalInternalMapper = (
                 } else {
                     zonedDate = dateToUtc(internalModelValue.value);
                 }
-                return emitValue(zonedDate);
+                return emitValue(zonedDate as Date);
             }
             if (Array.isArray(internalModelValue.value)) {
                 if (modelAuto) {
