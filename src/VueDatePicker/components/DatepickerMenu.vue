@@ -64,8 +64,6 @@
                                 @mount="childMount('monthYearInput')"
                                 @reset-flow="resetFlow"
                                 @update-month-year="updateMonthYear(instance, $event)"
-                                @update:month="updateMonthYear(instance, $event)"
-                                @update:year="updateMonthYear(instance, $event)"
                                 @month-year-select="monthYearSelect"
                                 @overlay-closed="focusMenu"
                             >
