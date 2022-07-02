@@ -144,7 +144,7 @@ describe('Logic connection', () => {
         const { dp, menu } = await mountDatepicker({ modelValue: null, range: true });
 
         const monthYearInput = menu.findComponent(MonthYearInput);
-        monthYearInput.vm.$emit('update:month', { month, year: getYear(new Date()) });
+        monthYearInput.vm.$emit('update-month-year', { month, year: getYear(new Date()) });
 
         expect(menu.vm.month(0)).toEqual(month);
         dp.unmount();

@@ -34,11 +34,11 @@
     "lint:lib": "eslint --fix \"src/**\" --ignore-pattern \"src/**/*.scss\""
   },
   "devDependencies": {
-    "@rushstack/eslint-patch": "^1.1.3",
+    "@rushstack/eslint-patch": "^1.1.4",
     "@types/jsdom": "^16.2.14",
     "@types/node": "^18.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.29.0",
-    "@typescript-eslint/parser": "^5.29.0",
+    "@typescript-eslint/eslint-plugin": "^5.30.3",
+    "@typescript-eslint/parser": "^5.30.3",
     "@vitejs/plugin-vue": "^2.3.3",
     "@vue/eslint-config-prettier": "^7.0.0",
     "@vue/eslint-config-typescript": "^11.0.0",
@@ -46,9 +46,9 @@
     "@vue/tsconfig": "^0.1.3",
     "c8": "^7.11.3",
     "cross-env": "^7.0.3",
-    "eslint": "^8.18.0",
+    "eslint": "^8.19.0",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-vue": "^9.1.1",
     "jsdom": "^20.0.0",
     "minimist": "^1.2.6",
@@ -57,14 +57,14 @@
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
     "sass": "^1.53.0",
-    "sass-loader": "^13.0.1",
+    "sass-loader": "^13.0.2",
     "stylelint": "^14.9.1",
     "stylelint-config-standard-scss": "^4.0.0",
     "typescript": "^4.7.4",
-    "vite": "^2.9.12",
+    "vite": "^2.9.13",
     "vitest": "^0.16.0",
     "vue": "^3.2.37",
-    "vue-tsc": "^0.38.1"
+    "vue-tsc": "^0.38.2"
   },
   "dependencies": {
     "date-fns": "^2.28.0"
