@@ -7,7 +7,6 @@
                 :class="calendarWrapClass"
                 role="grid"
                 :aria-label="ariaLabels.calendarWrap"
-                @wheel="onScroll"
             >
                 <div class="dp__calendar_header" role="row">
                     <div class="dp__calendar_header_item" role="gridcell" v-if="weekNumbers">{{ weekNumName }}</div>
@@ -147,10 +146,13 @@
         emit('mount', { cmp: 'calendar', refs: dayRefs });
         if (!props.noSwipe) {
             if (calendarWrapRef.value) {
-                calendarWrapRef.value.addEventListener('touchstart', onTouchStart);
-                calendarWrapRef.value.addEventListener('touchend', onTouchEnd);
-                calendarWrapRef.value.addEventListener('touchmove', onTouchMove);
+                calendarWrapRef.value.addEventListener('touchstart', onTouchStart, { passive: false });
+                calendarWrapRef.value.addEventListener('touchend', onTouchEnd, { passive: false });
+                calendarWrapRef.value.addEventListener('touchmove', onTouchMove, { passive: false });
             }
+        }
+        if (props.monthChangeOnScroll && calendarWrapRef.value) {
+            calendarWrapRef.value.addEventListener('wheel', onScroll, { passive: false });
         }
     });
 
