@@ -80,7 +80,7 @@ export const useExternalInternalMapper = (
             } else if (yearPicker) {
                 mappedDate = setYear(new Date(), value as number);
             } else if (multiDates && Array.isArray(value)) {
-                mappedDate = value.map((date) => new Date(date as string));
+                mappedDate = value.map((date) => parseModelType(date as Date));
             } else if (weekPicker && Array.isArray(value)) {
                 mappedDate = [new Date(value[0] as string), new Date(value[1] as string)];
             } else if (range) {
@@ -230,7 +230,7 @@ export const useExternalInternalMapper = (
                 }
                 return emitValue(zonedDate as Date);
             }
-            if (Array.isArray(internalModelValue.value)) {
+            if (Array.isArray(internalModelValue.value) && !multiDates) {
                 if (modelAuto) {
                     emitValue(
                         internalModelValue.value[1]
@@ -240,6 +240,8 @@ export const useExternalInternalMapper = (
                 } else {
                     emitValue(getRangeEmitValue());
                 }
+            } else if (Array.isArray(internalModelValue.value) && multiDates) {
+                emitValue(internalModelValue.value.map((date) => getModelValueType(date) as string));
             } else {
                 emitValue(getModelValueType(internalModelValue.value));
             }
