@@ -8,7 +8,10 @@
     "paths": {
       "@/*": ["./src/VueDatePicker/*"]
     },
-    "lib": ["esnext"],
+    "lib": [
+      "esnext",
+      "dom"
+    ],
     "target": "esnext"
   }
 }
