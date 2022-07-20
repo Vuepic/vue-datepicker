@@ -189,7 +189,7 @@ export const AllProps = {
     partialRange: { type: Boolean as PropType<boolean>, default: true },
     transitions: { type: [Boolean, Object] as PropType<boolean | ITransition>, default: true },
     formatLocale: { type: Object as PropType<Locale>, default: null },
-    utc: { type: Boolean as PropType<boolean>, default: false },
+    utc: { type: [Boolean, String] as PropType<boolean | 'preserve'>, default: false },
     ariaLabels: { type: Object as PropType<Partial<AreaLabels>>, default: () => ({}) },
 };
 

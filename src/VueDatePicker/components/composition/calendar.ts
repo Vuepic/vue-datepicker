@@ -31,7 +31,7 @@ import type {
     WeekStartNum,
 } from '@/interfaces';
 import {
-    dateToUtc,
+    sanitizeDate,
     dateValidator,
     getNextMonthYear,
     getWeekFromDate,
@@ -778,7 +778,7 @@ export const useCalendar = (
     };
 
     const getMarker = (date: UnwrapRef<ICalendarDay>): IMarker | undefined =>
-        props.markers.find((marker) => isDateEqual(dateToUtc(date.value), dateToUtc(marker.date)));
+        props.markers.find((marker) => isDateEqual(sanitizeDate(date.value), sanitizeDate(marker.date)));
 
     const selectCurrentDate = (): void => {
         if (!props.range) {

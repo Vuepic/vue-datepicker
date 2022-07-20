@@ -196,7 +196,7 @@ interface VueDatePicker {
     maxRange?: number | string;
     fixedStart?: boolean;
     fixedEnd?: boolean;
-    utc?: boolean;
+    utc?: boolean | 'preserve';
     multiDatesLimit?: number | string;
     reverseYears?: boolean;
     keepActionRow?: boolean;

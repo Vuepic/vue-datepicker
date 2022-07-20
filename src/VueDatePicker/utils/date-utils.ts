@@ -264,11 +264,28 @@ export const isMonthWithinRange = (
     return valid;
 };
 
-export const dateToUtc = (date: Date | string): Date | string => {
+export const sanitizeDate = (date: Date | string): Date | string => {
     if (date instanceof Date) {
         return date;
     }
     return parseISO(date);
+};
+
+export const dateToUtc = (date: Date, preserve: boolean) => {
+    if (preserve) {
+        const tzOffset = new Date().getTimezoneOffset() * 60000;
+        return new Date(date.getTime() - tzOffset).toISOString();
+    }
+    const utcDate = Date.UTC(
+        date.getUTCFullYear(),
+        date.getUTCMonth(),
+        date.getUTCDate(),
+        date.getUTCHours(),
+        date.getUTCMinutes(),
+        date.getUTCSeconds(),
+    );
+
+    return new Date(utcDate).toISOString();
 };
 
 export const isDateBetween = (range: Date[], hoverDate: Date, dateToCheck: Date): boolean => {
@@ -300,19 +317,19 @@ const validateDate = (
     disabledWeekDays: string[] | number[],
     yearRange: number[],
 ): boolean => {
-    const aboveMax = maxDate ? isDateAfter(dateToUtc(date), dateToUtc(maxDate)) : false;
-    const bellowMin = minDate ? isDateBefore(dateToUtc(date), dateToUtc(minDate)) : false;
+    const aboveMax = maxDate ? isDateAfter(sanitizeDate(date), sanitizeDate(maxDate)) : false;
+    const bellowMin = minDate ? isDateBefore(sanitizeDate(date), sanitizeDate(minDate)) : false;
     const inDisableArr =
         typeof disabledDates === 'function'
             ? disabledDates(date)
             : disabledDates.some((disabledDate: Date | string) =>
-                  isDateEqual(dateToUtc(disabledDate), dateToUtc(date)),
+                  isDateEqual(sanitizeDate(disabledDate), sanitizeDate(date)),
               );
     const disabledMonths = filters.months.length ? filters.months.map((month) => +month) : [];
     const inDisabledMonths = disabledMonths.includes(getMonth(date));
     const weekDayDisabled = disabledWeekDays.length ? disabledWeekDays.some((day) => +day === getDay(date)) : false;
     const notInSpecific = allowedDates.length
-        ? !allowedDates.some((dateVal) => isDateEqual(dateToUtc(dateVal), dateToUtc(date)))
+        ? !allowedDates.some((dateVal) => isDateEqual(sanitizeDate(dateVal), sanitizeDate(date)))
         : false;
 
     const dateYear = getYear(date);

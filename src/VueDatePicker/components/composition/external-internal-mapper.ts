@@ -30,7 +30,7 @@ export const useExternalInternalMapper = (
     enableSeconds: boolean,
     formatLocale: ComputedRef<Locale>,
     multiDates: boolean,
-    utc: boolean,
+    utc: boolean | 'preserve',
     weekPicker: boolean,
     yearPicker: boolean,
     textInputOptions: ITextInputOptions,
@@ -164,6 +164,10 @@ export const useExternalInternalMapper = (
     };
 
     const parseModelType = (value: string | number | Date): Date => {
+        if (utc) {
+            const toDate = new Date(value);
+            return utc === 'preserve' ? new Date(toDate.getTime() + toDate.getTimezoneOffset() * 60000) : toDate;
+        }
         if (modelType) {
             if (modelType === 'date' || modelType === 'timestamp') return new Date(value);
 
@@ -217,18 +221,18 @@ export const useExternalInternalMapper = (
             if (utc) {
                 let zonedDate;
                 if (Array.isArray(internalModelValue.value)) {
-                    const mapDate = (date: Date) => (date ? dateToUtc(date) : date);
+                    const mapDate = (date: Date) => (date ? dateToUtc(date, utc === 'preserve') : date);
                     if (modelAuto) {
                         zonedDate = internalModelValue.value[1]
                             ? internalModelValue.value.map(mapDate)
-                            : dateToUtc(internalModelValue.value[0]);
+                            : dateToUtc(internalModelValue.value[0], utc === 'preserve');
                     } else {
                         zonedDate = internalModelValue.value.map(mapDate);
                     }
                 } else {
-                    zonedDate = dateToUtc(internalModelValue.value);
+                    zonedDate = dateToUtc(internalModelValue.value, utc === 'preserve');
                 }
-                return emitValue(zonedDate as Date);
+                return emitValue(zonedDate as string);
             }
             if (Array.isArray(internalModelValue.value) && !multiDates) {
                 if (modelAuto) {
