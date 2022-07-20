@@ -425,6 +425,7 @@
             props.yearRange,
         );
         const date = internalModelValue.value;
+        if (!date) return true;
         if (!Array.isArray(date) && validate(date)) {
             return true;
         }
