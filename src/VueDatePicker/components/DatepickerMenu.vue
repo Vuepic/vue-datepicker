@@ -24,6 +24,7 @@
                     <div
                         v-for="(preset, i) in presetRanges"
                         :key="i"
+                        :style="preset.style || {}"
                         class="dp__preset_range"
                         @click="presetDateRange(preset.range)"
                     >
