@@ -16,9 +16,15 @@
 - Range date picker
 - Time picker
 - Month picker
+- Year picker
+- Week picker
+- Multiple dates select
+- Multiple calendars
 - Text input
+- UTC support
 - Locale support
 - Week numbers
+- Custom `v-model`
 - Dark and light theme
 - SSR support
 - Highly configurable
