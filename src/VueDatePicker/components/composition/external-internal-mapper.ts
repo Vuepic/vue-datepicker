@@ -78,7 +78,14 @@ export const useExternalInternalMapper = (
                     mappedDate = setDateMonthOrYear(null, +value.month, +value.year);
                 }
             } else if (yearPicker) {
-                mappedDate = setYear(new Date(), value as number);
+                if (Array.isArray(value)) {
+                    mappedDate = [
+                        setYear(new Date(), value[0] as number),
+                        !value[1] && partialRange ? (null as unknown as Date) : setYear(new Date(), value[1] as number),
+                    ];
+                } else {
+                    mappedDate = setYear(new Date(), value as number);
+                }
             } else if (multiDates && Array.isArray(value)) {
                 mappedDate = value.map((date) => parseModelType(date as Date));
             } else if (weekPicker && Array.isArray(value)) {
@@ -213,7 +220,16 @@ export const useExternalInternalMapper = (
         } else if (weekPicker) {
             emitValue(internalModelValue.value);
         } else if (yearPicker) {
-            emitValue(getYear(internalModelValue.value));
+            emitValue(
+                Array.isArray(internalModelValue.value)
+                    ? [
+                          getYear(internalModelValue.value[0]),
+                          internalModelValue.value[1]
+                              ? getYear(internalModelValue.value[1])
+                              : (null as unknown as number),
+                      ]
+                    : getYear(internalModelValue.value),
+            );
         } else {
             if (internalModelValue.value && range && partialRange && internalModelValue.value.length === 1) {
                 internalModelValue.value.push(null);

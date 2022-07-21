@@ -75,6 +75,7 @@
                 :skip-active="props.range"
                 :year="year"
                 :multi-model-value="multiModelValue"
+                month-picker
                 v-model="monthModelBind"
                 @toggle="toggleMonthPicker"
                 @selected="$emit('overlay-closed')"
@@ -144,7 +145,10 @@
             <SelectionGrid
                 v-bind="childProps('year')"
                 v-model="yearModelBind"
+                :multi-model-value="multiModelValue"
+                :skip-active="props.range"
                 skip-button-ref
+                year-picker
                 @toggle="toggleYearPicker"
                 @selected="$emit('overlay-closed')"
             >
@@ -262,7 +266,9 @@
     });
 
     const multiModelValue = computed(() => {
-        return props.range && props.internalModelValue && props.monthPicker ? (props.internalModelValue as Date[]) : [];
+        return props.range && props.internalModelValue && (props.monthPicker || props.yearPicker)
+            ? (props.internalModelValue as Date[])
+            : [];
     });
 
     const getGroupedList = (items: IDefaultSelect[], reverse = false): IDefaultSelect[][] => {

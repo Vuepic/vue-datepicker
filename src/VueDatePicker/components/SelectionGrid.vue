@@ -63,6 +63,8 @@
         skipActive: { type: Boolean as PropType<boolean>, default: false },
         headerRefs: { type: Array as PropType<HTMLElement[]>, default: () => [] },
         skipButtonRef: { type: Boolean as PropType<boolean>, default: false },
+        monthPicker: { type: Boolean as PropType<boolean>, default: false },
+        yearPicker: { type: Boolean as PropType<boolean>, default: false },
     });
 
     const scrollable = ref(false);
@@ -136,7 +138,13 @@
                         props.disabledValues.some((val) => val === itemVal.value) || checkMinMaxValue(itemVal.value);
                     const active = props.multiModelValue?.length
                         ? props.multiModelValue?.some((value) =>
-                              isDateEqual(value, setYear(setMonth(new Date(), itemVal.value), props.year)),
+                              isDateEqual(
+                                  value,
+                                  setYear(
+                                      props.monthPicker ? setMonth(new Date(), itemVal.value) : new Date(),
+                                      props.monthPicker ? props.year : itemVal.value,
+                                  ),
+                              ),
                           )
                         : props.skipActive
                         ? false
@@ -224,10 +232,14 @@
     };
 
     const rangeActive = (value: number): boolean => {
+        const yearValue = props.monthPicker ? props.year : value;
         return isDateBetween(
             props.multiModelValue,
-            setYear(setMonth(new Date(), hoverValue.value || 0), props.year),
-            setYear(setMonth(new Date(), value), props.year),
+            setYear(
+                props.monthPicker ? setMonth(new Date(), hoverValue.value || 0) : new Date(),
+                props.monthPicker ? yearValue : hoverValue.value || yearValue,
+            ),
+            setYear(props.monthPicker ? setMonth(new Date(), value) : new Date(), yearValue),
         );
     };
 

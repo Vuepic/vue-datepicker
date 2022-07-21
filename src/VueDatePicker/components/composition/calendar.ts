@@ -16,7 +16,6 @@ import {
     isBefore,
     set,
     setMilliseconds,
-    setYear,
     subMonths,
 } from 'date-fns';
 
@@ -303,7 +302,7 @@ export const useCalendar = (
                 modelValue.value = setDateMonthOrYear(new Date(), month.value(0), year.value(0));
             } else if (props.multiCalendars) {
                 assignMonthAndYear(new Date());
-            } else if (props.yearPicker) {
+            } else if (props.yearPicker && !props.range) {
                 modelValue.value = new Date();
             }
         }
@@ -535,39 +534,41 @@ export const useCalendar = (
         }
     };
 
-    const getMonthValue = (instance: number): Date => {
+    const getMonthYearValue = (instance: number): Date => {
         return setDateMonthOrYear(new Date(), month.value(instance), year.value(instance));
     };
 
     const updateMonthYear = (instance: number, val: { month: number; year: number }): void => {
-        const isMonthChange = month.value(instance) !== val.month;
-
+        const isValueChange = props.monthPicker
+            ? month.value(instance) !== val.month
+            : year.value(instance) !== val.year;
         setCalendarMonth(instance, val.month);
         setCalendarYear(instance, val.year);
 
         if (props.multiCalendars && !props.multiCalendarsSolo) {
             autoChangeMultiCalendars(instance);
         }
-        if (props.monthPicker) {
+
+        if (props.monthPicker || props.yearPicker) {
             if (props.range) {
-                if (isMonthChange) {
+                if (isValueChange) {
                     let rangeDate = modelValue.value ? (modelValue.value as Date[]).slice() : [];
                     if (rangeDate.length === 2 && rangeDate[1] !== null) {
                         rangeDate = [];
                     }
                     if (!rangeDate.length) {
-                        rangeDate = [getMonthValue(instance)];
+                        rangeDate = [getMonthYearValue(instance)];
                     } else {
-                        if (isDateBefore(getMonthValue(instance), rangeDate[0])) {
-                            rangeDate.unshift(getMonthValue(instance));
+                        if (isDateBefore(getMonthYearValue(instance), rangeDate[0])) {
+                            rangeDate.unshift(getMonthYearValue(instance));
                         } else {
-                            rangeDate[1] = getMonthValue(instance);
+                            rangeDate[1] = getMonthYearValue(instance);
                         }
                     }
                     modelValue.value = rangeDate;
                 }
             } else {
-                modelValue.value = getMonthValue(instance);
+                modelValue.value = getMonthYearValue(instance);
             }
         }
         updateFlow();
@@ -723,13 +724,7 @@ export const useCalendar = (
     };
 
     const monthYearSelect = (isYear = false) => {
-        if (isYear && props.yearPicker) {
-            modelValue.value = setYear(new Date(), calendars.value[0].year);
-            if (props.autoApply) {
-                emit('autoApply');
-            }
-        }
-        if (props.autoApply && props.monthPicker) {
+        if (props.autoApply && (props.monthPicker || props.yearPicker)) {
             nextTick().then(() => {
                 if (props.range) {
                     emit('autoApply', isYear || !modelValue.value || (modelValue.value as Date[]).length === 1);
