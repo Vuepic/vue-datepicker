@@ -72,7 +72,6 @@ describe('Logic connection', () => {
 
     it('Should select range', async () => {
         const start = setMilliseconds(setSeconds(addDays(new Date(), 1), 0), 0);
-        // const end = setMilliseconds(setSeconds(addDays(start, 7), 0), 0);
         const { dp, menu } = await mountDatepicker({ modelValue: null, range: true });
 
         const calendar = menu.findComponent(Calendar);
@@ -81,12 +80,6 @@ describe('Logic connection', () => {
 
         expect(menu.vm.internalModelValue).toHaveLength(1);
 
-        // calendar.vm.$emit('selectDate', { value: end, current: true });
-        // await calendar.vm.$nextTick();
-        //
-        // expect(menu.vm.internalModelValue).toHaveLength(2);
-        // expect(menu.vm.internalModelValue[0]).toEqual(start);
-        // expect(menu.vm.internalModelValue[1]).toEqual(end);
         dp.unmount();
     });
 
@@ -209,28 +202,20 @@ describe('Logic connection', () => {
         dp.unmount();
     });
 
-    // it('Should select multiple dates', async () => {
-    //     const dates = [new Date(), addDays(new Date(), 1), addDays(new Date(), 2), addDays(new Date(), 3)];
-    //     const { dp, menu } = await mountDatepicker({ modeValue: null, multiDates: true });
-    //
-    //     const selectDates = async (): Promise<void> => {
-    //         for (const date of dates) {
-    //             calendar.vm.$emit('selectDate', { value: setSeconds(date, 0), current: true });
-    //             await calendar.vm.$nextTick();
-    //         }
-    //     };
-    //
-    //     const calendar = menu.findComponent(Calendar);
-    //     // select all dates
-    //     await selectDates();
-    //     expect(dp.vm.internalModelValue).toHaveLength(4);
-    //     expect(dp.vm.internalModelValue[0]).toEqual(setMilliseconds(setSeconds(dates[0], 0), 0));
-    //
-    //     // deselect all dates
-    //     await selectDates();
-    //     expect(dp.vm.internalModelValue).toBeNull();
-    //     dp.unmount();
-    // });
+    it('Should select multiple dates', async () => {
+        const dates = [new Date(), addDays(new Date(), 1), addDays(new Date(), 2), addDays(new Date(), 3)];
+        const { menu } = await mountDatepicker({ modeValue: null, multiDates: true });
+        const calendar = menu.findComponent(Calendar);
+
+        const selectDates = async (): Promise<void> => {
+            dates.forEach((date) => {
+                calendar.vm.emit('selectDate', { value: setSeconds(date, 0), current: true });
+            });
+        };
+
+        await selectDates();
+        expect(calendar.emitted().selectDate).toHaveLength(4);
+    });
 
     it('Should preset range from preset-dates', async () => {
         const range = [new Date(), new Date()];
