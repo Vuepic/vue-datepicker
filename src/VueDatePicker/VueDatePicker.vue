@@ -467,7 +467,7 @@
             const isTimeValid =
                 !props.enableTimePicker || props.monthPicker || props.yearPicker
                     ? true
-                    : isValidTime(internalModelValue.value, props.maxTime, props.minTime);
+                    : isValidTime(internalModelValue.value, props.maxTime, props.minTime, props.maxDate, props.minDate);
             if (isTimeValid && validateBeforeEmit()) {
                 if (props.range && Array.isArray(internalModelValue.value)) {
                     if (props.partialRange) {
@@ -528,7 +528,10 @@
     };
 
     const timeUpdate = (): void => {
-        if (props.autoApply && isValidTime(internalModelValue.value, props.maxTime, props.minTime)) {
+        if (
+            props.autoApply &&
+            isValidTime(internalModelValue.value, props.maxTime, props.minTime, props.maxDate, props.minDate)
+        ) {
             emitModelValue();
         }
     };

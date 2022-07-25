@@ -212,7 +212,13 @@ const getMinMaxTime = (time: ITimeValue): Date => {
     });
 };
 
-export const isValidTime = (date: InternalModuleValue, maxTime: ITimeValue, minTime: ITimeValue): boolean => {
+export const isValidTime = (
+    date: InternalModuleValue,
+    maxTime: ITimeValue,
+    minTime: ITimeValue,
+    maxDate: Date | string,
+    minDate: Date | string,
+): boolean => {
     let isValid = true;
     if (!date) {
         return true;
@@ -220,26 +226,26 @@ export const isValidTime = (date: InternalModuleValue, maxTime: ITimeValue, minT
     const selectedDateTime = Array.isArray(date)
         ? [date[0] ? setTimeValue(date[0]) : null, date[1] ? setTimeValue(date[1]) : null]
         : setTimeValue(date);
-    if (maxTime) {
-        const maxDate = getMinMaxTime(maxTime);
+    if (maxTime || maxDate) {
+        const max = maxTime ? getMinMaxTime(maxTime) : new Date(maxDate);
         if (Array.isArray(selectedDateTime)) {
             isValid =
-                (selectedDateTime[0] ? selectedDateTime[0].getTime() <= maxDate.getTime() : true) &&
-                (selectedDateTime[1] ? selectedDateTime[1].getTime() <= maxDate.getTime() : true);
+                (selectedDateTime[0] ? selectedDateTime[0].getTime() <= max.getTime() : true) &&
+                (selectedDateTime[1] ? selectedDateTime[1].getTime() <= max.getTime() : true);
         } else {
-            isValid = selectedDateTime.getTime() <= maxDate.getTime();
+            isValid = selectedDateTime.getTime() <= max.getTime();
         }
     }
 
-    if (minTime) {
-        const minDate = getMinMaxTime(minTime);
+    if (minTime || minDate) {
+        const min = minTime ? getMinMaxTime(minTime) : new Date(minDate);
         if (Array.isArray(selectedDateTime)) {
             isValid =
-                (selectedDateTime[0] ? selectedDateTime[0].getTime() >= minDate.getTime() : true) &&
-                (selectedDateTime[1] ? selectedDateTime[1].getTime() >= minDate.getTime() : true) &&
+                (selectedDateTime[0] ? selectedDateTime[0].getTime() >= min.getTime() : true) &&
+                (selectedDateTime[1] ? selectedDateTime[1].getTime() >= min.getTime() : true) &&
                 isValid;
         } else {
-            isValid = selectedDateTime.getTime() >= minDate.getTime() && isValid;
+            isValid = selectedDateTime.getTime() >= min.getTime() && isValid;
         }
     }
     return isValid;
