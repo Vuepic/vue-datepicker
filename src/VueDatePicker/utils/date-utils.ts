@@ -212,6 +212,20 @@ const getMinMaxTime = (time: ITimeValue): Date => {
     });
 };
 
+/**
+ * Depending on the time or full date validation, validate if the selected time is valid
+ * Extracted logic from isValidTime fn
+ */
+const validateTime = (date: Date | null, dateToCompare: Date, compare: 'max' | 'min', full: boolean): boolean => {
+    if (!date) return true;
+    if (full) {
+        const valid = compare === 'max' ? isBefore(date, dateToCompare) : isAfter(date, dateToCompare);
+        const setOptions = { seconds: 0, milliseconds: 0 };
+        return valid || isEqual(set(date, setOptions), set(dateToCompare, setOptions));
+    }
+    return compare === 'max' ? date.getTime() <= dateToCompare.getTime() : date.getTime() >= dateToCompare.getTime();
+};
+
 export const isValidTime = (
     date: InternalModuleValue,
     maxTime: ITimeValue,
@@ -223,17 +237,20 @@ export const isValidTime = (
     if (!date) {
         return true;
     }
-    const selectedDateTime = Array.isArray(date)
-        ? [date[0] ? setTimeValue(date[0]) : null, date[1] ? setTimeValue(date[1]) : null]
-        : setTimeValue(date);
+    const selectedDateTime =
+        !minDate && !maxDate
+            ? Array.isArray(date)
+                ? [date[0] ? setTimeValue(date[0]) : null, date[1] ? setTimeValue(date[1]) : null]
+                : setTimeValue(date)
+            : date;
     if (maxTime || maxDate) {
         const max = maxTime ? getMinMaxTime(maxTime) : new Date(maxDate);
         if (Array.isArray(selectedDateTime)) {
             isValid =
-                (selectedDateTime[0] ? selectedDateTime[0].getTime() <= max.getTime() : true) &&
-                (selectedDateTime[1] ? selectedDateTime[1].getTime() <= max.getTime() : true);
+                validateTime(selectedDateTime[0], max, 'max', !!maxDate) &&
+                validateTime(selectedDateTime[1], max, 'max', !!maxDate);
         } else {
-            isValid = selectedDateTime.getTime() <= max.getTime();
+            isValid = validateTime(selectedDateTime, max, 'max', !!maxDate);
         }
     }
 
@@ -241,11 +258,11 @@ export const isValidTime = (
         const min = minTime ? getMinMaxTime(minTime) : new Date(minDate);
         if (Array.isArray(selectedDateTime)) {
             isValid =
-                (selectedDateTime[0] ? selectedDateTime[0].getTime() >= min.getTime() : true) &&
-                (selectedDateTime[1] ? selectedDateTime[1].getTime() >= min.getTime() : true) &&
+                validateTime(selectedDateTime[0], min, 'min', !!minDate) &&
+                validateTime(selectedDateTime[1], min, 'min', !!minDate) &&
                 isValid;
         } else {
-            isValid = selectedDateTime.getTime() >= min.getTime() && isValid;
+            isValid = validateTime(selectedDateTime, min, 'min', !!minDate) && isValid;
         }
     }
     return isValid;
