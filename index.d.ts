@@ -226,6 +226,7 @@ interface VueDatePicker {
     dayNames?: ((lang: string, weekStart: number) => string[]) | string[];
     modelType?: 'timestamp' | 'format' | string;
     modelAuto?: boolean;
+    highlight?: Date[] | string[] | number[] | ((date: Date[]) => boolean);
 }
 
 interface PublicMethods extends MethodOptions {

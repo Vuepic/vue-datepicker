@@ -260,3 +260,7 @@
     flex-direction: column;
   }
 }
+
+.dp__cell_highlight {
+  background-color: var(--dp-highlight-color);
+}

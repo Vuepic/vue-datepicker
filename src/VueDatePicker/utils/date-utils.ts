@@ -330,6 +330,13 @@ export const getWeekFromDate = (date: Date, weekStartsOn: WeekStartNum): [Date, 
     return [start, end];
 };
 
+export const matchDate = (date: Date, pattern: Date[] | string[] | number[] | ((date: Date) => boolean)): boolean => {
+    if (Array.isArray(pattern)) {
+        return pattern.some((includedDate) => isDateEqual(sanitizeDate(new Date(includedDate)), sanitizeDate(date)));
+    }
+    return pattern(date);
+};
+
 const validateDate = (
     date: Date,
     minDate: Date | string,
@@ -342,12 +349,7 @@ const validateDate = (
 ): boolean => {
     const aboveMax = maxDate ? isDateAfter(sanitizeDate(date), sanitizeDate(maxDate)) : false;
     const bellowMin = minDate ? isDateBefore(sanitizeDate(date), sanitizeDate(minDate)) : false;
-    const inDisableArr =
-        typeof disabledDates === 'function'
-            ? disabledDates(date)
-            : disabledDates.some((disabledDate: Date | string) =>
-                  isDateEqual(sanitizeDate(disabledDate), sanitizeDate(date)),
-              );
+    const inDisableArr = matchDate(date, disabledDates);
     const disabledMonths = filters.months.length ? filters.months.map((month) => +month) : [];
     const inDisabledMonths = disabledMonths.includes(getMonth(date));
     const weekDayDisabled = disabledWeekDays.length ? disabledWeekDays.some((day) => +day === getDay(date)) : false;

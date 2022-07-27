@@ -214,7 +214,7 @@
     } from '@/interfaces';
 
     import { getCalendarDays, getMonths, getYears, isModelAuto, unrefElement } from '@/utils/util';
-    import { isDateEqual } from '@/utils/date-utils';
+    import { isDateEqual, matchDate } from '@/utils/date-utils';
     import {
         ariaLabelsKey,
         arrowNavigationKey,
@@ -460,6 +460,11 @@
                 days: date.days.map((calendarDay) => {
                     const disabled = isDisabled(calendarDay.value);
                     const dateHover = isHoverDate(disabled, calendarDay);
+                    const isActive = props.range
+                        ? props.modelAuto
+                            ? isSingleInModelAuto() && isActiveDate(calendarDay)
+                            : false
+                        : isActiveDate(calendarDay);
                     const isBetween =
                         (props.range || props.weekPicker) &&
                         (props.multiCalendars > 0 ? calendarDay.current : true) &&
@@ -473,11 +478,7 @@
                     calendarDay.classData = {
                         dp__cell_offset: !calendarDay.current,
                         dp__pointer: !disabled && !(!calendarDay.current && props.hideOffsetDates),
-                        dp__active_date: props.range
-                            ? props.modelAuto
-                                ? isSingleInModelAuto() && isActiveDate(calendarDay)
-                                : false
-                            : isActiveDate(calendarDay),
+                        dp__active_date: isActive,
                         dp__date_hover: dateHover,
                         dp__date_hover_start: isHoverDateStartEnd(dateHover, calendarDay, true),
                         dp__date_hover_end: isHoverDateStartEnd(dateHover, calendarDay, false),
@@ -497,6 +498,9 @@
                                 ? calendarDay.current && rangeActiveStartEnd(calendarDay, false) && isModelAutoActive()
                                 : rangeActiveStartEnd(calendarDay, false) && isModelAutoActive(),
                         [props.calendarCellClassName]: !!props.calendarCellClassName,
+                        dp__cell_highlight: props.highlight
+                            ? matchDate(calendarDay.value, props.highlight) && !isActive
+                            : false,
                     };
                     return calendarDay;
                 }),

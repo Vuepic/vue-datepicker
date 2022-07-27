@@ -166,6 +166,10 @@ export const MenuProps = {
     arrowNavigation: { type: Boolean as PropType<boolean>, default: false },
     multiStatic: { type: Boolean as PropType<boolean>, default: true },
     disableTimeRangeValidation: { type: Boolean as PropType<boolean>, default: false },
+    highlight: {
+        type: [Array, Function] as PropType<Date[] | string[] | number[] | ((date: Date) => boolean)>,
+        default: null,
+    },
 };
 
 // Since many props are passed from the main component to the children, this is simply to reuse prop definitions and don't repeat the same code

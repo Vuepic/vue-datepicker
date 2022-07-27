@@ -129,6 +129,7 @@
                     disableTimeRangeValidation,
                     dayNames,
                     modelAuto,
+                    highlight,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @close-picker="closeMenu"
