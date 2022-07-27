@@ -194,6 +194,7 @@
         'flow-step',
         'focus-prev',
         'updateMonthYear',
+        'invalid-select',
     ]);
     const props = defineProps({
         ...AllProps,
@@ -447,6 +448,8 @@
         if (checkBeforeEmit() && validateBeforeEmit()) {
             emitModelValue();
             closeMenu();
+        } else {
+            emit('invalid-select', internalModelValue.value);
         }
     };
 

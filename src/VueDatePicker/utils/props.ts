@@ -94,6 +94,7 @@ export const ActionRowProps = {
         default: () => '',
     },
     multiDates: { type: Boolean as PropType<boolean>, default: false },
+    partialRange: { type: Boolean as PropType<boolean>, default: true },
     ...TimeValidationProps,
 };
 
@@ -186,7 +187,6 @@ export const AllProps = {
     closeOnAutoApply: { type: Boolean as PropType<boolean>, default: true },
     teleport: { type: [String, Object] as PropType<string | HTMLElement>, default: 'body' },
     altPosition: { type: [Boolean, Function] as PropType<AltPosition>, default: false },
-    partialRange: { type: Boolean as PropType<boolean>, default: true },
     transitions: { type: [Boolean, Object] as PropType<boolean | ITransition>, default: true },
     formatLocale: { type: Object as PropType<Locale>, default: null },
     utc: { type: [Boolean, String] as PropType<boolean | 'preserve'>, default: false },

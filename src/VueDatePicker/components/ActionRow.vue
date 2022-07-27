@@ -81,10 +81,14 @@
         }
     });
 
+    const validDateRange = computed(() =>
+        props.partialRange && props.internalModelValue ? (props.internalModelValue as Date[]).length === 2 : true,
+    );
+
     const selectClass = computed(() => ({
         dp__action: true,
         dp__select: true,
-        dp__action_disabled: !isTimeValid.value || !isMonthValid.value,
+        dp__action_disabled: !isTimeValid.value || !isMonthValid.value || !validDateRange.value,
     }));
 
     const isTimeValid = computed((): boolean => {
