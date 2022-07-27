@@ -130,6 +130,7 @@
                     dayNames,
                     modelAuto,
                     highlight,
+                    partialRange,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @close-picker="closeMenu"

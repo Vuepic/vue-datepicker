@@ -81,9 +81,11 @@
         }
     });
 
-    const validDateRange = computed(() =>
-        props.partialRange && props.internalModelValue ? (props.internalModelValue as Date[]).length === 2 : true,
-    );
+    const validDateRange = computed(() => {
+        return props.range && !props.partialRange && props.internalModelValue
+            ? (props.internalModelValue as Date[]).length === 2
+            : true;
+    });
 
     const selectClass = computed(() => ({
         dp__action: true,
