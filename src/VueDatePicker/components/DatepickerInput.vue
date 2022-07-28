@@ -31,19 +31,16 @@
                 :value="inputValue"
                 :autocomplete="autocomplete"
                 @input="handleInput"
-                @keydown.enter="handleEnter"
+                @keydown.enter="handleOpen"
                 @keydown.tab="handleTab"
                 @blur="handleBlur"
                 @focus="handleFocus"
                 @keypress="handleKeyPress"
             />
-            <span class="dp__input_icon" v-if="$slots['input-icon'] && !hideInputIcon" @click="emit('toggle')"
-                ><slot name="input-icon"
-            /></span>
+            <span class="dp__input_icon" v-if="$slots['input-icon'] && !hideInputIcon"><slot name="input-icon" /></span>
             <CalendarIcon
                 v-if="!$slots['input-icon'] && !hideInputIcon && !$slots['dp-input']"
                 class="dp__input_icon dp__input_icons"
-                @click="emit('toggle')"
             />
             <span
                 class="dp__clear_icon"
@@ -60,7 +57,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, inject, ref, useSlots } from 'vue';
+    import { computed, inject, ref } from 'vue';
     import type { PropType, ComputedRef } from 'vue';
 
     import { CalendarIcon, CancelIcon } from '@/components/Icons';
@@ -68,9 +65,7 @@
     import type { DynamicClass, AreaLabels } from '@/interfaces';
 
     import { isValidDate, parseFreeInput } from '@/utils/date-utils';
-    import { unrefElement } from '@/utils/util';
     import { ariaLabelsKey, ControlProps, InputProps, SharedProps } from '@/utils/props';
-    import { useStore } from '@/components/composition/store';
 
     const emit = defineEmits([
         'clear',
@@ -82,6 +77,8 @@
         'setEmptyDate',
         'toggle',
         'focus-prev',
+        'focus',
+        'blur',
     ]);
 
     const props = defineProps({
@@ -94,11 +91,9 @@
         pattern: { type: String as PropType<string>, default: '' },
     });
     const parsedDate = ref();
-    const inputRef = ref(null);
+    const inputRef = ref<HTMLElement | null>(null);
     const isFocused = ref(false);
     const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
-    const slots = useSlots();
-    const { getStore } = useStore();
 
     const inputClass = computed(
         (): DynamicClass => ({
@@ -160,42 +155,30 @@
             parsedDate.value = null;
             emit('clear');
         }
-        emit('close');
     };
 
     const handleFocus = (): void => {
-        if (getStore().shiftKeyInMenu && props.openMenuOnFocus) {
-            emit('close');
-            return emit('focus-prev');
-        }
-
-        if (!props.inline && (props.textInput ? props.textInput && props.textInputOptions?.openMenu : true)) {
-            isFocused.value = true;
-            if (props.openMenuOnFocus && !props.isMenuOpen) {
-                emit('open');
-            } else if (props.isMenuOpen && !getStore().menuFocused) {
-                unFocus();
-                emit('close');
-            }
-        }
+        isFocused.value = true;
+        emit('focus');
     };
 
     const handleOpen = () => {
-        if (!props.openMenuOnFocus || slots['dp-input'] || slots['trigger']) {
-            if (props.textInput && props.textInputOptions?.openMenu && !props.isMenuOpen) {
+        if (props.textInput && props.textInputOptions?.openMenu) {
+            if (!props.isMenuOpen) {
                 emit('open');
-            } else if (!props.textInput) {
-                emit('toggle');
+            } else if (props.textInputOptions.enterSubmit) {
+                emit('selectDate');
             }
         } else if (!props.textInput) {
-            if (isFocused.value) {
-                emit('toggle');
-            }
+            emit('toggle');
         }
     };
 
     const handleBlur = (): void => {
         isFocused.value = false;
+        if (!props.isMenuOpen) {
+            emit('blur');
+        }
         if (props.autoApply && props.textInput && parsedDate.value) {
             emit('setInputDate', parsedDate.value);
             emit('selectDate');
@@ -207,21 +190,19 @@
         emit('clear');
     };
 
-    const unFocus = (): void => {
-        isFocused.value = false;
-        const el = unrefElement(inputRef);
-        if (el) {
-            el.blur();
-        }
-    };
-
     const handleKeyPress = (ev: KeyboardEvent): boolean | void => {
         if (!props.textInput) {
             ev.preventDefault();
         }
     };
 
+    const focusInput = () => {
+        if (inputRef.value) {
+            inputRef.value.focus({ preventScroll: true });
+        }
+    };
+
     defineExpose({
-        unFocus,
+        focusInput,
     });
 </script>

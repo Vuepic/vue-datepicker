@@ -1,6 +1,5 @@
 <template>
     <div :class="wrapperClass">
-        <span tabindex="-1" ref="focusRefBefore"></span>
         <DatepickerInput
             ref="inputRef"
             v-bind="{
@@ -20,7 +19,6 @@
                 pattern: defaultPattern,
                 autoApply,
                 uid,
-                openMenuOnFocus,
                 required,
                 name,
                 autocomplete,
@@ -33,13 +31,13 @@
             @select-date="selectDate"
             @toggle="toggleMenu"
             @close="closeMenu"
-            @focus-prev="$emit('focus-prev')"
+            @focus="$emit('focus')"
+            @blur="$emit('blur')"
         >
             <template v-for="(slot, i) in inputSlots" #[slot]="args" :key="i">
                 <slot :name="slot" v-bind="args" />
             </template>
         </DatepickerInput>
-        <span tabindex="-1" ref="focusRef"></span>
         <teleport :to="teleport" :disabled="inline" v-if="isOpen">
             <DatepickerMenu
                 v-if="isOpen"
@@ -194,7 +192,6 @@
         'internalModelChange',
         'recalculatePosition',
         'flow-step',
-        'focus-prev',
         'updateMonthYear',
         'invalid-select',
     ]);
@@ -206,8 +203,8 @@
     const modelValueMap = toRef(props, 'modelValue');
     const dpMenuRef = ref(null);
     const inputRef = ref(null);
-    const focusRef = ref<HTMLElement | null>(null);
-    const focusRefBefore = ref<HTMLElement | null>(null);
+    // const focusRef = ref<HTMLElement | null>(null);
+    // const focusRefBefore = ref<HTMLElement | null>(null);
     provide(autoApplyKey, props.autoApply);
     const formatLocaleRef = computed(() => props.formatLocale);
     provide(formatLocaleKey, formatLocaleRef);
@@ -393,7 +390,6 @@
                 setMenuPosition();
                 if (isOpen.value) {
                     emit('open');
-                    emit('focus');
                 }
             });
 
@@ -506,7 +502,6 @@
                 setShiftKey(false);
                 clearArrowNav();
                 emit('closed');
-                emit('blur');
                 setInitialPosition();
                 if (inputValue.value) {
                     parseExternalModelValue(modelValueMap.value);
@@ -514,9 +509,8 @@
             }
             clearInternalValues();
             if (inputRef.value) {
-                (inputRef.value as { unFocus: () => void }).unFocus();
+                (inputRef.value as { focusInput: () => void }).focusInput();
             }
-            setSoftFocus();
         }
     };
 
@@ -538,13 +532,6 @@
             isValidTime(internalModelValue.value, props.maxTime, props.minTime, props.maxDate, props.minDate)
         ) {
             emitModelValue();
-        }
-    };
-
-    // When menu is close, allows user interaction via keyboard down the DOM tree, focus the span el after dp
-    const setSoftFocus = (): void => {
-        if (focusRef.value) {
-            focusRef.value.focus({ preventScroll: true });
         }
     };
 

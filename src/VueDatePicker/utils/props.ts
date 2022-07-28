@@ -73,7 +73,6 @@ export const InputProps = {
     inputClassName: { type: String as PropType<string>, default: null },
     inlineWithInput: { type: Boolean as PropType<boolean>, default: false },
     textInputOptions: { type: Object as PropType<ITextInputOptions>, default: () => null },
-    openMenuOnFocus: { type: Boolean as PropType<boolean>, default: true },
 };
 
 export const TimeValidationProps = {

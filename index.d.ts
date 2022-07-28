@@ -13,7 +13,6 @@ type EmitEvents =
     | 'internalModelChange'
     | 'recalculatePosition'
     | 'flow-step'
-    | 'focus-prev'
     | 'updateMonthYear';
 
 interface VueDatePicker {
@@ -183,7 +182,6 @@ interface VueDatePicker {
     modeHeight?: string | number;
     enableSeconds?: boolean;
     escClose?: boolean;
-    openMenuOnFocus?: boolean;
     spaceConfirm?: boolean;
     monthChangeOnArrows?: boolean;
     formatLocale?: Locale;

@@ -263,7 +263,7 @@
     const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
     const arrowNavigation = inject<Ref<boolean>>(arrowNavigationKey);
 
-    const { setMenuFocused, setShiftKey } = useStore();
+    const { setMenuFocused, setShiftKey, getStore } = useStore();
 
     onMounted(() => {
         menuMount.value = true;
@@ -585,5 +585,12 @@
 
     const checkShiftKey = (ev: KeyboardEvent) => {
         setShiftKey(ev.shiftKey);
+        if (!props.disableMonthYearSelect && ev.code === 'Tab') {
+            if ((ev.target as HTMLElement).classList.contains('dp__menu') && getStore().shiftKeyInMenu) {
+                ev.preventDefault();
+                ev.stopImmediatePropagation();
+                emit('closePicker');
+            }
+        }
     };
 </script>
