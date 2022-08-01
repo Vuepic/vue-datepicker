@@ -30,7 +30,7 @@
   --dp-danger-color: #e53935;
   --dp-marker-color: #e53935;
   --dp-tooltip-color: #3e3e3e;
-  --dp-highlight-color: rgba(0, 92, 178, 0.2);
+  --dp-highlight-color: rgb(0 92 178 / 20%);
 }
 
 .dp__theme_light {
@@ -56,7 +56,7 @@
   --dp-marker-color: #ff6f60;
   --dp-tooltip-color: #fafafa;
   --dp-disabled-color-text: #8e8e8e;
-  --dp-highlight-color: rgba(25, 118, 210, 0.1);
+  --dp-highlight-color: rgb(25 118 210 / 10%);
 }
 
 .dp__main {
