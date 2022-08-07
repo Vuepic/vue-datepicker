@@ -53,7 +53,7 @@
     import { useArrowNavigation } from '@/components/composition/arrow-navigate';
     import { unrefElement } from '@/utils/util';
 
-    const emit = defineEmits(['closePicker', 'selectDate']);
+    const emit = defineEmits(['closePicker', 'selectDate', 'invalid-select']);
 
     const props = defineProps({
         ...ActionRowProps,
@@ -139,8 +139,10 @@
     });
 
     const selectDate = (): void => {
-        if (isTimeValid.value && isMonthValid.value) {
+        if (isTimeValid.value && isMonthValid.value && validDateRange.value) {
             emit('selectDate');
+        } else {
+            emit('invalid-select');
         }
     };
 </script>

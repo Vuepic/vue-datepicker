@@ -179,6 +179,7 @@
                 }"
                 @close-picker="$emit('closePicker')"
                 @select-date="$emit('selectDate')"
+                @invalid-select="$emit('invalid-select')"
             >
                 <template v-for="(slot, i) in actionSlots" #[slot]="args" :key="i">
                     <slot :name="slot" v-bind="{ ...args }" />
@@ -236,6 +237,7 @@
         'timeUpdate',
         'flow-step',
         'updateMonthYear',
+        'invalid-select',
     ]);
     const props = defineProps({
         ...MenuProps,

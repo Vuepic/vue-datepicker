@@ -138,6 +138,7 @@
                 @time-update="timeUpdate"
                 @flow-step="$emit('flow-step', $event)"
                 @update-month-year="$emit('updateMonthYear', $event)"
+                @invalid-select="$emit('invalid-select', internalModelValue)"
             >
                 <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
                     <slot :name="slot" v-bind="{ ...args }" />
