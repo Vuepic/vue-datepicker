@@ -162,7 +162,10 @@
         emit('focus');
     };
 
-    const handleOpen = () => {
+    const handleOpen = (ev: KeyboardEvent) => {
+        ev.preventDefault();
+        ev.stopImmediatePropagation();
+        ev.stopPropagation();
         if (props.textInput && props.textInputOptions?.openMenu) {
             if (!props.isMenuOpen) {
                 emit('open');

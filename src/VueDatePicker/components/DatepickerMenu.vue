@@ -280,6 +280,9 @@
         }
         if (menu) {
             const stopDefault = (event: Event) => {
+                if (!props.monthYearComponent && !props.timePickerComponent) {
+                    event.preventDefault();
+                }
                 event.stopImmediatePropagation();
                 event.stopPropagation();
             };
