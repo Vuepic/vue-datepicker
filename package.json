@@ -18,6 +18,15 @@
     "src/**/*",
     "index.d.ts"
   ],
+  "exports": {
+    ".": {
+      "import": "./dist/vue-datepicker.es.js",
+      "require": "./dist/vue-datepicker.umd.js"
+    },
+    "./dist/main.css": "./dist/main.css",
+    "./src/VueDatePicker/style/main.scss": "./src/VueDatePicker/style/main.scss",
+    "./dist/*": "./dist/*"
+  },
   "scripts": {
     "dev": "vite",
     "build": "run-s clean build:lib build:css",

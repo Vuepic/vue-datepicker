@@ -17,11 +17,7 @@ export default defineConfig({
         host: true,
         port: 8080,
     },
-    esbuild: {
-        minify: true,
-    },
     build: {
-        minify: 'terser',
         emptyOutDir: false,
         lib: {
             formats: f === 'iife' ? ['iife'] : ['es', 'umd'],
@@ -36,11 +32,6 @@ export default defineConfig({
                     vue: 'Vue',
                     'date-fns': 'dateFns',
                 },
-            },
-        },
-        terserOptions: {
-            output: {
-                ecma: 5,
             },
         },
     },
