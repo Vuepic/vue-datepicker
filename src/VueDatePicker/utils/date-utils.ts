@@ -37,11 +37,37 @@ import type {
     IDateFilter,
 } from '@/interfaces';
 
-export const parseFreeInput = (value: string, pattern: string): Date | null => {
+const parseTextToDate = (value: string, pattern: string): Date | null => {
     const parsedDate = parse(value, pattern.slice(0, value.length), new Date());
     if (isValid(parsedDate) && isDate(parsedDate)) {
         return parsedDate;
     }
+    return null;
+};
+
+export const parseFreeInput = (
+    value: string,
+    pattern: string | string[] | ((value: string) => Date | null),
+): Date | null => {
+    if (typeof pattern === 'string') {
+        return parseTextToDate(value, pattern);
+    }
+
+    if (Array.isArray(pattern)) {
+        let parsedDate = null;
+        for (let i = 0; i < pattern.length; i++) {
+            parsedDate = parseTextToDate(value, pattern[i]);
+            if (parsedDate) {
+                break;
+            }
+        }
+        return parsedDate;
+    }
+
+    if (typeof pattern === 'function') {
+        return pattern(value);
+    }
+
     return null;
 };
 

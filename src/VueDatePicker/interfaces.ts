@@ -47,7 +47,7 @@ export interface ITextInputOptions {
     tabSubmit: boolean;
     openMenu: boolean;
     rangeSeparator: string;
-    format?: null;
+    format?: string | string[] | ((value: string) => Date | null);
 }
 
 export interface IMonthValue {

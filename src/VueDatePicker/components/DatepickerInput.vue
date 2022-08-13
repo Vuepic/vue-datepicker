@@ -114,6 +114,9 @@
         const { value } = event.target as HTMLInputElement;
         const { format, rangeSeparator } = props.textInputOptions;
         if (value !== '') {
+            if (props.textInputOptions?.openMenu && !props.isMenuOpen) {
+                emit('open');
+            }
             if (props.range) {
                 const [dateOne, dateTwo] = value.split(`${rangeSeparator}`);
 
