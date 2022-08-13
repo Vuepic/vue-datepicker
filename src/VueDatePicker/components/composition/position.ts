@@ -14,11 +14,11 @@ export const usePosition = (
     menuRef: ComponentRef,
     inputRef: ComponentRef,
     inline: boolean,
+    menuOffset: number | string,
     emit: VueEmit,
 ) => {
     const menuPosition = ref({ top: '0', left: '0', transform: 'none' });
     const openOnTop = ref(false);
-    const diagonal = 10; // arrow square diagonal + 1
     const maxHeight = 390;
 
     /**
@@ -96,7 +96,7 @@ export const usePosition = (
             } else if (el) {
                 const { left, width, height } = el.getBoundingClientRect();
                 const { top: offset } = altPosition ? getOffsetAlt(el) : getOffset(el);
-                menuPosition.value.top = `${height + offset + diagonal}px`;
+                menuPosition.value.top = `${height + offset + +menuOffset}px`;
                 setPositioning(left, width);
                 if (recalculate && autoPosition) {
                     recalculatePosition();
@@ -129,7 +129,7 @@ export const usePosition = (
                     }
                 } else {
                     if (menuHeight > freeSpaceBottom) {
-                        menuPosition.value.top = `${offset - height - diagonal}px`;
+                        menuPosition.value.top = `${offset - height - +menuOffset}px`;
                         openOnTop.value = true;
                     } else {
                         setMenuPosition(false);

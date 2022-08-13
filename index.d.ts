@@ -225,6 +225,7 @@ interface VueDatePicker {
     modelType?: 'timestamp' | 'format' | string;
     modelAuto?: boolean;
     highlight?: Date[] | string[] | number[] | ((date: Date[]) => boolean);
+    offset?: string | number;
 }
 
 interface PublicMethods extends MethodOptions {

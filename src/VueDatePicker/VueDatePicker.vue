@@ -249,6 +249,7 @@
         dpMenuRef,
         inputRef,
         props.inline,
+        props.offset,
         emit,
     );
 

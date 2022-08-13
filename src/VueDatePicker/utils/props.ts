@@ -194,6 +194,7 @@ export const AllProps = {
     formatLocale: { type: Object as PropType<Locale>, default: null },
     utc: { type: [Boolean, String] as PropType<boolean | 'preserve'>, default: false },
     ariaLabels: { type: Object as PropType<Partial<AreaLabels>>, default: () => ({}) },
+    offset: { type: [Number, String] as PropType<number | string>, default: 10 },
 };
 
 // These props bellow are for internal, since prop types may differ when sanitized than the exposed ones
