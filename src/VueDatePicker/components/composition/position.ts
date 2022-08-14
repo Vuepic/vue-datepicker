@@ -18,7 +18,11 @@ export const usePosition = (
     centered: Ref<boolean>,
     emit: VueEmit,
 ) => {
-    const menuPosition = ref({ top: '0', left: '0', transform: 'none' });
+    const menuPosition = ref<{ top: string; left: string; transform: string; position?: string }>({
+        top: '0',
+        left: '0',
+        transform: 'none',
+    });
     const openOnTop = ref(false);
     const maxHeight = 390;
 
@@ -89,6 +93,7 @@ export const usePosition = (
         menuPosition.value.left = `50%`;
         menuPosition.value.top = `50%`;
         menuPosition.value.transform = `translate(-50%, -50%)`;
+        menuPosition.value.position = `fixed`;
     };
 
     /**
