@@ -1,8 +1,8 @@
 import { ref } from 'vue';
-
+import type { Ref } from 'vue';
 import { OpenPosition } from '@/interfaces';
-import type { AltPosition, ComponentRef, VueEmit } from '@/interfaces';
 import { unrefElement } from '@/utils/util';
+import type { AltPosition, ComponentRef, VueEmit } from '@/interfaces';
 
 /**
  * Extracted code from the main component, used for calculating the position of the menu
@@ -15,6 +15,7 @@ export const usePosition = (
     inputRef: ComponentRef,
     inline: boolean,
     menuOffset: number | string,
+    centered: Ref<boolean>,
     emit: VueEmit,
 ) => {
     const menuPosition = ref({ top: '0', left: '0', transform: 'none' });
@@ -84,12 +85,19 @@ export const usePosition = (
         }
     };
 
+    const teleportCenter = () => {
+        menuPosition.value.left = `50%`;
+        menuPosition.value.top = `50%`;
+        menuPosition.value.transform = `translate(-50%, -50%)`;
+    };
+
     /**
      * Main call, when input is clicked, opens the menu on the first entry
      * Recalculate param is added when the menu component is mounted so that we can check the correct space
      */
     const setMenuPosition = (recalculate = true): void => {
         if (!inline) {
+            if (centered.value) return teleportCenter();
             const el = unrefElement(inputRef);
             if (altPosition && typeof altPosition !== 'boolean') {
                 menuPosition.value = altPosition(el);
@@ -126,6 +134,9 @@ export const usePosition = (
                     if (top < freeSpaceBottom) {
                         setMenuPosition(false);
                         openOnTop.value = false;
+                    } else {
+                        menuPosition.value.top = `${offset - height - +menuOffset}px`;
+                        openOnTop.value = true;
                     }
                 } else {
                     if (menuHeight > freeSpaceBottom) {

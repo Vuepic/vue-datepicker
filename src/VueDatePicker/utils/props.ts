@@ -169,6 +169,7 @@ export const MenuProps = {
         type: [Array, Function] as PropType<Date[] | string[] | number[] | ((date: Date) => boolean)>,
         default: null,
     },
+    teleportCenter: { type: Boolean as PropType<boolean>, default: false },
 };
 
 // Since many props are passed from the main component to the children, this is simply to reuse prop definitions and don't repeat the same code

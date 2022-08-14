@@ -129,6 +129,7 @@
                     modelAuto,
                     highlight,
                     partialRange,
+                    teleportCenter,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @close-picker="closeMenu"
@@ -204,8 +205,7 @@
     const modelValueMap = toRef(props, 'modelValue');
     const dpMenuRef = ref(null);
     const inputRef = ref(null);
-    // const focusRef = ref<HTMLElement | null>(null);
-    // const focusRefBefore = ref<HTMLElement | null>(null);
+    const centered = toRef(props, 'teleportCenter');
     provide(autoApplyKey, props.autoApply);
     const formatLocaleRef = computed(() => props.formatLocale);
     provide(formatLocaleKey, formatLocaleRef);
@@ -250,6 +250,7 @@
         inputRef,
         props.inline,
         props.offset,
+        centered,
         emit,
     );
 

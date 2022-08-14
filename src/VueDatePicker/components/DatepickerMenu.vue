@@ -18,7 +18,7 @@
             @keydown="checkShiftKey"
         >
             <div :class="disabledReadonlyOverlay" v-if="(disabled || readonly) && inline"></div>
-            <div :class="arrowClass" v-if="!inline"></div>
+            <div :class="arrowClass" v-if="!inline && !teleportCenter"></div>
             <div :class="presetRanges.length ? 'dp__menu_content_wrapper' : null">
                 <div class="dp__preset_ranges" v-if="presetRanges.length">
                     <div
