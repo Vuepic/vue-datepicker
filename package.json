@@ -26,7 +26,8 @@
     },
     "./dist/main.css": "./dist/main.css",
     "./src/VueDatePicker/style/main.scss": "./src/VueDatePicker/style/main.scss",
-    "./dist/*": "./dist/*"
+    "./dist/*": "./dist/*",
+    "./src/*": "./src/*"
   },
   "scripts": {
     "dev": "vite",
