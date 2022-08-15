@@ -24,10 +24,14 @@
       "import": "./dist/vue-datepicker.es.js",
       "require": "./dist/vue-datepicker.umd.js"
     },
-    "./dist/main.css": "./dist/main.css",
-    "./src/VueDatePicker/style/main.scss": "./src/VueDatePicker/style/main.scss",
-    "./dist/*": "./dist/*",
-    "./src/*": "./src/*"
+    "./dist/main.css": {
+      "import": "./dist/main.css",
+      "require": "./dist/main.css"
+    },
+    "./src/VueDatePicker/style/main.scss": {
+      "import": "./src/VueDatePicker/style/main.scss",
+      "require": "./src/VueDatePicker/style/main.scss"
+    }
   },
   "scripts": {
     "dev": "vite",
