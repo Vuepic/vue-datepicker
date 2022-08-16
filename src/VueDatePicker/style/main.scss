@@ -122,7 +122,7 @@
 .calendar-next-enter-active,
 .calendar-next-leave-active,
 .calendar-prev-enter-active,
-.calendar-prev-leave-active, {
+.calendar-prev-leave-active {
   transition: all $dp__transition_duration ease-out;
 }
 
