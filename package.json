@@ -1,6 +1,6 @@
 {
   "name": "@vuepic/vue-datepicker",
-  "version": "3.4.4",
+  "version": "3.4.5",
   "description": "Datepicker component for Vue 3",
   "author": "Vuepic",
   "private": false,
@@ -51,9 +51,9 @@
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",
     "@types/jsdom": "^20.0.0",
-    "@types/node": "^18.7.4",
-    "@typescript-eslint/eslint-plugin": "^5.33.0",
-    "@typescript-eslint/parser": "^5.33.0",
+    "@types/node": "^18.7.5",
+    "@typescript-eslint/eslint-plugin": "^5.33.1",
+    "@typescript-eslint/parser": "^5.33.1",
     "@vitejs/plugin-vue": "^3.0.3",
     "@vue/eslint-config-prettier": "^7.0.0",
     "@vue/eslint-config-typescript": "^11.0.0",
@@ -77,8 +77,8 @@
     "stylelint-config-standard-scss": "^5.0.0",
     "terser": "^5.14.2",
     "typescript": "^4.7.4",
-    "vite": "^3.0.7",
-    "vitest": "^0.21.1",
+    "vite": "^3.0.8",
+    "vitest": "^0.22.0",
     "vue": "^3.2.37",
     "vue-tsc": "^0.40.1"
   },
