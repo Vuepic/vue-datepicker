@@ -8,9 +8,9 @@
   "homepage": "https://vue3datepicker.com",
   "types": "index.d.ts",
   "type": "module",
-  "main": "dist/vue-datepicker.umd.js",
-  "module": "dist/vue-datepicker.es.js",
-  "browser": "dist/vue-datepicker.es.js",
+  "main": "dist/vue-datepicker.umd.cjs",
+  "module": "dist/vue-datepicker.js",
+  "browser": "dist/vue-datepicker.js",
   "unpkg": "dist/vue-datepicker.iife.js",
   "style": "dist/main.css",
   "sass": "src/VueDatePicker/style/main.scss",
@@ -21,8 +21,8 @@
   ],
   "exports": {
     ".": {
-      "import": "./dist/vue-datepicker.es.js",
-      "require": "./dist/vue-datepicker.umd.js"
+      "import": "./dist/vue-datepicker.js",
+      "require": "./dist/vue-datepicker.umd.cjs"
     },
     "./dist/main.css": {
       "import": "./dist/main.css",

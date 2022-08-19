@@ -23,7 +23,7 @@ export default defineConfig({
             formats: f === 'iife' ? ['iife'] : ['es', 'umd'],
             entry: resolve(__dirname, 'src', 'entry.ts'),
             name: 'VueDatePicker',
-            fileName: (format) => `vue-datepicker.${format}.js`,
+            fileName: 'vue-datepicker',
         },
         rollupOptions: {
             external: f === 'iife' ? ['vue'] : ['vue', 'date-fns'],
