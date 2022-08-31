@@ -128,6 +128,7 @@
                     dayNames,
                     modelAuto,
                     highlight,
+                    highlightWeekDays,
                     partialRange,
                     teleportCenter,
                 }"
@@ -150,38 +151,35 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, nextTick, onMounted, onUnmounted, provide, ref, toRef, useSlots, watch } from 'vue';
     import { getHours, getMinutes, getSeconds } from 'date-fns';
+import { computed, nextTick, onMounted, onUnmounted, provide, ref, toRef, useSlots, watch } from 'vue';
 
     import DatepickerInput from './components/DatepickerInput.vue';
-    import DatepickerMenu from './components/DatepickerMenu.vue';
+import DatepickerMenu from './components/DatepickerMenu.vue';
 
-    import { usePosition } from '@/components/composition/position';
     import { useExternalInternalMapper } from '@/components/composition/external-internal-mapper';
-    import { mapSlots } from '@/components/composition/slots';
+import { usePosition } from '@/components/composition/position';
+import { mapSlots } from '@/components/composition/slots';
 
     import type { AreaLabels, DynamicClass, ITextInputOptions, ITimeValue, ITransition } from './interfaces';
 
-    import { dateValidator, getDefaultPattern, isValidTime } from './utils/date-utils';
-    import {
-        getDefaultTextInputOptions,
-        getDefaultFilters,
-        mergeDefaultTransitions,
-        defaultAriaLabels,
-    } from './utils/util';
-    import { isString } from './utils/type-guard';
-    import { onClickOutside } from './directives/clickOutside';
-    import {
-        AllProps,
-        ariaLabelsKey,
-        arrowNavigationKey,
-        autoApplyKey,
-        formatLocaleKey,
-        textInputKey,
-        transitionsKey,
-    } from './utils/props';
     import { useArrowNavigation } from '@/components/composition/arrow-navigate';
-    import { useStore } from '@/components/composition/store';
+import { useStore } from '@/components/composition/store';
+import { onClickOutside } from './directives/clickOutside';
+import { dateValidator, getDefaultPattern, isValidTime } from './utils/date-utils';
+import {
+AllProps,
+ariaLabelsKey,
+arrowNavigationKey,
+autoApplyKey,
+formatLocaleKey,
+textInputKey,
+transitionsKey
+} from './utils/props';
+import { isString } from './utils/type-guard';
+import {
+defaultAriaLabels, getDefaultFilters, getDefaultTextInputOptions, mergeDefaultTransitions
+} from './utils/util';
 
     const emit = defineEmits([
         'update:modelValue',

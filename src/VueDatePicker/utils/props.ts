@@ -1,24 +1,14 @@
-import type { DefineComponent, PropType } from 'vue';
 import type { Locale } from 'date-fns';
+import type { DefineComponent, PropType } from 'vue';
 
 import type {
-    Flow,
+    AltPosition, AreaLabels, Flow,
     IDateFilter,
-    IDisableDates,
-    IMarker,
-    InternalModuleValue,
-    ITimeValue,
-    PresetRange,
+    IDisableDates, IFormat, IMarker,
+    InternalModuleValue, ITextInputOptions, ITimeValue, ITransition, ModelType, ModelValue,
+    OpenPosition, PresetRange,
     WeekStartNum,
-    WeekStartStr,
-    ITextInputOptions,
-    AreaLabels,
-    AltPosition,
-    IFormat,
-    ITransition,
-    ModelValue,
-    OpenPosition,
-    ModelType,
+    WeekStartStr
 } from '@/interfaces';
 
 export const ariaLabelsKey = Symbol();
@@ -167,6 +157,10 @@ export const MenuProps = {
     disableTimeRangeValidation: { type: Boolean as PropType<boolean>, default: false },
     highlight: {
         type: [Array, Function] as PropType<Date[] | string[] | number[] | ((date: Date) => boolean)>,
+        default: null,
+    },
+    highlightWeekDays: {
+        type: Array as PropType<number[]>,
         default: null,
     },
     teleportCenter: { type: Boolean as PropType<boolean>, default: false },
