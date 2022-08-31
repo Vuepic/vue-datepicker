@@ -2,13 +2,23 @@ import type { Locale } from 'date-fns';
 import type { DefineComponent, PropType } from 'vue';
 
 import type {
-    AltPosition, AreaLabels, Flow,
+    AltPosition,
+    AreaLabels,
+    Flow,
     IDateFilter,
-    IDisableDates, IFormat, IMarker,
-    InternalModuleValue, ITextInputOptions, ITimeValue, ITransition, ModelType, ModelValue,
-    OpenPosition, PresetRange,
+    IDisableDates,
+    IFormat,
+    IMarker,
+    InternalModuleValue,
+    ITextInputOptions,
+    ITimeValue,
+    ITransition,
+    ModelType,
+    ModelValue,
+    OpenPosition,
+    PresetRange,
     WeekStartNum,
-    WeekStartStr
+    WeekStartStr,
 } from '@/interfaces';
 
 export const ariaLabelsKey = Symbol();

@@ -152,34 +152,37 @@
 
 <script lang="ts" setup>
     import { getHours, getMinutes, getSeconds } from 'date-fns';
-import { computed, nextTick, onMounted, onUnmounted, provide, ref, toRef, useSlots, watch } from 'vue';
+    import { computed, nextTick, onMounted, onUnmounted, provide, ref, toRef, useSlots, watch } from 'vue';
 
     import DatepickerInput from './components/DatepickerInput.vue';
-import DatepickerMenu from './components/DatepickerMenu.vue';
+    import DatepickerMenu from './components/DatepickerMenu.vue';
 
     import { useExternalInternalMapper } from '@/components/composition/external-internal-mapper';
-import { usePosition } from '@/components/composition/position';
-import { mapSlots } from '@/components/composition/slots';
+    import { usePosition } from '@/components/composition/position';
+    import { mapSlots } from '@/components/composition/slots';
 
     import type { AreaLabels, DynamicClass, ITextInputOptions, ITimeValue, ITransition } from './interfaces';
 
     import { useArrowNavigation } from '@/components/composition/arrow-navigate';
-import { useStore } from '@/components/composition/store';
-import { onClickOutside } from './directives/clickOutside';
-import { dateValidator, getDefaultPattern, isValidTime } from './utils/date-utils';
-import {
-AllProps,
-ariaLabelsKey,
-arrowNavigationKey,
-autoApplyKey,
-formatLocaleKey,
-textInputKey,
-transitionsKey
-} from './utils/props';
-import { isString } from './utils/type-guard';
-import {
-defaultAriaLabels, getDefaultFilters, getDefaultTextInputOptions, mergeDefaultTransitions
-} from './utils/util';
+    import { useStore } from '@/components/composition/store';
+    import { onClickOutside } from './directives/clickOutside';
+    import { dateValidator, getDefaultPattern, isValidTime } from './utils/date-utils';
+    import {
+        AllProps,
+        ariaLabelsKey,
+        arrowNavigationKey,
+        autoApplyKey,
+        formatLocaleKey,
+        textInputKey,
+        transitionsKey,
+    } from './utils/props';
+    import { isString } from './utils/type-guard';
+    import {
+        defaultAriaLabels,
+        getDefaultFilters,
+        getDefaultTextInputOptions,
+        mergeDefaultTransitions,
+    } from './utils/util';
 
     const emit = defineEmits([
         'update:modelValue',
