@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { DefineComponent, ComputedOptions, ComponentOptionsMixin, MethodOptions } from 'vue';
 import { Locale } from 'date-fns';
+import { ComponentOptionsMixin, ComputedOptions, DefineComponent, MethodOptions } from 'vue';
 
 type EmitEvents =
     | 'update:modelValue'
@@ -226,6 +226,7 @@ interface VueDatePicker {
     modelType?: 'timestamp' | 'format' | string;
     modelAuto?: boolean;
     highlight?: Date[] | string[] | number[] | ((date: Date[]) => boolean);
+    highlightWeekDays?: number[];
     offset?: string | number;
     teleportCenter?: boolean;
 }

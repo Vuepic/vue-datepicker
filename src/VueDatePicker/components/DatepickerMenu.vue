@@ -190,32 +190,33 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, onMounted, useSlots, ref, onUnmounted, reactive, inject } from 'vue';
-    import type { PropType, ComputedRef, Ref } from 'vue';
+    import type { ComputedRef, PropType, Ref } from 'vue';
+    import { computed, inject, onMounted, onUnmounted, reactive, ref, useSlots } from 'vue';
 
-    import Calendar from '@/components/Calendar.vue';
     import ActionRow from '@/components/ActionRow.vue';
-    import TimePickerCmp from '@/components/TimePicker/TimePicker.vue';
+    import Calendar from '@/components/Calendar.vue';
     import MonthYearPicker from '@/components/MonthYearPicker/MonthYearPicker.vue';
+    import TimePickerCmp from '@/components/TimePicker/TimePicker.vue';
 
-    import { mapSlots } from '@/components/composition/slots';
     import { useCalendar } from '@/components/composition/calendar';
+    import { mapSlots } from '@/components/composition/slots';
 
     import type {
+        AreaLabels,
         CalendarRef,
         DynamicClass,
         ICalendarDate,
         IDefaultSelect,
         InternalModuleValue,
+        ITransition,
         MenuChildCmp,
         MonthYearPickerRef,
         TimePickerRef,
         WeekStartNum,
-        ITransition,
-        AreaLabels,
     } from '@/interfaces';
 
-    import { getCalendarDays, getMonths, getYears, isModelAuto, unrefElement } from '@/utils/util';
+    import { useArrowNavigation } from '@/components/composition/arrow-navigate';
+    import { useStore } from '@/components/composition/store';
     import { isDateEqual, matchDate } from '@/utils/date-utils';
     import {
         ariaLabelsKey,
@@ -225,8 +226,7 @@
         SharedProps,
         transitionsKey,
     } from '@/utils/props';
-    import { useArrowNavigation } from '@/components/composition/arrow-navigate';
-    import { useStore } from '@/components/composition/store';
+    import { getCalendarDays, getMonths, getYears, isModelAuto, unrefElement } from '@/utils/util';
 
     const emit = defineEmits([
         'update:internalModelValue',
@@ -472,6 +472,8 @@
                             : false
                         : isActiveDate(calendarDay);
                     const highlighted = props.highlight ? matchDate(calendarDay.value, props.highlight) : false;
+                    const highlightedWeekDay =
+                        props.highlightWeekDays && props.highlightWeekDays.includes(calendarDay.value.getDay());
                     const isBetween =
                         (props.range || props.weekPicker) &&
                         (props.multiCalendars > 0 ? calendarDay.current : true) &&
@@ -505,8 +507,8 @@
                                 ? calendarDay.current && rangeActiveStartEnd(calendarDay, false) && isModelAutoActive()
                                 : rangeActiveStartEnd(calendarDay, false) && isModelAutoActive(),
                         [props.calendarCellClassName]: !!props.calendarCellClassName,
-                        dp__cell_highlight: highlighted && !isActive,
-                        dp__cell_highlight_active: highlighted && isActive,
+                        dp__cell_highlight: (highlighted || highlightedWeekDay) && !isActive,
+                        dp__cell_highlight_active: (highlighted || highlightedWeekDay) && isActive,
                     };
                     return calendarDay;
                 }),
