@@ -176,6 +176,7 @@
                     multiDates,
                     modelAuto,
                     partialRange,
+                    ignoreTimeValidation,
                 }"
                 @close-picker="$emit('closePicker')"
                 @select-date="$emit('selectDate')"

@@ -94,7 +94,7 @@
     }));
 
     const isTimeValid = computed((): boolean => {
-        if (!props.enableTimePicker) return true;
+        if (!props.enableTimePicker || props.ignoreTimeValidation) return true;
         return isValidTime(props.internalModelValue, props.maxTime, props.minTime, props.maxDate, props.minDate);
     });
 

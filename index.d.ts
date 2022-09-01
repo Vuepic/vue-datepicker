@@ -229,6 +229,7 @@ interface VueDatePicker {
     highlightWeekDays?: number[];
     offset?: string | number;
     teleportCenter?: boolean;
+    ignoreTimeValidation?: boolean;
 }
 
 interface PublicMethods extends MethodOptions {
