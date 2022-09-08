@@ -3,6 +3,7 @@
         <template v-if="!monthPicker && !yearPicker">
             <ActionIcon
                 :aria-label="ariaLabels.prevMonth"
+                :disabled="isDisabled(false)"
                 @activate="handleMonthYearChange(false)"
                 v-if="showLeftIcon && !vertical"
                 @set-ref="setElRefs($event, 0)"
@@ -46,6 +47,7 @@
             </RegularPicker>
             <ActionIcon
                 :aria-label="ariaLabels.prevMonth"
+                :disabled="isDisabled(false)"
                 @activate="handleMonthYearChange(false)"
                 v-if="showLeftIcon && vertical"
             >
@@ -53,7 +55,8 @@
                 <ChevronUpIcon v-if="!$slots['arrow-up']" />
             </ActionIcon>
             <ActionIcon
-                :aria-label="ariaLabels.nextMonth"
+                :arial-label="ariaLabels.nextMonth"
+                :disabled="isDisabled(true)"
                 @activate="handleMonthYearChange(true)"
                 ref="rightIcon"
                 v-if="showRightIcon"
@@ -209,7 +212,7 @@
     const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
     const arrowNavigation = inject<Ref<boolean>>(arrowNavigationKey);
 
-    const { handleMonthYearChange } = useMontYearPick(props, emit);
+    const { handleMonthYearChange, isDisabled } = useMontYearPick(props, emit);
 
     onMounted(() => {
         emit('mount');

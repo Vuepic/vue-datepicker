@@ -2,6 +2,7 @@ import { addMonths, addYears, getMonth, getYear, set, subMonths, subYears } from
 
 import type { UseMonthYearPick, VueEmit } from '@/interfaces';
 import { isDateAfter, isDateBefore, isDateEqual } from '@/utils/date-utils';
+import { computed } from 'vue';
 
 const getDateForCompare = (date: Date | string, month: number, year: number): [Date, Date] => {
     return [set(new Date(date), { date: 1 }), set(new Date(), { month, year, date: 1 })];
@@ -96,5 +97,15 @@ export const useMontYearPick = (props: UseMonthYearPick, emit: VueEmit) => {
         emit('update-month-year', { month, year });
     };
 
-    return { handleMonthYearChange };
+    const isDisabled = computed(() => (next: boolean) => {
+        if (!props.preventMinMaxNavigation) return false;
+        if (next && !props.maxDate) return false;
+        if (!next && !props.minDate) return false;
+        const currentDate = set(new Date(), { month: props.month, year: props.year });
+        const compareDate = next ? addMonths(currentDate, 1) : subMonths(currentDate, 1);
+        const monthYear: [number, number] = [getMonth(compareDate), getYear(compareDate)];
+        return next ? !validateMaxDate(props.maxDate, ...monthYear) : !validateMinDate(props.minDate, ...monthYear);
+    });
+
+    return { handleMonthYearChange, isDisabled };
 };
