@@ -6,7 +6,13 @@
         tabindex="0"
         ref="elRef"
     >
-        <div class="dp__inner_nav" :class="{ dp__inner_nav_disabled: disabled }" role="button" :aria-label="ariaLabel">
+        <div
+            class="dp__inner_nav"
+            :class="{ dp__inner_nav_disabled: disabled }"
+            role="button"
+            :aria-label="ariaLabel"
+            :aria-disabled="disabled"
+        >
             <slot />
         </div>
     </div>
