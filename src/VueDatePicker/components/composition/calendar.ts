@@ -539,9 +539,6 @@ export const useCalendar = (
     };
 
     const updateMonthYear = (instance: number, val: { month: number; year: number }): void => {
-        const isValueChange = props.monthPicker
-            ? month.value(instance) !== val.month
-            : year.value(instance) !== val.year;
         setCalendarMonth(instance, val.month);
         setCalendarYear(instance, val.year);
 
@@ -551,22 +548,20 @@ export const useCalendar = (
 
         if (props.monthPicker || props.yearPicker) {
             if (props.range) {
-                if (isValueChange) {
-                    let rangeDate = modelValue.value ? (modelValue.value as Date[]).slice() : [];
-                    if (rangeDate.length === 2 && rangeDate[1] !== null) {
-                        rangeDate = [];
-                    }
-                    if (!rangeDate.length) {
-                        rangeDate = [getMonthYearValue(instance)];
-                    } else {
-                        if (isDateBefore(getMonthYearValue(instance), rangeDate[0])) {
-                            rangeDate.unshift(getMonthYearValue(instance));
-                        } else {
-                            rangeDate[1] = getMonthYearValue(instance);
-                        }
-                    }
-                    modelValue.value = rangeDate;
+                let rangeDate = modelValue.value ? (modelValue.value as Date[]).slice() : [];
+                if (rangeDate.length === 2 && rangeDate[1] !== null) {
+                    rangeDate = [];
                 }
+                if (!rangeDate.length) {
+                    rangeDate = [getMonthYearValue(instance)];
+                } else {
+                    if (isDateBefore(getMonthYearValue(instance), rangeDate[0])) {
+                        rangeDate.unshift(getMonthYearValue(instance));
+                    } else {
+                        rangeDate[1] = getMonthYearValue(instance);
+                    }
+                }
+                modelValue.value = rangeDate;
             } else {
                 modelValue.value = getMonthYearValue(instance);
             }
