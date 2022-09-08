@@ -53,7 +53,7 @@
                 <ChevronUpIcon v-if="!$slots['arrow-up']" />
             </ActionIcon>
             <ActionIcon
-                :arial-label="ariaLabels.nextMonth"
+                :aria-label="ariaLabels.nextMonth"
                 @activate="handleMonthYearChange(true)"
                 ref="rightIcon"
                 v-if="showRightIcon"

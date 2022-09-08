@@ -4,9 +4,11 @@
         @click="$emit('activate')"
         @keydown.enter="$emit('activate')"
         tabindex="0"
+        role="button"
+        :aria-label="ariaLabel"
         ref="elRef"
     >
-        <div class="dp__inner_nav" role="button" :aria-label="ariaLabel">
+        <div class="dp__inner_nav">
             <slot />
         </div>
     </div>
