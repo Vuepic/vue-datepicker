@@ -3,17 +3,12 @@
         class="dp__month_year_col_nav"
         @click="$emit('activate')"
         @keydown.enter="$emit('activate')"
-        @keydown.space="$emit('activate')"
         tabindex="0"
+        role="button"
+        :aria-label="ariaLabel"
         ref="elRef"
     >
-        <div
-            class="dp__inner_nav"
-            :class="{ dp__inner_nav_disabled: disabled }"
-            role="button"
-            :aria-label="ariaLabel"
-            :aria-disabled="disabled"
-        >
+        <div class="dp__inner_nav">
             <slot />
         </div>
     </div>
@@ -24,10 +19,7 @@
     import { onMounted, ref } from 'vue';
 
     const emit = defineEmits(['activate', 'setRef']);
-    defineProps({
-        ariaLabel: { type: String as PropType<string>, default: '' },
-        disabled: { type: Boolean as PropType<boolean>, default: false },
-    });
+    defineProps({ ariaLabel: { type: String as PropType<string>, default: '' } });
     const elRef = ref(null);
 
     onMounted(() => emit('setRef', elRef));
