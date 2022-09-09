@@ -10,8 +10,7 @@
         :aria-disabled="disabled"
         ref="elRef"
     >
-        <div class="dp__inner_nav" :class="{ dp__inner_nav_disabled: disabled }"
-        >
+        <div class="dp__inner_nav" :class="{ dp__inner_nav_disabled: disabled }">
             <slot />
         </div>
     </div>
