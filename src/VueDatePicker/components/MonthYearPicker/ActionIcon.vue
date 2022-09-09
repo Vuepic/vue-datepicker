@@ -3,6 +3,7 @@
         class="dp__month_year_col_nav"
         @click="$emit('activate')"
         @keydown.enter="$emit('activate')"
+        @keydown.space="$emit('activate')"
         tabindex="0"
         ref="elRef"
     >

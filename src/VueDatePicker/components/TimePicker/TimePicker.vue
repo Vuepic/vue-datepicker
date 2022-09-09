@@ -8,6 +8,7 @@
             tabindex="0"
             ref="openTimePickerBtn"
             @keydown.enter="toggleTimePicker(true)"
+            @keydown.space="toggleTimePicker(true)"
             @click="toggleTimePicker(true)"
         >
             <slot name="clock-icon" v-if="$slots['clock-icon']" />
@@ -75,6 +76,7 @@
                         :aria-label="ariaLabels.closeTimePicker"
                         tabindex="0"
                         @keydown.enter="toggleTimePicker(false)"
+                        @keydown.space="toggleTimePicker(false)"
                         @click="toggleTimePicker(false)"
                     >
                         <slot name="calendar-icon" v-if="$slots['calendar-icon']" />

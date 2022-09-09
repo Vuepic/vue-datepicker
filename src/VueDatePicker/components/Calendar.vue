@@ -41,6 +41,7 @@
                                 tabindex="0"
                                 @click.stop.prevent="$emit('selectDate', dayVal)"
                                 @keydown.enter="$emit('selectDate', dayVal)"
+                                @keydown.space="$emit('handleSpace', dayVal)"
                                 @mouseover="onMouseOver(dayVal, weekInd, dayInd)"
                                 @mouseleave="onMouseLeave"
                             >
@@ -107,7 +108,7 @@
     } from '@/utils/props';
     import { useArrowNavigation } from '@/components/composition/arrow-navigate';
 
-    const emit = defineEmits(['selectDate', 'setHoverDate', 'handleScroll', 'mount', 'handleSwipe']);
+    const emit = defineEmits(['selectDate', 'setHoverDate', 'handleScroll', 'mount', 'handleSwipe', 'handleSpace']);
 
     const props = defineProps({
         ...MonthCalendarSharedProps,

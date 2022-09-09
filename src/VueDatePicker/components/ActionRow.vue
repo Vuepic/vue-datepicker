@@ -19,12 +19,14 @@
                     tabindex="0"
                     @click="$emit('closePicker')"
                     @keydown.enter="$emit('closePicker')"
+                    @keydown.space="$emit('closePicker')"
                     >{{ cancelText }}</span
                 >
                 <span
                     :class="selectClass"
                     tabindex="0"
                     @keydown.enter="selectDate"
+                    @keydown.space="selectDate"
                     @click="selectDate"
                     ref="selectButtonRef"
                     >{{ selectText }}</span

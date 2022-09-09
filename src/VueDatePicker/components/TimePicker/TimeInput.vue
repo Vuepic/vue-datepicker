@@ -9,6 +9,7 @@
                     :aria-label="ariaLabels.incrementValue(timeInput.type)"
                     tabindex="0"
                     @keydown.enter="handleTimeValue(timeInput.type)"
+                    @keydown.space="handleTimeValue(timeInput.type)"
                     @click="handleTimeValue(timeInput.type)"
                     :ref="(el) => assignRefs(el, i, 0)"
                 >
@@ -21,6 +22,7 @@
                     :class="checkOverlayDisabled(timeInput.type) ? '' : 'dp__time_display'"
                     tabindex="0"
                     @keydown.enter="toggleOverlay(timeInput.type)"
+                    @keydown.space="toggleOverlay(timeInput.type)"
                     @click="toggleOverlay(timeInput.type)"
                     :ref="(el) => assignRefs(el, i, 1)"
                 >
@@ -38,6 +40,7 @@
                     :aria-label="ariaLabels.decrementValue(timeInput.type)"
                     tabindex="0"
                     @keydown.enter="handleTimeValue(timeInput.type, false)"
+                    @keydown.space="handleTimeValue(timeInput.type, false)"
                     @click="handleTimeValue(timeInput.type, false)"
                     :ref="(el) => assignRefs(el, i, 2)"
                 >
@@ -58,6 +61,7 @@
                 tabindex="0"
                 @click="setAmPm"
                 @keydown.enter.prevent="setAmPm"
+                @keydown.space.prevent="setAmPm"
             >
                 {{ amPm }}
             </button>

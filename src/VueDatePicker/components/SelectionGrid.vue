@@ -14,6 +14,7 @@
                     tabindex="0"
                     @click="onClick(col.value)"
                     @keydown.enter="onClick(col.value)"
+                    @keydown.space="onClick(col.value)"
                     @mouseover="hoverValue = col.value"
                 >
                     <div :class="col.className">
