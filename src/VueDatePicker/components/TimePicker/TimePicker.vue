@@ -54,6 +54,7 @@
                                     noSecondsOverlay,
                                     enableSeconds,
                                     closeTimePickerBtn,
+                                    escClose,
                                     order: index,
                                 }"
                                 @update:hours="updateHours(getEvent($event, index, 'hours'))"
@@ -124,6 +125,7 @@
         customProps: { type: Object as PropType<Record<string, unknown>>, default: null },
         modelAuto: { type: Boolean as PropType<boolean>, default: false },
         internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
+        escClose: { type: Boolean as PropType<boolean>, default: true },
     });
     const slots = useSlots();
     const openTimePickerBtn = ref(null);

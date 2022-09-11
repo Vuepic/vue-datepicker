@@ -60,6 +60,7 @@
                                     reverseYears,
                                     vertical,
                                     yearPicker,
+                                    escClose,
                                 }"
                                 @mount="childMount('monthYearInput')"
                                 @reset-flow="resetFlow"
@@ -125,6 +126,7 @@
                                 fixedEnd,
                                 modelAuto,
                                 internalModelValue,
+                                escClose,
                             }"
                             @mount="childMount('timePicker')"
                             @update:hours="updateTime($event)"

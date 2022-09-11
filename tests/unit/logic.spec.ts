@@ -30,6 +30,15 @@ const mountDatepicker = async (props: any = {}): Promise<{ dp: VueWrapper<any>; 
     return { dp, menu };
 };
 
+const openAndGetMonthOverlay = async (menu: VueWrapper<any>) => {
+    const monthYearInput = menu.findComponent(MonthYearInput);
+    monthYearInput.vm.toggleMonthPicker();
+
+    await monthYearInput.vm.$nextTick();
+
+    return menu.find('.dp__overlay');
+};
+
 /**
  * Commented code is not working in vue 3.2.33, looks like the second emit is not working after next tick
  * will wait for the update
@@ -242,5 +251,27 @@ describe('Logic connection', () => {
 
         expect(dp.vm.internalModelValue).toHaveLength(2);
         expect(dp.vm.internalModelValue).toEqual(weekRange);
+    });
+
+    it('Should close month overlay on pressing keyboard Esc when escClose = true', async () => {
+        const { menu } = await mountDatepicker({ inline: true, escClose: true });
+
+        // trigger keypress Esc
+        const overlayBefore = await openAndGetMonthOverlay(menu);
+        await overlayBefore.trigger('keydown.esc');
+
+        const overlayAfter = menu.findAll('.dp__overlay');
+        expect(overlayAfter).toHaveLength(0);
+    });
+
+    it('Should not close month overlay on pressing keyboard Esc when escClose = false', async () => {
+        const { menu } = await mountDatepicker({ inline: true, escClose: false });
+
+        // trigger keypress Esc
+        const overlayBefore = await openAndGetMonthOverlay(menu);
+        await overlayBefore.trigger('keydown.esc');
+
+        const overlayAfter = menu.findAll('.dp__overlay');
+        expect(overlayAfter).toHaveLength(1);
     });
 });

@@ -198,6 +198,7 @@
         filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
         multiCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
         yearPicker: { type: Boolean as PropType<boolean>, default: false },
+        escClose: { type: Boolean as PropType<boolean>, default: true },
     });
 
     const { transitionName, showTransition } = useTransitions();
@@ -245,6 +246,7 @@
             maxValue: (isMonth ? maxMonth : maxYear).value,
             headerRefs:
                 isMonth && props.monthPicker ? [mpPrevIconRef.value, mpYearButtonRef.value, mpNextIconRef.value] : [],
+            escClose: props.escClose,
         };
     });
 
