@@ -192,7 +192,7 @@ describe('Logic connection', () => {
     });
 
     it('Should format with locale', async () => {
-        const selected = new Date(0);
+        const selected = new Date(1970, 0, 1);
         // The day of the week (E) is locale-sensitive in Japanese.
         // Since epoch time zero (1970/1/1) was a Thursday, the 'Thu' must be localized to '木'.
         const { dp, menu } = await mountDatepicker({
