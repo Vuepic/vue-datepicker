@@ -76,6 +76,7 @@
                 v-if="overlays[timeInput.type]"
                 :items="getGridItems(timeInput.type)"
                 :disabled-values="filters.times[timeInput.type]"
+                :esc-close="escClose"
                 @update:model-value="handleTimeFromOverlay(timeInput.type, $event)"
                 @selected="toggleOverlay(timeInput.type)"
                 @toggle="toggleOverlay(timeInput.type)"
@@ -135,6 +136,7 @@
         disabled: { type: Boolean as PropType<boolean>, default: false },
         closeTimePickerBtn: { type: Object as PropType<HTMLElement>, default: null },
         order: { type: Number as PropType<0 | 1>, default: 0 },
+        escClose: { type: Boolean as PropType<boolean>, default: true },
     });
 
     const overlays = reactive({
