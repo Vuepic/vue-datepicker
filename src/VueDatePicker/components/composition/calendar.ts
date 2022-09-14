@@ -718,15 +718,15 @@ export const useCalendar = (
         return false;
     };
 
-    const monthYearSelect = (isYear = false) => {
+    const monthYearSelect = async (isYear = false): Promise<void> => {
         if (props.autoApply && (props.monthPicker || props.yearPicker)) {
-            nextTick().then(() => {
-                if (props.range) {
-                    emit('autoApply', isYear || !modelValue.value || (modelValue.value as Date[]).length === 1);
-                } else {
-                    emit('autoApply', isYear);
-                }
-            });
+            await nextTick();
+            const ignoreClose = props.monthPicker ? isYear : false;
+            if (props.range) {
+                emit('autoApply', ignoreClose || !modelValue.value || (modelValue.value as Date[]).length === 1);
+            } else {
+                emit('autoApply', ignoreClose);
+            }
         }
     };
 
