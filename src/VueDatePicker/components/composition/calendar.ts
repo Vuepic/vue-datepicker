@@ -787,7 +787,8 @@ export const useCalendar = (
         }
     };
 
-    const presetDateRange = (dates: Date[] | string[]): void => {
+    const presetDateRange = (dates: Date[] | string[], hasSlot?: boolean): void => {
+        if (hasSlot) return;
         if (dates.length && dates.length <= 2 && props.range) {
             modelValue.value = dates.map((date) => new Date(date));
             if (props.autoApply) {

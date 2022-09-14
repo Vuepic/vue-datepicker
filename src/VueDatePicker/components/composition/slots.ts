@@ -1,4 +1,5 @@
 import type { Slots } from 'vue';
+import type { PresetRange } from '@/interfaces';
 
 export const slots = [
     { name: 'clock-icon', use: ['time', 'calendar'] },
@@ -24,6 +25,7 @@ export const slots = [
     { name: 'now-button', use: [] },
     { name: 'time-picker-overlay', use: ['calendar', 'time'] },
     { name: 'am-pm-button', use: ['calendar', 'time'] },
+    { name: 'left-sidebar', use: ['calendar'] },
 ];
 
 export const inputSlots = [{ name: 'trigger' }, { name: 'input-icon' }, { name: 'clear-icon' }, { name: 'dp-input' }];
@@ -40,6 +42,7 @@ const slotNames = {
 export const mapSlots = (
     slots: Slots,
     usage: 'all' | 'monthYear' | 'timePicker' | 'input' | 'action' | 'calendar',
+    presetRanges?: PresetRange[],
 ): string[] => {
     const toReturn: string[] = [];
 
@@ -48,6 +51,14 @@ export const mapSlots = (
             toReturn.push(slot.name);
         }
     });
+
+    if (presetRanges && presetRanges.length) {
+        presetRanges.forEach((preset) => {
+            if (preset.slot) {
+                toReturn.push(preset.slot);
+            }
+        });
+    }
 
     return toReturn;
 };

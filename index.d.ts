@@ -188,7 +188,7 @@ interface VueDatePicker {
     formatLocale?: Locale;
     autocomplete?: string;
     multiDates?: boolean;
-    presetRanges?: { label: string; range: Date[] | string[]; style?: Record<string, string> }[];
+    presetRanges?: { label: string; range: Date[] | string[]; style?: Record<string, string>; slot?: string }[];
     flow?: ('month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds')[];
     preventMinMaxNavigation?: boolean;
     minRange?: number | string;

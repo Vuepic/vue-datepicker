@@ -19,16 +19,29 @@
             <div :class="disabledReadonlyOverlay" v-if="(disabled || readonly) && inline"></div>
             <div :class="arrowClass" v-if="!inline && !teleportCenter"></div>
             <div :class="presetRanges.length ? 'dp__menu_content_wrapper' : null">
-                <div class="dp__preset_ranges" v-if="presetRanges.length">
+                <div class="dp__preset_ranges" v-if="presetRanges.length && !$slots['left-sidebar']">
                     <div
                         v-for="(preset, i) in presetRanges"
                         :key="i"
                         :style="preset.style || {}"
                         class="dp__preset_range"
-                        @click="presetDateRange(preset.range)"
+                        @click="presetDateRange(preset.range, !!preset.slot)"
                     >
-                        {{ preset.label }}
+                        <template v-if="preset.slot">
+                            <slot
+                                :name="preset.slot"
+                                :preset-date-range="presetDateRange"
+                                :label="preset.label"
+                                :range="preset.range"
+                            />
+                        </template>
+                        <template v-else>
+                            {{ preset.label }}
+                        </template>
                     </div>
+                </div>
+                <div class="dp__preset_ranges" v-if="$slots['left-sidebar']">
+                    <slot name="left-sidebar" />
                 </div>
                 <div class="dp__instance_calendar" ref="calendarWrapperRef" role="document">
                     <div :class="menuCalendarClassWrapper">
