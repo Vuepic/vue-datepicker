@@ -132,6 +132,7 @@
                     partialRange,
                     teleportCenter,
                     ignoreTimeValidation,
+                    dayClass,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @close-picker="closeMenu"

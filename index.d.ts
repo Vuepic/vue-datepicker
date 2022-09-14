@@ -230,6 +230,7 @@ interface VueDatePicker {
     offset?: string | number;
     teleportCenter?: boolean;
     ignoreTimeValidation?: boolean;
+    dayClass?: (date: Date) => string;
 }
 
 interface PublicMethods extends MethodOptions {

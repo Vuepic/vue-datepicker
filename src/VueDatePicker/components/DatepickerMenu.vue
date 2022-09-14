@@ -513,6 +513,7 @@
                         [props.calendarCellClassName]: !!props.calendarCellClassName,
                         dp__cell_highlight: (highlighted || highlightedWeekDay) && !isActive,
                         dp__cell_highlight_active: (highlighted || highlightedWeekDay) && isActive,
+                        [props.dayClass ? props.dayClass(calendarDay.value) : '']: true,
                     };
                     return calendarDay;
                 }),
