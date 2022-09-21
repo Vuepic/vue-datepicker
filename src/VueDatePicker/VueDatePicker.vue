@@ -129,6 +129,7 @@
                     modelAuto,
                     highlight,
                     highlightWeekDays,
+                    highlightDisabledDays,
                     partialRange,
                     teleportCenter,
                 }"
