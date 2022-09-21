@@ -94,6 +94,7 @@ export const ActionRowProps = {
     },
     multiDates: { type: Boolean as PropType<boolean>, default: false },
     partialRange: { type: Boolean as PropType<boolean>, default: true },
+    ignoreTimeValidation: { type: Boolean as PropType<boolean>, default: false },
     ...TimeValidationProps,
 };
 

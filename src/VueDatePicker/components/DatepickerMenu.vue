@@ -10,7 +10,6 @@
             @mouseleave="clearHoverDate"
             @click="handleDpMenuClick"
             @keydown.esc="handleEsc"
-            @keydown.space="handleSpace"
             @keydown.left.prevent="handleArrowKey('left')"
             @keydown.up.prevent="handleArrowKey('up')"
             @keydown.down.prevent="handleArrowKey('down')"
@@ -61,6 +60,7 @@
                                     reverseYears,
                                     vertical,
                                     yearPicker,
+                                    escClose,
                                 }"
                                 @mount="childMount('monthYearInput')"
                                 @reset-flow="resetFlow"
@@ -85,6 +85,7 @@
                                 :month="month(instance)"
                                 :year="year(instance)"
                                 @select-date="selectDate($event, !isFirstInstance(instance))"
+                                @handle-space="handleSpace($event, !isFirstInstance(instance))"
                                 @set-hover-date="setHoverDate($event)"
                                 @handle-scroll="handleScroll($event, instance)"
                                 @handle-swipe="handleSwipe($event, instance)"
@@ -125,6 +126,7 @@
                                 fixedEnd,
                                 modelAuto,
                                 internalModelValue,
+                                escClose,
                             }"
                             @mount="childMount('timePicker')"
                             @update:hours="updateTime($event)"
@@ -176,6 +178,7 @@
                     multiDates,
                     modelAuto,
                     partialRange,
+                    ignoreTimeValidation,
                 }"
                 @close-picker="$emit('closePicker')"
                 @select-date="$emit('selectDate')"
@@ -191,7 +194,7 @@
 
 <script lang="ts" setup>
     import type { ComputedRef, PropType, Ref } from 'vue';
-    import { computed, inject, onMounted, onUnmounted, reactive, ref, useSlots } from 'vue';
+    import { computed, inject, onMounted, onUnmounted, reactive, ref, UnwrapRef, useSlots } from 'vue';
 
     import ActionRow from '@/components/ActionRow.vue';
     import Calendar from '@/components/Calendar.vue';
@@ -227,6 +230,7 @@
         transitionsKey,
     } from '@/utils/props';
     import { getCalendarDays, getMonths, getYears, isModelAuto, unrefElement } from '@/utils/util';
+    import { ICalendarDay } from '@/interfaces';
 
     const emit = defineEmits([
         'update:internalModelValue',
@@ -529,9 +533,8 @@
         }
     };
 
-    const handleSpace = (event: Event): void => {
-        event.stopImmediatePropagation();
-        event.preventDefault();
+    const handleSpace = (day: UnwrapRef<ICalendarDay>, isNext = false): void => {
+        selectDate(day, isNext);
         if (props.spaceConfirm) {
             emit('selectDate');
         }

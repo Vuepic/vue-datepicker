@@ -24,6 +24,7 @@
                 :id="uid ? `dp-input-${uid}` : undefined"
                 :name="name"
                 :class="inputClass"
+                :inputmode="textInput ? 'text' : 'none'"
                 :placeholder="placeholder"
                 :disabled="disabled"
                 :readonly="readonly"

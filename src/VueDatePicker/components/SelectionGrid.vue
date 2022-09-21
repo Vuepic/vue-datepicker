@@ -1,5 +1,5 @@
 <template>
-    <div ref="gridWrapRef" :class="dpOverlayClass" role="dialog" tabindex="0">
+    <div ref="gridWrapRef" :class="dpOverlayClass" role="dialog" tabindex="0" @keydown.esc="handleEsc">
         <div :class="containerClass" role="grid">
             <div class="dp__selection_grid_header"><slot name="header"></slot></div>
             <div class="dp__overlay_row" v-for="(row, i) in mappedItems" :key="getKey(i)" role="row">
@@ -14,6 +14,7 @@
                     tabindex="0"
                     @click="onClick(col.value)"
                     @keydown.enter="onClick(col.value)"
+                    @keydown.space="onClick(col.value)"
                     @mouseover="hoverValue = col.value"
                 >
                     <div :class="col.className">
@@ -65,6 +66,7 @@
         skipButtonRef: { type: Boolean as PropType<boolean>, default: false },
         monthPicker: { type: Boolean as PropType<boolean>, default: false },
         yearPicker: { type: Boolean as PropType<boolean>, default: false },
+        escClose: { type: Boolean as PropType<boolean>, default: true },
     });
 
     const scrollable = ref(false);
@@ -246,6 +248,12 @@
     const toggle = () => {
         emit('toggle');
         emit('reset-flow');
+    };
+
+    const handleEsc = () => {
+        if (props.escClose) {
+            toggle();
+        }
     };
 
     const assignRef = (el: HTMLElement, col: IDefaultSelect, rowInd: number, colInd: number): void => {

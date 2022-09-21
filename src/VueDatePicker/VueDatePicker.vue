@@ -132,6 +132,7 @@
                     highlightDisabledDays,
                     partialRange,
                     teleportCenter,
+                    ignoreTimeValidation,
                 }"
                 v-model:internalModelValue="internalModelValue"
                 @close-picker="closeMenu"
@@ -471,7 +472,7 @@
     const autoApplyValue = (ignoreClose = false): void => {
         if (props.autoApply) {
             const isTimeValid =
-                !props.enableTimePicker || props.monthPicker || props.yearPicker
+                !props.enableTimePicker || props.monthPicker || props.yearPicker || props.ignoreTimeValidation
                     ? true
                     : isValidTime(internalModelValue.value, props.maxTime, props.minTime, props.maxDate, props.minDate);
             if (isTimeValid && validateBeforeEmit()) {

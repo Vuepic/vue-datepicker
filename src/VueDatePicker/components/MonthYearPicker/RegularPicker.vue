@@ -3,6 +3,7 @@
         class="dp__month_year_select"
         @click="$emit('toggle')"
         @keydown.enter="$emit('toggle')"
+        @keydown.space="$emit('toggle')"
         role="button"
         :aria-label="ariaLabel"
         tabindex="0"
@@ -19,6 +20,7 @@
                 disabledValues,
                 minValue,
                 maxValue,
+                escClose,
             }"
             :header-refs="[]"
             @update:model-value="$emit('update:model-value', $event)"
@@ -56,6 +58,7 @@
         maxValue: { type: Number as PropType<number>, default: null },
         slotName: { type: String as PropType<string>, default: '' },
         headerRefs: { type: Array as PropType<HTMLElement[]>, default: () => [] },
+        escClose: { type: Boolean as PropType<boolean>, default: true },
     });
 
     const { transitionName, showTransition } = useTransitions();

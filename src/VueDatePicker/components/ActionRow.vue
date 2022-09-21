@@ -19,12 +19,14 @@
                     tabindex="0"
                     @click="$emit('closePicker')"
                     @keydown.enter="$emit('closePicker')"
+                    @keydown.space="$emit('closePicker')"
                     >{{ cancelText }}</span
                 >
                 <span
                     :class="selectClass"
                     tabindex="0"
                     @keydown.enter="selectDate"
+                    @keydown.space="selectDate"
                     @click="selectDate"
                     ref="selectButtonRef"
                     >{{ selectText }}</span
@@ -94,7 +96,7 @@
     }));
 
     const isTimeValid = computed((): boolean => {
-        if (!props.enableTimePicker) return true;
+        if (!props.enableTimePicker || props.ignoreTimeValidation) return true;
         return isValidTime(props.internalModelValue, props.maxTime, props.minTime, props.maxDate, props.minDate);
     });
 

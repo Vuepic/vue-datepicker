@@ -9,6 +9,7 @@
                     :aria-label="ariaLabels.incrementValue(timeInput.type)"
                     tabindex="0"
                     @keydown.enter="handleTimeValue(timeInput.type)"
+                    @keydown.space="handleTimeValue(timeInput.type)"
                     @click="handleTimeValue(timeInput.type)"
                     :ref="(el) => assignRefs(el, i, 0)"
                 >
@@ -21,6 +22,7 @@
                     :class="checkOverlayDisabled(timeInput.type) ? '' : 'dp__time_display'"
                     tabindex="0"
                     @keydown.enter="toggleOverlay(timeInput.type)"
+                    @keydown.space="toggleOverlay(timeInput.type)"
                     @click="toggleOverlay(timeInput.type)"
                     :ref="(el) => assignRefs(el, i, 1)"
                 >
@@ -38,6 +40,7 @@
                     :aria-label="ariaLabels.decrementValue(timeInput.type)"
                     tabindex="0"
                     @keydown.enter="handleTimeValue(timeInput.type, false)"
+                    @keydown.space="handleTimeValue(timeInput.type, false)"
                     @click="handleTimeValue(timeInput.type, false)"
                     :ref="(el) => assignRefs(el, i, 2)"
                 >
@@ -58,6 +61,7 @@
                 tabindex="0"
                 @click="setAmPm"
                 @keydown.enter.prevent="setAmPm"
+                @keydown.space.prevent="setAmPm"
             >
                 {{ amPm }}
             </button>
@@ -72,6 +76,7 @@
                 v-if="overlays[timeInput.type]"
                 :items="getGridItems(timeInput.type)"
                 :disabled-values="filters.times[timeInput.type]"
+                :esc-close="escClose"
                 @update:model-value="handleTimeFromOverlay(timeInput.type, $event)"
                 @selected="toggleOverlay(timeInput.type)"
                 @toggle="toggleOverlay(timeInput.type)"
@@ -131,6 +136,7 @@
         disabled: { type: Boolean as PropType<boolean>, default: false },
         closeTimePickerBtn: { type: Object as PropType<HTMLElement>, default: null },
         order: { type: Number as PropType<0 | 1>, default: 0 },
+        escClose: { type: Boolean as PropType<boolean>, default: true },
     });
 
     const overlays = reactive({

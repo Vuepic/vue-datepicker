@@ -28,6 +28,20 @@
   }
 }
 
+%__dp_inner_nav_disabled {
+  background: var(--dp-disabled-color);
+  color: var(--dp-disabled-color-text);
+  cursor: not-allowed;
+}
+
+.dp__inner_nav_disabled {
+  @extend %__dp_inner_nav_disabled;
+
+  &:hover {
+    @extend %__dp_inner_nav_disabled;
+  }
+}
+
 .dp__month_year_select {
   width: 50%;
   text-align: center;
