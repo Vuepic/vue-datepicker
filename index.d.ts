@@ -240,6 +240,7 @@ interface PublicMethods extends MethodOptions {
     openMenu: () => void;
     clearValue: () => void;
     onScroll: () => void;
+    updateInternalModelValue: (value: Date | Date[]) => void;
 }
 
 declare const _default: DefineComponent<

@@ -547,6 +547,10 @@
         return openMenu();
     };
 
+    const updateInternalModelValue = (value: Date | Date[]): void => {
+        internalModelValue.value = value;
+    };
+
     onClickOutside(dpMenuRef, inputRef, closeMenu);
 
     defineExpose({
@@ -556,5 +560,6 @@
         openMenu,
         onScroll,
         formatInputValue, // exposed for testing purposes
+        updateInternalModelValue, // modify internal modelValue
     });
 </script>
