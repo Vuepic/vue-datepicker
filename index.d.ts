@@ -2,7 +2,7 @@
 import { Locale } from 'date-fns';
 import { ComponentOptionsMixin, ComputedOptions, DefineComponent, MethodOptions } from 'vue';
 
-type EmitEvents =
+export type EmitEvents =
     | 'update:modelValue'
     | 'textSubmit'
     | 'closed'
@@ -16,7 +16,7 @@ type EmitEvents =
     | 'updateMonthYear'
     | 'invalid-select';
 
-interface VueDatePicker {
+export interface VueDatePicker {
     uid?: string;
     name?: string;
     is24?: boolean;
@@ -234,7 +234,7 @@ interface VueDatePicker {
     dayClass?: (date: Date) => string;
 }
 
-interface PublicMethods extends MethodOptions {
+export interface PublicMethods extends MethodOptions {
     selectDate: () => void;
     closeMenu: () => void;
     openMenu: () => void;
