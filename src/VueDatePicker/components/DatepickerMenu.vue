@@ -18,8 +18,16 @@
         >
             <div :class="disabledReadonlyOverlay" v-if="(disabled || readonly) && inline"></div>
             <div :class="arrowClass" v-if="!inline && !teleportCenter"></div>
-            <div :class="presetRanges.length ? 'dp__menu_content_wrapper' : null">
-                <div class="dp__preset_ranges" v-if="presetRanges.length && !$slots['left-sidebar']">
+            <div
+                :class="{
+                    dp__menu_content_wrapper:
+                        presetRanges.length || !!$slots['left-sidebar'] || !!$slots['left-sidebar'],
+                }"
+            >
+                <div class="dp__sidebar_left" v-if="$slots['left-sidebar']">
+                    <slot name="left-sidebar" />
+                </div>
+                <div class="dp__preset_ranges" v-if="presetRanges.length">
                     <div
                         v-for="(preset, i) in presetRanges"
                         :key="i"
@@ -39,9 +47,6 @@
                             {{ preset.label }}
                         </template>
                     </div>
-                </div>
-                <div class="dp__preset_ranges" v-if="$slots['left-sidebar']">
-                    <slot name="left-sidebar" />
                 </div>
                 <div class="dp__instance_calendar" ref="calendarWrapperRef" role="document">
                     <div :class="menuCalendarClassWrapper">
@@ -153,6 +158,9 @@
                             </template>
                         </component>
                     </div>
+                </div>
+                <div class="dp__sidebar_right" v-if="$slots['right-sidebar']">
+                    <slot name="right-sidebar" />
                 </div>
                 <div class="dp__now_wrap" v-if="showNowButton">
                     <slot name="now-button" v-if="$slots['now-button']" :select-current-date="selectCurrentDate" />

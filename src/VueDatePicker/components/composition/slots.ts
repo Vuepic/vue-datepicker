@@ -25,7 +25,8 @@ export const slots = [
     { name: 'now-button', use: [] },
     { name: 'time-picker-overlay', use: ['calendar', 'time'] },
     { name: 'am-pm-button', use: ['calendar', 'time'] },
-    { name: 'left-sidebar', use: ['calendar'] },
+    { name: 'left-sidebar', use: ['menu'] },
+    { name: 'right-sidebar', use: ['menu'] },
 ];
 
 export const inputSlots = [{ name: 'trigger' }, { name: 'input-icon' }, { name: 'clear-icon' }, { name: 'dp-input' }];
@@ -37,11 +38,12 @@ const slotNames = {
     timePicker: () => slots.filter((slot) => slot.use.includes('time')),
     action: () => slots.filter((slot) => slot.use.includes('action')),
     calendar: () => slots.filter((slot) => slot.use.includes('calendar')),
+    menu: () => slots.filter((slot) => slot.use.includes('menu')),
 };
 
 export const mapSlots = (
     slots: Slots,
-    usage: 'all' | 'monthYear' | 'timePicker' | 'input' | 'action' | 'calendar',
+    usage: 'all' | 'monthYear' | 'timePicker' | 'input' | 'action' | 'calendar' | 'menu',
     presetRanges?: PresetRange[],
 ): string[] => {
     const toReturn: string[] = [];

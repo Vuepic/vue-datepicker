@@ -95,6 +95,16 @@
   border-right: 1px solid var(--dp-border-color);
 }
 
+.dp__sidebar_left {
+  padding: 5px;
+  border-right: 1px solid var(--dp-border-color);
+}
+
+.dp__sidebar_right {
+  padding: 5px;
+  border-left: 1px solid var(--dp-border-color);
+}
+
 .dp__preset_range {
   padding: 5px;
 
