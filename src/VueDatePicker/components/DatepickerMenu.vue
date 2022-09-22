@@ -476,6 +476,7 @@
                             : false
                         : isActiveDate(calendarDay);
                     const highlighted = props.highlight ? matchDate(calendarDay.value, props.highlight) : false;
+                    const disableHighlight = disabled && props.highlightDisabledDays == false;
                     const highlightedWeekDay =
                         props.highlightWeekDays && props.highlightWeekDays.includes(calendarDay.value.getDay());
                     const isBetween =
@@ -511,8 +512,8 @@
                                 ? calendarDay.current && rangeActiveStartEnd(calendarDay, false) && isModelAutoActive()
                                 : rangeActiveStartEnd(calendarDay, false) && isModelAutoActive(),
                         [props.calendarCellClassName]: !!props.calendarCellClassName,
-                        dp__cell_highlight: (highlighted || highlightedWeekDay) && !isActive,
-                        dp__cell_highlight_active: (highlighted || highlightedWeekDay) && isActive,
+                        dp__cell_highlight: !disableHighlight && (highlighted || highlightedWeekDay) && !isActive,
+                        dp__cell_highlight_active: !disableHighlight && (highlighted || highlightedWeekDay) && isActive,
                     };
                     return calendarDay;
                 }),
