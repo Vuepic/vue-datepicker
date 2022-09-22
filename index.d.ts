@@ -227,7 +227,7 @@ interface VueDatePicker {
     modelAuto?: boolean;
     highlight?: Date[] | string[] | number[] | ((date: Date[]) => boolean);
     highlightWeekDays?: number[];
-    highlightDisabledDays?: boolean,
+    highlightDisabledDays?: boolean;
     offset?: string | number;
     teleportCenter?: boolean;
     ignoreTimeValidation?: boolean;
