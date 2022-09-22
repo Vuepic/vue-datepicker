@@ -175,6 +175,7 @@ export const MenuProps = {
         type: Array as PropType<number[]>,
         default: null,
     },
+    highlightDisabledDays: { type: Boolean as PropType<boolean>, default: false },
     teleportCenter: { type: Boolean as PropType<boolean>, default: false },
 };
 
