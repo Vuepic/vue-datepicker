@@ -214,8 +214,8 @@
 </template>
 
 <script lang="ts" setup>
-    import type { ComputedRef, PropType, Ref } from 'vue';
-    import { computed, inject, onMounted, onUnmounted, reactive, ref, UnwrapRef, useSlots } from 'vue';
+    import { computed, inject, onMounted, onUnmounted, reactive, ref, useSlots } from 'vue';
+    import type { ComputedRef, PropType, Ref, UnwrapRef } from 'vue';
 
     import ActionRow from '@/components/ActionRow.vue';
     import Calendar from '@/components/Calendar.vue';
