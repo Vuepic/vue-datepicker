@@ -572,7 +572,6 @@ export const useCalendar = (
                 modelValue.value = getMonthYearValue(instance);
             }
         }
-        updateFlow();
         emit('updateMonthYear', { instance, month: val.month, year: val.year });
         triggerCalendarTransition(props.multiCalendarsSolo ? instance : undefined);
     };
@@ -734,6 +733,7 @@ export const useCalendar = (
                 emit('autoApply', ignoreClose);
             }
         }
+        updateFlow();
     };
 
     const autoChangeMonth = (increment: number, instance: number) => {
