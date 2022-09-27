@@ -21,7 +21,7 @@
             <div
                 :class="{
                     dp__menu_content_wrapper:
-                        presetRanges.length || !!$slots['left-sidebar'] || !!$slots['left-sidebar'],
+                        presetRanges.length || !!$slots['left-sidebar'] || !!$slots['right-sidebar'],
                 }"
             >
                 <div class="dp__sidebar_left" v-if="$slots['left-sidebar']">
