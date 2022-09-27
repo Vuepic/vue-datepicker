@@ -294,7 +294,7 @@
 
     onMounted(() => {
         menuMount.value = true;
-        if (!props.presetRanges?.length) {
+        if (!props.presetRanges?.length && !slots['left-sidebar'] && !slots['right-sidebar']) {
             getCalendarWidth();
         }
 
