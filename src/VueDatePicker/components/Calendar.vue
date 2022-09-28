@@ -75,7 +75,8 @@
                                                         class="dp__tooltip_mark"
                                                         :style="tooltip.color ? { backgroundColor: tooltip.color } : {}"
                                                     ></div>
-                                                    <div>{{ tooltip.text }}</div>
+                                                    <div v-if="tooltip.html" v-html="tooltip.html"></div>
+                                                    <div v-else>{{ tooltip.text }}</div>
                                                 </template>
                                             </div>
                                             <div class="dp__arrow_bottom_tp"></div>
