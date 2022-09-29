@@ -117,7 +117,7 @@ export interface OnClickOutsideOptions<E extends keyof OnClickOutsideEvents> ext
 export interface IMarker {
     date: Date | string;
     type?: 'dot' | 'line';
-    tooltip?: { text: string; color?: string }[];
+    tooltip?: { text?: string; html?: string; color?: string }[];
     color?: string;
 }
 

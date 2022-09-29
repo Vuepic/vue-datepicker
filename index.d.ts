@@ -174,7 +174,7 @@ export interface VueDatePicker {
     markers?: {
         date: Date | string;
         type?: 'dot' | 'line';
-        tooltip?: { text: string; color?: string }[];
+        tooltip?: { text?: string; html?: string; color?: string }[];
         color?: string;
     }[];
     transitions?:
