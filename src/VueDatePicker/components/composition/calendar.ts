@@ -538,9 +538,9 @@ export const useCalendar = (
         return setDateMonthOrYear(new Date(), month.value(instance), year.value(instance));
     };
 
-    const updateMonthYear = (instance: number, val: { month: number; year: number }): void => {
+    const updateMonthYear = (instance: number, val: { month: number; year: number; fromNav?: boolean }): void => {
         const isValueChange = props.monthPicker
-            ? month.value(instance) !== val.month
+            ? month.value(instance) !== val.month || !val.fromNav
             : year.value(instance) !== val.year;
 
         setCalendarMonth(instance, val.month);
@@ -552,7 +552,7 @@ export const useCalendar = (
 
         if (props.monthPicker || props.yearPicker) {
             if (props.range) {
-                if (isValueChange || (val.month === getMonth(new Date()) && !modelValue.value)) {
+                if (isValueChange) {
                     let rangeDate = modelValue.value ? (modelValue.value as Date[]).slice() : [];
                     if (rangeDate.length === 2 && rangeDate[1] !== null) {
                         rangeDate = [];

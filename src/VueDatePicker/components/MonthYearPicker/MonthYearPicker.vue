@@ -337,7 +337,11 @@
     };
 
     const handleYear = (increment = false): void => {
-        emit('update-month-year', { year: increment ? props.year + 1 : props.year - 1, month: props.month });
+        emit('update-month-year', {
+            year: increment ? props.year + 1 : props.year - 1,
+            month: props.month,
+            fromNav: true,
+        });
     };
 
     const setElRefs = (el: HTMLElement, i: number): void => {
