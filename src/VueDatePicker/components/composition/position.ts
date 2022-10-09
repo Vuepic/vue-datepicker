@@ -81,11 +81,11 @@ export const usePosition = (
         const inputEl = unrefElement(inputRef);
         if (inputEl) {
             const fullHeight = window.innerHeight;
-            const { top: offset } = altPosition ? getOffsetAlt(inputEl) : getOffset(inputEl);
+            const { top: offset, left } = altPosition ? getOffsetAlt(inputEl) : getOffset(inputEl);
             const { width, top, height } = inputEl.getBoundingClientRect();
             const freeBottom = fullHeight - top - height;
             menuPosition.value.top = top > freeBottom ? `${offset - maxHeight}px` : `${offset}px`;
-            setPositioning(inputEl.offsetLeft, width);
+            setPositioning(left, width);
         }
     };
 
@@ -108,9 +108,9 @@ export const usePosition = (
                 menuPosition.value = altPosition(el);
             } else if (el) {
                 const { width, height } = el.getBoundingClientRect();
-                const { top: offset } = altPosition ? getOffsetAlt(el) : getOffset(el);
+                const { top: offset, left } = altPosition ? getOffsetAlt(el) : getOffset(el);
                 menuPosition.value.top = `${height + offset + +menuOffset}px`;
-                setPositioning(el.offsetLeft, width);
+                setPositioning(left, width);
                 if (recalculate && autoPosition) {
                     recalculatePosition();
                 }
@@ -126,7 +126,7 @@ export const usePosition = (
         const el = unrefElement(inputRef);
         if (el && autoPosition && !inline) {
             const { height: inputHeight, top, width } = el.getBoundingClientRect();
-            const { top: offset } = altPosition ? getOffsetAlt(el) : getOffset(el);
+            const { top: offset, left: inputLeft } = altPosition ? getOffsetAlt(el) : getOffset(el);
             const fullHeight = window.innerHeight;
             const freeSpaceBottom = fullHeight - top - inputHeight;
 
@@ -154,9 +154,9 @@ export const usePosition = (
                 }
 
                 if (left < 0) {
-                    setPositionLeft(el.offsetLeft);
+                    setPositionLeft(inputLeft);
                 } else if (right > document.documentElement.clientWidth) {
-                    setPositionRight(el.offsetLeft, width);
+                    setPositionRight(inputLeft, width);
                 }
             }
         }
