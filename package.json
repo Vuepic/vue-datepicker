@@ -1,6 +1,6 @@
 {
   "name": "@vuepic/vue-datepicker",
-  "version": "3.5.1",
+  "version": "3.5.2",
   "description": "Datepicker component for Vue 3",
   "author": "Vuepic",
   "private": false,
