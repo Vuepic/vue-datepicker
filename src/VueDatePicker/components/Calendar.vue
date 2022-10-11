@@ -38,6 +38,7 @@
                                     dayVal.classData.dp__range_start
                                 "
                                 :aria-disabled="dayVal.classData.dp__cell_disabled"
+                                :aria-label="ariaLabels.day?.(dayVal)"
                                 tabindex="0"
                                 @click.stop.prevent="$emit('selectDate', dayVal)"
                                 @keydown.enter="$emit('selectDate', dayVal)"

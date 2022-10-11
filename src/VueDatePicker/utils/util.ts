@@ -197,6 +197,7 @@ export const defaultAriaLabels = (labels: Partial<AreaLabels>): AreaLabels => {
             openMonthsOverlay: 'Open months overlay',
             nextMonth: 'Next month',
             prevMonth: 'Previous month',
+            day: () => null,
         },
         labels,
     );
