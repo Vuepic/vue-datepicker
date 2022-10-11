@@ -162,6 +162,7 @@ export interface AreaLabels {
     openMonthsOverlay: string;
     nextMonth: string;
     prevMonth: string;
+    day: (dayVal: ICalendarDay) => string | null;
 }
 
 export interface CalendarRef {
