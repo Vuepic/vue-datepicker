@@ -186,7 +186,7 @@
     const getGridItems = (type: ITimeType): IDefaultSelect[][] => {
         const max = type === 'hours' ? (props.is24 ? 24 : 12) : 60;
         const increment = +props[`${type}GridIncrement`];
-        const min = type === 'hours' && ! props.is24 ? increment : 0;
+        const min = type === 'hours' && !props.is24 ? increment : 0;
 
         const generatedArray: IDefaultSelect[] = [];
 
@@ -194,7 +194,7 @@
             generatedArray.push({ value: i, text: i < 10 ? `0${i}` : `${i}` });
         }
 
-        if (type === 'hours' && ! props.is24){
+        if (type === 'hours' && !props.is24) {
             generatedArray.push({ value: 0, text: '12' });
         }
 
