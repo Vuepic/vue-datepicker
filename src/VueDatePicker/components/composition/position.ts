@@ -1,7 +1,7 @@
-import { ref } from 'vue';
-import type { Ref } from 'vue';
+import { ref, watch } from 'vue';
 import { OpenPosition } from '@/interfaces';
 import { unrefElement } from '@/utils/util';
+import type { Ref } from 'vue';
 import type { AltPosition, ComponentRef, VueEmit } from '@/interfaces';
 
 /**
@@ -25,6 +25,10 @@ export const usePosition = (
     });
     const openOnTop = ref(false);
     const maxHeight = 390;
+
+    watch(centered, () => {
+        setMenuPosition();
+    });
 
     /**
      * Get correct offset of an element
