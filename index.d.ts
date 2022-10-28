@@ -218,6 +218,7 @@ export interface VueDatePicker {
         openMonthsOverlay?: string;
         nextMonth?: string;
         prevMonth?: string;
+        day?: ({ value }: { value: Date }) => string;
     };
     arrowNavigation?: boolean;
     yearPicker?: boolean;
