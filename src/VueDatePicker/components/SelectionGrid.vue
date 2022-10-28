@@ -25,6 +25,7 @@
             </div>
             <div
                 v-if="$slots['button-icon']"
+                v-show="!hideNavigation(type)"
                 role="button"
                 :aria-label="ariaLabels.toggleOverlay"
                 :class="actionButtonClass"
@@ -48,8 +49,9 @@
 
     import { getKey, unrefElement } from '@/utils/util';
     import { isDateBetween, isDateEqual } from '@/utils/date-utils';
-    import { ariaLabelsKey, arrowNavigationKey, autoApplyKey, textInputKey } from '@/utils/props';
+    import { ariaLabelsKey, arrowNavigationKey, autoApplyKey, hideNavigationKey, textInputKey } from '@/utils/props';
     import { useArrowNavigation } from '@/components/composition/arrow-navigate';
+    import { Flow } from '@/interfaces';
 
     const emit = defineEmits(['update:modelValue', 'selected', 'toggle', 'reset-flow']);
 
@@ -67,6 +69,7 @@
         monthPicker: { type: Boolean as PropType<boolean>, default: false },
         yearPicker: { type: Boolean as PropType<boolean>, default: false },
         escClose: { type: Boolean as PropType<boolean>, default: true },
+        type: { type: String as PropType<Flow>, default: null },
     });
 
     const scrollable = ref(false);
@@ -79,6 +82,7 @@
     const arrowNavigation = inject<Ref<boolean>>(arrowNavigationKey);
     const hoverValue = ref();
     const toggleButton = ref<HTMLElement | null>();
+    const hideNavigation = inject(hideNavigationKey);
 
     const { setSelectionGrid, buildMultiLevelMatrix, setMonthPicker } = useArrowNavigation();
 

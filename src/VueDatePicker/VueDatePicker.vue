@@ -164,7 +164,7 @@
     import { usePosition } from '@/components/composition/position';
     import { mapSlots } from '@/components/composition/slots';
 
-    import type { AreaLabels, DynamicClass, ITextInputOptions, ITimeValue, ITransition } from './interfaces';
+    import type { AreaLabels, DynamicClass, Flow, ITextInputOptions, ITimeValue, ITransition } from './interfaces';
 
     import { useArrowNavigation } from '@/components/composition/arrow-navigate';
     import { useStore } from '@/components/composition/store';
@@ -176,6 +176,7 @@
         arrowNavigationKey,
         autoApplyKey,
         formatLocaleKey,
+        hideNavigationKey,
         textInputKey,
         transitionsKey,
     } from './utils/props';
@@ -327,6 +328,11 @@
         return mergeDefaultTransitions(props.transitions);
     });
     provide(transitionsKey, defaultTransitions);
+
+    const hideNavigationButtons = computed(() => (key: Flow) => {
+        return props.hideNavigation?.includes(key);
+    });
+    provide(hideNavigationKey, hideNavigationButtons);
 
     const theme = computed(() => (props.dark ? 'dp__theme_dark' : 'dp__theme_light'));
 

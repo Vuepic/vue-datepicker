@@ -138,7 +138,7 @@ export type AltPosition = boolean | ((el: HTMLElement | null) => { top: string; 
 
 export type PresetRange = { label: string; range: Date[] | string[]; style?: Record<string, string>; slot?: string };
 
-export type Flow = ('month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds')[];
+export type Flow = 'month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds';
 export type MenuChildCmp = 'timePicker' | 'monthYearInput' | 'calendar';
 
 export interface MonthYearPickerRef {

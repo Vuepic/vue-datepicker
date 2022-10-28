@@ -27,6 +27,7 @@ export const autoApplyKey = Symbol();
 export const textInputKey = Symbol();
 export const formatLocaleKey = Symbol();
 export const arrowNavigationKey = Symbol();
+export const hideNavigationKey = Symbol();
 
 export const ControlProps = {
     disabled: { type: Boolean as PropType<boolean>, default: false },
@@ -155,7 +156,7 @@ export const MenuProps = {
     spaceConfirm: { type: Boolean as PropType<boolean>, default: true },
     monthChangeOnArrows: { type: Boolean as PropType<boolean>, default: true },
     presetRanges: { type: Array as PropType<PresetRange[]>, default: () => [] },
-    flow: { type: Array as PropType<Flow>, default: () => [] },
+    flow: { type: Array as PropType<Flow[]>, default: () => [] },
     preventMinMaxNavigation: { type: Boolean as PropType<boolean>, default: false },
     minRange: { type: [Number, String] as PropType<number | string>, default: null },
     maxRange: { type: [Number, String] as PropType<number | string>, default: null },
@@ -203,6 +204,7 @@ export const AllProps = {
     utc: { type: [Boolean, String] as PropType<boolean | 'preserve'>, default: false },
     ariaLabels: { type: Object as PropType<Partial<AreaLabels>>, default: () => ({}) },
     offset: { type: [Number, String] as PropType<number | string>, default: 10 },
+    hideNavigation: { type: Array as PropType<Flow[]>, default: () => [] },
 };
 
 // These props bellow are for internal, since prop types may differ when sanitized than the exposed ones

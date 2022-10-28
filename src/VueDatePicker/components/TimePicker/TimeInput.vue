@@ -81,6 +81,7 @@
                 @selected="toggleOverlay(timeInput.type)"
                 @toggle="toggleOverlay(timeInput.type)"
                 @reset-flow="$emit('reset-flow')"
+                :type="timeInput.type"
             >
                 <template #button-icon>
                     <slot name="clock-icon" v-if="$slots['clock-icon']" />

@@ -2,6 +2,7 @@
     <div>
         <div
             v-if="!timePicker"
+            v-show="!hideNavigation('time')"
             :class="toggleButtonClass"
             role="button"
             :aria-label="ariaLabels.openTimePicker"
@@ -71,6 +72,7 @@
                     </template>
                     <div
                         v-if="!timePicker"
+                        v-show="!hideNavigation('time')"
                         ref="closeTimePickerBtn"
                         :class="toggleButtonClass"
                         role="button"
@@ -101,7 +103,7 @@
 
     import type { IDateFilter, TimeInputRef, AreaLabels } from '@/interfaces';
 
-    import { ariaLabelsKey, arrowNavigationKey, autoApplyKey, TimePickerProps } from '@/utils/props';
+    import { ariaLabelsKey, arrowNavigationKey, autoApplyKey, hideNavigationKey, TimePickerProps } from '@/utils/props';
     import { useArrowNavigation } from '@/components/composition/arrow-navigate';
     import { isModelAuto, unrefElement } from '@/utils/util';
     import type { InternalModuleValue } from '@/interfaces';
@@ -135,6 +137,7 @@
     const overlayRef = ref<HTMLElement | null>(null);
     const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
     const arrowNavigation = inject<Ref<boolean>>(arrowNavigationKey);
+    const hideNavigation = inject(hideNavigationKey);
 
     const { transitionName, showTransition } = useTransitions();
     const { buildMatrix, setTimePicker } = useArrowNavigation();

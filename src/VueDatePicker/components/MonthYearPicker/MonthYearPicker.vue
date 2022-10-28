@@ -18,6 +18,7 @@
                 v-bind="childProps('month')"
                 @toggle="toggleMonthPicker"
                 @set-ref="setElRefs($event, 1)"
+                type="month"
             >
                 <slot v-if="$slots.month" name="month" v-bind="getMonthDisplayVal" />
                 <template v-if="!$slots.month">{{ getMonthDisplayVal.text }}</template>
@@ -35,6 +36,7 @@
                 v-bind="childProps('year')"
                 @toggle="toggleYearPicker"
                 @set-ref="setElRefs($event, 2)"
+                type="year"
             >
                 <slot v-if="$slots.year" name="year" :year="year" />
                 <template v-if="!$slots.year">{{ year }}</template>

@@ -21,6 +21,7 @@
                 minValue,
                 maxValue,
                 escClose,
+                type,
             }"
             :header-refs="[]"
             @update:model-value="$emit('update:model-value', $event)"
@@ -59,6 +60,7 @@
         slotName: { type: String as PropType<string>, default: '' },
         headerRefs: { type: Array as PropType<HTMLElement[]>, default: () => [] },
         escClose: { type: Boolean as PropType<boolean>, default: true },
+        type: { type: String as PropType<'month' | 'year'>, default: null },
     });
 
     const { transitionName, showTransition } = useTransitions();
