@@ -322,8 +322,12 @@ export const sanitizeDate = (date: Date | string): Date | string => {
 
 export const dateToUtc = (date: Date, preserve: boolean) => {
     if (preserve) {
-        const tzOffset = new Date().getTimezoneOffset() * 60000;
-        return new Date(date.getTime() - tzOffset).toISOString();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+
+        return `${date.getFullYear()}-${month}-${day}T${hours}:${minutes}:00.000Z`;
     }
     const utcDate = Date.UTC(
         date.getUTCFullYear(),
