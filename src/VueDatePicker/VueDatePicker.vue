@@ -477,7 +477,6 @@
      * the user experience it should not close the menu
      */
     const autoApplyValue = (ignoreClose = false): void => {
-        console.log('autoapply?')
         if (props.autoApply) {
             const isTimeValid =
                 !props.enableTimePicker || props.monthPicker || props.yearPicker || props.ignoreTimeValidation
