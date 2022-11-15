@@ -557,7 +557,33 @@
         internalModelValue.value = value;
     };
 
-    onClickOutside(dpMenuRef, inputRef, closeMenu);
+    const handleClickOutside = (): void => {
+        if (props.canCloseOnInvalidData) {
+            return closeMenu();
+        }
+
+        const { validate } = dateValidator(
+            props.minDate,
+            props.maxDate,
+            props.disabledDates,
+            props.allowedDates,
+            defaultFilters.value,
+            props.disabledWeekDays,
+            props.yearRange,
+        );
+
+        if (props.range) {
+            if (Array.isArray(internalModelValue.value) && validate(internalModelValue.value[0]) && validate(internalModelValue.value[1])) {
+                return closeMenu()
+            }
+        } else {
+            if (validate(internalModelValue.value)) {
+                return closeMenu();
+            }
+        }
+    }
+        
+    onClickOutside(dpMenuRef, inputRef, handleClickOutside);
 
     defineExpose({
         closeMenu,
