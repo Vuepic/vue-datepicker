@@ -35,6 +35,7 @@ export const ControlProps = {
     autoApply: { type: Boolean as PropType<boolean>, default: false },
     inline: { type: Boolean as PropType<boolean>, default: false },
     textInput: { type: Boolean as PropType<boolean>, default: false },
+    canCloseOnInvalidData: { type: Boolean as PropType<boolean>, default: true },
 };
 
 export const SharedProps = {
