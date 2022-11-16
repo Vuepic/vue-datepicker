@@ -75,8 +75,6 @@ export const useCalendar = (
     );
 
     onMounted(() => {
-        mapInternalModuleValues(true);
-
         if (!modelValue.value) {
             if (props.startDate) {
                 calendars.value[0].month = getMonth(new Date(props.startDate));
@@ -89,6 +87,7 @@ export const useCalendar = (
                 assignStartTime();
             }
         }
+        mapInternalModuleValues(true);
     });
 
     const month = computed(
