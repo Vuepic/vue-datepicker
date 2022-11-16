@@ -2,6 +2,7 @@ import { ref, watch } from 'vue';
 import { getYear, parse, setYear } from 'date-fns';
 import type { ComputedRef } from 'vue';
 import type { Locale } from 'date-fns';
+import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
 
 import {
     dateToUtc,
@@ -36,6 +37,7 @@ export const useExternalInternalMapper = (
     textInputOptions: ITextInputOptions,
     modelType: ModelType,
     modelAuto: boolean,
+    timezone: string,
     emit: VueEmit,
 ) => {
     const inputValue = ref('');
@@ -170,32 +172,46 @@ export const useExternalInternalMapper = (
         return false;
     };
 
+    const getZonedDate = (date: Date): Date => {
+        return timezone ? utcToZonedTime(date, timezone) : date;
+    };
+
+    const getZonnedToUtc = (date: Date): Date => {
+        return timezone ? zonedTimeToUtc(date, timezone) : date;
+    };
+
     const parseModelType = (value: string | number | Date): Date => {
         if (utc) {
             const toDate = new Date(value);
             return utc === 'preserve' ? new Date(toDate.getTime() + toDate.getTimezoneOffset() * 60000) : toDate;
         }
         if (modelType) {
-            if (modelType === 'date' || modelType === 'timestamp') return new Date(value);
+            if (modelType === 'date' || modelType === 'timestamp') return getZonedDate(new Date(value));
 
             if (modelType === 'format' && (typeof format === 'string' || !format))
                 return parse(value as string, getPattern(), new Date());
 
-            return parse(value as string, modelType, new Date());
+            return getZonedDate(parse(value as string, modelType, new Date()));
         }
-        return new Date(value);
+
+        return getZonedDate(new Date(value));
     };
 
     const getModelValueType = (val: Date): string | number | Date => {
         if (modelType) {
-            if (modelType === 'timestamp') return +val;
+            if (modelType === 'timestamp') return +getZonnedToUtc(val);
 
             if (modelType === 'format' && (typeof format === 'string' || !format))
-                return formatDate(val, getPattern(), formatLocale?.value, textInputOptions?.rangeSeparator);
+                return formatDate(
+                    getZonnedToUtc(val),
+                    getPattern(),
+                    formatLocale?.value,
+                    textInputOptions?.rangeSeparator,
+                );
 
-            return formatDate(val, modelType, formatLocale?.value, textInputOptions?.rangeSeparator);
+            return formatDate(getZonnedToUtc(val), modelType, formatLocale?.value, textInputOptions?.rangeSeparator);
         }
-        return val;
+        return getZonnedToUtc(val);
     };
 
     const emitValue = (value: ModelValue): void => {

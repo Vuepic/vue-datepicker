@@ -206,6 +206,7 @@ export const AllProps = {
     ariaLabels: { type: Object as PropType<Partial<AreaLabels>>, default: () => ({}) },
     offset: { type: [Number, String] as PropType<number | string>, default: 10 },
     hideNavigation: { type: Array as PropType<Flow[]>, default: () => [] },
+    timezone: { type: String as PropType<string>, default: null },
 };
 
 // These props bellow are for internal, since prop types may differ when sanitized than the exposed ones

@@ -283,6 +283,7 @@
         props.textInputOptions,
         props.modelType,
         props.modelAuto,
+        props.timezone,
         emit,
     );
 
