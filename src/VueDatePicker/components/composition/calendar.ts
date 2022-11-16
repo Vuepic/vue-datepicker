@@ -351,8 +351,9 @@ export const useCalendar = (
             const start = isDateAfter(modelValue.value[0], secondDate) ? secondDate : modelValue.value[0];
             const end = isDateAfter(secondDate, modelValue.value[0]) ? secondDate : modelValue.value[0];
             const daysInBetween = eachDayOfInterval({ start, end });
-            const disabledDates = daysInBetween.filter((date) => isDisabled(date)).length;
-            const diff = Math.abs(absoluteDiff < 0 ? absoluteDiff + 1 : absoluteDiff - 1) - disabledDates;
+            const disabledDates =
+                daysInBetween.length === 1 ? 0 : daysInBetween.filter((date) => isDisabled(date)).length;
+            const diff = Math.abs(absoluteDiff) - disabledDates;
             if (props.minRange && props.maxRange) return diff >= +props.minRange && diff <= +props.maxRange;
             if (props.minRange) return diff >= +props.minRange;
             if (props.maxRange) return diff <= +props.maxRange;
