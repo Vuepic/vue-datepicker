@@ -25,7 +25,7 @@ import {
 } from 'date-fns';
 import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
 
-import { errors } from '@/utils/util';
+import { errors, convertType } from '@/utils/util';
 import { useState } from '@/components/composables/state';
 
 import type {
@@ -304,39 +304,53 @@ export const useUtils = () => {
         );
     };
 
+    // Return set time for a given date or array of dates
+    const getSetTimeValue = (date: Date | Date[]) => {
+        if (Array.isArray(date)) {
+            return [date[0] ? setTimeValue(date[0]) : null, date[1] ? setTimeValue(date[1]) : null];
+        }
+        return setTimeValue(date);
+    };
+
+    // Extracted validation function that will check time based on maxTime or maxDate
+    const checkTimeMax = (selectedDateTime: Date | Date[]) => {
+        const max = config.value.maxTime ? getMinMaxTime(config.value.maxTime) : getDate(config.value.maxDate);
+        if (Array.isArray(selectedDateTime)) {
+            return (
+                validateTime(selectedDateTime[0], max, 'max', !!config.value.maxDate) &&
+                validateTime(selectedDateTime[1], max, 'max', !!config.value.maxDate)
+            );
+        }
+        return validateTime(selectedDateTime, max, 'max', !!config.value.maxDate);
+    };
+
+    // Extracted validation function that will check time based on minTime or minDate
+    const checkTimeMin = (selectedDateTime: Date | Date[], isValid: boolean) => {
+        const min = config.value.minTime ? getMinMaxTime(config.value.minTime) : getDate(config.value.minDate);
+        if (Array.isArray(selectedDateTime)) {
+            return (
+                validateTime(selectedDateTime[0], min, 'min', !!config.value.minDate) &&
+                validateTime(selectedDateTime[1], min, 'min', !!config.value.minDate) &&
+                isValid
+            );
+        }
+        return validateTime(selectedDateTime, min, 'min', !!config.value.minDate) && isValid;
+    };
+
+    // Validate time
     const isValidTime = (date: InternalModuleValue): boolean => {
         let isValid = true;
         if (!date) return true;
         if (skipTimeValidation()) return true;
 
-        const selectedDateTime =
-            !config.value.minDate && !config.value.maxDate
-                ? Array.isArray(date)
-                    ? [date[0] ? setTimeValue(date[0]) : null, date[1] ? setTimeValue(date[1]) : null]
-                    : setTimeValue(date)
-                : date;
+        const selectedDateTime = !config.value.minDate && !config.value.maxDate ? getSetTimeValue(date) : date;
 
         if (config.value.maxTime || config.value.maxDate) {
-            const max = config.value.maxTime ? getMinMaxTime(config.value.maxTime) : getDate(config.value.maxDate);
-            if (Array.isArray(selectedDateTime)) {
-                isValid =
-                    validateTime(selectedDateTime[0], max, 'max', !!config.value.maxDate) &&
-                    validateTime(selectedDateTime[1], max, 'max', !!config.value.maxDate);
-            } else {
-                isValid = validateTime(selectedDateTime, max, 'max', !!config.value.maxDate);
-            }
+            isValid = checkTimeMax(convertType(selectedDateTime));
         }
 
         if (config.value.minTime || config.value.minDate) {
-            const min = config.value.minTime ? getMinMaxTime(config.value.minTime) : getDate(config.value.minDate);
-            if (Array.isArray(selectedDateTime)) {
-                isValid =
-                    validateTime(selectedDateTime[0], min, 'min', !!config.value.minDate) &&
-                    validateTime(selectedDateTime[1], min, 'min', !!config.value.minDate) &&
-                    isValid;
-            } else {
-                isValid = validateTime(selectedDateTime, min, 'min', !!config.value.minDate) && isValid;
-            }
+            isValid = checkTimeMin(convertType(selectedDateTime), isValid);
         }
         return isValid;
     };
@@ -383,6 +397,51 @@ export const useUtils = () => {
         return weeks;
     };
 
+    const getDateForCompare = (date: Date | string, month: number, year: number): [Date, Date] => {
+        return [set(getDate(date), { date: 1 }), set(getDate(), { month, year, date: 1 })];
+    };
+
+    const validateMinDate = (month: number, year: number): boolean => {
+        return (
+            isDateBefore(...getDateForCompare(config.value.minDate, month, year)) ||
+            isDateEqual(...getDateForCompare(config.value.minDate, month, year))
+        );
+    };
+
+    const validateMaxDate = (month: number, year: number): boolean => {
+        return (
+            isDateAfter(...getDateForCompare(config.value.maxDate, month, year)) ||
+            isDateEqual(...getDateForCompare(config.value.maxDate, month, year))
+        );
+    };
+
+    const validateBothMinAndMax = (month: number, year: number, isNext: boolean) => {
+        let valid = false;
+        if (config.value.maxDate && isNext && validateMaxDate(month, year)) {
+            valid = true;
+        }
+        if (config.value.minDate && !isNext && validateMinDate(month, year)) {
+            valid = true;
+        }
+        return valid;
+    };
+
+    const validateMonthYearInRange = (month: number, year: number, isNext: boolean, preventNav: boolean): boolean => {
+        let valid = false;
+        if (preventNav) {
+            if (config.value.minDate && config.value.maxDate) {
+                valid = validateBothMinAndMax(month, year, isNext);
+            } else if (config.value.minDate && validateMinDate(month, year)) {
+                valid = true;
+            } else if (config.value.maxDate && validateMaxDate(month, year)) {
+                valid = true;
+            }
+        } else {
+            valid = true;
+        }
+        return valid;
+    };
+
     return {
         checkPartialRangeValue,
         checkRangeEnabled,
@@ -407,6 +466,9 @@ export const useUtils = () => {
         setDateMonthOrYear,
         isValidTime,
         getCalendarDays,
+        validateMonthYearInRange,
+        validateMaxDate,
+        validateMinDate,
         hideNavigationButtons,
     };
 };

@@ -18,8 +18,8 @@ export const parseFreeInput = (
 
     if (Array.isArray(pattern)) {
         let parsedDate = null;
-        for (let i = 0; i < pattern.length; i++) {
-            parsedDate = parseTextToDate(value, pattern[i]);
+        for (const textVal of pattern) {
+            parsedDate = parseTextToDate(value, textVal);
             if (parsedDate) {
                 break;
             }

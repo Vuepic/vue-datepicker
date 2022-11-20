@@ -1,4 +1,4 @@
-import type { ComponentPublicInstance, Ref, VNodeRef } from 'vue';
+import type { ComponentPublicInstance, Ref } from 'vue';
 
 export type DynamicClass = Record<string, boolean>;
 

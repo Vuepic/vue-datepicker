@@ -19,7 +19,6 @@ import {
 } from 'date-fns';
 
 import { isModelValueRange, isNumberArray, isRange } from '@/utils/type-guard';
-import { validateMonthYearInRange } from '@/components/composables/month-year';
 import { useState } from '@/components/composables/state';
 import { useUtils } from '@/components/composables/utils';
 
@@ -38,13 +37,17 @@ const {
     isDateBefore,
     isDateEqual,
     setDateMonthOrYear,
+    validateMonthYearInRange,
 } = useUtils();
 
+// BEGIN-NOSCAN
 export const useCalendar = (
     emit: VueEmit,
     updateFlow: () => void,
     triggerCalendarTransition: (inst?: number) => void,
 ) => {
+    // END-NOSCAN
+
     // internal model value is updated from this computed property
     const modelValue = computed({
         get: (): InternalModuleValue => {
@@ -561,14 +564,7 @@ export const useCalendar = (
         const initialDate = set(getDate(), { month: month.value(instance), year: year.value(instance) });
         const date = increment < 0 ? addMonths(initialDate, 1) : subMonths(initialDate, 1);
         if (
-            validateMonthYearInRange(
-                config.value.minDate,
-                config.value.maxDate,
-                getMonth(date),
-                getYear(date),
-                increment < 0,
-                config.value.preventMinMaxNavigation,
-            )
+            validateMonthYearInRange(getMonth(date), getYear(date), increment < 0, config.value.preventMinMaxNavigation)
         ) {
             setCalendarMonthYear(instance, getMonth(date), getYear(date));
             if (config.value.multiCalendars && !config.value.multiCalendarsSolo) {

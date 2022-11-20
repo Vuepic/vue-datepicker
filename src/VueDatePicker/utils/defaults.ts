@@ -1,5 +1,3 @@
-import { isString } from '@/utils/type-guard';
-
 import type { AriaLabels, IFormat, ITransition, ITextInputOptions } from '@/interfaces';
 
 export const mergeDefaultTransitions = (conf: Partial<ITransition>): ITransition =>
@@ -52,7 +50,7 @@ export const defaultPreviewFormat = (
     defaultPattern: string | ((val: Date) => string),
 ): IFormat => {
     if (!previewFormat) {
-        return isString(defaultPattern) ? defaultPattern : format;
+        return typeof defaultPattern === 'string' ? defaultPattern : format;
     }
     return previewFormat;
 };

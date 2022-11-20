@@ -2,7 +2,7 @@
     <div ref="gridWrapRef" :class="dpOverlayClass" role="dialog" tabindex="0" @keydown.esc="handleEsc">
         <div :class="containerClass" role="grid">
             <div class="dp__selection_grid_header"><slot name="header"></slot></div>
-            <div class="dp__overlay_row" v-for="(row, i) in mappedItems" :key="getKey(i)" role="row">
+            <div class="dp__overlay_row" v-for="(row, i) in mappedItems" :key="i" role="row">
                 <div
                     v-for="(col, ind) in row"
                     role="gridcell"
@@ -44,12 +44,12 @@
     import { computed, nextTick, onBeforeUpdate, onMounted, onUnmounted, ref } from 'vue';
     import { setMonth, setYear } from 'date-fns';
 
-    import { getKey, unrefElement } from '@/utils/util';
+    import { unrefElement } from '@/utils/util';
     import { useArrowNavigation, useState, useUtils } from '@/components/composables';
 
     import type { PropType } from 'vue';
     import type { IDefaultSelect, DynamicClass, Flow } from '@/interfaces';
-    import { convertType } from '@/utils/type-guard';
+    import { convertType } from '@/utils/util';
 
     const { config } = useState();
     const { hideNavigationButtons, isDateBetween, isDateEqual } = useUtils();

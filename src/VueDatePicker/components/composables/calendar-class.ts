@@ -1,7 +1,6 @@
 import { ref } from 'vue';
 import { addDays } from 'date-fns';
 
-import { isRange, modelValueIsRange } from '@/utils/type-guard';
 import { useState, useUtils } from '@/components/composables';
 import { isModelAuto } from '@/utils/util';
 
@@ -33,7 +32,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
     };
 
     const checkRangeDirection = (isStart: boolean): boolean => {
-        if (modelValueIsRange(modelValue.value, config.value.range) && modelValue.value[0] && hoveredDate.value) {
+        if (Array.isArray(modelValue.value) && config.value.range && modelValue.value[0] && hoveredDate.value) {
             return isStart
                 ? isDateAfter(hoveredDate.value, modelValue.value[0])
                 : isDateBefore(hoveredDate.value, modelValue.value[0]);
@@ -59,7 +58,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
      * Check when to add a proper active start/end date class on range picker
      */
     const rangeActiveStartEnd = (day: UnwrapRef<ICalendarDay>, isStart = true): boolean => {
-        if ((config.value.range || config.value.weekPicker) && isRange(modelValue.value)) {
+        if ((config.value.range || config.value.weekPicker) && Array.isArray(modelValue.value)) {
             if (config.value.hideOffsetDates && !day.current) return false;
             return isDateEqual(getDate(day.value), modelValue.value[isStart ? 0 : 1]);
         }

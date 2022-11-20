@@ -73,23 +73,6 @@ export const hoursToAmPmHours = (index: number): number => {
 export const getDefaultFilters = (filters: Partial<IDateFilter>): IDateFilter =>
     Object.assign({ months: [], years: [], times: { hours: [], minutes: [], seconds: [] } }, filters);
 
-/**
- * For v-for loops randomize string value
- */
-export const getKey = (index: number): string => {
-    const len = 5;
-    function makeKey(length: number): string {
-        let result = '';
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        const charactersLength = characters.length;
-        for (let i = 0; i < length; i++) {
-            result += characters.charAt(Math.floor(Math.random() * charactersLength));
-        }
-        return result + index;
-    }
-    return makeKey(len);
-};
-
 export const unrefElement = (elRef: MaybeElementRef): HTMLElement | null => {
     const plain = unref(elRef);
     return (plain as ComponentPublicInstance)?.$el ?? plain;
@@ -107,4 +90,8 @@ export const isModelAuto = (modelValue: ModelValue): boolean => {
 export const errors = {
     prop: (name: string): string => `"${name}" prop must be enabled!`,
     dateArr: (name: string) => `You need to use array as "model-value" binding in order to support "${name}"`,
+};
+
+export const convertType = <T>(val: any): T => {
+    return val as unknown as T;
 };

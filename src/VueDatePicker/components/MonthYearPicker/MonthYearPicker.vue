@@ -270,7 +270,9 @@
             : [];
     });
 
+    // START-NOSCAN
     const reverseList = (list: IDefaultSelect[]) => list.reverse();
+    // END-NOSCAN
 
     const getGroupedList = (items: IDefaultSelect[], reverse = false): IDefaultSelect[][] => {
         const list = [];

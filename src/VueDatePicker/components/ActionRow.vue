@@ -39,9 +39,8 @@
 <script lang="ts" setup>
     import { computed, onMounted, ref } from 'vue';
 
-    import { convertType, isModelValueRange } from '@/utils/type-guard';
+    import { convertType, unrefElement } from '@/utils/util';
     import { useArrowNavigation, useState, useUtils } from '@/components/composables';
-    import { unrefElement } from '@/utils/util';
 
     import type { PropType } from 'vue';
 
@@ -99,7 +98,7 @@
     const previewValue = computed((): string | string[] => {
         if (!internalModelValue.value || !props.menuMount) return '';
         if (typeof config.value.previewFormat === 'string') {
-            if (isModelValueRange(internalModelValue.value)) {
+            if (Array.isArray(internalModelValue.value)) {
                 if (internalModelValue.value.length === 2 && internalModelValue.value[1]) {
                     if (config.value.multiCalendars > 0) {
                         return `${formatDate(internalModelValue.value[0])} - ${formatDate(

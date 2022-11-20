@@ -2,9 +2,8 @@ import { ref, watch } from 'vue';
 import { getHours, getMinutes, getMonth, getSeconds, getYear, parse, setYear } from 'date-fns';
 
 import { dateToUtc } from '@/utils/date-utils';
-import { convertType } from '@/utils/type-guard';
+import { convertType, errors } from '@/utils/util';
 import { useUtils, useState } from '@/components/composables';
-import { errors } from '@/utils/util';
 
 import type { ModelValue, VueEmit, TimeModel, MonthModel } from '@/interfaces';
 
