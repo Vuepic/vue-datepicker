@@ -6,10 +6,12 @@
                 v-if="!specificMode"
                 :class="calendarWrapClass"
                 role="grid"
-                :aria-label="ariaLabels.calendarWrap"
+                :aria-label="config.ariaLabels?.calendarWrap"
             >
                 <div class="dp__calendar_header" role="row">
-                    <div class="dp__calendar_header_item" role="gridcell" v-if="weekNumbers">{{ weekNumName }}</div>
+                    <div class="dp__calendar_header_item" role="gridcell" v-if="config.weekNumbers">
+                        {{ config.weekNumName }}
+                    </div>
                     <div class="dp__calendar_header_item" role="gridcell" v-for="(dayVal, i) in weekDays" :key="i">
                         <slot v-if="$slots['calendar-header']" name="calendar-header" :day="dayVal" :index="i" />
                         <template v-if="!$slots['calendar-header']">
@@ -18,10 +20,15 @@
                     </div>
                 </div>
                 <div class="dp__calendar_header_separator"></div>
-                <transition :name="transitionName" :css="!!transitions">
-                    <div class="dp__calendar" role="grid" :aria-label="ariaLabels.calendarDays" v-if="showCalendar">
+                <transition :name="transitionName" :css="!!config.transitions">
+                    <div
+                        class="dp__calendar"
+                        role="grid"
+                        :aria-label="config.ariaLabels?.calendarDays"
+                        v-if="showCalendar"
+                    >
                         <div class="dp__calendar_row" role="row" v-for="(week, weekInd) in mappedDates" :key="weekInd">
-                            <div role="gridcell" v-if="weekNumbers" class="dp__calendar_item dp__week_num">
+                            <div role="gridcell" v-if="config.weekNumbers" class="dp__calendar_item dp__week_num">
                                 <div class="dp__cell_inner">
                                     {{ getWeekNum(week.days) }}
                                 </div>
@@ -38,11 +45,11 @@
                                     dayVal.classData.dp__range_start
                                 "
                                 :aria-disabled="dayVal.classData.dp__cell_disabled"
-                                :aria-label="ariaLabels.day?.(dayVal)"
+                                :aria-label="config.ariaLabels?.day?.(dayVal)"
                                 tabindex="0"
-                                @click.stop.prevent="$emit('selectDate', dayVal)"
-                                @keydown.enter="$emit('selectDate', dayVal)"
-                                @keydown.space="$emit('handleSpace', dayVal)"
+                                @click.stop.prevent="$emit('select-date', dayVal)"
+                                @keydown.enter="$emit('select-date', dayVal)"
+                                @keydown.space="$emit('handle-space', dayVal)"
                                 @mouseover="onMouseOver(dayVal, weekInd, dayInd)"
                                 @mouseleave="onMouseLeave"
                             >
@@ -94,34 +101,38 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, inject, nextTick, onMounted, ref } from 'vue';
-    import type { PropType, UnwrapRef, ComputedRef, Ref } from 'vue';
-
-    import type { DynamicClass, ICalendarDate, ICalendarDay, IMarker, ITransition, AreaLabels } from '@/interfaces';
+    import { computed, nextTick, onMounted, ref } from 'vue';
 
     import { getDayNames, getDefaultMarker, unrefElement } from '@/utils/util';
     import { isDateAfter, isDateEqual, resetDateTime, setDateMonthOrYear } from '@/utils/date-utils';
-    import {
-        ariaLabelsKey,
-        arrowNavigationKey,
-        CalendarProps,
-        MonthCalendarSharedProps,
-        transitionsKey,
-    } from '@/utils/props';
-    import { useArrowNavigation } from '@/components/composition/arrow-navigate';
+    import { useArrowNavigation, useState, useUtils } from '@/components/composables';
 
-    const emit = defineEmits(['selectDate', 'setHoverDate', 'handleScroll', 'mount', 'handleSwipe', 'handleSpace']);
+    import type { PropType, UnwrapRef } from 'vue';
+    import type { DynamicClass, ICalendarDate, ICalendarDay, IMarker, ITransition } from '@/interfaces';
+
+    const { config } = useState();
+    const { buildMultiLevelMatrix } = useArrowNavigation();
+    const { getDate } = useUtils();
+
+    const emit = defineEmits([
+        'select-date',
+        'set-hover-date',
+        'handle-scroll',
+        'mount',
+        'handle-swipe',
+        'handle-space',
+    ]);
 
     const props = defineProps({
-        ...MonthCalendarSharedProps,
-        ...CalendarProps,
         mappedDates: { type: Array as PropType<ICalendarDate[]>, default: () => [] },
         getWeekNum: {
             type: Function as PropType<(dates: UnwrapRef<ICalendarDay[]>) => string | number>,
             default: () => '',
         },
-        modeHeight: { type: [Number, String] as PropType<number | string>, default: 255 },
         specificMode: { type: Boolean as PropType<boolean>, default: false },
+        instance: { type: Number as PropType<number>, default: 0 },
+        month: { type: Number as PropType<number>, default: 0 },
+        year: { type: Number as PropType<number>, default: 0 },
     });
 
     const showMakerTooltip = ref<Date | null>(null);
@@ -129,42 +140,43 @@
     const dayRefs = ref<HTMLElement[][]>([]);
     const calendarWrapRef = ref<HTMLElement | null>(null);
     const showCalendar = ref(true);
-    const transitions = inject<ComputedRef<ITransition>>(transitionsKey);
-    const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
-    const arrowNavigation = inject<Ref<boolean>>(arrowNavigationKey);
     const transitionName = ref('');
     const touch = ref({ startX: 0, endX: 0, startY: 0, endY: 0 });
 
     const weekDays = computed(() => {
-        return props.dayNames
-            ? Array.isArray(props.dayNames)
-                ? props.dayNames
-                : props.dayNames(props.locale, +props.weekStart)
-            : getDayNames(props.locale, +props.weekStart);
+        if (config.value.dayNames) {
+            return Array.isArray(config.value.dayNames)
+                ? config.value.dayNames
+                : config.value.dayNames(config.value.locale, +config.value.weekStart);
+        }
+        return getDayNames(config.value.locale, +config.value.weekStart);
     });
-
-    const { buildMultiLevelMatrix } = useArrowNavigation();
 
     onMounted(() => {
         emit('mount', { cmp: 'calendar', refs: dayRefs });
-        if (!props.noSwipe) {
+        if (!config.value.noSwipe) {
             if (calendarWrapRef.value) {
                 calendarWrapRef.value.addEventListener('touchstart', onTouchStart, { passive: false });
                 calendarWrapRef.value.addEventListener('touchend', onTouchEnd, { passive: false });
                 calendarWrapRef.value.addEventListener('touchmove', onTouchMove, { passive: false });
             }
         }
-        if (props.monthChangeOnScroll && calendarWrapRef.value) {
+        if (config.value.monthChangeOnScroll && calendarWrapRef.value) {
             calendarWrapRef.value.addEventListener('wheel', onScroll, { passive: false });
         }
     });
 
+    const getTransitionName = (isNext: boolean) => {
+        if (isNext) return config.value.vertical ? 'vNext' : 'next';
+        return config.value.vertical ? 'vPrevious' : 'previous';
+    };
+
     const triggerTransition = (month: number, year: number): void => {
-        if (transitions?.value) {
-            const newDate = resetDateTime(setDateMonthOrYear(new Date(), props.month, props.year));
-            transitionName.value = isDateAfter(resetDateTime(setDateMonthOrYear(new Date(), month, year)), newDate)
-                ? transitions.value[props.vertical ? 'vNext' : 'next']
-                : transitions.value[props.vertical ? 'vPrevious' : 'previous'];
+        if (config.value.transitions) {
+            const newDate = resetDateTime(setDateMonthOrYear(getDate(), props.month, props.year));
+            transitionName.value = isDateAfter(resetDateTime(setDateMonthOrYear(getDate(), month, year)), newDate)
+                ? (config.value.transitions as ITransition)[getTransitionName(true)]
+                : (config.value.transitions as ITransition)[getTransitionName(false)];
             showCalendar.value = false;
             nextTick(() => {
                 showCalendar.value = true;
@@ -176,7 +188,7 @@
     const calendarWrapClass = computed(
         (): DynamicClass => ({
             dp__calendar_wrap: true,
-            [props.calendarClassName]: !!props.calendarClassName,
+            [config.value.calendarClassName]: !!config.value.calendarClassName,
         }),
     );
 
@@ -192,13 +204,13 @@
 
     const calendarParentClass = computed(() => ({
         dp__calendar: true,
-        dp__calendar_next: props.multiCalendars > 0 && props.instance !== 0,
+        dp__calendar_next: config.value.multiCalendars > 0 && props.instance !== 0,
     }));
 
-    const contentWrapStyle = computed(() => (props.specificMode ? { height: `${props.modeHeight}px` } : null));
+    const contentWrapStyle = computed(() => (props.specificMode ? { height: `${config.value.modeHeight}px` } : null));
 
     const onMouseOver = (day: UnwrapRef<ICalendarDay>, weekInd: number, dayInd: number): void => {
-        emit('setHoverDate', day);
+        emit('set-hover-date', day);
         if (day.marker?.tooltip?.length) {
             const el = unrefElement(dayRefs.value[weekInd][dayInd]);
             if (el) {
@@ -234,9 +246,9 @@
     };
 
     const handleTouch = () => {
-        const property = props.vertical ? 'Y' : 'X';
+        const property = config.value.vertical ? 'Y' : 'X';
         if (Math.abs(touch.value[`start${property}`] - touch.value[`end${property}`]) > 10) {
-            emit('handleSwipe', touch.value[`start${property}`] > touch.value[`end${property}`] ? 'right' : 'left');
+            emit('handle-swipe', touch.value[`start${property}`] > touch.value[`end${property}`] ? 'right' : 'left');
         }
     };
 
@@ -248,15 +260,15 @@
                 dayRefs.value[weekInd] = [el];
             }
         }
-        if (arrowNavigation?.value) {
+        if (config.value.arrowNavigation) {
             buildMultiLevelMatrix(dayRefs.value, 'calendar');
         }
     };
 
     const onScroll = (ev: WheelEvent) => {
-        if (props.monthChangeOnScroll) {
+        if (config.value.monthChangeOnScroll) {
             ev.preventDefault();
-            emit('handleScroll', ev);
+            emit('handle-scroll', ev);
         }
     };
 

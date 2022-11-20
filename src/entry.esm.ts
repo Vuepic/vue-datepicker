@@ -1,5 +1,5 @@
-import type { App, Plugin } from 'vue';
 import component from './VueDatePicker/VueDatePicker.vue';
+import type { App, Plugin } from 'vue';
 
 type InstallableComponent = typeof component & { install: Exclude<Plugin['install'], undefined> };
 

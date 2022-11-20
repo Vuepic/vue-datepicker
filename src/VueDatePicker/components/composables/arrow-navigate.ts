@@ -23,18 +23,17 @@ const activeRow = ref(0);
 
 export const useArrowNavigation = () => {
     const matrix = computed((): HTMLElement[][] => {
-        return isSelectionGrid.value
-            ? [...refSets.selectionGrid, refSets.actionRow].filter((set) => set.length)
-            : isTimePicker.value
-            ? [
-                  ...refSets.timePicker[0],
-                  ...refSets.timePicker[1],
-                  isTimePickerMode.value ? [] : [timePickerBackRef.value as HTMLElement],
-                  refSets.actionRow,
-              ].filter((set) => set.length)
-            : isMonthPicker.value
-            ? [...refSets.monthPicker, refSets.actionRow]
-            : [refSets.monthYear, ...refSets.calendar, refSets.time, refSets.actionRow].filter((set) => set.length);
+        if (isSelectionGrid.value) return [...refSets.selectionGrid, refSets.actionRow].filter((set) => set.length);
+        if (isTimePicker.value) {
+            return [
+                ...refSets.timePicker[0],
+                ...refSets.timePicker[1],
+                isTimePickerMode.value ? [] : [timePickerBackRef.value as HTMLElement],
+                refSets.actionRow,
+            ].filter((set) => set.length);
+        }
+        if (isMonthPicker.value) return [...refSets.monthPicker, refSets.actionRow];
+        return [refSets.monthYear, ...refSets.calendar, refSets.time, refSets.actionRow].filter((set) => set.length);
     });
 
     // Handles left and right arrow

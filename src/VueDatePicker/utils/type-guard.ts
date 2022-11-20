@@ -1,4 +1,4 @@
-import type { IMonthValue, ITimeValue, ModelValue } from '@/interfaces';
+import type { ModelValue } from '@/interfaces';
 
 /**
  * =========================================================================================================================
@@ -6,24 +6,8 @@ import type { IMonthValue, ITimeValue, ModelValue } from '@/interfaces';
  * =========================================================================================================================
  */
 
-export const isTime = (value: ModelValue): value is ITimeValue => {
-    return typeof value === 'object';
-};
-
 export const modelValueIsRange = (modelValue: ModelValue, range: boolean): modelValue is Date[] => {
     return range;
-};
-
-export const isTimeArray = (value: ModelValue): value is ITimeValue[] => {
-    return Array.isArray(value) && value.length === 2;
-};
-
-export const isMonthArray = (value: ModelValue): value is IMonthValue[] => {
-    return Array.isArray(value);
-};
-
-export const isMonth = (value: ModelValue): value is IMonthValue => {
-    return typeof value === 'object';
 };
 
 export const isModelValueRange = (value: ModelValue): value is Date[] => {
@@ -38,19 +22,10 @@ export const isRange = (value: ModelValue): value is Date[] => {
     return Array.isArray(value) && value.length === 2;
 };
 
-export const isRangeArray = (value: ModelValue, partialRange: boolean): value is Date[] => {
-    if (partialRange) return Array.isArray(value);
-    return isRange(value);
-};
-
-export const isTimeArr = (value: ITimeValue | ITimeValue[]): value is ITimeValue[] => {
-    return Array.isArray(value);
-};
-
-export const isSingle = (value: ModelValue): value is Date => {
-    return typeof value === 'string' || typeof value === 'object' || typeof value === 'number';
-};
-
 export const isString = (value: unknown): value is string => {
     return typeof value === 'string';
+};
+
+export const convertType = <T>(val: any): T => {
+    return val as unknown as T;
 };

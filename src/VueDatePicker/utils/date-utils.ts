@@ -1,6 +1,5 @@
 import {
     parse,
-    format,
     isDate,
     isValid,
     setYear,
@@ -26,15 +25,15 @@ import {
     getDay,
     parseISO,
 } from 'date-fns';
-import type { Locale } from 'date-fns';
 
 import type {
     IDisableDates,
-    IMonthValue,
     InternalModuleValue,
     ITimeValue,
     WeekStartNum,
     IDateFilter,
+    MonthModel,
+    TimeModel,
 } from '@/interfaces';
 
 const parseTextToDate = (value: string, pattern: string): Date | null => {
@@ -154,7 +153,7 @@ export const getDefaultPattern = (
     return enableTimePicker ? `MM/dd/yyyy, ${getTimeFormat(is24, enableSeconds)}` : 'MM/dd/yyyy';
 };
 
-export const getTimeVal = (date?: Date): ITimeValue => {
+export const getTimeVal = (date?: Date): TimeModel => {
     const dateValue = date || new Date();
     return {
         hours: getHours(dateValue),
@@ -163,44 +162,7 @@ export const getTimeVal = (date?: Date): ITimeValue => {
     };
 };
 
-export const getMonthVal = (date: Date): IMonthValue => ({ month: getMonth(date), year: getYear(date) });
-
-export const getMonthValForExternal = (date: Date | Date[]): IMonthValue | IMonthValue[] => {
-    if (Array.isArray(date)) {
-        return [getMonthVal(date[0]), date[1] ? getMonthVal(date[1]) : (null as unknown as IMonthValue)];
-    }
-    return getMonthVal(date);
-};
-
-export const getTImeForExternal = (date: Date | Date[]): ITimeValue | ITimeValue[] => {
-    if (Array.isArray(date)) {
-        return [getTimeVal(date[0]), getTimeVal(date[1])];
-    }
-    return getTimeVal(date);
-};
-
-const formatFn = (value: Date, pattern: string, locale?: Locale | null): string => {
-    if (locale) {
-        return format(value, pattern, { locale });
-    }
-    return format(value, pattern);
-};
-
-export const formatDate = (
-    value: Date | Date[],
-    pattern: string,
-    locale?: Locale | null,
-    textInputSeparator?: string,
-    modelAuto?: boolean,
-): string => {
-    if (Array.isArray(value)) {
-        return `${formatFn(value[0], pattern, locale)} ${
-            modelAuto && !value[1] ? '' : textInputSeparator ? textInputSeparator : '-'
-        } ${value[1] ? formatFn(value[1], pattern, locale) : ''}`;
-    }
-
-    return formatFn(value, pattern, locale);
-};
+export const getMonthVal = (date: Date): MonthModel => ({ month: getMonth(date), year: getYear(date) });
 
 export const isDateAfter = (date: Date | string | null, dateToCompare: Date | string | null): boolean => {
     if (!date || !dateToCompare) {
@@ -379,7 +341,8 @@ const validateDate = (
 ): boolean => {
     const aboveMax = maxDate ? isDateAfter(sanitizeDate(date), sanitizeDate(maxDate)) : false;
     const bellowMin = minDate ? isDateBefore(sanitizeDate(date), sanitizeDate(minDate)) : false;
-    const inDisableArr = matchDate(date, disabledDates);
+    // const inDisableArr = matchDate(date, disabledDates);
+    const inDisableArr = false;
     const disabledMonths = filters.months.length ? filters.months.map((month) => +month) : [];
     const inDisabledMonths = disabledMonths.includes(getMonth(date));
     const weekDayDisabled = disabledWeekDays.length ? disabledWeekDays.some((day) => +day === getDay(date)) : false;

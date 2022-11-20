@@ -1,8 +1,10 @@
+import { computed } from 'vue';
 import { addMonths, addYears, getMonth, getYear, set, subMonths, subYears } from 'date-fns';
 
-import type { UseMonthYearPick, VueEmit } from '@/interfaces';
 import { isDateAfter, isDateBefore, isDateEqual } from '@/utils/date-utils';
-import { computed } from 'vue';
+import { useState } from '@/components/composables/state';
+
+import type { VueEmit } from '@/interfaces';
 
 const getDateForCompare = (date: Date | string, month: number, year: number): [Date, Date] => {
     return [set(new Date(date), { date: 1 }), set(new Date(), { month, year, date: 1 })];
@@ -50,10 +52,11 @@ export const validateMonthYearInRange = (
     return valid;
 };
 
-export const useMontYearPick = (props: UseMonthYearPick, emit: VueEmit) => {
+export const useMontYearPick = (props: { month: number; year: number }, emit: VueEmit) => {
+    const { config } = useState();
     const recursiveMonthAdjust = (date: Date, increment: boolean): Date => {
         let monthDate = date;
-        if (props.filters.months.includes(getMonth(monthDate))) {
+        if (config.value.filters.months.includes(getMonth(monthDate))) {
             monthDate = increment ? addMonths(date, 1) : subMonths(date, 1);
             return recursiveMonthAdjust(monthDate, increment);
         }
@@ -62,7 +65,7 @@ export const useMontYearPick = (props: UseMonthYearPick, emit: VueEmit) => {
 
     const recursiveYearAdjust = (date: Date, increment: boolean): Date => {
         let yearDate = date;
-        if (props.filters.years.includes(getYear(yearDate))) {
+        if (config.value.filters.years.includes(getYear(yearDate))) {
             yearDate = increment ? addYears(date, 1) : subYears(date, 1);
             return recursiveYearAdjust(yearDate, increment);
         }
@@ -76,18 +79,25 @@ export const useMontYearPick = (props: UseMonthYearPick, emit: VueEmit) => {
         let month = getMonth(date);
         let year = getYear(date);
 
-        if (props.filters.months.includes(month)) {
+        if (config.value.filters.months.includes(month)) {
             date = recursiveMonthAdjust(date, isNext);
             month = getMonth(date);
             year = getYear(date);
         }
 
-        if (props.filters.years.includes(year)) {
+        if (config.value.filters.years.includes(year)) {
             date = recursiveYearAdjust(date, isNext);
             year = getYear(date);
         }
         if (
-            validateMonthYearInRange(props.minDate, props.maxDate, month, year, isNext, props.preventMinMaxNavigation)
+            validateMonthYearInRange(
+                config.value.minDate,
+                config.value.maxDate,
+                month,
+                year,
+                isNext,
+                config.value.preventMinMaxNavigation,
+            )
         ) {
             updateMonthYear(month, year);
         }
@@ -98,13 +108,15 @@ export const useMontYearPick = (props: UseMonthYearPick, emit: VueEmit) => {
     };
 
     const isDisabled = computed(() => (next: boolean) => {
-        if (!props.preventMinMaxNavigation) return false;
-        if (next && !props.maxDate) return false;
-        if (!next && !props.minDate) return false;
+        if (!config.value.preventMinMaxNavigation) return false;
+        if (next && !config.value.maxDate) return false;
+        if (!next && !config.value.minDate) return false;
         const currentDate = set(new Date(), { month: props.month, year: props.year });
         const compareDate = next ? addMonths(currentDate, 1) : subMonths(currentDate, 1);
         const monthYear: [number, number] = [getMonth(compareDate), getYear(compareDate)];
-        return next ? !validateMaxDate(props.maxDate, ...monthYear) : !validateMinDate(props.minDate, ...monthYear);
+        return next
+            ? !validateMaxDate(config.value.maxDate, ...monthYear)
+            : !validateMinDate(config.value.minDate, ...monthYear);
     });
 
     return { handleMonthYearChange, isDisabled };

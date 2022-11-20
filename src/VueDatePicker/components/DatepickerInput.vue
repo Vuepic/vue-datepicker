@@ -1,16 +1,16 @@
 <template>
     <div
         @click="handleOpen"
-        :aria-label="ariaLabels.input"
+        :aria-label="config.ariaLabels?.input"
         role="textbox"
         aria-multiline="false"
-        :aria-disabled="disabled"
-        :aria-readonly="readonly"
+        :aria-disabled="config.disabled"
+        :aria-readonly="config.readonly"
     >
-        <slot v-if="$slots.trigger && !$slots['dp-input'] && !inline" name="trigger" />
-        <div v-if="!$slots.trigger && (!inline || inlineWithInput)" class="dp__input_wrap">
+        <slot v-if="$slots.trigger && !$slots['dp-input'] && !config.inline" name="trigger" />
+        <div v-if="!$slots.trigger && (!config.inline || config.inlineWithInput)" class="dp__input_wrap">
             <slot
-                v-if="$slots['dp-input'] && !$slots.trigger && !inline"
+                v-if="$slots['dp-input'] && !$slots.trigger && !config.inline"
                 name="dp-input"
                 :value="inputValue"
                 :on-input="handleInput"
@@ -21,16 +21,16 @@
             <input
                 v-if="!$slots['dp-input']"
                 ref="inputRef"
-                :id="uid ? `dp-input-${uid}` : undefined"
-                :name="name"
+                :id="config.uid ? `dp-input-${config.uid}` : undefined"
+                :name="config.name"
                 :class="inputClass"
-                :inputmode="textInput ? 'text' : 'none'"
-                :placeholder="placeholder"
-                :disabled="disabled"
-                :readonly="readonly"
-                :required="required"
+                :inputmode="config.textInput ? 'text' : 'none'"
+                :placeholder="config.placeholder"
+                :disabled="config.disabled"
+                :readonly="config.readonly"
+                :required="config.required"
                 :value="inputValue"
-                :autocomplete="autocomplete"
+                :autocomplete="config.autocomplete"
                 @input="handleInput"
                 @keydown.enter="handleOpen"
                 @keydown.tab="handleTab"
@@ -38,18 +38,20 @@
                 @focus="handleFocus"
                 @keypress="handleKeyPress"
             />
-            <span class="dp__input_icon" v-if="$slots['input-icon'] && !hideInputIcon"><slot name="input-icon" /></span>
+            <span class="dp__input_icon" v-if="$slots['input-icon'] && !config.hideInputIcon"
+                ><slot name="input-icon"
+            /></span>
             <CalendarIcon
-                v-if="!$slots['input-icon'] && !hideInputIcon && !$slots['dp-input']"
+                v-if="!$slots['input-icon'] && !config.hideInputIcon && !$slots['dp-input']"
                 class="dp__input_icon dp__input_icons"
             />
             <span
                 class="dp__clear_icon"
-                v-if="$slots['clear-icon'] && inputValue && clearable && !disabled && !readonly"
+                v-if="$slots['clear-icon'] && inputValue && config.clearable && !config.disabled && !config.readonly"
                 ><slot name="clear-icon" :clear="onClear"
             /></span>
             <CancelIcon
-                v-if="clearable && !$slots['clear-icon'] && inputValue && !disabled && !readonly"
+                v-if="config.clearable && !$slots['clear-icon'] && inputValue && !config.disabled && !config.readonly"
                 class="dp__clear_icon dp__input_icons"
                 @click.stop.prevent="onClear"
             />
@@ -58,24 +60,27 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, inject, ref } from 'vue';
-    import type { PropType, ComputedRef } from 'vue';
+    import { computed, ref } from 'vue';
 
     import { CalendarIcon, CancelIcon } from '@/components/Icons';
 
-    import type { DynamicClass, AreaLabels } from '@/interfaces';
-
     import { isValidDate, parseFreeInput } from '@/utils/date-utils';
-    import { ariaLabelsKey, ControlProps, InputProps, SharedProps } from '@/utils/props';
+    import { useState, useUtils } from '@/components/composables';
+
+    import type { PropType } from 'vue';
+    import type { DynamicClass } from '@/interfaces';
+
+    const { config } = useState();
+    const { getDefaultPattern } = useUtils();
 
     const emit = defineEmits([
         'clear',
         'open',
-        'update:inputValue',
-        'setInputDate',
+        'update:input-value',
+        'set-input-date',
         'close',
-        'selectDate',
-        'setEmptyDate',
+        'select-date',
+        'set-empty-date',
         'toggle',
         'focus-prev',
         'focus',
@@ -83,79 +88,87 @@
     ]);
 
     const props = defineProps({
-        ...InputProps,
-        ...ControlProps,
-        ...SharedProps,
-        inputValue: { type: String as PropType<string>, default: '' },
-        inline: { type: Boolean as PropType<boolean>, default: false },
         isMenuOpen: { type: Boolean as PropType<boolean>, default: false },
-        pattern: { type: String as PropType<string>, default: '' },
+        inputValue: { type: String as PropType<string>, default: '' },
     });
     const parsedDate = ref();
     const inputRef = ref<HTMLElement | null>(null);
     const isFocused = ref(false);
-    const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
 
     const inputClass = computed(
         (): DynamicClass => ({
-            dp__pointer: !props.disabled && !props.readonly && !props.textInput,
-            dp__disabled: props.disabled,
-            dp__input_readonly: !props.textInput,
+            dp__pointer: !config.value.disabled && !config.value.readonly && !config.value.textInput,
+            dp__disabled: config.value.disabled,
+            dp__input_readonly: !config.value.textInput,
             dp__input: true,
-            dp__input_icon_pad: !props.hideInputIcon,
-            dp__input_valid: props.state,
-            dp__input_invalid: props.state === false,
+            dp__input_icon_pad: !config.value.hideInputIcon,
+            dp__input_valid: config.value.state,
+            dp__input_invalid: config.value.state === false,
             dp__input_focus: isFocused.value || props.isMenuOpen,
-            dp__input_reg: !props.textInput,
-            [props.inputClassName]: !!props.inputClassName,
+            dp__input_reg: !config.value.textInput,
+            [config.value.inputClassName]: !!config.value.inputClassName,
         }),
     );
 
+    const handleOnEmptyInput = () => {
+        emit('set-input-date', null);
+        if (config.value.autoApply) {
+            emit('set-empty-date');
+            parsedDate.value = null;
+        }
+    };
+
+    const parser = (value: string): Date | null => {
+        return parseFreeInput(value, config.value.textInputOptions?.format || getDefaultPattern());
+    };
+
+    const parseInput = (value: string) => {
+        const { rangeSeparator } = config.value.textInputOptions;
+
+        if (config.value.range) {
+            const [dateOne, dateTwo] = value.split(`${rangeSeparator}`);
+
+            if (dateOne && dateTwo) {
+                const parsedDateOne = parser(dateOne.trim());
+                const parsedDateTwo = parser(dateTwo.trim());
+                parsedDate.value = parsedDateOne && parsedDateTwo ? [parsedDateOne, parsedDateTwo] : null;
+            }
+        } else {
+            parsedDate.value = parser(value);
+        }
+    };
+
     const handleInput = (event: Event): void => {
         const { value } = event.target as HTMLInputElement;
-        const { format, rangeSeparator } = props.textInputOptions;
+
         if (value !== '') {
-            if (props.textInputOptions?.openMenu && !props.isMenuOpen) {
+            if (config.value.textInputOptions?.openMenu && !props.isMenuOpen) {
                 emit('open');
             }
-            if (props.range) {
-                const [dateOne, dateTwo] = value.split(`${rangeSeparator}`);
+            parseInput(value);
 
-                if (dateOne && dateTwo) {
-                    const parsedDateOne = parseFreeInput(dateOne.trim(), format || props.pattern);
-                    const parsedDateTwo = parseFreeInput(dateTwo.trim(), format || props.pattern);
-                    parsedDate.value = parsedDateOne && parsedDateTwo ? [parsedDateOne, parsedDateTwo] : null;
-                }
-            } else {
-                parsedDate.value = parseFreeInput(value, format || props.pattern);
-            }
-
-            emit('setInputDate', parsedDate.value);
+            emit('set-input-date', parsedDate.value);
         } else {
-            emit('setInputDate', null);
-            if (props.autoApply) {
-                emit('setEmptyDate');
-                parsedDate.value = null;
-            }
+            handleOnEmptyInput();
         }
-        emit('update:inputValue', value);
+        emit('update:input-value', value);
     };
 
     const handleEnter = (): void => {
-        if (props.textInputOptions?.enterSubmit && isValidDate(parsedDate.value) && props.inputValue !== '') {
-            emit('setInputDate', parsedDate.value, true);
+        if (config.value.textInputOptions?.enterSubmit && isValidDate(parsedDate.value) && props.inputValue !== '') {
+            emit('set-input-date', parsedDate.value, true);
             parsedDate.value = null;
-        } else if (props.textInputOptions?.enterSubmit && props.inputValue === '') {
+        } else if (config.value.textInputOptions?.enterSubmit && props.inputValue === '') {
             parsedDate.value = null;
             emit('clear');
         }
     };
 
     const handleTab = (): void => {
-        if (props.textInputOptions?.tabSubmit && isValidDate(parsedDate.value) && props.inputValue !== '') {
-            emit('setInputDate', parsedDate.value, true);
+        if (config.value.textInputOptions?.tabSubmit && isValidDate(parsedDate.value) && props.inputValue !== '') {
+            emit('set-input-date', parsedDate.value, true);
             parsedDate.value = null;
-        } else if (props.textInputOptions?.tabSubmit && props.inputValue === '') {
+        } else if (config.value.textInputOptions?.tabSubmit && props.inputValue === '') {
             parsedDate.value = null;
             emit('clear');
         }
@@ -170,13 +183,13 @@
         ev.preventDefault();
         ev.stopImmediatePropagation();
         ev.stopPropagation();
-        if (props.textInput && props.textInputOptions?.openMenu) {
+        if (config.value.textInput && config.value.textInputOptions?.openMenu) {
             if (!props.isMenuOpen) {
                 emit('open');
-            } else if (props.textInputOptions.enterSubmit) {
-                emit('selectDate');
+            } else if (config.value.textInputOptions.enterSubmit) {
+                emit('select-date');
             }
-        } else if (!props.textInput) {
+        } else if (!config.value.textInput) {
             emit('toggle');
         }
     };
@@ -186,9 +199,9 @@
         if (!props.isMenuOpen) {
             emit('blur');
         }
-        if (props.autoApply && props.textInput && parsedDate.value) {
-            emit('setInputDate', parsedDate.value);
-            emit('selectDate');
+        if (config.value.autoApply && config.value.textInput && parsedDate.value) {
+            emit('set-input-date', parsedDate.value);
+            emit('select-date');
             parsedDate.value = null;
         }
     };
@@ -198,7 +211,7 @@
     };
 
     const handleKeyPress = (ev: KeyboardEvent): boolean | void => {
-        if (!props.textInput) {
+        if (!config.value.textInput) {
             ev.preventDefault();
         }
     };

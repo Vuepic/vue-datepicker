@@ -1,11 +1,11 @@
 <template>
-    <transition appear :name="transitions.menuAppear" mode="out-in" :css="!!transitions">
+    <transition appear :name="config.transitions?.menuAppear" mode="out-in" :css="!!config.transitions">
         <div
-            :id="uid ? `dp-menu-${uid}` : undefined"
+            :id="config.uid ? `dp-menu-${config.uid}` : undefined"
             tabindex="0"
             ref="dpMenuRef"
             role="dialog"
-            :aria-label="ariaLabels.menu"
+            :aria-label="config.ariaLabels"
             :class="dpMenuClass"
             @mouseleave="clearHoverDate"
             @click="handleDpMenuClick"
@@ -16,20 +16,20 @@
             @keydown.right.prevent="handleArrowKey('right')"
             @keydown="checkShiftKey"
         >
-            <div :class="disabledReadonlyOverlay" v-if="(disabled || readonly) && inline"></div>
-            <div :class="arrowClass" v-if="!inline && !teleportCenter"></div>
+            <div :class="disabledReadonlyOverlay" v-if="(config.disabled || config.readonly) && config.inline"></div>
+            <div :class="arrowClass" v-if="!config.inline && !config.teleportCenter"></div>
             <div
                 :class="{
                     dp__menu_content_wrapper:
-                        presetRanges.length || !!$slots['left-sidebar'] || !!$slots['right-sidebar'],
+                        config.presetRanges?.length || !!$slots['left-sidebar'] || !!$slots['right-sidebar'],
                 }"
             >
                 <div class="dp__sidebar_left" v-if="$slots['left-sidebar']">
                     <slot name="left-sidebar" />
                 </div>
-                <div class="dp__preset_ranges" v-if="presetRanges.length">
+                <div class="dp__preset_ranges" v-if="config.presetRanges?.length">
                     <div
-                        v-for="(preset, i) in presetRanges"
+                        v-for="(preset, i) in config.presetRanges"
                         :key="i"
                         :style="preset.style || {}"
                         class="dp__preset_range"
@@ -52,34 +52,18 @@
                     <div :class="menuCalendarClassWrapper">
                         <div v-for="(instance, i) in calendarAmm" :key="instance" :class="calendarInstanceClassWrapper">
                             <component
-                                :is="monthYearComponent ? monthYearComponent : MonthYearPicker"
+                                :is="config.monthYearComponent ? config.monthYearComponent : MonthYearPicker"
                                 :ref="
                                     (el) => {
                                         if (el) monthYearPickerRefs[i] = el;
                                     }
                                 "
-                                v-if="!disableMonthYearSelect && !timePicker"
-                                v-bind="{
-                                    months,
-                                    years,
-                                    filters,
-                                    monthPicker,
-                                    month: month(instance),
-                                    year: year(instance),
-                                    customProps,
-                                    multiCalendars,
-                                    multiCalendarsSolo,
-                                    instance,
-                                    minDate,
-                                    maxDate,
-                                    preventMinMaxNavigation,
-                                    internalModelValue,
-                                    range,
-                                    reverseYears,
-                                    vertical,
-                                    yearPicker,
-                                    escClose,
-                                }"
+                                v-if="!config.disableMonthYearSelect && !config.timePicker"
+                                :months="months"
+                                :years="years"
+                                :month="month(instance)"
+                                :year="year(instance)"
+                                :instance="instance"
                                 @mount="childMount('monthYearInput')"
                                 @reset-flow="resetFlow"
                                 @update-month-year="updateMonthYear(instance, $event)"
@@ -96,12 +80,13 @@
                                         if (el) calendarRefs[i] = el;
                                     }
                                 "
-                                v-bind="calendarProps"
-                                v-model:flow-step="flowStep"
+                                :specific-mode="specificMode"
+                                :get-week-num="getWeekNum"
                                 :instance="instance"
                                 :mapped-dates="mappedDates(instance)"
                                 :month="month(instance)"
                                 :year="year(instance)"
+                                v-model:flow-step="flowStep"
                                 @select-date="selectDate($event, !isFirstInstance(instance))"
                                 @handle-space="handleSpace($event, !isFirstInstance(instance))"
                                 @set-hover-date="setHoverDate($event)"
@@ -118,34 +103,12 @@
                     </div>
                     <div>
                         <component
-                            v-if="enableTimePicker && !monthPicker && !weekPicker"
-                            :is="timePickerComponent ? timePickerComponent : TimePickerCmp"
+                            v-if="config.enableTimePicker && !config.monthPicker && !config.weekPicker"
+                            :is="config.timePickerComponent ? config.timePickerComponent : TimePickerCmp"
                             ref="timePickerRef"
-                            v-bind="{
-                                is24,
-                                hoursIncrement,
-                                minutesIncrement,
-                                hoursGridIncrement,
-                                secondsIncrement,
-                                minutesGridIncrement,
-                                secondsGridIncrement,
-                                noHoursOverlay,
-                                noMinutesOverlay,
-                                noSecondsOverlay,
-                                range,
-                                filters,
-                                timePicker,
-                                hours,
-                                minutes,
-                                seconds,
-                                customProps,
-                                enableSeconds,
-                                fixedStart,
-                                fixedEnd,
-                                modelAuto,
-                                internalModelValue,
-                                escClose,
-                            }"
+                            :hours="time.hours"
+                            :minutes="time.minutes"
+                            :seconds="time.seconds"
                             @mount="childMount('timePicker')"
                             @update:hours="updateTime($event)"
                             @update:minutes="updateTime($event, false)"
@@ -162,7 +125,7 @@
                 <div class="dp__sidebar_right" v-if="$slots['right-sidebar']">
                     <slot name="right-sidebar" />
                 </div>
-                <div class="dp__now_wrap" v-if="showNowButton">
+                <div class="dp__now_wrap" v-if="config.showNowButton">
                     <slot name="now-button" v-if="$slots['now-button']" :select-current-date="selectCurrentDate" />
                     <button
                         v-if="!$slots['now-button']"
@@ -171,38 +134,17 @@
                         class="dp__now_button"
                         @click="selectCurrentDate"
                     >
-                        {{ nowButtonLabel }}
+                        {{ config.nowButtonLabel }}
                     </button>
                 </div>
             </div>
             <component
-                v-if="!autoApply || keepActionRow"
-                :is="actionRowComponent ? actionRowComponent : ActionRow"
-                v-bind="{
-                    calendarWidth,
-                    selectText,
-                    cancelText,
-                    internalModelValue,
-                    range,
-                    previewFormat,
-                    inline,
-                    monthPicker,
-                    timePicker,
-                    customProps,
-                    multiCalendars,
-                    menuMount,
-                    maxTime,
-                    minTime,
-                    enableTimePicker,
-                    minDate,
-                    maxDate,
-                    multiDates,
-                    modelAuto,
-                    partialRange,
-                    ignoreTimeValidation,
-                }"
-                @close-picker="$emit('closePicker')"
-                @select-date="$emit('selectDate')"
+                v-if="!config.autoApply || config.keepActionRow"
+                :is="config.actionRowComponent ? config.actionRowComponent : ActionRow"
+                :menu-mount="menuMount"
+                :calendar-width="calendarWidth"
+                @close-picker="$emit('close-picker')"
+                @select-date="$emit('select-date')"
                 @invalid-select="$emit('invalid-select')"
             >
                 <template v-for="(slot, i) in actionSlots" #[slot]="args" :key="i">
@@ -214,7 +156,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, inject, onMounted, onUnmounted, reactive, ref, useSlots } from 'vue';
+    import { computed, onMounted, onUnmounted, reactive, ref, useSlots, watch } from 'vue';
     import type { ComputedRef, PropType, Ref, UnwrapRef } from 'vue';
 
     import ActionRow from '@/components/ActionRow.vue';
@@ -222,61 +164,45 @@
     import MonthYearPicker from '@/components/MonthYearPicker/MonthYearPicker.vue';
     import TimePickerCmp from '@/components/TimePicker/TimePicker.vue';
 
-    import { useCalendar } from '@/components/composition/calendar';
-    import { mapSlots } from '@/components/composition/slots';
+    import { useCalendar, mapSlots, useArrowNavigation, useState } from '@/components/composables';
 
     import type {
-        AreaLabels,
         CalendarRef,
         DynamicClass,
+        Flow,
         ICalendarDate,
         IDefaultSelect,
-        InternalModuleValue,
-        ITransition,
         MenuChildCmp,
         MonthYearPickerRef,
         TimePickerRef,
         WeekStartNum,
     } from '@/interfaces';
 
-    import { useArrowNavigation } from '@/components/composition/arrow-navigate';
-    import { useStore } from '@/components/composition/store';
-    import { isDateEqual, matchDate } from '@/utils/date-utils';
-    import {
-        ariaLabelsKey,
-        arrowNavigationKey,
-        ControlProps,
-        MenuProps,
-        SharedProps,
-        transitionsKey,
-    } from '@/utils/props';
-    import { getCalendarDays, getMonths, getYears, isModelAuto, unrefElement } from '@/utils/util';
+    import { getCalendarDays, getMonths, getYears, unrefElement } from '@/utils/util';
     import { ICalendarDay } from '@/interfaces';
+    import { useCalendarClass } from '@/components/composables/calendar-class';
+
+    const { config, setMenuFocused, setShiftKey, control } = useState();
+    const slots = useSlots();
 
     const emit = defineEmits([
-        'update:internalModelValue',
-        'closePicker',
-        'selectDate',
-        'dpOpen',
-        'autoApply',
-        'timeUpdate',
+        'close-picker',
+        'select-date',
+        'dp-open',
+        'auto-apply',
+        'time-update',
         'flow-step',
-        'updateMonthYear',
+        'update-month-year',
         'invalid-select',
     ]);
     const props = defineProps({
-        ...MenuProps,
-        ...SharedProps,
-        ...ControlProps,
-        internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
-        multiCalendars: { type: Number as PropType<number>, default: 0 },
         openOnTop: { type: Boolean as PropType<boolean>, default: false },
     });
-    const slots = useSlots();
+
     const calendarWrapperRef = ref(null);
     const childrenMounted = reactive({
-        timePicker: !!(!props.enableTimePicker || props.timePicker || props.monthPicker),
-        monthYearInput: !!props.timePicker,
+        timePicker: !!(!config.value.enableTimePicker || config.value.timePicker || config.value.monthPicker),
+        monthYearInput: !!config.value.timePicker,
         calendar: false,
     });
     const monthYearPickerRefs = ref<MonthYearPickerRef[]>([]);
@@ -286,26 +212,21 @@
     const calendarWidth = ref(0);
     const menuMount = ref(false);
     const flowStep = ref(0);
-    const transitions = inject<ComputedRef<ITransition>>(transitionsKey);
-    const ariaLabels = inject<ComputedRef<AreaLabels>>(ariaLabelsKey);
-    const arrowNavigation = inject<Ref<boolean>>(arrowNavigationKey);
-
-    const { setMenuFocused, setShiftKey, getStore } = useStore();
 
     onMounted(() => {
         menuMount.value = true;
-        if (!props.presetRanges?.length && !slots['left-sidebar'] && !slots['right-sidebar']) {
+        if (!config.value.presetRanges?.length && !slots['left-sidebar'] && !slots['right-sidebar']) {
             getCalendarWidth();
         }
 
         const menu = unrefElement(dpMenuRef);
-        if (menu && !props.textInput && !props.inline) {
+        if (menu && !config.value.textInput && !config.value.inline) {
             setMenuFocused(true);
             focusMenu();
         }
         if (menu) {
             const stopDefault = (event: Event) => {
-                if (!props.monthYearComponent && !props.timePickerComponent) {
+                if (!config.value.monthYearComponent && !config.value.timePickerComponent) {
                     event.preventDefault();
                 }
                 event.stopImmediatePropagation();
@@ -321,7 +242,27 @@
         document.removeEventListener('resize', getCalendarWidth);
     });
 
+    watch(
+        calendarRefs,
+        () => {
+            setTimeout(() => {
+                if (props.openOnTop) {
+                    emit('dp-open');
+                }
+            }, 0);
+        },
+        { deep: true },
+    );
+
     const { arrowRight, arrowLeft, arrowDown, arrowUp } = useArrowNavigation();
+
+    const triggerCalendarTransition = (instance?: number): void => {
+        if (instance || instance === 0) {
+            calendarRefs.value[instance].triggerTransition(month.value(instance), year.value(instance));
+        } else {
+            calendarRefs.value.forEach((refVal, i) => refVal.triggerTransition(month.value(i), year.value(i)));
+        }
+    };
 
     const focusMenu = (): void => {
         const menu = unrefElement(dpMenuRef);
@@ -331,7 +272,7 @@
     };
 
     const updateFlowStep = (): void => {
-        if (props.flow?.length && flowStep.value !== -1) {
+        if (config.value.flow?.length && flowStep.value !== -1) {
             flowStep.value += 1;
             emit('flow-step', flowStep.value);
             handleFlow();
@@ -343,35 +284,24 @@
     };
 
     const {
-        updateTime,
-        updateMonthYear,
-        today,
+        modelValue,
         month,
         year,
-        hours,
-        minutes,
-        seconds,
-        isDisabled,
-        isActiveDate,
+        time,
+        updateTime,
+        updateMonthYear,
         selectDate,
         getWeekNum,
-        setHoverDate,
-        isHoverRangeEnd,
-        isAutoRangeInBetween,
-        isAutoRangeStart,
-        rangeActive,
-        clearHoverDate,
-        rangeActiveStartEnd,
         monthYearSelect,
         handleScroll,
         handleArrow,
         handleSwipe,
         getMarker,
         selectCurrentDate,
-        isHoverDateStartEnd,
-        isHoverDate,
         presetDateRange,
-    } = useCalendar(props, emit, updateFlowStep, calendarRefs);
+    } = useCalendar(emit, updateFlowStep, triggerCalendarTransition);
+
+    const { setHoverDate, clearHoverDate, getDayClassData } = useCalendarClass(modelValue);
 
     const calendarSlots = mapSlots(slots, 'calendar');
     const actionSlots = mapSlots(slots, 'action');
@@ -382,12 +312,12 @@
 
     // Generate array of years depending on provided range that will be available for picker
     const years = computed((): IDefaultSelect[] => {
-        return getYears(props.yearRange);
+        return getYears(config.value.yearRange);
     });
 
     // Get generated months
     const months = computed((): IDefaultSelect[] => {
-        return getMonths(props.locale, props.monthNameFormat);
+        return getMonths(config.value.locale, config.value.monthNameFormat);
     });
 
     const getCalendarWidth = (): void => {
@@ -403,13 +333,13 @@
             getCalendarDays(
                 month.value(instance),
                 year.value(instance),
-                +props.weekStart as WeekStartNum,
-                props.hideOffsetDates,
+                +config.value.weekStart as WeekStartNum,
+                config.value.hideOffsetDates,
             ),
     );
 
     const calendarAmm = computed((): number[] =>
-        props.multiCalendars > 0 && props.range ? [...Array(props.multiCalendars).keys()] : [0],
+        config.value.multiCalendars > 0 && config.value.range ? [...Array(config.value.multiCalendars).keys()] : [0],
     );
 
     const isFirstInstance = computed(
@@ -419,21 +349,23 @@
     );
 
     // If datepicker is using only month or time picker
-    const specificMode = computed((): boolean => props.monthPicker || props.timePicker || props.yearPicker);
+    const specificMode = computed(
+        (): boolean => config.value.monthPicker || config.value.timePicker || config.value.yearPicker,
+    );
 
     const menuCalendarClassWrapper = computed(
         (): DynamicClass => ({
-            dp__flex_display: props.multiCalendars > 0,
+            dp__flex_display: config.value.multiCalendars > 0,
         }),
     );
 
     const calendarInstanceClassWrapper = computed(() => ({
-        dp__instance_calendar: props.multiCalendars > 0,
+        dp__instance_calendar: config.value.multiCalendars > 0,
     }));
 
     const disabledReadonlyOverlay = computed(() => ({
-        dp__menu_disabled: props.disabled,
-        dp__menu_readonly: props.readonly,
+        dp__menu_disabled: config.value.disabled,
+        dp__menu_readonly: config.value.readonly,
     }));
     /**
      * Array of the dates from which calendar is built.
@@ -445,98 +377,23 @@
                 mapDates(dates, instance),
     );
 
-    const calendarProps = computed(() => ({
-        locale: props.locale,
-        weekNumName: props.weekNumName,
-        weekStart: props.weekStart,
-        weekNumbers: props.weekNumbers,
-        customProps: props.customProps,
-        calendarClassName: props.calendarClassName,
-        specificMode: specificMode.value,
-        getWeekNum,
-        multiCalendars: props.multiCalendars,
-        modeHeight: props.modeHeight,
-        internalModelValue: props.internalModelValue,
-        noSwipe: props.noSwipe,
-        vertical: props.vertical,
-        dayNames: props.dayNames,
-        monthChangeOnScroll: props.monthChangeOnScroll,
-    }));
-
     const dpMenuClass = computed(
         (): DynamicClass => ({
             dp__menu: true,
-            dp__menu_index: !props.inline,
-            dp__relative: props.inline,
-            [props.menuClassName]: !!props.menuClassName,
+            dp__menu_index: !config.value.inline,
+            dp__relative: config.value.inline,
+            [config.value.menuClassName]: !!config.value.menuClassName,
         }),
     );
 
-    const isSingleInModelAuto = (): boolean => {
-        if (props.modelAuto && Array.isArray(props.internalModelValue)) {
-            return !!props.internalModelValue[0];
-        }
-        return false;
-    };
-
-    const isModelAutoActive = () => {
-        if (props.modelAuto) return isModelAuto(props.internalModelValue);
-        return true;
-    };
-
+    // Map days data that will be displayed in the calendar component
     const mapDates = (dates: ComputedRef<(instance: number) => ICalendarDate[]>, instance: number): ICalendarDate[] => {
         return dates.value(instance).map((date) => {
             return {
                 ...date,
                 days: date.days.map((calendarDay) => {
-                    const disabled = isDisabled(calendarDay.value);
-                    const dateHover = isHoverDate(disabled, calendarDay);
-                    const isActive = props.range
-                        ? props.modelAuto
-                            ? isSingleInModelAuto() && isActiveDate(calendarDay)
-                            : false
-                        : isActiveDate(calendarDay);
-                    const highlighted = props.highlight ? matchDate(calendarDay.value, props.highlight) : false;
-                    const disableHighlight = disabled && props.highlightDisabledDays == false;
-                    const highlightedWeekDay =
-                        props.highlightWeekDays && props.highlightWeekDays.includes(calendarDay.value.getDay());
-                    const isBetween =
-                        (props.range || props.weekPicker) &&
-                        (props.multiCalendars > 0 ? calendarDay.current : true) &&
-                        !disabled &&
-                        isModelAutoActive() &&
-                        !(!calendarDay.current && props.hideOffsetDates) &&
-                        !isActiveDate(calendarDay)
-                            ? rangeActive(calendarDay)
-                            : false;
                     calendarDay.marker = getMarker(calendarDay);
-                    calendarDay.classData = {
-                        dp__cell_offset: !calendarDay.current,
-                        dp__pointer: !disabled && !(!calendarDay.current && props.hideOffsetDates),
-                        dp__active_date: isActive,
-                        dp__date_hover: dateHover,
-                        dp__date_hover_start: isHoverDateStartEnd(dateHover, calendarDay, true),
-                        dp__date_hover_end: isHoverDateStartEnd(dateHover, calendarDay, false),
-                        dp__range_between: isBetween && !props.weekPicker,
-                        dp__range_between_week: isBetween && props.weekPicker,
-                        dp__today: !props.noToday && isDateEqual(calendarDay.value, today.value) && calendarDay.current,
-                        dp__cell_disabled: disabled,
-                        dp__cell_auto_range: isAutoRangeInBetween(calendarDay),
-                        dp__cell_auto_range_start: isAutoRangeStart(calendarDay),
-                        dp__cell_auto_range_end: isHoverRangeEnd(calendarDay),
-                        dp__range_start:
-                            props.multiCalendars > 0
-                                ? calendarDay.current && rangeActiveStartEnd(calendarDay) && isModelAutoActive()
-                                : rangeActiveStartEnd(calendarDay) && isModelAutoActive(),
-                        dp__range_end:
-                            props.multiCalendars > 0
-                                ? calendarDay.current && rangeActiveStartEnd(calendarDay, false) && isModelAutoActive()
-                                : rangeActiveStartEnd(calendarDay, false) && isModelAutoActive(),
-                        [props.calendarCellClassName]: !!props.calendarCellClassName,
-                        dp__cell_highlight: !disableHighlight && (highlighted || highlightedWeekDay) && !isActive,
-                        dp__cell_highlight_active: !disableHighlight && (highlighted || highlightedWeekDay) && isActive,
-                        [props.dayClass ? props.dayClass(calendarDay.value) : '']: true,
-                    };
+                    calendarDay.classData = getDayClassData(calendarDay);
                     return calendarDay;
                 }),
             };
@@ -550,20 +407,20 @@
     };
 
     const handleEsc = (): void => {
-        if (props.escClose) {
-            emit('closePicker');
+        if (config.value.escClose) {
+            emit('close-picker');
         }
     };
 
     const handleSpace = (day: UnwrapRef<ICalendarDay>, isNext = false): void => {
         selectDate(day, isNext);
-        if (props.spaceConfirm) {
-            emit('selectDate');
+        if (config.value.spaceConfirm) {
+            emit('select-date');
         }
     };
 
     const childMount = (cmp: MenuChildCmp): void => {
-        if (props.flow?.length) {
+        if (config.value.flow?.length) {
             childrenMounted[cmp] = true;
 
             if (!Object.keys(childrenMounted).filter((key) => !childrenMounted[key as MenuChildCmp]).length) {
@@ -572,37 +429,29 @@
         }
     };
 
-    const handleFlow = (): void => {
-        if (props.flow[flowStep.value] === 'month') {
-            if (monthYearPickerRefs.value[0]) {
-                monthYearPickerRefs.value[0].toggleMonthPicker(true);
-            }
-        }
-        if (props.flow[flowStep.value] === 'year') {
-            if (monthYearPickerRefs.value) {
-                monthYearPickerRefs.value[0].toggleYearPicker(true);
-            }
-        }
-        if (props.flow[flowStep.value] === 'calendar') {
-            if (timePickerRef.value) {
-                timePickerRef.value.toggleTimePicker(false, true);
-            }
-        }
-        if (props.flow[flowStep.value] === 'time') {
-            if (timePickerRef.value) {
-                timePickerRef.value.toggleTimePicker(true, true);
-            }
-        }
-        const flowValue = props.flow[flowStep.value];
-        if (flowValue === 'hours' || flowValue === 'minutes' || flowValue === 'seconds') {
-            if (timePickerRef.value) {
-                timePickerRef.value.toggleTimePicker(true, true, flowValue);
+    const handleFlowStep = (step: Flow, refVal: Ref, fn: string, multi: boolean, ...args: Array<boolean | string>) => {
+        if (config.value.flow[flowStep.value] === step) {
+            const cmpRef = multi ? refVal.value[0] : refVal.value;
+            if (cmpRef) {
+                cmpRef[fn](...args);
             }
         }
     };
 
+    const handleFlow = (): void => {
+        handleFlowStep('month', monthYearPickerRefs, 'toggleMonthPicker', true, true);
+        handleFlowStep('year', monthYearPickerRefs, 'toggleYearPicker', true, true);
+        handleFlowStep('calendar', timePickerRef, 'toggleTimePicker', false, false, true);
+        handleFlowStep('time', timePickerRef, 'toggleTimePicker', false, true, true);
+
+        const flowValue = config.value.flow[flowStep.value];
+        if (flowValue === 'hours' || flowValue === 'minutes' || flowValue === 'seconds') {
+            handleFlowStep(flowValue, timePickerRef, 'toggleTimePicker', false, true, true, flowValue);
+        }
+    };
+
     const handleArrowKey = (arrow: 'up' | 'down' | 'left' | 'right'): void => {
-        if (arrowNavigation?.value) {
+        if (config.value.arrowNavigation) {
             if (arrow === 'up') return arrowUp();
             if (arrow === 'down') return arrowDown();
             if (arrow === 'left') return arrowLeft();
@@ -618,11 +467,11 @@
 
     const checkShiftKey = (ev: KeyboardEvent) => {
         setShiftKey(ev.shiftKey);
-        if (!props.disableMonthYearSelect && ev.code === 'Tab') {
-            if ((ev.target as HTMLElement).classList.contains('dp__menu') && getStore().shiftKeyInMenu) {
+        if (!config.value.disableMonthYearSelect && ev.code === 'Tab') {
+            if ((ev.target as HTMLElement).classList.contains('dp__menu') && control.value.shiftKeyInMenu) {
                 ev.preventDefault();
                 ev.stopImmediatePropagation();
-                emit('closePicker');
+                emit('close-picker');
             }
         }
     };

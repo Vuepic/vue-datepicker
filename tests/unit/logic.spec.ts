@@ -50,8 +50,8 @@ describe('Logic connection', () => {
 
         expect(menu.vm.month(0)).toEqual(date.getMonth());
         expect(menu.vm.year(0)).toEqual(date.getFullYear());
-        expect(menu.vm.hours).toEqual(date.getHours());
-        expect(menu.vm.minutes).toEqual(date.getMinutes());
+        expect(menu.vm.time.hours).toEqual(date.getHours());
+        expect(menu.vm.time.minutes).toEqual(date.getMinutes());
         dp.unmount();
     });
 
@@ -60,9 +60,9 @@ describe('Logic connection', () => {
         const end = addDays(start, 7);
         const { dp, menu } = await mountDatepicker({ modelValue: [start, end], range: true });
 
-        expect(menu.vm.hours).toHaveLength(2);
-        expect(menu.vm.minutes).toHaveLength(2);
-        expect(menu.vm.hours[0]).toEqual(start.getHours());
+        expect(menu.vm.time.hours).toHaveLength(2);
+        expect(menu.vm.time.minutes).toHaveLength(2);
+        expect(menu.vm.time.hours[0]).toEqual(start.getHours());
         dp.unmount();
     });
 
@@ -72,7 +72,7 @@ describe('Logic connection', () => {
 
         const calendar = menu.findComponent(Calendar);
 
-        calendar.vm.$emit('selectDate', { value: tomorrow, current: true });
+        calendar.vm.$emit('select-date', { value: tomorrow, current: true });
         await calendar.vm.$nextTick();
 
         expect(dp.vm.internalModelValue).toEqual(tomorrow);
@@ -84,8 +84,10 @@ describe('Logic connection', () => {
         const { dp, menu } = await mountDatepicker({ modelValue: null, range: true });
 
         const calendar = menu.findComponent(Calendar);
-        calendar.vm.$emit('selectDate', { value: start, current: true });
+        calendar.vm.$emit('select-date', { value: start, current: true });
         await calendar.vm.$nextTick();
+
+        console.log(menu.vm.internalModelValue);
 
         expect(menu.vm.internalModelValue).toHaveLength(1);
 
@@ -99,7 +101,7 @@ describe('Logic connection', () => {
 
         const calendar = menu.findComponent(Calendar);
 
-        calendar.vm.$emit('selectDate', { value: start, current: true });
+        calendar.vm.$emit('select-date', { value: start, current: true });
         await calendar.vm.$nextTick();
 
         expect(menu.vm.internalModelValue).toHaveLength(2);
@@ -169,7 +171,7 @@ describe('Logic connection', () => {
         const { dp, menu } = await mountDatepicker({ modelValue: null, format });
 
         const calendar = menu.findComponent(Calendar);
-        calendar.vm.$emit('selectDate', { value: selected, current: true });
+        calendar.vm.$emit('select-date', { value: selected, current: true });
         await calendar.vm.$nextTick();
         await dp.vm.formatInputValue();
 
@@ -183,7 +185,7 @@ describe('Logic connection', () => {
         const { dp, menu } = await mountDatepicker({ modelValue: null, previewFormat: format });
 
         const calendar = menu.findComponent(Calendar);
-        calendar.vm.$emit('selectDate', { value: selected, current: true });
+        calendar.vm.$emit('select-date', { value: selected, current: true });
         await calendar.vm.$nextTick();
 
         const actionRow = menu.findComponent(ActionRow);
@@ -203,7 +205,7 @@ describe('Logic connection', () => {
         });
 
         const calendar = menu.findComponent(Calendar);
-        calendar.vm.$emit('selectDate', { value: selected, current: true });
+        calendar.vm.$emit('select-date', { value: selected, current: true });
         await calendar.vm.$nextTick();
         await dp.vm.formatInputValue();
 
@@ -218,12 +220,12 @@ describe('Logic connection', () => {
 
         const selectDates = async (): Promise<void> => {
             dates.forEach((date) => {
-                calendar.vm.emit('selectDate', { value: setSeconds(date, 0), current: true });
+                calendar.vm.emit('select-date', { value: setSeconds(date, 0), current: true });
             });
         };
 
         await selectDates();
-        expect(calendar.emitted().selectDate).toHaveLength(4);
+        expect(calendar.emitted()['select-date']).toHaveLength(4);
     });
 
     it('Should preset range from preset-dates', async () => {
@@ -247,7 +249,7 @@ describe('Logic connection', () => {
         const { dp, menu } = await mountDatepicker({ modelValue: null, weekPicker: true });
 
         const calendar = menu.findComponent(Calendar);
-        calendar.vm.$emit('selectDate', { value: today, current: true });
+        calendar.vm.$emit('select-date', { value: today, current: true });
 
         expect(dp.vm.internalModelValue).toHaveLength(2);
         expect(dp.vm.internalModelValue).toEqual(weekRange);

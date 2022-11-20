@@ -40,15 +40,15 @@
 
 <script lang="ts" setup>
     import { onMounted, ref } from 'vue';
-    import type { PropType } from 'vue';
 
     import SelectionGrid from '@/components/SelectionGrid.vue';
     import { CalendarIcon } from '@/components/Icons';
-    import { useTransitions } from '@/components/composition/transition';
+    import { useTransitions } from '@/components/composables';
 
+    import type { PropType } from 'vue';
     import type { IDefaultSelect } from '@/interfaces';
 
-    const emit = defineEmits(['update:model-value', 'toggle', 'setRef']);
+    const emit = defineEmits(['update:model-value', 'toggle', 'set-ref']);
     defineProps({
         ariaLabel: { type: String as PropType<string>, default: '' },
         showSelectionGrid: { type: Boolean as PropType<boolean>, default: false },
@@ -67,5 +67,5 @@
 
     const elRef = ref(null);
 
-    onMounted(() => emit('setRef', elRef));
+    onMounted(() => emit('set-ref', elRef));
 </script>

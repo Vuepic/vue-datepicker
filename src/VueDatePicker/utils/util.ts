@@ -3,14 +3,12 @@ import type { ComponentPublicInstance } from 'vue';
 import { addDays, getMonth, startOfWeek } from 'date-fns';
 
 import type {
-    AreaLabels,
     ICalendarDate,
     ICalendarDay,
     IDateFilter,
     IDefaultSelect,
     IMarker,
     ITextInputOptions,
-    ITransition,
     MaybeElementRef,
     ModelValue,
     WeekStartNum,
@@ -165,47 +163,14 @@ export const unrefElement = (elRef: MaybeElementRef): HTMLElement | null => {
 
 export const getDefaultMarker = (marker: IMarker): IMarker => Object.assign({ type: 'dot' }, marker);
 
-export const mergeDefaultTransitions = (conf: Partial<ITransition>): ITransition =>
-    Object.assign(
-        {
-            menuAppear: 'dp-menu-appear',
-            open: 'dp-slide-down',
-            close: 'dp-slide-up',
-            next: 'calendar-next',
-            previous: 'calendar-prev',
-            vNext: 'dp-slide-up',
-            vPrevious: 'dp-slide-down',
-        },
-        conf,
-    );
-
-export const defaultAriaLabels = (labels: Partial<AreaLabels>): AreaLabels => {
-    return Object.assign(
-        {
-            toggleOverlay: 'Toggle overlay',
-            menu: 'Datepicker menu',
-            input: 'Datepicker input',
-            calendarWrap: 'Calendar wrapper',
-            calendarDays: 'Calendar days',
-            openTimePicker: 'Open time picker',
-            closeTimePicker: 'Close time Picker',
-            incrementValue: (type: string) => `Increment ${type}`,
-            decrementValue: (type: string) => `Decrement ${type}`,
-            openTpOverlay: (type: string) => `Open ${type} overlay`,
-            amPmButton: 'Switch AM/PM mode',
-            openYearsOverlay: 'Open years overlay',
-            openMonthsOverlay: 'Open months overlay',
-            nextMonth: 'Next month',
-            prevMonth: 'Previous month',
-            day: () => null,
-        },
-        labels,
-    );
-};
-
 export const isModelAuto = (modelValue: ModelValue): boolean => {
     if (Array.isArray(modelValue)) {
         return !!modelValue[0] && !!modelValue[1];
     }
     return false;
+};
+
+export const errors = {
+    prop: (name: string): string => `"${name}" prop must be enabled!`,
+    dateArr: (name: string) => `You need to use array as "model-value" binding in order to support "${name}"`,
 };

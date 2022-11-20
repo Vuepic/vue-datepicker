@@ -17,8 +17,9 @@
 </template>
 
 <script lang="ts" setup>
-    import type { PropType } from 'vue';
     import { onMounted, ref } from 'vue';
+
+    import type { PropType } from 'vue';
 
     const emit = defineEmits(['activate', 'setRef']);
     defineProps({

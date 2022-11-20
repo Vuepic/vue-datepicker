@@ -1,23 +1,17 @@
-import { ref, watch } from 'vue';
+import { ref, toRef, watch } from 'vue';
+
 import { OpenPosition } from '@/interfaces';
 import { unrefElement } from '@/utils/util';
-import type { Ref } from 'vue';
-import type { AltPosition, ComponentRef, VueEmit } from '@/interfaces';
+import { useState } from '@/components/composables/state';
+
+import type { ComponentRef, VueEmit } from '@/interfaces';
 
 /**
  * Extracted code from the main component, used for calculating the position of the menu
  */
-export const usePosition = (
-    openPosition: OpenPosition,
-    altPosition: AltPosition,
-    autoPosition: boolean,
-    menuRef: ComponentRef,
-    inputRef: ComponentRef,
-    inline: boolean,
-    menuOffset: number | string,
-    centered: Ref<boolean>,
-    emit: VueEmit,
-) => {
+export const usePosition = (menuRef: ComponentRef, inputRef: ComponentRef, emit: VueEmit) => {
+    const { config } = useState();
+
     const menuPosition = ref<{ top: string; left: string; transform: string; position?: string }>({
         top: '0',
         left: '0',
@@ -25,6 +19,7 @@ export const usePosition = (
     });
     const openOnTop = ref(false);
     const maxHeight = 390;
+    const centered = toRef(config.value, 'teleportCenter');
 
     watch(centered, () => {
         setMenuPosition();
@@ -67,15 +62,15 @@ export const usePosition = (
     };
 
     const setPositioning = (left: number, width: number): void => {
-        if (openPosition === OpenPosition.left) {
+        if (config.value.position === OpenPosition.left) {
             setPositionLeft(left);
         }
 
-        if (openPosition === OpenPosition.right) {
+        if (config.value.position === OpenPosition.right) {
             setPositionRight(left, width);
         }
 
-        if (openPosition === OpenPosition.center) {
+        if (config.value.position === OpenPosition.center) {
             menuPosition.value.left = `${left + width / 2}px`;
             menuPosition.value.transform = `translateX(-50%)`;
         }
@@ -85,7 +80,7 @@ export const usePosition = (
         const inputEl = unrefElement(inputRef);
         if (inputEl) {
             const fullHeight = window.innerHeight;
-            const { top: offset, left } = altPosition ? getOffsetAlt(inputEl) : getOffset(inputEl);
+            const { top: offset, left } = config.value.altPosition ? getOffsetAlt(inputEl) : getOffset(inputEl);
             const { width, top, height } = inputEl.getBoundingClientRect();
             const freeBottom = fullHeight - top - height;
             menuPosition.value.top = top > freeBottom ? `${offset - maxHeight}px` : `${offset}px`;
@@ -105,57 +100,67 @@ export const usePosition = (
      * Recalculate param is added when the menu component is mounted so that we can check the correct space
      */
     const setMenuPosition = (recalculate = true): void => {
-        if (!inline) {
+        if (!config.value.inline) {
             if (centered.value) return teleportCenter();
             const el = unrefElement(inputRef);
-            if (altPosition && typeof altPosition !== 'boolean') {
-                menuPosition.value = altPosition(el);
+            if (config.value.altPosition && typeof config.value.altPosition !== 'boolean') {
+                menuPosition.value = config.value.altPosition(el);
             } else if (el) {
                 const { width, height } = el.getBoundingClientRect();
-                const { top: offset, left } = altPosition ? getOffsetAlt(el) : getOffset(el);
-                menuPosition.value.top = `${height + offset + +menuOffset}px`;
+                const { top: offset, left } = config.value.altPosition ? getOffsetAlt(el) : getOffset(el);
+                menuPosition.value.top = `${height + offset + +config.value.offset}px`;
                 setPositioning(left, width);
-                if (recalculate && autoPosition) {
+                // todo - rewrite
+                if (recalculate && config.value.autoPosition) {
                     recalculatePosition();
                 }
             }
         }
     };
 
+    const positionTopBottom = (
+        height: number,
+        inputHeight: number,
+        freeSpaceBottom: number,
+        top: number,
+        offset: number,
+    ) => {
+        const menuHeight = height + inputHeight;
+        if (menuHeight > top && menuHeight > freeSpaceBottom) {
+            if (top < freeSpaceBottom) {
+                setMenuPosition(false);
+                openOnTop.value = false;
+            } else {
+                menuPosition.value.top = `${offset - height - +config.value.offset}px`;
+                openOnTop.value = true;
+            }
+        } else {
+            if (menuHeight > freeSpaceBottom) {
+                menuPosition.value.top = `${offset - height - +config.value.offset}px`;
+                openOnTop.value = true;
+            } else {
+                setMenuPosition(false);
+                openOnTop.value = false;
+            }
+        }
+    };
     /**
      * When the menu is mounted, it calls position check again, and checks if there is a free space on top or bottom
      * of the input field to place the menu
      */
     const recalculatePosition = (): void => {
         const el = unrefElement(inputRef);
-        if (el && autoPosition && !inline) {
+
+        if (el && config.value.autoPosition && !config.value.inline) {
             const { height: inputHeight, top, width } = el.getBoundingClientRect();
-            const { top: offset, left: inputLeft } = altPosition ? getOffsetAlt(el) : getOffset(el);
+            const { top: offset, left: inputLeft } = config.value.altPosition ? getOffsetAlt(el) : getOffset(el);
             const fullHeight = window.innerHeight;
             const freeSpaceBottom = fullHeight - top - inputHeight;
 
             const menuEl = unrefElement(menuRef);
-
             if (menuEl) {
                 const { height, left, right } = menuEl.getBoundingClientRect();
-                const menuHeight = height + inputHeight;
-                if (menuHeight > top && menuHeight > freeSpaceBottom) {
-                    if (top < freeSpaceBottom) {
-                        setMenuPosition(false);
-                        openOnTop.value = false;
-                    } else {
-                        menuPosition.value.top = `${offset - height - +menuOffset}px`;
-                        openOnTop.value = true;
-                    }
-                } else {
-                    if (menuHeight > freeSpaceBottom) {
-                        menuPosition.value.top = `${offset - height - +menuOffset}px`;
-                        openOnTop.value = true;
-                    } else {
-                        setMenuPosition(false);
-                        openOnTop.value = false;
-                    }
-                }
+                positionTopBottom(height, inputHeight, freeSpaceBottom, top, offset);
 
                 if (left < 0) {
                     setPositionLeft(inputLeft);
@@ -164,7 +169,7 @@ export const usePosition = (
                 }
             }
         }
-        emit('recalculatePosition');
+        emit('recalculate-position');
     };
 
     return { openOnTop, menuPosition, setMenuPosition, setInitialPosition, recalculatePosition };
