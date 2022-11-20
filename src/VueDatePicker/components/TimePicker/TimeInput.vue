@@ -98,20 +98,21 @@
 <script lang="ts" setup>
     import { computed, onMounted, reactive, ref } from 'vue';
 
-    import { getHours, getMinutes, getSeconds } from 'date-fns';
+    import { add, getHours, getMinutes, getSeconds, set, sub } from 'date-fns';
 
     import { ChevronUpIcon, ChevronDownIcon, ClockIcon } from '@/components/Icons';
     import SelectionGrid from '@/components/SelectionGrid.vue';
-    import { useTransitions, useArrowNavigation, useState } from '@/components/composables';
+    import { useTransitions, useArrowNavigation, useState, useUtils } from '@/components/composables';
 
     import { getArrayInArray, hoursToAmPmHours } from '@/utils/util';
-    import { addTime, subTime } from '@/utils/date-utils';
 
     import type { PropType } from 'vue';
+    import type { Duration } from 'date-fns';
     import type { DynamicClass, IDefaultSelect, TimeType, TimeOverlayCheck } from '@/interfaces';
 
     const { transitionName, showTransition } = useTransitions();
     const { setTimePickerElements, setTimePickerBackRef } = useArrowNavigation();
+    const { getDate } = useUtils();
     const { config } = useState();
 
     const emit = defineEmits([
@@ -129,7 +130,7 @@
         minutes: { type: Number as PropType<number>, default: 0 },
         seconds: { type: Number as PropType<number>, default: 0 },
         closeTimePickerBtn: { type: Object as PropType<HTMLElement>, default: null },
-        order: { type: Number as PropType<0 | 1>, default: 0 },
+        order: { type: Number as PropType<number>, default: 0 },
     });
 
     const overlays = reactive({
@@ -144,6 +145,10 @@
     onMounted(() => {
         emit('mounted');
     });
+
+    const addTime = (initial: Record<string, number>, toAdd: Duration) => add(set(getDate(), initial), toAdd);
+
+    const subTime = (initial: Record<string, number>, toSub: Duration) => sub(set(getDate(), initial), toSub);
 
     const timeColClass = computed(
         (): DynamicClass => ({
@@ -257,7 +262,7 @@
             if (amPmButton.value) {
                 matrix[1] = matrix[1].concat(amPmButton.value);
             }
-            setTimePickerElements(matrix, props.order);
+            setTimePickerElements(matrix, props.order as 0 | 1);
         }
     };
 

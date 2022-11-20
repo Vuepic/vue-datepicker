@@ -64,14 +64,14 @@
 
     import { CalendarIcon, CancelIcon } from '@/components/Icons';
 
-    import { isValidDate, parseFreeInput } from '@/utils/date-utils';
+    import { parseFreeInput } from '@/utils/date-utils';
     import { useState, useUtils } from '@/components/composables';
 
     import type { PropType } from 'vue';
     import type { DynamicClass } from '@/interfaces';
 
     const { config } = useState();
-    const { getDefaultPattern } = useUtils();
+    const { getDefaultPattern, isValidDate } = useUtils();
 
     const emit = defineEmits([
         'clear',

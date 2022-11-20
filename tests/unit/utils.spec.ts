@@ -1,11 +1,17 @@
 import { describe, it, expect } from 'vitest';
 
-import { getArrayInArray, getCalendarDays, getDayNames, getMonths, getYears } from '@/utils/util';
-import { getDefaultPattern, parseFreeInput, resetDateTime, setDateTime } from '@/utils/date-utils';
+import { getArrayInArray, getDayNames, getMonths, getYears } from '@/utils/util';
+import { parseFreeInput } from '@/utils/date-utils';
+import { useState, useUtils } from '@/components/composables';
+import type { AllPropsType } from '@/utils/props';
 
 describe('Utils and date utils formatting', () => {
+    const { setProps } = useState();
+    const { getCalendarDays, getDefaultPattern, resetDateTime, setDateTime } = useUtils();
+
     it('Should get calendar days', () => {
-        const days = getCalendarDays(0, 2021, 1, false);
+        setProps({ weekStart: 1, hideOffsetDates: false } as AllPropsType);
+        const days = getCalendarDays(0, 2021);
 
         expect(days).toHaveLength(5);
         expect(days[0].days).toHaveLength(7);
@@ -13,13 +19,17 @@ describe('Utils and date utils formatting', () => {
     });
 
     it('Should get calendar days starting from sunday', () => {
-        const days = getCalendarDays(0, 2021, 0, false);
+        setProps({ weekStart: 0, hideOffsetDates: false } as AllPropsType);
+
+        const days = getCalendarDays(0, 2021);
         expect(days).toHaveLength(6);
         expect(days[0].days[0].text).toEqual(27);
     });
 
     it('Should get calendar days with hidden offset dats', () => {
-        const days = getCalendarDays(0, 2021, 1, true);
+        setProps({ weekStart: 1, hideOffsetDates: true } as AllPropsType);
+
+        const days = getCalendarDays(0, 2021);
 
         expect(days).toHaveLength(5);
         expect(days[0].days[0].text).toEqual('');
@@ -54,8 +64,10 @@ describe('Utils and date utils formatting', () => {
     });
 
     it('Should get default pattern', () => {
-        const patternDef = getDefaultPattern(null, true, false, false, false, false, false, true);
-        const patternMonthPicker = getDefaultPattern(null, true, false, true, false, false, false, false);
+        setProps({ enableTimePicker: true, is24: true } as AllPropsType);
+        const patternDef = getDefaultPattern();
+        setProps({ monthPicker: true } as AllPropsType);
+        const patternMonthPicker = getDefaultPattern();
 
         expect(patternDef).toEqual('MM/dd/yyyy, HH:mm');
         expect(patternMonthPicker).toEqual('MM/yyyy');

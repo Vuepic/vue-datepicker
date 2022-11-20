@@ -1,15 +1,46 @@
 import { computed } from 'vue';
-import { format, getHours, getMinutes, getSeconds } from 'date-fns';
+import {
+    addDays,
+    endOfWeek,
+    format,
+    getDay,
+    getHours,
+    getMinutes,
+    getMonth,
+    getSeconds,
+    getYear,
+    isAfter,
+    isBefore,
+    isEqual,
+    isValid,
+    parseISO,
+    set,
+    setHours,
+    setMilliseconds,
+    setMinutes,
+    setMonth,
+    setSeconds,
+    setYear,
+    startOfWeek,
+} from 'date-fns';
 import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
 
 import { errors } from '@/utils/util';
 import { useState } from '@/components/composables/state';
-import { dateValidator, isValidTime } from '@/utils/date-utils';
 
-import type { Flow, TimeModel } from '@/interfaces';
+import type {
+    DateTimeSetter,
+    DateValue,
+    Flow,
+    TimeModel,
+    WeekStartNum,
+    InternalModuleValue,
+    ICalendarDate,
+    ICalendarDay,
+} from '@/interfaces';
 
 export const useUtils = () => {
-    const { internalModelValue, config } = useState();
+    const { config } = useState();
 
     // Check for partial range enabled on null value as second item in the array
     const checkPartialRangeValue = (): Date => {
@@ -72,34 +103,36 @@ export const useUtils = () => {
     });
 
     const validateDate = (date: Date) => {
-        const { validate } = dateValidator(
-            config.value.minDate,
-            config.value.maxDate,
-            config.value.disabledDates,
-            config.value.allowedDates,
-            config.value.filters,
-            config.value.disabledWeekDays,
-            config.value.yearRange,
-        );
+        const aboveMax = config.value.maxDate
+            ? isDateAfter(sanitizeDate(date), sanitizeDate(config.value.maxDate))
+            : false;
+        const bellowMin = config.value.minDate
+            ? isDateBefore(sanitizeDate(date), sanitizeDate(config.value.minDate))
+            : false;
+        const inDisableArr = matchDate(date, config.value.disabledDates);
+        const disabledMonths = config.value.filters.months.length
+            ? config.value.filters.months.map((month) => +month)
+            : [];
+        const inDisabledMonths = disabledMonths.includes(getMonth(date));
+        const weekDayDisabled = config.value.disabledWeekDays.length
+            ? config.value.disabledWeekDays.some((day) => +day === getDay(date))
+            : false;
+        const notInSpecific = config.value.allowedDates.length
+            ? !config.value.allowedDates.some((dateVal) => isDateEqual(sanitizeDate(dateVal), sanitizeDate(date)))
+            : false;
 
-        return validate(date);
-    };
+        const dateYear = getYear(date);
 
-    const validateTime = () => {
-        const validTime =
-            !config.value.enableTimePicker ||
-            config.value.monthPicker ||
-            config.value.yearPicker ||
-            config.value.ignoreTimeValidation;
+        const outOfYearRange = dateYear < +config.value.yearRange[0] || dateYear > +config.value.yearRange[1];
 
-        if (validTime) return true;
-
-        return isValidTime(
-            internalModelValue.value,
-            config.value.minTime,
-            config.value.maxTime,
-            config.value.maxDate,
-            config.value.minDate,
+        return !(
+            aboveMax ||
+            bellowMin ||
+            inDisableArr ||
+            inDisabledMonths ||
+            outOfYearRange ||
+            weekDayDisabled ||
+            notInSpecific
         );
     };
 
@@ -131,6 +164,224 @@ export const useUtils = () => {
         return !validateDate(date);
     };
 
+    // Reset date time
+    const resetDateTime = (value: Date | string): Date => {
+        let dateParse = getDate(JSON.parse(JSON.stringify(value)));
+        dateParse = setHours(dateParse, 0);
+        dateParse = setMinutes(dateParse, 0);
+        dateParse = setSeconds(dateParse, 0);
+        dateParse = setMilliseconds(dateParse, 0);
+
+        return dateParse;
+    };
+
+    const isValidDate = (value: Date | Date[] | null): boolean => {
+        if (Array.isArray(value)) {
+            return isValid(value[0]) && (value[1] ? isValid(value[1]) : true);
+        }
+        return value ? isValid(value) : false;
+    };
+
+    const sanitizeDate = (date: Date | string): Date | string => {
+        if (date instanceof Date) {
+            return date;
+        }
+        return parseISO(date);
+    };
+
+    const getWeekFromDate = (date: Date): [Date, Date] => {
+        const start = startOfWeek(date, { weekStartsOn: +config.value.weekStart as WeekStartNum });
+        const end = endOfWeek(date, { weekStartsOn: +config.value.weekStart as WeekStartNum });
+        return [start, end];
+    };
+
+    const setDateTime = (
+        date: Date | null,
+        hours?: DateTimeSetter,
+        minutes?: DateTimeSetter,
+        seconds?: DateTimeSetter,
+    ): Date => {
+        let dateCopy = date ? getDate(date) : getDate();
+        if (hours || hours === 0) {
+            dateCopy = setHours(dateCopy, +hours);
+        }
+        if (minutes || minutes === 0) {
+            dateCopy = setMinutes(dateCopy, +minutes);
+        }
+        if (seconds || seconds === 0) {
+            dateCopy = setSeconds(dateCopy, +seconds);
+        }
+        return setMilliseconds(dateCopy, 0);
+    };
+
+    const matchDate = (date: Date, pattern: Date[] | string[] | number[] | ((date: Date) => boolean)): boolean => {
+        if (Array.isArray(pattern)) {
+            return pattern.some((includedDate) => isDateEqual(sanitizeDate(getDate(includedDate)), sanitizeDate(date)));
+        }
+        return pattern(date);
+    };
+
+    const isDateAfter = (date: DateValue, dateToCompare: DateValue): boolean => {
+        if (!date || !dateToCompare) {
+            return false;
+        }
+        return isAfter(resetDateTime(date), resetDateTime(dateToCompare));
+    };
+
+    const isDateBefore = (date: DateValue, dateToCompare: DateValue): boolean => {
+        if (!date || !dateToCompare) {
+            return false;
+        }
+        return isBefore(resetDateTime(date), resetDateTime(dateToCompare));
+    };
+
+    const isDateEqual = (date: DateValue, dateToCompare: DateValue): boolean => {
+        if (!date || !dateToCompare) {
+            return false;
+        }
+        return isEqual(resetDateTime(date), resetDateTime(dateToCompare));
+    };
+
+    const isDateBetween = (range: Date[], hoverDate: Date, dateToCheck: Date): boolean => {
+        if (range && range[0] && range[1]) {
+            return isDateAfter(dateToCheck, range[0]) && isDateBefore(dateToCheck, range[1]);
+        }
+        if (range && range[0] && hoverDate) {
+            return (
+                (isDateAfter(dateToCheck, range[0]) && isDateBefore(dateToCheck, hoverDate)) ||
+                (isDateBefore(dateToCheck, range[0]) && isDateAfter(dateToCheck, hoverDate))
+            );
+        }
+        return false;
+    };
+
+    const setDateMonthOrYear = (date: DateValue, month?: number | null, year?: number | null): Date => {
+        let dateCopy = date ? getDate(date) : getDate();
+        if (month || month === 0) {
+            dateCopy = setMonth(dateCopy, month);
+        }
+        if (year) {
+            dateCopy = setYear(dateCopy, year);
+        }
+        return dateCopy;
+    };
+
+    // Returns a getDate object with a set of time from a provided date
+    const setTimeValue = (date: Date): Date =>
+        set(getDate(), { hours: getHours(date), minutes: getMinutes(date), seconds: getSeconds(date) });
+
+    const getMinMaxTime = (time: TimeModel): Date => {
+        return set(getDate(), {
+            hours: +time.hours || 0,
+            minutes: +time.minutes || 0,
+            seconds: +time.seconds || 0,
+        });
+    };
+
+    /**
+     * Depending on the time or full date validation, validate if the selected time is valid
+     * Extracted logic from isValidTime fn
+     */
+    const validateTime = (date: Date | null, dateToCompare: Date, compare: 'max' | 'min', full: boolean): boolean => {
+        if (!date) return true;
+        if (full) {
+            const valid = compare === 'max' ? isBefore(date, dateToCompare) : isAfter(date, dateToCompare);
+            const setOptions = { seconds: 0, milliseconds: 0 };
+            return valid || isEqual(set(date, setOptions), set(dateToCompare, setOptions));
+        }
+        return compare === 'max'
+            ? date.getTime() <= dateToCompare.getTime()
+            : date.getTime() >= dateToCompare.getTime();
+    };
+
+    // Check if we need to do a time validation
+    const skipTimeValidation = () => {
+        return (
+            !config.value.enableTimePicker ||
+            config.value.monthPicker ||
+            config.value.yearPicker ||
+            config.value.ignoreTimeValidation
+        );
+    };
+
+    const isValidTime = (date: InternalModuleValue): boolean => {
+        let isValid = true;
+        if (!date) return true;
+        if (skipTimeValidation()) return true;
+
+        const selectedDateTime =
+            !config.value.minDate && !config.value.maxDate
+                ? Array.isArray(date)
+                    ? [date[0] ? setTimeValue(date[0]) : null, date[1] ? setTimeValue(date[1]) : null]
+                    : setTimeValue(date)
+                : date;
+
+        if (config.value.maxTime || config.value.maxDate) {
+            const max = config.value.maxTime ? getMinMaxTime(config.value.maxTime) : getDate(config.value.maxDate);
+            if (Array.isArray(selectedDateTime)) {
+                isValid =
+                    validateTime(selectedDateTime[0], max, 'max', !!config.value.maxDate) &&
+                    validateTime(selectedDateTime[1], max, 'max', !!config.value.maxDate);
+            } else {
+                isValid = validateTime(selectedDateTime, max, 'max', !!config.value.maxDate);
+            }
+        }
+
+        if (config.value.minTime || config.value.minDate) {
+            const min = config.value.minTime ? getMinMaxTime(config.value.minTime) : getDate(config.value.minDate);
+            if (Array.isArray(selectedDateTime)) {
+                isValid =
+                    validateTime(selectedDateTime[0], min, 'min', !!config.value.minDate) &&
+                    validateTime(selectedDateTime[1], min, 'min', !!config.value.minDate) &&
+                    isValid;
+            } else {
+                isValid = validateTime(selectedDateTime, min, 'min', !!config.value.minDate) && isValid;
+            }
+        }
+        return isValid;
+    };
+
+    // Get 7 days from the provided start date, month is used to check whether the date is from the specified month or in the offset
+    const getWeekDays = (startDay: Date, month: number, hideOffsetDates: boolean): ICalendarDay[] => {
+        const startDate = getDate(JSON.parse(JSON.stringify(startDay)));
+        const dates = [];
+        for (let i = 0; i < 7; i++) {
+            const next = addDays(startDate, i);
+            const isNext = getMonth(next) !== month;
+            dates.push({
+                text: hideOffsetDates && isNext ? '' : next.getDate(),
+                value: next,
+                current: !isNext,
+            });
+        }
+        return dates;
+    };
+
+    // Get days for the calendar to be displayed in a table grouped by weeks
+    const getCalendarDays = (month: number, year: number): ICalendarDate[] => {
+        const weeks: ICalendarDate[] = [];
+        const firstDate = getDate(new Date(year, month));
+        const lastDate = getDate(new Date(year, month + 1, 0));
+
+        const firstDateInCalendar = startOfWeek(firstDate, { weekStartsOn: config.value.weekStart as WeekStartNum });
+
+        const addDaysToWeek = (date: Date) => {
+            const days = getWeekDays(date, month, config.value.hideOffsetDates);
+            weeks.push({ days });
+            if (
+                !weeks[weeks.length - 1].days.some((day) =>
+                    isDateEqual(resetDateTime(day.value), resetDateTime(lastDate)),
+                )
+            ) {
+                const nextDate = addDays(date, 7);
+                addDaysToWeek(nextDate);
+            }
+        };
+        addDaysToWeek(firstDateInCalendar);
+
+        return weeks;
+    };
+
     return {
         checkPartialRangeValue,
         checkRangeEnabled,
@@ -140,9 +391,21 @@ export const useUtils = () => {
         formatDate,
         getDefaultPattern,
         validateDate,
-        validateTime,
         getDefaultStartTime,
         isDisabled,
+        resetDateTime,
+        isValidDate,
+        sanitizeDate,
+        getWeekFromDate,
+        setDateTime,
+        matchDate,
+        isDateBetween,
+        isDateAfter,
+        isDateBefore,
+        isDateEqual,
+        setDateMonthOrYear,
+        isValidTime,
+        getCalendarDays,
         hideNavigationButtons,
     };
 };

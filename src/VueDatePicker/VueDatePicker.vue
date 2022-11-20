@@ -86,7 +86,7 @@
 
     const { setProps, internalModelValue, setMenuFocused, setShiftKey } = useState();
     const { clearArrowNav } = useArrowNavigation();
-    const { validateDate, validateTime } = useUtils();
+    const { validateDate, isValidTime } = useUtils();
 
     watchEffect(() => {
         setProps(props);
@@ -238,7 +238,7 @@
      */
     const autoApplyValue = (ignoreClose = false): void => {
         if (props.autoApply) {
-            const isTimeValid = validateTime();
+            const isTimeValid = isValidTime(internalModelValue.value);
 
             if (isTimeValid && validateBeforeEmit()) {
                 if (props.range && Array.isArray(internalModelValue.value)) {
@@ -296,7 +296,7 @@
     };
 
     const timeUpdate = (): void => {
-        if (props.autoApply && validateTime()) {
+        if (props.autoApply && isValidTime(internalModelValue.value)) {
             emitModelValue();
         }
     };

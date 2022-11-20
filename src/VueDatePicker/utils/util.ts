@@ -1,63 +1,7 @@
 import { unref } from 'vue';
+
+import type { IDateFilter, IDefaultSelect, IMarker, MaybeElementRef, ModelValue } from '@/interfaces';
 import type { ComponentPublicInstance } from 'vue';
-import { addDays, getMonth, startOfWeek } from 'date-fns';
-
-import type {
-    ICalendarDate,
-    ICalendarDay,
-    IDateFilter,
-    IDefaultSelect,
-    IMarker,
-    ITextInputOptions,
-    MaybeElementRef,
-    ModelValue,
-    WeekStartNum,
-} from '@/interfaces';
-import { isDateEqual, resetDateTime } from './date-utils';
-
-// Get 7 days from the provided start date, month is used to check whether the date is from the specified month or in the offset
-const getWeekDays = (startDay: Date, month: number, hideOffsetDates: boolean): ICalendarDay[] => {
-    const startDate = new Date(JSON.parse(JSON.stringify(startDay)));
-    const dates = [];
-    for (let i = 0; i < 7; i++) {
-        const next = addDays(startDate, i);
-        const isNext = getMonth(next) !== month;
-        dates.push({
-            text: hideOffsetDates && isNext ? '' : next.getDate(),
-            value: next,
-            current: !isNext,
-        });
-    }
-    return dates;
-};
-
-// Get days for the calendar to be displayed in a table grouped by weeks
-export const getCalendarDays = (
-    month: number,
-    year: number,
-    start: WeekStartNum,
-    hideOffsetDates: boolean,
-): ICalendarDate[] => {
-    const weeks: ICalendarDate[] = [];
-    const firstDate = new Date(year, month);
-    const lastDate = new Date(year, month + 1, 0);
-
-    const firstDateInCalendar = startOfWeek(firstDate, { weekStartsOn: start });
-
-    const addDaysToWeek = (date: Date) => {
-        const days = getWeekDays(date, month, hideOffsetDates);
-        weeks.push({ days });
-        if (
-            !weeks[weeks.length - 1].days.some((day) => isDateEqual(resetDateTime(day.value), resetDateTime(lastDate)))
-        ) {
-            const nextDate = addDays(date, 7);
-            addDaysToWeek(nextDate);
-        }
-    };
-    addDaysToWeek(firstDateInCalendar);
-
-    return weeks;
-};
 
 export const getArrayInArray = <T>(list: T[], increment = 3): T[][] => {
     const items = [];
@@ -122,16 +66,6 @@ export const hoursToAmPmHours = (index: number): number => {
 
     return hoursValues[index];
 };
-
-/**
- * Default options to merge with user provided ones
- */
-export const getDefaultTextInputOptions = (): ITextInputOptions => ({
-    enterSubmit: true,
-    tabSubmit: true,
-    openMenu: true,
-    rangeSeparator: ' - ',
-});
 
 /**
  * Default filters to merge with user provided values

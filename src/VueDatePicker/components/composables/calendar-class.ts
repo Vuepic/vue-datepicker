@@ -2,16 +2,16 @@ import { ref } from 'vue';
 import { addDays } from 'date-fns';
 
 import { isRange, modelValueIsRange } from '@/utils/type-guard';
-import { getWeekFromDate, isDateAfter, isDateBefore, isDateBetween, isDateEqual, matchDate } from '@/utils/date-utils';
 import { useState, useUtils } from '@/components/composables';
 import { isModelAuto } from '@/utils/util';
 
 import type { UnwrapRef, WritableComputedRef } from 'vue';
-import type { ICalendarDay, InternalModuleValue, WeekStartNum } from '@/interfaces';
+import type { ICalendarDay, InternalModuleValue } from '@/interfaces';
 
 export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleValue>) => {
     const { config, internalModelValue } = useState();
-    const { getDate, isDisabled } = useUtils();
+    const { getDate, isDisabled, matchDate, getWeekFromDate, isDateAfter, isDateBefore, isDateBetween, isDateEqual } =
+        useUtils();
     // Track hovered date
     const hoveredDate = ref<Date | null>();
     // Today date
@@ -113,7 +113,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
             if (hoveredDate.value) {
                 if (config.value.hideOffsetDates && !day.current) return false;
                 const rangeEnd = addDays(hoveredDate.value, +config.value.autoRange);
-                const range = getWeekFromDate(getDate(hoveredDate.value), +config.value.weekStart as WeekStartNum);
+                const range = getWeekFromDate(getDate(hoveredDate.value));
                 return config.value.weekPicker
                     ? isDateEqual(range[1], getDate(day.value))
                     : isDateEqual(rangeEnd, getDate(day.value));
@@ -131,7 +131,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
             if (hoveredDate.value) {
                 const rangeEnd = addDays(hoveredDate.value, +config.value.autoRange);
                 if (config.value.hideOffsetDates && !day.current) return false;
-                const range = getWeekFromDate(getDate(hoveredDate.value), +config.value.weekStart as WeekStartNum);
+                const range = getWeekFromDate(getDate(hoveredDate.value));
                 return config.value.weekPicker
                     ? isDateAfter(day.value, range[0]) && isDateBefore(day.value, range[1])
                     : isDateAfter(day.value, hoveredDate.value) && isDateBefore(day.value, rangeEnd);
@@ -145,7 +145,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
         if (config.value.autoRange || config.value.weekPicker) {
             if (hoveredDate.value) {
                 if (config.value.hideOffsetDates && !day.current) return false;
-                const range = getWeekFromDate(getDate(hoveredDate.value), +config.value.weekStart as WeekStartNum);
+                const range = getWeekFromDate(getDate(hoveredDate.value));
                 return config.value.weekPicker
                     ? isDateEqual(range[0], day.value)
                     : isDateEqual(hoveredDate.value, day.value);

@@ -104,7 +104,6 @@
     import { computed, nextTick, onMounted, ref } from 'vue';
 
     import { getDayNames, getDefaultMarker, unrefElement } from '@/utils/util';
-    import { isDateAfter, isDateEqual, resetDateTime, setDateMonthOrYear } from '@/utils/date-utils';
     import { useArrowNavigation, useState, useUtils } from '@/components/composables';
 
     import type { PropType, UnwrapRef } from 'vue';
@@ -112,7 +111,7 @@
 
     const { config } = useState();
     const { buildMultiLevelMatrix } = useArrowNavigation();
-    const { getDate } = useUtils();
+    const { getDate, isDateAfter, isDateEqual, resetDateTime, setDateMonthOrYear } = useUtils();
 
     const emit = defineEmits([
         'select-date',

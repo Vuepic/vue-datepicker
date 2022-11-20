@@ -18,34 +18,27 @@ import {
     subMonths,
 } from 'date-fns';
 
-import {
-    sanitizeDate,
-    getNextMonthYear,
-    getWeekFromDate,
-    isDateAfter,
-    isDateBefore,
-    isDateEqual,
-    setDateMonthOrYear,
-    setDateTime,
-} from '@/utils/date-utils';
 import { isModelValueRange, isNumberArray, isRange } from '@/utils/type-guard';
 import { validateMonthYearInRange } from '@/components/composables/month-year';
 import { useState } from '@/components/composables/state';
 import { useUtils } from '@/components/composables/utils';
 
-import type {
-    ICalendarData,
-    ICalendarDay,
-    IMarker,
-    InternalModuleValue,
-    TimeType,
-    VueEmit,
-    WeekStartNum,
-} from '@/interfaces';
+import type { ICalendarData, ICalendarDay, IMarker, InternalModuleValue, TimeType, VueEmit } from '@/interfaces';
 import type { UnwrapRef } from 'vue';
 
 const { config, internalModelValue } = useState();
-const { getDate, getDefaultStartTime, isDisabled } = useUtils();
+const {
+    getDate,
+    getDefaultStartTime,
+    isDisabled,
+    sanitizeDate,
+    setDateTime,
+    getWeekFromDate,
+    isDateAfter,
+    isDateBefore,
+    isDateEqual,
+    setDateMonthOrYear,
+} = useUtils();
 
 export const useCalendar = (
     emit: VueEmit,
@@ -279,6 +272,12 @@ export const useCalendar = (
         }
     };
 
+    // Add one month to a given date
+    const getNextMonthYear = (date: Date): { month: number; year: number } => {
+        const newDate = addMonths(date, 1);
+        return { month: getMonth(newDate), year: getYear(newDate) };
+    };
+
     /**
      * When using next calendar on auto range mode, adjust month and year for both calendars
      */
@@ -373,7 +372,7 @@ export const useCalendar = (
 
     // Called on selectDate when the week-picker mode is used
     const handleWeekPickerSelect = (day: ICalendarDay) => {
-        modelValue.value = getWeekFromDate(getDate(day.value), +config.value.weekStart as WeekStartNum);
+        modelValue.value = getWeekFromDate(getDate(day.value));
         return autoApply();
     };
 

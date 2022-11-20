@@ -39,7 +39,6 @@
 <script lang="ts" setup>
     import { computed, onMounted, ref } from 'vue';
 
-    import { isMonthWithinRange, isValidTime } from '@/utils/date-utils';
     import { convertType, isModelValueRange } from '@/utils/type-guard';
     import { useArrowNavigation, useState, useUtils } from '@/components/composables';
     import { unrefElement } from '@/utils/util';
@@ -47,7 +46,7 @@
     import type { PropType } from 'vue';
 
     const { config, internalModelValue } = useState();
-    const { formatDate } = useUtils();
+    const { formatDate, getDate, isDateAfter, isDateBefore, isValidTime } = useUtils();
     const { buildMatrix } = useArrowNavigation();
 
     const emit = defineEmits(['close-picker', 'select-date', 'invalid-select']);
@@ -77,21 +76,14 @@
         dp__action_disabled: !isTimeValid.value || !isMonthValid.value || !validDateRange.value,
     }));
 
-    // todo - refactor
     const isTimeValid = computed((): boolean => {
         if (!config.value.enableTimePicker || config.value.ignoreTimeValidation) return true;
-        return isValidTime(
-            internalModelValue.value,
-            config.value.maxTime,
-            config.value.minTime,
-            config.value.maxDate,
-            config.value.minDate,
-        );
+        return isValidTime(internalModelValue.value);
     });
 
     const isMonthValid = computed((): boolean => {
         if (!config.value.monthPicker) return true;
-        return isMonthWithinRange(internalModelValue.value as Date, config.value.minDate, config.value.maxDate);
+        return isMonthWithinRange(internalModelValue.value as Date);
     });
 
     const handleCustomPreviewFormat = () => {
@@ -128,6 +120,24 @@
         }
         return handleCustomPreviewFormat();
     });
+
+    const isMonthWithinRange = (date: Date | string): boolean => {
+        if (!config.value.monthPicker) return true;
+        let valid = true;
+        if (config.value.minDate && config.value.maxDate) {
+            valid =
+                isDateAfter(getDate(date), getDate(config.value.minDate)) &&
+                isDateBefore(getDate(date), getDate(config.value.maxDate));
+        }
+        if (config.value.minDate) {
+            valid = isDateAfter(getDate(date), getDate(config.value.minDate));
+        }
+        if (config.value.maxDate) {
+            valid = isDateBefore(getDate(date), getDate(config.value.maxDate));
+        }
+
+        return valid;
+    };
 
     const selectDate = (): void => {
         if (isTimeValid.value && isMonthValid.value && validDateRange.value) {

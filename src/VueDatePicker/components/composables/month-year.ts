@@ -1,10 +1,11 @@
 import { computed } from 'vue';
 import { addMonths, addYears, getMonth, getYear, set, subMonths, subYears } from 'date-fns';
 
-import { isDateAfter, isDateBefore, isDateEqual } from '@/utils/date-utils';
-import { useState } from '@/components/composables/state';
+import { useState, useUtils } from '@/components/composables';
 
 import type { VueEmit } from '@/interfaces';
+
+const { isDateAfter, isDateBefore, isDateEqual } = useUtils();
 
 const getDateForCompare = (date: Date | string, month: number, year: number): [Date, Date] => {
     return [set(new Date(date), { date: 1 }), set(new Date(), { month, year, date: 1 })];

@@ -1,7 +1,13 @@
 import { computed, reactive } from 'vue';
 
-import { getDefaultFilters, getDefaultTextInputOptions } from '@/utils/util';
-import { defaultAriaLabels, defaultMultiCalendars, defaultPreviewFormat, defaultTransitions } from '@/utils/defaults';
+import { getDefaultFilters } from '@/utils/util';
+import {
+    defaultAriaLabels,
+    defaultMultiCalendars,
+    defaultPreviewFormat,
+    defaultTransitions,
+    getDefaultTextInputOptions,
+} from '@/utils/defaults';
 
 import type { AllPropsType } from '@/utils/props';
 

@@ -45,7 +45,6 @@
     import { setMonth, setYear } from 'date-fns';
 
     import { getKey, unrefElement } from '@/utils/util';
-    import { isDateBetween, isDateEqual } from '@/utils/date-utils';
     import { useArrowNavigation, useState, useUtils } from '@/components/composables';
     import { Flow } from '@/interfaces';
 
@@ -53,7 +52,7 @@
     import type { IDefaultSelect, DynamicClass } from '@/interfaces';
 
     const { config } = useState();
-    const { hideNavigationButtons } = useUtils();
+    const { hideNavigationButtons, isDateBetween, isDateEqual } = useUtils();
     const { setSelectionGrid, buildMultiLevelMatrix, setMonthPicker } = useArrowNavigation();
 
     const emit = defineEmits(['update:modelValue', 'selected', 'toggle', 'reset-flow']);

@@ -1,7 +1,7 @@
 import { ref, watch } from 'vue';
-import { getYear, parse, setYear } from 'date-fns';
+import { getHours, getMinutes, getMonth, getSeconds, getYear, parse, setYear } from 'date-fns';
 
-import { dateToUtc, getMonthVal, getTimeVal, isValidDate, setDateMonthOrYear, setDateTime } from '@/utils/date-utils';
+import { dateToUtc } from '@/utils/date-utils';
 import { convertType } from '@/utils/type-guard';
 import { useUtils, useState } from '@/components/composables';
 import { errors } from '@/utils/util';
@@ -21,6 +21,9 @@ export const useExternalInternalMapper = (emit: VueEmit) => {
         checkRangeEnabled,
         checkPartialRangeValue,
         getDate,
+        isValidDate,
+        setDateTime,
+        setDateMonthOrYear,
     } = useUtils();
 
     const inputValue = ref('');
@@ -28,6 +31,17 @@ export const useExternalInternalMapper = (emit: VueEmit) => {
     watch(internalModelValue, () => {
         emit('internal-model-change', internalModelValue.value);
     });
+
+    const getTimeVal = (date?: Date): TimeModel => {
+        const dateValue = date || getDate();
+        return {
+            hours: getHours(dateValue),
+            minutes: getMinutes(dateValue),
+            seconds: getSeconds(dateValue),
+        };
+    };
+
+    const getMonthVal = (date: Date): MonthModel => ({ month: getMonth(date), year: getYear(date) });
 
     const mapYearExternalToInternal = (value: number | number[]): Date | Date[] => {
         if (Array.isArray(value)) {

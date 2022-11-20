@@ -164,7 +164,7 @@
     import MonthYearPicker from '@/components/MonthYearPicker/MonthYearPicker.vue';
     import TimePickerCmp from '@/components/TimePicker/TimePicker.vue';
 
-    import { useCalendar, mapSlots, useArrowNavigation, useState } from '@/components/composables';
+    import { useCalendar, mapSlots, useArrowNavigation, useState, useUtils } from '@/components/composables';
 
     import type {
         CalendarRef,
@@ -175,14 +175,14 @@
         MenuChildCmp,
         MonthYearPickerRef,
         TimePickerRef,
-        WeekStartNum,
     } from '@/interfaces';
 
-    import { getCalendarDays, getMonths, getYears, unrefElement } from '@/utils/util';
+    import { getMonths, getYears, unrefElement } from '@/utils/util';
     import { ICalendarDay } from '@/interfaces';
     import { useCalendarClass } from '@/components/composables/calendar-class';
 
     const { config, setMenuFocused, setShiftKey, control } = useState();
+    const { getCalendarDays } = useUtils();
     const slots = useSlots();
 
     const emit = defineEmits([

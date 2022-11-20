@@ -58,12 +58,6 @@ export interface TimeModel {
     seconds: number | string;
 }
 
-export interface ITimeValue {
-    hours: number | string;
-    minutes: number | string;
-    seconds: number | string;
-}
-
 export type ModelValue =
     | Date
     | Date[]
@@ -172,3 +166,7 @@ export type TimeOverlayCheck = 'noHoursOverlay' | 'noMinutesOverlay' | 'noSecond
 export type ModelFormatType = 'timestamp' | 'format';
 
 export type ModelType = ModelFormatType | string;
+
+export type DateTimeSetter = number | string | null;
+
+export type DateValue = Date | string | null;

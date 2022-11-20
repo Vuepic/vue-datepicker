@@ -1,6 +1,6 @@
 import { isString } from '@/utils/type-guard';
 
-import type { AriaLabels, IFormat, ITransition } from '@/interfaces';
+import type { AriaLabels, IFormat, ITransition, ITextInputOptions } from '@/interfaces';
 
 export const mergeDefaultTransitions = (conf: Partial<ITransition>): ITransition =>
     Object.assign(
@@ -63,3 +63,13 @@ export const defaultTransitions = (transitions: boolean | ITransition) => {
     }
     return mergeDefaultTransitions(transitions);
 };
+
+/**
+ * Default options to merge with user provided ones
+ */
+export const getDefaultTextInputOptions = (): ITextInputOptions => ({
+    enterSubmit: true,
+    tabSubmit: true,
+    openMenu: true,
+    rangeSeparator: ' - ',
+});
