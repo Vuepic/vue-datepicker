@@ -87,9 +87,9 @@ describe('Logic connection', () => {
         calendar.vm.$emit('select-date', { value: start, current: true });
         await calendar.vm.$nextTick();
 
-        console.log(menu.vm.internalModelValue);
+        console.log(menu.vm.modelValue);
 
-        expect(menu.vm.internalModelValue).toHaveLength(1);
+        expect(menu.vm.modelValue).toHaveLength(1);
 
         dp.unmount();
     });
@@ -104,9 +104,9 @@ describe('Logic connection', () => {
         calendar.vm.$emit('select-date', { value: start, current: true });
         await calendar.vm.$nextTick();
 
-        expect(menu.vm.internalModelValue).toHaveLength(2);
-        expect(menu.vm.internalModelValue[0]).toEqual(start);
-        expect(menu.vm.internalModelValue[1]).toEqual(end);
+        expect(menu.vm.modelValue).toHaveLength(2);
+        expect(menu.vm.modelValue[0]).toEqual(start);
+        expect(menu.vm.modelValue[1]).toEqual(end);
         dp.unmount();
     });
 
@@ -121,7 +121,7 @@ describe('Logic connection', () => {
         // timePicker.vm.$emit('update:minutes', val);
         // await timePicker.vm.$nextTick();
 
-        expect(menu.vm.internalModelValue.getHours()).toEqual(val);
+        expect(menu.vm.modelValue.getHours()).toEqual(val);
         // expect(menu.vm.internalModelValue.getMinutes()).toEqual(val);
         dp.unmount();
     });
@@ -138,8 +138,8 @@ describe('Logic connection', () => {
         timePicker.vm.$emit('update:minutes', [val, end.getMinutes()]);
         await timePicker.vm.$nextTick();
 
-        expect(menu.vm.internalModelValue[1].getHours()).toEqual(val);
-        expect(menu.vm.internalModelValue[0].getMinutes()).toEqual(val);
+        expect(menu.vm.modelValue[1].getHours()).toEqual(val);
+        expect(menu.vm.modelValue[0].getMinutes()).toEqual(val);
         dp.unmount();
     });
 
