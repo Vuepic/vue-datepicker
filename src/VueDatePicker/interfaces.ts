@@ -1,4 +1,4 @@
-import type { ComponentPublicInstance, Ref } from 'vue';
+import type { ComponentPublicInstance, Ref, VNodeRef } from 'vue';
 
 export type DynamicClass = Record<string, boolean>;
 
@@ -31,7 +31,7 @@ export interface ICalendarDay {
     text: number | string;
     value: Date;
     current: boolean;
-    classData?: DynamicClass;
+    classData: DynamicClass;
     marker?: IMarker | null;
 }
 
@@ -94,7 +94,7 @@ export interface OnClickOutsideOptions<E extends keyof OnClickOutsideEvents> ext
 export interface IMarker {
     date: Date | string;
     type?: 'dot' | 'line';
-    tooltip?: { text?: string; html?: string; color?: string }[];
+    tooltip?: { text?: string; slot?: string; color?: string }[];
     color?: string;
 }
 
@@ -139,18 +139,18 @@ export interface AriaLabels {
     openMonthsOverlay: string;
     nextMonth: string;
     prevMonth: string;
-    day: (dayVal: ICalendarDay) => string | null;
+    day: (dayVal: ICalendarDay) => string;
 }
 
-export interface CalendarRef {
+export interface CalendarRef extends ComponentPublicInstance {
     triggerTransition: (m: number, year: number) => void;
 }
 
-export interface TimePickerRef {
+export interface TimePickerRef extends Element {
     toggleTimePicker: (show: boolean, flow: boolean, child?: TimeType) => void;
 }
 
-export interface TimeInputRef {
+export interface TimeInputRef extends Element {
     openChildCmp: (child: string) => void;
 }
 

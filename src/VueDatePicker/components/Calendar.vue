@@ -45,7 +45,7 @@
                                     dayVal.classData.dp__range_start
                                 "
                                 :aria-disabled="dayVal.classData.dp__cell_disabled"
-                                :aria-label="config.ariaLabels?.day?.(dayVal)"
+                                :aria-label="config.ariaLabels.day(dayVal)"
                                 tabindex="0"
                                 @click.stop.prevent="$emit('select-date', dayVal)"
                                 @keydown.enter="$emit('select-date', dayVal)"
@@ -66,7 +66,7 @@
                                         v-if="dateMatch(dayVal.value)"
                                         :style="markerTooltipStyle"
                                     >
-                                        <div class="dp__tooltip_content" @click.stop>
+                                        <div class="dp__tooltip_content" @click.stop v-if="dayVal.marker?.tooltip">
                                             <div
                                                 v-for="(tooltip, i) in dayVal.marker.tooltip"
                                                 :key="i"
@@ -83,7 +83,9 @@
                                                         class="dp__tooltip_mark"
                                                         :style="tooltip.color ? { backgroundColor: tooltip.color } : {}"
                                                     ></div>
-                                                    <div v-if="tooltip.html" v-html="tooltip.html"></div>
+                                                    <div v-if="$slots['tooltip-text']">
+                                                        <slot :name="tooltip.slot" :tooltip="tooltip"></slot>
+                                                    </div>
                                                     <div v-else>{{ tooltip.text }}</div>
                                                 </template>
                                             </div>
@@ -206,7 +208,9 @@
         dp__calendar_next: config.value.multiCalendars > 0 && props.instance !== 0,
     }));
 
-    const contentWrapStyle = computed(() => (props.specificMode ? { height: `${config.value.modeHeight}px` } : null));
+    const contentWrapStyle = computed(() =>
+        props.specificMode ? { height: `${config.value.modeHeight}px` } : undefined,
+    );
 
     const onMouseOver = (day: UnwrapRef<ICalendarDay>, weekInd: number, dayInd: number): void => {
         emit('set-hover-date', day);
@@ -251,7 +255,7 @@
         }
     };
 
-    const assignDayRef = (el: HTMLElement, weekInd: number, dayInd: number) => {
+    const assignDayRef = (el: any, weekInd: number, dayInd: number) => {
         if (el) {
             if (Array.isArray(dayRefs.value[weekInd])) {
                 dayRefs.value[weekInd][dayInd] = el;

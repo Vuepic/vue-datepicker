@@ -150,7 +150,7 @@ export const useArrowNavigation = () => {
         refSets.timePicker[order] = elements;
     };
 
-    const setTimePickerBackRef = (el: HTMLElement): void => {
+    const setTimePickerBackRef = (el: HTMLElement | null): void => {
         timePickerBackRef.value = el;
     };
 

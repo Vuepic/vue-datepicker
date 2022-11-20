@@ -55,10 +55,10 @@
         modelValue: { type: Number as PropType<number>, default: null },
         items: { type: Array as PropType<IDefaultSelect[][]>, default: () => [] },
         disabledValues: { type: Array as PropType<number[]>, default: () => [] },
-        minValue: { type: Number as PropType<number>, default: null },
-        maxValue: { type: Number as PropType<number>, default: null },
+        minValue: { type: Number as PropType<number | null>, default: null },
+        maxValue: { type: Number as PropType<number | null>, default: null },
         slotName: { type: String as PropType<string>, default: '' },
-        headerRefs: { type: Array as PropType<HTMLElement[]>, default: () => [] },
+        headerRefs: { type: Array as PropType<(HTMLElement | null)[]>, default: () => [] },
         escClose: { type: Boolean as PropType<boolean>, default: true },
         type: { type: String as PropType<'month' | 'year'>, default: null },
     });

@@ -179,7 +179,7 @@
         emit('focus');
     };
 
-    const handleOpen = (ev: KeyboardEvent) => {
+    const handleOpen = (ev: KeyboardEvent | MouseEvent) => {
         ev.preventDefault();
         ev.stopImmediatePropagation();
         ev.stopPropagation();

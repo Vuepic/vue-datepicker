@@ -5,7 +5,7 @@
             tabindex="0"
             ref="dpMenuRef"
             role="dialog"
-            :aria-label="config.ariaLabels"
+            :aria-label="config.ariaLabels?.menu"
             :class="dpMenuClass"
             @mouseleave="clearHoverDate"
             @click="handleDpMenuClick"
@@ -54,7 +54,7 @@
                             <component
                                 :is="config.monthYearComponent ? config.monthYearComponent : MonthYearPicker"
                                 :ref="
-                                    (el) => {
+                                    (el: any) => {
                                         if (el) monthYearPickerRefs[i] = el;
                                     }
                                 "
@@ -76,7 +76,7 @@
                             </component>
                             <Calendar
                                 :ref="
-                                    (el) => {
+                                    (el: any) => {
                                         if (el) calendarRefs[i] = el;
                                     }
                                 "
@@ -157,7 +157,6 @@
 
 <script lang="ts" setup>
     import { computed, onMounted, onUnmounted, reactive, ref, useSlots, watch } from 'vue';
-    import type { ComputedRef, PropType, Ref, UnwrapRef } from 'vue';
 
     import ActionRow from '@/components/ActionRow.vue';
     import Calendar from '@/components/Calendar.vue';
@@ -165,6 +164,8 @@
     import TimePickerCmp from '@/components/TimePicker/TimePicker.vue';
 
     import { useCalendar, mapSlots, useArrowNavigation, useState, useUtils } from '@/components/composables';
+    import { getMonths, getYears, unrefElement } from '@/utils/util';
+    import { useCalendarClass } from '@/components/composables/calendar-class';
 
     import type {
         CalendarRef,
@@ -175,11 +176,9 @@
         MenuChildCmp,
         MonthYearPickerRef,
         TimePickerRef,
+        ICalendarDay,
     } from '@/interfaces';
-
-    import { getMonths, getYears, unrefElement } from '@/utils/util';
-    import { ICalendarDay } from '@/interfaces';
-    import { useCalendarClass } from '@/components/composables/calendar-class';
+    import type { ComputedRef, PropType, Ref, UnwrapRef } from 'vue';
 
     const { config, setMenuFocused, setShiftKey, control } = useState();
     const { getCalendarDays } = useUtils();
@@ -258,9 +257,14 @@
 
     const triggerCalendarTransition = (instance?: number): void => {
         if (instance || instance === 0) {
-            calendarRefs.value[instance].triggerTransition(month.value(instance), year.value(instance));
+            (calendarRefs.value[instance] as unknown as CalendarRef).triggerTransition(
+                month.value(instance),
+                year.value(instance),
+            );
         } else {
-            calendarRefs.value.forEach((refVal, i) => refVal.triggerTransition(month.value(i), year.value(i)));
+            calendarRefs.value.forEach((refVal, i) =>
+                (refVal as unknown as CalendarRef).triggerTransition(month.value(i), year.value(i)),
+            );
         }
     };
 
@@ -328,15 +332,7 @@
     };
 
     // Get dates for the currently selected month and year
-    const dates = computed(
-        () => (instance: number) =>
-            getCalendarDays(
-                month.value(instance),
-                year.value(instance),
-                +config.value.weekStart as WeekStartNum,
-                config.value.hideOffsetDates,
-            ),
-    );
+    const dates = computed(() => (instance: number) => getCalendarDays(month.value(instance), year.value(instance)));
 
     const calendarAmm = computed((): number[] =>
         config.value.multiCalendars > 0 && config.value.range ? [...Array(config.value.multiCalendars).keys()] : [0],

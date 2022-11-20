@@ -156,3 +156,7 @@ export const AllProps = {
 };
 
 export type AllPropsType = ExtractPropTypes<typeof AllProps>;
+export interface ExtractedProps extends AllPropsType {
+    transitions: ITransition;
+    ariaLabels: AriaLabels;
+}

@@ -77,7 +77,7 @@
         <template v-if="config.monthPicker">
             <SelectionGrid
                 v-bind="childProps('month')"
-                :skip-active="props.range"
+                :skip-active="config.range"
                 :year="year"
                 :multi-model-value="multiModelValue"
                 month-picker
@@ -108,8 +108,8 @@
                             ref="mpYearButtonRef"
                             :aria-label="config.ariaLabels?.openYearsOverlay"
                             tabindex="0"
-                            @click="toggleYearPicker"
-                            @keydown.enter="toggleYearPicker"
+                            @click="() => toggleYearPicker"
+                            @keydown.enter="() => toggleYearPicker"
                         >
                             <slot v-if="$slots.year" name="year" :year="year" />
                             <template v-if="!$slots.year">{{ year }}</template>
@@ -151,7 +151,7 @@
                 v-bind="childProps('year')"
                 v-model="yearModelBind"
                 :multi-model-value="multiModelValue"
-                :skip-active="props.range"
+                :skip-active="config.range"
                 skip-button-ref
                 year-picker
                 @toggle="toggleYearPicker"

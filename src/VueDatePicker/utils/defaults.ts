@@ -34,7 +34,7 @@ export const defaultAriaLabels = (labels: Partial<AriaLabels>): AriaLabels => {
             openMonthsOverlay: 'Open months overlay',
             nextMonth: 'Next month',
             prevMonth: 'Previous month',
-            day: () => null,
+            day: () => '',
         },
         labels,
     );
@@ -57,9 +57,9 @@ export const defaultPreviewFormat = (
     return previewFormat;
 };
 
-export const defaultTransitions = (transitions: boolean | ITransition) => {
+export const defaultTransitions = (transitions: boolean | ITransition): ITransition => {
     if (typeof transitions === 'boolean') {
-        return transitions ? mergeDefaultTransitions({}) : false;
+        return transitions ? mergeDefaultTransitions({}) : (false as unknown as ITransition);
     }
     return mergeDefaultTransitions(transitions);
 };

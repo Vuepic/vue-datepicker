@@ -46,10 +46,10 @@
 
     import { getKey, unrefElement } from '@/utils/util';
     import { useArrowNavigation, useState, useUtils } from '@/components/composables';
-    import { Flow } from '@/interfaces';
 
     import type { PropType } from 'vue';
-    import type { IDefaultSelect, DynamicClass } from '@/interfaces';
+    import type { IDefaultSelect, DynamicClass, Flow } from '@/interfaces';
+    import { convertType } from '@/utils/type-guard';
 
     const { config } = useState();
     const { hideNavigationButtons, isDateBetween, isDateEqual } = useUtils();
@@ -62,11 +62,11 @@
         modelValue: { type: [String, Number] as PropType<string | number>, default: null },
         multiModelValue: { type: Array as PropType<Date[]>, default: () => [] },
         disabledValues: { type: Array as PropType<number[]>, default: () => [] },
-        minValue: { type: [Number, String] as PropType<number | string>, default: null },
-        maxValue: { type: [Number, String] as PropType<number | string>, default: null },
+        minValue: { type: [Number, String] as PropType<number | string | null>, default: null },
+        maxValue: { type: [Number, String] as PropType<number | string | null>, default: null },
         year: { type: Number as PropType<number>, default: 0 },
         skipActive: { type: Boolean as PropType<boolean>, default: false },
-        headerRefs: { type: Array as PropType<HTMLElement[]>, default: () => [] },
+        headerRefs: { type: Array as PropType<(HTMLElement | null)[]>, default: () => [] },
         skipButtonRef: { type: Boolean as PropType<boolean>, default: false },
         monthPicker: { type: Boolean as PropType<boolean>, default: false },
         yearPicker: { type: Boolean as PropType<boolean>, default: false },
@@ -257,7 +257,7 @@
         }
     };
 
-    const assignRef = (el: HTMLElement, col: IDefaultSelect, rowInd: number, colInd: number): void => {
+    const assignRef = (el: any, col: IDefaultSelect, rowInd: number, colInd: number): void => {
         if (el) {
             if (col.value === +props.modelValue && !props.disabledValues.includes(col.value)) {
                 selectionActiveRef.value = el;
@@ -278,7 +278,7 @@
             ? [props.headerRefs].concat(elementRefs.value)
             : elementRefs.value.concat([props.skipButtonRef ? [] : [toggleButton.value as HTMLElement]]);
 
-        buildMultiLevelMatrix(refs, props.headerRefs?.length ? 'monthPicker' : 'selectionGrid');
+        buildMultiLevelMatrix(convertType(refs), props.headerRefs?.length ? 'monthPicker' : 'selectionGrid');
     };
 
     defineExpose({ focusGrid });

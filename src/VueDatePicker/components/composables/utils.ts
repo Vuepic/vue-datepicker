@@ -352,6 +352,7 @@ export const useUtils = () => {
                 text: hideOffsetDates && isNext ? '' : next.getDate(),
                 value: next,
                 current: !isNext,
+                classData: {},
             });
         }
         return dates;

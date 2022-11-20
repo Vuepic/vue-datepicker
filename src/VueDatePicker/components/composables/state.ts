@@ -9,18 +9,18 @@ import {
     getDefaultTextInputOptions,
 } from '@/utils/defaults';
 
-import type { AllPropsType } from '@/utils/props';
+import type { AllPropsType, ExtractedProps } from '@/utils/props';
 
 interface State {
     internalModelValue: Date | Date[] | null;
-    props: AllPropsType;
+    props: ExtractedProps;
     menuFocused: boolean;
     shiftKeyInMenu: boolean;
 }
 
 const state = reactive<State>({
     internalModelValue: null as unknown as Date,
-    props: {} as AllPropsType,
+    props: {} as ExtractedProps,
     menuFocused: false,
     shiftKeyInMenu: false,
 });
@@ -33,7 +33,7 @@ const internalModelValue = computed({
 });
 
 // Populate default values for prop objects that are passed partially
-const getDefaults = (props: AllPropsType): Partial<AllPropsType> => {
+const getDefaults = (props: AllPropsType): Partial<ExtractedProps> => {
     return {
         ariaLabels: defaultAriaLabels(props.ariaLabels),
         textInputOptions: Object.assign(getDefaultTextInputOptions(), props.textInputOptions),
@@ -46,7 +46,7 @@ const getDefaults = (props: AllPropsType): Partial<AllPropsType> => {
 
 // Set all props to a shared state to be accessed across the app
 const setProps = (props: AllPropsType): void => {
-    state.props = { ...props, ...getDefaults(props) };
+    state.props = { ...props, ...getDefaults(props) } as ExtractedProps;
 };
 
 const config = computed(() => state.props);

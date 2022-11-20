@@ -1,7 +1,7 @@
 <template>
     <div class="dp__time_input" v-if="!config.disabled">
         <div v-for="(timeInput, i) in timeInputs" :key="i" :class="timeColClass">
-            <template v-if="timeInput === 'separator'"> : </template>
+            <template v-if="timeInput.separator"> : </template>
             <template v-else>
                 <div
                     class="dp__inc_dec_button"
@@ -129,7 +129,7 @@
         hours: { type: Number as PropType<number>, default: 0 },
         minutes: { type: Number as PropType<number>, default: 0 },
         seconds: { type: Number as PropType<number>, default: 0 },
-        closeTimePickerBtn: { type: Object as PropType<HTMLElement>, default: null },
+        closeTimePickerBtn: { type: Object as PropType<HTMLElement | null>, default: null },
         order: { type: Number as PropType<number>, default: 0 },
     });
 
@@ -160,12 +160,16 @@
         }),
     );
 
-    const timeInputs = computed(() => {
-        const inputs = [{ type: 'hours' }, 'separator', { type: 'minutes' }];
-        return config.value.enableSeconds ? inputs.concat(['separator', { type: 'seconds' }]) : inputs;
+    const timeInputs = computed((): { type: TimeType; separator?: boolean }[] => {
+        const inputs = [{ type: 'hours' }, { type: '', separator: true }, { type: 'minutes' }];
+        return (
+            config.value.enableSeconds ? inputs.concat([{ type: '', separator: true }, { type: 'seconds' }]) : inputs
+        ) as {
+            type: TimeType;
+        }[];
     });
 
-    const timeInputOverlays = computed(() => timeInputs.value.filter((input) => typeof input !== 'string'));
+    const timeInputOverlays = computed(() => timeInputs.value.filter((input) => !input.separator));
 
     const timeValueDisplay = computed(() => (type: TimeType) => {
         if (type === 'hours') {
@@ -247,7 +251,7 @@
         overlays[child] = true;
     };
 
-    const assignRefs = (el: HTMLElement, col: number, pos: number): void => {
+    const assignRefs = (el: any, col: number, pos: number): void => {
         if (el && config.value.arrowNavigation) {
             if (Array.isArray(elementRefs.value[col])) {
                 elementRefs.value[col][pos] = el;
