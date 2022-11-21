@@ -28,6 +28,7 @@
                     @keydown.enter="selectDate"
                     @keydown.space="selectDate"
                     @click="selectDate"
+                    data-test="select-button"
                     ref="selectButtonRef"
                     >{{ config.selectText }}</span
                 >
@@ -95,17 +96,20 @@
         return formatFn(convertType(internalModelValue.value));
     };
 
+    const formatRangeDate = () => {
+        const dates = internalModelValue.value as Date[];
+        if (config.value.multiCalendars > 0) {
+            return `${formatDate(dates[0])} - ${formatDate(dates[1])}`;
+        }
+        return [formatDate(dates[0]), formatDate(dates[1])];
+    };
+
     const previewValue = computed((): string | string[] => {
         if (!internalModelValue.value || !props.menuMount) return '';
         if (typeof config.value.previewFormat === 'string') {
             if (Array.isArray(internalModelValue.value)) {
                 if (internalModelValue.value.length === 2 && internalModelValue.value[1]) {
-                    if (config.value.multiCalendars > 0) {
-                        return `${formatDate(internalModelValue.value[0])} - ${formatDate(
-                            internalModelValue.value[1],
-                        )}`;
-                    }
-                    return [formatDate(internalModelValue.value[0]), formatDate(internalModelValue.value[1])];
+                    return formatRangeDate();
                 }
                 if (config.value.multiDates) {
                     return internalModelValue.value.map((date) => `${formatDate(date)}`);
@@ -124,9 +128,10 @@
         if (!config.value.monthPicker) return true;
         let valid = true;
         if (config.value.minDate && config.value.maxDate) {
-            valid =
+            return (
                 isDateAfter(getDate(date), getDate(config.value.minDate)) &&
-                isDateBefore(getDate(date), getDate(config.value.maxDate));
+                isDateBefore(getDate(date), getDate(config.value.maxDate))
+            );
         }
         if (config.value.minDate) {
             valid = isDateAfter(getDate(date), getDate(config.value.minDate));

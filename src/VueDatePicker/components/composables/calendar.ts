@@ -143,7 +143,7 @@ export const useCalendar = (
             for (let i = 1; i <= config.value.multiCalendars; i++) {
                 const prevDate = set(getDate(), { month: month.value(i - 1), year: year.value(i - 1) });
                 const nextMonth = add(prevDate, { months: 1 });
-                setCalendarMonthYear(i, getMonth(nextMonth), getYear(nextMonth));
+                calendars.value[i] = { month: getMonth(nextMonth), year: getYear(nextMonth) };
             }
         }
     };

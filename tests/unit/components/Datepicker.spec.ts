@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { mount, VueWrapper } from '@vue/test-utils';
+import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { describe, it, expect } from 'vitest';
-import { getMonth, getYear, setMilliseconds, setSeconds } from 'date-fns';
+import { addMonths, getHours, getMonth, getYear, setMilliseconds, setSeconds, startOfYear } from 'date-fns';
 import addDays from 'date-fns/addDays';
 import { ja } from 'date-fns/locale';
 
@@ -29,6 +29,14 @@ const mountDatepicker = async (props: any = {}): Promise<{ dp: VueWrapper<any>; 
     return { dp, menu };
 };
 
+const checkRange = async (calendar: VueWrapper, menu: VueWrapper<any>, start: Date, end: Date) => {
+    await calendar.vm.$nextTick();
+
+    expect(menu.vm.modelValue).toHaveLength(2);
+    expect(menu.vm.modelValue[0]).toEqual(start);
+    expect(menu.vm.modelValue[1]).toEqual(end);
+};
+
 const openAndGetMonthOverlay = async (menu: VueWrapper<any>) => {
     const monthYearInput = menu.findComponent(MonthYearInput);
     monthYearInput.vm.toggleMonthPicker();
@@ -38,10 +46,6 @@ const openAndGetMonthOverlay = async (menu: VueWrapper<any>) => {
     return menu.find('.dp__overlay');
 };
 
-/**
- * Commented code is not working in vue 3.2.33, looks like the second emit is not working after next tick
- * will wait for the update
- */
 describe('Logic connection', () => {
     it('Should properly define initial values', async () => {
         const date = new Date();
@@ -80,15 +84,14 @@ describe('Logic connection', () => {
 
     it('Should select range', async () => {
         const start = setMilliseconds(setSeconds(addDays(new Date(), 1), 0), 0);
+        const end = setMilliseconds(setSeconds(addDays(start, 7), 0), 0);
         const { dp, menu } = await mountDatepicker({ modelValue: null, range: true });
 
         const calendar = menu.findComponent(Calendar);
         calendar.vm.$emit('select-date', { value: start, current: true });
-        await calendar.vm.$nextTick();
+        calendar.vm.$emit('select-date', { value: end, current: true });
 
-        console.log(menu.vm.modelValue);
-
-        expect(menu.vm.modelValue).toHaveLength(1);
+        await checkRange(calendar, menu, start, end);
 
         dp.unmount();
     });
@@ -101,11 +104,8 @@ describe('Logic connection', () => {
         const calendar = menu.findComponent(Calendar);
 
         calendar.vm.$emit('select-date', { value: start, current: true });
-        await calendar.vm.$nextTick();
+        await checkRange(calendar, menu, start, end);
 
-        expect(menu.vm.modelValue).toHaveLength(2);
-        expect(menu.vm.modelValue[0]).toEqual(start);
-        expect(menu.vm.modelValue[1]).toEqual(end);
         dp.unmount();
     });
 
@@ -116,12 +116,12 @@ describe('Logic connection', () => {
 
         const timePicker = menu.findComponent(TimePicker);
         timePicker.vm.$emit('update:hours', val);
+        timePicker.vm.$emit('update:minutes', val);
         await timePicker.vm.$nextTick();
-        // timePicker.vm.$emit('update:minutes', val);
-        // await timePicker.vm.$nextTick();
+        await flushPromises();
 
         expect(menu.vm.modelValue.getHours()).toEqual(val);
-        // expect(menu.vm.internalModelValue.getMinutes()).toEqual(val);
+        expect(menu.vm.modelValue.getMinutes()).toEqual(val);
         dp.unmount();
     });
 
@@ -276,5 +276,76 @@ describe('Logic connection', () => {
 
         const overlayAfter = menu.findAll('.dp__overlay');
         expect(overlayAfter).toHaveLength(1);
+    });
+
+    it('It should assign start date', async () => {
+        const { menu } = await mountDatepicker({ startDate: startOfYear(new Date()) });
+
+        expect(menu.vm.month(0)).toEqual(0);
+    });
+
+    it('It should assign start time', async () => {
+        const { menu } = await mountDatepicker({ startTime: { hours: 10 } });
+        expect(menu.vm.time.hours).toEqual(10);
+    });
+
+    it('Should assign empty time picker', async () => {
+        const hours = getHours(new Date());
+        const { menu } = await mountDatepicker({ timePicker: true });
+        expect(menu.vm.time.hours).toEqual(hours);
+    });
+
+    it('Should assign empty month picker', async () => {
+        const month = getMonth(new Date());
+        const { menu } = await mountDatepicker({ monthPicker: true });
+        expect(menu.vm.month(0)).toEqual(month);
+    });
+
+    it('Should assign empty year picker', async () => {
+        const year = getMonth(new Date());
+        const { menu } = await mountDatepicker({ yearPicker: true });
+        expect(menu.vm.month(0)).toEqual(year);
+    });
+
+    it('Should get seconds value depending on the mode', async () => {
+        const { menu } = await mountDatepicker({ enableSeconds: true });
+        expect(menu.vm.time.seconds).toBeDefined();
+    });
+
+    it('Should handle next month/year on multi-calendars', async () => {
+        const { menu } = await mountDatepicker({ multiCalendars: true });
+        expect(menu.vm.month(0)).toEqual(getMonth(new Date()));
+        expect(menu.vm.month(1)).toEqual(getMonth(addMonths(new Date(), 1)));
+    });
+
+    it('Should check min/max-range', async () => {
+        const start = setMilliseconds(setSeconds(addDays(new Date(), 1), 0), 0);
+        const end = addDays(setMilliseconds(setSeconds(addDays(start, 7), 0), 0), 5);
+        const { dp, menu } = await mountDatepicker({ modelValue: null, range: true, maxRange: 3 });
+
+        menu.vm.selectDate({ value: start, current: true });
+        menu.vm.selectDate({ value: end, current: true });
+
+        expect(menu.vm.modelValue).toHaveLength(1);
+
+        dp.unmount();
+    });
+
+    it('Should get range with fixed date', async () => {
+        const modelValue = [new Date(), addDays(new Date(), 3)];
+        const { menu } = await mountDatepicker({ fixedStart: true, modelValue, range: true });
+
+        const calendar = menu.findComponent(Calendar);
+        calendar.vm.$emit('select-date', { value: addDays(new Date(), 5), current: true });
+        await calendar.vm.$nextTick();
+
+        expect(menu.vm.modelValue).toHaveLength(2);
+    });
+
+    it('Should auto change multi calendars', async () => {
+        const modelValue = [addMonths(new Date(), 1), addMonths(new Date(), 2)];
+        const { menu } = await mountDatepicker({ multiCalendars: true, modelValue, range: true });
+        expect(menu.vm.month(0)).toEqual(getMonth(modelValue[0]));
+        expect(menu.vm.month(1)).toEqual(getMonth(modelValue[1]));
     });
 });

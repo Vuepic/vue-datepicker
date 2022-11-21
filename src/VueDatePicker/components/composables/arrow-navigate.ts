@@ -183,5 +183,6 @@ export const useArrowNavigation = () => {
         arrowDown,
         clearArrowNav,
         setMonthPicker,
+        refSets, // exposed for testing
     };
 };

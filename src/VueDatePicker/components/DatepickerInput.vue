@@ -53,6 +53,7 @@
             <CancelIcon
                 v-if="config.clearable && !$slots['clear-icon'] && inputValue && !config.disabled && !config.readonly"
                 class="dp__clear_icon dp__input_icons"
+                data-test="clear-icon"
                 @click.stop.prevent="onClear"
             />
         </div>

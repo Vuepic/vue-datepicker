@@ -44,12 +44,11 @@
     import { computed, nextTick, onBeforeUpdate, onMounted, onUnmounted, ref } from 'vue';
     import { setMonth, setYear } from 'date-fns';
 
-    import { unrefElement } from '@/utils/util';
+    import { unrefElement, convertType } from '@/utils/util';
     import { useArrowNavigation, useState, useUtils } from '@/components/composables';
 
     import type { PropType } from 'vue';
     import type { IDefaultSelect, DynamicClass, Flow } from '@/interfaces';
-    import { convertType } from '@/utils/util';
 
     const { config } = useState();
     const { hideNavigationButtons, isDateBetween, isDateEqual } = useUtils();

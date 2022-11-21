@@ -1,9 +1,11 @@
 import { describe, it, expect } from 'vitest';
 
 import { getArrayInArray, getDayNames, getMonths, getYears } from '@/utils/util';
-import { parseFreeInput } from '@/utils/date-utils';
+import { dateToUtc, parseFreeInput } from '@/utils/date-utils';
 import { useState, useUtils } from '@/components/composables';
 import type { AllPropsType } from '@/utils/props';
+import { addHours, getMonth, set, setMonth, subHours } from 'date-fns';
+import { getTimezoneOffset, zonedTimeToUtc } from 'date-fns-tz';
 
 describe('Utils and date utils formatting', () => {
     const { setProps } = useState();
@@ -95,5 +97,46 @@ describe('Utils and date utils formatting', () => {
 
         expect(date.getHours()).toEqual(12);
         expect(date.getMinutes()).toEqual(12);
+    });
+
+    it('Should parse text input to date with pattern text', () => {
+        const parsed = parseFreeInput('2', 'MM/dd/yyyy');
+        expect(getMonth(parsed as Date)).toEqual(1);
+    });
+
+    it('Should parse text input with pattern function', () => {
+        const parser = (value: string) => setMonth(new Date(), +value);
+        const parsed = parseFreeInput('2', parser);
+
+        expect(getMonth(parsed as Date)).toEqual(2);
+    });
+
+    it('Should get UTC date', () => {
+        const date = new Date();
+        const utcDate = dateToUtc(date, false);
+
+        const utcString = set(zonedTimeToUtc(date, Intl.DateTimeFormat().resolvedOptions().timeZone), {
+            milliseconds: 0,
+        });
+
+        expect(utcString.toISOString()).toEqual(utcDate);
+    });
+
+    it('Should return UTC date with preserved value', () => {
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const date = new Date();
+        const utcDate = dateToUtc(date, true);
+        const offset = getTimezoneOffset(timezone);
+        const mapHour = offset > 0 ? addHours : subHours;
+        const offsetHours = Math.floor((offset / (1000 * 60 * 60)) % 24);
+        const utcString = mapHour(
+            set(zonedTimeToUtc(date, Intl.DateTimeFormat().resolvedOptions().timeZone), {
+                milliseconds: 0,
+                seconds: 0,
+            }),
+            offsetHours,
+        );
+
+        expect(utcString.toISOString()).toEqual(utcDate);
     });
 });
