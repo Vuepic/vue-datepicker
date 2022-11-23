@@ -1,6 +1,6 @@
 import { unref } from 'vue';
 
-import type { IDateFilter, IDefaultSelect, IMarker, MaybeElementRef, ModelValue } from '@/interfaces';
+import type { DateFilter, IDefaultSelect, IMarker, MaybeElementRef, ModelValue } from '@/interfaces';
 import type { ComponentPublicInstance } from 'vue';
 
 export const getArrayInArray = <T>(list: T[], increment = 3): T[][] => {
@@ -70,7 +70,7 @@ export const hoursToAmPmHours = (index: number): number => {
 /**
  * Default filters to merge with user provided values
  */
-export const getDefaultFilters = (filters: Partial<IDateFilter>): IDateFilter =>
+export const getDefaultFilters = (filters: Partial<DateFilter>): DateFilter =>
     Object.assign({ months: [], years: [], times: { hours: [], minutes: [], seconds: [] } }, filters);
 
 export const unrefElement = (elRef: MaybeElementRef): HTMLElement | null => {

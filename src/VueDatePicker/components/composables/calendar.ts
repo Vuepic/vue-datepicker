@@ -19,43 +19,51 @@ import {
 } from 'date-fns';
 
 import { isModelValueRange, isNumberArray, isRange } from '@/utils/type-guard';
-import { useState } from '@/components/composables/state';
 import { useUtils } from '@/components/composables/utils';
 
-import type { ICalendarData, ICalendarDay, IMarker, InternalModuleValue, TimeType, VueEmit } from '@/interfaces';
+import type {
+    ExtendedProps,
+    ICalendarData,
+    ICalendarDay,
+    IMarker,
+    InternalModuleValue,
+    TimeType,
+    VueEmit,
+} from '@/interfaces';
 import type { UnwrapRef } from 'vue';
-
-const { config, internalModelValue } = useState();
-const {
-    getDate,
-    getDefaultStartTime,
-    isDisabled,
-    sanitizeDate,
-    setDateTime,
-    getWeekFromDate,
-    isDateAfter,
-    isDateBefore,
-    isDateEqual,
-    setDateMonthOrYear,
-    validateMonthYearInRange,
-} = useUtils();
 
 // BEGIN-NOSCAN
 export const useCalendar = (
+    props: ExtendedProps,
     emit: VueEmit,
     updateFlow: () => void,
     triggerCalendarTransition: (inst?: number) => void,
 ) => {
     // END-NOSCAN
 
+    const {
+        getDate,
+        getDefaultStartTime,
+        isDisabled,
+        sanitizeDate,
+        setDateTime,
+        getWeekFromDate,
+        isDateAfter,
+        isDateBefore,
+        isDateEqual,
+        setDateMonthOrYear,
+        validateMonthYearInRange,
+    } = useUtils(props);
+
     // internal model value is updated from this computed property
     const modelValue = computed({
         get: (): InternalModuleValue => {
-            return internalModelValue.value;
+            return props.internalModelValue;
         },
         set: (value: InternalModuleValue): void => {
-            if (!config.value.readonly && !config.value.disabled) {
-                internalModelValue.value = value;
+            if (!props.readonly && !props.disabled) {
+                emit('update:internal-model-value', value);
+                // props.internalModelValue = value;
             }
         },
     });
@@ -67,9 +75,9 @@ export const useCalendar = (
 
     // Time values
     const time = reactive({
-        hours: config.value.range ? [getHours(getDate()), getHours(getDate())] : getHours(getDate()),
-        minutes: config.value.range ? [getMinutes(getDate()), getMinutes(getDate())] : getMinutes(getDate()),
-        seconds: config.value.range ? [0, 0] : 0,
+        hours: props.range ? [getHours(getDate()), getHours(getDate())] : getHours(getDate()),
+        minutes: props.range ? [getMinutes(getDate()), getMinutes(getDate())] : getMinutes(getDate()),
+        seconds: props.range ? [0, 0] : 0,
     });
 
     // Get month based on the calendar instance
@@ -99,18 +107,14 @@ export const useCalendar = (
 
     onMounted(() => {
         if (!modelValue.value) {
-            if (config.value.startDate) {
-                setCalendarMonthYear(
-                    0,
-                    getMonth(getDate(config.value.startDate)),
-                    getYear(getDate(config.value.startDate)),
-                );
+            if (props.startDate) {
+                setCalendarMonthYear(0, getMonth(getDate(props.startDate)), getYear(getDate(props.startDate)));
 
-                if (config.value.multiCalendars) {
+                if (props.multiCalendars) {
                     autoChangeMultiCalendars(0);
                 }
             }
-            if (config.value.startTime) {
+            if (props.startTime) {
                 assignStartTime();
             }
         }
@@ -128,19 +132,19 @@ export const useCalendar = (
             return assignSingleValue(modelValue.value);
         }
         // On initial empty picker, note: range values are not set on month and year
-        if (config.value.timePicker) return assignTimePicker();
-        if (config.value.monthPicker && !config.value.range) return assignMonthPicker();
-        if (config.value.yearPicker && !config.value.range) return assignYearPicker();
-        if (config.value.multiCalendars) return assignMonthAndYear(getDate(), fromMount);
+        if (props.timePicker) return assignTimePicker();
+        if (props.monthPicker && !props.range) return assignMonthPicker();
+        if (props.yearPicker && !props.range) return assignYearPicker();
+        if (props.multiCalendars) return assignMonthAndYear(getDate(), fromMount);
     };
 
     // Assign month and year values per date
     const assignMonthAndYear = (date: Date, fromMount = false): void => {
-        if (!config.value.multiCalendars || !config.value.multiStatic || fromMount) {
+        if (!props.multiCalendars || !props.multiStatic || fromMount) {
             setCalendarMonthYear(0, getMonth(date), getYear(date));
         }
-        if (config.value.multiCalendars) {
-            for (let i = 1; i <= config.value.multiCalendars; i++) {
+        if (props.multiCalendars) {
+            for (let i = 1; i <= props.multiCalendars; i++) {
                 const prevDate = set(getDate(), { month: month.value(i - 1), year: year.value(i - 1) });
                 const nextMonth = add(prevDate, { months: 1 });
                 calendars.value[i] = { month: getMonth(nextMonth), year: getYear(nextMonth) };
@@ -170,11 +174,11 @@ export const useCalendar = (
 
     // Assign range values, or in case of multiDates, set
     const assignExistingMulti = (dates: Date[], fromMount: boolean) => {
-        if (config.value.range && !config.value.multiDates) {
+        if (props.range && !props.multiDates) {
             return assignRangeValue(dates, fromMount);
         }
 
-        if (config.value.multiDates) {
+        if (props.multiDates) {
             const lastEntry = dates[dates.length - 1];
             // return lastEntry ? assignMonthYearAndTime(lastEntry) : (throw new Error('invalid'));
             return assignSingleValue(lastEntry);
@@ -185,7 +189,7 @@ export const useCalendar = (
     const assignExistingModelValueArr = (fromMount: boolean) => {
         const dates = modelValue.value as Date[];
         assignExistingMulti(dates, fromMount);
-        if (config.value.multiCalendars && config.value.multiCalendarsSolo) {
+        if (props.multiCalendars && props.multiCalendarsSolo) {
             handleNextMonthYear();
         }
     };
@@ -193,7 +197,7 @@ export const useCalendar = (
     // On initial empty time picker, assign value
     const assignTimePicker = () => {
         assignStartTime();
-        if (!config.value.range) {
+        if (!props.range) {
             modelValue.value = setDateTime(getDate(), time.hours as number, time.minutes as number, getSecondsValue());
         } else {
             const hours = time.hours as number[];
@@ -217,7 +221,7 @@ export const useCalendar = (
 
     // Check if seconds are enabled, and return proper value
     const getSecondsValue = (getFirst = true): number => {
-        if (config.value.enableSeconds) {
+        if (props.enableSeconds) {
             if (Array.isArray(time.seconds)) {
                 return getFirst ? time.seconds[0] : time.seconds[1];
             }
@@ -240,7 +244,7 @@ export const useCalendar = (
 
             setTime('hours', hours);
             setTime('minutes', minutes);
-            if (config.value.enableSeconds) {
+            if (props.enableSeconds) {
                 setTime('seconds', seconds);
             }
         }
@@ -268,7 +272,7 @@ export const useCalendar = (
 
             if (
                 (firstMonth !== secondMonth || (firstMonth === secondMonth && firstYear !== secondYear)) &&
-                config.value.multiCalendarsSolo
+                props.multiCalendarsSolo
             ) {
                 setCalendarMonthYear(1, getMonth(date), getYear(date));
             }
@@ -288,8 +292,8 @@ export const useCalendar = (
         const monthValue = getMonth(getDate(date));
         const yearValue = getYear(getDate(date));
         setCalendarMonthYear(0, monthValue, yearValue);
-        if (config.value.multiCalendars > 0) {
-            for (let i = 1; i < config.value.multiCalendars; i++) {
+        if (props.multiCalendars > 0) {
+            for (let i = 1; i < props.multiCalendars; i++) {
                 const next = getNextMonthYear(
                     set(getDate(date), { year: month.value(i - 1), month: year.value(i - 1) }),
                 );
@@ -305,8 +309,8 @@ export const useCalendar = (
                 modelValue.value = !value.length ? null : value;
             } else {
                 if (
-                    (config.value.multiDatesLimit && +config.value.multiDatesLimit > modelValue.value.length) ||
-                    !config.value.multiDatesLimit
+                    (props.multiDatesLimit && +props.multiDatesLimit > modelValue.value.length) ||
+                    !props.multiDatesLimit
                 ) {
                     modelValue.value.push(date);
                 }
@@ -327,10 +331,9 @@ export const useCalendar = (
             const disabledDates =
                 daysInBetween.length === 1 ? 0 : daysInBetween.filter((date) => isDisabled(date)).length;
             const diff = Math.abs(absoluteDiff) - disabledDates;
-            if (config.value.minRange && config.value.maxRange)
-                return diff >= +config.value.minRange && diff <= +config.value.maxRange;
-            if (config.value.minRange) return diff >= +config.value.minRange;
-            if (config.value.maxRange) return diff <= +config.value.maxRange;
+            if (props.minRange && props.maxRange) return diff >= +props.minRange && diff <= +props.maxRange;
+            if (props.minRange) return diff >= +props.minRange;
+            if (props.maxRange) return diff <= +props.maxRange;
         }
         return true;
     };
@@ -339,15 +342,12 @@ export const useCalendar = (
     const getRangeWithFixedDate = (date: Date): Date[] => {
         if (Array.isArray(modelValue.value) && modelValue.value.length === 2) {
             if (
-                config.value.fixedStart &&
+                props.fixedStart &&
                 (isDateAfter(date, modelValue.value[0]) || isDateEqual(date, modelValue.value[0]))
             ) {
                 return [modelValue.value[0], date];
             }
-            if (
-                config.value.fixedEnd &&
-                (isDateBefore(date, modelValue.value[1]) || isDateEqual(date, modelValue.value[1]))
-            ) {
+            if (props.fixedEnd && (isDateBefore(date, modelValue.value[1]) || isDateEqual(date, modelValue.value[1]))) {
                 return [date, modelValue.value[1]];
             }
             return modelValue.value;
@@ -356,13 +356,13 @@ export const useCalendar = (
     };
 
     const autoApply = (): void => {
-        if (config.value.autoApply) {
+        if (props.autoApply) {
             emit('auto-apply');
         }
     };
 
     const selectOnAutoApply = () => {
-        if (config.value.autoApply) {
+        if (props.autoApply) {
             emit('select-date');
         }
     };
@@ -382,7 +382,7 @@ export const useCalendar = (
     // Called on selectDate when the regular single picker is used
     const handleSingleDateSelect = (day: ICalendarDay) => {
         const date = setDateTime(getDate(day.value), time.hours as number, time.minutes as number, getSecondsValue());
-        if (config.value.multiDates) {
+        if (props.multiDates) {
             handleMultiDateSelect(date);
         } else {
             modelValue.value = date;
@@ -394,14 +394,14 @@ export const useCalendar = (
     // Before range selecting, ensure that modelValue is properly set
     const presetTempRange = () => {
         tempRange.value = modelValue.value ? (modelValue.value as Date[]).slice() : [];
-        if (tempRange.value.length === 2 && !(config.value.fixedStart || config.value.fixedEnd)) {
+        if (tempRange.value.length === 2 && !(props.fixedStart || props.fixedEnd)) {
             tempRange.value = [];
         }
     };
 
     // Handles auto range selecting
     const handleAutoRange = (day: ICalendarDay, isNext: boolean) => {
-        const autoRange = [getDate(day.value), addDays(getDate(day.value), +config.value.autoRange)];
+        const autoRange = [getDate(day.value), addDays(getDate(day.value), +props.autoRange)];
         if (isDateRangeAllowed(autoRange)) {
             if (isNext) {
                 handleNextCalendarAutoRange(day.value);
@@ -418,8 +418,8 @@ export const useCalendar = (
     // Called on selectDate when range mode is used
     const handleRangeDatesSelect = (day: ICalendarDay, isNext: boolean) => {
         presetTempRange();
-        if (config.value.autoRange) return handleAutoRange(day, isNext);
-        if (config.value.fixedStart || config.value.fixedEnd) return setFixedDateRange(day);
+        if (props.autoRange) return handleAutoRange(day, isNext);
+        if (props.fixedStart || props.fixedEnd) return setFixedDateRange(day);
         if (!tempRange.value[0]) {
             tempRange.value[0] = getDate(day.value);
         } else {
@@ -453,7 +453,7 @@ export const useCalendar = (
             }
             modelValue.value = tempRange.value;
 
-            if (tempRange.value[0] && tempRange.value[1] && config.value.autoApply) {
+            if (tempRange.value[0] && tempRange.value[1] && props.autoApply) {
                 emit('autoApply');
             }
         }
@@ -464,13 +464,13 @@ export const useCalendar = (
      * Do a necessary formatting and assign value to internal
      */
     const selectDate = (day: UnwrapRef<ICalendarDay>, isNext = false): void => {
-        if (isDisabled(day.value) || (!day.current && config.value.hideOffsetDates)) return;
+        if (isDisabled(day.value) || (!day.current && props.hideOffsetDates)) return;
 
-        if (config.value.weekPicker) return handleWeekPickerSelect(day);
+        if (props.weekPicker) return handleWeekPickerSelect(day);
 
-        if (!config.value.range) return handleSingleDateSelect(day);
+        if (!props.range) return handleSingleDateSelect(day);
 
-        if (isNumberArray(time.hours) && isNumberArray(time.minutes) && !config.value.multiDates) {
+        if (isNumberArray(time.hours) && isNumberArray(time.minutes) && !props.multiDates) {
             handleRangeDatesSelect(day, isNext);
             postRangeSelect();
         }
@@ -491,7 +491,7 @@ export const useCalendar = (
             const date = subMonths(set(getDate(), { month: month.value(i + 1), year: year.value(i + 1) }), 1);
             setCalendarMonthYear(i, getMonth(date), getYear(date));
         }
-        for (let i = instance + 1; i <= (config.value.multiCalendars as number) - 1; i++) {
+        for (let i = instance + 1; i <= (props.multiCalendars as number) - 1; i++) {
             const date = addMonths(set(getDate(), { month: month.value(i - 1), year: year.value(i - 1) }), 1);
             setCalendarMonthYear(i, getMonth(date), getYear(date));
         }
@@ -509,18 +509,18 @@ export const useCalendar = (
 
     // Handles selection of month/year
     const updateMonthYear = (instance: number, val: { month: number; year: number; fromNav?: boolean }): void => {
-        const isValueChange = config.value.monthPicker
+        const isValueChange = props.monthPicker
             ? month.value(instance) !== val.month || !val.fromNav
             : year.value(instance) !== val.year;
 
         setCalendarMonthYear(instance, val.month, val.year);
 
-        if (config.value.multiCalendars && !config.value.multiCalendarsSolo) {
+        if (props.multiCalendars && !props.multiCalendarsSolo) {
             autoChangeMultiCalendars(instance);
         }
 
-        if (config.value.monthPicker || config.value.yearPicker) {
-            if (config.value.range) {
+        if (props.monthPicker || props.yearPicker) {
+            if (props.range) {
                 if (isValueChange) {
                     let rangeDate = modelValue.value ? (modelValue.value as Date[]).slice() : [];
                     if (rangeDate.length === 2 && rangeDate[1] !== null) {
@@ -542,15 +542,15 @@ export const useCalendar = (
             }
         }
         emit('update-month-year', { instance, month: val.month, year: val.year });
-        triggerCalendarTransition(config.value.multiCalendarsSolo ? instance : undefined);
+        triggerCalendarTransition(props.multiCalendarsSolo ? instance : undefined);
     };
 
     // Post month/year select, handles auto-apply and flow step, after the selection
     const monthYearSelect = async (isYear = false): Promise<void> => {
-        if (config.value.autoApply && (config.value.monthPicker || config.value.yearPicker)) {
+        if (props.autoApply && (props.monthPicker || props.yearPicker)) {
             await nextTick();
-            const ignoreClose = config.value.monthPicker ? isYear : false;
-            if (config.value.range) {
+            const ignoreClose = props.monthPicker ? isYear : false;
+            if (props.range) {
                 emit('auto-apply', ignoreClose || !modelValue.value || (modelValue.value as Date[]).length === 1);
             } else {
                 emit('auto-apply', ignoreClose);
@@ -563,11 +563,9 @@ export const useCalendar = (
     const autoChangeMonth = (increment: number, instance: number) => {
         const initialDate = set(getDate(), { month: month.value(instance), year: year.value(instance) });
         const date = increment < 0 ? addMonths(initialDate, 1) : subMonths(initialDate, 1);
-        if (
-            validateMonthYearInRange(getMonth(date), getYear(date), increment < 0, config.value.preventMinMaxNavigation)
-        ) {
+        if (validateMonthYearInRange(getMonth(date), getYear(date), increment < 0, props.preventMinMaxNavigation)) {
             setCalendarMonthYear(instance, getMonth(date), getYear(date));
-            if (config.value.multiCalendars && !config.value.multiCalendarsSolo) {
+            if (props.multiCalendars && !props.multiCalendarsSolo) {
                 autoChangeMultiCalendars(instance);
             }
             triggerCalendarTransition();
@@ -588,9 +586,9 @@ export const useCalendar = (
             if (dateValue[1] && modelValue.value[1]) {
                 modelValue.value[1] = setDateTime(dateValue[1], time.hours[1], time.minutes[1], getSecondsValue(false));
             }
-        } else if (config.value.multiDates && Array.isArray(modelValue.value)) {
+        } else if (props.multiDates && Array.isArray(modelValue.value)) {
             modelValue.value[modelValue.value.length - 1] = getSetDateTime(dateValue as Date);
-        } else if (!config.value.range && !isRange(dateValue)) {
+        } else if (!props.range && !isRange(dateValue)) {
             modelValue.value = getSetDateTime(dateValue);
         }
         emit('time-update');
@@ -602,12 +600,12 @@ export const useCalendar = (
         const minutesCp = !isHours && !isSeconds ? value : time.minutes;
         const secondsCp = isSeconds ? value : time.seconds;
         if (
-            config.value.range &&
+            props.range &&
             isRange(modelValue.value) &&
             isNumberArray(hoursCp) &&
             isNumberArray(minutesCp) &&
             isNumberArray(secondsCp) &&
-            !config.value.disableTimeRangeValidation
+            !props.disableTimeRangeValidation
         ) {
             const setTime = (index: number) =>
                 setDateTime((modelValue.value as Date[])[index], hoursCp[index], minutesCp[index], secondsCp[index]);
@@ -625,7 +623,7 @@ export const useCalendar = (
         setTime('seconds', secondsCp);
 
         if (modelValue.value) {
-            if (config.value.multiDates) {
+            if (props.multiDates) {
                 const lastEntry = multiDatesLast();
                 if (lastEntry) {
                     handleTimeUpdate(lastEntry);
@@ -633,22 +631,22 @@ export const useCalendar = (
             } else {
                 handleTimeUpdate(modelValue.value);
             }
-        } else if (config.value.timePicker) {
-            handleTimeUpdate(config.value.range ? [getDate(), getDate()] : getDate());
+        } else if (props.timePicker) {
+            handleTimeUpdate(props.range ? [getDate(), getDate()] : getDate());
         }
         updateFlow();
     };
 
     // Handle mouse scroll
     const handleScroll = (event: WheelEvent, instance: number): void => {
-        if (config.value.monthChangeOnScroll) {
-            autoChangeMonth(config.value.monthChangeOnScroll !== 'inverse' ? -event.deltaY : event.deltaY, instance);
+        if (props.monthChangeOnScroll) {
+            autoChangeMonth(props.monthChangeOnScroll !== 'inverse' ? -event.deltaY : event.deltaY, instance);
         }
     };
 
     // Handle arrow key
     const handleArrow = (arrow: 'left' | 'right', instance: number, vertical = false): void => {
-        if (config.value.monthChangeOnArrows && config.value.vertical === vertical) {
+        if (props.monthChangeOnArrows && props.vertical === vertical) {
             handleSwipe(arrow, instance);
         }
     };
@@ -660,11 +658,11 @@ export const useCalendar = (
 
     // Check if the calendar day has a marker
     const getMarker = (date: UnwrapRef<ICalendarDay>): IMarker | undefined =>
-        config.value.markers.find((marker) => isDateEqual(sanitizeDate(date.value), sanitizeDate(marker.date)));
+        props.markers.find((marker) => isDateEqual(sanitizeDate(date.value), sanitizeDate(marker.date)));
 
     // Select current date on now button
     const selectCurrentDate = (): void => {
-        if (!config.value.range) {
+        if (!props.range) {
             modelValue.value = getDate();
         } else {
             if (modelValue.value && Array.isArray(modelValue.value) && modelValue.value[0]) {
@@ -681,7 +679,7 @@ export const useCalendar = (
     // Called when the preset range is clicked
     const presetDateRange = (dates: Date[] | string[], hasSlot?: boolean): void => {
         if (hasSlot) return;
-        if (dates.length && dates.length <= 2 && config.value.range) {
+        if (dates.length && dates.length <= 2 && props.range) {
             modelValue.value = dates.map((date) => getDate(date));
             selectOnAutoApply();
         }

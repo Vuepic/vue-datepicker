@@ -25,8 +25,7 @@ import {
 } from 'date-fns';
 import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
 
-import { errors, convertType } from '@/utils/util';
-import { useState } from '@/components/composables/state';
+import { errors, convertType, getDefaultFilters } from '@/utils/util';
 
 import type {
     DateTimeSetter,
@@ -37,48 +36,81 @@ import type {
     InternalModuleValue,
     ICalendarDate,
     ICalendarDay,
+    ExtendedProps,
 } from '@/interfaces';
+import type { AllPropsType } from '@/utils/props';
 
-export const useUtils = () => {
-    const { config } = useState();
+// Instead of using everywhere new Date(), this is the central place for getting or parsing the date
+const getDate = (value?: Date | string | number) => (value ? new Date(value) : new Date());
 
+// Reset date time
+export const resetDateTime = (value: Date | string): Date => {
+    let dateParse = getDate(JSON.parse(JSON.stringify(value)));
+    dateParse = setHours(dateParse, 0);
+    dateParse = setMinutes(dateParse, 0);
+    dateParse = setSeconds(dateParse, 0);
+    dateParse = setMilliseconds(dateParse, 0);
+
+    return dateParse;
+};
+
+export const setDateTime = (
+    date: Date | null,
+    hours?: DateTimeSetter,
+    minutes?: DateTimeSetter,
+    seconds?: DateTimeSetter,
+): Date => {
+    let dateCopy = date ? getDate(date) : getDate();
+    if (hours || hours === 0) {
+        dateCopy = setHours(dateCopy, +hours);
+    }
+    if (minutes || minutes === 0) {
+        dateCopy = setMinutes(dateCopy, +minutes);
+    }
+    if (seconds || seconds === 0) {
+        dateCopy = setSeconds(dateCopy, +seconds);
+    }
+    return setMilliseconds(dateCopy, 0);
+};
+
+export const useUtils = (props: AllPropsType | ExtendedProps | any) => {
     // Check for partial range enabled on null value as second item in the array
     const checkPartialRangeValue = (): Date => {
-        if (config.value.partialRange) return null as unknown as Date;
+        if (props.partialRange) return null as unknown as Date;
         throw new Error(errors.prop('partial-range'));
     };
 
     // Execute some code depending on the range prop, if not, throw error
     const checkRangeEnabled = <T>(fn: () => T): T => {
-        if (config.value.range) return fn();
+        if (props.range) return fn();
         throw new Error(errors.prop('range'));
     };
 
     // Shared method for time format
     const getTimeFormat = (): string => {
-        const seconds = config.value.enableSeconds ? ':ss' : '';
-        return config.value.is24 ? `HH:mm${seconds}` : `hh:mm${seconds} aa`;
+        const seconds = props.enableSeconds ? ':ss' : '';
+        return props.is24 ? `HH:mm${seconds}` : `hh:mm${seconds} aa`;
     };
 
     // Get default format pattern, returns user specified if defined first
     const getDefaultPattern = (): string => {
-        if (config.value.format) return config.value.format as string;
-        if (config.value.monthPicker) return 'MM/yyyy';
-        if (config.value.timePicker) return getTimeFormat();
-        if (config.value.weekPicker) return 'MM/dd/yyyy';
-        if (config.value.yearPicker) return 'yyyy';
-        return config.value.enableTimePicker ? `MM/dd/yyyy, ${getTimeFormat()}` : 'MM/dd/yyyy';
+        if (props.format) return props.format as string;
+        if (props.monthPicker) return 'MM/yyyy';
+        if (props.timePicker) return getTimeFormat();
+        if (props.weekPicker) return 'MM/dd/yyyy';
+        if (props.yearPicker) return 'yyyy';
+        return props.enableTimePicker ? `MM/dd/yyyy, ${getTimeFormat()}` : 'MM/dd/yyyy';
     };
 
     // Format date to a  human-readable output
     const formatDate = (value: Date | Date[]) => {
-        if (typeof config.value.format === 'function') return config.value.format(value);
+        if (typeof props.format === 'function') return props.format(value);
         const pattern = getDefaultPattern();
-        const options = config.value.formatLocale ? { locale: config.value.formatLocale } : undefined;
+        const options = props.formatLocale ? { locale: props.formatLocale } : undefined;
 
         if (Array.isArray(value)) {
             return `${format(value[0], pattern, options)} ${
-                config.value.modelAuto && !value[1] ? '' : config.value.textInputOptions.rangeSeparator || '-'
+                props.modelAuto && !value[1] ? '' : props.textInputOptions.rangeSeparator || '-'
             } ${value[1] ? format(value[1], pattern, options) : ''}`;
         }
 
@@ -87,43 +119,35 @@ export const useUtils = () => {
 
     // Converts utc date to a timezone date
     const getZonedDate = (date: Date): Date => {
-        return config.value.timezone ? utcToZonedTime(date, config.value.timezone) : date;
+        return props.timezone ? utcToZonedTime(date, props.timezone) : date;
     };
 
     // Convert zoned date back to utc date
     const getZonedToUtc = (date: Date): Date => {
-        return config.value.timezone ? zonedTimeToUtc(date, config.value.timezone) : date;
+        return props.timezone ? zonedTimeToUtc(date, props.timezone) : date;
     };
 
-    // Instead of using everywhere new Date(), this is the central place for getting or parsing the date
-    const getDate = (value?: Date | string | number) => (value ? new Date(value) : new Date());
-
     const hideNavigationButtons = computed(() => (key: Flow) => {
-        return config.value.hideNavigation?.includes(key);
+        return props.hideNavigation?.includes(key);
     });
 
     const validateDate = (date: Date) => {
-        const aboveMax = config.value.maxDate
-            ? isDateAfter(sanitizeDate(date), sanitizeDate(config.value.maxDate))
-            : false;
-        const bellowMin = config.value.minDate
-            ? isDateBefore(sanitizeDate(date), sanitizeDate(config.value.minDate))
-            : false;
-        const inDisableArr = matchDate(date, config.value.disabledDates);
-        const disabledMonths = config.value.filters.months.length
-            ? config.value.filters.months.map((month) => +month)
-            : [];
+        const filters = getDefaultFilters(props.filters);
+        const aboveMax = props.maxDate ? isDateAfter(sanitizeDate(date), sanitizeDate(props.maxDate)) : false;
+        const bellowMin = props.minDate ? isDateBefore(sanitizeDate(date), sanitizeDate(props.minDate)) : false;
+        const inDisableArr = matchDate(date, props.disabledDates);
+        const disabledMonths = filters.months.length ? filters.months.map((month) => +month) : [];
         const inDisabledMonths = disabledMonths.includes(getMonth(date));
-        const weekDayDisabled = config.value.disabledWeekDays.length
-            ? config.value.disabledWeekDays.some((day) => +day === getDay(date))
+        const weekDayDisabled = props.disabledWeekDays.length
+            ? props.disabledWeekDays.some((day: Date) => +day === getDay(date))
             : false;
-        const notInSpecific = config.value.allowedDates.length
-            ? !config.value.allowedDates.some((dateVal) => isDateEqual(sanitizeDate(dateVal), sanitizeDate(date)))
+        const notInSpecific = props.allowedDates.length
+            ? !props.allowedDates.some((dateVal: Date) => isDateEqual(sanitizeDate(dateVal), sanitizeDate(date)))
             : false;
 
         const dateYear = getYear(date);
 
-        const outOfYearRange = dateYear < +config.value.yearRange[0] || dateYear > +config.value.yearRange[1];
+        const outOfYearRange = dateYear < +props.yearRange[0] || dateYear > +props.yearRange[1];
 
         return !(
             aboveMax ||
@@ -146,15 +170,13 @@ export const useUtils = () => {
     };
 
     const getDefaultStartTime = (): TimeModel | TimeModel[] | null => {
-        if (config.value.range) {
-            if (config.value.startTime && Array.isArray(config.value.startTime)) {
-                return [assignDefaultTime(config.value.startTime[0]), assignDefaultTime(config.value.startTime[1])];
+        if (props.range) {
+            if (props.startTime && Array.isArray(props.startTime)) {
+                return [assignDefaultTime(props.startTime[0]), assignDefaultTime(props.startTime[1])];
             }
             return null;
         }
-        return config.value.startTime && !Array.isArray(config.value.startTime)
-            ? assignDefaultTime(config.value.startTime)
-            : null;
+        return props.startTime && !Array.isArray(props.startTime) ? assignDefaultTime(props.startTime) : null;
     };
 
     /**
@@ -162,17 +184,6 @@ export const useUtils = () => {
      */
     const isDisabled = (date: Date): boolean => {
         return !validateDate(date);
-    };
-
-    // Reset date time
-    const resetDateTime = (value: Date | string): Date => {
-        let dateParse = getDate(JSON.parse(JSON.stringify(value)));
-        dateParse = setHours(dateParse, 0);
-        dateParse = setMinutes(dateParse, 0);
-        dateParse = setSeconds(dateParse, 0);
-        dateParse = setMilliseconds(dateParse, 0);
-
-        return dateParse;
     };
 
     const isValidDate = (value: Date | Date[] | null): boolean => {
@@ -190,28 +201,9 @@ export const useUtils = () => {
     };
 
     const getWeekFromDate = (date: Date): [Date, Date] => {
-        const start = startOfWeek(date, { weekStartsOn: +config.value.weekStart as WeekStartNum });
-        const end = endOfWeek(date, { weekStartsOn: +config.value.weekStart as WeekStartNum });
+        const start = startOfWeek(date, { weekStartsOn: +props.weekStart as WeekStartNum });
+        const end = endOfWeek(date, { weekStartsOn: +props.weekStart as WeekStartNum });
         return [start, end];
-    };
-
-    const setDateTime = (
-        date: Date | null,
-        hours?: DateTimeSetter,
-        minutes?: DateTimeSetter,
-        seconds?: DateTimeSetter,
-    ): Date => {
-        let dateCopy = date ? getDate(date) : getDate();
-        if (hours || hours === 0) {
-            dateCopy = setHours(dateCopy, +hours);
-        }
-        if (minutes || minutes === 0) {
-            dateCopy = setMinutes(dateCopy, +minutes);
-        }
-        if (seconds || seconds === 0) {
-            dateCopy = setSeconds(dateCopy, +seconds);
-        }
-        return setMilliseconds(dateCopy, 0);
     };
 
     const matchDate = (date: Date, pattern: Date[] | string[] | number[] | ((date: Date) => boolean)): boolean => {
@@ -296,12 +288,7 @@ export const useUtils = () => {
 
     // Check if we need to do a time validation
     const skipTimeValidation = () => {
-        return (
-            !config.value.enableTimePicker ||
-            config.value.monthPicker ||
-            config.value.yearPicker ||
-            config.value.ignoreTimeValidation
-        );
+        return !props.enableTimePicker || props.monthPicker || props.yearPicker || props.ignoreTimeValidation;
     };
 
     // Return set time for a given date or array of dates
@@ -314,27 +301,27 @@ export const useUtils = () => {
 
     // Extracted validation function that will check time based on maxTime or maxDate
     const checkTimeMax = (selectedDateTime: Date | Date[]) => {
-        const max = config.value.maxTime ? getMinMaxTime(config.value.maxTime) : getDate(config.value.maxDate);
+        const max = props.maxTime ? getMinMaxTime(props.maxTime) : getDate(props.maxDate);
         if (Array.isArray(selectedDateTime)) {
             return (
-                validateTime(selectedDateTime[0], max, 'max', !!config.value.maxDate) &&
-                validateTime(selectedDateTime[1], max, 'max', !!config.value.maxDate)
+                validateTime(selectedDateTime[0], max, 'max', !!props.maxDate) &&
+                validateTime(selectedDateTime[1], max, 'max', !!props.maxDate)
             );
         }
-        return validateTime(selectedDateTime, max, 'max', !!config.value.maxDate);
+        return validateTime(selectedDateTime, max, 'max', !!props.maxDate);
     };
 
     // Extracted validation function that will check time based on minTime or minDate
     const checkTimeMin = (selectedDateTime: Date | Date[], isValid: boolean) => {
-        const min = config.value.minTime ? getMinMaxTime(config.value.minTime) : getDate(config.value.minDate);
+        const min = props.minTime ? getMinMaxTime(props.minTime) : getDate(props.minDate);
         if (Array.isArray(selectedDateTime)) {
             return (
-                validateTime(selectedDateTime[0], min, 'min', !!config.value.minDate) &&
-                validateTime(selectedDateTime[1], min, 'min', !!config.value.minDate) &&
+                validateTime(selectedDateTime[0], min, 'min', !!props.minDate) &&
+                validateTime(selectedDateTime[1], min, 'min', !!props.minDate) &&
                 isValid
             );
         }
-        return validateTime(selectedDateTime, min, 'min', !!config.value.minDate) && isValid;
+        return validateTime(selectedDateTime, min, 'min', !!props.minDate) && isValid;
     };
 
     // Validate time
@@ -343,13 +330,13 @@ export const useUtils = () => {
         if (!date) return true;
         if (skipTimeValidation()) return true;
 
-        const selectedDateTime = !config.value.minDate && !config.value.maxDate ? getSetTimeValue(date) : date;
+        const selectedDateTime = !props.minDate && !props.maxDate ? getSetTimeValue(date) : date;
 
-        if (config.value.maxTime || config.value.maxDate) {
+        if (props.maxTime || props.maxDate) {
             isValid = checkTimeMax(convertType(selectedDateTime));
         }
 
-        if (config.value.minTime || config.value.minDate) {
+        if (props.minTime || props.minDate) {
             isValid = checkTimeMin(convertType(selectedDateTime), isValid);
         }
         return isValid;
@@ -378,10 +365,10 @@ export const useUtils = () => {
         const firstDate = getDate(new Date(year, month));
         const lastDate = getDate(new Date(year, month + 1, 0));
 
-        const firstDateInCalendar = startOfWeek(firstDate, { weekStartsOn: config.value.weekStart as WeekStartNum });
+        const firstDateInCalendar = startOfWeek(firstDate, { weekStartsOn: props.weekStart as WeekStartNum });
 
         const addDaysToWeek = (date: Date) => {
-            const days = getWeekDays(date, month, config.value.hideOffsetDates);
+            const days = getWeekDays(date, month, props.hideOffsetDates);
             weeks.push({ days });
             if (
                 !weeks[weeks.length - 1].days.some((day) =>
@@ -403,24 +390,24 @@ export const useUtils = () => {
 
     const validateMinDate = (month: number, year: number): boolean => {
         return (
-            isDateBefore(...getDateForCompare(config.value.minDate, month, year)) ||
-            isDateEqual(...getDateForCompare(config.value.minDate, month, year))
+            isDateBefore(...getDateForCompare(props.minDate, month, year)) ||
+            isDateEqual(...getDateForCompare(props.minDate, month, year))
         );
     };
 
     const validateMaxDate = (month: number, year: number): boolean => {
         return (
-            isDateAfter(...getDateForCompare(config.value.maxDate, month, year)) ||
-            isDateEqual(...getDateForCompare(config.value.maxDate, month, year))
+            isDateAfter(...getDateForCompare(props.maxDate, month, year)) ||
+            isDateEqual(...getDateForCompare(props.maxDate, month, year))
         );
     };
 
     const validateBothMinAndMax = (month: number, year: number, isNext: boolean) => {
         let valid = false;
-        if (config.value.maxDate && isNext && validateMaxDate(month, year)) {
+        if (props.maxDate && isNext && validateMaxDate(month, year)) {
             valid = true;
         }
-        if (config.value.minDate && !isNext && validateMinDate(month, year)) {
+        if (props.minDate && !isNext && validateMinDate(month, year)) {
             valid = true;
         }
         return valid;
@@ -429,11 +416,11 @@ export const useUtils = () => {
     const validateMonthYearInRange = (month: number, year: number, isNext: boolean, preventNav: boolean): boolean => {
         let valid = false;
         if (preventNav) {
-            if (config.value.minDate && config.value.maxDate) {
+            if (props.minDate && props.maxDate) {
                 valid = validateBothMinAndMax(month, year, isNext);
-            } else if (config.value.minDate && validateMinDate(month, year)) {
+            } else if (props.minDate && validateMinDate(month, year)) {
                 valid = true;
-            } else if (config.value.maxDate && validateMaxDate(month, year)) {
+            } else if (props.maxDate && validateMaxDate(month, year)) {
                 valid = true;
             }
         } else {

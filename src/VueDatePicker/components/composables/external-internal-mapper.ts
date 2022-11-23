@@ -3,15 +3,16 @@ import { getHours, getMinutes, getMonth, getSeconds, getYear, parse, setYear } f
 
 import { dateToUtc } from '@/utils/date-utils';
 import { convertType, errors } from '@/utils/util';
-import { useUtils, useState } from '@/components/composables';
+import { useUtils } from '@/components/composables';
 
 import type { ModelValue, VueEmit, TimeModel, MonthModel } from '@/interfaces';
+import type { AllPropsType } from '@/utils/props';
 
 /**
  * Handles values from external to internal and vise versa
  */
-export const useExternalInternalMapper = (emit: VueEmit) => {
-    const { internalModelValue, config } = useState();
+export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType) => {
+    const internalModelValue = ref();
     const {
         getZonedToUtc,
         getZonedDate,
@@ -23,7 +24,7 @@ export const useExternalInternalMapper = (emit: VueEmit) => {
         isValidDate,
         setDateTime,
         setDateMonthOrYear,
-    } = useUtils();
+    } = useUtils(props);
 
     const inputValue = ref('');
 
@@ -91,7 +92,7 @@ export const useExternalInternalMapper = (emit: VueEmit) => {
 
     // Map external format to internal model value for range and single picker
     const mapDateExternalToInternal = (value: Date | Date[]) => {
-        if (config.value.modelAuto) {
+        if (props.modelAuto) {
             return Array.isArray(value)
                 ? [parseModelType(value[0]), parseModelType(value[1])]
                 : [parseModelType(value), null];
@@ -110,7 +111,7 @@ export const useExternalInternalMapper = (emit: VueEmit) => {
      * auto add 'null' value as second value
      */
     const sanitizeModelValue = () => {
-        if (Array.isArray(internalModelValue.value) && config.value.range && internalModelValue.value.length === 1) {
+        if (Array.isArray(internalModelValue.value) && props.range && internalModelValue.value.length === 1) {
             internalModelValue.value.push(checkPartialRangeValue());
         }
     };
@@ -137,8 +138,8 @@ export const useExternalInternalMapper = (emit: VueEmit) => {
     // Parent internal to external function mapper that will return proper date format based on provided config
     const mapInternalDatesToExternal = () => {
         sanitizeModelValue();
-        if (config.value.modelAuto) return getModelAutoForExternal();
-        if (config.value.multiDates) return getMultiDatesForExternal();
+        if (props.modelAuto) return getModelAutoForExternal();
+        if (props.multiDates) return getMultiDatesForExternal();
         if (Array.isArray(internalModelValue.value)) {
             return checkRangeEnabled(() => getRangeEmitValue());
         }
@@ -147,11 +148,11 @@ export const useExternalInternalMapper = (emit: VueEmit) => {
 
     const mapExternalToInternal = (value: ModelValue) => {
         if (!value) return null;
-        if (config.value.timePicker) return mapTimeExternalToInternal(convertType(value));
-        if (config.value.monthPicker) return mapMonthExternalToInternal(convertType(value));
-        if (config.value.yearPicker) return mapYearExternalToInternal(convertType(value));
-        if (config.value.multiDates) return mapMultiDateExternalToInternal(convertType(value));
-        if (config.value.weekPicker) return mapWeekExternalToInternal(convertType(value));
+        if (props.timePicker) return mapTimeExternalToInternal(convertType(value));
+        if (props.monthPicker) return mapMonthExternalToInternal(convertType(value));
+        if (props.yearPicker) return mapYearExternalToInternal(convertType(value));
+        if (props.multiDates) return mapMultiDateExternalToInternal(convertType(value));
+        if (props.weekPicker) return mapWeekExternalToInternal(convertType(value));
         return mapDateExternalToInternal(convertType(value));
     };
 
@@ -173,8 +174,7 @@ export const useExternalInternalMapper = (emit: VueEmit) => {
 
     const getInputValue = (): string => {
         if (!internalModelValue.value) return '';
-        if (config.value.multiDates)
-            return (internalModelValue.value as Date[]).map((date) => formatDate(date)).join('; ');
+        if (props.multiDates) return (internalModelValue.value as Date[]).map((date) => formatDate(date)).join('; ');
         return formatDate(internalModelValue.value);
     };
 
@@ -182,47 +182,38 @@ export const useExternalInternalMapper = (emit: VueEmit) => {
      * Map the date value(s) to the human-readable text for the input field
      */
     const formatInputValue = (): void => {
-        if (!config.value.format || typeof config.value.format === 'string') {
+        if (!props.format || typeof props.format === 'string') {
             inputValue.value = getInputValue();
         } else {
-            inputValue.value = config.value.format(internalModelValue.value as Date | Date[]);
+            inputValue.value = props.format(internalModelValue.value as Date | Date[]);
         }
     };
 
     const parseModelType = (value: string | number | Date): Date => {
-        if (config.value.utc) {
+        if (props.utc) {
             const toDate = new Date(value);
-            return config.value.utc === 'preserve'
-                ? new Date(toDate.getTime() + toDate.getTimezoneOffset() * 60000)
-                : toDate;
+            return props.utc === 'preserve' ? new Date(toDate.getTime() + toDate.getTimezoneOffset() * 60000) : toDate;
         }
-        if (config.value.modelType) {
-            if (config.value.modelType === 'date' || config.value.modelType === 'timestamp')
-                return getZonedDate(new Date(value));
+        if (props.modelType) {
+            if (props.modelType === 'date' || props.modelType === 'timestamp') return getZonedDate(new Date(value));
 
-            if (
-                config.value.modelType === 'format' &&
-                (typeof config.value.format === 'string' || !config.value.format)
-            )
+            if (props.modelType === 'format' && (typeof props.format === 'string' || !props.format))
                 return parse(value as string, getDefaultPattern(), new Date());
 
-            return getZonedDate(parse(value as string, config.value.modelType, new Date()));
+            return getZonedDate(parse(value as string, props.modelType, new Date()));
         }
 
         return getZonedDate(new Date(value));
     };
 
     const toModelType = (val: Date): string | number | Date => {
-        if (config.value.utc) {
-            return dateToUtc(val, config.value.utc === 'preserve');
+        if (props.utc) {
+            return dateToUtc(val, props.utc === 'preserve');
         }
-        if (config.value.modelType) {
-            if (config.value.modelType === 'timestamp') return +getZonedToUtc(val);
+        if (props.modelType) {
+            if (props.modelType === 'timestamp') return +getZonedToUtc(val);
 
-            if (
-                config.value.modelType === 'format' &&
-                (typeof config.value.format === 'string' || !config.value.format)
-            )
+            if (props.modelType === 'format' && (typeof props.format === 'string' || !props.format))
                 return formatDate(getZonedToUtc(val));
 
             return formatDate(getZonedToUtc(val));
@@ -258,15 +249,16 @@ export const useExternalInternalMapper = (emit: VueEmit) => {
     const emitModelValue = (): void => {
         formatInputValue();
 
-        if (config.value.monthPicker) return modeEmitter(getMonthVal);
-        if (config.value.timePicker) return modeEmitter(getTimeVal);
-        if (config.value.yearPicker) return modeEmitter(getYear);
-        if (config.value.weekPicker) return emitValue(internalModelValue.value);
+        if (props.monthPicker) return modeEmitter(getMonthVal);
+        if (props.timePicker) return modeEmitter(getTimeVal);
+        if (props.yearPicker) return modeEmitter(getYear);
+        if (props.weekPicker) return emitValue(internalModelValue.value);
         return emitValue(mapInternalDatesToExternal());
     };
 
     return {
         inputValue,
+        internalModelValue,
         parseExternalModelValue,
         formatInputValue,
         emitModelValue,

@@ -6,11 +6,11 @@
                 v-if="!specificMode"
                 :class="calendarWrapClass"
                 role="grid"
-                :aria-label="config.ariaLabels?.calendarWrap"
+                :aria-label="ariaLabels?.calendarWrap"
             >
                 <div class="dp__calendar_header" role="row">
-                    <div class="dp__calendar_header_item" role="gridcell" v-if="config.weekNumbers">
-                        {{ config.weekNumName }}
+                    <div class="dp__calendar_header_item" role="gridcell" v-if="weekNumbers">
+                        {{ weekNumName }}
                     </div>
                     <div class="dp__calendar_header_item" role="gridcell" v-for="(dayVal, i) in weekDays" :key="i">
                         <slot v-if="$slots['calendar-header']" name="calendar-header" :day="dayVal" :index="i" />
@@ -20,15 +20,10 @@
                     </div>
                 </div>
                 <div class="dp__calendar_header_separator"></div>
-                <transition :name="transitionName" :css="!!config.transitions">
-                    <div
-                        class="dp__calendar"
-                        role="grid"
-                        :aria-label="config.ariaLabels?.calendarDays"
-                        v-if="showCalendar"
-                    >
+                <transition :name="transitionName" :css="!!transitions">
+                    <div class="dp__calendar" role="grid" :aria-label="ariaLabels?.calendarDays" v-if="showCalendar">
                         <div class="dp__calendar_row" role="row" v-for="(week, weekInd) in mappedDates" :key="weekInd">
-                            <div role="gridcell" v-if="config.weekNumbers" class="dp__calendar_item dp__week_num">
+                            <div role="gridcell" v-if="weekNumbers" class="dp__calendar_item dp__week_num">
                                 <div class="dp__cell_inner">
                                     {{ getWeekNum(week.days) }}
                                 </div>
@@ -45,7 +40,7 @@
                                     dayVal.classData.dp__range_start
                                 "
                                 :aria-disabled="dayVal.classData.dp__cell_disabled"
-                                :aria-label="config.ariaLabels.day(dayVal)"
+                                :aria-label="ariaLabels.day(dayVal)"
                                 tabindex="0"
                                 @click.stop.prevent="$emit('select-date', dayVal)"
                                 @keydown.enter="$emit('select-date', dayVal)"
@@ -106,14 +101,11 @@
     import { computed, nextTick, onMounted, ref } from 'vue';
 
     import { getDayNames, getDefaultMarker, unrefElement } from '@/utils/util';
-    import { useArrowNavigation, useState, useUtils } from '@/components/composables';
+    import { useArrowNavigation, useUtils } from '@/components/composables';
+    import { MergedProps } from '@/utils/props';
 
     import type { PropType, UnwrapRef } from 'vue';
-    import type { DynamicClass, ICalendarDate, ICalendarDay, IMarker, ITransition } from '@/interfaces';
-
-    const { config } = useState();
-    const { buildMultiLevelMatrix } = useArrowNavigation();
-    const { getDate, isDateAfter, isDateEqual, resetDateTime, setDateMonthOrYear } = useUtils();
+    import type { DynamicClass, ICalendarDate, ICalendarDay, IMarker, Transition } from '@/interfaces';
 
     const emit = defineEmits([
         'select-date',
@@ -134,7 +126,11 @@
         instance: { type: Number as PropType<number>, default: 0 },
         month: { type: Number as PropType<number>, default: 0 },
         year: { type: Number as PropType<number>, default: 0 },
+        ...MergedProps,
     });
+
+    const { buildMultiLevelMatrix } = useArrowNavigation();
+    const { getDate, isDateAfter, isDateEqual, resetDateTime, setDateMonthOrYear } = useUtils(props);
 
     const showMakerTooltip = ref<Date | null>(null);
     const markerTooltipStyle = ref({ bottom: '', left: '', transform: '' });
@@ -145,39 +141,37 @@
     const touch = ref({ startX: 0, endX: 0, startY: 0, endY: 0 });
 
     const weekDays = computed(() => {
-        if (config.value.dayNames) {
-            return Array.isArray(config.value.dayNames)
-                ? config.value.dayNames
-                : config.value.dayNames(config.value.locale, +config.value.weekStart);
+        if (props.dayNames) {
+            return Array.isArray(props.dayNames) ? props.dayNames : props.dayNames(props.locale, +props.weekStart);
         }
-        return getDayNames(config.value.locale, +config.value.weekStart);
+        return getDayNames(props.locale, +props.weekStart);
     });
 
     onMounted(() => {
         emit('mount', { cmp: 'calendar', refs: dayRefs });
-        if (!config.value.noSwipe) {
+        if (!props.noSwipe) {
             if (calendarWrapRef.value) {
                 calendarWrapRef.value.addEventListener('touchstart', onTouchStart, { passive: false });
                 calendarWrapRef.value.addEventListener('touchend', onTouchEnd, { passive: false });
                 calendarWrapRef.value.addEventListener('touchmove', onTouchMove, { passive: false });
             }
         }
-        if (config.value.monthChangeOnScroll && calendarWrapRef.value) {
+        if (props.monthChangeOnScroll && calendarWrapRef.value) {
             calendarWrapRef.value.addEventListener('wheel', onScroll, { passive: false });
         }
     });
 
     const getTransitionName = (isNext: boolean) => {
-        if (isNext) return config.value.vertical ? 'vNext' : 'next';
-        return config.value.vertical ? 'vPrevious' : 'previous';
+        if (isNext) return props.vertical ? 'vNext' : 'next';
+        return props.vertical ? 'vPrevious' : 'previous';
     };
 
     const triggerTransition = (month: number, year: number): void => {
-        if (config.value.transitions) {
+        if (props.transitions) {
             const newDate = resetDateTime(setDateMonthOrYear(getDate(), props.month, props.year));
             transitionName.value = isDateAfter(resetDateTime(setDateMonthOrYear(getDate(), month, year)), newDate)
-                ? (config.value.transitions as ITransition)[getTransitionName(true)]
-                : (config.value.transitions as ITransition)[getTransitionName(false)];
+                ? (props.transitions as Transition)[getTransitionName(true)]
+                : (props.transitions as Transition)[getTransitionName(false)];
             showCalendar.value = false;
             nextTick(() => {
                 showCalendar.value = true;
@@ -189,7 +183,7 @@
     const calendarWrapClass = computed(
         (): DynamicClass => ({
             dp__calendar_wrap: true,
-            [config.value.calendarClassName]: !!config.value.calendarClassName,
+            [props.calendarClassName]: !!props.calendarClassName,
         }),
     );
 
@@ -205,12 +199,10 @@
 
     const calendarParentClass = computed(() => ({
         dp__calendar: true,
-        dp__calendar_next: config.value.multiCalendars > 0 && props.instance !== 0,
+        dp__calendar_next: props.multiCalendars > 0 && props.instance !== 0,
     }));
 
-    const contentWrapStyle = computed(() =>
-        props.specificMode ? { height: `${config.value.modeHeight}px` } : undefined,
-    );
+    const contentWrapStyle = computed(() => (props.specificMode ? { height: `${props.modeHeight}px` } : undefined));
 
     const onMouseOver = (day: UnwrapRef<ICalendarDay>, weekInd: number, dayInd: number): void => {
         emit('set-hover-date', day);
@@ -249,7 +241,7 @@
     };
 
     const handleTouch = () => {
-        const property = config.value.vertical ? 'Y' : 'X';
+        const property = props.vertical ? 'Y' : 'X';
         if (Math.abs(touch.value[`start${property}`] - touch.value[`end${property}`]) > 10) {
             emit('handle-swipe', touch.value[`start${property}`] > touch.value[`end${property}`] ? 'right' : 'left');
         }
@@ -263,13 +255,13 @@
                 dayRefs.value[weekInd] = [el];
             }
         }
-        if (config.value.arrowNavigation) {
+        if (props.arrowNavigation) {
             buildMultiLevelMatrix(dayRefs.value, 'calendar');
         }
     };
 
     const onScroll = (ev: WheelEvent) => {
-        if (config.value.monthChangeOnScroll) {
+        if (props.monthChangeOnScroll) {
             ev.preventDefault();
             emit('handle-scroll', ev);
         }

@@ -1,4 +1,5 @@
 import type { ComponentPublicInstance, Ref } from 'vue';
+import type { AllPropsType } from '@/utils/props';
 
 export type DynamicClass = Record<string, boolean>;
 
@@ -21,7 +22,7 @@ export type IFormat = string | ((date: Date | Date[]) => string);
 
 export type InternalModuleValue = Date | Date[] | null;
 
-export interface IDateFilter {
+export interface DateFilter {
     months: number[];
     years: number[];
     times: { hours: number[]; minutes: number[]; seconds: number[] };
@@ -39,7 +40,7 @@ export interface ICalendarDate {
     days: ICalendarDay[];
 }
 
-export interface ITextInputOptions {
+export interface TextInputOptions {
     enterSubmit: boolean;
     tabSubmit: boolean;
     openMenu: boolean;
@@ -98,7 +99,7 @@ export interface IMarker {
     color?: string;
 }
 
-export interface ITransition {
+export interface Transition {
     menuAppear: string;
     open: string;
     close: string;
@@ -170,3 +171,17 @@ export type ModelType = ModelFormatType | string;
 export type DateTimeSetter = number | string | null;
 
 export type DateValue = Date | string | null;
+
+export interface MergedValues {
+    ariaLabels: AriaLabels;
+    textInputOptions: TextInputOptions;
+    multiCalendars: number;
+    filters: DateFilter;
+    transitions: Transition;
+    previewFormat: IFormat;
+    startTime: TimeModel | TimeModel[];
+}
+
+export interface ExtendedProps extends AllPropsType {
+    internalModelValue: InternalModuleValue;
+}

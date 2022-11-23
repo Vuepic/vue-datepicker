@@ -1,6 +1,6 @@
-import type { AriaLabels, IFormat, ITransition, ITextInputOptions } from '@/interfaces';
+import type { AriaLabels, IFormat, Transition, TextInputOptions } from '@/interfaces';
 
-export const mergeDefaultTransitions = (conf: Partial<ITransition>): ITransition =>
+export const mergeDefaultTransitions = (conf: Partial<Transition>): Transition =>
     Object.assign(
         {
             menuAppear: 'dp-menu-appear',
@@ -55,9 +55,9 @@ export const defaultPreviewFormat = (
     return previewFormat;
 };
 
-export const defaultTransitions = (transitions: boolean | ITransition): ITransition => {
+export const defaultTransitions = (transitions: boolean | Partial<Transition>): Transition => {
     if (typeof transitions === 'boolean') {
-        return transitions ? mergeDefaultTransitions({}) : (false as unknown as ITransition);
+        return transitions ? mergeDefaultTransitions({}) : (false as unknown as Transition);
     }
     return mergeDefaultTransitions(transitions);
 };
@@ -65,7 +65,7 @@ export const defaultTransitions = (transitions: boolean | ITransition): ITransit
 /**
  * Default options to merge with user provided ones
  */
-export const getDefaultTextInputOptions = (): ITextInputOptions => ({
+export const getDefaultTextInputOptions = (): TextInputOptions => ({
     enterSubmit: true,
     tabSubmit: true,
     openMenu: true,

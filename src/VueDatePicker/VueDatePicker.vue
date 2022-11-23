@@ -4,6 +4,7 @@
             ref="inputRef"
             :is-menu-open="isOpen"
             v-model:input-value="inputValue"
+            v-bind="{ ...$props, ...defaults }"
             @clear="clearValue"
             @open="openMenu"
             @set-input-date="setInputDate"
@@ -25,6 +26,8 @@
                 :class="theme"
                 :style="menuPosition"
                 :open-on-top="openOnTop"
+                v-bind="{ ...$props, ...defaults }"
+                v-model:internal-model-value="internalModelValue"
                 @close-picker="closeMenu"
                 @select-date="selectDate"
                 @dp-open="recalculatePosition"
@@ -43,7 +46,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, nextTick, onMounted, onUnmounted, ref, toRef, useSlots, watch, watchEffect } from 'vue';
+    import { computed, nextTick, onMounted, onUnmounted, ref, toRef, useSlots, watch } from 'vue';
 
     import DatepickerInput from './components/DatepickerInput.vue';
     import DatepickerMenu from './components/DatepickerMenu.vue';
@@ -58,6 +61,14 @@
     } from '@/components/composables';
     import { onClickOutside } from './directives/clickOutside';
     import { AllProps } from './utils/props';
+    import { getDefaultFilters } from '@/utils/util';
+    import {
+        defaultAriaLabels,
+        defaultMultiCalendars,
+        defaultPreviewFormat,
+        defaultTransitions,
+        getDefaultTextInputOptions,
+    } from '@/utils/defaults';
 
     import type { DynamicClass } from './interfaces';
 
@@ -84,13 +95,9 @@
     const dpMenuRef = ref(null);
     const inputRef = ref(null);
 
-    const { setProps, internalModelValue, setMenuFocused, setShiftKey } = useState();
+    const { setMenuFocused, setShiftKey } = useState();
     const { clearArrowNav } = useArrowNavigation();
-    const { validateDate, isValidTime } = useUtils();
-
-    watchEffect(() => {
-        setProps(props);
-    });
+    const { validateDate, isValidTime, getDefaultPattern, getDefaultStartTime } = useUtils(props);
 
     onMounted(() => {
         parseExternalModelValue(props.modelValue);
@@ -126,9 +133,21 @@
         dpMenuRef,
         inputRef,
         emit,
+        props,
     );
 
-    const { inputValue, parseExternalModelValue, emitModelValue, formatInputValue } = useExternalInternalMapper(emit);
+    const defaults = computed(() => ({
+        ariaLabels: defaultAriaLabels(props.ariaLabels),
+        textInputOptions: Object.assign(getDefaultTextInputOptions(), props.textInputOptions),
+        multiCalendars: defaultMultiCalendars(props.multiCalendars),
+        previewFormat: defaultPreviewFormat(props.previewFormat, props.format, getDefaultPattern()),
+        filters: getDefaultFilters(props.filters),
+        transitions: defaultTransitions(props.transitions),
+        startTime: getDefaultStartTime(),
+    }));
+
+    const { inputValue, internalModelValue, parseExternalModelValue, emitModelValue, formatInputValue } =
+        useExternalInternalMapper(emit, { ...props, ...defaults.value });
 
     const wrapperClass = computed(
         (): DynamicClass => ({

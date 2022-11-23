@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, afterEach } from 'vitest';
 import { addMonths, getHours, getMonth, getYear, setMilliseconds, setSeconds, startOfYear } from 'date-fns';
 import addDays from 'date-fns/addDays';
 import { ja } from 'date-fns/locale';
@@ -12,6 +12,7 @@ import TimePicker from '@/components/TimePicker/TimePicker.vue';
 import MonthYearInput from '@/components/MonthYearPicker/MonthYearPicker.vue';
 import ActionRow from '@/components/ActionRow.vue';
 import { useUtils } from '@/components/composables';
+import { nextTick } from 'vue';
 
 const format = (date: Date): string => {
     return `Selected year is ${date.getFullYear()}`;
@@ -31,6 +32,7 @@ const mountDatepicker = async (props: any = {}): Promise<{ dp: VueWrapper<any>; 
 
 const checkRange = async (calendar: VueWrapper, menu: VueWrapper<any>, start: Date, end: Date) => {
     await calendar.vm.$nextTick();
+    await flushPromises();
 
     expect(menu.vm.modelValue).toHaveLength(2);
     expect(menu.vm.modelValue[0]).toEqual(start);
@@ -47,6 +49,10 @@ const openAndGetMonthOverlay = async (menu: VueWrapper<any>) => {
 };
 
 describe('Logic connection', () => {
+    afterEach(async () => {
+        await flushPromises();
+    });
+
     it('Should properly define initial values', async () => {
         const date = new Date();
         const { dp, menu } = await mountDatepicker({ modelValue: date });
@@ -84,12 +90,16 @@ describe('Logic connection', () => {
 
     it('Should select range', async () => {
         const start = setMilliseconds(setSeconds(addDays(new Date(), 1), 0), 0);
-        const end = setMilliseconds(setSeconds(addDays(start, 7), 0), 0);
+        const end = setMilliseconds(setSeconds(addDays(start, 3), 0), 0);
         const { dp, menu } = await mountDatepicker({ modelValue: null, range: true });
 
         const calendar = menu.findComponent(Calendar);
-        calendar.vm.$emit('select-date', { value: start, current: true });
-        calendar.vm.$emit('select-date', { value: end, current: true });
+        menu.vm.selectDate({ value: start, current: true });
+        await nextTick();
+        await flushPromises();
+        menu.vm.selectDate({ value: end, current: true });
+        await nextTick();
+        await flushPromises();
 
         await checkRange(calendar, menu, start, end);
 
@@ -246,7 +256,7 @@ describe('Logic connection', () => {
         const today = new Date();
 
         const { dp, menu } = await mountDatepicker({ modelValue: null, weekPicker: true });
-        const { getWeekFromDate } = useUtils();
+        const { getWeekFromDate } = useUtils({ weekStart: 1 });
         const weekRange = getWeekFromDate(today);
 
         const calendar = menu.findComponent(Calendar);
@@ -313,7 +323,7 @@ describe('Logic connection', () => {
     });
 
     it('Should handle next month/year on multi-calendars', async () => {
-        const { menu } = await mountDatepicker({ multiCalendars: true });
+        const { menu } = await mountDatepicker({ multiCalendars: true, range: true });
         expect(menu.vm.month(0)).toEqual(getMonth(new Date()));
         expect(menu.vm.month(1)).toEqual(getMonth(addMonths(new Date(), 1)));
     });
@@ -326,7 +336,7 @@ describe('Logic connection', () => {
         menu.vm.selectDate({ value: start, current: true });
         menu.vm.selectDate({ value: end, current: true });
 
-        expect(menu.vm.modelValue).toHaveLength(1);
+        expect(dp.vm.internalModelValue).toHaveLength(1);
 
         dp.unmount();
     });

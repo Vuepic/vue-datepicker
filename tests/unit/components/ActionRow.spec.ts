@@ -1,17 +1,11 @@
-import { describe, it, beforeEach, expect } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import ActionRow from '@/components/ActionRow.vue';
-import { useArrowNavigation, useState } from '@/components/composables';
-import type { AllPropsType } from '@/utils/props';
+import { useArrowNavigation } from '@/components/composables';
 import { addMonths, subMonths } from 'date-fns';
 
 describe('ActionRow component', () => {
-    const { setProps, internalModelValue } = useState();
-    const props = { menuMount: true, calendarWidth: 400 };
-
-    beforeEach(() => {
-        setProps({} as AllPropsType);
-    });
+    const props = { menuMount: true, calendarWidth: 400, internalModelValue: null };
 
     it('Should set proper row width', () => {
         const wrapper = mount(ActionRow, { props });
@@ -21,89 +15,96 @@ describe('ActionRow component', () => {
 
     it('Should build arrow navigation matrix', async () => {
         const { refSets } = useArrowNavigation();
-        setProps({ arrowNavigation: true } as AllPropsType);
-        mount(ActionRow, { props });
 
-        // const selectBtn = wrapper.find('[data-test="select-button"]');
-        // expect(selectBtn).toBe(document.activeElement);
+        mount(ActionRow, { props: { ...props, arrowNavigation: true } });
+
         expect(refSets.actionRow).toHaveLength(2);
     });
 
     it('Should not check time', () => {
-        setProps({ ignoreTimeValidation: true } as AllPropsType);
-        const wrapper = mount(ActionRow, { props });
+        const wrapper = mount(ActionRow, { props: { ...props, ignoreTimeValidation: true } });
 
         expect(wrapper.vm.isTimeValid).toBe(true);
     });
 
     it('Should check if month is within range on maxDate', () => {
-        setProps({ maxDate: addMonths(new Date(), 1), monthPicker: true } as AllPropsType);
-        internalModelValue.value = new Date();
-
-        const wrapper = mount(ActionRow, { props });
+        const wrapper = mount(ActionRow, {
+            props: { ...props, maxDate: addMonths(new Date(), 1), monthPicker: true, internalModelValue: new Date() },
+        });
 
         expect(wrapper.vm.isMonthValid).toBe(true);
     });
 
     it('Should check if month is within range on minDate', () => {
-        setProps({ minDate: subMonths(new Date(), 1), monthPicker: true } as AllPropsType);
-        internalModelValue.value = new Date();
-
-        const wrapper = mount(ActionRow, { props });
+        const wrapper = mount(ActionRow, {
+            props: { ...props, minDate: subMonths(new Date(), 1), monthPicker: true, internalModelValue: new Date() },
+        });
 
         expect(wrapper.vm.isMonthValid).toBe(true);
     });
 
     it('Should check if month is within range on minDate and maxDate', () => {
-        setProps({
-            minDate: subMonths(new Date(), 1),
-            maxDate: addMonths(new Date(), 1),
-            monthPicker: true,
-        } as AllPropsType);
-
-        internalModelValue.value = subMonths(new Date(), 3);
-
-        const wrapper = mount(ActionRow, { props });
+        const wrapper = mount(ActionRow, {
+            props: {
+                ...props,
+                minDate: subMonths(new Date(), 1),
+                maxDate: addMonths(new Date(), 1),
+                monthPicker: true,
+                internalModelValue: subMonths(new Date(), 3),
+            },
+        });
 
         expect(wrapper.vm.isMonthValid).toBe(false);
     });
 
     it('Should format month picker with custom format fn', () => {
         const formatter = (date: Date) => `${date.getMonth()}`;
-        setProps({ previewFormat: formatter } as AllPropsType);
 
-        internalModelValue.value = new Date();
-
-        const wrapper = mount(ActionRow, { props });
+        const wrapper = mount(ActionRow, {
+            props: {
+                ...props,
+                previewFormat: formatter,
+                monthPicker: true,
+                internalModelValue: new Date(),
+            },
+        });
 
         expect(wrapper.vm.previewValue).toEqual(formatter(new Date()));
     });
 
     it('Should format year picker with custom format fn', () => {
         const formatter = (date: Date) => `${date.getFullYear()}`;
-        setProps({ previewFormat: formatter } as AllPropsType);
 
-        internalModelValue.value = new Date();
-
-        const wrapper = mount(ActionRow, { props });
+        const wrapper = mount(ActionRow, {
+            props: {
+                ...props,
+                previewFormat: formatter,
+                yearPicker: true,
+                internalModelValue: new Date(),
+            },
+        });
 
         expect(wrapper.vm.previewValue).toEqual(formatter(new Date()));
     });
 
     it('Should format date in a single row when multi-calendars is enabled', () => {
-        setProps({ multiCalendars: true, range: true } as AllPropsType);
-        internalModelValue.value = [new Date(), addMonths(new Date(), 1)];
-
-        const wrapper = mount(ActionRow, { props });
+        const wrapper = mount(ActionRow, {
+            props: {
+                ...props,
+                multiCalendars: 2,
+                range: true,
+                internalModelValue: [new Date(), addMonths(new Date(), 1)],
+            },
+        });
 
         expect(wrapper.vm.previewValue).toBeTypeOf('string');
     });
 
-    // todo - fix the logic in code
-    it('Should properly format model-auto', () => {
-        setProps({ modelAuto: true, range: true, partialRange: true } as AllPropsType);
-        internalModelValue.value = new Date();
-    });
+    // // todo - fix the logic in code
+    // it('Should properly format model-auto', () => {
+    //     setProps({ modelAuto: true, range: true, partialRange: true } as AllPropsType);
+    //     internalModelValue.value = new Date();
+    // });
 
     it('Should select date', async () => {
         const wrapper = mount(ActionRow, { props });

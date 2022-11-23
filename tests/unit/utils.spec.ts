@@ -2,17 +2,15 @@ import { describe, it, expect } from 'vitest';
 
 import { getArrayInArray, getDayNames, getMonths, getYears } from '@/utils/util';
 import { dateToUtc, parseFreeInput } from '@/utils/date-utils';
-import { useState, useUtils } from '@/components/composables';
-import type { AllPropsType } from '@/utils/props';
+import { resetDateTime, setDateTime, useUtils } from '@/components/composables';
 import { addHours, getMonth, set, setMonth, subHours } from 'date-fns';
 import { getTimezoneOffset, zonedTimeToUtc } from 'date-fns-tz';
+import { reactive } from 'vue';
 
 describe('Utils and date utils formatting', () => {
-    const { setProps } = useState();
-    const { getCalendarDays, getDefaultPattern, resetDateTime, setDateTime } = useUtils();
-
     it('Should get calendar days', () => {
-        setProps({ weekStart: 1, hideOffsetDates: false } as AllPropsType);
+        const { getCalendarDays } = useUtils({ weekStart: 1, hideOffsetDates: false });
+
         const days = getCalendarDays(0, 2021);
 
         expect(days).toHaveLength(5);
@@ -21,7 +19,7 @@ describe('Utils and date utils formatting', () => {
     });
 
     it('Should get calendar days starting from sunday', () => {
-        setProps({ weekStart: 0, hideOffsetDates: false } as AllPropsType);
+        const { getCalendarDays } = useUtils({ weekStart: 0, hideOffsetDates: false });
 
         const days = getCalendarDays(0, 2021);
         expect(days).toHaveLength(6);
@@ -29,7 +27,7 @@ describe('Utils and date utils formatting', () => {
     });
 
     it('Should get calendar days with hidden offset dats', () => {
-        setProps({ weekStart: 1, hideOffsetDates: true } as AllPropsType);
+        const { getCalendarDays } = useUtils({ weekStart: 1, hideOffsetDates: true });
 
         const days = getCalendarDays(0, 2021);
 
@@ -66,9 +64,11 @@ describe('Utils and date utils formatting', () => {
     });
 
     it('Should get default pattern', () => {
-        setProps({ enableTimePicker: true, is24: true } as AllPropsType);
+        const props = reactive({ enableTimePicker: true, is24: true, monthPicker: false });
+        const { getDefaultPattern } = useUtils(props);
+
         const patternDef = getDefaultPattern();
-        setProps({ monthPicker: true } as AllPropsType);
+        props.monthPicker = true;
         const patternMonthPicker = getDefaultPattern();
 
         expect(patternDef).toEqual('MM/dd/yyyy, HH:mm');

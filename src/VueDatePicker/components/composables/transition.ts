@@ -1,18 +1,14 @@
 import { computed } from 'vue';
-import { useState } from '@/components/composables/state';
 
-import type { ITransition } from '@/interfaces';
+import type { Transition } from '@/interfaces';
 
-export const useTransitions = () => {
-    const { config } = useState();
+export const useTransitions = (transitions: Transition | boolean) => {
     const transitionName = computed(() => (isOpen: boolean): string => {
-        if (config.value.transitions) {
-            return isOpen
-                ? (config.value.transitions as ITransition).open
-                : (config.value.transitions as ITransition).close;
+        if (transitions && typeof transitions !== 'boolean') {
+            return isOpen ? transitions.open : transitions.close;
         }
         return '';
     });
 
-    return { transitionName, showTransition: !!config.value.transitions };
+    return { transitionName, showTransition: !!transitions };
 };

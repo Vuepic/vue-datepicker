@@ -27,7 +27,7 @@
                 v-if="$slots['button-icon']"
                 v-show="!hideNavigationButtons(type)"
                 role="button"
-                :aria-label="config.ariaLabels?.toggleOverlay"
+                :aria-label="ariaLabels?.toggleOverlay"
                 :class="actionButtonClass"
                 tabindex="0"
                 ref="toggleButton"
@@ -45,13 +45,11 @@
     import { setMonth, setYear } from 'date-fns';
 
     import { unrefElement, convertType } from '@/utils/util';
-    import { useArrowNavigation, useState, useUtils } from '@/components/composables';
+    import { useArrowNavigation, useUtils } from '@/components/composables';
 
     import type { PropType } from 'vue';
-    import type { IDefaultSelect, DynamicClass, Flow } from '@/interfaces';
+    import type { IDefaultSelect, DynamicClass, Flow, AriaLabels } from '@/interfaces';
 
-    const { config } = useState();
-    const { hideNavigationButtons, isDateBetween, isDateEqual } = useUtils();
     const { setSelectionGrid, buildMultiLevelMatrix, setMonthPicker } = useArrowNavigation();
 
     const emit = defineEmits(['update:modelValue', 'selected', 'toggle', 'reset-flow']);
@@ -71,7 +69,13 @@
         yearPicker: { type: Boolean as PropType<boolean>, default: false },
         escClose: { type: Boolean as PropType<boolean>, default: true },
         type: { type: String as PropType<Flow>, default: null },
+        arrowNavigation: { type: Boolean as PropType<boolean>, default: false },
+        autoApply: { type: Boolean as PropType<boolean>, default: false },
+        textInput: { type: Boolean as PropType<boolean>, default: false },
+        ariaLabels: { type: Object as PropType<AriaLabels>, default: () => ({}) },
     });
+
+    const { hideNavigationButtons, isDateBetween, isDateEqual } = useUtils(props);
 
     const scrollable = ref(false);
     const selectionActiveRef = ref<HTMLElement | null>(null);
@@ -96,7 +100,7 @@
     onUnmounted(() => handleArrowNav(false));
 
     const handleArrowNav = (value: boolean): void => {
-        if (config.value.arrowNavigation) {
+        if (props.arrowNavigation) {
             if (props.headerRefs?.length) {
                 setMonthPicker(value);
             } else {
@@ -108,7 +112,7 @@
     const focusGrid = (): void => {
         const elm = unrefElement(gridWrapRef);
         if (elm) {
-            if (!config.value.textInput) {
+            if (!props.textInput) {
                 elm.focus({ preventScroll: true });
             }
             scrollable.value = elm.clientHeight < elm.scrollHeight;
@@ -175,7 +179,7 @@
             dp__button: true,
             dp__overlay_action: true,
             dp__over_action_scroll: scrollable.value,
-            dp__button_bottom: config.value.autoApply,
+            dp__button_bottom: props.autoApply,
         }),
     );
 
@@ -261,7 +265,7 @@
             if (col.value === +props.modelValue && !props.disabledValues.includes(col.value)) {
                 selectionActiveRef.value = el;
             }
-            if (config.value.arrowNavigation) {
+            if (props.arrowNavigation) {
                 if (Array.isArray(elementRefs.value[rowInd])) {
                     elementRefs.value[rowInd][colInd] = el;
                 } else {

@@ -1,11 +1,11 @@
 <template>
     <div>
         <div
-            v-if="!config.timePicker"
+            v-if="!timePicker"
             v-show="!hideNavigationButtons('time')"
             :class="toggleButtonClass"
             role="button"
-            :aria-label="config.ariaLabels?.openTimePicker"
+            :aria-label="ariaLabels?.openTimePicker"
             tabindex="0"
             ref="openTimePickerBtn"
             @keydown.enter="toggleTimePicker(true)"
@@ -16,7 +16,7 @@
             <ClockIcon v-if="!$slots['clock-icon']" />
         </div>
         <transition :name="transitionName(showTimePicker)" :css="showTransition">
-            <div v-if="showTimePicker || config.timePicker" class="dp__overlay" ref="overlayRef" tabindex="0">
+            <div v-if="showTimePicker || timePicker" class="dp__overlay" ref="overlayRef" tabindex="0">
                 <div class="dp__overlay_container dp__container_flex">
                     <slot
                         name="time-picker-overlay"
@@ -33,13 +33,16 @@
                             <TimeInput
                                 v-for="(tInput, index) in timeInputs"
                                 :key="index"
-                                :disabled="index === 0 ? config.fixedStart : config.fixedEnd"
                                 v-show="index === 0 ? true : shouldShowRangedInput"
-                                :hours="tInput.hours"
-                                :minutes="tInput.minutes"
-                                :seconds="tInput.seconds"
-                                :close-time-picker-btn="closeTimePickerBtn"
-                                :order="index"
+                                v-bind="{
+                                    ...$props,
+                                    order: index,
+                                    hours: tInput.hours,
+                                    minutes: tInput.minutes,
+                                    seconds: tInput.seconds,
+                                    closeTimePickerBtn,
+                                    disabled: index === 0 ? fixedStart : fixedEnd,
+                                }"
                                 ref="timeInputRefs"
                                 @update:hours="updateHours(getEvent($event, index, 'hours'))"
                                 @update:minutes="updateMinutes(getEvent($event, index, 'minutes'))"
@@ -54,12 +57,12 @@
                         </div>
                     </template>
                     <div
-                        v-if="!config.timePicker"
+                        v-if="!timePicker"
                         v-show="!hideNavigationButtons('time')"
                         ref="closeTimePickerBtn"
                         :class="toggleButtonClass"
                         role="button"
-                        :aria-label="config.ariaLabels?.closeTimePicker"
+                        :aria-label="ariaLabels?.closeTimePicker"
                         tabindex="0"
                         @keydown.enter="toggleTimePicker(false)"
                         @keydown.space="toggleTimePicker(false)"
@@ -81,16 +84,11 @@
     import TimeInput from '@/components/TimePicker/TimeInput.vue';
 
     import { isModelAuto, unrefElement } from '@/utils/util';
-    import { mapSlots, useTransitions, useArrowNavigation, useState, useUtils } from '@/components/composables';
+    import { mapSlots, useTransitions, useArrowNavigation, useUtils } from '@/components/composables';
+    import { MergedProps } from '@/utils/props';
 
     import type { PropType } from 'vue';
-    import type { TimeInputRef } from '@/interfaces';
-
-    const { transitionName, showTransition } = useTransitions();
-    const { buildMatrix, setTimePicker } = useArrowNavigation();
-    const slots = useSlots();
-    const { config, internalModelValue } = useState();
-    const { hideNavigationButtons } = useUtils();
+    import type { TimeInputRef, InternalModuleValue } from '@/interfaces';
 
     const emit = defineEmits([
         'update:hours',
@@ -105,7 +103,15 @@
         hours: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         minutes: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         seconds: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
+        internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
+        ...MergedProps,
     });
+
+    const { buildMatrix, setTimePicker } = useArrowNavigation();
+    const slots = useSlots();
+    const { hideNavigationButtons } = useUtils(props);
+
+    const { transitionName, showTransition } = useTransitions(props.transitions);
     const openTimePickerBtn = ref(null);
     const closeTimePickerBtn = ref(null);
     const timeInputRefs = ref<TimeInputRef[]>([]);
@@ -113,15 +119,15 @@
 
     onMounted(() => {
         emit('mount');
-        if (!config.value.timePicker && config.value.arrowNavigation) {
+        if (!props.timePicker && props.arrowNavigation) {
             buildMatrix([unrefElement(openTimePickerBtn.value) as HTMLElement], 'time');
         } else {
-            setTimePicker(true, config.value.timePicker);
+            setTimePicker(true, props.timePicker);
         }
     });
 
     const shouldShowRangedInput = computed(() => {
-        if (config.value.range && config.value.modelAuto) return isModelAuto(internalModelValue.value);
+        if (props.range && props.modelAuto) return isModelAuto(props.internalModelValue);
         return true;
     });
 
@@ -137,14 +143,14 @@
 
     const timeInputs = computed((): { hours: number; minutes: number; seconds: number }[] => {
         const arr = [];
-        if (config.value.range) {
+        if (props.range) {
             for (let i = 0; i < 2; i++) {
                 arr.push(getTimeInput(i));
             }
         } else {
             arr.push(getTimeInput(0));
         }
-        return arr;
+        return arr as { hours: number; minutes: number; seconds: number }[];
     });
 
     const toggleTimePicker = (show: boolean, flow = false, childOpen = ''): void => {
@@ -153,7 +159,7 @@
         }
         showTimePicker.value = show;
 
-        if (config.value.arrowNavigation) {
+        if (props.arrowNavigation) {
             setTimePicker(show);
             if (!show) {
                 emit('overlay-closed');
@@ -169,13 +175,13 @@
 
     const toggleButtonClass = computed(() => ({
         dp__button: true,
-        dp__button_bottom: config.value.autoApply,
+        dp__button_bottom: props.autoApply,
     }));
 
     const timeInputSlots = mapSlots(slots, 'timePicker');
 
     const getEvent = (event: number, index: number, property: 'hours' | 'minutes' | 'seconds') => {
-        if (!config.value.range) {
+        if (!props.range) {
             return event;
         }
         if (index === 0) {
@@ -197,7 +203,7 @@
     };
 
     const focusOverlay = () => {
-        if (overlayRef.value && config.value.arrowNavigation) {
+        if (overlayRef.value && props.arrowNavigation) {
             overlayRef.value.focus({ preventScroll: true });
         }
     };

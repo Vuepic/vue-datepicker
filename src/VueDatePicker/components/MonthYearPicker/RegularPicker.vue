@@ -22,6 +22,10 @@
                 maxValue,
                 escClose,
                 type,
+                arrowNavigation,
+                textInput,
+                autoApply,
+                ariaLabels,
             }"
             :header-refs="[]"
             @update:model-value="$emit('update:model-value', $event)"
@@ -46,10 +50,11 @@
     import { useTransitions } from '@/components/composables';
 
     import type { PropType } from 'vue';
-    import type { IDefaultSelect } from '@/interfaces';
+    import type { IDefaultSelect, Transition } from '@/interfaces';
+    import { AriaLabels } from '@/interfaces';
 
     const emit = defineEmits(['update:model-value', 'toggle', 'set-ref']);
-    defineProps({
+    const props = defineProps({
         ariaLabel: { type: String as PropType<string>, default: '' },
         showSelectionGrid: { type: Boolean as PropType<boolean>, default: false },
         modelValue: { type: Number as PropType<number>, default: null },
@@ -61,9 +66,14 @@
         headerRefs: { type: Array as PropType<(HTMLElement | null)[]>, default: () => [] },
         escClose: { type: Boolean as PropType<boolean>, default: true },
         type: { type: String as PropType<'month' | 'year'>, default: null },
+        transitions: { type: [Object, Boolean] as PropType<Transition>, default: false },
+        arrowNavigation: { type: Boolean as PropType<boolean>, default: false },
+        autoApply: { type: Boolean as PropType<boolean>, default: false },
+        textInput: { type: Boolean as PropType<boolean>, default: false },
+        ariaLabels: { type: Object as PropType<AriaLabels>, default: () => ({}) },
     });
 
-    const { transitionName, showTransition } = useTransitions();
+    const { transitionName, showTransition } = useTransitions(props.transitions);
 
     const elRef = ref(null);
 

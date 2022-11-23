@@ -21,12 +21,12 @@
 
     import type { PropType } from 'vue';
 
-    const emit = defineEmits(['activate', 'setRef']);
+    const emit = defineEmits(['activate', 'set-ref']);
     defineProps({
         ariaLabel: { type: String as PropType<string>, default: '' },
         disabled: { type: Boolean as PropType<boolean>, default: false },
     });
     const elRef = ref(null);
 
-    onMounted(() => emit('setRef', elRef));
+    onMounted(() => emit('set-ref', elRef));
 </script>

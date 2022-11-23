@@ -1,18 +1,18 @@
 <template>
     <div class="dp__month_year_row">
-        <template v-if="!config.monthPicker && !config.yearPicker">
+        <template v-if="!monthPicker && !yearPicker">
             <ActionIcon
-                :aria-label="config.ariaLabels?.prevMonth"
+                :aria-label="ariaLabels?.prevMonth"
                 :disabled="isDisabled(false)"
                 @activate="handleMonthYearChange(false)"
-                v-if="showLeftIcon && !config.vertical"
+                v-if="showLeftIcon && !vertical"
                 @set-ref="setElRefs($event, 0)"
             >
                 <slot name="arrow-left" v-if="$slots['arrow-left']" />
                 <ChevronLeftIcon v-if="!$slots['arrow-left']" />
             </ActionIcon>
             <RegularPicker
-                :aria-label="config.ariaLabels?.openMonthsOverlay"
+                :aria-label="ariaLabels?.openMonthsOverlay"
                 slot-name="month-overlay"
                 v-model="monthModelBind"
                 v-bind="childProps('month')"
@@ -30,7 +30,7 @@
                 </template>
             </RegularPicker>
             <RegularPicker
-                :aria-label="config.ariaLabels?.openYearsOverlay"
+                :aria-label="ariaLabels?.openYearsOverlay"
                 slot-name="year-overlay"
                 v-model="yearModelBind"
                 v-bind="childProps('year')"
@@ -48,36 +48,36 @@
                 </template>
             </RegularPicker>
             <ActionIcon
-                :aria-label="config.ariaLabels?.prevMonth"
+                :aria-label="ariaLabels?.prevMonth"
                 :disabled="isDisabled(false)"
                 @activate="handleMonthYearChange(false)"
-                v-if="showLeftIcon && config.vertical"
+                v-if="showLeftIcon && vertical"
             >
                 <slot name="arrow-up" v-if="$slots['arrow-up']" />
                 <ChevronUpIcon v-if="!$slots['arrow-up']" />
             </ActionIcon>
             <ActionIcon
                 :disabled="isDisabled(true)"
-                :aria-label="config.ariaLabels?.nextMonth"
+                :aria-label="ariaLabels?.nextMonth"
                 @activate="handleMonthYearChange(true)"
                 ref="rightIcon"
                 v-if="showRightIcon"
                 @set-ref="setElRefs($event, 3)"
             >
                 <slot
-                    :name="config.vertical ? 'arrow-down' : 'arrow-right'"
-                    v-if="$slots[config.vertical ? 'arrow-down' : 'arrow-right']"
+                    :name="vertical ? 'arrow-down' : 'arrow-right'"
+                    v-if="$slots[vertical ? 'arrow-down' : 'arrow-right']"
                 />
                 <component
-                    :is="config.vertical ? ChevronDownIcon : ChevronRightIcon"
-                    v-if="!$slots[config.vertical ? 'arrow-down' : 'arrow-right']"
+                    :is="vertical ? ChevronDownIcon : ChevronRightIcon"
+                    v-if="!$slots[vertical ? 'arrow-down' : 'arrow-right']"
                 />
             </ActionIcon>
         </template>
-        <template v-if="config.monthPicker">
+        <template v-if="monthPicker">
             <SelectionGrid
                 v-bind="childProps('month')"
-                :skip-active="config.range"
+                :skip-active="range"
                 :year="year"
                 :multi-model-value="multiModelValue"
                 month-picker
@@ -97,7 +97,7 @@
                             @click="handleYear(false)"
                             @keydown.enter="handleYear(false)"
                         >
-                            <div class="dp__inner_nav" role="button" :aria-label="config.ariaLabels?.prevMonth">
+                            <div class="dp__inner_nav" role="button" :aria-label="ariaLabels?.prevMonth">
                                 <slot name="arrow-left" v-if="$slots['arrow-left']" />
                                 <ChevronLeftIcon v-if="!$slots['arrow-left']" />
                             </div>
@@ -106,7 +106,7 @@
                             class="dp__pointer"
                             role="button"
                             ref="mpYearButtonRef"
-                            :aria-label="config.ariaLabels?.openYearsOverlay"
+                            :aria-label="ariaLabels?.openYearsOverlay"
                             tabindex="0"
                             @click="() => toggleYearPicker"
                             @keydown.enter="() => toggleYearPicker"
@@ -121,7 +121,7 @@
                             @click="handleYear(true)"
                             @keydown.enter="handleYear(true)"
                         >
-                            <div class="dp__inner_nav" role="button" :aria-label="config.ariaLabels?.nextMonth">
+                            <div class="dp__inner_nav" role="button" :aria-label="ariaLabels?.nextMonth">
                                 <slot name="arrow-right" v-if="$slots['arrow-right']" />
                                 <ChevronRightIcon v-if="!$slots['arrow-right']" />
                             </div>
@@ -146,12 +146,12 @@
                 </template>
             </SelectionGrid>
         </template>
-        <template v-if="config.yearPicker">
+        <template v-if="yearPicker">
             <SelectionGrid
                 v-bind="childProps('year')"
                 v-model="yearModelBind"
                 :multi-model-value="multiModelValue"
-                :skip-active="config.range"
+                :skip-active="range"
                 skip-button-ref
                 year-picker
                 @toggle="toggleYearPicker"
@@ -180,11 +180,12 @@
     import RegularPicker from '@/components/MonthYearPicker/RegularPicker.vue';
     import SelectionGrid from '@/components/SelectionGrid.vue';
 
-    import { useMontYearPick, useTransitions, useArrowNavigation, useState } from '@/components/composables';
+    import { useMontYearPick, useTransitions, useArrowNavigation } from '@/components/composables';
     import { unrefElement } from '@/utils/util';
+    import { MergedProps } from '@/utils/props';
 
     import type { PropType } from 'vue';
-    import type { IDefaultSelect } from '@/interfaces';
+    import type { IDefaultSelect, InternalModuleValue } from '@/interfaces';
 
     const emit = defineEmits(['update-month-year', 'month-year-select', 'mount', 'reset-flow', 'overlay-closed']);
     const props = defineProps({
@@ -193,10 +194,11 @@
         instance: { type: Number as PropType<number>, default: 0 },
         years: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
         months: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
+        internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
+        ...MergedProps,
     });
 
-    const { transitionName, showTransition } = useTransitions();
-    const { config, internalModelValue } = useState();
+    const { transitionName, showTransition } = useTransitions(props.transitions);
     const { buildMatrix } = useArrowNavigation();
     const { handleMonthYearChange, isDisabled } = useMontYearPick(props, emit);
 
@@ -233,40 +235,43 @@
         return {
             showSelectionGrid: (isMonth ? showMonthPicker : showYearPicker).value,
             items: (isMonth ? groupedMonths : groupedYears).value,
-            disabledValues: config.value.filters[isMonth ? 'months' : 'years'],
+            disabledValues: props.filters[isMonth ? 'months' : 'years'],
             minValue: (isMonth ? minMonth : minYear).value,
             maxValue: (isMonth ? maxMonth : maxYear).value,
             headerRefs:
-                isMonth && config.value.monthPicker
-                    ? [mpPrevIconRef.value, mpYearButtonRef.value, mpNextIconRef.value]
-                    : [],
-            escClose: config.value.escClose,
+                isMonth && props.monthPicker ? [mpPrevIconRef.value, mpYearButtonRef.value, mpNextIconRef.value] : [],
+            escClose: props.escClose,
+            transitions: props?.transitions,
+            ariaLabels: props.ariaLabels,
+            textInput: props.textInput,
+            autoApply: props.autoApply,
+            arrowNavigation: props.arrowNavigation,
         };
     });
 
-    const minYear = computed(() => (config.value.minDate ? getYear(new Date(config.value.minDate)) : null));
-    const maxYear = computed(() => (config.value.maxDate ? getYear(new Date(config.value.maxDate)) : null));
+    const minYear = computed(() => (props.minDate ? getYear(new Date(props.minDate)) : null));
+    const maxYear = computed(() => (props.maxDate ? getYear(new Date(props.maxDate)) : null));
 
     const minMonth = computed(() => {
-        if (config.value.minDate && minYear.value) {
+        if (props.minDate && minYear.value) {
             if (minYear.value > props.year) return 12;
-            if (minYear.value === props.year) return getMonth(new Date(config.value.minDate));
+            if (minYear.value === props.year) return getMonth(new Date(props.minDate));
         }
         return null;
     });
 
     const maxMonth = computed(() => {
-        if (config.value.maxDate && maxYear.value) {
+        if (props.maxDate && maxYear.value) {
             if (maxYear.value < props.year) return -1;
-            if (maxYear.value === props.year) return getMonth(new Date(config.value.maxDate));
+            if (maxYear.value === props.year) return getMonth(new Date(props.maxDate));
             return null;
         }
         return null;
     });
 
     const multiModelValue = computed(() => {
-        return config.value.range && internalModelValue.value && (config.value.monthPicker || config.value.yearPicker)
-            ? (internalModelValue.value as Date[])
+        return props.range && props.internalModelValue && (props.monthPicker || props.yearPicker)
+            ? (props.internalModelValue as Date[])
             : [];
     });
 
@@ -297,21 +302,19 @@
     });
 
     const groupedYears = computed((): IDefaultSelect[][] => {
-        return getGroupedList(props.years, config.value.reverseYears);
+        return getGroupedList(props.years, props.reverseYears);
     });
 
     const showLeftIcon = computed(() => {
-        if (config.value.multiCalendars) {
-            return !config.value.multiCalendarsSolo ? props.instance === 0 : true;
+        if (props.multiCalendars) {
+            return !props.multiCalendarsSolo ? props.instance === 0 : true;
         }
         return true;
     });
 
     const showRightIcon = computed((): boolean => {
-        if (config.value.multiCalendars) {
-            return !config.value.multiCalendarsSolo
-                ? props.instance === (config.value.multiCalendars as number) - 1
-                : true;
+        if (props.multiCalendars) {
+            return !props.multiCalendarsSolo ? props.instance === (props.multiCalendars as number) - 1 : true;
         }
         return true;
     });
@@ -347,7 +350,7 @@
     };
 
     const setElRefs = (el: HTMLElement, i: number): void => {
-        if (config.value.arrowNavigation) {
+        if (props.arrowNavigation) {
             elementRefs.value[i] = unrefElement(el);
             buildMatrix(elementRefs.value as HTMLElement[], 'monthYear');
         }

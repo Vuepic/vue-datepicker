@@ -3,11 +3,9 @@ import { getYear, addDays, getMonth, addMonths, addYears, format, parse, getHour
 import { describe, it, expect } from 'vitest';
 
 import VueDatepicker from '@/VueDatePicker.vue';
-
-import { useUtils } from '@/components/composables';
+import { resetDateTime } from '@/components/composables';
 
 describe('v-model mapping', () => {
-    const { resetDateTime } = useUtils();
     it('Should accept null value v-model', () => {
         const wrapper = shallowMount(VueDatepicker, { props: { modelValue: null } });
         expect(wrapper.vm.internalModelValue).toBeNull();

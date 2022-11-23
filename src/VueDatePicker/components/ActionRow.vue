@@ -13,14 +13,14 @@
             <slot name="action-select" v-if="$slots['action-select']" :value="internalModelValue" />
             <template v-if="!$slots['action-select']">
                 <span
-                    v-if="!config.inline"
+                    v-if="!inline"
                     class="dp__action dp__cancel"
                     ref="cancelButtonRef"
                     tabindex="0"
                     @click="$emit('close-picker')"
                     @keydown.enter="$emit('close-picker')"
                     @keydown.space="$emit('close-picker')"
-                    >{{ config.cancelText }}</span
+                    >{{ cancelText }}</span
                 >
                 <span
                     :class="selectClass"
@@ -30,7 +30,7 @@
                     @click="selectDate"
                     data-test="select-button"
                     ref="selectButtonRef"
-                    >{{ config.selectText }}</span
+                    >{{ selectText }}</span
                 >
             </template>
         </div>
@@ -41,32 +41,36 @@
     import { computed, onMounted, ref } from 'vue';
 
     import { convertType, unrefElement } from '@/utils/util';
-    import { useArrowNavigation, useState, useUtils } from '@/components/composables';
+    import { useArrowNavigation, useUtils } from '@/components/composables';
+    import { MergedProps } from '@/utils/props';
 
     import type { PropType } from 'vue';
-
-    const { config, internalModelValue } = useState();
-    const { formatDate, getDate, isDateAfter, isDateBefore, isValidTime } = useUtils();
-    const { buildMatrix } = useArrowNavigation();
+    import type { InternalModuleValue } from '@/interfaces';
 
     const emit = defineEmits(['close-picker', 'select-date', 'invalid-select']);
 
     const props = defineProps({
         calendarWidth: { type: Number as PropType<number>, default: 0 },
         menuMount: { type: Boolean as PropType<boolean>, default: false },
+        internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
+        ...MergedProps,
     });
+
+    const { formatDate, getDate, isDateAfter, isDateBefore, isValidTime } = useUtils(props);
+    const { buildMatrix } = useArrowNavigation();
+
     const cancelButtonRef = ref(null);
     const selectButtonRef = ref(null);
 
     onMounted(() => {
-        if (config.value.arrowNavigation) {
+        if (props.arrowNavigation) {
             buildMatrix([unrefElement(cancelButtonRef), unrefElement(selectButtonRef)] as HTMLElement[], 'actionRow');
         }
     });
 
     const validDateRange = computed(() => {
-        return config.value.range && !config.value.partialRange && internalModelValue.value
-            ? (internalModelValue.value as Date[]).length === 2
+        return props.range && !props.partialRange && props.internalModelValue
+            ? (props.internalModelValue as Date[]).length === 2
             : true;
     });
 
@@ -77,67 +81,67 @@
     }));
 
     const isTimeValid = computed((): boolean => {
-        if (!config.value.enableTimePicker || config.value.ignoreTimeValidation) return true;
-        return isValidTime(internalModelValue.value);
+        if (!props.enableTimePicker || props.ignoreTimeValidation) return true;
+        return isValidTime(props.internalModelValue);
     });
 
     const isMonthValid = computed((): boolean => {
-        if (!config.value.monthPicker) return true;
-        return isMonthWithinRange(internalModelValue.value as Date);
+        if (!props.monthPicker) return true;
+        return isMonthWithinRange(props.internalModelValue as Date);
     });
 
     const handleCustomPreviewFormat = () => {
-        const formatFn = config.value.previewFormat as (val: Date | Date[]) => string | string[];
+        const formatFn = props.previewFormat as (val: Date | Date[]) => string | string[];
 
-        if (config.value.timePicker) return formatFn(convertType(internalModelValue.value));
+        if (props.timePicker) return formatFn(convertType(props.internalModelValue));
 
-        if (config.value.monthPicker) return formatFn(convertType(internalModelValue.value as Date));
+        if (props.monthPicker) return formatFn(convertType(props.internalModelValue as Date));
 
-        return formatFn(convertType(internalModelValue.value));
+        return formatFn(convertType(props.internalModelValue));
     };
 
     const formatRangeDate = () => {
-        const dates = internalModelValue.value as Date[];
-        if (config.value.multiCalendars > 0) {
+        const dates = props.internalModelValue as Date[];
+        if (props.multiCalendars > 0) {
             return `${formatDate(dates[0])} - ${formatDate(dates[1])}`;
         }
         return [formatDate(dates[0]), formatDate(dates[1])];
     };
 
     const previewValue = computed((): string | string[] => {
-        if (!internalModelValue.value || !props.menuMount) return '';
-        if (typeof config.value.previewFormat === 'string') {
-            if (Array.isArray(internalModelValue.value)) {
-                if (internalModelValue.value.length === 2 && internalModelValue.value[1]) {
+        if (!props.internalModelValue || !props.menuMount) return '';
+        if (typeof props.previewFormat === 'string') {
+            if (Array.isArray(props.internalModelValue)) {
+                if (props.internalModelValue.length === 2 && props.internalModelValue[1]) {
                     return formatRangeDate();
                 }
-                if (config.value.multiDates) {
-                    return internalModelValue.value.map((date) => `${formatDate(date)}`);
+                if (props.multiDates) {
+                    return props.internalModelValue.map((date) => `${formatDate(date)}`);
                 }
-                if (config.value.modelAuto) {
-                    return `${formatDate(internalModelValue.value[0])}`;
+                if (props.modelAuto) {
+                    return `${formatDate(props.internalModelValue[0])}`;
                 }
-                return `${formatDate(internalModelValue.value[0])} -`;
+                return `${formatDate(props.internalModelValue[0])} -`;
             }
-            return formatDate(internalModelValue.value);
+            return formatDate(props.internalModelValue);
         }
         return handleCustomPreviewFormat();
     });
 
     const isMonthWithinRange = (date: Date | string): boolean => {
-        if (!config.value.monthPicker) return true;
+        if (!props.monthPicker) return true;
         let valid = true;
-        if (config.value.minDate && config.value.maxDate) {
+        if (props.minDate && props.maxDate) {
             return (
-                isDateAfter(getDate(date), getDate(config.value.minDate)) &&
-                isDateBefore(getDate(date), getDate(config.value.maxDate))
+                isDateAfter(getDate(date), getDate(props.minDate)) &&
+                isDateBefore(getDate(date), getDate(props.maxDate))
             );
         }
-        if (config.value.minDate) {
-            valid = isDateAfter(getDate(date), getDate(config.value.minDate));
+        if (props.minDate) {
+            valid = isDateAfter(getDate(date), getDate(props.minDate));
         }
-        if (config.value.maxDate) {
-            valid = isDateBefore(getDate(date), getDate(config.value.maxDate));
+        if (props.maxDate) {
+            valid = isDateBefore(getDate(date), getDate(props.maxDate));
         }
 
         return valid;

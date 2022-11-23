@@ -6,13 +6,13 @@ import type {
     AltPosition,
     AriaLabels,
     Flow,
-    IDateFilter,
+    DateFilter,
     IDisableDates,
     IFormat,
     IMarker,
-    ITextInputOptions,
+    TextInputOptions,
     TimeModel,
-    ITransition,
+    Transition,
     ModelType,
     ModelValue,
     OpenPosition,
@@ -36,7 +36,7 @@ export const AllProps = {
     closeOnAutoApply: { type: Boolean as PropType<boolean>, default: true },
     teleport: { type: [String, Object] as PropType<string | HTMLElement>, default: 'body' },
     altPosition: { type: [Boolean, Function] as PropType<AltPosition>, default: false },
-    transitions: { type: [Boolean, Object] as PropType<boolean | ITransition>, default: true },
+    transitions: { type: [Boolean, Object] as PropType<boolean | Partial<Transition>>, default: true },
     formatLocale: { type: Object as PropType<Locale>, default: null },
     utc: { type: [Boolean, String] as PropType<boolean | 'preserve'>, default: false },
     ariaLabels: { type: Object as PropType<Partial<AriaLabels>>, default: () => ({}) },
@@ -80,7 +80,7 @@ export const AllProps = {
     reverseYears: { type: Boolean as PropType<boolean>, default: false },
     keepActionRow: { type: Boolean as PropType<boolean>, default: false },
     weekPicker: { type: Boolean as PropType<boolean>, default: false },
-    filters: { type: Object as PropType<IDateFilter>, default: () => ({}) },
+    filters: { type: Object as PropType<DateFilter>, default: () => ({}) },
     arrowNavigation: { type: Boolean as PropType<boolean>, default: false },
     multiStatic: { type: Boolean as PropType<boolean>, default: true },
     disableTimeRangeValidation: { type: Boolean as PropType<boolean>, default: false },
@@ -131,7 +131,7 @@ export const AllProps = {
     autocomplete: { type: String as PropType<string>, default: 'off' },
     inputClassName: { type: String as PropType<string>, default: null },
     inlineWithInput: { type: Boolean as PropType<boolean>, default: false },
-    textInputOptions: { type: Object as PropType<ITextInputOptions>, default: () => null },
+    textInputOptions: { type: Object as PropType<TextInputOptions>, default: () => null },
     fixedStart: { type: Boolean as PropType<boolean>, default: false },
     fixedEnd: { type: Boolean as PropType<boolean>, default: false },
     timePicker: { type: Boolean as PropType<boolean>, default: false },
@@ -156,7 +156,12 @@ export const AllProps = {
 };
 
 export type AllPropsType = ExtractPropTypes<typeof AllProps>;
-export interface ExtractedProps extends AllPropsType {
-    transitions: ITransition;
-    ariaLabels: AriaLabels;
-}
+
+export const MergedProps = {
+    ...AllProps,
+    filters: { type: Object as PropType<DateFilter>, default: () => ({}) },
+    multiCalendars: { type: Number as PropType<number>, default: null },
+    transitions: { type: [Boolean, Object] as PropType<Transition>, default: true },
+    ariaLabels: { type: Object as PropType<AriaLabels>, default: () => ({}) },
+    textInputOptions: { type: Object as PropType<TextInputOptions>, default: () => ({}) },
+};

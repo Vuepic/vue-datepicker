@@ -1,19 +1,13 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
-import DatepickerInput from '@/components/DatepickerInput.vue';
-import { useState } from '@/components/composables';
-
-import type { AllPropsType } from '@/utils/props';
 import { format, set } from 'date-fns';
 
+import DatepickerInput from '@/components/DatepickerInput.vue';
+import { getDefaultTextInputOptions } from '@/utils/defaults';
+
 describe('Datepicker input component', () => {
-    const { setProps } = useState();
     const props = { isMenuOpen: false, inputValue: '' };
     const patternFormat = format(new Date(), 'MM/dd/yyyy');
-
-    beforeEach(() => {
-        setProps({} as AllPropsType);
-    });
 
     it('Should open datepicker menu', async () => {
         const wrapper = mount(DatepickerInput, { props });
@@ -32,17 +26,15 @@ describe('Datepicker input component', () => {
     });
 
     it('Should clear the input', async () => {
-        setProps({ clearable: true } as AllPropsType);
         const wrapper = mount(DatepickerInput, {
-            props: { ...props, inputValue: patternFormat },
+            props: { ...props, inputValue: patternFormat, clearable: true },
         });
         await wrapper.find('[data-test="clear-icon"]').trigger('click');
         expect(wrapper.emitted()).toHaveProperty('clear');
     });
 
     it('Should select single date on text-input', async () => {
-        setProps({ textInput: true } as AllPropsType);
-        const wrapper = mount(DatepickerInput, { props });
+        const wrapper = mount(DatepickerInput, { props: { ...props, textInput: true } });
         const el = wrapper.find('input');
         await el.setValue(patternFormat);
         await el.trigger('keydown.enter');
@@ -53,9 +45,15 @@ describe('Datepicker input component', () => {
     });
 
     it('Should select range on text-input', async () => {
-        setProps({ textInput: true, format: 'MM/dd/yyyy', range: true } as AllPropsType);
-
-        const wrapper = mount(DatepickerInput, { props });
+        const wrapper = mount(DatepickerInput, {
+            props: {
+                ...props,
+                textInput: true,
+                format: 'MM/dd/yyyy',
+                range: true,
+                textInputOptions: getDefaultTextInputOptions(),
+            },
+        });
         const el = wrapper.find('input');
         await el.setValue(`${patternFormat} - ${patternFormat}`);
         await el.trigger('keydown.enter');
@@ -67,8 +65,7 @@ describe('Datepicker input component', () => {
     });
 
     it('Should clear the selected value on clearing input with text-input', async () => {
-        setProps({ textInput: true, format: 'MM/dd/yyyy' } as AllPropsType);
-        const wrapper = mount(DatepickerInput, { props });
+        const wrapper = mount(DatepickerInput, { props: { ...props, textInput: true, format: 'MM/dd/yyyy' } });
         const el = wrapper.find('input');
         await el.setValue('');
         await el.trigger('keydown.enter');
@@ -77,8 +74,9 @@ describe('Datepicker input component', () => {
     });
 
     it('Should submit date with tab key', async () => {
-        setProps({ textInput: true, format: 'MM/dd/yyyy', textInputOptions: { tabSubmit: true } } as AllPropsType);
-        const wrapper = mount(DatepickerInput, { props });
+        const wrapper = mount(DatepickerInput, {
+            props: { ...props, textInput: true, format: 'MM/dd/yyyy', textInputOptions: { tabSubmit: true } },
+        });
 
         const el = wrapper.find('input');
         await el.setValue(patternFormat);
@@ -91,8 +89,9 @@ describe('Datepicker input component', () => {
     });
 
     it('Should clear date with tab key', async () => {
-        setProps({ textInput: true, format: 'MM/dd/yyyy', textInputOptions: { tabSubmit: true } } as AllPropsType);
-        const wrapper = mount(DatepickerInput, { props });
+        const wrapper = mount(DatepickerInput, {
+            props: { ...props, textInput: true, format: 'MM/dd/yyyy', textInputOptions: { tabSubmit: true } },
+        });
 
         await wrapper.find('input').trigger('keydown.tab');
 
