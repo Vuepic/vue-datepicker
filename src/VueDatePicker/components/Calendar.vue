@@ -105,7 +105,7 @@
     import { MergedProps } from '@/utils/props';
 
     import type { PropType, UnwrapRef } from 'vue';
-    import type { DynamicClass, ICalendarDate, ICalendarDay, IMarker, Transition } from '@/interfaces';
+    import type { DynamicClass, ICalendarDate, ICalendarDay, IMarker } from '@/interfaces';
 
     const emit = defineEmits([
         'select-date',
@@ -170,8 +170,8 @@
         if (props.transitions) {
             const newDate = resetDateTime(setDateMonthOrYear(getDate(), props.month, props.year));
             transitionName.value = isDateAfter(resetDateTime(setDateMonthOrYear(getDate(), month, year)), newDate)
-                ? (props.transitions as Transition)[getTransitionName(true)]
-                : (props.transitions as Transition)[getTransitionName(false)];
+                ? props.transitions[getTransitionName(true)]
+                : props.transitions[getTransitionName(false)];
             showCalendar.value = false;
             nextTick(() => {
                 showCalendar.value = true;

@@ -32,14 +32,14 @@ import type {
 } from '@/interfaces';
 import type { UnwrapRef } from 'vue';
 
-// BEGIN-NOSCAN
+// @SONAR_START@
 export const useCalendar = (
     props: ExtendedProps,
     emit: VueEmit,
     updateFlow: () => void,
     triggerCalendarTransition: (inst?: number) => void,
 ) => {
-    // END-NOSCAN
+    // @SONAR_STOP@
 
     const {
         getDate,
@@ -63,7 +63,6 @@ export const useCalendar = (
         set: (value: InternalModuleValue): void => {
             if (!props.readonly && !props.disabled) {
                 emit('update:internal-model-value', value);
-                // props.internalModelValue = value;
             }
         },
     });

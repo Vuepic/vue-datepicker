@@ -275,9 +275,9 @@
             : [];
     });
 
-    // START-NOSCAN
+    // @SONAR_START@
     const reverseList = (list: IDefaultSelect[]) => list.reverse();
-    // END-NOSCAN
+    // @SONAR_STOP@
 
     const getGroupedList = (items: IDefaultSelect[], reverse = false): IDefaultSelect[][] => {
         const list = [];
@@ -314,7 +314,7 @@
 
     const showRightIcon = computed((): boolean => {
         if (props.multiCalendars) {
-            return !props.multiCalendarsSolo ? props.instance === (props.multiCalendars as number) - 1 : true;
+            return !props.multiCalendarsSolo ? props.instance === props.multiCalendars - 1 : true;
         }
         return true;
     });
