@@ -12,7 +12,13 @@
                     <div class="dp__calendar_header_item" role="gridcell" v-if="weekNumbers">
                         {{ weekNumName }}
                     </div>
-                    <div class="dp__calendar_header_item" role="gridcell" v-for="(dayVal, i) in weekDays" :key="i">
+                    <div
+                        class="dp__calendar_header_item"
+                        role="gridcell"
+                        v-for="(dayVal, i) in weekDays"
+                        :key="i"
+                        data-test="calendar-header"
+                    >
                         <slot v-if="$slots['calendar-header']" name="calendar-header" :day="dayVal" :index="i" />
                         <template v-if="!$slots['calendar-header']">
                             {{ dayVal }}
@@ -42,6 +48,7 @@
                                 :aria-disabled="dayVal.classData.dp__cell_disabled"
                                 :aria-label="ariaLabels.day(dayVal)"
                                 tabindex="0"
+                                :data-test="dayVal.value"
                                 @click.stop.prevent="$emit('select-date', dayVal)"
                                 @keydown.enter="$emit('select-date', dayVal)"
                                 @keydown.space="$emit('handle-space', dayVal)"

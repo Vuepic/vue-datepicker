@@ -147,7 +147,10 @@
     }));
 
     const { inputValue, internalModelValue, parseExternalModelValue, emitModelValue, formatInputValue } =
-        useExternalInternalMapper(emit, { ...props, ...defaults.value });
+        useExternalInternalMapper(
+            emit,
+            computed(() => ({ ...props, ...defaults.value })),
+        );
 
     const wrapperClass = computed(
         (): DynamicClass => ({

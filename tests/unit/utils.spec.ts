@@ -139,4 +139,14 @@ describe('Utils and date utils formatting', () => {
 
         expect(utcString.toISOString()).toEqual(utcDate);
     });
+
+    it('Should parse text input date from the pattern array', () => {
+        const parsed = parseFreeInput('2', ['MM/dd/yyyy', 'MM/dd/yyyy']);
+        expect(getMonth(parsed as Date)).toEqual(1);
+    });
+
+    it('Should return null on invalid text input', () => {
+        const parsed = parseFreeInput('random', ['MM/dd/yyyy', 'MM/dd/yyyy']);
+        expect(parsed).toBeNull();
+    });
 });

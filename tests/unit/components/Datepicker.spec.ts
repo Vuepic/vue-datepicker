@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { describe, it, expect, afterEach } from 'vitest';
 import { addMonths, getHours, getMonth, getYear, setMilliseconds, setSeconds, startOfYear } from 'date-fns';
@@ -11,6 +10,7 @@ import Calendar from '@/components/Calendar.vue';
 import TimePicker from '@/components/TimePicker/TimePicker.vue';
 import MonthYearInput from '@/components/MonthYearPicker/MonthYearPicker.vue';
 import ActionRow from '@/components/ActionRow.vue';
+import SelectionGrid from '@/components/SelectionGrid.vue';
 import { useUtils } from '@/components/composables';
 import { nextTick } from 'vue';
 
@@ -357,5 +357,22 @@ describe('Logic connection', () => {
         const { menu } = await mountDatepicker({ multiCalendars: true, modelValue, range: true });
         expect(menu.vm.month(0)).toEqual(getMonth(modelValue[0]));
         expect(menu.vm.month(1)).toEqual(getMonth(modelValue[1]));
+    });
+
+    it('Should handle flow', async () => {
+        const flow = ['month', 'year', 'calendar'];
+        const { menu } = await mountDatepicker({ flow });
+        await menu.vm.$nextTick();
+        const monthPickerGrid = await menu.findComponent(SelectionGrid);
+
+        await monthPickerGrid.find(`[data-test="Jan"]`).trigger('click');
+        await nextTick();
+        const yearPickerGrid = await menu.findComponent(SelectionGrid);
+
+        await yearPickerGrid.find(`[data-test="${getYear(new Date())}"]`).trigger('click');
+        await nextTick();
+
+        expect(menu.vm.month(0)).toEqual(0);
+        expect(menu.vm.year(0)).toEqual(getYear(new Date()));
     });
 });

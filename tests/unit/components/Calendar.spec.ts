@@ -1,9 +1,67 @@
-import { describe, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import { mount } from '@vue/test-utils';
+import Calendar from '@/components/Calendar.vue';
+import DatepickerMenu from '@/components/DatepickerMenu.vue';
+import { resetDateTime } from '@/components/composables';
 
 describe('Calendar component', () => {
-    it('Should render custom day names', () => {});
+    it('Should render custom day names', () => {
+        const calendar = mount(Calendar, { props: { dayNames: ['1', '2', '3', '4', '5', '6', '7'] } });
 
-    it('Should display marker', () => {});
+        const header = calendar.find('[data-test="calendar-header"]');
 
-    it('Should display marker tooltip', () => {});
+        expect(header.text()).toContain('1');
+    });
+
+    it('Should display marker', async () => {
+        const marker = {
+            date: new Date(),
+        };
+        const menu = mount(DatepickerMenu, { props: { markers: [marker], ariaLabels: { day: () => '' } } });
+        await menu.vm.$nextTick();
+        const calendar = menu.findComponent(Calendar);
+
+        expect(calendar.html()).toContain('dp__marker_dot');
+    });
+
+    it('Should display marker tooltip', async () => {
+        const marker = {
+            date: new Date(),
+            tooltip: [{ text: 'test' }],
+        };
+        const menu = mount(DatepickerMenu, { props: { markers: [marker], ariaLabels: { day: () => '' } } });
+        await menu.vm.$nextTick();
+        const calendar = menu.findComponent(Calendar);
+
+        await calendar.find(`[data-test="${resetDateTime(new Date())}"]`).trigger('mouseover');
+        await calendar.vm.$nextTick();
+
+        expect(calendar.html()).toContain('dp__marker_tooltip');
+    });
+
+    it('Should emit hover date on mouse over', async () => {
+        const menu = mount(DatepickerMenu, { props: { ariaLabels: { day: () => '' } } });
+        await menu.vm.$nextTick();
+        const calendar = menu.findComponent(Calendar);
+        const date = new Date();
+
+        await calendar.find(`[data-test="${resetDateTime(date)}"]`).trigger('mouseover');
+        await calendar.vm.$nextTick();
+
+        expect(calendar.emitted()).toHaveProperty('set-hover-date');
+        expect((calendar.emitted()['set-hover-date'][0] as any)[0].value).toEqual(resetDateTime(date));
+    });
+
+    it('Should emit date when calendar day is clicked', async () => {
+        const menu = mount(DatepickerMenu, { props: { ariaLabels: { day: () => '' } } });
+        await menu.vm.$nextTick();
+        const calendar = menu.findComponent(Calendar);
+        const date = new Date();
+
+        await calendar.find(`[data-test="${resetDateTime(date)}"]`).trigger('click');
+        await calendar.vm.$nextTick();
+
+        expect(calendar.emitted()).toHaveProperty('select-date');
+        expect((calendar.emitted()['select-date'][0] as any)[0].value).toEqual(resetDateTime(date));
+    });
 });

@@ -12,6 +12,7 @@
                     :aria-disabled="col.className.dp__overlay_cell_disabled"
                     :ref="(el) => assignRef(el, col, i, ind)"
                     tabindex="0"
+                    :data-test="col.text"
                     @click="onClick(col.value)"
                     @keydown.enter="onClick(col.value)"
                     @keydown.space="onClick(col.value)"

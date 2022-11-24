@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { getYear, addDays, getMonth, addMonths, addYears, format, parse, getHours } from 'date-fns';
+import { getYear, addDays, getMonth, addMonths, addYears, format, parse, getHours, getMinutes } from 'date-fns';
 import { describe, it, expect } from 'vitest';
 
 import VueDatepicker from '@/VueDatePicker.vue';
@@ -141,5 +141,79 @@ describe('v-model mapping', () => {
 
         const wrapper = shallowMount(VueDatepicker, { props: { modelValue, utc: true } });
         expect(getHours(wrapper.vm.internalModelValue)).toEqual(getHours(today));
+    });
+
+    it('Should emit month-picker values', () => {
+        const wrapper = shallowMount(VueDatepicker, { props: { monthPicker: true } });
+        wrapper.vm.internalModelValue = new Date();
+
+        wrapper.vm.emitModelValue();
+
+        expect(wrapper.emitted()).toHaveProperty('update:model-value');
+        expect((wrapper.emitted()['update:model-value'][0] as any)[0]).toEqual({
+            month: getMonth(new Date()),
+            year: getYear(new Date()),
+        });
+    });
+
+    it('Should emit year-picker values', () => {
+        const wrapper = shallowMount(VueDatepicker, { props: { yearPicker: true } });
+        wrapper.vm.internalModelValue = new Date();
+
+        wrapper.vm.emitModelValue();
+
+        expect(wrapper.emitted()).toHaveProperty('update:model-value');
+        expect((wrapper.emitted()['update:model-value'][0] as any)[0]).toEqual(getYear(new Date()));
+    });
+
+    it('Should emit time-picker values', () => {
+        const date = new Date();
+        const wrapper = shallowMount(VueDatepicker, { props: { timePicker: true } });
+        wrapper.vm.internalModelValue = date;
+
+        wrapper.vm.emitModelValue();
+
+        expect(wrapper.emitted()).toHaveProperty('update:model-value');
+        expect((wrapper.emitted()['update:model-value'][0] as any)[0]).toEqual({
+            hours: getHours(date),
+            minutes: getMinutes(date),
+        });
+    });
+
+    it('Should emit date-picker values', () => {
+        const date = new Date();
+        const wrapper = shallowMount(VueDatepicker);
+        wrapper.vm.internalModelValue = date;
+
+        wrapper.vm.emitModelValue();
+        expect(wrapper.emitted()).toHaveProperty('update:model-value');
+        expect((wrapper.emitted()['update:model-value'][0] as any)[0]).toEqual(date);
+    });
+
+    it('Should emit multi-dates value', () => {
+        const dates = [new Date(), addDays(new Date(), 1), addDays(new Date(), 2), addDays(new Date(), 3)];
+        const wrapper = shallowMount(VueDatepicker, { props: { multiDates: true } });
+        wrapper.vm.internalModelValue = dates;
+
+        wrapper.vm.emitModelValue();
+        expect(wrapper.emitted()).toHaveProperty('update:model-value');
+        expect((wrapper.emitted()['update:model-value'][0] as any)[0]).toEqual(dates);
+    });
+
+    it('Should emit custom model-type', () => {
+        const date = new Date();
+        const wrapper = shallowMount(VueDatepicker, { props: { modelType: 'timestamp' } });
+        wrapper.vm.internalModelValue = date;
+
+        wrapper.vm.emitModelValue();
+        expect(wrapper.emitted()).toHaveProperty('update:model-value');
+        expect((wrapper.emitted()['update:model-value'][0] as any)[0]).toEqual(+date);
+
+        const secondWrapper = shallowMount(VueDatepicker, { props: { modelType: 'pattern', format: 'dd.mm.yyyy' } });
+        secondWrapper.vm.internalModelValue = date;
+
+        secondWrapper.vm.emitModelValue();
+        expect(secondWrapper.emitted()).toHaveProperty('update:model-value');
+        expect((secondWrapper.emitted()['update:model-value'][0] as any)[0]).toEqual(format(date, 'dd.mm.yyyy'));
     });
 });
