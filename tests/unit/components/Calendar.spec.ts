@@ -4,6 +4,15 @@ import Calendar from '@/components/Calendar.vue';
 import DatepickerMenu from '@/components/DatepickerMenu.vue';
 import { resetDateTime } from '@/components/composables';
 
+const mountCalendar = async () => {
+    const menu = mount(DatepickerMenu, { props: { ariaLabels: { day: () => '' } } });
+    await menu.vm.$nextTick();
+    const calendar = menu.findComponent(Calendar);
+    const date = new Date();
+
+    return { calendar, date };
+};
+
 describe('Calendar component', () => {
     it('Should render custom day names', () => {
         const calendar = mount(Calendar, { props: { dayNames: ['1', '2', '3', '4', '5', '6', '7'] } });
@@ -40,10 +49,7 @@ describe('Calendar component', () => {
     });
 
     it('Should emit hover date on mouse over', async () => {
-        const menu = mount(DatepickerMenu, { props: { ariaLabels: { day: () => '' } } });
-        await menu.vm.$nextTick();
-        const calendar = menu.findComponent(Calendar);
-        const date = new Date();
+        const { calendar, date } = await mountCalendar();
 
         await calendar.find(`[data-test="${resetDateTime(date)}"]`).trigger('mouseover');
         await calendar.vm.$nextTick();
@@ -53,10 +59,7 @@ describe('Calendar component', () => {
     });
 
     it('Should emit date when calendar day is clicked', async () => {
-        const menu = mount(DatepickerMenu, { props: { ariaLabels: { day: () => '' } } });
-        await menu.vm.$nextTick();
-        const calendar = menu.findComponent(Calendar);
-        const date = new Date();
+        const { calendar, date } = await mountCalendar();
 
         await calendar.find(`[data-test="${resetDateTime(date)}"]`).trigger('click');
         await calendar.vm.$nextTick();

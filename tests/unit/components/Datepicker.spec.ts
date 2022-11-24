@@ -363,11 +363,11 @@ describe('Logic connection', () => {
         const flow = ['month', 'year', 'calendar'];
         const { menu } = await mountDatepicker({ flow });
         await menu.vm.$nextTick();
-        const monthPickerGrid = await menu.findComponent(SelectionGrid);
+        const monthPickerGrid = menu.findComponent(SelectionGrid);
 
         await monthPickerGrid.find(`[data-test="Jan"]`).trigger('click');
         await nextTick();
-        const yearPickerGrid = await menu.findComponent(SelectionGrid);
+        const yearPickerGrid = menu.findComponent(SelectionGrid);
 
         await yearPickerGrid.find(`[data-test="${getYear(new Date())}"]`).trigger('click');
         await nextTick();
