@@ -98,7 +98,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: ComputedRef<AllP
     const mapDateExternalToInternal = (value: Date | Date[]) => {
         if (props.value.modelAuto) {
             return Array.isArray(value)
-                ? [parseModelType(value[0]), value[1] ? parseModelType(value[1]) : null]
+                ? [parseModelType(value[0]), parseModelType(value[1])]
                 : [parseModelType(value), null];
         }
         if (Array.isArray(value)) {
@@ -133,15 +133,11 @@ export const useExternalInternalMapper = (emit: VueEmit, props: ComputedRef<AllP
     const getModelAutoForExternal = () =>
         (internalModelValue.value as Date[])[1]
             ? getRangeEmitValue()
-            : toModelType(convertType(internalModelValue.value));
+            : toModelType(convertType(internalModelValue.value[0]));
 
     // Map internal value for external
-    const getMultiDatesForExternal = () => {
-        if (internalModelValue.value[1]) {
-            return (internalModelValue.value as Date[]).map((date) => toModelType(date) as string);
-        }
-        return toModelType(internalModelValue.value[0]);
-    };
+    const getMultiDatesForExternal = () =>
+        (internalModelValue.value as Date[]).map((date) => toModelType(date) as string);
 
     // Parent internal to external function mapper that will return proper date format based on provided config
     const mapInternalDatesToExternal = () => {
