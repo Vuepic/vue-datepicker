@@ -279,6 +279,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
     const getModeClasses = (day: ICalendarDay) => {
         if (props.range) {
             if (props.autoRange) return autoRangeClasses(day);
+            if (props.modelAuto) return { ...singleDateClasses(day), ...rangeDateClasses(day) };
             return rangeDateClasses(day);
         }
         if (props.weekPicker) {
