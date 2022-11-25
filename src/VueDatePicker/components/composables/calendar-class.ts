@@ -244,6 +244,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
     const weekPickerClasses = (day: ICalendarDay): Record<string, boolean> => {
         return {
             ...rangeDateClasses(day),
+            ...autoRangeClasses(day),
             dp__range_between_week: isBetween(day) && props.weekPicker,
         };
     };
