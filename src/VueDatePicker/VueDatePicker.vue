@@ -30,7 +30,6 @@
                 v-model:internal-model-value="internalModelValue"
                 @close-picker="closeMenu"
                 @select-date="selectDate"
-                @dp-open="recalculatePosition"
                 @auto-apply="autoApplyValue"
                 @time-update="timeUpdate"
                 @flow-step="$emit('flow-step', $event)"
@@ -129,7 +128,7 @@
         { deep: true },
     );
 
-    const { openOnTop, menuPosition, setMenuPosition, recalculatePosition, setInitialPosition } = usePosition(
+    const { openOnTop, menuPosition, setMenuPosition, setInitialPosition } = usePosition(
         dpMenuRef,
         inputRef,
         emit,

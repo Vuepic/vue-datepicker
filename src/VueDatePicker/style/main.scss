@@ -169,8 +169,15 @@
 
 .dp-menu-appear-enter-from {
   opacity: 0;
+
+}
+
+.dp-menu-appear-enter-active,
+.dp-menu-appear-leave-active {
+  transition: opacity 0.1s ease;
 }
 
 .dp-menu-appear-leave-to {
   opacity: 1;
+
 }

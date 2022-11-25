@@ -112,7 +112,8 @@ export interface Transition {
 export type IDisableDates = (date: Date) => boolean;
 export type TimeType = 'hours' | 'minutes' | 'seconds';
 
-export type AltPosition = boolean | ((el: HTMLElement | null) => { top: string; left: string; transform: string });
+export type CustomAltPosition = (el: HTMLElement | null) => { top: string; left: string; transform: string };
+export type AltPosition = boolean | CustomAltPosition;
 
 export type PresetRange = { label: string; range: Date[] | string[]; style?: Record<string, string>; slot?: string };
 

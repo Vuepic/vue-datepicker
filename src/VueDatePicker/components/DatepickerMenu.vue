@@ -162,7 +162,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, onMounted, onUnmounted, reactive, ref, useSlots, watch } from 'vue';
+    import { computed, onMounted, onUnmounted, reactive, ref, useSlots } from 'vue';
 
     import ActionRow from '@/components/ActionRow.vue';
     import Calendar from '@/components/Calendar.vue';
@@ -191,7 +191,6 @@
     const emit = defineEmits([
         'close-picker',
         'select-date',
-        'dp-open',
         'auto-apply',
         'time-update',
         'flow-step',
@@ -251,18 +250,6 @@
     onUnmounted(() => {
         document.removeEventListener('resize', getCalendarWidth);
     });
-
-    watch(
-        calendarRefs,
-        () => {
-            setTimeout(() => {
-                if (props.openOnTop) {
-                    emit('dp-open');
-                }
-            }, 0);
-        },
-        { deep: true },
-    );
 
     const { arrowRight, arrowLeft, arrowDown, arrowUp } = useArrowNavigation();
 
