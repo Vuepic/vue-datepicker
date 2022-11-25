@@ -13,7 +13,7 @@ import MonthYearInput from '@/components/MonthYearPicker/MonthYearPicker.vue';
 import ActionRow from '@/components/ActionRow.vue';
 import SelectionGrid from '@/components/SelectionGrid.vue';
 
-import { useUtils } from '@/components/composables';
+import { resetDateTime, useUtils } from '@/components/composables';
 
 const format = (date: Date): string => {
     return `Selected year is ${date.getFullYear()}`;
@@ -375,5 +375,22 @@ describe('Logic connection', () => {
 
         expect(menu.vm.month(0)).toEqual(0);
         expect(menu.vm.year(0)).toEqual(getYear(new Date()));
+    });
+
+    it('Should do a proper map on auto-apply and model-auto', async () => {
+        const date = resetDateTime(new Date());
+        const { menu, dp } = await mountDatepicker({ autoApply: true, range: true, modelAuto: true });
+
+        menu.vm.selectDate(new Date());
+        await menu.vm.$nextTick();
+
+        const emittedDate = resetDateTime((dp.emitted()['update:model-value'][0] as any)[0]);
+
+        expect(emittedDate).toEqual(date);
+
+        await dp.setProps({ modelValue: emittedDate });
+        await dp.vm.$nextTick();
+
+        expect(dp.vm.internalModelValue).toEqual([emittedDate]);
     });
 });

@@ -97,9 +97,9 @@ export const useExternalInternalMapper = (emit: VueEmit, props: ComputedRef<AllP
     // Map external format to internal model value for range and single picker
     const mapDateExternalToInternal = (value: Date | Date[]) => {
         if (props.value.modelAuto) {
-            return Array.isArray(value)
-                ? [parseModelType(value[0]), parseModelType(value[1])]
-                : [parseModelType(value), null];
+            if (Array.isArray(value)) return [parseModelType(value[0]), parseModelType(value[1])];
+            // In case of auto-apply, if we add null, it will never select range
+            return props.value.autoApply ? [parseModelType(value)] : [parseModelType(value), null];
         }
         if (Array.isArray(value)) {
             return checkRangeEnabled(() => [

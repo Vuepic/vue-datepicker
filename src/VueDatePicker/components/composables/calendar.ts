@@ -432,16 +432,18 @@ export const useCalendar = (
         }
     };
 
+    // Assign time to a temp range item
+    const assignTime = (index: number) => {
+        tempRange.value[index] = setDateTime(
+            tempRange.value[index],
+            (time.hours as number[])[index],
+            (time.minutes as number[])[index],
+            getSecondsValue(index !== 1),
+        );
+    };
+
     // After range date is select, ensure that proper times are set and assign to modelValue
     const postRangeSelect = () => {
-        const assignTime = (index: number) => {
-            tempRange.value[index] = setDateTime(
-                tempRange.value[index],
-                (time.hours as number[])[index],
-                (time.minutes as number[])[index],
-                getSecondsValue(index !== 1),
-            );
-        };
         if (tempRange.value.length) {
             if (tempRange.value[0] && !tempRange.value[1]) {
                 assignTime(0);
@@ -450,10 +452,13 @@ export const useCalendar = (
                 assignTime(1);
                 updateFlow();
             }
-            modelValue.value = tempRange.value;
+            modelValue.value = tempRange.value.slice();
 
             if (tempRange.value[0] && tempRange.value[1] && props.autoApply) {
-                emit('autoApply');
+                emit('auto-apply');
+            }
+            if (tempRange.value[0] && !tempRange.value[1] && props.modelAuto && props.autoApply) {
+                emit('auto-apply');
             }
         }
     };
