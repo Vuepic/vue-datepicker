@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils';
 import { format, set } from 'date-fns';
 
 import DatepickerInput from '@/components/DatepickerInput.vue';
+
 import { getDefaultTextInputOptions } from '@/utils/defaults';
 
 describe('Datepicker input component', () => {

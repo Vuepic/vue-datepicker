@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest';
+import { addHours, getMonth, set, setMonth, subHours } from 'date-fns';
+import { getTimezoneOffset, zonedTimeToUtc } from 'date-fns-tz';
+import { reactive } from 'vue';
 
 import { getArrayInArray, getDayNames, getMonths, getYears } from '@/utils/util';
 import { dateToUtc, parseFreeInput } from '@/utils/date-utils';
 import { resetDateTime, setDateTime, useUtils } from '@/components/composables';
-import { addHours, getMonth, set, setMonth, subHours } from 'date-fns';
-import { getTimezoneOffset, zonedTimeToUtc } from 'date-fns-tz';
-import { reactive } from 'vue';
 
 describe('Utils and date utils formatting', () => {
     it('Should get calendar days', () => {

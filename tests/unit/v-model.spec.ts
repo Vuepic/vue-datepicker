@@ -5,6 +5,13 @@ import { describe, it, expect } from 'vitest';
 import VueDatepicker from '@/VueDatePicker.vue';
 import { resetDateTime } from '@/components/composables';
 
+const mountModelAuto = () => {
+    const date = new Date();
+    const wrapper = shallowMount(VueDatepicker, { props: { modelAuto: true, range: true } });
+
+    return { date, wrapper };
+};
+
 describe('v-model mapping', () => {
     it('Should accept null value v-model', () => {
         const wrapper = shallowMount(VueDatepicker, { props: { modelValue: null } });
@@ -215,5 +222,22 @@ describe('v-model mapping', () => {
         secondWrapper.vm.emitModelValue();
         expect(secondWrapper.emitted()).toHaveProperty('update:model-value');
         expect((secondWrapper.emitted()['update:model-value'][0] as any)[0]).toEqual(format(date, 'dd.mm.yyyy'));
+    });
+
+    it('Should emit single date on model-auto 1 selection', () => {
+        const { wrapper, date } = mountModelAuto();
+        wrapper.vm.internalModelValue = [date, null];
+
+        wrapper.vm.emitModelValue();
+        expect(wrapper.emitted()).toHaveProperty('update:model-value');
+        expect((wrapper.emitted()['update:model-value'][0] as any)[0]).toEqual(date);
+    });
+
+    it('Should emit range date on model-auto 2 selections', () => {
+        const { wrapper, date } = mountModelAuto();
+
+        wrapper.vm.internalModelValue = [date, addDays(date, 1)];
+        wrapper.vm.emitModelValue();
+        expect((wrapper.emitted()['update:model-value'][0] as any)[0]).toEqual([date, addDays(date, 1)]);
     });
 });

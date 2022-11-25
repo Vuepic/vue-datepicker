@@ -1,5 +1,6 @@
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { describe, it, expect, afterEach } from 'vitest';
+import { nextTick } from 'vue';
 import { addMonths, getHours, getMonth, getYear, setMilliseconds, setSeconds, startOfYear } from 'date-fns';
 import addDays from 'date-fns/addDays';
 import { ja } from 'date-fns/locale';
@@ -11,8 +12,8 @@ import TimePicker from '@/components/TimePicker/TimePicker.vue';
 import MonthYearInput from '@/components/MonthYearPicker/MonthYearPicker.vue';
 import ActionRow from '@/components/ActionRow.vue';
 import SelectionGrid from '@/components/SelectionGrid.vue';
+
 import { useUtils } from '@/components/composables';
-import { nextTick } from 'vue';
 
 const format = (date: Date): string => {
     return `Selected year is ${date.getFullYear()}`;

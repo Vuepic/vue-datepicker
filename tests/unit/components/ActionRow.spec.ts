@@ -100,12 +100,6 @@ describe('ActionRow component', () => {
         expect(wrapper.vm.previewValue).toBeTypeOf('string');
     });
 
-    // // todo - fix the logic in code
-    // it('Should properly format model-auto', () => {
-    //     setProps({ modelAuto: true, range: true, partialRange: true } as AllPropsType);
-    //     internalModelValue.value = new Date();
-    // });
-
     it('Should select date', async () => {
         const wrapper = mount(ActionRow, { props });
 

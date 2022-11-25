@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { addMonths, addYears, getMonth, getYear, subMonths } from 'date-fns';
-
 import { mount, VueWrapper } from '@vue/test-utils';
+
 import MonthYearPicker from '@/components/MonthYearPicker/MonthYearPicker.vue';
+
 import { getDefaultFilters, getMonths, getYears } from '@/utils/util';
+import { useArrowNavigation } from '@/components/composables';
 
 describe('MonthYearPicker component', () => {
     let wrapper: VueWrapper<any>;
@@ -97,5 +99,11 @@ describe('MonthYearPicker component', () => {
         expect(secondInstance.vm.showRightIcon).toEqual(true);
     });
 
-    it('Should build matrix', () => {});
+    it('Should build matrix', () => {
+        const { refSets } = useArrowNavigation();
+
+        mount(MonthYearPicker, { props: { ...props, arrowNavigation: true } });
+
+        expect(refSets.monthYear).toHaveLength(4);
+    });
 });
