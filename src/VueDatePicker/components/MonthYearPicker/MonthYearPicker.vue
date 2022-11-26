@@ -11,42 +11,44 @@
                 <slot name="arrow-left" v-if="$slots['arrow-left']" />
                 <ChevronLeftIcon v-if="!$slots['arrow-left']" />
             </ActionIcon>
-            <RegularPicker
-                :aria-label="ariaLabels?.openMonthsOverlay"
-                slot-name="month-overlay"
-                v-model="monthModelBind"
-                v-bind="childProps('month')"
-                @toggle="toggleMonthPicker"
-                @set-ref="setElRefs($event, 1)"
-                type="month"
-            >
-                <slot v-if="$slots.month" name="month" v-bind="getMonthDisplayVal" />
-                <template v-if="!$slots.month">{{ getMonthDisplayVal.text }}</template>
-                <template #calendar-icon v-if="$slots['calendar-icon']">
-                    <slot name="calendar-icon" />
-                </template>
-                <template v-if="$slots['month-overlay']" #month-overlay="{ item }">
-                    <slot name="month-overlay" :text="item.text" :value="item.value" />
-                </template>
-            </RegularPicker>
-            <RegularPicker
-                :aria-label="ariaLabels?.openYearsOverlay"
-                slot-name="year-overlay"
-                v-model="yearModelBind"
-                v-bind="childProps('year')"
-                @toggle="toggleYearPicker"
-                @set-ref="setElRefs($event, 2)"
-                type="year"
-            >
-                <slot v-if="$slots.year" name="year" :year="year" />
-                <template v-if="!$slots.year">{{ year }}</template>
-                <template #calendar-icon v-if="$slots['calendar-icon']">
-                    <slot name="calendar-icon" />
-                </template>
-                <template v-if="$slots['year-overlay']" #year-overlay="{ item }">
-                    <slot name="year-overlay" :text="item.text" :value="item.value" />
-                </template>
-            </RegularPicker>
+            <div class="dp__month_year_wrap">
+                <RegularPicker
+                    :aria-label="ariaLabels?.openMonthsOverlay"
+                    slot-name="month-overlay"
+                    v-model="monthModelBind"
+                    v-bind="childProps('month')"
+                    @toggle="toggleMonthPicker"
+                    @set-ref="setElRefs($event, 1)"
+                    type="month"
+                >
+                    <slot v-if="$slots.month" name="month" v-bind="getMonthDisplayVal" />
+                    <template v-if="!$slots.month">{{ getMonthDisplayVal.text }}</template>
+                    <template #calendar-icon v-if="$slots['calendar-icon']">
+                        <slot name="calendar-icon" />
+                    </template>
+                    <template v-if="$slots['month-overlay']" #month-overlay="{ item }">
+                        <slot name="month-overlay" :text="item.text" :value="item.value" />
+                    </template>
+                </RegularPicker>
+                <RegularPicker
+                    :aria-label="ariaLabels?.openYearsOverlay"
+                    slot-name="year-overlay"
+                    v-model="yearModelBind"
+                    v-bind="childProps('year')"
+                    @toggle="toggleYearPicker"
+                    @set-ref="setElRefs($event, 2)"
+                    type="year"
+                >
+                    <slot v-if="$slots.year" name="year" :year="year" />
+                    <template v-if="!$slots.year">{{ year }}</template>
+                    <template #calendar-icon v-if="$slots['calendar-icon']">
+                        <slot name="calendar-icon" />
+                    </template>
+                    <template v-if="$slots['year-overlay']" #year-overlay="{ item }">
+                        <slot name="year-overlay" :text="item.text" :value="item.value" />
+                    </template>
+                </RegularPicker>
+            </div>
             <ActionIcon
                 :aria-label="ariaLabels?.prevMonth"
                 :disabled="isDisabled(false)"
