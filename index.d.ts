@@ -3,17 +3,17 @@ import { Locale } from 'date-fns';
 import { ComponentOptionsMixin, ComputedOptions, DefineComponent, MethodOptions } from 'vue';
 
 export type EmitEvents =
-    | 'update:modelValue'
-    | 'textSubmit'
+    | 'update:model-value'
+    | 'text-submit'
     | 'closed'
     | 'cleared'
     | 'open'
     | 'focus'
     | 'blur'
-    | 'internalModelChange'
-    | 'recalculatePosition'
+    | 'internal-model-change'
+    | 'recalculate-position'
     | 'flow-step'
-    | 'updateMonthYear'
+    | 'update-month-year'
     | 'invalid-select';
 
 export interface VueDatePicker {
@@ -234,6 +234,7 @@ export interface VueDatePicker {
     ignoreTimeValidation?: boolean;
     dayClass?: (date: Date) => string;
     hideNavigation?: ('month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds')[];
+    noDisabledRange?: boolean;
 }
 
 export interface PublicMethods extends MethodOptions {

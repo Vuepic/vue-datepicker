@@ -49,6 +49,15 @@ const openAndGetMonthOverlay = async (menu: VueWrapper<any>) => {
     return menu.find('.dp__overlay');
 };
 
+const selectRange = async (menu: VueWrapper<any>, start: Date, end: Date) => {
+    menu.vm.selectDate({ value: start, current: true });
+    await nextTick();
+    await flushPromises();
+    menu.vm.selectDate({ value: end, current: true });
+    await nextTick();
+    await flushPromises();
+};
+
 describe('Logic connection', () => {
     afterEach(async () => {
         await flushPromises();
@@ -95,12 +104,8 @@ describe('Logic connection', () => {
         const { dp, menu } = await mountDatepicker({ modelValue: null, range: true });
 
         const calendar = menu.findComponent(Calendar);
-        menu.vm.selectDate({ value: start, current: true });
-        await nextTick();
-        await flushPromises();
-        menu.vm.selectDate({ value: end, current: true });
-        await nextTick();
-        await flushPromises();
+
+        await selectRange(menu, start, end);
 
         await checkRange(calendar, menu, start, end);
 
@@ -392,5 +397,18 @@ describe('Logic connection', () => {
         await dp.vm.$nextTick();
 
         expect(dp.vm.internalModelValue).toEqual([emittedDate]);
+    });
+
+    it('Should not select range when no-disabled-range is provided', async () => {
+        const start = new Date();
+        const end = addDays(start, 7);
+        const disabledDates = [addDays(start, 1), addDays(start, 2)];
+
+        const { menu } = await mountDatepicker({ noDisabledRange: true, range: true, disabledDates });
+
+        await selectRange(menu, start, end);
+
+        expect(menu.vm.internalModelValue).toHaveLength(1);
+        expect(resetDateTime(menu.vm.internalModelValue[0])).toEqual(resetDateTime(start));
     });
 });

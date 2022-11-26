@@ -319,14 +319,19 @@ export const useCalendar = (
         }
     };
 
+    // Get dates between 2 dates
+    const getDaysInBetween = (dateOne: Date, dateTwo: Date) => {
+        // Check if selection is backwards
+        const start = isDateAfter(dateOne, dateTwo) ? dateTwo : dateOne;
+        const end = isDateAfter(dateTwo, dateOne) ? dateTwo : dateOne;
+        return eachDayOfInterval({ start, end });
+    };
+
     // If min or max range is set, validate given range
     const checkMinMaxRange = (secondDate: Date): boolean => {
         if (Array.isArray(modelValue.value) && modelValue.value[0]) {
             const absoluteDiff = differenceInCalendarDays(secondDate, modelValue.value[0]);
-            // Check if selection is backwards
-            const start = isDateAfter(modelValue.value[0], secondDate) ? secondDate : modelValue.value[0];
-            const end = isDateAfter(secondDate, modelValue.value[0]) ? secondDate : modelValue.value[0];
-            const daysInBetween = eachDayOfInterval({ start, end });
+            const daysInBetween = getDaysInBetween(modelValue.value[0], secondDate);
             const disabledDates =
                 daysInBetween.length === 1 ? 0 : daysInBetween.filter((date) => isDisabled(date)).length;
             const diff = Math.abs(absoluteDiff) - disabledDates;
@@ -414,6 +419,12 @@ export const useCalendar = (
         tempRange.value = getRangeWithFixedDate(getDate(day.value));
     };
 
+    const includesDisabled = (day: Date) => {
+        if (!props.noDisabledRange) return false;
+        const daysBetween = getDaysInBetween(tempRange.value[0], day);
+        return daysBetween.some((date) => isDisabled(date));
+    };
+
     // Called on selectDate when range mode is used
     const handleRangeDatesSelect = (day: ICalendarDay, isNext: boolean) => {
         presetTempRange();
@@ -422,7 +433,7 @@ export const useCalendar = (
         if (!tempRange.value[0]) {
             tempRange.value[0] = getDate(day.value);
         } else {
-            if (checkMinMaxRange(getDate(day.value))) {
+            if (checkMinMaxRange(getDate(day.value)) && !includesDisabled(day.value)) {
                 if (isDateBefore(getDate(day.value), getDate(tempRange.value[0]))) {
                     tempRange.value.unshift(getDate(day.value));
                 } else {
