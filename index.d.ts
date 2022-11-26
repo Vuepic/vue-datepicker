@@ -234,6 +234,7 @@ export interface VueDatePicker {
     ignoreTimeValidation?: boolean;
     dayClass?: (date: Date) => string;
     hideNavigation?: ('month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds')[];
+    onClickOutside?: (validate: () => boolean) => void;
     noDisabledRange?: boolean;
     sixWeeks?: boolean;
 }
