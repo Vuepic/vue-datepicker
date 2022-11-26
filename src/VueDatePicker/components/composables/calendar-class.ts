@@ -222,12 +222,10 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
             dp__cell_offset: !day.current,
             dp__pointer: !props.disabled && !(!day.current && props.hideOffsetDates),
             dp__cell_disabled: isDisabled(day.value),
-            [props.dayClass ? props.dayClass(day.value) : '']: true,
             dp__cell_highlight:
                 !disableHighlight(day) && (highlighted(day) || highlightedWeekDay(day)) && !isActive(day),
             dp__cell_highlight_active:
                 !disableHighlight && (highlighted(day) || highlightedWeekDay(day)) && isActive(day),
-            [props.calendarCellClassName]: !!props.calendarCellClassName,
             dp__today: !props.noToday && isDateEqual(day.value, today.value) && day.current,
         };
     };
@@ -295,6 +293,8 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
         return {
             ...sharedClasses(day),
             ...getModeClasses(day),
+            [props.dayClass ? props.dayClass(day.value) : '']: true,
+            [props.calendarCellClassName]: !!props.calendarCellClassName,
         };
     };
 
