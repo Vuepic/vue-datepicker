@@ -3,8 +3,7 @@ import { mount } from '@vue/test-utils';
 
 import Calendar from '@/components/Calendar.vue';
 import DatepickerMenu from '@/components/DatepickerMenu.vue';
-
-import { resetDateTime } from '@/components/composables';
+import { resetDateTime } from '@/utils/date-utils';
 
 const mountCalendar = async () => {
     const menu = mount(DatepickerMenu, { props: { ariaLabels: { day: () => '' } } });

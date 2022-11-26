@@ -20,6 +20,7 @@ import {
 
 import { isModelValueRange, isNumberArray, isRange } from '@/utils/type-guard';
 import { useUtils } from '@/components/composables/utils';
+import { isDateAfter, isDateBefore, isDateEqual, getDate, setDateTime } from '@/utils/date-utils';
 
 import type {
     ExtendedProps,
@@ -42,17 +43,13 @@ export const useCalendar = (
     // @SONAR_STOP@
 
     const {
-        getDate,
         getDefaultStartTime,
         isDisabled,
         sanitizeDate,
-        setDateTime,
         getWeekFromDate,
-        isDateAfter,
-        isDateBefore,
-        isDateEqual,
         setDateMonthOrYear,
         validateMonthYearInRange,
+        defaults,
     } = useUtils(props);
 
     // internal model value is updated from this computed property
@@ -109,11 +106,11 @@ export const useCalendar = (
             if (props.startDate) {
                 setCalendarMonthYear(0, getMonth(getDate(props.startDate)), getYear(getDate(props.startDate)));
 
-                if (props.multiCalendars) {
+                if (defaults.value.multiCalendars) {
                     autoChangeMultiCalendars(0);
                 }
             }
-            if (props.startTime) {
+            if (defaults.value.startTime) {
                 assignStartTime();
             }
         }
@@ -134,16 +131,16 @@ export const useCalendar = (
         if (props.timePicker) return assignTimePicker();
         if (props.monthPicker && !props.range) return assignMonthPicker();
         if (props.yearPicker && !props.range) return assignYearPicker();
-        if (props.multiCalendars) return assignMonthAndYear(getDate(), fromMount);
+        if (defaults.value.multiCalendars) return assignMonthAndYear(getDate(), fromMount);
     };
 
     // Assign month and year values per date
     const assignMonthAndYear = (date: Date, fromMount = false): void => {
-        if (!props.multiCalendars || !props.multiStatic || fromMount) {
+        if (!defaults.value.multiCalendars || !props.multiStatic || fromMount) {
             setCalendarMonthYear(0, getMonth(date), getYear(date));
         }
-        if (props.multiCalendars) {
-            for (let i = 1; i <= props.multiCalendars; i++) {
+        if (defaults.value.multiCalendars) {
+            for (let i = 1; i <= defaults.value.multiCalendars; i++) {
                 const prevDate = set(getDate(), { month: month.value(i - 1), year: year.value(i - 1) });
                 const nextMonth = add(prevDate, { months: 1 });
                 calendars.value[i] = { month: getMonth(nextMonth), year: getYear(nextMonth) };
@@ -188,7 +185,7 @@ export const useCalendar = (
     const assignExistingModelValueArr = (fromMount: boolean) => {
         const dates = modelValue.value as Date[];
         assignExistingMulti(dates, fromMount);
-        if (props.multiCalendars && props.multiCalendarsSolo) {
+        if (defaults.value.multiCalendars && props.multiCalendarsSolo) {
             handleNextMonthYear();
         }
     };
@@ -291,8 +288,8 @@ export const useCalendar = (
         const monthValue = getMonth(getDate(date));
         const yearValue = getYear(getDate(date));
         setCalendarMonthYear(0, monthValue, yearValue);
-        if (props.multiCalendars > 0) {
-            for (let i = 1; i < props.multiCalendars; i++) {
+        if (defaults.value.multiCalendars > 0) {
+            for (let i = 1; i < defaults.value.multiCalendars; i++) {
                 const next = getNextMonthYear(
                     set(getDate(date), { year: month.value(i - 1), month: year.value(i - 1) }),
                 );
@@ -506,7 +503,7 @@ export const useCalendar = (
             const date = subMonths(set(getDate(), { month: month.value(i + 1), year: year.value(i + 1) }), 1);
             setCalendarMonthYear(i, getMonth(date), getYear(date));
         }
-        for (let i = instance + 1; i <= (props.multiCalendars as number) - 1; i++) {
+        for (let i = instance + 1; i <= (defaults.value.multiCalendars as number) - 1; i++) {
             const date = addMonths(set(getDate(), { month: month.value(i - 1), year: year.value(i - 1) }), 1);
             setCalendarMonthYear(i, getMonth(date), getYear(date));
         }
@@ -530,7 +527,7 @@ export const useCalendar = (
 
         setCalendarMonthYear(instance, val.month, val.year);
 
-        if (props.multiCalendars && !props.multiCalendarsSolo) {
+        if (defaults.value.multiCalendars && !props.multiCalendarsSolo) {
             autoChangeMultiCalendars(instance);
         }
 
@@ -580,7 +577,7 @@ export const useCalendar = (
         const date = increment < 0 ? addMonths(initialDate, 1) : subMonths(initialDate, 1);
         if (validateMonthYearInRange(getMonth(date), getYear(date), increment < 0, props.preventMinMaxNavigation)) {
             setCalendarMonthYear(instance, getMonth(date), getYear(date));
-            if (props.multiCalendars && !props.multiCalendarsSolo) {
+            if (defaults.value.multiCalendars && !props.multiCalendarsSolo) {
                 autoChangeMultiCalendars(instance);
             }
             triggerCalendarTransition();

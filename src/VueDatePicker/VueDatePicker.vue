@@ -4,7 +4,7 @@
             ref="inputRef"
             :is-menu-open="isOpen"
             v-model:input-value="inputValue"
-            v-bind="{ ...$props, ...defaults }"
+            v-bind="$props"
             @clear="clearValue"
             @open="openMenu"
             @set-input-date="setInputDate"
@@ -26,7 +26,7 @@
                 :class="theme"
                 :style="menuPosition"
                 :open-on-top="openOnTop"
-                v-bind="{ ...$props, ...defaults }"
+                v-bind="$props"
                 v-model:internal-model-value="internalModelValue"
                 @close-picker="closeMenu"
                 @select-date="selectDate"
@@ -60,14 +60,6 @@
     } from '@/components/composables';
     import { onClickOutside } from './directives/clickOutside';
     import { AllProps } from './utils/props';
-    import { getDefaultFilters } from '@/utils/util';
-    import {
-        defaultAriaLabels,
-        defaultMultiCalendars,
-        defaultPreviewFormat,
-        defaultTransitions,
-        getDefaultTextInputOptions,
-    } from '@/utils/defaults';
 
     import type { DynamicClass } from './interfaces';
 
@@ -97,7 +89,7 @@
 
     const { setMenuFocused, setShiftKey } = useState();
     const { clearArrowNav } = useArrowNavigation();
-    const { validateDate, isValidTime, getDefaultPattern, getDefaultStartTime } = useUtils(props);
+    const { validateDate, isValidTime, defaults } = useUtils(props);
 
     onMounted(() => {
         parseExternalModelValue(props.modelValue);
@@ -136,22 +128,8 @@
         props,
     );
 
-    const defaults = computed(() => ({
-        ariaLabels: defaultAriaLabels(props.ariaLabels),
-        textInputOptions: Object.assign(getDefaultTextInputOptions(), props.textInputOptions),
-        multiCalendars: defaultMultiCalendars(props.multiCalendars),
-        previewFormat: defaultPreviewFormat(props.previewFormat, props.format, getDefaultPattern()),
-        filters: getDefaultFilters(props.filters),
-        transitions: defaultTransitions(props.transitions),
-        startTime: getDefaultStartTime(),
-    }));
-
     const { inputValue, internalModelValue, parseExternalModelValue, emitModelValue, formatInputValue } =
-        useExternalInternalMapper(
-            emit,
-            computed(() => ({ ...props, ...defaults.value })),
-            isInputFocused,
-        );
+        useExternalInternalMapper(emit, props, isInputFocused);
 
     const wrapperClass = computed(
         (): DynamicClass => ({

@@ -158,12 +158,3 @@ export const AllProps = {
 };
 
 export type AllPropsType = ExtractPropTypes<typeof AllProps>;
-
-export const MergedProps = {
-    ...AllProps,
-    filters: { type: Object as PropType<DateFilter>, default: () => ({}) },
-    multiCalendars: { type: Number as PropType<number>, default: null },
-    transitions: { type: [Boolean, Object] as PropType<Transition>, default: true },
-    ariaLabels: { type: Object as PropType<AriaLabels>, default: () => ({}) },
-    textInputOptions: { type: Object as PropType<TextInputOptions>, default: () => ({}) },
-};

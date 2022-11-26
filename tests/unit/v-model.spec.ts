@@ -3,7 +3,7 @@ import { getYear, addDays, getMonth, addMonths, addYears, format, parse, getHour
 import { describe, it, expect } from 'vitest';
 
 import VueDatepicker from '@/VueDatePicker.vue';
-import { resetDateTime } from '@/components/composables';
+import { resetDateTime } from '@/utils/date-utils';
 
 const mountModelAuto = () => {
     const date = new Date();

@@ -1,7 +1,7 @@
 <template>
     <div
         @click="handleOpen"
-        :aria-label="ariaLabels?.input"
+        :aria-label="defaults.ariaLabels?.input"
         role="textbox"
         aria-multiline="false"
         :aria-disabled="disabled"
@@ -65,7 +65,7 @@
 
     import { parseFreeInput } from '@/utils/date-utils';
     import { useUtils } from '@/components/composables';
-    import { MergedProps } from '@/utils/props';
+    import { AllProps } from '@/utils/props';
 
     import type { PropType } from 'vue';
     import type { DynamicClass } from '@/interfaces';
@@ -87,10 +87,10 @@
     const props = defineProps({
         isMenuOpen: { type: Boolean as PropType<boolean>, default: false },
         inputValue: { type: String as PropType<string>, default: '' },
-        ...MergedProps,
+        ...AllProps,
     });
 
-    const { getDefaultPattern, isValidDate } = useUtils(props);
+    const { getDefaultPattern, isValidDate, defaults } = useUtils(props);
 
     const parsedDate = ref();
     const inputRef = ref<HTMLElement | null>(null);
@@ -120,11 +120,11 @@
     };
 
     const parser = (value: string): Date | null => {
-        return parseFreeInput(value, props.textInputOptions?.format || getDefaultPattern());
+        return parseFreeInput(value, defaults.value.textInputOptions?.format || getDefaultPattern());
     };
 
     const parseInput = (value: string) => {
-        const { rangeSeparator } = props.textInputOptions;
+        const { rangeSeparator } = defaults.value.textInputOptions;
 
         if (props.range) {
             const [dateOne, dateTwo] = value.split(`${rangeSeparator}`);
@@ -143,7 +143,7 @@
         const { value } = event.target as HTMLInputElement;
 
         if (value !== '') {
-            if (props.textInputOptions?.openMenu && !props.isMenuOpen) {
+            if (defaults.value.textInputOptions?.openMenu && !props.isMenuOpen) {
                 emit('open');
             }
             parseInput(value);
@@ -156,20 +156,20 @@
     };
 
     const handleEnter = (): void => {
-        if (props.textInputOptions?.enterSubmit && isValidDate(parsedDate.value) && props.inputValue !== '') {
+        if (defaults.value.textInputOptions?.enterSubmit && isValidDate(parsedDate.value) && props.inputValue !== '') {
             emit('set-input-date', parsedDate.value, true);
             parsedDate.value = null;
-        } else if (props.textInputOptions?.enterSubmit && props.inputValue === '') {
+        } else if (defaults.value.textInputOptions?.enterSubmit && props.inputValue === '') {
             parsedDate.value = null;
             emit('clear');
         }
     };
 
     const handleTab = (): void => {
-        if (props.textInputOptions?.tabSubmit && isValidDate(parsedDate.value) && props.inputValue !== '') {
+        if (defaults.value.textInputOptions?.tabSubmit && isValidDate(parsedDate.value) && props.inputValue !== '') {
             emit('set-input-date', parsedDate.value, true);
             parsedDate.value = null;
-        } else if (props.textInputOptions?.tabSubmit && props.inputValue === '') {
+        } else if (defaults.value.textInputOptions?.tabSubmit && props.inputValue === '') {
             parsedDate.value = null;
             emit('clear');
         }
@@ -184,10 +184,10 @@
         ev.preventDefault();
         ev.stopImmediatePropagation();
         ev.stopPropagation();
-        if (props.textInput && props.textInputOptions?.openMenu) {
+        if (props.textInput && defaults.value.textInputOptions?.openMenu) {
             if (!props.isMenuOpen) {
                 emit('open');
-            } else if (props.textInputOptions.enterSubmit) {
+            } else if (defaults.value.textInputOptions.enterSubmit) {
                 emit('select-date');
             }
         } else if (!props.textInput) {

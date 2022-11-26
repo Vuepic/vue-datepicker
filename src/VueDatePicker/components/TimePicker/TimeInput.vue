@@ -6,7 +6,7 @@
                 <div
                     class="dp__inc_dec_button"
                     role="button"
-                    :aria-label="ariaLabels?.incrementValue(timeInput.type)"
+                    :aria-label="defaults.ariaLabels?.incrementValue(timeInput.type)"
                     tabindex="0"
                     @keydown.enter="handleTimeValue(timeInput.type)"
                     @keydown.space="handleTimeValue(timeInput.type)"
@@ -18,7 +18,7 @@
                 </div>
                 <div
                     role="button"
-                    :aria-label="ariaLabels?.openTpOverlay(timeInput.type)"
+                    :aria-label="defaults.ariaLabels?.openTpOverlay(timeInput.type)"
                     :class="checkOverlayDisabled(timeInput.type) ? '' : 'dp__time_display'"
                     tabindex="0"
                     @keydown.enter="toggleOverlay(timeInput.type)"
@@ -37,7 +37,7 @@
                 <div
                     class="dp__inc_dec_button"
                     role="button"
-                    :aria-label="ariaLabels?.decrementValue(timeInput.type)"
+                    :aria-label="defaults.ariaLabels?.decrementValue(timeInput.type)"
                     tabindex="0"
                     @keydown.enter="handleTimeValue(timeInput.type, false)"
                     @keydown.space="handleTimeValue(timeInput.type, false)"
@@ -57,7 +57,7 @@
                 v-if="!$slots['am-pm-button']"
                 class="dp__pm_am_button"
                 role="button"
-                :aria-label="ariaLabels?.amPmButton"
+                :aria-label="defaults.ariaLabels?.amPmButton"
                 tabindex="0"
                 @click="setAmPm"
                 @keydown.enter.prevent="setAmPm"
@@ -77,7 +77,7 @@
                 :items="getGridItems(timeInput.type)"
                 :disabled-values="filters?.times[timeInput.type]"
                 :esc-close="escClose"
-                :aria-labels="ariaLabels"
+                :aria-labels="defaults.ariaLabels"
                 @update:model-value="handleTimeFromOverlay(timeInput.type, $event)"
                 @selected="toggleOverlay(timeInput.type)"
                 @toggle="toggleOverlay(timeInput.type)"
@@ -104,12 +104,13 @@
     import { ChevronUpIcon, ChevronDownIcon, ClockIcon } from '@/components/Icons';
     import SelectionGrid from '@/components/SelectionGrid.vue';
     import { useTransitions, useArrowNavigation, useUtils } from '@/components/composables';
-    import { MergedProps } from '@/utils/props';
+    import { AllProps } from '@/utils/props';
     import { getArrayInArray, hoursToAmPmHours } from '@/utils/util';
 
     import type { PropType } from 'vue';
     import type { Duration } from 'date-fns';
     import type { DynamicClass, IDefaultSelect, TimeType, TimeOverlayCheck } from '@/interfaces';
+    import { getDate } from '@/utils/date-utils';
 
     const emit = defineEmits([
         'set-hours',
@@ -127,13 +128,13 @@
         seconds: { type: Number as PropType<number>, default: 0 },
         closeTimePickerBtn: { type: Object as PropType<HTMLElement | null>, default: null },
         order: { type: Number as PropType<number>, default: 0 },
-        ...MergedProps,
+        ...AllProps,
     });
 
     const { setTimePickerElements, setTimePickerBackRef } = useArrowNavigation();
-    const { getDate } = useUtils(props);
+    const { defaults } = useUtils(props);
 
-    const { transitionName, showTransition } = useTransitions(props.transitions);
+    const { transitionName, showTransition } = useTransitions(defaults.value.transitions);
 
     const overlays = reactive({
         hours: false,

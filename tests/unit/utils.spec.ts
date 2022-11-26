@@ -4,12 +4,13 @@ import { getTimezoneOffset, zonedTimeToUtc } from 'date-fns-tz';
 import { reactive } from 'vue';
 
 import { getArrayInArray, getDayNames, getMonths, getYears } from '@/utils/util';
-import { dateToUtc, parseFreeInput } from '@/utils/date-utils';
-import { resetDateTime, setDateTime, useUtils } from '@/components/composables';
+import { dateToUtc, parseFreeInput, resetDateTime, setDateTime } from '@/utils/date-utils';
+import { useUtils } from '@/components/composables';
+import type { AllPropsType } from '@/utils/props';
 
 describe('Utils and date utils formatting', () => {
     it('Should get calendar days', () => {
-        const { getCalendarDays } = useUtils({ weekStart: 1, hideOffsetDates: false });
+        const { getCalendarDays } = useUtils({ weekStart: 1, hideOffsetDates: false } as AllPropsType);
 
         const days = getCalendarDays(0, 2021);
 
@@ -19,7 +20,7 @@ describe('Utils and date utils formatting', () => {
     });
 
     it('Should get calendar days starting from sunday', () => {
-        const { getCalendarDays } = useUtils({ weekStart: 0, hideOffsetDates: false });
+        const { getCalendarDays } = useUtils({ weekStart: 0, hideOffsetDates: false } as AllPropsType);
 
         const days = getCalendarDays(0, 2021);
         expect(days).toHaveLength(6);
@@ -27,7 +28,7 @@ describe('Utils and date utils formatting', () => {
     });
 
     it('Should get calendar days with hidden offset dats', () => {
-        const { getCalendarDays } = useUtils({ weekStart: 1, hideOffsetDates: true });
+        const { getCalendarDays } = useUtils({ weekStart: 1, hideOffsetDates: true } as AllPropsType);
 
         const days = getCalendarDays(0, 2021);
 
@@ -65,7 +66,7 @@ describe('Utils and date utils formatting', () => {
 
     it('Should get default pattern', () => {
         const props = reactive({ enableTimePicker: true, is24: true, monthPicker: false });
-        const { getDefaultPattern } = useUtils(props);
+        const { getDefaultPattern } = useUtils(props as AllPropsType);
 
         const patternDef = getDefaultPattern();
         props.monthPicker = true;

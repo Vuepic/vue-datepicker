@@ -5,7 +5,7 @@
             v-show="!hideNavigationButtons('time')"
             :class="toggleButtonClass"
             role="button"
-            :aria-label="ariaLabels?.openTimePicker"
+            :aria-label="defaults.ariaLabels?.openTimePicker"
             tabindex="0"
             ref="openTimePickerBtn"
             @keydown.enter="toggleTimePicker(true)"
@@ -62,7 +62,7 @@
                         ref="closeTimePickerBtn"
                         :class="toggleButtonClass"
                         role="button"
-                        :aria-label="ariaLabels?.closeTimePicker"
+                        :aria-label="defaults.ariaLabels?.closeTimePicker"
                         tabindex="0"
                         @keydown.enter="toggleTimePicker(false)"
                         @keydown.space="toggleTimePicker(false)"
@@ -85,7 +85,7 @@
 
     import { isModelAuto, unrefElement } from '@/utils/util';
     import { mapSlots, useTransitions, useArrowNavigation, useUtils } from '@/components/composables';
-    import { MergedProps } from '@/utils/props';
+    import { AllProps } from '@/utils/props';
 
     import type { PropType } from 'vue';
     import type { TimeInputRef, InternalModuleValue } from '@/interfaces';
@@ -104,14 +104,14 @@
         minutes: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         seconds: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
-        ...MergedProps,
+        ...AllProps,
     });
 
     const { buildMatrix, setTimePicker } = useArrowNavigation();
     const slots = useSlots();
-    const { hideNavigationButtons } = useUtils(props);
+    const { hideNavigationButtons, defaults } = useUtils(props);
 
-    const { transitionName, showTransition } = useTransitions(props.transitions);
+    const { transitionName, showTransition } = useTransitions(defaults.value.transitions);
     const openTimePickerBtn = ref(null);
     const closeTimePickerBtn = ref(null);
     const timeInputRefs = ref<TimeInputRef[]>([]);

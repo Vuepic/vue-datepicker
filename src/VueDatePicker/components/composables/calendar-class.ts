@@ -3,13 +3,13 @@ import { addDays } from 'date-fns';
 
 import { useUtils } from '@/components/composables';
 import { isModelAuto } from '@/utils/util';
+import { isDateAfter, isDateBefore, isDateBetween, isDateEqual, getDate } from '@/utils/date-utils';
 
 import type { UnwrapRef, WritableComputedRef } from 'vue';
 import type { ExtendedProps, ICalendarDay, InternalModuleValue } from '@/interfaces';
 
 export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleValue>, props: ExtendedProps) => {
-    const { getDate, isDisabled, matchDate, getWeekFromDate, isDateAfter, isDateBefore, isDateBetween, isDateEqual } =
-        useUtils(props);
+    const { isDisabled, matchDate, getWeekFromDate } = useUtils(props);
     // Track hovered date
     const hoveredDate = ref<Date | null>();
     // Today date

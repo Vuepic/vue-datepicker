@@ -67,12 +67,6 @@ export const hoursToAmPmHours = (index: number): number => {
     return hoursValues[index];
 };
 
-/**
- * Default filters to merge with user provided values
- */
-export const getDefaultFilters = (filters: Partial<DateFilter>): DateFilter =>
-    Object.assign({ months: [], years: [], times: { hours: [], minutes: [], seconds: [] } }, filters);
-
 export const unrefElement = (elRef: MaybeElementRef): HTMLElement | null => {
     const plain = unref(elRef);
     return (plain as ComponentPublicInstance)?.$el ?? plain;

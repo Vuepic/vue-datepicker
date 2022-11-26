@@ -1,4 +1,4 @@
-import type { AriaLabels, IFormat, Transition, TextInputOptions } from '@/interfaces';
+import type { AriaLabels, IFormat, Transition, TextInputOptions, DateFilter } from '@/interfaces';
 
 export const mergeDefaultTransitions = (conf: Partial<Transition>): Transition =>
     Object.assign(
@@ -71,3 +71,9 @@ export const getDefaultTextInputOptions = (): TextInputOptions => ({
     openMenu: true,
     rangeSeparator: ' - ',
 });
+
+/**
+ * Default filters to merge with user provided values
+ */
+export const getDefaultFilters = (filters: Partial<DateFilter>): DateFilter =>
+    Object.assign({ months: [], years: [], times: { hours: [], minutes: [], seconds: [] } }, filters);

@@ -2,7 +2,7 @@
     <div class="dp__month_year_row">
         <template v-if="!monthPicker && !yearPicker">
             <ActionIcon
-                :aria-label="ariaLabels?.prevMonth"
+                :aria-label="defaults.ariaLabels?.prevMonth"
                 :disabled="isDisabled(false)"
                 @activate="handleMonthYearChange(false)"
                 v-if="showLeftIcon && !vertical"
@@ -13,7 +13,7 @@
             </ActionIcon>
             <div class="dp__month_year_wrap">
                 <RegularPicker
-                    :aria-label="ariaLabels?.openMonthsOverlay"
+                    :aria-label="defaults.ariaLabels?.openMonthsOverlay"
                     slot-name="month-overlay"
                     v-model="monthModelBind"
                     v-bind="childProps('month')"
@@ -31,7 +31,7 @@
                     </template>
                 </RegularPicker>
                 <RegularPicker
-                    :aria-label="ariaLabels?.openYearsOverlay"
+                    :aria-label="defaults.ariaLabels?.openYearsOverlay"
                     slot-name="year-overlay"
                     v-model="yearModelBind"
                     v-bind="childProps('year')"
@@ -50,7 +50,7 @@
                 </RegularPicker>
             </div>
             <ActionIcon
-                :aria-label="ariaLabels?.prevMonth"
+                :aria-label="defaults.ariaLabels?.prevMonth"
                 :disabled="isDisabled(false)"
                 @activate="handleMonthYearChange(false)"
                 v-if="showLeftIcon && vertical"
@@ -60,7 +60,7 @@
             </ActionIcon>
             <ActionIcon
                 :disabled="isDisabled(true)"
-                :aria-label="ariaLabels?.nextMonth"
+                :aria-label="defaults.ariaLabels?.nextMonth"
                 @activate="handleMonthYearChange(true)"
                 ref="rightIcon"
                 v-if="showRightIcon"
@@ -99,7 +99,7 @@
                             @click="handleYear(false)"
                             @keydown.enter="handleYear(false)"
                         >
-                            <div class="dp__inner_nav" role="button" :aria-label="ariaLabels?.prevMonth">
+                            <div class="dp__inner_nav" role="button" :aria-label="defaults.ariaLabels?.prevMonth">
                                 <slot name="arrow-left" v-if="$slots['arrow-left']" />
                                 <ChevronLeftIcon v-if="!$slots['arrow-left']" />
                             </div>
@@ -108,7 +108,7 @@
                             class="dp__pointer"
                             role="button"
                             ref="mpYearButtonRef"
-                            :aria-label="ariaLabels?.openYearsOverlay"
+                            :aria-label="defaults.ariaLabels?.openYearsOverlay"
                             tabindex="0"
                             @click="() => toggleYearPicker"
                             @keydown.enter="() => toggleYearPicker"
@@ -123,7 +123,7 @@
                             @click="handleYear(true)"
                             @keydown.enter="handleYear(true)"
                         >
-                            <div class="dp__inner_nav" role="button" :aria-label="ariaLabels?.nextMonth">
+                            <div class="dp__inner_nav" role="button" :aria-label="defaults.ariaLabels?.nextMonth">
                                 <slot name="arrow-right" v-if="$slots['arrow-right']" />
                                 <ChevronRightIcon v-if="!$slots['arrow-right']" />
                             </div>
@@ -182,12 +182,13 @@
     import RegularPicker from '@/components/MonthYearPicker/RegularPicker.vue';
     import SelectionGrid from '@/components/SelectionGrid.vue';
 
-    import { useMontYearPick, useTransitions, useArrowNavigation } from '@/components/composables';
+    import { useMontYearPick, useTransitions, useArrowNavigation, useUtils } from '@/components/composables';
     import { unrefElement } from '@/utils/util';
-    import { MergedProps } from '@/utils/props';
+    import { AllProps } from '@/utils/props';
 
     import type { PropType } from 'vue';
     import type { IDefaultSelect, InternalModuleValue } from '@/interfaces';
+    import { getDate } from '@/utils/date-utils';
 
     const emit = defineEmits(['update-month-year', 'month-year-select', 'mount', 'reset-flow', 'overlay-closed']);
     const props = defineProps({
@@ -197,10 +198,10 @@
         years: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
         months: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
         internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
-        ...MergedProps,
+        ...AllProps,
     });
-
-    const { transitionName, showTransition } = useTransitions(props.transitions);
+    const { defaults } = useUtils(props);
+    const { transitionName, showTransition } = useTransitions(defaults.value.transitions);
     const { buildMatrix } = useArrowNavigation();
     const { handleMonthYearChange, isDisabled } = useMontYearPick(props, emit);
 
@@ -237,27 +238,27 @@
         return {
             showSelectionGrid: (isMonth ? showMonthPicker : showYearPicker).value,
             items: (isMonth ? groupedMonths : groupedYears).value,
-            disabledValues: props.filters[isMonth ? 'months' : 'years'],
+            disabledValues: defaults.value.filters[isMonth ? 'months' : 'years'],
             minValue: (isMonth ? minMonth : minYear).value,
             maxValue: (isMonth ? maxMonth : maxYear).value,
             headerRefs:
                 isMonth && props.monthPicker ? [mpPrevIconRef.value, mpYearButtonRef.value, mpNextIconRef.value] : [],
             escClose: props.escClose,
-            transitions: props?.transitions,
-            ariaLabels: props.ariaLabels,
+            transitions: defaults.value.transitions,
+            ariaLabels: defaults.value.ariaLabels,
             textInput: props.textInput,
             autoApply: props.autoApply,
             arrowNavigation: props.arrowNavigation,
         };
     });
 
-    const minYear = computed(() => (props.minDate ? getYear(new Date(props.minDate)) : null));
-    const maxYear = computed(() => (props.maxDate ? getYear(new Date(props.maxDate)) : null));
+    const minYear = computed(() => (props.minDate ? getYear(getDate(props.minDate)) : null));
+    const maxYear = computed(() => (props.maxDate ? getYear(getDate(props.maxDate)) : null));
 
     const minMonth = computed(() => {
         if (props.minDate && minYear.value) {
             if (minYear.value > props.year) return 12;
-            if (minYear.value === props.year) return getMonth(new Date(props.minDate));
+            if (minYear.value === props.year) return getMonth(getDate(props.minDate));
         }
         return null;
     });
@@ -265,7 +266,7 @@
     const maxMonth = computed(() => {
         if (props.maxDate && maxYear.value) {
             if (maxYear.value < props.year) return -1;
-            if (maxYear.value === props.year) return getMonth(new Date(props.maxDate));
+            if (maxYear.value === props.year) return getMonth(getDate(props.maxDate));
             return null;
         }
         return null;
@@ -308,15 +309,15 @@
     });
 
     const showLeftIcon = computed(() => {
-        if (props.multiCalendars) {
+        if (defaults.value.multiCalendars) {
             return !props.multiCalendarsSolo ? props.instance === 0 : true;
         }
         return true;
     });
 
     const showRightIcon = computed((): boolean => {
-        if (props.multiCalendars) {
-            return !props.multiCalendarsSolo ? props.instance === props.multiCalendars - 1 : true;
+        if (defaults.value.multiCalendars) {
+            return !props.multiCalendarsSolo ? props.instance === defaults.value.multiCalendars - 1 : true;
         }
         return true;
     });

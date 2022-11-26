@@ -1,22 +1,18 @@
 import { ref, watch } from 'vue';
 import { format, getHours, getMinutes, getMonth, getSeconds, getYear, parse, setYear } from 'date-fns';
 
-import { dateToUtc } from '@/utils/date-utils';
+import { dateToUtc, getDate, setDateTime } from '@/utils/date-utils';
 import { convertType, errors } from '@/utils/util';
 import { useUtils } from '@/components/composables';
 
 import type { ModelValue, VueEmit, TimeModel, MonthModel } from '@/interfaces';
 import type { AllPropsType } from '@/utils/props';
-import type { Ref, ComputedRef } from 'vue';
+import type { Ref } from 'vue';
 
 /**
  * Handles values from external to internal and vise versa
  */
-export const useExternalInternalMapper = (
-    emit: VueEmit,
-    props: ComputedRef<AllPropsType>,
-    isInputFocused: Ref<boolean>,
-) => {
+export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, isInputFocused: Ref<boolean>) => {
     const internalModelValue = ref();
     const {
         getZonedToUtc,
@@ -25,11 +21,10 @@ export const useExternalInternalMapper = (
         getDefaultPattern,
         checkRangeEnabled,
         checkPartialRangeValue,
-        getDate,
         isValidDate,
-        setDateTime,
         setDateMonthOrYear,
-    } = useUtils(props.value);
+        defaults,
+    } = useUtils(props);
 
     const inputValue = ref('');
 
@@ -43,7 +38,7 @@ export const useExternalInternalMapper = (
             hours: getHours(dateValue),
             minutes: getMinutes(dateValue),
         };
-        if (props.value.enableSeconds) {
+        if (props.enableSeconds) {
             timeModel.seconds = getSeconds(dateValue);
         }
         return timeModel as TimeModel;
@@ -100,10 +95,10 @@ export const useExternalInternalMapper = (
 
     // Map external format to internal model value for range and single picker
     const mapDateExternalToInternal = (value: Date | Date[]) => {
-        if (props.value.modelAuto) {
+        if (props.modelAuto) {
             if (Array.isArray(value)) return [parseModelType(value[0]), parseModelType(value[1])];
             // In case of auto-apply, if we add null, it will never select range
-            return props.value.autoApply ? [parseModelType(value)] : [parseModelType(value), null];
+            return props.autoApply ? [parseModelType(value)] : [parseModelType(value), null];
         }
         if (Array.isArray(value)) {
             return checkRangeEnabled(() => [
@@ -119,7 +114,7 @@ export const useExternalInternalMapper = (
      * auto add 'null' value as second value
      */
     const sanitizeModelValue = () => {
-        if (Array.isArray(internalModelValue.value) && props.value.range && internalModelValue.value.length === 1) {
+        if (Array.isArray(internalModelValue.value) && props.range && internalModelValue.value.length === 1) {
             internalModelValue.value.push(checkPartialRangeValue());
         }
     };
@@ -146,8 +141,8 @@ export const useExternalInternalMapper = (
     // Parent internal to external function mapper that will return proper date format based on provided config
     const mapInternalDatesToExternal = () => {
         sanitizeModelValue();
-        if (props.value.modelAuto) return getModelAutoForExternal();
-        if (props.value.multiDates) return getMultiDatesForExternal();
+        if (props.modelAuto) return getModelAutoForExternal();
+        if (props.multiDates) return getMultiDatesForExternal();
         if (Array.isArray(internalModelValue.value)) {
             return checkRangeEnabled(() => getRangeEmitValue());
         }
@@ -156,11 +151,11 @@ export const useExternalInternalMapper = (
 
     const mapExternalToInternal = (value: ModelValue) => {
         if (!value) return null;
-        if (props.value.timePicker) return mapTimeExternalToInternal(convertType(value));
-        if (props.value.monthPicker) return mapMonthExternalToInternal(convertType(value));
-        if (props.value.yearPicker) return mapYearExternalToInternal(convertType(value));
-        if (props.value.multiDates) return mapMultiDateExternalToInternal(convertType(value));
-        if (props.value.weekPicker) return mapWeekExternalToInternal(convertType(value));
+        if (props.timePicker) return mapTimeExternalToInternal(convertType(value));
+        if (props.monthPicker) return mapMonthExternalToInternal(convertType(value));
+        if (props.yearPicker) return mapYearExternalToInternal(convertType(value));
+        if (props.multiDates) return mapMultiDateExternalToInternal(convertType(value));
+        if (props.weekPicker) return mapWeekExternalToInternal(convertType(value));
         return mapDateExternalToInternal(convertType(value));
     };
 
@@ -181,8 +176,8 @@ export const useExternalInternalMapper = (
     };
 
     const formatRangeTextInput = () => {
-        const formatter = (value: Date) => format(value, props.value.textInputOptions?.format as string);
-        return `${formatter(internalModelValue.value[0])} ${props.value.textInputOptions?.rangeSeparator} ${
+        const formatter = (value: Date) => format(value, defaults.value.textInputOptions?.format as string);
+        return `${formatter(internalModelValue.value[0])} ${defaults.value.textInputOptions?.rangeSeparator} ${
             internalModelValue.value[1] ? formatter(internalModelValue.value[1]) : ''
         }`;
     };
@@ -191,7 +186,7 @@ export const useExternalInternalMapper = (
     const formatForTextInput = () => {
         if (isInputFocused.value && internalModelValue.value) {
             if (Array.isArray(internalModelValue.value)) return formatRangeTextInput();
-            return format(internalModelValue.value, props.value.textInputOptions?.format as string);
+            return format(internalModelValue.value, defaults.value.textInputOptions?.format as string);
         }
         return formatDate(internalModelValue.value);
     };
@@ -199,10 +194,8 @@ export const useExternalInternalMapper = (
     // Get proper input value depending on the mode
     const getInputValue = (): string => {
         if (!internalModelValue.value) return '';
-        if (props.value.multiDates)
-            return (internalModelValue.value as Date[]).map((date) => formatDate(date)).join('; ');
-        if (props.value.textInput && typeof props.value.textInputOptions?.format === 'string')
-            return formatForTextInput();
+        if (props.multiDates) return (internalModelValue.value as Date[]).map((date) => formatDate(date)).join('; ');
+        if (props.textInput && typeof defaults.value.textInputOptions?.format === 'string') return formatForTextInput();
         return formatDate(internalModelValue.value);
     };
 
@@ -210,41 +203,38 @@ export const useExternalInternalMapper = (
      * Map the date value(s) to the human-readable text for the input field
      */
     const formatInputValue = (): void => {
-        if (!props.value.format || typeof props.value.format === 'string') {
+        if (!props.format || typeof props.format === 'string') {
             inputValue.value = getInputValue();
         } else {
-            inputValue.value = props.value.format(internalModelValue.value as Date | Date[]);
+            inputValue.value = props.format(internalModelValue.value as Date | Date[]);
         }
     };
 
     const parseModelType = (value: string | number | Date): Date => {
-        if (props.value.utc) {
+        if (props.utc) {
             const toDate = new Date(value);
-            return props.value.utc === 'preserve'
-                ? new Date(toDate.getTime() + toDate.getTimezoneOffset() * 60000)
-                : toDate;
+            return props.utc === 'preserve' ? new Date(toDate.getTime() + toDate.getTimezoneOffset() * 60000) : toDate;
         }
-        if (props.value.modelType) {
-            if (props.value.modelType === 'date' || props.value.modelType === 'timestamp')
-                return getZonedDate(new Date(value));
+        if (props.modelType) {
+            if (props.modelType === 'date' || props.modelType === 'timestamp') return getZonedDate(new Date(value));
 
-            if (props.value.modelType === 'format' && (typeof props.value.format === 'string' || !props.value.format))
+            if (props.modelType === 'format' && (typeof props.format === 'string' || !props.format))
                 return parse(value as string, getDefaultPattern(), new Date());
 
-            return getZonedDate(parse(value as string, props.value.modelType, new Date()));
+            return getZonedDate(parse(value as string, props.modelType, new Date()));
         }
 
         return getZonedDate(new Date(value));
     };
 
     const toModelType = (val: Date): string | number | Date => {
-        if (props.value.utc) {
-            return dateToUtc(val, props.value.utc === 'preserve');
+        if (props.utc) {
+            return dateToUtc(val, props.utc === 'preserve');
         }
-        if (props.value.modelType) {
-            if (props.value.modelType === 'timestamp') return +getZonedToUtc(val);
+        if (props.modelType) {
+            if (props.modelType === 'timestamp') return +getZonedToUtc(val);
 
-            if (props.value.modelType === 'format' && (typeof props.value.format === 'string' || !props.value.format))
+            if (props.modelType === 'format' && (typeof props.format === 'string' || !props.format))
                 return formatDate(getZonedToUtc(val));
 
             return formatDate(getZonedToUtc(val));
@@ -280,10 +270,10 @@ export const useExternalInternalMapper = (
     const emitModelValue = (): void => {
         formatInputValue();
 
-        if (props.value.monthPicker) return modeEmitter(getMonthVal);
-        if (props.value.timePicker) return modeEmitter(getTimeVal);
-        if (props.value.yearPicker) return modeEmitter(getYear);
-        if (props.value.weekPicker) return emitValue(internalModelValue.value);
+        if (props.monthPicker) return modeEmitter(getMonthVal);
+        if (props.timePicker) return modeEmitter(getTimeVal);
+        if (props.yearPicker) return modeEmitter(getYear);
+        if (props.weekPicker) return emitValue(internalModelValue.value);
         return emitValue(mapInternalDatesToExternal());
     };
 

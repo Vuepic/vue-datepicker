@@ -13,7 +13,9 @@ import MonthYearInput from '@/components/MonthYearPicker/MonthYearPicker.vue';
 import ActionRow from '@/components/ActionRow.vue';
 import SelectionGrid from '@/components/SelectionGrid.vue';
 
-import { resetDateTime, useUtils } from '@/components/composables';
+import { useUtils } from '@/components/composables';
+import type { AllPropsType } from '@/utils/props';
+import { resetDateTime } from '@/utils/date-utils';
 
 const format = (date: Date): string => {
     return `Selected year is ${date.getFullYear()}`;
@@ -262,7 +264,7 @@ describe('Logic connection', () => {
         const today = new Date();
 
         const { dp, menu } = await mountDatepicker({ modelValue: null, weekPicker: true });
-        const { getWeekFromDate } = useUtils({ weekStart: 1 });
+        const { getWeekFromDate } = useUtils({ weekStart: 1 } as AllPropsType);
         const weekRange = getWeekFromDate(today);
 
         const calendar = menu.findComponent(Calendar);

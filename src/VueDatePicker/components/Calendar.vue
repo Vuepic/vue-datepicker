@@ -6,7 +6,7 @@
                 v-if="!specificMode"
                 :class="calendarWrapClass"
                 role="grid"
-                :aria-label="ariaLabels?.calendarWrap"
+                :aria-label="defaults.ariaLabels?.calendarWrap"
             >
                 <div class="dp__calendar_header" role="row">
                     <div class="dp__calendar_header_item" role="gridcell" v-if="weekNumbers">
@@ -27,7 +27,12 @@
                 </div>
                 <div class="dp__calendar_header_separator"></div>
                 <transition :name="transitionName" :css="!!transitions">
-                    <div class="dp__calendar" role="grid" :aria-label="ariaLabels?.calendarDays" v-if="showCalendar">
+                    <div
+                        class="dp__calendar"
+                        role="grid"
+                        :aria-label="defaults.ariaLabels?.calendarDays"
+                        v-if="showCalendar"
+                    >
                         <div class="dp__calendar_row" role="row" v-for="(week, weekInd) in mappedDates" :key="weekInd">
                             <div role="gridcell" v-if="weekNumbers" class="dp__calendar_item dp__week_num">
                                 <div class="dp__cell_inner">
@@ -46,7 +51,7 @@
                                     dayVal.classData.dp__range_start
                                 "
                                 :aria-disabled="dayVal.classData.dp__cell_disabled"
-                                :aria-label="ariaLabels.day(dayVal)"
+                                :aria-label="defaults.ariaLabels.day(dayVal)"
                                 tabindex="0"
                                 :data-test="dayVal.value"
                                 @click.stop.prevent="$emit('select-date', dayVal)"
@@ -109,7 +114,8 @@
 
     import { getDayNames, getDefaultMarker, unrefElement } from '@/utils/util';
     import { useArrowNavigation, useUtils } from '@/components/composables';
-    import { MergedProps } from '@/utils/props';
+    import { AllProps } from '@/utils/props';
+    import { getDate, isDateAfter, isDateEqual, resetDateTime } from '@/utils/date-utils';
 
     import type { PropType, UnwrapRef } from 'vue';
     import type { DynamicClass, ICalendarDate, ICalendarDay, IMarker } from '@/interfaces';
@@ -133,11 +139,11 @@
         instance: { type: Number as PropType<number>, default: 0 },
         month: { type: Number as PropType<number>, default: 0 },
         year: { type: Number as PropType<number>, default: 0 },
-        ...MergedProps,
+        ...AllProps,
     });
 
     const { buildMultiLevelMatrix } = useArrowNavigation();
-    const { getDate, isDateAfter, isDateEqual, resetDateTime, setDateMonthOrYear } = useUtils(props);
+    const { setDateMonthOrYear, defaults } = useUtils(props);
 
     const showMakerTooltip = ref<Date | null>(null);
     const markerTooltipStyle = ref({ bottom: '', left: '', transform: '' });
@@ -177,8 +183,8 @@
         if (props.transitions) {
             const newDate = resetDateTime(setDateMonthOrYear(getDate(), props.month, props.year));
             transitionName.value = isDateAfter(resetDateTime(setDateMonthOrYear(getDate(), month, year)), newDate)
-                ? props.transitions[getTransitionName(true)]
-                : props.transitions[getTransitionName(false)];
+                ? defaults.value.transitions[getTransitionName(true)]
+                : defaults.value.transitions[getTransitionName(false)];
             showCalendar.value = false;
             nextTick(() => {
                 showCalendar.value = true;
@@ -206,7 +212,7 @@
 
     const calendarParentClass = computed(() => ({
         dp__calendar: true,
-        dp__calendar_next: props.multiCalendars > 0 && props.instance !== 0,
+        dp__calendar_next: defaults.value.multiCalendars > 0 && props.instance !== 0,
     }));
 
     const contentWrapStyle = computed(() => (props.specificMode ? { height: `${props.modeHeight}px` } : undefined));

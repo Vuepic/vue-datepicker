@@ -47,9 +47,11 @@
 
     import { unrefElement, convertType } from '@/utils/util';
     import { useArrowNavigation, useUtils } from '@/components/composables';
+    import { isDateBetween, isDateEqual } from '@/utils/date-utils';
 
     import type { PropType } from 'vue';
     import type { IDefaultSelect, DynamicClass, Flow, AriaLabels } from '@/interfaces';
+    import type { AllPropsType } from '@/utils/props';
 
     const { setSelectionGrid, buildMultiLevelMatrix, setMonthPicker } = useArrowNavigation();
 
@@ -76,7 +78,7 @@
         ariaLabels: { type: Object as PropType<AriaLabels>, default: () => ({}) },
     });
 
-    const { hideNavigationButtons, isDateBetween, isDateEqual } = useUtils(props);
+    const { hideNavigationButtons } = useUtils(props as unknown as AllPropsType);
 
     const scrollable = ref(false);
     const selectionActiveRef = ref<HTMLElement | null>(null);

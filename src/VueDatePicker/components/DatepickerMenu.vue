@@ -1,5 +1,5 @@
 <template>
-    <transition appear :name="transitions?.menuAppear" mode="out-in" :css="!!transitions">
+    <transition appear :name="defaults.transitions?.menuAppear" mode="out-in" :css="!!transitions">
         <div
             :id="uid ? `dp-menu-${uid}` : undefined"
             tabindex="0"
@@ -172,7 +172,7 @@
     import { useCalendar, mapSlots, useArrowNavigation, useState, useUtils } from '@/components/composables';
     import { getMonths, getYears, unrefElement } from '@/utils/util';
     import { useCalendarClass } from '@/components/composables/calendar-class';
-    import { MergedProps } from '@/utils/props';
+    import { AllProps } from '@/utils/props';
 
     import type {
         CalendarRef,
@@ -201,11 +201,11 @@
     const props = defineProps({
         openOnTop: { type: Boolean as PropType<boolean>, default: false },
         internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
-        ...MergedProps,
+        ...AllProps,
     });
 
     const { setMenuFocused, setShiftKey, control } = useState();
-    const { getCalendarDays } = useUtils(props);
+    const { getCalendarDays, defaults } = useUtils(props);
     const slots = useSlots();
 
     const calendarWrapperRef = ref(null);
@@ -333,7 +333,7 @@
     const dates = computed(() => (instance: number) => getCalendarDays(month.value(instance), year.value(instance)));
 
     const calendarAmm = computed((): number[] =>
-        props.multiCalendars > 0 && props.range ? [...Array(props.multiCalendars).keys()] : [0],
+        defaults.value.multiCalendars > 0 && props.range ? [...Array(defaults.value.multiCalendars).keys()] : [0],
     );
 
     const isFirstInstance = computed(
@@ -347,12 +347,12 @@
 
     const menuCalendarClassWrapper = computed(
         (): DynamicClass => ({
-            dp__flex_display: props.multiCalendars > 0,
+            dp__flex_display: defaults.value.multiCalendars > 0,
         }),
     );
 
     const calendarInstanceClassWrapper = computed(() => ({
-        dp__instance_calendar: props.multiCalendars > 0,
+        dp__instance_calendar: defaults.value.multiCalendars > 0,
     }));
 
     const disabledReadonlyOverlay = computed(() => ({

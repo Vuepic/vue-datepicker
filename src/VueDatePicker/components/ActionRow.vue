@@ -42,7 +42,8 @@
 
     import { convertType, unrefElement } from '@/utils/util';
     import { useArrowNavigation, useUtils } from '@/components/composables';
-    import { MergedProps } from '@/utils/props';
+    import { AllProps } from '@/utils/props';
+    import { getDate, isDateAfter, isDateBefore } from '@/utils/date-utils';
 
     import type { PropType } from 'vue';
     import type { InternalModuleValue } from '@/interfaces';
@@ -53,10 +54,10 @@
         calendarWidth: { type: Number as PropType<number>, default: 0 },
         menuMount: { type: Boolean as PropType<boolean>, default: false },
         internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
-        ...MergedProps,
+        ...AllProps,
     });
 
-    const { formatDate, getDate, isDateAfter, isDateBefore, isValidTime } = useUtils(props);
+    const { formatDate, isValidTime, defaults } = useUtils(props);
     const { buildMatrix } = useArrowNavigation();
 
     const cancelButtonRef = ref(null);
@@ -91,7 +92,7 @@
     });
 
     const handleCustomPreviewFormat = () => {
-        const formatFn = props.previewFormat as (val: Date | Date[]) => string | string[];
+        const formatFn = defaults.value.previewFormat as (val: Date | Date[]) => string | string[];
 
         if (props.timePicker) return formatFn(convertType(props.internalModelValue));
 
@@ -102,7 +103,7 @@
 
     const formatRangeDate = () => {
         const dates = props.internalModelValue as Date[];
-        if (props.multiCalendars > 0) {
+        if (defaults.value.multiCalendars > 0) {
             return `${formatDate(dates[0])} - ${formatDate(dates[1])}`;
         }
         return [formatDate(dates[0]), formatDate(dates[1])];
@@ -110,7 +111,7 @@
 
     const previewValue = computed((): string | string[] => {
         if (!props.internalModelValue || !props.menuMount) return '';
-        if (typeof props.previewFormat === 'string') {
+        if (typeof defaults.value.previewFormat === 'string') {
             if (Array.isArray(props.internalModelValue)) {
                 if (props.internalModelValue.length === 2 && props.internalModelValue[1]) {
                     return formatRangeDate();
