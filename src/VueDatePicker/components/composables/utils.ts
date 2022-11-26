@@ -116,8 +116,10 @@ export const useUtils = (props: AllPropsType) => {
     });
 
     const validateDate = (date: Date) => {
-        const aboveMax = props.maxDate ? isDateAfter(sanitizeDate(date), sanitizeDate(props.maxDate)) : false;
-        const bellowMin = props.minDate ? isDateBefore(sanitizeDate(date), sanitizeDate(props.minDate)) : false;
+        const aboveMax = props.maxDate ? isDateAfter(getZonedDate(date), getZonedDate(getDate(props.maxDate))) : false;
+        const bellowMin = props.minDate
+            ? isDateBefore(getZonedDate(date), getZonedDate(getDate(props.minDate)))
+            : false;
         const inDisableArr = matchDate(date, props.disabledDates);
         const disabledMonths = defaults.value.filters.months.map((month) => +month);
         const inDisabledMonths = disabledMonths.includes(getMonth(date));
@@ -125,7 +127,7 @@ export const useUtils = (props: AllPropsType) => {
             ? props.disabledWeekDays.some((day) => +day === getDay(date))
             : false;
         const notInSpecific = props.allowedDates.length
-            ? !props.allowedDates.some((dateVal) => isDateEqual(sanitizeDate(dateVal), sanitizeDate(date)))
+            ? !props.allowedDates.some((dateVal) => isDateEqual(getZonedDate(getDate(dateVal)), getZonedDate(date)))
             : false;
 
         const dateYear = getYear(date);
@@ -184,14 +186,14 @@ export const useUtils = (props: AllPropsType) => {
     };
 
     const getWeekFromDate = (date: Date): [Date, Date] => {
-        const start = startOfWeek(date, { weekStartsOn: +props.weekStart as WeekStartNum });
-        const end = endOfWeek(date, { weekStartsOn: +props.weekStart as WeekStartNum });
+        const start = startOfWeek(getZonedDate(date), { weekStartsOn: +props.weekStart as WeekStartNum });
+        const end = endOfWeek(getZonedDate(date), { weekStartsOn: +props.weekStart as WeekStartNum });
         return [start, end];
     };
 
     const matchDate = (date: Date, pattern: Date[] | string[] | number[] | ((date: Date) => boolean)): boolean => {
         if (Array.isArray(pattern)) {
-            return pattern.some((includedDate) => isDateEqual(sanitizeDate(getDate(includedDate)), sanitizeDate(date)));
+            return pattern.some((includedDate) => isDateEqual(getZonedDate(getDate(includedDate)), getZonedDate(date)));
         }
         return pattern(date);
     };
@@ -311,8 +313,8 @@ export const useUtils = (props: AllPropsType) => {
     // Get days for the calendar to be displayed in a table grouped by weeks
     const getCalendarDays = (month: number, year: number): ICalendarDate[] => {
         const weeks: ICalendarDate[] = [];
-        const firstDate = getDate(new Date(year, month));
-        const lastDate = getDate(new Date(year, month + 1, 0));
+        const firstDate = getDate(getZonedDate(new Date(year, month)));
+        const lastDate = getDate(getZonedDate(new Date(year, month + 1, 0)));
 
         const firstDateInCalendar = startOfWeek(firstDate, { weekStartsOn: props.weekStart as WeekStartNum });
 

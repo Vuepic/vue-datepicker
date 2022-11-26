@@ -82,7 +82,8 @@
     });
     const slots = useSlots();
     const isOpen = ref(false);
-    const modelValueMap = toRef(props, 'modelValue');
+    const modelValueRef = toRef(props, 'modelValue');
+    const timezoneRef = toRef(props, 'timezone');
     const dpMenuRef = ref(null);
     const inputRef = ref(null);
     const isInputFocused = ref(false);
@@ -114,9 +115,9 @@
     const inputSlots = mapSlots(slots, 'input');
 
     watch(
-        modelValueMap,
+        [modelValueRef, timezoneRef],
         () => {
-            parseExternalModelValue(modelValueMap.value);
+            parseExternalModelValue(modelValueRef.value);
         },
         { deep: true },
     );
@@ -276,7 +277,7 @@
                 emit('closed');
                 setInitialPosition();
                 if (inputValue.value) {
-                    parseExternalModelValue(modelValueMap.value);
+                    parseExternalModelValue(modelValueRef.value);
                 }
             }
             clearInternalValues();
