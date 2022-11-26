@@ -1,6 +1,6 @@
 import { unref } from 'vue';
 
-import type { DateFilter, IDefaultSelect, IMarker, MaybeElementRef, ModelValue } from '@/interfaces';
+import type { IDefaultSelect, IMarker, MaybeElementRef, ModelValue } from '@/interfaces';
 import type { ComponentPublicInstance } from 'vue';
 
 export const getArrayInArray = <T>(list: T[], increment = 3): T[][] => {

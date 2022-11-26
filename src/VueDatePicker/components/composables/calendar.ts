@@ -503,7 +503,7 @@ export const useCalendar = (
             const date = subMonths(set(getDate(), { month: month.value(i + 1), year: year.value(i + 1) }), 1);
             setCalendarMonthYear(i, getMonth(date), getYear(date));
         }
-        for (let i = instance + 1; i <= (defaults.value.multiCalendars as number) - 1; i++) {
+        for (let i = instance + 1; i <= defaults.value.multiCalendars - 1; i++) {
             const date = addMonths(set(getDate(), { month: month.value(i - 1), year: year.value(i - 1) }), 1);
             setCalendarMonthYear(i, getMonth(date), getYear(date));
         }
