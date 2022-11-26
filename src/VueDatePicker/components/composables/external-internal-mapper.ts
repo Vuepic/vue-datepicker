@@ -37,10 +37,6 @@ export const useExternalInternalMapper = (
         emit('internal-model-change', internalModelValue.value);
     });
 
-    // watch(isInputFocused, () => {
-    //     formatInputValue();
-    // });
-
     const getTimeVal = (date?: Date): TimeModel => {
         const dateValue = date || getDate();
         const timeModel: Partial<TimeModel> = {

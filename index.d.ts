@@ -235,6 +235,7 @@ export interface VueDatePicker {
     dayClass?: (date: Date) => string;
     hideNavigation?: ('month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds')[];
     noDisabledRange?: boolean;
+    sixWeeks?: boolean;
 }
 
 export interface PublicMethods extends MethodOptions {

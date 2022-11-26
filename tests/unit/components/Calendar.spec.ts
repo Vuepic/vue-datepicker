@@ -69,4 +69,11 @@ describe('Calendar component', () => {
         expect(calendar.emitted()).toHaveProperty('select-date');
         expect((calendar.emitted()['select-date'][0] as any)[0].value).toEqual(resetDateTime(date));
     });
+
+    it('Should display six weeks', async () => {
+        const menu = mount(DatepickerMenu, { props: { sixWeeks: true, ariaLabels: { day: () => '' } } });
+        await menu.vm.$nextTick();
+
+        expect(menu.vm.dates(0)).toHaveLength(6);
+    });
 });

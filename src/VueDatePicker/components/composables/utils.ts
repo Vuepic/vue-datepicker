@@ -343,14 +343,14 @@ export const useUtils = (props: AllPropsType | ExtendedProps | any) => {
     };
 
     // Get 7 days from the provided start date, month is used to check whether the date is from the specified month or in the offset
-    const getWeekDays = (startDay: Date, month: number, hideOffsetDates: boolean): ICalendarDay[] => {
+    const getWeekDays = (startDay: Date, month: number): ICalendarDay[] => {
         const startDate = getDate(JSON.parse(JSON.stringify(startDay)));
         const dates = [];
         for (let i = 0; i < 7; i++) {
             const next = addDays(startDate, i);
             const isNext = getMonth(next) !== month;
             dates.push({
-                text: hideOffsetDates && isNext ? '' : next.getDate(),
+                text: props.hideOffsetDates && isNext ? '' : next.getDate(),
                 value: next,
                 current: !isNext,
                 classData: {},
@@ -368,7 +368,7 @@ export const useUtils = (props: AllPropsType | ExtendedProps | any) => {
         const firstDateInCalendar = startOfWeek(firstDate, { weekStartsOn: props.weekStart as WeekStartNum });
 
         const addDaysToWeek = (date: Date) => {
-            const days = getWeekDays(date, month, props.hideOffsetDates);
+            const days = getWeekDays(date, month);
             weeks.push({ days });
             if (
                 !weeks[weeks.length - 1].days.some((day) =>
@@ -380,6 +380,16 @@ export const useUtils = (props: AllPropsType | ExtendedProps | any) => {
             }
         };
         addDaysToWeek(firstDateInCalendar);
+
+        if (props.sixWeeks && weeks.length < 6) {
+            const diff = 6 - weeks.length;
+            for (let i = 1; i <= diff; i++) {
+                const lastWeek = weeks[weeks.length - 1];
+                const last = lastWeek.days[lastWeek.days.length - 1];
+                const days = getWeekDays(addDays(last.value, 1), getMonth(firstDate));
+                weeks.push({ days });
+            }
+        }
 
         return weeks;
     };
