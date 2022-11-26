@@ -244,7 +244,9 @@
     };
 
     const onTouchMove = (ev: TouchEvent): void => {
-        ev.preventDefault();
+        if (props.vertical && !props.inline) {
+            ev.preventDefault();
+        }
     };
 
     const handleTouch = () => {
