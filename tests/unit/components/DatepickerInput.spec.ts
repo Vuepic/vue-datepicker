@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils';
 import { format, set } from 'date-fns';
 
 import DatepickerInput from '@/components/DatepickerInput.vue';
+import DatePicker from '@/VueDatePicker.vue';
 
 import { getDefaultTextInputOptions } from '@/utils/defaults';
 
@@ -97,5 +98,34 @@ describe('Datepicker input component', () => {
         await wrapper.find('input').trigger('keydown.tab');
 
         expect(Object.keys(wrapper.emitted())).to.not.include('set-input-date');
+    });
+
+    it('Should switch format on text-input-options-format and general format', async () => {
+        const inputPattern = 'dd-MM-yyyy';
+        const formatPattern = 'MM/dd/yyyy';
+        const patternDate = format(new Date(), inputPattern);
+
+        const wrapper = mount(DatePicker, {
+            props: {
+                textInput: true,
+                format: formatPattern,
+                modelValue: new Date(),
+                textInputOptions: { format: inputPattern, enterSubmit: true },
+            },
+        });
+        const inputCmp = wrapper.findComponent(DatepickerInput);
+        await inputCmp.vm.$nextTick();
+
+        await inputCmp.find('input').trigger('focus');
+        await inputCmp.vm.$nextTick();
+        await wrapper.vm.$nextTick();
+
+        expect(inputCmp.find('input').element.value).toEqual(patternDate);
+
+        await inputCmp.find('input').trigger('blur');
+        await inputCmp.vm.$nextTick();
+        await wrapper.vm.$nextTick();
+
+        expect(inputCmp.find('input').element.value).toEqual(format(new Date(), formatPattern));
     });
 });

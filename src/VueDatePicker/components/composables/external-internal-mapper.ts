@@ -1,5 +1,5 @@
 import { ref, watch } from 'vue';
-import { getHours, getMinutes, getMonth, getSeconds, getYear, parse, setYear } from 'date-fns';
+import { format, getHours, getMinutes, getMonth, getSeconds, getYear, parse, setYear } from 'date-fns';
 
 import { dateToUtc } from '@/utils/date-utils';
 import { convertType, errors } from '@/utils/util';
@@ -7,12 +7,16 @@ import { useUtils } from '@/components/composables';
 
 import type { ModelValue, VueEmit, TimeModel, MonthModel } from '@/interfaces';
 import type { AllPropsType } from '@/utils/props';
-import type { ComputedRef } from 'vue';
+import type { Ref, ComputedRef } from 'vue';
 
 /**
  * Handles values from external to internal and vise versa
  */
-export const useExternalInternalMapper = (emit: VueEmit, props: ComputedRef<AllPropsType>) => {
+export const useExternalInternalMapper = (
+    emit: VueEmit,
+    props: ComputedRef<AllPropsType>,
+    isInputFocused: Ref<boolean>,
+) => {
     const internalModelValue = ref();
     const {
         getZonedToUtc,
@@ -32,6 +36,10 @@ export const useExternalInternalMapper = (emit: VueEmit, props: ComputedRef<AllP
     watch(internalModelValue, () => {
         emit('internal-model-change', internalModelValue.value);
     });
+
+    // watch(isInputFocused, () => {
+    //     formatInputValue();
+    // });
 
     const getTimeVal = (date?: Date): TimeModel => {
         const dateValue = date || getDate();
@@ -176,10 +184,29 @@ export const useExternalInternalMapper = (emit: VueEmit, props: ComputedRef<AllP
         }
     };
 
+    const formatRangeTextInput = () => {
+        const formatter = (value: Date) => format(value, props.value.textInputOptions?.format as string);
+        return `${formatter(internalModelValue.value[0])} ${props.value.textInputOptions?.rangeSeparator} ${
+            internalModelValue.value[1] ? formatter(internalModelValue.value[1]) : ''
+        }`;
+    };
+
+    // If text input format is enabled, on input focus, set the text to the given format
+    const formatForTextInput = () => {
+        if (isInputFocused.value && internalModelValue.value) {
+            if (Array.isArray(internalModelValue.value)) return formatRangeTextInput();
+            return format(internalModelValue.value, props.value.textInputOptions?.format as string);
+        }
+        return formatDate(internalModelValue.value);
+    };
+
+    // Get proper input value depending on the mode
     const getInputValue = (): string => {
         if (!internalModelValue.value) return '';
         if (props.value.multiDates)
             return (internalModelValue.value as Date[]).map((date) => formatDate(date)).join('; ');
+        if (props.value.textInput && typeof props.value.textInputOptions?.format === 'string')
+            return formatForTextInput();
         return formatDate(internalModelValue.value);
     };
 

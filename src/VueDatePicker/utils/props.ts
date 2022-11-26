@@ -131,7 +131,7 @@ export const AllProps = {
     autocomplete: { type: String as PropType<string>, default: 'off' },
     inputClassName: { type: String as PropType<string>, default: null },
     inlineWithInput: { type: Boolean as PropType<boolean>, default: false },
-    textInputOptions: { type: Object as PropType<TextInputOptions>, default: () => null },
+    textInputOptions: { type: Object as PropType<Partial<TextInputOptions>>, default: () => null },
     fixedStart: { type: Boolean as PropType<boolean>, default: false },
     fixedEnd: { type: Boolean as PropType<boolean>, default: false },
     timePicker: { type: Boolean as PropType<boolean>, default: false },

@@ -53,7 +53,7 @@
 
     const { setSelectionGrid, buildMultiLevelMatrix, setMonthPicker } = useArrowNavigation();
 
-    const emit = defineEmits(['update:modelValue', 'selected', 'toggle', 'reset-flow']);
+    const emit = defineEmits(['update:model-value', 'selected', 'toggle', 'reset-flow']);
 
     const props = defineProps({
         items: { type: Array as PropType<IDefaultSelect[][]>, default: () => [] },
@@ -233,7 +233,7 @@
      */
     const onClick = (val: string | number): void => {
         if (!props.disabledValues.some((value) => value === val) && !checkMinMaxValue(val)) {
-            emit('update:modelValue', val);
+            emit('update:model-value', val);
             emit('selected');
         }
     };

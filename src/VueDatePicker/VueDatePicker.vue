@@ -12,8 +12,8 @@
             @select-date="selectDate"
             @toggle="toggleMenu"
             @close="closeMenu"
-            @focus="$emit('focus')"
-            @blur="$emit('blur')"
+            @focus="handleInputFocus"
+            @blur="handleBlur"
         >
             <template v-for="(slot, i) in inputSlots" #[slot]="args" :key="i">
                 <slot :name="slot" v-bind="args" />
@@ -93,6 +93,7 @@
     const modelValueMap = toRef(props, 'modelValue');
     const dpMenuRef = ref(null);
     const inputRef = ref(null);
+    const isInputFocused = ref(false);
 
     const { setMenuFocused, setShiftKey } = useState();
     const { clearArrowNav } = useArrowNavigation();
@@ -149,6 +150,7 @@
         useExternalInternalMapper(
             emit,
             computed(() => ({ ...props, ...defaults.value })),
+            isInputFocused,
         );
 
     const wrapperClass = computed(
@@ -278,7 +280,9 @@
      * update, just clears internal data
      */
     const clearInternalValues = (): void => {
-        internalModelValue.value = null;
+        if (!props.textInput) {
+            internalModelValue.value = null;
+        }
     };
 
     /**
@@ -329,6 +333,18 @@
 
     const updateInternalModelValue = (value: Date | Date[]): void => {
         internalModelValue.value = value;
+    };
+
+    const handleInputFocus = () => {
+        isInputFocused.value = true;
+        formatInputValue();
+        emit('focus');
+    };
+
+    const handleBlur = () => {
+        isInputFocused.value = false;
+        formatInputValue();
+        emit('blur');
     };
 
     onClickOutside(
