@@ -23,7 +23,9 @@ import {
     setYear,
     startOfWeek,
 } from 'date-fns';
-import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
+import dateFnsTz from 'date-fns-tz';
+
+const { utcToZonedTime, zonedTimeToUtc } = dateFnsTz;
 
 import { errors, convertType, getDefaultFilters } from '@/utils/util';
 
