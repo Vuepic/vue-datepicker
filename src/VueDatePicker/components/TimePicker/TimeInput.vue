@@ -78,6 +78,7 @@
                 :disabled-values="defaults.filters.times[timeInput.type]"
                 :esc-close="escClose"
                 :aria-labels="defaults.ariaLabels"
+                :hide-navigation="hideNavigation"
                 @update:model-value="handleTimeFromOverlay(timeInput.type, $event)"
                 @selected="toggleOverlay(timeInput.type)"
                 @toggle="toggleOverlay(timeInput.type)"

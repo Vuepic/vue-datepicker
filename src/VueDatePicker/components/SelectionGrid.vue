@@ -76,6 +76,7 @@
         autoApply: { type: Boolean as PropType<boolean>, default: false },
         textInput: { type: Boolean as PropType<boolean>, default: false },
         ariaLabels: { type: Object as PropType<AriaLabels>, default: () => ({}) },
+        hideNavigation: { type: Array as PropType<Flow[]>, default: () => [] },
     });
 
     const { hideNavigationButtons } = useUtils(props as unknown as AllPropsType);

@@ -26,6 +26,7 @@
                 textInput,
                 autoApply,
                 ariaLabels,
+                hideNavigation,
             }"
             :header-refs="[]"
             @update:model-value="$emit('update:model-value', $event)"
@@ -51,6 +52,7 @@
 
     import type { PropType } from 'vue';
     import type { IDefaultSelect, Transition, AriaLabels } from '@/interfaces';
+    import { Flow } from '@/interfaces';
 
     const emit = defineEmits(['update:model-value', 'toggle', 'set-ref']);
     const props = defineProps({
@@ -70,6 +72,7 @@
         autoApply: { type: Boolean as PropType<boolean>, default: false },
         textInput: { type: Boolean as PropType<boolean>, default: false },
         ariaLabels: { type: Object as PropType<AriaLabels>, default: () => ({}) },
+        hideNavigation: { type: Array as PropType<Flow[]>, default: () => [] },
     });
 
     const { transitionName, showTransition } = useTransitions(props.transitions);

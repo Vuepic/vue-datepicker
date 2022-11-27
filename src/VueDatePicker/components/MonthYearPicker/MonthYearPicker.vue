@@ -249,6 +249,7 @@
             textInput: props.textInput,
             autoApply: props.autoApply,
             arrowNavigation: props.arrowNavigation,
+            hideNavigation: props.hideNavigation,
         };
     });
 
