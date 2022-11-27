@@ -277,9 +277,22 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
         return emitValue(mapInternalDatesToExternal());
     };
 
+    // Check if there is any selection before emitting value, to prevent null setting
+    const checkBeforeEmit = (): boolean => {
+        if (internalModelValue.value) {
+            if (props.range) {
+                if (props.partialRange) return internalModelValue.value.length >= 1;
+                return internalModelValue.value.length === 2;
+            }
+            return !!internalModelValue.value;
+        }
+        return false;
+    };
+
     return {
         inputValue,
         internalModelValue,
+        checkBeforeEmit,
         parseExternalModelValue,
         formatInputValue,
         emitModelValue,

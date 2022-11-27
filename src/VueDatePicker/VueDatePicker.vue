@@ -129,8 +129,14 @@
         props,
     );
 
-    const { inputValue, internalModelValue, parseExternalModelValue, emitModelValue, formatInputValue } =
-        useExternalInternalMapper(emit, props, isInputFocused);
+    const {
+        inputValue,
+        internalModelValue,
+        parseExternalModelValue,
+        emitModelValue,
+        formatInputValue,
+        checkBeforeEmit,
+    } = useExternalInternalMapper(emit, props, isInputFocused);
 
     const wrapperClass = computed(
         (): DynamicClass => ({
@@ -218,7 +224,7 @@
      * Called when select button is clicked, emit update for the modelValue
      */
     const selectDate = (): void => {
-        if (validateBeforeEmit()) {
+        if (checkBeforeEmit() && validateBeforeEmit()) {
             emitModelValue();
             closeMenu();
         } else {
