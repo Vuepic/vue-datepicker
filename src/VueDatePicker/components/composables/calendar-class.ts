@@ -220,7 +220,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
     const sharedClasses = (day: ICalendarDay): Record<string, boolean> => {
         return {
             dp__cell_offset: !day.current,
-            dp__pointer: !props.disabled && !(!day.current && props.hideOffsetDates),
+            dp__pointer: !props.disabled && !(!day.current && props.hideOffsetDates) && !isDisabled(day.value),
             dp__cell_disabled: isDisabled(day.value),
             dp__cell_highlight:
                 !disableHighlight(day) && (highlighted(day) || highlightedWeekDay(day)) && !isActive(day),

@@ -235,7 +235,7 @@
         }
         if (menu) {
             const stopDefault = (event: Event) => {
-                if (!props.monthYearComponent && !props.timePickerComponent) {
+                if (!props.monthYearComponent && !props.timePickerComponent && !Object.keys(slots).length) {
                     event.preventDefault();
                 }
                 event.stopImmediatePropagation();
