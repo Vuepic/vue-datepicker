@@ -75,7 +75,7 @@
             <SelectionGrid
                 v-if="overlays[timeInput.type]"
                 :items="getGridItems(timeInput.type)"
-                :disabled-values="filters?.times[timeInput.type]"
+                :disabled-values="defaults.filters.times[timeInput.type]"
                 :esc-close="escClose"
                 :aria-labels="defaults.ariaLabels"
                 @update:model-value="handleTimeFromOverlay(timeInput.type, $event)"
