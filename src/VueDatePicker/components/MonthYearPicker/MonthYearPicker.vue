@@ -110,8 +110,8 @@
                             ref="mpYearButtonRef"
                             :aria-label="defaults.ariaLabels?.openYearsOverlay"
                             tabindex="0"
-                            @click="() => toggleYearPicker"
-                            @keydown.enter="() => toggleYearPicker"
+                            @click="() => toggleYearPicker(false)"
+                            @keydown.enter="() => toggleYearPicker(false)"
                         >
                             <slot v-if="$slots.year" name="year" :year="year" />
                             <template v-if="!$slots.year">{{ year }}</template>
