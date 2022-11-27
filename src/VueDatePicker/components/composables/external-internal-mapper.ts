@@ -237,7 +237,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
             if (props.modelType === 'format' && (typeof props.format === 'string' || !props.format))
                 return formatDate(getZonedToUtc(val));
 
-            return formatDate(getZonedToUtc(val));
+            return formatDate(getZonedToUtc(val), props.modelType);
         }
         return getZonedToUtc(val);
     };

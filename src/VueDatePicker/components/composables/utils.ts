@@ -87,9 +87,9 @@ export const useUtils = (props: AllPropsType) => {
     };
 
     // Format date to a  human-readable output
-    const formatDate = (value: Date | Date[]) => {
+    const formatDate = (value: Date | Date[], customPattern?: string) => {
         if (typeof props.format === 'function') return props.format(value);
-        const pattern = getDefaultPattern();
+        const pattern = customPattern || getDefaultPattern();
         const options = props.formatLocale ? { locale: props.formatLocale } : undefined;
 
         if (Array.isArray(value)) {
