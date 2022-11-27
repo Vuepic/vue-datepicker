@@ -90,7 +90,7 @@
                                                         class="dp__tooltip_mark"
                                                         :style="tooltip.color ? { backgroundColor: tooltip.color } : {}"
                                                     ></div>
-                                                    <div v-if="$slots['tooltip-text']">
+                                                    <div v-if="$slots['marker-tooltip-text']">
                                                         <slot :name="tooltip.slot" :tooltip="tooltip"></slot>
                                                     </div>
                                                     <div v-else>{{ tooltip.text }}</div>
