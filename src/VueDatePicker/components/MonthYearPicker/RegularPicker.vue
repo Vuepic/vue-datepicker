@@ -51,8 +51,7 @@
     import { useTransitions } from '@/components/composables';
 
     import type { PropType } from 'vue';
-    import type { IDefaultSelect, Transition, AriaLabels } from '@/interfaces';
-    import { Flow } from '@/interfaces';
+    import type { IDefaultSelect, Transition, AriaLabels, Flow } from '@/interfaces';
 
     const emit = defineEmits(['update:model-value', 'toggle', 'set-ref']);
     const props = defineProps({
