@@ -216,7 +216,7 @@ describe('v-model mapping', () => {
         expect(wrapper.emitted()).toHaveProperty('update:model-value');
         expect((wrapper.emitted()['update:model-value'][0] as any)[0]).toEqual(+date);
 
-        const secondWrapper = shallowMount(VueDatepicker, { props: { modelType: 'pattern', format: 'dd.mm.yyyy' } });
+        const secondWrapper = shallowMount(VueDatepicker, { props: { modelType: 'format', format: 'dd.mm.yyyy' } });
         secondWrapper.vm.internalModelValue = date;
 
         secondWrapper.vm.emitModelValue();
