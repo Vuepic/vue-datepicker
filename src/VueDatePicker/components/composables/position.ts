@@ -22,9 +22,7 @@ export const usePosition = (menuRef: ComponentRef, inputRef: ComponentRef, emit:
         setMenuPosition();
     });
 
-    /**
-     * Get correct offset of an element
-     */
+    // Get correct offset of an element
     const getOffset = (el: HTMLElement): { top: number; left: number } => {
         const rect = el.getBoundingClientRect();
         return {
@@ -33,9 +31,7 @@ export const usePosition = (menuRef: ComponentRef, inputRef: ComponentRef, emit:
         };
     };
 
-    /**
-     * Use alternative position calculation, for specific cases on nested relative elements
-     */
+    // Use alternative position calculation, for specific cases on nested relative elements
     const getOffsetAlt = (el: HTMLElement): { top: number; left: number } => {
         const rect = el.getBoundingClientRect();
         let x = 0;
@@ -121,11 +117,13 @@ export const usePosition = (menuRef: ComponentRef, inputRef: ComponentRef, emit:
     };
 
     // Set menu position bellow input
-    const setBottomPosition = (el: HTMLElement) => {
-        const { top: offset, left, height, width } = getInputPositions(el);
+    const setBottomPosition = (inputEl: HTMLElement, menuEl: HTMLElement) => {
+        const { top: offset, left, height, width } = getInputPositions(inputEl);
 
         menuPosition.value.top = `${height + offset + +props.offset}px`;
         setHorizontalPositioning(left, width);
+
+        autoLeftRight(inputEl, menuEl);
 
         openOnTop.value = false;
     };
@@ -133,18 +131,25 @@ export const usePosition = (menuRef: ComponentRef, inputRef: ComponentRef, emit:
     // Set menu position above the input
     const setTopPosition = (inputEl: HTMLElement, menuEl: HTMLElement) => {
         const { top: offset, left, width } = getInputPositions(inputEl);
+        const { height } = menuEl.getBoundingClientRect();
 
-        const { height: menuHeight, left: menuLeft, right: menuRight } = menuEl.getBoundingClientRect();
-        menuPosition.value.top = `${offset - menuHeight - +props.offset}px`;
+        menuPosition.value.top = `${offset - height - +props.offset}px`;
         setHorizontalPositioning(left, width);
 
-        if (menuLeft < 0) {
-            setPositionLeft(left);
-        } else if (menuRight > document.documentElement.clientWidth) {
-            setPositionRight(left, width);
-        }
+        autoLeftRight(inputEl, menuEl);
 
         openOnTop.value = true;
+    };
+
+    // Set auto left-right if the menu is out of the screen
+    const autoLeftRight = (inputEl: HTMLElement, menuEl: HTMLElement) => {
+        if (props.autoPosition) {
+            const { left, width } = getInputPositions(inputEl);
+            const { left: menuLeft, right: menuRight } = menuEl.getBoundingClientRect();
+
+            if (menuLeft < 0) return setPositionLeft(left);
+            if (menuRight > document.documentElement.clientWidth) return setPositionRight(left, width);
+        }
     };
 
     // If auto-position is enabled, perform calculation to fit menu on the screen
@@ -157,12 +162,12 @@ export const usePosition = (menuRef: ComponentRef, inputRef: ComponentRef, emit:
         const spaceTop = inputTop;
 
         // If there is enough space at the bottom, open at the bottom
-        if (menuHeight <= spaceBottom) return setBottomPosition(inputEl);
+        if (menuHeight <= spaceBottom) return setBottomPosition(inputEl, menuEl);
         // If there is not enough space at the bottom but there is on top, set position on top
         if (menuHeight > spaceBottom && menuHeight <= spaceTop) return setTopPosition(inputEl, menuEl);
         // If we pass both check, it means there is not enough space above and bellow the input
         // Position where there is more space available
-        if (spaceBottom >= spaceTop) return setBottomPosition(inputEl);
+        if (spaceBottom >= spaceTop) return setBottomPosition(inputEl, menuEl);
         return setTopPosition(inputEl, menuEl);
     };
 
@@ -174,7 +179,7 @@ export const usePosition = (menuRef: ComponentRef, inputRef: ComponentRef, emit:
             if (props.autoPosition) {
                 return setAutoPosition(inputEl, menuEl);
             }
-            return setBottomPosition(inputEl);
+            return setBottomPosition(inputEl, menuEl);
         }
     };
 
