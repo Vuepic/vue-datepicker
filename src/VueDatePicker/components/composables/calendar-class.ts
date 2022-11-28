@@ -206,7 +206,6 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
         if (
             (props.range || props.weekPicker) &&
             (props.multiCalendars > 0 ? day.current : true) &&
-            !isDisabled(day.value) &&
             isModelAutoActive() &&
             !(!day.current && props.hideOffsetDates) &&
             !isActiveDate(day)
