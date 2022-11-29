@@ -89,8 +89,8 @@
                     <slot name="clock-icon" v-if="$slots['clock-icon']" />
                     <ClockIcon v-if="!$slots['clock-icon']" />
                 </template>
-                <template v-if="$slots[`${timeInput.type}-overlay`]" #item="{ item }">
-                    <slot :name="`${timeInput.type}-overlay`" :text="item.text" :value="item.value" />
+                <template v-if="$slots[`${timeInput.type}-overlay-value`]" #item="{ item }">
+                    <slot :name="`${timeInput.type}-overlay-value`" :text="item.text" :value="item.value" />
                 </template>
             </SelectionGrid>
         </transition>

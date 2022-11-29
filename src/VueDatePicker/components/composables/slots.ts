@@ -9,11 +9,11 @@ export const slots = [
     { name: 'arrow-down', use: ['time', 'calendar'] },
     { name: 'calendar-icon', use: ['month-year', 'time', 'calendar'] },
     { name: 'day', use: ['calendar'] },
-    { name: 'month-overlay', use: ['calendar', 'month-year'] },
-    { name: 'year-overlay', use: ['calendar', 'month-year'] },
-    { name: 'hours-overlay', use: ['calendar', 'time'] },
-    { name: 'minutes-overlay', use: ['calendar', 'time'] },
-    { name: 'seconds-overlay', use: ['calendar', 'time'] },
+    { name: 'month-overlay-value', use: ['calendar', 'month-year'] },
+    { name: 'year-overlay-value', use: ['calendar', 'month-year'] },
+    { name: 'hours-overlay-value', use: ['calendar', 'time'] },
+    { name: 'minutes-overlay-value', use: ['calendar', 'time'] },
+    { name: 'seconds-overlay-value', use: ['calendar', 'time'] },
     { name: 'hours', use: ['calendar', 'time'] },
     { name: 'minutes', use: ['calendar', 'time'] },
     { name: 'month', use: ['calendar', 'month-year'] },
@@ -27,6 +27,9 @@ export const slots = [
     { name: 'am-pm-button', use: ['calendar', 'time'] },
     { name: 'left-sidebar', use: ['menu'] },
     { name: 'right-sidebar', use: ['menu'] },
+    { name: 'month-year', use: ['month-year'] },
+    { name: 'time-picker', use: ['menu'] },
+    { name: 'action-row', use: ['menu'] },
 ];
 
 export const inputSlots = [{ name: 'trigger' }, { name: 'input-icon' }, { name: 'clear-icon' }, { name: 'dp-input' }];

@@ -1,168 +1,176 @@
 <template>
     <div class="dp__month_year_row">
-        <template v-if="!monthPicker && !yearPicker">
-            <ActionIcon
-                :aria-label="defaults.ariaLabels?.prevMonth"
-                :disabled="isDisabled(false)"
-                @activate="handleMonthYearChange(false)"
-                v-if="showLeftIcon && !vertical"
-                @set-ref="setElRefs($event, 0)"
-            >
-                <slot name="arrow-left" v-if="$slots['arrow-left']" />
-                <ChevronLeftIcon v-if="!$slots['arrow-left']" />
-            </ActionIcon>
-            <div class="dp__month_year_wrap">
-                <RegularPicker
-                    :aria-label="defaults.ariaLabels?.openMonthsOverlay"
-                    slot-name="month-overlay"
-                    v-model="monthModelBind"
+        <template v-if="$slots['month-year']">
+            <slot
+                name="month-year"
+                v-bind="{ month, year, months, years, updateMonthYear, handleMonthYearChange, instance }"
+            />
+        </template>
+        <template v-else>
+            <template v-if="!monthPicker && !yearPicker">
+                <ActionIcon
+                    v-if="showLeftIcon && !vertical"
+                    :aria-label="defaults.ariaLabels?.prevMonth"
+                    :disabled="isDisabled(false)"
+                    @activate="handleMonthYearChange(false)"
+                    @set-ref="setElRefs($event, 0)"
+                >
+                    <slot name="arrow-left" v-if="$slots['arrow-left']" />
+                    <ChevronLeftIcon v-if="!$slots['arrow-left']" />
+                </ActionIcon>
+                <div class="dp__month_year_wrap">
+                    <RegularPicker
+                        type="month"
+                        slot-name="month-overlay"
+                        :aria-label="defaults.ariaLabels?.openMonthsOverlay"
+                        v-model="monthModelBind"
+                        v-bind="childProps('month')"
+                        @toggle="toggleMonthPicker"
+                        @set-ref="setElRefs($event, 1)"
+                    >
+                        <slot v-if="$slots.month" name="month" v-bind="getMonthDisplayVal" />
+                        <template v-if="!$slots.month">{{ getMonthDisplayVal.text }}</template>
+                        <template #calendar-icon v-if="$slots['calendar-icon']">
+                            <slot name="calendar-icon" />
+                        </template>
+                        <template v-if="$slots['month-overlay-value']" #month-overlay="{ item }">
+                            <slot name="month-overlay-value" :text="item.text" :value="item.value" />
+                        </template>
+                    </RegularPicker>
+                    <RegularPicker
+                        type="year"
+                        slot-name="year-overlay"
+                        :aria-label="defaults.ariaLabels?.openYearsOverlay"
+                        v-model="yearModelBind"
+                        v-bind="childProps('year')"
+                        @toggle="toggleYearPicker"
+                        @set-ref="setElRefs($event, 2)"
+                    >
+                        <slot v-if="$slots.year" name="year" :year="year" />
+                        <template v-if="!$slots.year">{{ year }}</template>
+                        <template #calendar-icon v-if="$slots['calendar-icon']">
+                            <slot name="calendar-icon" />
+                        </template>
+                        <template v-if="$slots['year-overlay-value']" #year-overlay="{ item }">
+                            <slot name="year-overlay-value" :text="item.text" :value="item.value" />
+                        </template>
+                    </RegularPicker>
+                </div>
+                <ActionIcon
+                    v-if="showLeftIcon && vertical"
+                    :aria-label="defaults.ariaLabels?.prevMonth"
+                    :disabled="isDisabled(false)"
+                    @activate="handleMonthYearChange(false)"
+                >
+                    <slot name="arrow-up" v-if="$slots['arrow-up']" />
+                    <ChevronUpIcon v-if="!$slots['arrow-up']" />
+                </ActionIcon>
+                <ActionIcon
+                    v-if="showRightIcon"
+                    ref="rightIcon"
+                    :disabled="isDisabled(true)"
+                    :aria-label="defaults.ariaLabels?.nextMonth"
+                    @activate="handleMonthYearChange(true)"
+                    @set-ref="setElRefs($event, 3)"
+                >
+                    <slot
+                        :name="vertical ? 'arrow-down' : 'arrow-right'"
+                        v-if="$slots[vertical ? 'arrow-down' : 'arrow-right']"
+                    />
+                    <component
+                        :is="vertical ? ChevronDownIcon : ChevronRightIcon"
+                        v-if="!$slots[vertical ? 'arrow-down' : 'arrow-right']"
+                    />
+                </ActionIcon>
+            </template>
+            <template v-if="monthPicker">
+                <SelectionGrid
                     v-bind="childProps('month')"
+                    :skip-active="range"
+                    :year="year"
+                    :multi-model-value="multiModelValue"
+                    month-picker
+                    v-model="monthModelBind"
                     @toggle="toggleMonthPicker"
-                    @set-ref="setElRefs($event, 1)"
-                    type="month"
+                    @selected="$emit('overlay-closed')"
                 >
-                    <slot v-if="$slots.month" name="month" v-bind="getMonthDisplayVal" />
-                    <template v-if="!$slots.month">{{ getMonthDisplayVal.text }}</template>
-                    <template #calendar-icon v-if="$slots['calendar-icon']">
-                        <slot name="calendar-icon" />
+                    <template v-if="$slots['month-overlay-value']" #item="{ item }">
+                        <slot name="month-overlay-value" :text="item.text" :value="item.value" />
                     </template>
-                    <template v-if="$slots['month-overlay']" #month-overlay="{ item }">
-                        <slot name="month-overlay" :text="item.text" :value="item.value" />
+                    <template #header>
+                        <div class="dp__month_picker_header">
+                            <div
+                                class="dp__month_year_col_nav"
+                                tabindex="0"
+                                ref="mpPrevIconRef"
+                                @click="handleYear(false)"
+                                @keydown.enter="handleYear(false)"
+                            >
+                                <div class="dp__inner_nav" role="button" :aria-label="defaults.ariaLabels?.prevMonth">
+                                    <slot name="arrow-left" v-if="$slots['arrow-left']" />
+                                    <ChevronLeftIcon v-if="!$slots['arrow-left']" />
+                                </div>
+                            </div>
+                            <div
+                                class="dp__pointer"
+                                role="button"
+                                ref="mpYearButtonRef"
+                                :aria-label="defaults.ariaLabels?.openYearsOverlay"
+                                tabindex="0"
+                                @click="() => toggleYearPicker(false)"
+                                @keydown.enter="() => toggleYearPicker(false)"
+                            >
+                                <slot v-if="$slots.year" name="year" :year="year" />
+                                <template v-if="!$slots.year">{{ year }}</template>
+                            </div>
+                            <div
+                                class="dp__month_year_col_nav"
+                                tabindex="0"
+                                ref="mpNextIconRef"
+                                @click="handleYear(true)"
+                                @keydown.enter="handleYear(true)"
+                            >
+                                <div class="dp__inner_nav" role="button" :aria-label="defaults.ariaLabels?.nextMonth">
+                                    <slot name="arrow-right" v-if="$slots['arrow-right']" />
+                                    <ChevronRightIcon v-if="!$slots['arrow-right']" />
+                                </div>
+                            </div>
+                        </div>
+                        <transition :name="transitionName(showYearPicker)" :css="showTransition">
+                            <SelectionGrid
+                                v-if="showYearPicker"
+                                v-bind="childProps('year')"
+                                v-model="yearModelBind"
+                                @toggle="toggleYearPicker"
+                                @selected="$emit('overlay-closed')"
+                                ><template #button-icon>
+                                    <slot name="calendar-icon" v-if="$slots['calendar-icon']" />
+                                    <CalendarIcon v-if="!$slots['calendar-icon']" />
+                                </template>
+                                <template v-if="$slots['year-overlay-value']" #item="{ item }">
+                                    <slot name="year-overlay-value" :text="item.text" :value="item.value" />
+                                </template>
+                            </SelectionGrid>
+                        </transition>
                     </template>
-                </RegularPicker>
-                <RegularPicker
-                    :aria-label="defaults.ariaLabels?.openYearsOverlay"
-                    slot-name="year-overlay"
-                    v-model="yearModelBind"
+                </SelectionGrid>
+            </template>
+            <template v-if="yearPicker">
+                <SelectionGrid
                     v-bind="childProps('year')"
+                    v-model="yearModelBind"
+                    :multi-model-value="multiModelValue"
+                    :skip-active="range"
+                    skip-button-ref
+                    year-picker
                     @toggle="toggleYearPicker"
-                    @set-ref="setElRefs($event, 2)"
-                    type="year"
+                    @selected="$emit('overlay-closed')"
                 >
-                    <slot v-if="$slots.year" name="year" :year="year" />
-                    <template v-if="!$slots.year">{{ year }}</template>
-                    <template #calendar-icon v-if="$slots['calendar-icon']">
-                        <slot name="calendar-icon" />
+                    <template v-if="$slots['year-overlay-value']" #item="{ item }">
+                        <slot name="year-overlay-value" :text="item.text" :value="item.value" />
                     </template>
-                    <template v-if="$slots['year-overlay']" #year-overlay="{ item }">
-                        <slot name="year-overlay" :text="item.text" :value="item.value" />
-                    </template>
-                </RegularPicker>
-            </div>
-            <ActionIcon
-                :aria-label="defaults.ariaLabels?.prevMonth"
-                :disabled="isDisabled(false)"
-                @activate="handleMonthYearChange(false)"
-                v-if="showLeftIcon && vertical"
-            >
-                <slot name="arrow-up" v-if="$slots['arrow-up']" />
-                <ChevronUpIcon v-if="!$slots['arrow-up']" />
-            </ActionIcon>
-            <ActionIcon
-                :disabled="isDisabled(true)"
-                :aria-label="defaults.ariaLabels?.nextMonth"
-                @activate="handleMonthYearChange(true)"
-                ref="rightIcon"
-                v-if="showRightIcon"
-                @set-ref="setElRefs($event, 3)"
-            >
-                <slot
-                    :name="vertical ? 'arrow-down' : 'arrow-right'"
-                    v-if="$slots[vertical ? 'arrow-down' : 'arrow-right']"
-                />
-                <component
-                    :is="vertical ? ChevronDownIcon : ChevronRightIcon"
-                    v-if="!$slots[vertical ? 'arrow-down' : 'arrow-right']"
-                />
-            </ActionIcon>
-        </template>
-        <template v-if="monthPicker">
-            <SelectionGrid
-                v-bind="childProps('month')"
-                :skip-active="range"
-                :year="year"
-                :multi-model-value="multiModelValue"
-                month-picker
-                v-model="monthModelBind"
-                @toggle="toggleMonthPicker"
-                @selected="$emit('overlay-closed')"
-            >
-                <template v-if="$slots['month-overlay']" #item="{ item }">
-                    <slot name="month-overlay" :text="item.text" :value="item.value" />
-                </template>
-                <template #header>
-                    <div class="dp__month_picker_header">
-                        <div
-                            class="dp__month_year_col_nav"
-                            tabindex="0"
-                            ref="mpPrevIconRef"
-                            @click="handleYear(false)"
-                            @keydown.enter="handleYear(false)"
-                        >
-                            <div class="dp__inner_nav" role="button" :aria-label="defaults.ariaLabels?.prevMonth">
-                                <slot name="arrow-left" v-if="$slots['arrow-left']" />
-                                <ChevronLeftIcon v-if="!$slots['arrow-left']" />
-                            </div>
-                        </div>
-                        <div
-                            class="dp__pointer"
-                            role="button"
-                            ref="mpYearButtonRef"
-                            :aria-label="defaults.ariaLabels?.openYearsOverlay"
-                            tabindex="0"
-                            @click="() => toggleYearPicker(false)"
-                            @keydown.enter="() => toggleYearPicker(false)"
-                        >
-                            <slot v-if="$slots.year" name="year" :year="year" />
-                            <template v-if="!$slots.year">{{ year }}</template>
-                        </div>
-                        <div
-                            class="dp__month_year_col_nav"
-                            tabindex="0"
-                            ref="mpNextIconRef"
-                            @click="handleYear(true)"
-                            @keydown.enter="handleYear(true)"
-                        >
-                            <div class="dp__inner_nav" role="button" :aria-label="defaults.ariaLabels?.nextMonth">
-                                <slot name="arrow-right" v-if="$slots['arrow-right']" />
-                                <ChevronRightIcon v-if="!$slots['arrow-right']" />
-                            </div>
-                        </div>
-                    </div>
-                    <transition :name="transitionName(showYearPicker)" :css="showTransition">
-                        <SelectionGrid
-                            v-if="showYearPicker"
-                            v-bind="childProps('year')"
-                            v-model="yearModelBind"
-                            @toggle="toggleYearPicker"
-                            @selected="$emit('overlay-closed')"
-                            ><template #button-icon>
-                                <slot name="calendar-icon" v-if="$slots['calendar-icon']" />
-                                <CalendarIcon v-if="!$slots['calendar-icon']" />
-                            </template>
-                            <template v-if="$slots['year-overlay']" #item="{ item }">
-                                <slot name="year-overlay" :text="item.text" :value="item.value" />
-                            </template>
-                        </SelectionGrid>
-                    </transition>
-                </template>
-            </SelectionGrid>
-        </template>
-        <template v-if="yearPicker">
-            <SelectionGrid
-                v-bind="childProps('year')"
-                v-model="yearModelBind"
-                :multi-model-value="multiModelValue"
-                :skip-active="range"
-                skip-button-ref
-                year-picker
-                @toggle="toggleYearPicker"
-                @selected="$emit('overlay-closed')"
-            >
-                <template v-if="$slots['year-overlay']" #item="{ item }">
-                    <slot name="year-overlay" :text="item.text" :value="item.value" />
-                </template>
-            </SelectionGrid>
+                </SelectionGrid>
+            </template>
         </template>
     </div>
 </template>
@@ -203,7 +211,7 @@
     const { defaults } = useUtils(props);
     const { transitionName, showTransition } = useTransitions(defaults.value.transitions);
     const { buildMatrix } = useArrowNavigation();
-    const { handleMonthYearChange, isDisabled } = useMontYearPick(props, emit);
+    const { handleMonthYearChange, isDisabled, updateMonthYear } = useMontYearPick(props, emit);
 
     const showMonthPicker = ref(false);
     const showYearPicker = ref(false);

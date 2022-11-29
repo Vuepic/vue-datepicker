@@ -104,26 +104,31 @@
                         </div>
                     </div>
                     <div>
-                        <component
-                            v-if="enableTimePicker && !monthPicker && !weekPicker"
-                            :is="timePickerComponent ? timePickerComponent : TimePickerCmp"
-                            ref="timePickerRef"
-                            :hours="time.hours"
-                            :minutes="time.minutes"
-                            :seconds="time.seconds"
-                            :internal-model-value="internalModelValue"
-                            v-bind="$props"
-                            @mount="childMount('timePicker')"
-                            @update:hours="updateTime($event)"
-                            @update:minutes="updateTime($event, false)"
-                            @update:seconds="updateTime($event, false, true)"
-                            @reset-flow="resetFlow"
-                            @overlay-closed="focusMenu"
-                        >
-                            <template v-for="(slot, i) in timePickerSlots" #[slot]="args" :key="i">
-                                <slot :name="slot" v-bind="args" />
-                            </template>
-                        </component>
+                        <template v-if="$slots['time-picker']">
+                            <slot name="time-picker" v-bind="{ time, updateTime }" />
+                        </template>
+                        <template v-else>
+                            <component
+                                v-if="enableTimePicker && !monthPicker && !weekPicker"
+                                :is="timePickerComponent ? timePickerComponent : TimePickerCmp"
+                                ref="timePickerRef"
+                                :hours="time.hours"
+                                :minutes="time.minutes"
+                                :seconds="time.seconds"
+                                :internal-model-value="internalModelValue"
+                                v-bind="$props"
+                                @mount="childMount('timePicker')"
+                                @update:hours="updateTime($event)"
+                                @update:minutes="updateTime($event, false)"
+                                @update:seconds="updateTime($event, false, true)"
+                                @reset-flow="resetFlow"
+                                @overlay-closed="focusMenu"
+                            >
+                                <template v-for="(slot, i) in timePickerSlots" #[slot]="args" :key="i">
+                                    <slot :name="slot" v-bind="args" />
+                                </template>
+                            </component>
+                        </template>
                     </div>
                 </div>
                 <div class="dp__sidebar_right" v-if="$slots['right-sidebar']">
@@ -142,21 +147,33 @@
                     </button>
                 </div>
             </div>
-            <component
-                v-if="!autoApply || keepActionRow"
-                :is="actionRowComponent ? actionRowComponent : ActionRow"
-                :menu-mount="menuMount"
-                :calendar-width="calendarWidth"
-                :internal-model-value="internalModelValue"
-                v-bind="$props"
-                @close-picker="$emit('close-picker')"
-                @select-date="$emit('select-date')"
-                @invalid-select="$emit('invalid-select')"
-            >
-                <template v-for="(slot, i) in actionSlots" #[slot]="args" :key="i">
-                    <slot :name="slot" v-bind="{ ...args }" />
-                </template>
-            </component>
+            <template v-if="$slots['action-row']">
+                <slot
+                    name="action-row"
+                    v-bind="{
+                        internalModelValue,
+                        selectDate: () => $emit('select-date'),
+                        closePicker: () => $emit('close-picker'),
+                    }"
+                />
+            </template>
+            <template v-else>
+                <component
+                    v-if="!autoApply || keepActionRow"
+                    :is="actionRowComponent ? actionRowComponent : ActionRow"
+                    :menu-mount="menuMount"
+                    :calendar-width="calendarWidth"
+                    :internal-model-value="internalModelValue"
+                    v-bind="$props"
+                    @close-picker="$emit('close-picker')"
+                    @select-date="$emit('select-date')"
+                    @invalid-select="$emit('invalid-select')"
+                >
+                    <template v-for="(slot, i) in actionSlots" #[slot]="args" :key="i">
+                        <slot :name="slot" v-bind="{ ...args }" />
+                    </template>
+                </component>
+            </template>
         </div>
     </transition>
 </template>

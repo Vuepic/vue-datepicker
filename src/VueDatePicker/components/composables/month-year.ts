@@ -62,5 +62,5 @@ export const useMontYearPick = (props: { month: number; year: number } & Extende
         return next ? !validateMaxDate(...monthYear) : !validateMinDate(...monthYear);
     });
 
-    return { handleMonthYearChange, isDisabled };
+    return { handleMonthYearChange, isDisabled, updateMonthYear };
 };
