@@ -173,16 +173,6 @@ export type DateTimeSetter = number | string | null;
 
 export type DateValue = Date | string | null;
 
-export interface MergedValues {
-    ariaLabels: AriaLabels;
-    textInputOptions: TextInputOptions;
-    multiCalendars: number;
-    filters: DateFilter;
-    transitions: Transition;
-    previewFormat: IFormat;
-    startTime: TimeModel | TimeModel[];
-}
-
 export interface ExtendedProps extends AllPropsType {
     internalModelValue: InternalModuleValue;
 }
