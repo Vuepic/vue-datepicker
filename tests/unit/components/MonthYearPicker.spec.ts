@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { addMonths, addYears, getMonth, getYear, subMonths } from 'date-fns';
+import { addMonths, addYears, getMonth, getYear, subMonths, subYears } from 'date-fns';
 import { mount, VueWrapper } from '@vue/test-utils';
 
 import MonthYearPicker from '@/components/MonthYearPicker/MonthYearPicker.vue';
@@ -106,5 +106,20 @@ describe('MonthYearPicker component', () => {
         mount(MonthYearPicker, { props: { ...props, arrowNavigation: true } });
 
         expect(refSets.monthYear).toHaveLength(4);
+    });
+
+    it('Should handle year update', async () => {
+        const wrapper = mount(MonthYearPicker, { props });
+        wrapper.vm.handleYear();
+        await wrapper.vm.$nextTick();
+
+        const emitted = wrapper.emitted();
+
+        expect(emitted).toHaveProperty('update-month-year');
+
+        const value = (emitted['update-month-year'][0] as any)[0];
+
+        expect(value).toHaveProperty('year', getYear(subYears(new Date(), 1)));
+        expect(value).toHaveProperty('month', props.month);
     });
 });

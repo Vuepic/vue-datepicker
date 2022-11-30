@@ -1,12 +1,23 @@
 import { describe, it, expect } from 'vitest';
-import { addHours, getMonth, set, setMonth, subHours } from 'date-fns';
+import { addHours, getHours, getMinutes, getMonth, getSeconds, set, setMonth, subHours } from 'date-fns';
 import { getTimezoneOffset, zonedTimeToUtc } from 'date-fns-tz';
 import { reactive } from 'vue';
 
-import { getArrayInArray, getDayNames, getMonths, getYears } from '@/utils/util';
-import { dateToUtc, parseFreeInput, resetDateTime, setDateTime } from '@/utils/date-utils';
-import { useUtils } from '@/components/composables';
+import { getArrayInArray, getDayNames, getMonths, getYears, hoursToAmPmHours, isModelAuto } from '@/utils/util';
+import {
+    dateToUtc,
+    isDateAfter,
+    isDateBefore,
+    isDateBetween,
+    parseFreeInput,
+    resetDateTime,
+    setDateTime,
+} from '@/utils/date-utils';
+import { useTransitions, useUtils } from '@/components/composables';
+
 import type { AllPropsType } from '@/utils/props';
+import addDays from 'date-fns/addDays';
+import { defaultMultiCalendars, defaultTransitions } from '@/utils/defaults';
 
 describe('Utils and date utils formatting', () => {
     it('Should get calendar days', () => {
@@ -149,5 +160,62 @@ describe('Utils and date utils formatting', () => {
     it('Should return null on invalid text input', () => {
         const parsed = parseFreeInput('random', ['MM/dd/yyyy', 'MM/dd/yyyy']);
         expect(parsed).toBeNull();
+    });
+
+    it('Should map properly 12h to 24h mode', () => {
+        const get12Val = hoursToAmPmHours(23);
+
+        expect(get12Val).toEqual(11);
+    });
+
+    it('Should detect model-auto', () => {
+        const isRange = isModelAuto(new Date());
+        expect(isRange).toBeFalsy();
+        const hasBothValue = isModelAuto([new Date(), new Date()]);
+        expect(hasBothValue).toBeTruthy();
+    });
+
+    it('Should set time values on a date', () => {
+        const date = new Date();
+        const dateWithTime = setDateTime(date, 10, 15, 15);
+        expect(getHours(dateWithTime)).toEqual(10);
+        expect(getMinutes(dateWithTime)).toEqual(15);
+        expect(getSeconds(dateWithTime)).toEqual(15);
+    });
+
+    it('Should not check before and after date if value is not provided', () => {
+        const isBefore = isDateBefore(new Date(), null);
+        const isAfter = isDateAfter(new Date(), null);
+        expect(isBefore).toBeFalsy();
+        expect(isAfter).toBeFalsy();
+    });
+
+    it('Should check if date is in-between', () => {
+        const isBetween = isDateBetween([new Date()], addDays(new Date(), 5), addDays(new Date(), 1));
+        expect(isBetween).toBeTruthy();
+    });
+
+    it('Should get proper default transitions', () => {
+        const transitions = defaultTransitions(false);
+        expect(transitions).toBeFalsy();
+
+        const enabledTransitions = defaultTransitions({});
+        expect(enabledTransitions).toHaveProperty('menuAppear', 'dp-menu-appear');
+    });
+
+    it('Should return proper multi-calendars default value', () => {
+        const enabled = defaultMultiCalendars(true);
+        expect(enabled).toEqual(2);
+
+        const stringEnabled = defaultMultiCalendars('3');
+        expect(stringEnabled).toEqual(3);
+
+        const invalid = defaultMultiCalendars(1);
+        expect(invalid).toEqual(2);
+    });
+
+    it('Should return empty transition name', () => {
+        const { transitionName } = useTransitions(false);
+        expect(transitionName.value(true)).toEqual('');
     });
 });

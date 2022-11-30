@@ -413,4 +413,14 @@ describe('Logic connection', () => {
         expect(menu.vm.internalModelValue).toHaveLength(1);
         expect(resetDateTime(menu.vm.internalModelValue[0])).toEqual(resetDateTime(start));
     });
+
+    it('Should not select date', async () => {
+        const date = new Date();
+
+        const { menu } = await mountDatepicker({ disabledDates: [date] });
+        menu.vm.selectDate({ value: date, current: true });
+        await menu.vm.$nextTick();
+
+        expect(menu.vm.internalModelValue).toEqual(null);
+    });
 });

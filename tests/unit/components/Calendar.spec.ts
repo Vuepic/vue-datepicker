@@ -6,7 +6,7 @@ import DatepickerMenu from '@/components/DatepickerMenu.vue';
 import { resetDateTime } from '@/utils/date-utils';
 
 const mountCalendar = async () => {
-    const menu = mount(DatepickerMenu, { props: { ariaLabels: { day: () => '' } } });
+    const menu = mount(DatepickerMenu, {});
     await menu.vm.$nextTick();
     const calendar = menu.findComponent(Calendar);
     const date = new Date();
@@ -27,7 +27,7 @@ describe('Calendar component', () => {
         const marker = {
             date: new Date(),
         };
-        const menu = mount(DatepickerMenu, { props: { markers: [marker], ariaLabels: { day: () => '' } } });
+        const menu = mount(DatepickerMenu, { props: { markers: [marker] } });
         await menu.vm.$nextTick();
         const calendar = menu.findComponent(Calendar);
 
@@ -39,7 +39,7 @@ describe('Calendar component', () => {
             date: new Date(),
             tooltip: [{ text: 'test' }],
         };
-        const menu = mount(DatepickerMenu, { props: { markers: [marker], ariaLabels: { day: () => '' } } });
+        const menu = mount(DatepickerMenu, { props: { markers: [marker] } });
         await menu.vm.$nextTick();
         const calendar = menu.findComponent(Calendar);
 
@@ -70,7 +70,7 @@ describe('Calendar component', () => {
     });
 
     it('Should display six weeks', async () => {
-        const menu = mount(DatepickerMenu, { props: { sixWeeks: true, ariaLabels: { day: () => '' } } });
+        const menu = mount(DatepickerMenu, { props: { sixWeeks: true } });
         await menu.vm.$nextTick();
 
         expect(menu.vm.dates(0)).toHaveLength(6);
