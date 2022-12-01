@@ -3,47 +3,112 @@
 		<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 	<loc>https://vue3datepicker.com/</loc>
-	<lastmod>2021-10-12T10:56:15+01:00</lastmod>
+	<lastmod>2022-11-30T19:26:16+01:00</lastmod>
 	<priority>1.0</priority>
 </url>
 <url>
 	<loc>https://vue3datepicker.com/installation/</loc>
-	<lastmod>2021-10-12T10:56:16+01:00</lastmod>
+	<lastmod>2022-11-30T19:26:16+01:00</lastmod>
 	<priority>0.8</priority>
 </url>
 <url>
-	<loc>https://vue3datepicker.com/api/props/</loc>
+	<loc>https://vue3datepicker.com/props/modes/</loc>
+	<lastmod>2022-11-30T19:26:16+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://vue3datepicker.com/props/modes-configuration/</loc>
+	<lastmod>2022-11-30T19:26:16+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://vue3datepicker.com/props/general-configuration/</loc>
+	<lastmod>2022-11-30T19:26:16+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://vue3datepicker.com/props/calendar-configuration/</loc>
+	<lastmod>2022-11-30T19:26:16+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://vue3datepicker.com/props/time-picker-configuration/</loc>
+	<lastmod>2022-11-30T19:26:16+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://vue3datepicker.com/props/formatting/</loc>
+	<lastmod>2022-11-30T19:26:16+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://vue3datepicker.com/props/localization/</loc>
+	<lastmod>2022-11-30T19:26:16+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://vue3datepicker.com/props/positioning/</loc>
+	<lastmod>2022-11-30T19:26:16+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://vue3datepicker.com/props/keyboard/</loc>
+	<lastmod>2022-11-30T19:26:16+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://vue3datepicker.com/props/look-and-feel/</loc>
+	<lastmod>2022-11-30T19:26:16+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://vue3datepicker.com/slots/components/</loc>
+	<lastmod>2022-11-30T19:26:16+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://vue3datepicker.com/slots/content/</loc>
+	<lastmod>2022-11-30T19:26:16+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://vue3datepicker.com/slots/trigger-and-input/</loc>
+	<lastmod>2022-11-30T19:26:16+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://vue3datepicker.com/slots/icons/</loc>
+	<lastmod>2022-11-30T19:26:16+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://vue3datepicker.com/slots/overlay/</loc>
+	<lastmod>2022-11-30T19:26:16+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://vue3datepicker.com/methods-and-events/methods/</loc>
 	<lastmod>2021-10-12T10:56:20+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://vue3datepicker.com/methods-and-events/events/</loc>
+	<lastmod>2022-11-30T19:26:16+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://vue3datepicker.com/customization/theming/</loc>
+	<lastmod>2022-11-30T19:26:16+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://vue3datepicker.com/customization/scss/</loc>
+	<lastmod>2022-11-30T19:26:16+01:00</lastmod>
 	<priority>0.6</priority>
 </url>
 <url>
 	<loc>https://vue3datepicker.com/api/components/</loc>
 	<lastmod>2021-10-12T10:56:19+01:00</lastmod>
-	<priority>0.6</priority>
-</url>
-<url>
-	<loc>https://vue3datepicker.com/api/slots/</loc>
-	<lastmod>2021-10-12T10:56:22+01:00</lastmod>
-	<priority>0.6</priority>
-</url>
-<url>
-	<loc>https://vue3datepicker.com/api/events/</loc>
-	<lastmod>2021-10-12T10:56:20+01:00</lastmod>
-	<priority>0.6</priority>
-</url>
-<url>
-	<loc>https://vue3datepicker.com/api/methods/</loc>
-	<lastmod>2021-10-12T10:56:21+01:00</lastmod>
-	<priority>0.6</priority>
-</url>
-<url>
-	<loc>https://vue3datepicker.com/customization/theming/</loc>
-	<lastmod>2021-10-12T10:56:21+01:00</lastmod>
-	<priority>0.6</priority>
-</url>
-<url>
-	<loc>https://vue3datepicker.com/customization/scss/</loc>
-	<lastmod>2021-10-12T10:56:21+01:00</lastmod>
 	<priority>0.6</priority>
 </url>
 </urlset>
