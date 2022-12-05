@@ -184,7 +184,7 @@
         ev.preventDefault();
         ev.stopImmediatePropagation();
         ev.stopPropagation();
-        if (props.textInput && defaults.value.textInputOptions?.openMenu) {
+        if (props.textInput && defaults.value.textInputOptions?.openMenu && !props.inlineWithInput) {
             if (!props.isMenuOpen) {
                 emit('open');
             } else if (defaults.value.textInputOptions.enterSubmit) {
