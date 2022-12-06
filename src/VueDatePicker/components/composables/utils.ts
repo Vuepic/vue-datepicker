@@ -19,9 +19,7 @@ import {
     setYear,
     startOfWeek,
 } from 'date-fns';
-import dateFnsTz from 'date-fns-tz';
-
-const { utcToZonedTime, zonedTimeToUtc } = dateFnsTz;
+import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz/esm';
 
 import { errors, convertType } from '@/utils/util';
 
