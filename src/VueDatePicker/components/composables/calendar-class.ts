@@ -11,7 +11,7 @@ import type { ExtendedProps, ICalendarDay, InternalModuleValue } from '@/interfa
 export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleValue>, props: ExtendedProps) => {
     const { isDisabled, matchDate, getWeekFromDate } = useUtils(props);
     // Track hovered date
-    const hoveredDate = ref<Date | null>();
+    const hoveredDate = ref<Date | null>(null);
     // Today date
     const today = ref<Date>(getDate());
 
@@ -155,7 +155,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
      * If range mode used, this will check if the calendar day is between 2 active dates
      */
     const rangeActive = (calendarDay: ICalendarDay): boolean => {
-        return isDateBetween(modelValue.value as Date[], hoveredDate.value as Date, calendarDay.value);
+        return isDateBetween(modelValue.value as Date[], hoveredDate.value, calendarDay.value);
     };
 
     const isSingleInModelAuto = (): boolean => {

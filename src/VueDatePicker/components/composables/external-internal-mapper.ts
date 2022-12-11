@@ -34,14 +34,11 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
 
     const getTimeVal = (date?: Date): TimeModel => {
         const dateValue = date || getDate();
-        const timeModel: Partial<TimeModel> = {
+        return {
             hours: getHours(dateValue),
             minutes: getMinutes(dateValue),
+            seconds: props.enableSeconds ? getSeconds(dateValue) : 0,
         };
-        if (props.enableSeconds) {
-            timeModel.seconds = getSeconds(dateValue);
-        }
-        return timeModel as TimeModel;
     };
 
     const getMonthVal = (date: Date): MonthModel => ({ month: getMonth(date), year: getYear(date) });

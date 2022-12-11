@@ -120,7 +120,7 @@ export const isDateAfter = (date: DateValue, dateToCompare: DateValue): boolean 
     return isAfter(resetDateTime(date), resetDateTime(dateToCompare));
 };
 
-export const isDateBetween = (range: Date[], hoverDate: Date, dateToCheck: Date): boolean => {
+export const isDateBetween = (range: Date[], hoverDate: Date | null, dateToCheck: Date): boolean => {
     if (range && range[0] && range[1]) {
         return isDateAfter(dateToCheck, range[0]) && isDateBefore(dateToCheck, range[1]);
     }
