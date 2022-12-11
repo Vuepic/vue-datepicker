@@ -2,41 +2,46 @@
     <div ref="gridWrapRef" :class="dpOverlayClass" role="dialog" tabindex="0" @keydown.esc="handleEsc">
         <div :class="containerClass" role="grid">
             <div class="dp__selection_grid_header"><slot name="header"></slot></div>
-            <div class="dp__overlay_row" v-for="(row, i) in mappedItems" :key="i" role="row">
-                <div
-                    v-for="(col, ind) in row"
-                    role="gridcell"
-                    :class="cellClassName"
-                    :key="col.value"
-                    :aria-selected="col.value === modelValue && !disabledValues.includes(col.value)"
-                    :aria-disabled="col.className.dp__overlay_cell_disabled"
-                    :ref="(el) => assignRef(el, col, i, ind)"
-                    tabindex="0"
-                    :data-test="col.text"
-                    @click="onClick(col.value)"
-                    @keydown.enter="onClick(col.value)"
-                    @keydown.space="onClick(col.value)"
-                    @mouseover="hoverValue = col.value"
-                >
-                    <div :class="col.className">
-                        <slot v-if="$slots.item" name="item" :item="col" />
-                        <template v-if="!$slots.item">{{ col.text }}</template>
+            <template v-if="$slots.overlay">
+                <slot name="overlay" />
+            </template>
+            <template v-else>
+                <div class="dp__overlay_row" v-for="(row, i) in mappedItems" :key="i" role="row">
+                    <div
+                        v-for="(col, ind) in row"
+                        role="gridcell"
+                        :class="cellClassName"
+                        :key="col.value"
+                        :aria-selected="col.value === modelValue && !disabledValues.includes(col.value)"
+                        :aria-disabled="col.className.dp__overlay_cell_disabled"
+                        :ref="(el) => assignRef(el, col, i, ind)"
+                        tabindex="0"
+                        :data-test="col.text"
+                        @click="onClick(col.value)"
+                        @keydown.enter="onClick(col.value)"
+                        @keydown.space="onClick(col.value)"
+                        @mouseover="hoverValue = col.value"
+                    >
+                        <div :class="col.className">
+                            <slot v-if="$slots.item" name="item" :item="col" />
+                            <template v-if="!$slots.item">{{ col.text }}</template>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div
-                v-if="$slots['button-icon']"
-                v-show="!hideNavigationButtons(type)"
-                role="button"
-                :aria-label="ariaLabels?.toggleOverlay"
-                :class="actionButtonClass"
-                tabindex="0"
-                ref="toggleButton"
-                @click="toggle"
-                @keydown.enter="toggle"
-            >
-                <slot name="button-icon" />
-            </div>
+                <div
+                    v-if="$slots['button-icon']"
+                    v-show="!hideNavigationButtons(type)"
+                    role="button"
+                    :aria-label="ariaLabels?.toggleOverlay"
+                    :class="actionButtonClass"
+                    tabindex="0"
+                    ref="toggleButton"
+                    @click="toggle"
+                    @keydown.enter="toggle"
+                >
+                    <slot name="button-icon" />
+                </div>
+            </template>
         </div>
     </div>
 </template>

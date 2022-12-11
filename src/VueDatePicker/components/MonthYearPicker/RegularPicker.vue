@@ -39,6 +39,12 @@
             <template v-if="$slots[slotName]" #item="{ item }">
                 <slot :name="slotName" :item="item" />
             </template>
+            <template v-if="$slots[overlaySlot]" #overlay>
+                <slot :name="overlaySlot" />
+            </template>
+            <template v-if="$slots[`${overlaySlot}-header`]" #header>
+                <slot :name="`${overlaySlot}-header`" />
+            </template>
         </SelectionGrid>
     </transition>
 </template>
@@ -63,6 +69,7 @@
         minValue: { type: Number as PropType<number | null>, default: null },
         maxValue: { type: Number as PropType<number | null>, default: null },
         slotName: { type: String as PropType<string>, default: '' },
+        overlaySlot: { type: String as PropType<string>, default: '' },
         headerRefs: { type: Array as PropType<(HTMLElement | null)[]>, default: () => [] },
         escClose: { type: Boolean as PropType<boolean>, default: true },
         type: { type: String as PropType<'month' | 'year'>, default: null },

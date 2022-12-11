@@ -1,10 +1,7 @@
 <template>
     <div class="dp__month_year_row">
         <template v-if="$slots['month-year']">
-            <slot
-                name="month-year"
-                v-bind="{ month, year, months, years, updateMonthYear, handleMonthYearChange, instance }"
-            />
+            <slot name="month-year" v-bind="slotProps" />
         </template>
         <template v-else>
             <template v-if="!monthPicker && !yearPicker">
@@ -21,7 +18,8 @@
                 <div class="dp__month_year_wrap">
                     <RegularPicker
                         type="month"
-                        slot-name="month-overlay"
+                        slot-name="month-overlay-val"
+                        overlay-slot="overlay-month"
                         :aria-label="defaults.ariaLabels?.openMonthsOverlay"
                         v-model="monthModelBind"
                         v-bind="childProps('month')"
@@ -33,13 +31,20 @@
                         <template #calendar-icon v-if="$slots['calendar-icon']">
                             <slot name="calendar-icon" />
                         </template>
-                        <template v-if="$slots['month-overlay-value']" #month-overlay="{ item }">
+                        <template v-if="$slots['month-overlay-value']" #month-overlay-val="{ item }">
                             <slot name="month-overlay-value" :text="item.text" :value="item.value" />
+                        </template>
+                        <template v-if="$slots['month-overlay']" #overlay-month>
+                            <slot name="month-overlay" v-bind="slotProps" />
+                        </template>
+                        <template v-if="$slots['month-overlay-header']" #overlay-month-header>
+                            <slot name="month-overlay-header" v-bind="slotProps" />
                         </template>
                     </RegularPicker>
                     <RegularPicker
                         type="year"
-                        slot-name="year-overlay"
+                        slot-name="year-overlay-val"
+                        overlay-slot="overlay-year"
                         :aria-label="defaults.ariaLabels?.openYearsOverlay"
                         v-model="yearModelBind"
                         v-bind="childProps('year')"
@@ -51,8 +56,14 @@
                         <template #calendar-icon v-if="$slots['calendar-icon']">
                             <slot name="calendar-icon" />
                         </template>
-                        <template v-if="$slots['year-overlay-value']" #year-overlay="{ item }">
+                        <template v-if="$slots['year-overlay-value']" #year-overlay-val="{ item }">
                             <slot name="year-overlay-value" :text="item.text" :value="item.value" />
+                        </template>
+                        <template v-if="$slots['year-overlay']" #overlay-year>
+                            <slot name="year-overlay" v-bind="slotProps" />
+                        </template>
+                        <template v-if="$slots['year-overlay-header']" #overlay-year-header>
+                            <slot name="year-overlay-header" v-bind="slotProps" />
                         </template>
                     </RegularPicker>
                 </div>
@@ -260,6 +271,18 @@
             hideNavigation: props.hideNavigation,
         };
     });
+
+    const slotProps = computed(() => ({
+        month: props.month,
+        year: props.year,
+        months: props.months,
+        years: props.years,
+        updateMonthYear,
+        handleMonthYearChange,
+        instance: props.instance,
+        toggleMonthPicker,
+        toggleYearPicker,
+    }));
 
     const minYear = computed(() => (props.minDate ? getYear(getDate(props.minDate)) : null));
     const maxYear = computed(() => (props.maxDate ? getYear(getDate(props.maxDate)) : null));
