@@ -184,6 +184,7 @@ describe('v-model mapping', () => {
         expect((wrapper.emitted()['update:model-value'][0] as any)[0]).toEqual({
             hours: getHours(date),
             minutes: getMinutes(date),
+            seconds: 0,
         });
     });
 
