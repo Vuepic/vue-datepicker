@@ -6,7 +6,7 @@
   "private": false,
   "license": "MIT",
   "homepage": "https://vue3datepicker.com",
-  "types": "dist/entry.d.ts",
+  "types": "index.d.ts",
   "type": "module",
   "main": "dist/vue-datepicker.umd.cjs",
   "module": "dist/vue-datepicker.js",
@@ -15,8 +15,9 @@
   "style": "dist/main.css",
   "sass": "src/VueDatePicker/style/main.scss",
   "files": [
-    "dist/**/*",
-    "src/**/*"
+    "dist/*",
+    "src/**/*",
+    "index.d.ts"
   ],
   "exports": {
     ".": {
@@ -34,10 +35,9 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "run-s clean build:lib build:css build:ts",
+    "build": "run-s clean build:lib build:css",
     "clean": "rimraf ./dist",
     "build:lib": "run-s typecheck build:es build:browser",
-    "build:ts": "vue-tsc --declaration --emitDeclarationOnly -p ./tsconfig.type-check.json --composite false",
     "typecheck": "vue-tsc --noEmit -p tsconfig.type-check.json --composite false",
     "build:es": "cross-env NODE_ENV=production vite build --mode production",
     "build:browser": "cross-env NODE_ENV=production vite -f iife build --mode production",
