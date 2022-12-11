@@ -89,9 +89,9 @@
     const scrollable = ref(false);
     const selectionActiveRef = ref<HTMLElement | null>(null);
     const gridWrapRef = ref(null);
-    const elementRefs = ref<HTMLElement[][]>([]);
+    const elementRefs = ref<Array<HTMLElement | null>[]>([]);
     const hoverValue = ref();
-    const toggleButton = ref<HTMLElement | null>();
+    const toggleButton = ref<HTMLElement | null>(null);
 
     onBeforeUpdate(() => {
         selectionActiveRef.value = null;
@@ -288,7 +288,7 @@
     const buildMatrix = () => {
         const refs = props.headerRefs?.length
             ? [props.headerRefs].concat(elementRefs.value)
-            : elementRefs.value.concat([props.skipButtonRef ? [] : [toggleButton.value as HTMLElement]]);
+            : elementRefs.value.concat([props.skipButtonRef ? [] : [toggleButton.value]]);
 
         buildMultiLevelMatrix(convertType(refs), props.headerRefs?.length ? 'monthPicker' : 'selectionGrid');
     };

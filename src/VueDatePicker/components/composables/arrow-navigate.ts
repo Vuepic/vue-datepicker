@@ -1,16 +1,18 @@
 import { computed, reactive, ref } from 'vue';
 
+type ElRefs = Array<HTMLElement | null>;
+
 const refSets = reactive({
-    monthYear: [] as HTMLElement[],
-    calendar: [] as HTMLElement[][],
-    time: [] as HTMLElement[],
-    actionRow: [] as HTMLElement[],
-    selectionGrid: [] as HTMLElement[][],
+    monthYear: [] as ElRefs,
+    calendar: [] as ElRefs[],
+    time: [] as ElRefs,
+    actionRow: [] as ElRefs,
+    selectionGrid: [] as ElRefs[],
     timePicker: {
-        '0': [] as HTMLElement[][],
-        '1': [] as HTMLElement[][],
+        '0': [] as ElRefs[],
+        '1': [] as ElRefs[],
     },
-    monthPicker: [] as HTMLElement[][],
+    monthPicker: [] as ElRefs[],
 });
 const timePickerBackRef = ref<HTMLElement | null>(null);
 const isSelectionGrid = ref(false);
@@ -22,7 +24,7 @@ const selectedIndex = ref(0);
 const activeRow = ref(0);
 
 export const useArrowNavigation = () => {
-    const matrix = computed((): HTMLElement[][] => {
+    const matrix = computed((): ElRefs[] => {
         if (isSelectionGrid.value) return [...refSets.selectionGrid, refSets.actionRow].filter((set) => set.length);
         if (isTimePicker.value) {
             return [
@@ -104,7 +106,7 @@ export const useArrowNavigation = () => {
      * Add values per page, holds the ref values of the focusable elements
      * Build top to bottom
      */
-    const buildMatrix = (elements: HTMLElement[], set: 'monthYear' | 'time' | 'actionRow'): void => {
+    const buildMatrix = (elements: Array<HTMLElement | null>, set: 'monthYear' | 'time' | 'actionRow'): void => {
         refSets[set] = elements;
     };
 

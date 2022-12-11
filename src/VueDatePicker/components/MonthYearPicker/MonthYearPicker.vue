@@ -387,7 +387,7 @@
     const setElRefs = (el: HTMLElement, i: number): void => {
         if (props.arrowNavigation) {
             elementRefs.value[i] = unrefElement(el);
-            buildMatrix(elementRefs.value as HTMLElement[], 'monthYear');
+            buildMatrix(elementRefs.value, 'monthYear');
         }
     };
 
