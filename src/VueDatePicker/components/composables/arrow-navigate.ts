@@ -30,7 +30,7 @@ export const useArrowNavigation = () => {
             return [
                 ...refSets.timePicker[0],
                 ...refSets.timePicker[1],
-                isTimePickerMode.value ? [] : [timePickerBackRef.value as HTMLElement],
+                isTimePickerMode.value ? [] : [timePickerBackRef.value],
                 refSets.actionRow,
             ].filter((set) => set.length);
         }
