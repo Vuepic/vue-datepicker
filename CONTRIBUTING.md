@@ -48,7 +48,7 @@ To ensure consistency throughout the source code, keep these rules in mind as yo
 
 - All features or bug fixes **must be tested**, ideally by unit tests.
 - If you are implementing a new feature or extending public API, you should **document it**.
-- Follow defined rules in [.eslintrc.cjs](../.eslintrc.cjs) and [.prettier.cjs](../.prettierrc.cjs).
+- Follow defined rules in [.eslintrc.cjs](https://github.com/Vuepic/vue-datepicker/blob/main/.eslintrc.cjs) and [.prettier.cjs](https://github.com/Vuepic/vue-datepicker/blob/main/.prettierrc.cjs).
   when you submit your PR.
 
 Some highlights:
