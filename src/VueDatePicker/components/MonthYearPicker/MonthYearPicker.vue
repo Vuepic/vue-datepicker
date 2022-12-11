@@ -1,7 +1,10 @@
 <template>
     <div class="dp__month_year_row">
         <template v-if="$slots['month-year']">
-            <slot name="month-year" v-bind="slotProps" />
+            <slot
+                name="month-year"
+                v-bind="{ month, year, months, years, updateMonthYear, handleMonthYearChange, instance }"
+            />
         </template>
         <template v-else>
             <template v-if="!monthPicker && !yearPicker">
@@ -35,10 +38,10 @@
                             <slot name="month-overlay-value" :text="item.text" :value="item.value" />
                         </template>
                         <template v-if="$slots['month-overlay']" #overlay-month>
-                            <slot name="month-overlay" v-bind="slotProps" />
+                            <slot name="month-overlay" v-bind="overlaySlotProps('month')" />
                         </template>
                         <template v-if="$slots['month-overlay-header']" #overlay-month-header>
-                            <slot name="month-overlay-header" v-bind="slotProps" />
+                            <slot name="month-overlay-header" :toggle="toggleMonthPicker" />
                         </template>
                     </RegularPicker>
                     <RegularPicker
@@ -60,10 +63,10 @@
                             <slot name="year-overlay-value" :text="item.text" :value="item.value" />
                         </template>
                         <template v-if="$slots['year-overlay']" #overlay-year>
-                            <slot name="year-overlay" v-bind="slotProps" />
+                            <slot name="year-overlay" v-bind="overlaySlotProps('year')" />
                         </template>
                         <template v-if="$slots['year-overlay-header']" #overlay-year-header>
-                            <slot name="year-overlay-header" v-bind="slotProps" />
+                            <slot name="year-overlay-header" :toggle="toggleYearPicker" />
                         </template>
                     </RegularPicker>
                 </div>
@@ -272,16 +275,13 @@
         };
     });
 
-    const slotProps = computed(() => ({
+    const overlaySlotProps = computed(() => (type: 'month' | 'year') => ({
         month: props.month,
         year: props.year,
-        months: props.months,
-        years: props.years,
-        updateMonthYear,
-        handleMonthYearChange,
+        items: type === 'month' ? props.months : props.years,
         instance: props.instance,
-        toggleMonthPicker,
-        toggleYearPicker,
+        updateMonthYear,
+        toggle: type === 'month' ? toggleMonthPicker : toggleYearPicker,
     }));
 
     const minYear = computed(() => (props.minDate ? getYear(getDate(props.minDate)) : null));

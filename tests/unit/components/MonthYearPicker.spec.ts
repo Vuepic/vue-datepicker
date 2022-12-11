@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { addMonths, addYears, getMonth, getYear, subMonths, subYears } from 'date-fns';
 import { mount, VueWrapper } from '@vue/test-utils';
 
@@ -121,5 +121,27 @@ describe('MonthYearPicker component', () => {
 
         expect(value).toHaveProperty('year', getYear(subYears(new Date(), 1)));
         expect(value).toHaveProperty('month', props.month);
+    });
+
+    it('Should get proper overlay slot props for month-overlay', async () => {
+        const wrapper = mount(MonthYearPicker, { props });
+
+        const spy = vi.spyOn(wrapper.vm.overlaySlotProps('month'), 'toggle');
+
+        const slotProps = wrapper.vm.overlaySlotProps('month');
+        expect(slotProps).toHaveProperty('items');
+        expect(slotProps.items).toHaveLength(12);
+        expect(spy.getMockName()).toEqual('toggleMonthPicker');
+    });
+
+    it('Should get proper overlay slot props for year-overlay', async () => {
+        const wrapper = mount(MonthYearPicker, { props: { ...props, years: getYears([2000, 2100]) } });
+
+        const spy = vi.spyOn(wrapper.vm.overlaySlotProps('year'), 'toggle');
+
+        const slotProps = wrapper.vm.overlaySlotProps('year');
+        expect(slotProps).toHaveProperty('items');
+        expect(slotProps.items).toHaveLength(101);
+        expect(spy.getMockName()).toEqual('toggleYearPicker');
     });
 });
