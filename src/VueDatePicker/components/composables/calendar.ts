@@ -159,13 +159,13 @@ export const useCalendar = (
     // Assign range values
     const assignRangeValue = (dates: Date[], fromMount: boolean) => {
         assignMonthAndYear(dates[0], fromMount);
-        const getValue = (mapper: (date: Date) => number): number[] => [
+        const getValue = (mapper: (date: Date) => number, keys: TimeType): number[] => [
             mapper(dates[0]),
-            dates[1] ? mapper(dates[1]) : mapper(getDate()),
+            dates[1] ? mapper(dates[1]) : (time[keys] as number[])[1],
         ];
-        setTime('hours', getValue(getHours));
-        setTime('minutes', getValue(getMinutes));
-        setTime('seconds', getValue(getSeconds));
+        setTime('hours', getValue(getHours, 'hours'));
+        setTime('minutes', getValue(getMinutes, 'minutes'));
+        setTime('seconds', getValue(getSeconds, 'seconds'));
     };
 
     // Assign range values, or in case of multiDates, set

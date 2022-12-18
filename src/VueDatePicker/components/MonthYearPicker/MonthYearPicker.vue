@@ -191,7 +191,7 @@
 
 <script lang="ts" setup>
     import { computed, onMounted, ref } from 'vue';
-    import { getMonth, getYear, set } from 'date-fns';
+    import { getMonth, getYear } from 'date-fns';
 
     import {
         ChevronLeftIcon,
