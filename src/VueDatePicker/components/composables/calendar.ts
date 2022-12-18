@@ -1,4 +1,4 @@
-import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, reactive, ref } from 'vue';
 import {
     add,
     addDays,
@@ -64,7 +64,6 @@ export const useCalendar = (
         },
     });
     const tempRange = ref<Date[]>([]);
-    watch(modelValue, () => mapInternalModuleValues());
 
     // Calendar data per instance
     const calendars = ref<ICalendarData[]>([{ month: getMonth(getDate()), year: getYear(getDate()) }]);
@@ -140,7 +139,7 @@ export const useCalendar = (
             setCalendarMonthYear(0, getMonth(date), getYear(date));
         }
         if (defaults.value.multiCalendars) {
-            for (let i = 1; i <= defaults.value.multiCalendars; i++) {
+            for (let i = 1; i < defaults.value.multiCalendars; i++) {
                 const prevDate = set(getDate(), { month: month.value(i - 1), year: year.value(i - 1) });
                 const nextMonth = add(prevDate, { months: 1 });
                 calendars.value[i] = { month: getMonth(nextMonth), year: getYear(nextMonth) };
@@ -176,7 +175,6 @@ export const useCalendar = (
 
         if (props.multiDates) {
             const lastEntry = dates[dates.length - 1];
-            // return lastEntry ? assignMonthYearAndTime(lastEntry) : (throw new Error('invalid'));
             return assignSingleValue(lastEntry);
         }
     };
