@@ -191,7 +191,7 @@
 
 <script lang="ts" setup>
     import { computed, onMounted, ref } from 'vue';
-    import { getMonth, getYear } from 'date-fns';
+    import { getMonth, getYear, set } from 'date-fns';
 
     import {
         ChevronLeftIcon,
@@ -255,12 +255,30 @@
     const monthModelBind = computed(bindOptions('month'));
     const yearModelBind = computed(bindOptions('year'));
 
+    const isMonthDisabled = (date: Date | string): boolean => {
+        const year = getYear(getDate(date));
+        return props.year === year;
+    };
+
+    const getDisabledMonths = computed(() => {
+        if (props.monthPicker) {
+            if (Array.isArray(props.disabledDates)) {
+                return props.disabledDates
+                    .map((date) => getDate(date))
+                    .filter((date) => isMonthDisabled(date))
+                    .map((date) => getMonth(date));
+            }
+            return [];
+        }
+        return [];
+    });
+
     const childProps = computed(() => (type: 'month' | 'year') => {
         const isMonth = type === 'month';
         return {
             showSelectionGrid: (isMonth ? showMonthPicker : showYearPicker).value,
             items: (isMonth ? groupedMonths : groupedYears).value,
-            disabledValues: defaults.value.filters[isMonth ? 'months' : 'years'],
+            disabledValues: defaults.value.filters[isMonth ? 'months' : 'years'].concat(getDisabledMonths.value),
             minValue: (isMonth ? minMonth : minYear).value,
             maxValue: (isMonth ? maxMonth : maxYear).value,
             headerRefs:

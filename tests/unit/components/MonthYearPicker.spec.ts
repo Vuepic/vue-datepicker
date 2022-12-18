@@ -144,4 +144,11 @@ describe('MonthYearPicker component', () => {
         expect(slotProps.items).toHaveLength(101);
         expect(spy.getMockName()).toEqual('toggleYearPicker');
     });
+
+    it('Should disable months based on disabled dates', async () => {
+        const wrapper = mount(MonthYearPicker, { props: { ...props, monthPicker: true, disabledDates: [new Date()] } });
+
+        const mappedProps = wrapper.vm.childProps('months');
+        expect(mappedProps).toHaveProperty('disabledValues', [getMonth(new Date())]);
+    });
 });
