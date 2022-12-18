@@ -179,7 +179,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, onMounted, onUnmounted, reactive, ref, useSlots } from 'vue';
+    import { computed, onMounted, onUnmounted, reactive, ref, useSlots, watch } from 'vue';
 
     import ActionRow from '@/components/ActionRow.vue';
     import Calendar from '@/components/Calendar.vue';
@@ -214,6 +214,7 @@
         'update-month-year',
         'invalid-select',
         'update:internal-model-value',
+        'recalculate-position',
     ]);
     const props = defineProps({
         openOnTop: { type: Boolean as PropType<boolean>, default: false },
@@ -303,6 +304,7 @@
     };
 
     const {
+        calendars,
         modelValue,
         month,
         year,
@@ -321,6 +323,18 @@
     } = useCalendar(props, emit, updateFlowStep, triggerCalendarTransition);
 
     const { setHoverDate, clearHoverDate, getDayClassData } = useCalendarClass(modelValue, props);
+
+    watch(
+        calendars,
+        () => {
+            if (props.openOnTop) {
+                setTimeout(() => {
+                    emit('recalculate-position');
+                }, 0);
+            }
+        },
+        { deep: true },
+    );
 
     const calendarSlots = mapSlots(slots, 'calendar');
     const actionSlots = mapSlots(slots, 'action');

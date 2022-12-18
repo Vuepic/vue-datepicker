@@ -35,6 +35,7 @@
                 @flow-step="$emit('flow-step', $event)"
                 @update-month-year="$emit('update-month-year', $event)"
                 @invalid-select="$emit('invalid-select', internalModelValue)"
+                @recalculate-position="setMenuPosition"
             >
                 <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
                     <slot :name="slot" v-bind="{ ...args }" />

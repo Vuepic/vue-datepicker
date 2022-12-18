@@ -700,6 +700,7 @@ export const useCalendar = (
         month,
         year,
         modelValue,
+        calendars,
         monthYearSelect,
         isDisabled,
         updateTime,
