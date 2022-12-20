@@ -17,7 +17,9 @@
   "files": [
     "dist/*",
     "src/**/*",
-    "index.d.ts"
+    "index.d.ts",
+    "LICENSE",
+    "README.md"
   ],
   "exports": {
     ".": {
@@ -96,6 +98,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/Vuepic/vue-datepicker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Vuepic/vue-datepicker/issues"
   },
   "keywords": [
     "vue",
