@@ -224,7 +224,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
             dp__cell_highlight:
                 !disableHighlight(day) && (highlighted(day) || highlightedWeekDay(day)) && !isActive(day),
             dp__cell_highlight_active:
-                !disableHighlight && (highlighted(day) || highlightedWeekDay(day)) && isActive(day),
+                !disableHighlight(day) && (highlighted(day) || highlightedWeekDay(day)) && isActive(day),
             dp__today: !props.noToday && isDateEqual(day.value, today.value) && day.current,
         };
     };
