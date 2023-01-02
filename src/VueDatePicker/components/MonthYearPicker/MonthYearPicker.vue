@@ -34,7 +34,7 @@
                         <template #calendar-icon v-if="$slots['calendar-icon']">
                             <slot name="calendar-icon" />
                         </template>
-                        <template v-if="$slots['month-overlay-value']" #month-overlay-val="{ item }">
+                        <template v-if="$slots['month-overlay-value']" #month-overlay-val="{ item }: any">
                             <slot name="month-overlay-value" :text="item.text" :value="item.value" />
                         </template>
                         <template v-if="$slots['month-overlay']" #overlay-month>
@@ -59,7 +59,7 @@
                         <template #calendar-icon v-if="$slots['calendar-icon']">
                             <slot name="calendar-icon" />
                         </template>
-                        <template v-if="$slots['year-overlay-value']" #year-overlay-val="{ item }">
+                        <template v-if="$slots['year-overlay-value']" #year-overlay-val="{ item }: any">
                             <slot name="year-overlay-value" :text="item.text" :value="item.value" />
                         </template>
                         <template v-if="$slots['year-overlay']" #overlay-year>
