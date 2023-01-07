@@ -116,14 +116,30 @@ export const usePosition = (menuRef: ComponentRef, inputRef: ComponentRef, emit:
         }
     };
 
+    const setLeftRightPosition = ({
+        inputEl,
+        menuEl,
+        left,
+        width,
+    }: {
+        inputEl: HTMLElement;
+        menuEl: HTMLElement;
+        left: number;
+        width: number;
+    }) => {
+        if (!window.matchMedia('screen and (max-width: 768px)').matches) {
+            setHorizontalPositioning(left, width);
+        }
+
+        autoLeftRight(inputEl, menuEl);
+    };
+
     // Set menu position bellow input
     const setBottomPosition = (inputEl: HTMLElement, menuEl: HTMLElement) => {
         const { top: offset, left, height, width } = getInputPositions(inputEl);
 
         menuPosition.value.top = `${height + offset + +props.offset}px`;
-        setHorizontalPositioning(left, width);
-
-        autoLeftRight(inputEl, menuEl);
+        setLeftRightPosition({ inputEl, menuEl, left, width });
 
         openOnTop.value = false;
     };
@@ -134,9 +150,7 @@ export const usePosition = (menuRef: ComponentRef, inputRef: ComponentRef, emit:
         const { height } = menuEl.getBoundingClientRect();
 
         menuPosition.value.top = `${offset - height - +props.offset}px`;
-        setHorizontalPositioning(left, width);
-
-        autoLeftRight(inputEl, menuEl);
+        setLeftRightPosition({ inputEl, menuEl, left, width });
 
         openOnTop.value = true;
     };
