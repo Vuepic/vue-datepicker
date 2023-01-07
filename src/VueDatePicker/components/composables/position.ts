@@ -127,7 +127,7 @@ export const usePosition = (menuRef: ComponentRef, inputRef: ComponentRef, emit:
         left: number;
         width: number;
     }) => {
-        if (!window.matchMedia('screen and (max-width: 768px)').matches) {
+        if (window.screen.width > 768) {
             setHorizontalPositioning(left, width);
         }
 
