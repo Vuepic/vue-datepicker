@@ -1,39 +1,52 @@
 <template>
     <div class="dp__action_row" :style="calendarWidth ? { width: `${calendarWidth}px` } : {}">
-        <div class="dp__selection_preview">
-            <slot name="action-preview" v-if="$slots['action-preview']" :value="internalModelValue" />
-            <template v-if="!$slots['action-preview']">
-                <template v-if="!Array.isArray(previewValue)">{{ previewValue }}</template>
-                <template v-if="Array.isArray(previewValue)">
-                    <div v-for="(preview, i) in previewValue" :key="i">{{ preview }}</div>
+        <template v-if="$slots['action-row']">
+            <slot
+                name="action-row"
+                v-bind="{
+                    internalModelValue,
+                    disabled,
+                    selectDate: () => $emit('select-date'),
+                    closePicker: () => $emit('close-picker'),
+                }"
+            />
+        </template>
+        <template v-else>
+            <div class="dp__selection_preview">
+                <slot name="action-preview" v-if="$slots['action-preview']" :value="internalModelValue" />
+                <template v-if="!$slots['action-preview']">
+                    <template v-if="!Array.isArray(previewValue)">{{ previewValue }}</template>
+                    <template v-if="Array.isArray(previewValue)">
+                        <div v-for="(preview, i) in previewValue" :key="i">{{ preview }}</div>
+                    </template>
                 </template>
-            </template>
-        </div>
-        <div class="dp__action_buttons">
-            <slot name="action-select" v-if="$slots['action-select']" :value="internalModelValue" />
-            <template v-if="!$slots['action-select']">
-                <span
-                    v-if="!inline"
-                    class="dp__action dp__cancel"
-                    ref="cancelButtonRef"
-                    tabindex="0"
-                    @click="$emit('close-picker')"
-                    @keydown.enter="$emit('close-picker')"
-                    @keydown.space="$emit('close-picker')"
-                    >{{ cancelText }}</span
-                >
-                <span
-                    :class="selectClass"
-                    tabindex="0"
-                    @keydown.enter="selectDate"
-                    @keydown.space="selectDate"
-                    @click="selectDate"
-                    data-test="select-button"
-                    ref="selectButtonRef"
-                    >{{ selectText }}</span
-                >
-            </template>
-        </div>
+            </div>
+            <div class="dp__action_buttons">
+                <slot name="action-select" v-if="$slots['action-select']" :value="internalModelValue" />
+                <template v-if="!$slots['action-select']">
+                    <span
+                        v-if="!inline"
+                        class="dp__action dp__cancel"
+                        ref="cancelButtonRef"
+                        tabindex="0"
+                        @click="$emit('close-picker')"
+                        @keydown.enter="$emit('close-picker')"
+                        @keydown.space="$emit('close-picker')"
+                        >{{ cancelText }}</span
+                    >
+                    <span
+                        :class="selectClass"
+                        tabindex="0"
+                        @keydown.enter="selectDate"
+                        @keydown.space="selectDate"
+                        @click="selectDate"
+                        data-test="select-button"
+                        ref="selectButtonRef"
+                        >{{ selectText }}</span
+                    >
+                </template>
+            </div>
+        </template>
     </div>
 </template>
 
@@ -75,10 +88,12 @@
             : true;
     });
 
+    const disabled = computed(() => !isTimeValid.value || !isMonthValid.value || !validDateRange.value);
+
     const selectClass = computed(() => ({
         dp__action: true,
         dp__select: true,
-        dp__action_disabled: !isTimeValid.value || !isMonthValid.value || !validDateRange.value,
+        dp__action_disabled: disabled.value,
     }));
 
     const isTimeValid = computed((): boolean => {

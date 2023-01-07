@@ -147,33 +147,21 @@
                     </button>
                 </div>
             </div>
-            <template v-if="$slots['action-row']">
-                <slot
-                    name="action-row"
-                    v-bind="{
-                        internalModelValue,
-                        selectDate: () => $emit('select-date'),
-                        closePicker: () => $emit('close-picker'),
-                    }"
-                />
-            </template>
-            <template v-else>
-                <component
-                    v-if="!autoApply || keepActionRow"
-                    :is="actionRowComponent ? actionRowComponent : ActionRow"
-                    :menu-mount="menuMount"
-                    :calendar-width="calendarWidth"
-                    :internal-model-value="internalModelValue"
-                    v-bind="$props"
-                    @close-picker="$emit('close-picker')"
-                    @select-date="$emit('select-date')"
-                    @invalid-select="$emit('invalid-select')"
-                >
-                    <template v-for="(slot, i) in actionSlots" #[slot]="args" :key="i">
-                        <slot :name="slot" v-bind="{ ...args }" />
-                    </template>
-                </component>
-            </template>
+            <component
+                v-if="!autoApply || keepActionRow"
+                :is="actionRowComponent ? actionRowComponent : ActionRow"
+                :menu-mount="menuMount"
+                :calendar-width="calendarWidth"
+                :internal-model-value="internalModelValue"
+                v-bind="$props"
+                @close-picker="$emit('close-picker')"
+                @select-date="$emit('select-date')"
+                @invalid-select="$emit('invalid-select')"
+            >
+                <template v-for="(slot, i) in actionSlots" #[slot]="args" :key="i">
+                    <slot :name="slot" v-bind="{ ...args }" />
+                </template>
+            </component>
         </div>
     </transition>
 </template>

@@ -33,7 +33,7 @@ export const slots = [
     { name: 'right-sidebar', use: ['menu'] },
     { name: 'month-year', use: ['month-year'] },
     { name: 'time-picker', use: ['menu'] },
-    { name: 'action-row', use: ['menu'] },
+    { name: 'action-row', use: ['action'] },
 ];
 
 export const inputSlots = [{ name: 'trigger' }, { name: 'input-icon' }, { name: 'clear-icon' }, { name: 'dp-input' }];
