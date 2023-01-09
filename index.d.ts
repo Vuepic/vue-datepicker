@@ -247,6 +247,7 @@ export interface PublicMethods extends MethodOptions {
     clearValue: () => void;
     onScroll: () => void;
     updateInternalModelValue: (value: Date | Date[]) => void;
+    setMonthYear: (value: { month?: number | string; year?: number | string }) => void;
 }
 
 declare const _default: DefineComponent<

@@ -486,4 +486,8 @@
             }
         }
     };
+
+    defineExpose({
+        updateMonthYear,
+    });
 </script>

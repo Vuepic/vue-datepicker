@@ -423,4 +423,28 @@ describe('Logic connection', () => {
 
         expect(menu.vm.internalModelValue).toEqual(null);
     });
+
+    it('Should programmatically change month year view', async () => {
+        const { dp, menu } = await mountDatepicker();
+        const month = 5;
+        const year = 2040;
+        dp.vm.setMonthYear({ month, year });
+        await dp.vm.$nextTick();
+        await menu.vm.$nextTick();
+
+        expect(menu.vm.month(0)).toEqual(month);
+        expect(menu.vm.year(0)).toEqual(year);
+    });
+
+    it('Should not change month year view on invalid value call', async () => {
+        const { dp, menu } = await mountDatepicker();
+        const date = new Date();
+
+        dp.vm.setMonthYear({ month: undefined, year: 'rand' });
+        await dp.vm.$nextTick();
+        await menu.vm.$nextTick();
+
+        expect(menu.vm.month(0)).toEqual(getMonth(date));
+        expect(menu.vm.year(0)).toEqual(getYear(date));
+    });
 });

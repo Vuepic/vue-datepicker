@@ -3,7 +3,15 @@ import { addHours, getHours, getMinutes, getMonth, getSeconds, set, setMonth, su
 import { getTimezoneOffset, zonedTimeToUtc } from 'date-fns-tz';
 import { reactive } from 'vue';
 
-import { getArrayInArray, getDayNames, getMonths, getYears, hoursToAmPmHours, isModelAuto } from '@/utils/util';
+import {
+    getArrayInArray,
+    getDayNames,
+    getMonths,
+    getNumVal,
+    getYears,
+    hoursToAmPmHours,
+    isModelAuto,
+} from '@/utils/util';
 import {
     dateToUtc,
     isDateAfter,
@@ -217,5 +225,25 @@ describe('Utils and date utils formatting', () => {
     it('Should return empty transition name', () => {
         const { transitionName } = useTransitions(false);
         expect(transitionName.value(true)).toEqual('');
+    });
+
+    it('Should return proper value from number param', () => {
+        const undefinedVal = getNumVal(undefined);
+        expect(undefinedVal).toBeNull();
+
+        const nullishVal = getNumVal(null);
+        expect(nullishVal).toBeNull();
+
+        const invalidString = getNumVal('rand');
+        expect(invalidString).toBeNull();
+
+        const stringVal = getNumVal('2');
+        expect(stringVal).toEqual(2);
+
+        const zeroVal = getNumVal(0);
+        expect(zeroVal).toEqual(0);
+
+        const validNum = getNumVal(1);
+        expect(validNum).toEqual(1);
     });
 });

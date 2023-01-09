@@ -48,8 +48,8 @@
 <script lang="ts" setup>
     import { computed, nextTick, onMounted, onUnmounted, ref, toRef, useSlots, watch } from 'vue';
 
-    import DatepickerInput from './components/DatepickerInput.vue';
-    import DatepickerMenu from './components/DatepickerMenu.vue';
+    import DatepickerInput from '@/components/DatepickerInput.vue';
+    import DatepickerMenu from '@/components/DatepickerMenu.vue';
 
     import {
         useExternalInternalMapper,
@@ -59,10 +59,12 @@
         useState,
         useUtils,
     } from '@/components/composables';
-    import { onClickOutside } from './directives/clickOutside';
-    import { AllProps } from './utils/props';
+    import { onClickOutside } from '@/directives/clickOutside';
+    import { AllProps } from '@/utils/props';
+    import { getNumVal } from '@/utils/util';
 
-    import type { DynamicClass } from './interfaces';
+    import type { DynamicClass, MonthYearOpt } from '@/interfaces';
+    import type { ComponentPublicInstance } from 'vue';
 
     const emit = defineEmits([
         'update:model-value',
@@ -85,7 +87,9 @@
     const isOpen = ref(false);
     const modelValueRef = toRef(props, 'modelValue');
     const timezoneRef = toRef(props, 'timezone');
-    const dpMenuRef = ref(null);
+    const dpMenuRef = ref<ComponentPublicInstance<{
+        updateMonthYear: (ins: number, val: { month: number | null; year: number | null }) => void;
+    }> | null>(null);
     const inputRef = ref(null);
     const isInputFocused = ref(false);
 
@@ -340,6 +344,15 @@
         emit('blur');
     };
 
+    const setMonthYear = (value: MonthYearOpt) => {
+        if (dpMenuRef.value) {
+            dpMenuRef.value.updateMonthYear(0, {
+                month: getNumVal(value.month),
+                year: getNumVal(value.year),
+            });
+        }
+    };
+
     onClickOutside(
         dpMenuRef,
         inputRef,
@@ -354,5 +367,6 @@
         onScroll,
         formatInputValue, // exposed for testing purposes
         updateInternalModelValue, // modify internal modelValue
+        setMonthYear,
     });
 </script>

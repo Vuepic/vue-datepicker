@@ -161,7 +161,7 @@ export interface ICalendarData {
     year: number;
 }
 
-export type ComponentRef = Ref<HTMLElement | null>;
+export type ComponentRef = Ref<ComponentPublicInstance | HTMLElement | null>;
 
 export type TimeOverlayCheck = 'noHoursOverlay' | 'noMinutesOverlay' | 'noSecondsOverlay';
 
@@ -175,4 +175,9 @@ export type DateValue = Date | string | null;
 
 export interface ExtendedProps extends AllPropsType {
     internalModelValue: InternalModuleValue;
+}
+
+export interface MonthYearOpt {
+    month?: number | string;
+    year?: number | string;
 }
