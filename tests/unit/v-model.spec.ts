@@ -208,6 +208,15 @@ describe('v-model mapping', () => {
         expect((wrapper.emitted()['update:model-value'][0] as any)[0]).toEqual(dates);
     });
 
+    it('Should emit empty array if no multi-dates are selected', () => {
+        const wrapper = shallowMount(VueDatepicker, { props: { multiDates: true } });
+        wrapper.vm.internalModelValue = null;
+
+        wrapper.vm.emitModelValue();
+        expect(wrapper.emitted()).toHaveProperty('update:model-value');
+        expect((wrapper.emitted()['update:model-value'][0] as any)[0]).toEqual([]);
+    });
+
     it('Should emit custom model-type', () => {
         const date = new Date();
         const wrapper = shallowMount(VueDatepicker, { props: { modelType: 'timestamp' } });
