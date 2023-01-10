@@ -133,7 +133,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
 
     // Map internal value for external
     const getMultiDatesForExternal = () =>
-        (internalModelValue.value as Date[]).map((date) => toModelType(date) as string);
+        (internalModelValue.value as Date[] || []).map((date) => toModelType(date) as string);
 
     // Parent internal to external function mapper that will return proper date format based on provided config
     const mapInternalDatesToExternal = () => {
