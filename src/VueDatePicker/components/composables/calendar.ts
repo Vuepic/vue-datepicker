@@ -31,7 +31,7 @@ import type {
     TimeType,
     VueEmit,
 } from '@/interfaces';
-import type { UnwrapRef } from 'vue';
+import type { UnwrapRef, Ref } from 'vue';
 
 // @SONAR_START@
 export const useCalendar = (
@@ -39,6 +39,7 @@ export const useCalendar = (
     emit: VueEmit,
     updateFlow: () => void,
     triggerCalendarTransition: (inst?: number) => void,
+    flowStep: Ref<number>,
 ) => {
     // @SONAR_STOP@
 
@@ -88,6 +89,13 @@ export const useCalendar = (
             (instance: number): number =>
                 calendars.value[instance] ? calendars.value[instance].year : 0,
     );
+
+    const isFlowLastStep = computed(() => {
+        if (props.flow) {
+            return flowStep.value === props.flow.length;
+        }
+        return true;
+    });
 
     // Any update for month or year value will go through this function
     const setCalendarMonthYear = (instance: number, month: number | null, year: number | null): void => {
@@ -355,7 +363,7 @@ export const useCalendar = (
     };
 
     const autoApply = (): void => {
-        if (props.autoApply) {
+        if (props.autoApply && isFlowLastStep.value) {
             emit('auto-apply');
         }
     };

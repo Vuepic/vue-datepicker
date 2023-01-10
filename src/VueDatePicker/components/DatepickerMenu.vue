@@ -308,7 +308,7 @@
         getMarker,
         selectCurrentDate,
         presetDateRange,
-    } = useCalendar(props, emit, updateFlowStep, triggerCalendarTransition);
+    } = useCalendar(props, emit, updateFlowStep, triggerCalendarTransition, flowStep);
 
     const { setHoverDate, clearHoverDate, getDayClassData } = useCalendarClass(modelValue, props);
 
