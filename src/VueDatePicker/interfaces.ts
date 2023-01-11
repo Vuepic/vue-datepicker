@@ -181,3 +181,7 @@ export interface MonthYearOpt {
     month?: number | string;
     year?: number | string;
 }
+
+export type DatepickerMenuRef = ComponentPublicInstance<{
+    updateMonthYear: (ins: number, val: { month: number | null; year: number | null }) => void;
+}>;

@@ -63,8 +63,7 @@
     import { AllProps } from '@/utils/props';
     import { getNumVal } from '@/utils/util';
 
-    import type { DynamicClass, MonthYearOpt } from '@/interfaces';
-    import type { ComponentPublicInstance } from 'vue';
+    import type { DynamicClass, MonthYearOpt, DatepickerMenuRef } from '@/interfaces';
 
     const emit = defineEmits([
         'update:model-value',
@@ -87,9 +86,7 @@
     const isOpen = ref(false);
     const modelValueRef = toRef(props, 'modelValue');
     const timezoneRef = toRef(props, 'timezone');
-    const dpMenuRef = ref<ComponentPublicInstance<{
-        updateMonthYear: (ins: number, val: { month: number | null; year: number | null }) => void;
-    }> | null>(null);
+    const dpMenuRef = ref<DatepickerMenuRef | null>(null);
     const inputRef = ref(null);
     const isInputFocused = ref(false);
 
