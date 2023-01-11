@@ -64,7 +64,7 @@
                                     <slot name="day" v-if="$slots.day" :day="+dayVal.text" :date="dayVal.value"></slot>
                                     <template v-if="!$slots.day"> {{ dayVal.text }} </template>
                                     <div
-                                        v-if="dayVal.marker"
+                                        v-if="dayVal.marker && (hideOffsetDates ? dayVal.current : true)"
                                         :class="markerClass(dayVal.marker)"
                                         :style="dayVal.marker.color ? { backgroundColor: dayVal.marker.color } : {}"
                                     ></div>
