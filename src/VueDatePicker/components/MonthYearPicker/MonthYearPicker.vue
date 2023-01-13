@@ -120,7 +120,12 @@
                                 @click="handleYear(false)"
                                 @keydown.enter="handleYear(false)"
                             >
-                                <div class="dp__inner_nav" role="button" :aria-label="defaults.ariaLabels?.prevMonth">
+                                <div
+                                    class="dp__inner_nav"
+                                    :class="{ dp__inner_nav_disabled: isDisabled(false) }"
+                                    role="button"
+                                    :aria-label="defaults.ariaLabels?.prevMonth"
+                                >
                                     <slot name="arrow-left" v-if="$slots['arrow-left']" />
                                     <ChevronLeftIcon v-if="!$slots['arrow-left']" />
                                 </div>
@@ -144,7 +149,12 @@
                                 @click="handleYear(true)"
                                 @keydown.enter="handleYear(true)"
                             >
-                                <div class="dp__inner_nav" role="button" :aria-label="defaults.ariaLabels?.nextMonth">
+                                <div
+                                    class="dp__inner_nav"
+                                    :class="{ dp__inner_nav_disabled: isDisabled(true) }"
+                                    role="button"
+                                    :aria-label="defaults.ariaLabels?.nextMonth"
+                                >
                                     <slot name="arrow-right" v-if="$slots['arrow-right']" />
                                     <ChevronRightIcon v-if="!$slots['arrow-right']" />
                                 </div>
@@ -395,11 +405,13 @@
     };
 
     const handleYear = (increment = false): void => {
-        emit('update-month-year', {
-            year: increment ? props.year + 1 : props.year - 1,
-            month: props.month,
-            fromNav: true,
-        });
+        if (!isDisabled.value(increment)) {
+            emit('update-month-year', {
+                year: increment ? props.year + 1 : props.year - 1,
+                month: props.month,
+                fromNav: true,
+            });
+        }
     };
 
     const setElRefs = (el: HTMLElement, i: number): void => {
