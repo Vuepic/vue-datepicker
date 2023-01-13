@@ -135,7 +135,12 @@
                 parsedDate.value = parsedDateOne && parsedDateTwo ? [parsedDateOne, parsedDateTwo] : null;
             }
         } else {
-            parsedDate.value = parser(value);
+            if (props.multiDates) {
+                const dates = value.split(`;`);
+                parsedDate.value = dates.map((val) => parser(val.trim())).filter((val) => val);
+            } else {
+                parsedDate.value = parser(value);
+            }
         }
     };
 
