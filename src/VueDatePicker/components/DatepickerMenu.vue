@@ -413,7 +413,6 @@
 
     const handleDpMenuClick = (e: Event) => {
         e.stopPropagation();
-        e.preventDefault();
         e.stopImmediatePropagation();
     };
 
