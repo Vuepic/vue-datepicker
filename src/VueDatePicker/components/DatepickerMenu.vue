@@ -250,11 +250,11 @@
             menu.addEventListener('pointerdown', stopDefault);
             menu.addEventListener('mousedown', stopDefault);
         }
-        document.addEventListener('resize', getCalendarWidth);
+        window.addEventListener('resize', getCalendarWidth);
     });
 
     onUnmounted(() => {
-        document.removeEventListener('resize', getCalendarWidth);
+        window.removeEventListener('resize', getCalendarWidth);
     });
 
     const { arrowRight, arrowLeft, arrowDown, arrowUp } = useArrowNavigation();
