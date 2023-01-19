@@ -69,7 +69,8 @@ export const hoursToAmPmHours = (index: number): number => {
 
 export const unrefElement = (elRef: MaybeElementRef): HTMLElement | null => {
     const plain = unref(elRef);
-    return (plain as ComponentPublicInstance)?.$el ?? plain;
+    if (!(plain as ComponentPublicInstance)?.$el) return plain as HTMLElement | null;
+    return (plain as ComponentPublicInstance)?.$el;
 };
 
 export const getDefaultMarker = (marker: IMarker): IMarker => Object.assign({ type: 'dot' }, marker);
