@@ -91,7 +91,7 @@ export const useCalendar = (
     );
 
     const isFlowLastStep = computed(() => {
-        if (props.flow) {
+        if (props.flow && props.flow.length) {
             return flowStep.value === props.flow.length;
         }
         return true;
