@@ -177,7 +177,7 @@ export const useCalendar = (
 
     // Assign range values, or in case of multiDates, set
     const assignExistingMulti = (dates: Date[], fromMount: boolean) => {
-        if (props.range && !props.multiDates) {
+        if ((props.range || props.weekPicker) && !props.multiDates) {
             return assignRangeValue(dates, fromMount);
         }
 
