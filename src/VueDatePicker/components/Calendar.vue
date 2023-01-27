@@ -61,10 +61,15 @@
                                 @mouseleave="onMouseLeave"
                             >
                                 <div class="dp__cell_inner" :class="dayVal.classData">
-                                    <slot name="day" v-if="$slots.day" :day="+dayVal.text" :date="dayVal.value"></slot>
+                                    <slot
+                                        name="day"
+                                        v-if="$slots.day && showDay(dayVal)"
+                                        :day="+dayVal.text"
+                                        :date="dayVal.value"
+                                    ></slot>
                                     <template v-if="!$slots.day"> {{ dayVal.text }} </template>
                                     <div
-                                        v-if="dayVal.marker && (hideOffsetDates ? dayVal.current : true)"
+                                        v-if="dayVal.marker && showDay(dayVal)"
                                         :class="markerClass(dayVal.marker)"
                                         :style="dayVal.marker.color ? { backgroundColor: dayVal.marker.color } : {}"
                                     ></div>
@@ -211,6 +216,8 @@
         dp__calendar: true,
         dp__calendar_next: defaults.value.multiCalendars > 0 && props.instance !== 0,
     }));
+
+    const showDay = computed(() => (day: ICalendarDay) => props.hideOffsetDates ? day.current : true);
 
     const contentWrapStyle = computed(() => (props.specificMode ? { height: `${props.modeHeight}px` } : undefined));
 
