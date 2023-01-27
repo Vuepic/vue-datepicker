@@ -1,4 +1,4 @@
-import { computed, nextTick, onMounted, reactive, ref } from 'vue';
+import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import {
     add,
     addDays,
@@ -65,6 +65,11 @@ export const useCalendar = (
         },
     });
     const tempRange = ref<Date[]>([]);
+    watch(modelValue, () => {
+        if (!props.multiCalendars) {
+            mapInternalModuleValues();
+        }
+    });
 
     // Calendar data per instance
     const calendars = ref<ICalendarData[]>([{ month: getMonth(getDate()), year: getYear(getDate()) }]);
