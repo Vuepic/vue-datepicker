@@ -4,8 +4,12 @@
             <template v-if="timeInput.separator"> : </template>
             <template v-else>
                 <div
-                    class="dp__inc_dec_button"
+                    :class="{
+                        dp__inc_dec_button: true,
+                        dp__inc_dec_button_disabled: disabledArrowUpBtn(timeInput.type),
+                    }"
                     role="button"
+                    data-test="time-inc-btn"
                     :aria-label="defaults.ariaLabels?.incrementValue(timeInput.type)"
                     tabindex="0"
                     @keydown.enter="handleTimeValue(timeInput.type)"
@@ -21,6 +25,7 @@
                     :aria-label="defaults.ariaLabels?.openTpOverlay(timeInput.type)"
                     :class="checkOverlayDisabled(timeInput.type) ? '' : 'dp__time_display'"
                     tabindex="0"
+                    :data-test="`${timeInput.type}-toggle-overlay-btn`"
                     @keydown.enter="toggleOverlay(timeInput.type)"
                     @keydown.space="toggleOverlay(timeInput.type)"
                     @click="toggleOverlay(timeInput.type)"
@@ -35,8 +40,12 @@
                     <template v-if="!$slots[timeInput.type]">{{ timeValueDisplay(timeInput.type).text }}</template>
                 </div>
                 <div
-                    class="dp__inc_dec_button"
+                    :class="{
+                        dp__inc_dec_button: true,
+                        dp__inc_dec_button_disabled: disabledArrowDownBtn(timeInput.type),
+                    }"
                     role="button"
+                    data-test="time-dec-btn"
                     :aria-label="defaults.ariaLabels?.decrementValue(timeInput.type)"
                     tabindex="0"
                     @keydown.enter="handleTimeValue(timeInput.type, false)"
@@ -75,7 +84,7 @@
             <SelectionGrid
                 v-if="overlays[timeInput.type]"
                 :items="getGridItems(timeInput.type)"
-                :disabled-values="defaults.filters.times[timeInput.type]"
+                :disabled-values="defaults.filters.times[timeInput.type].concat(disabledInGrid(timeInput.type))"
                 :esc-close="escClose"
                 :aria-labels="defaults.ariaLabels"
                 :hide-navigation="hideNavigation"
@@ -150,6 +159,22 @@
         emit('mounted');
     });
 
+    const disabledArrowUpBtn = computed(() => (type: TimeType) => {
+        return !!(
+            props.maxTime &&
+            props.maxTime[type] &&
+            props.maxTime[type] < props[type] + +props[`${type}Increment`]
+        );
+    });
+
+    const disabledArrowDownBtn = computed(() => (type: TimeType) => {
+        return !!(
+            props.minTime &&
+            props.minTime[type] &&
+            props.minTime[type] > props[type] - +props[`${type}Increment`]
+        );
+    });
+
     const addTime = (initial: Record<string, number>, toAdd: Duration) => add(set(getDate(), initial), toAdd);
 
     const subTime = (initial: Record<string, number>, toSub: Duration) => sub(set(getDate(), initial), toSub);
@@ -200,6 +225,23 @@
         return getArrayInArray(generatedArray);
     };
 
+    const checkMinMax = (val: number, type: TimeType): boolean => {
+        const minValue = props.minTime && props.minTime[type];
+        const maxValue = props.maxTime && props.maxTime[type];
+        if (minValue && maxValue) return val < minValue || val > maxValue;
+        if (minValue) return val < minValue;
+        if (maxValue) return val > maxValue;
+        return false;
+    };
+
+    const disabledInGrid = computed(() => (type: TimeType) => {
+        const times = getGridItems(type)
+            .flat()
+            .map((item) => item.value);
+
+        return times.filter((item) => checkMinMax(item, type));
+    });
+
     const checkOverlayDisabled = (type: TimeType): boolean => {
         return props[`no${type[0].toUpperCase() + type.slice(1)}Overlay` as TimeOverlayCheck];
     };
@@ -221,10 +263,13 @@
 
     const handleTimeValue = (type: TimeType, inc = true): void => {
         const addOrSub = inc ? addTime : subTime;
-        emit(
-            `update:${type}`,
-            getTimeGetter(type)(addOrSub({ [type]: +props[type] }, { [type]: +props[`${type}Increment`] })),
-        );
+        const disabled = inc ? disabledArrowUpBtn.value(type) : disabledArrowDownBtn.value(type);
+        if (!disabled) {
+            emit(
+                `update:${type}`,
+                getTimeGetter(type)(addOrSub({ [type]: +props[type] }, { [type]: +props[`${type}Increment`] })),
+            );
+        }
     };
 
     const convert24ToAmPm = (time: number): number => {

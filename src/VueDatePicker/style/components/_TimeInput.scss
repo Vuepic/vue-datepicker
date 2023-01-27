@@ -72,6 +72,20 @@
   }
 }
 
+%__dp_time_arrow_disabled {
+  background: var(--dp-disabled-color);
+  color: var(--dp-disabled-color-text);
+  cursor: not-allowed;
+}
+
+.dp__inc_dec_button_disabled {
+  @extend %__dp_time_arrow_disabled;
+
+  &:hover {
+    @extend %__dp_time_arrow_disabled;
+  }
+}
+
 .dp__pm_am_button {
   background: var(--dp-primary-color);
   color: var(--dp-primary-text-color);

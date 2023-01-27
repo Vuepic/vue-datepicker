@@ -1,7 +1,7 @@
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { describe, it, expect, afterEach } from 'vitest';
 import { nextTick } from 'vue';
-import { addMonths, getHours, getMonth, getYear, setMilliseconds, setSeconds, startOfYear } from 'date-fns';
+import { addMonths, getHours, getMonth, getYear, set, setMilliseconds, setSeconds, startOfYear } from 'date-fns';
 import addDays from 'date-fns/addDays';
 import { ja } from 'date-fns/locale';
 
@@ -16,6 +16,7 @@ import SelectionGrid from '@/components/SelectionGrid.vue';
 import { useUtils } from '@/components/composables';
 import type { AllPropsType } from '@/utils/props';
 import { resetDateTime } from '@/utils/date-utils';
+import TimeInput from '@/components/TimePicker/TimeInput.vue';
 
 const format = (date: Date): string => {
     return `Selected year is ${date.getFullYear()}`;
@@ -446,5 +447,33 @@ describe('Logic connection', () => {
 
         expect(menu.vm.month(0)).toEqual(getMonth(date));
         expect(menu.vm.year(0)).toEqual(getYear(date));
+    });
+
+    it('Should disable times that are out of max time validation', async () => {
+        const date = set(new Date(), { hours: 21 });
+        const { menu } = await mountDatepicker({ maxTime: { hours: 21 }, modelValue: date });
+        await menu.find(`[data-test="open-time-picker-btn"]`).trigger('click');
+        await menu.vm.$nextTick();
+        const timeInput = await menu.findComponent(TimeInput);
+
+        const incBtn = timeInput.find(`[data-test="time-inc-btn"]`);
+
+        expect(incBtn.classes()).toContain('dp__inc_dec_button_disabled');
+
+        expect(timeInput.vm.disabledInGrid('hours')).toEqual([22, 23]);
+    });
+
+    it('Should disable times that are out of min time validation', async () => {
+        const date = set(new Date(), { hours: 7 });
+        const { menu } = await mountDatepicker({ minTime: { hours: 7 }, modelValue: date });
+        await menu.find(`[data-test="open-time-picker-btn"]`).trigger('click');
+        await menu.vm.$nextTick();
+        const timeInput = await menu.findComponent(TimeInput);
+
+        const incBtn = timeInput.find(`[data-test="time-dec-btn"]`);
+
+        expect(incBtn.classes()).toContain('dp__inc_dec_button_disabled');
+
+        expect(timeInput.vm.disabledInGrid('hours')).toEqual([0, 1, 2, 3, 4, 5, 6]);
     });
 });

@@ -7,6 +7,7 @@
             role="button"
             :aria-label="defaults.ariaLabels?.openTimePicker"
             tabindex="0"
+            data-test="open-time-picker-btn"
             ref="openTimePickerBtn"
             @keydown.enter="toggleTimePicker(true)"
             @keydown.space="toggleTimePicker(true)"
