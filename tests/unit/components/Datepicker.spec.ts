@@ -454,7 +454,7 @@ describe('Logic connection', () => {
         const { menu } = await mountDatepicker({ maxTime: { hours: 21 }, modelValue: date });
         await menu.find(`[data-test="open-time-picker-btn"]`).trigger('click');
         await menu.vm.$nextTick();
-        const timeInput = await menu.findComponent(TimeInput);
+        const timeInput = menu.findComponent(TimeInput);
 
         const incBtn = timeInput.find(`[data-test="time-inc-btn"]`);
 
@@ -468,7 +468,7 @@ describe('Logic connection', () => {
         const { menu } = await mountDatepicker({ minTime: { hours: 7 }, modelValue: date });
         await menu.find(`[data-test="open-time-picker-btn"]`).trigger('click');
         await menu.vm.$nextTick();
-        const timeInput = await menu.findComponent(TimeInput);
+        const timeInput = menu.findComponent(TimeInput);
 
         const incBtn = timeInput.find(`[data-test="time-dec-btn"]`);
 
