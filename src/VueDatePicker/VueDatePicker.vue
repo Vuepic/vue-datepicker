@@ -162,8 +162,6 @@
                 closeMenu();
             } else if (props.autoPosition) {
                 setMenuPosition();
-            } else {
-                window.removeEventListener('scroll', onScroll);
             }
         }
     };
