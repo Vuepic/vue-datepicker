@@ -586,6 +586,7 @@ export const useCalendar = (
             if (defaults.value.multiCalendars && !props.multiCalendarsSolo) {
                 autoChangeMultiCalendars(instance);
             }
+            emit('update-month-year', { instance, month: getMonth(date), year: getYear(date) });
             triggerCalendarTransition();
         }
     };
