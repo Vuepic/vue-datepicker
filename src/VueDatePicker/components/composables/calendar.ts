@@ -104,8 +104,11 @@ export const useCalendar = (
 
     // Any update for month or year value will go through this function
     const setCalendarMonthYear = (instance: number, month: number | null, year: number | null): void => {
-        calendars.value[instance].month = month === null ? calendars.value[instance].month : month;
-        calendars.value[instance].year = year === null ? calendars.value[instance].year : year;
+        if (!calendars.value[instance]) {
+            calendars.value[instance] = { month: 0, year: 0 };
+        }
+        calendars.value[instance].month = month === null ? calendars.value[instance]?.month : month;
+        calendars.value[instance].year = year === null ? calendars.value[instance]?.year : year;
     };
 
     // Any time modification will go through this function
@@ -143,7 +146,8 @@ export const useCalendar = (
         if (props.timePicker) return assignTimePicker();
         if (props.monthPicker && !props.range) return assignMonthPicker();
         if (props.yearPicker && !props.range) return assignYearPicker();
-        if (defaults.value.multiCalendars) return assignMonthAndYear(getDate(), fromMount);
+        if (defaults.value.multiCalendars && fromMount && !props.startDate)
+            return assignMonthAndYear(getDate(), fromMount);
     };
 
     // Assign month and year values per date
