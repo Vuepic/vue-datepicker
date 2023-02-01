@@ -228,7 +228,7 @@ describe('Utils and date utils formatting', () => {
     });
 
     it('Should return proper value from number param', () => {
-        const undefinedVal = getNumVal(undefined);
+        const undefinedVal = getNumVal();
         expect(undefinedVal).toBeNull();
 
         const nullishVal = getNumVal(null);
