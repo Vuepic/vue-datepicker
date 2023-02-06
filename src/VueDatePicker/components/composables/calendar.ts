@@ -710,6 +710,9 @@ export const useCalendar = (
         if (dates.length && dates.length <= 2 && props.range) {
             modelValue.value = dates.map((date) => getDate(date));
             selectOnAutoApply();
+            if (props.multiCalendars) {
+                nextTick().then(() => mapInternalModuleValues(true));
+            }
         }
     };
 
