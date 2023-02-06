@@ -240,6 +240,7 @@ export interface VueDatePicker {
     noDisabledRange?: boolean;
     sixWeeks?: boolean;
     timezone?: string;
+    noMenuFocus?: boolean;
 }
 
 export interface PublicMethods extends MethodOptions {

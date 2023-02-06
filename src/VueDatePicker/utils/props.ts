@@ -155,6 +155,7 @@ export const AllProps = {
     onClickOutside: { type: Function as PropType<(validate: () => boolean) => void>, default: null },
     noDisabledRange: { type: Boolean as PropType<boolean>, default: false },
     sixWeeks: { type: Boolean as PropType<boolean>, default: false },
+    noMenuFocus: { type: Boolean as PropType<boolean>, default: false },
 };
 
 export type AllPropsType = ExtractPropTypes<typeof AllProps>;
