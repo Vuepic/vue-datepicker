@@ -138,6 +138,7 @@ export const useCalendar = (
     const mapInternalModuleValues = (fromMount = false): void => {
         if (modelValue.value) {
             if (Array.isArray(modelValue.value)) {
+                tempRange.value = modelValue.value;
                 return assignExistingModelValueArr(fromMount);
             }
             return assignSingleValue(modelValue.value);

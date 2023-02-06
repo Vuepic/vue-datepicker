@@ -129,10 +129,11 @@
         if (props.range) {
             const [dateOne, dateTwo] = value.split(`${rangeSeparator}`);
 
-            if (dateOne && dateTwo) {
+            if (dateOne) {
                 const parsedDateOne = parser(dateOne.trim());
-                const parsedDateTwo = parser(dateTwo.trim());
-                parsedDate.value = parsedDateOne && parsedDateTwo ? [parsedDateOne, parsedDateTwo] : null;
+                const parsedDateTwo = dateTwo ? parser(dateTwo.trim()) : null;
+                const parsedArr = parsedDateOne && parsedDateTwo ? [parsedDateOne, parsedDateTwo] : [parsedDateOne];
+                parsedDate.value = parsedDateOne ? parsedArr : null;
             }
         } else {
             if (props.multiDates) {
