@@ -428,6 +428,7 @@ export const useCalendar = (
 
     // Handle range with fixed start/end
     const setFixedDateRange = (day: ICalendarDay) => {
+        if (includesDisabled(day.value)) return;
         tempRange.value = getRangeWithFixedDate(getDate(day.value));
     };
 
