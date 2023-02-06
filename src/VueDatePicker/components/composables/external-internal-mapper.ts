@@ -1,4 +1,4 @@
-import { ref, watch } from 'vue';
+import { ref, toRef, watch } from 'vue';
 import { format, getHours, getMinutes, getMonth, getSeconds, getYear, parse, setYear } from 'date-fns';
 
 import { dateToUtc, getDate, setDateTime } from '@/utils/date-utils';
@@ -27,9 +27,14 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
     } = useUtils(props);
 
     const inputValue = ref('');
+    const formatRef = toRef(props, 'format');
 
     watch(internalModelValue, () => {
         emit('internal-model-change', internalModelValue.value);
+    });
+
+    watch(formatRef, () => {
+        formatInputValue();
     });
 
     const getTimeVal = (date?: Date): TimeModel => {
@@ -133,7 +138,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
 
     // Map internal value for external
     const getMultiDatesForExternal = () =>
-        (internalModelValue.value as Date[] || []).map((date) => toModelType(date) as string);
+        ((internalModelValue.value as Date[]) || []).map((date) => toModelType(date) as string);
 
     // Parent internal to external function mapper that will return proper date format based on provided config
     const mapInternalDatesToExternal = () => {
