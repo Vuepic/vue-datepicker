@@ -43,7 +43,7 @@ describe('Calendar component', () => {
         await menu.vm.$nextTick();
         const calendar = menu.findComponent(Calendar);
 
-        await calendar.find(`[data-test="${resetDateTime(new Date())}"]`).trigger('mouseover');
+        await calendar.find(`[data-test="${resetDateTime(new Date())}"]`).trigger('mouseenter');
         await calendar.vm.$nextTick();
 
         expect(calendar.html()).toContain('dp__marker_tooltip');
@@ -52,7 +52,7 @@ describe('Calendar component', () => {
     it('Should emit hover date on mouse over', async () => {
         const { calendar, date } = await mountCalendar();
 
-        await calendar.find(`[data-test="${resetDateTime(date)}"]`).trigger('mouseover');
+        await calendar.find(`[data-test="${resetDateTime(date)}"]`).trigger('mouseenter');
         await calendar.vm.$nextTick();
 
         expect(calendar.emitted()).toHaveProperty('set-hover-date');
