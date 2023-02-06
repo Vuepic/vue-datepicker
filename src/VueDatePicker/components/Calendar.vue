@@ -57,8 +57,8 @@
                                 @click.stop.prevent="$emit('select-date', dayVal)"
                                 @keydown.enter="$emit('select-date', dayVal)"
                                 @keydown.space="$emit('handle-space', dayVal)"
-                                @mouseover="onMouseOver(dayVal, weekInd, dayInd)"
-                                @mouseleave="onMouseLeave"
+                                @mouseenter="onMouseOver(dayVal, weekInd, dayInd)"
+                                @mouseleave="onMouseLeave(dayVal)"
                             >
                                 <div class="dp__cell_inner" :class="dayVal.classData">
                                     <slot
@@ -129,6 +129,8 @@
         'mount',
         'handle-swipe',
         'handle-space',
+        'tooltip-open',
+        'tooltip-close',
     ]);
 
     const props = defineProps({
@@ -234,12 +236,16 @@
                     transform: `translateX(-50%)`,
                 };
                 showMakerTooltip.value = day.value;
+                emit('tooltip-open', day.value);
             }
         }
     };
 
-    const onMouseLeave = (): void => {
-        showMakerTooltip.value = null;
+    const onMouseLeave = (day: UnwrapRef<ICalendarDay>): void => {
+        if (showMakerTooltip.value) {
+            showMakerTooltip.value = null;
+            emit('tooltip-close', day.value);
+        }
     };
 
     const onTouchStart = (ev: TouchEvent): void => {

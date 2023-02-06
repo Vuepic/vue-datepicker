@@ -14,7 +14,9 @@ export type EmitEvents =
     | 'recalculate-position'
     | 'flow-step'
     | 'update-month-year'
-    | 'invalid-select';
+    | 'invalid-select'
+    | 'tooltip-open'
+    | 'tooltip-close';
 
 export interface VueDatePicker {
     uid?: string;

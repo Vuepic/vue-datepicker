@@ -36,6 +36,8 @@
                 @update-month-year="$emit('update-month-year', $event)"
                 @invalid-select="$emit('invalid-select', internalModelValue)"
                 @recalculate-position="setMenuPosition"
+                @tooltip-open="$emit('tooltip-open', $event)"
+                @tooltip-close="$emit('tooltip-close', $event)"
             >
                 <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
                     <slot :name="slot" v-bind="{ ...args }" />
@@ -78,6 +80,8 @@
         'flow-step',
         'update-month-year',
         'invalid-select',
+        'tooltip-open',
+        'tooltip-close',
     ]);
     const props = defineProps({
         ...AllProps,

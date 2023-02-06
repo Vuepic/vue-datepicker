@@ -96,6 +96,8 @@
                                 @handle-swipe="handleSwipe($event, instance)"
                                 @mount="childMount('calendar')"
                                 @reset-flow="resetFlow"
+                                @tooltip-open="$emit('tooltip-open', $event)"
+                                @tooltip-close="$emit('tooltip-close', $event)"
                             >
                                 <template v-for="(slot, j) in calendarSlots" #[slot]="args" :key="j">
                                     <slot :name="slot" v-bind="{ ...args }" />
@@ -203,6 +205,8 @@
         'invalid-select',
         'update:internal-model-value',
         'recalculate-position',
+        'tooltip-open',
+        'tooltip-close',
     ]);
     const props = defineProps({
         openOnTop: { type: Boolean as PropType<boolean>, default: false },
