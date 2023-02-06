@@ -5,7 +5,7 @@ import { dateToUtc, getDate, setDateTime } from '@/utils/date-utils';
 import { convertType, errors } from '@/utils/util';
 import { useUtils } from '@/components/composables';
 
-import type { ModelValue, VueEmit, TimeModel, MonthModel } from '@/interfaces';
+import type { ModelValue, VueEmit, TimeModel, MonthModel, ModelTypeConverted } from '@/interfaces';
 import type { AllPropsType } from '@/utils/props';
 import type { Ref } from 'vue';
 
@@ -37,8 +37,9 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
         formatInputValue();
     });
 
-    const getTimeVal = (date?: Date): TimeModel => {
+    const getTimeVal = (date?: Date): TimeModel | ModelTypeConverted => {
         const dateValue = date || getDate();
+        if (props.modelType) return toModelType(dateValue);
         return {
             hours: getHours(dateValue),
             minutes: getMinutes(dateValue),
@@ -46,7 +47,10 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
         };
     };
 
-    const getMonthVal = (date: Date): MonthModel => ({ month: getMonth(date), year: getYear(date) });
+    const getMonthVal = (date: Date): MonthModel | ModelTypeConverted => {
+        if (props.modelType) return toModelType(date);
+        return { month: getMonth(date), year: getYear(date) };
+    };
 
     const mapYearExternalToInternal = (value: number | number[]): Date | Date[] => {
         if (Array.isArray(value)) {
@@ -58,25 +62,40 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
         return setYear(getDate(), +value);
     };
 
+    const convertCustomModeType = (value: unknown, defaultValue: Date): Date => {
+        const shouldConvert = (typeof value === 'string' || typeof value === 'number') && props.modelType;
+        if (shouldConvert) return parseModelType(value);
+        return defaultValue;
+    };
+
     const mapTimeExternalToInternal = (value: TimeModel | TimeModel[]): Date | Date[] => {
         // Unlike in other modes, partial range is not supported here, since the time needs to be defined on both time inputs
         if (Array.isArray(value)) {
             return [
-                setDateTime(null, +value[0].hours, +value[0].minutes, value[0].seconds),
-                setDateTime(null, +value[1].hours, +value[1].minutes, value[1].seconds),
+                convertCustomModeType(
+                    value[0],
+                    setDateTime(null, +value[0].hours, +value[0].minutes, value[0].seconds),
+                ),
+                convertCustomModeType(
+                    value[1],
+                    setDateTime(null, +value[1].hours, +value[1].minutes, value[1].seconds),
+                ),
             ];
         }
-        return setDateTime(null, value.hours, value.minutes, value?.seconds);
+        return convertCustomModeType(value, setDateTime(null, value.hours, value.minutes, value.seconds));
     };
 
     const mapMonthExternalToInternal = (value: MonthModel | MonthModel[]): Date | Date[] => {
         if (Array.isArray(value)) {
             return checkRangeEnabled(() => [
-                setDateMonthOrYear(null, +value[0].month, +value[0].year),
-                value[1] ? setDateMonthOrYear(null, +value[1].month, +value[1].year) : checkPartialRangeValue(),
+                convertCustomModeType(value[0], setDateMonthOrYear(null, +value[0].month, +value[0].year)),
+                convertCustomModeType(
+                    value[1],
+                    value[1] ? setDateMonthOrYear(null, +value[1].month, +value[1].year) : checkPartialRangeValue(),
+                ),
             ]);
         }
-        return setDateMonthOrYear(null, +value.month, +value.year);
+        return convertCustomModeType(value, setDateMonthOrYear(null, +value.month, +value.year));
     };
 
     // Map external multi dates format to internal model value

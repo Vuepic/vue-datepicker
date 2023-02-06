@@ -173,6 +173,8 @@ export type DateTimeSetter = number | string | null;
 
 export type DateValue = Date | string | null;
 
+export type ModelTypeConverted = string | number | Date;
+
 export interface ExtendedProps extends AllPropsType {
     internalModelValue: InternalModuleValue;
 }
