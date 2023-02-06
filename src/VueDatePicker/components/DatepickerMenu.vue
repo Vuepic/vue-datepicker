@@ -239,7 +239,7 @@
         }
 
         const menu = unrefElement(dpMenuRef);
-        if (menu && !props.textInput && !props.inline && !props.noMenuFocus) {
+        if (menu && !props.textInput && !props.inline) {
             setMenuFocused(true);
             focusMenu();
         }
