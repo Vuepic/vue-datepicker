@@ -123,18 +123,21 @@
         return parseFreeInput(value, defaults.value.textInputOptions?.format || getDefaultPattern());
     };
 
-    const parseInput = (value: string) => {
+    const handleRangeTextInput = (value: string) => {
         const { rangeSeparator } = defaults.value.textInputOptions;
+        const [dateOne, dateTwo] = value.split(`${rangeSeparator}`);
 
+        if (dateOne) {
+            const parsedDateOne = parser(dateOne.trim());
+            const parsedDateTwo = dateTwo ? parser(dateTwo.trim()) : null;
+            const parsedArr = parsedDateOne && parsedDateTwo ? [parsedDateOne, parsedDateTwo] : [parsedDateOne];
+            parsedDate.value = parsedDateOne ? parsedArr : null;
+        }
+    };
+
+    const parseInput = (value: string) => {
         if (props.range) {
-            const [dateOne, dateTwo] = value.split(`${rangeSeparator}`);
-
-            if (dateOne) {
-                const parsedDateOne = parser(dateOne.trim());
-                const parsedDateTwo = dateTwo ? parser(dateTwo.trim()) : null;
-                const parsedArr = parsedDateOne && parsedDateTwo ? [parsedDateOne, parsedDateTwo] : [parsedDateOne];
-                parsedDate.value = parsedDateOne ? parsedArr : null;
-            }
+            handleRangeTextInput(value);
         } else {
             if (props.multiDates) {
                 const dates = value.split(`;`);
