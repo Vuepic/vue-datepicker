@@ -1,6 +1,6 @@
 <template>
     <div ref="gridWrapRef" :class="dpOverlayClass" role="dialog" tabindex="0" @keydown.esc="handleEsc">
-        <div :class="containerClass" role="grid">
+        <div :class="containerClass" ref="containerRef" role="grid" :style="{ height: `${containerHeight}px` }">
             <div class="dp__selection_grid_header"><slot name="header"></slot></div>
             <template v-if="$slots.overlay">
                 <slot name="overlay" />
@@ -28,20 +28,20 @@
                         </div>
                     </div>
                 </div>
-                <div
-                    v-if="$slots['button-icon']"
-                    v-show="!hideNavigationButtons(type)"
-                    role="button"
-                    :aria-label="ariaLabels?.toggleOverlay"
-                    :class="actionButtonClass"
-                    tabindex="0"
-                    ref="toggleButton"
-                    @click="toggle"
-                    @keydown.enter="toggle"
-                >
-                    <slot name="button-icon" />
-                </div>
             </template>
+        </div>
+        <div
+            v-if="$slots['button-icon']"
+            v-show="!hideNavigationButtons(type)"
+            role="button"
+            :aria-label="ariaLabels?.toggleOverlay"
+            :class="actionButtonClass"
+            tabindex="0"
+            ref="toggleButton"
+            @click="toggle"
+            @keydown.enter="toggle"
+        >
+            <slot name="button-icon" />
         </div>
     </div>
 </template>
@@ -92,6 +92,8 @@
     const elementRefs = ref<Array<HTMLElement | null>[]>([]);
     const hoverValue = ref();
     const toggleButton = ref<HTMLElement | null>(null);
+    const containerHeight = ref(0);
+    const containerRef = ref<HTMLElement | null>(null);
 
     onBeforeUpdate(() => {
         selectionActiveRef.value = null;
@@ -225,14 +227,19 @@
      */
     const setScrollPosition = (): void => {
         const el = unrefElement(selectionActiveRef);
-        if (el) {
-            const parent = unrefElement(gridWrapRef);
-            if (parent) {
-                parent.scrollTop =
-                    el.offsetTop -
-                    parent.offsetTop -
-                    (parent.getBoundingClientRect().height / 2 - el.getBoundingClientRect().height);
-            }
+        const parent = unrefElement(gridWrapRef);
+        const btn = unrefElement(toggleButton);
+        const container = unrefElement(containerRef);
+        const toggleBtnHeight = btn ? btn.getBoundingClientRect().height : 0;
+        if (parent) {
+            containerHeight.value = parent.getBoundingClientRect().height - toggleBtnHeight;
+        }
+        if (el && container) {
+            container.scrollTop =
+                el.offsetTop -
+                container.offsetTop -
+                (containerHeight.value / 2 - el.getBoundingClientRect().height) -
+                toggleBtnHeight;
         }
     };
 

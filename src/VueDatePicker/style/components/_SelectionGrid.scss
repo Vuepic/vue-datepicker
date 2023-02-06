@@ -1,6 +1,5 @@
 .dp__overlay {
   position: absolute;
-  overflow-y: auto;
   width: 100%;
   height: 100%;
   background: var(--dp-background-color);
@@ -13,17 +12,17 @@
   box-sizing: border-box;
 }
 
-.dp__overlay::-webkit-scrollbar-track {
+.dp__overlay_container::-webkit-scrollbar-track {
   box-shadow: var(--dp-scroll-bar-background);
   background-color: var(--dp-scroll-bar-background);
 }
 
-.dp__overlay::-webkit-scrollbar {
+.dp__overlay_container::-webkit-scrollbar {
   width: 5px;
   background-color: var(--dp-scroll-bar-background);
 }
 
-.dp__overlay::-webkit-scrollbar-thumb {
+.dp__overlay_container::-webkit-scrollbar-thumb {
   background-color: var(--dp-scroll-bar-color);
   border-radius: 10px;
 }
@@ -42,8 +41,12 @@
 }
 
 .dp__overlay_container {
-  height: 100%;
   flex-direction: column;
+  overflow-y: auto;
+}
+
+.dp__time_picker_overlay_container {
+  height: 100%;
 }
 
 .dp__overlay_row {
