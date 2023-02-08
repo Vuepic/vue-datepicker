@@ -35,6 +35,7 @@
                 @flow-step="$emit('flow-step', $event)"
                 @update-month-year="$emit('update-month-year', $event)"
                 @invalid-select="$emit('invalid-select', internalModelValue)"
+                @invalid-fixed-range="$emit('invalid-fixed-range', $event)"
                 @recalculate-position="setMenuPosition"
                 @tooltip-open="$emit('tooltip-open', $event)"
                 @tooltip-close="$emit('tooltip-close', $event)"
@@ -80,6 +81,7 @@
         'flow-step',
         'update-month-year',
         'invalid-select',
+        'invalid-fixed-range',
         'tooltip-open',
         'tooltip-close',
     ]);

@@ -367,7 +367,7 @@ export const useCalendar = (
             if (props.fixedEnd && (isDateBefore(date, modelValue.value[1]) || isDateEqual(date, modelValue.value[1]))) {
                 return [date, modelValue.value[1]];
             }
-            emit('invalid-select');
+            emit('invalid-fixed-range', date);
             return modelValue.value;
         }
         return [];

@@ -205,6 +205,7 @@
         'invalid-select',
         'update:internal-model-value',
         'recalculate-position',
+        'invalid-fixed-range',
         'tooltip-open',
         'tooltip-close',
     ]);
