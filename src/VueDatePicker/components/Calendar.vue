@@ -87,7 +87,7 @@
                                                 <slot
                                                     name="marker-tooltip"
                                                     v-if="$slots['marker-tooltip']"
-                                                    :tooltop="tooltip"
+                                                    :tooltip="tooltip"
                                                     :day="dayVal.value"
                                                 ></slot>
                                                 <template v-if="!$slots['marker-tooltip']">
