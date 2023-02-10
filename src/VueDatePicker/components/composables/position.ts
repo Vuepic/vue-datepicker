@@ -163,6 +163,7 @@ export const usePosition = (menuRef: ComponentRef, inputRef: ComponentRef, emit:
 
             if (menuLeft < 0) return setPositionLeft(left);
             if (menuRight > document.documentElement.clientWidth) return setPositionRight(left, width);
+            return setHorizontalPositioning(left, width);
         }
     };
 
