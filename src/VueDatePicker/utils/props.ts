@@ -1,6 +1,6 @@
 import type { Locale } from 'date-fns';
 
-import type { DefineComponent, ExtractPropTypes, PropType } from 'vue';
+import type { ExtractPropTypes, PropType } from 'vue';
 
 import type {
     AriaLabels,
@@ -34,7 +34,6 @@ export const AllProps = {
     closeOnScroll: { type: Boolean as PropType<boolean>, default: false },
     autoPosition: { type: Boolean as PropType<boolean>, default: true },
     closeOnAutoApply: { type: Boolean as PropType<boolean>, default: true },
-    teleport: { type: [String, Object] as PropType<string | HTMLElement>, default: 'body' },
     altPosition: { type: Function as PropType<CustomAltPosition>, default: null },
     transitions: { type: [Boolean, Object] as PropType<boolean | Partial<Transition>>, default: true },
     formatLocale: { type: Object as PropType<Locale>, default: null },
@@ -56,9 +55,6 @@ export const AllProps = {
     monthNameFormat: { type: String as PropType<'long' | 'short'>, default: 'short' },
     startDate: { type: [Date, String] as PropType<string | Date>, default: null },
     startTime: { type: [Object, Array] as PropType<TimeModel | TimeModel[] | null>, default: null },
-    monthYearComponent: { type: Object as PropType<DefineComponent>, default: null },
-    timePickerComponent: { type: Object as PropType<DefineComponent>, default: null },
-    actionRowComponent: { type: Object as PropType<DefineComponent>, default: null },
     hideOffsetDates: { type: Boolean as PropType<boolean>, default: false },
     autoRange: { type: [Number, String] as PropType<number | string>, default: null },
     noToday: { type: Boolean as PropType<boolean>, default: false },

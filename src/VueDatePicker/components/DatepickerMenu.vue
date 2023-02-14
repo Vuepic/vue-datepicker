@@ -50,8 +50,7 @@
                 <div class="dp__instance_calendar" ref="calendarWrapperRef" role="document">
                     <div :class="menuCalendarClassWrapper">
                         <div v-for="(instance, i) in calendarAmm" :key="instance" :class="calendarInstanceClassWrapper">
-                            <component
-                                :is="monthYearComponent ? monthYearComponent : MonthYearPicker"
+                            <MonthYearPicker
                                 :ref="
                                     (el: any) => {
                                         if (el) monthYearPickerRefs[i] = el;
@@ -74,7 +73,7 @@
                                 <template v-for="(slot, j) in monthYearSlots" #[slot]="args" :key="j">
                                     <slot :name="slot" v-bind="args" />
                                 </template>
-                            </component>
+                            </MonthYearPicker>
                             <Calendar
                                 :ref="
                                     (el: any) => {
@@ -110,9 +109,8 @@
                             <slot name="time-picker" v-bind="{ time, updateTime }" />
                         </template>
                         <template v-else>
-                            <component
+                            <TimePickerCmp
                                 v-if="enableTimePicker && !monthPicker && !weekPicker"
-                                :is="timePickerComponent ? timePickerComponent : TimePickerCmp"
                                 ref="timePickerRef"
                                 :hours="time.hours"
                                 :minutes="time.minutes"
@@ -129,7 +127,7 @@
                                 <template v-for="(slot, i) in timePickerSlots" #[slot]="args" :key="i">
                                     <slot :name="slot" v-bind="args" />
                                 </template>
-                            </component>
+                            </TimePickerCmp>
                         </template>
                     </div>
                 </div>
@@ -149,9 +147,8 @@
                     </button>
                 </div>
             </div>
-            <component
+            <ActionRow
                 v-if="!autoApply || keepActionRow"
-                :is="actionRowComponent ? actionRowComponent : ActionRow"
                 :menu-mount="menuMount"
                 :calendar-width="calendarWidth"
                 :internal-model-value="internalModelValue"
@@ -163,7 +160,7 @@
                 <template v-for="(slot, i) in actionSlots" #[slot]="args" :key="i">
                     <slot :name="slot" v-bind="{ ...args }" />
                 </template>
-            </component>
+            </ActionRow>
         </div>
     </transition>
 </template>
@@ -246,7 +243,7 @@
         }
         if (menu) {
             const stopDefault = (event: Event) => {
-                if (!props.monthYearComponent && !props.timePickerComponent && !Object.keys(slots).length) {
+                if (!Object.keys(slots).length) {
                     event.preventDefault();
                 }
                 event.stopImmediatePropagation();

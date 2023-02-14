@@ -143,7 +143,6 @@ export interface VueDatePicker {
         rangeSeparator?: string;
         format?: string | string[] | ((value: string) => Date | null);
     };
-    teleport?: string | HTMLElement;
     monthNameFormat?: 'long' | 'short';
     startDate?: string | Date;
     startTime?:
@@ -157,10 +156,6 @@ export interface VueDatePicker {
               minutes?: number | string;
               seconds?: number | string;
           }[];
-    monthYearComponent?: DefineComponent;
-    timePickerComponent?: DefineComponent;
-    actionRowComponent?: DefineComponent;
-    customProps?: Record<string, unknown>;
     hideOffsetDates?: boolean;
     autoRange?: number | string;
     noToday?: boolean;
