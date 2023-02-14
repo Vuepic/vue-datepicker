@@ -236,7 +236,7 @@
                     transform: `translateX(-50%)`,
                 };
                 showMakerTooltip.value = day.value;
-                emit('tooltip-open', day.value);
+                emit('tooltip-open', day.marker);
             }
         }
     };
@@ -244,7 +244,7 @@
     const onMouseLeave = (day: UnwrapRef<ICalendarDay>): void => {
         if (showMakerTooltip.value) {
             showMakerTooltip.value = null;
-            emit('tooltip-close', day.value);
+            emit('tooltip-close', day.marker);
         }
     };
 
