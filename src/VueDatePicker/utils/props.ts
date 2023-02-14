@@ -3,7 +3,6 @@ import type { Locale } from 'date-fns';
 import type { DefineComponent, ExtractPropTypes, PropType } from 'vue';
 
 import type {
-    AltPosition,
     AriaLabels,
     Flow,
     DateFilter,
@@ -19,6 +18,7 @@ import type {
     PresetRange,
     WeekStartNum,
     WeekStartStr,
+    CustomAltPosition,
 } from '@/interfaces';
 
 export const AllProps = {
@@ -35,7 +35,7 @@ export const AllProps = {
     autoPosition: { type: Boolean as PropType<boolean>, default: true },
     closeOnAutoApply: { type: Boolean as PropType<boolean>, default: true },
     teleport: { type: [String, Object] as PropType<string | HTMLElement>, default: 'body' },
-    altPosition: { type: [Boolean, Function] as PropType<AltPosition>, default: false },
+    altPosition: { type: Function as PropType<CustomAltPosition>, default: null },
     transitions: { type: [Boolean, Object] as PropType<boolean | Partial<Transition>>, default: true },
     formatLocale: { type: Object as PropType<Locale>, default: null },
     utc: { type: [Boolean, String] as PropType<boolean | 'preserve'>, default: false },

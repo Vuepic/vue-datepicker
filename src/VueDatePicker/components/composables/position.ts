@@ -25,15 +25,6 @@ export const usePosition = (menuRef: ComponentRef, inputRef: ComponentRef, emit:
     // Get correct offset of an element
     const getOffset = (el: HTMLElement): { top: number; left: number } => {
         const rect = el.getBoundingClientRect();
-        return {
-            left: rect.left + window.scrollX,
-            top: rect.top + window.scrollY,
-        };
-    };
-
-    // Use alternative position calculation, for specific cases on nested relative elements
-    const getOffsetAlt = (el: HTMLElement): { top: number; left: number } => {
-        const rect = el.getBoundingClientRect();
         let x = 0;
         let y = 0;
         while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
@@ -71,7 +62,7 @@ export const usePosition = (menuRef: ComponentRef, inputRef: ComponentRef, emit:
 
     const getInputPositions = (inputEl: HTMLElement) => {
         const { width, height } = inputEl.getBoundingClientRect();
-        const { top, left } = props.altPosition ? getOffsetAlt(inputEl) : getOffset(inputEl);
+        const { top, left } = props.altPosition ? props.altPosition(inputEl) : getOffset(inputEl);
         return { top, left, width, height };
     };
 
@@ -96,7 +87,8 @@ export const usePosition = (menuRef: ComponentRef, inputRef: ComponentRef, emit:
 
     const customAltPosition = () => {
         const el = unrefElement(inputRef);
-        menuPosition.value = (props.altPosition as CustomAltPosition)(el);
+        const { top, left, transform } = (props.altPosition as CustomAltPosition)(el);
+        menuPosition.value = { top: `${top}px`, left: `${left}px`, transform };
     };
 
     /**
@@ -107,7 +99,7 @@ export const usePosition = (menuRef: ComponentRef, inputRef: ComponentRef, emit:
         if (!props.inline) {
             if (centered.value) return teleportCenter();
 
-            if (props.altPosition && typeof props.altPosition !== 'boolean') return customAltPosition();
+            if (props.altPosition !== null) return customAltPosition();
 
             if (recalculate) {
                 emit('recalculate-position');
@@ -161,9 +153,8 @@ export const usePosition = (menuRef: ComponentRef, inputRef: ComponentRef, emit:
             const { left, width } = getInputPositions(inputEl);
             const { left: menuLeft, right: menuRight } = menuEl.getBoundingClientRect();
 
-            if (menuLeft < 0) return setPositionLeft(left);
-            if (menuRight > document.documentElement.clientWidth) return setPositionRight(left, width);
-            return setHorizontalPositioning(left, width);
+            if (menuLeft <= 0) return setPositionLeft(left);
+            if (menuRight >= document.documentElement.clientWidth) return setPositionRight(left, width);
         }
     };
 
@@ -198,5 +189,23 @@ export const usePosition = (menuRef: ComponentRef, inputRef: ComponentRef, emit:
         }
     };
 
-    return { openOnTop, menuPosition, setMenuPosition, setInitialPosition };
+    const isScrollable = function (el: HTMLElement | null) {
+        if (el) {
+            const hasScrollableContent = el.scrollHeight > el.clientHeight;
+
+            const overflowYStyle = window.getComputedStyle(el).overflowY;
+            const isOverflowHidden = overflowYStyle.indexOf('hidden') !== -1;
+
+            return hasScrollableContent && !isOverflowHidden;
+        }
+        return true;
+    };
+
+    const getScrollableParent = function (el: HTMLElement | null): Window | HTMLElement {
+        if (!el || el === document.body) return window;
+        if (isScrollable(el)) return el;
+        return getScrollableParent(el.parentNode as HTMLElement);
+    };
+
+    return { openOnTop, menuPosition, setMenuPosition, setInitialPosition, getScrollableParent };
 };

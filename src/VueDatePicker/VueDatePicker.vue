@@ -1,5 +1,5 @@
 <template>
-    <div :class="wrapperClass">
+    <div :class="wrapperClass" ref="pickerWrapperRef">
         <DatepickerInput
             ref="inputRef"
             :is-menu-open="isOpen"
@@ -19,7 +19,7 @@
                 <slot :name="slot" v-bind="args" />
             </template>
         </DatepickerInput>
-        <teleport :to="teleport" :disabled="inline" v-if="isOpen">
+        <template v-if="isOpen">
             <DatepickerMenu
                 v-if="isOpen"
                 ref="dpMenuRef"
@@ -44,7 +44,7 @@
                     <slot :name="slot" v-bind="{ ...args }" />
                 </template>
             </DatepickerMenu>
-        </teleport>
+        </template>
     </div>
 </template>
 
@@ -95,6 +95,7 @@
     const dpMenuRef = ref<DatepickerMenuRef | null>(null);
     const inputRef = ref(null);
     const isInputFocused = ref(false);
+    const pickerWrapperRef = ref<HTMLElement | null>(null);
 
     const { setMenuFocused, setShiftKey } = useState();
     const { clearArrowNav } = useArrowNavigation();
@@ -103,7 +104,9 @@
     onMounted(() => {
         parseExternalModelValue(props.modelValue);
         if (!props.inline) {
-            window.addEventListener('scroll', onScroll);
+            const el = getScrollableParent(pickerWrapperRef.value);
+            el.addEventListener('scroll', onScroll);
+
             window.addEventListener('resize', onResize);
         }
 
@@ -114,7 +117,10 @@
 
     onUnmounted(() => {
         if (!props.inline) {
-            window.removeEventListener('scroll', onScroll);
+            const el = getScrollableParent(pickerWrapperRef.value);
+            if (el) {
+                el.removeEventListener('scroll', onScroll);
+            }
             window.removeEventListener('resize', onResize);
         }
     });
@@ -130,7 +136,7 @@
         { deep: true },
     );
 
-    const { openOnTop, menuPosition, setMenuPosition, setInitialPosition } = usePosition(
+    const { openOnTop, menuPosition, setMenuPosition, setInitialPosition, getScrollableParent } = usePosition(
         dpMenuRef,
         inputRef,
         emit,

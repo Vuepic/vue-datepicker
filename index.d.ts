@@ -167,7 +167,7 @@ export interface VueDatePicker {
     noHoursOverlay?: boolean;
     noMinutesOverlay?: boolean;
     noSecondsOverlay?: boolean;
-    altPosition?: boolean | ((el: HTMLElement | undefined) => { top: string; left: string; transform: string });
+    altPosition?: (el: HTMLElement | undefined) => { top: number; left: number; transform: string };
     disabledWeekDays?: number[] | string[];
     allowedDates?: string[] | Date[];
     showNowButton?: boolean;
