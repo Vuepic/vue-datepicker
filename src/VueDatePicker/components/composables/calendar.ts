@@ -10,6 +10,7 @@ import {
     getMinutes,
     getMonth,
     getSeconds,
+    getWeek,
     getYear,
     isAfter,
     isBefore,
@@ -30,6 +31,7 @@ import type {
     InternalModuleValue,
     TimeType,
     VueEmit,
+    WeekStartNum,
 } from '@/interfaces';
 import type { UnwrapRef, Ref } from 'vue';
 
@@ -508,10 +510,11 @@ export const useCalendar = (
 
     // Get week number if enabled
     const getWeekNum = (days: UnwrapRef<ICalendarDay[]>): string | number => {
-        const firstCurrentData = days.find((day) => day.current);
-        if (firstCurrentData) {
-            return getISOWeek(firstCurrentData.value);
-        }
+        const firstCurrentDate = days[0];
+        if (props.weekNumbers === 'local')
+            return getWeek(firstCurrentDate.value, { weekStartsOn: +props.weekStart as WeekStartNum });
+        if (props.weekNumbers === 'iso') return getISOWeek(firstCurrentDate.value);
+        if (typeof props.weekNumbers === 'function') return props.weekNumbers(firstCurrentDate.value);
         return '';
     };
 

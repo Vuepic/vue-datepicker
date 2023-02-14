@@ -93,7 +93,10 @@ export const AllProps = {
     locale: { type: String as PropType<string>, default: 'en-Us' },
     weekNumName: { type: String as PropType<string>, default: 'W' },
     weekStart: { type: [Number, String] as PropType<WeekStartNum | WeekStartStr>, default: 1 },
-    weekNumbers: { type: Boolean as PropType<boolean>, default: false },
+    weekNumbers: {
+        type: [String, Function] as PropType<'iso' | 'local' | ((date: Date) => string | number)>,
+        default: null,
+    },
     calendarClassName: { type: String as PropType<string>, default: null },
     noSwipe: { type: Boolean as PropType<boolean>, default: false },
     monthChangeOnScroll: { type: [Boolean, String] as PropType<boolean | 'inverse'>, default: true },

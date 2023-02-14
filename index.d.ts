@@ -52,7 +52,7 @@ export interface VueDatePicker {
     position?: 'left' | 'center' | 'right';
     dark?: boolean;
     placeholder?: string;
-    weekNumbers?: boolean;
+    weekNumbers?: 'iso' | 'local' | ((date: Date) => string | number);
     hoursIncrement?: number | string;
     hoursGridIncrement?: number | string;
     secondsGridIncrement?: number | string;
