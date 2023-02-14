@@ -87,7 +87,7 @@ export const usePosition = (menuRef: ComponentRef, inputRef: ComponentRef, emit:
 
     const customAltPosition = () => {
         const el = unrefElement(inputRef);
-        const { top, left, transform } = (props.altPosition as CustomAltPosition)(el);
+        const { top, left, transform } = props.altPosition(el);
         menuPosition.value = { top: `${top}px`, left: `${left}px`, transform };
     };
 
