@@ -3,7 +3,7 @@ import { ref, toRef, watch } from 'vue';
 import { OpenPosition } from '@/interfaces';
 import { unrefElement } from '@/utils/util';
 
-import type { ComponentRef, VueEmit, CustomAltPosition } from '@/interfaces';
+import type { ComponentRef, VueEmit } from '@/interfaces';
 import type { AllPropsType } from '@/utils/props';
 
 /**
