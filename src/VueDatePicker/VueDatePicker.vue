@@ -172,7 +172,7 @@
         if (isOpen.value) {
             if (props.closeOnScroll) {
                 closeMenu();
-            } else if (props.autoPosition) {
+            } else {
                 setMenuPosition();
             }
         }
