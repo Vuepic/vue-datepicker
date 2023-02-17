@@ -23,16 +23,8 @@ export const usePosition = (menuRef: ComponentRef, inputRef: ComponentRef, emit:
     });
 
     // Get correct offset of an element
-    const getOffset = (el: HTMLElement): { top: number; left: number } => {
-        const rect = el.getBoundingClientRect();
-        let x = 0;
-        let y = 0;
-        while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
-            x += el.offsetLeft - el.scrollLeft;
-            y = rect.top + el.scrollTop;
-            el = el.offsetParent as HTMLElement;
-        }
-        return { top: y, left: x };
+    const getOffset = (): { top: number; left: number } => {
+        return { top: 0, left: 0 };
     };
 
     const setPositionRight = (left: number, width: number): void => {
@@ -62,7 +54,7 @@ export const usePosition = (menuRef: ComponentRef, inputRef: ComponentRef, emit:
 
     const getInputPositions = (inputEl: HTMLElement) => {
         const { width, height } = inputEl.getBoundingClientRect();
-        const { top, left } = props.altPosition ? props.altPosition(inputEl) : getOffset(inputEl);
+        const { top, left } = props.altPosition ? props.altPosition(inputEl) : getOffset();
         return { top: +top, left: +left, width, height };
     };
 
