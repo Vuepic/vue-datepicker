@@ -63,7 +63,7 @@ export const usePosition = (menuRef: ComponentRef, inputRef: ComponentRef, emit:
     const getInputPositions = (inputEl: HTMLElement) => {
         const { width, height } = inputEl.getBoundingClientRect();
         const { top, left } = props.altPosition ? props.altPosition(inputEl) : getOffset(inputEl);
-        return { top, left, width, height };
+        return { top: +top, left: +left, width, height };
     };
 
     // On initial component map, set menu starting position to the middle of the input
@@ -88,7 +88,7 @@ export const usePosition = (menuRef: ComponentRef, inputRef: ComponentRef, emit:
     const customAltPosition = () => {
         const el = unrefElement(inputRef);
         const { top, left, transform } = props.altPosition(el);
-        menuPosition.value = { top: `${top}px`, left: `${left}px`, transform };
+        menuPosition.value = { top: `${top}px`, left: `${left}px`, transform: transform || '' };
     };
 
     /**
