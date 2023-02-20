@@ -237,6 +237,7 @@
     const disabledInGrid = computed(() => (type: TimeType) => {
         const times = getGridItems(type)
             .flat()
+            .filter((item) => item)
             .map((item) => item.value);
 
         return times.filter((item) => checkMinMax(item, type));
