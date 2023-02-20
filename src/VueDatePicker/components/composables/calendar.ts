@@ -343,10 +343,10 @@ export const useCalendar = (
     };
 
     // If min or max range is set, validate given range
-    const checkMinMaxRange = (secondDate: Date): boolean => {
-        if (Array.isArray(modelValue.value) && modelValue.value[0]) {
-            const absoluteDiff = differenceInCalendarDays(secondDate, modelValue.value[0]);
-            const daysInBetween = getDaysInBetween(modelValue.value[0], secondDate);
+    const checkMinMaxRange = (secondDate: Date, index = 0): boolean => {
+        if (Array.isArray(modelValue.value) && modelValue.value[index]) {
+            const absoluteDiff = differenceInCalendarDays(secondDate, modelValue.value[index]);
+            const daysInBetween = getDaysInBetween(modelValue.value[index], secondDate);
             const disabledDates =
                 daysInBetween.length === 1 ? 0 : daysInBetween.filter((date) => isDisabled(date)).length;
             const diff = Math.abs(absoluteDiff) - disabledDates;
@@ -432,7 +432,7 @@ export const useCalendar = (
 
     // Handle range with fixed start/end
     const setFixedDateRange = (day: ICalendarDay) => {
-        if (includesDisabled(day.value)) return;
+        if (includesDisabled(day.value) || !checkMinMaxRange(day.value, props.fixedStart ? 0 : 1)) return;
         tempRange.value = getRangeWithFixedDate(getDate(day.value));
     };
 
