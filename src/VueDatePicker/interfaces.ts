@@ -126,6 +126,7 @@ export type MenuChildCmp = 'timePicker' | 'monthYearInput' | 'calendar';
 export interface MonthYearPickerRef {
     toggleMonthPicker: (auto: boolean) => void;
     toggleYearPicker: (auto: boolean) => void;
+    handleMonthYearChange: (isNext: boolean) => void;
 }
 
 export interface AriaLabels {

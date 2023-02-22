@@ -424,5 +424,6 @@
     defineExpose({
         toggleMonthPicker,
         toggleYearPicker,
+        handleMonthYearChange,
     });
 </script>

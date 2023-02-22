@@ -24,7 +24,7 @@
                 }"
             >
                 <div class="dp__sidebar_left" v-if="$slots['left-sidebar']">
-                    <slot name="left-sidebar" />
+                    <slot name="left-sidebar" v-bind="{ handleMonthYearChange }" />
                 </div>
                 <div class="dp__preset_ranges" v-if="presetRanges?.length">
                     <div
@@ -132,7 +132,7 @@
                     </div>
                 </div>
                 <div class="dp__sidebar_right" v-if="$slots['right-sidebar']">
-                    <slot name="right-sidebar" />
+                    <slot name="right-sidebar" v-bind="{ handleMonthYearChange }" />
                 </div>
                 <div class="dp__now_wrap" v-if="showNowButton">
                     <slot name="now-button" v-if="$slots['now-button']" :select-current-date="selectCurrentDate" />
@@ -485,6 +485,12 @@
                 ev.stopImmediatePropagation();
                 emit('close-picker');
             }
+        }
+    };
+
+    const handleMonthYearChange = (isNext: boolean) => {
+        if (monthYearPickerRefs.value[0]) {
+            monthYearPickerRefs.value[0].handleMonthYearChange(isNext);
         }
     };
 
