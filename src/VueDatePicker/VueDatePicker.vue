@@ -19,7 +19,7 @@
                 <slot :name="slot" v-bind="args" />
             </template>
         </DatepickerInput>
-        <template v-if="isOpen">
+        <component v-if="isOpen" :is="teleport ? TeleportCmp : 'div'" v-bind="menuWrapProps">
             <DatepickerMenu
                 v-if="isOpen"
                 ref="dpMenuRef"
@@ -44,12 +44,22 @@
                     <slot :name="slot" v-bind="{ ...args }" />
                 </template>
             </DatepickerMenu>
-        </template>
+        </component>
     </div>
 </template>
 
 <script lang="ts" setup>
-    import { computed, nextTick, onMounted, onUnmounted, ref, toRef, useSlots, watch } from 'vue';
+    import {
+        computed,
+        nextTick,
+        onMounted,
+        onUnmounted,
+        ref,
+        toRef,
+        useSlots,
+        watch,
+        Teleport as TeleportCmp,
+    } from 'vue';
 
     import DatepickerInput from '@/components/DatepickerInput.vue';
     import DatepickerMenu from '@/components/DatepickerMenu.vue';
@@ -163,6 +173,15 @@
     );
 
     const theme = computed(() => (props.dark ? 'dp__theme_dark' : 'dp__theme_light'));
+    const menuWrapProps = computed(() => {
+        if (props.teleport) {
+            return {
+                to: typeof props.teleport === 'boolean' ? 'body' : props.teleport,
+                disabled: props.inline,
+            };
+        }
+        return { class: 'dp__outer_menu_wrap' };
+    });
 
     /**
      * Event listener for 'scroll'

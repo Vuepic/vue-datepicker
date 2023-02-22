@@ -229,6 +229,7 @@ export interface VueDatePicker {
     highlightDisabledDays?: boolean;
     offset?: string | number;
     teleportCenter?: boolean;
+    teleport?: boolean | string;
     ignoreTimeValidation?: boolean;
     dayClass?: (date: Date) => string;
     hideNavigation?: ('month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds')[];
