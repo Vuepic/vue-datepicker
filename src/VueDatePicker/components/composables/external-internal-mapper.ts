@@ -249,6 +249,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
     };
 
     const toModelType = (val: Date): string | number | Date => {
+        if (!val) return '';
         if (props.utc) {
             return dateToUtc(val, props.utc === 'preserve');
         }

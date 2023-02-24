@@ -232,7 +232,12 @@
         }
     };
 
+    const setParsedDate = (date: Date) => {
+        parsedDate.value = date;
+    };
+
     defineExpose({
         focusInput,
+        setParsedDate,
     });
 </script>

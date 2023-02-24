@@ -191,3 +191,8 @@ export interface MonthYearOpt {
 export type DatepickerMenuRef = ComponentPublicInstance<{
     updateMonthYear: (ins: number, val: { month: number | null; year: number | null }) => void;
 }>;
+
+export type DatepickerInputRef = ComponentPublicInstance<{
+    setParsedDate: (date: Date | Date[]) => void;
+    focusInput: () => void;
+}>;

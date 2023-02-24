@@ -3,6 +3,7 @@
         <DatepickerInput
             ref="inputRef"
             :is-menu-open="isOpen"
+            :internal-model-value="internalModelValue"
             v-model:input-value="inputValue"
             v-bind="$props"
             @clear="clearValue"
@@ -76,7 +77,7 @@
     import { AllProps } from '@/utils/props';
     import { getNumVal } from '@/utils/util';
 
-    import type { DynamicClass, MonthYearOpt, DatepickerMenuRef } from '@/interfaces';
+    import type { DynamicClass, MonthYearOpt, DatepickerMenuRef, DatepickerInputRef } from '@/interfaces';
 
     const emit = defineEmits([
         'update:model-value',
@@ -103,7 +104,7 @@
     const modelValueRef = toRef(props, 'modelValue');
     const timezoneRef = toRef(props, 'timezone');
     const dpMenuRef = ref<DatepickerMenuRef | null>(null);
-    const inputRef = ref(null);
+    const inputRef = ref<DatepickerInputRef | null>(null);
     const isInputFocused = ref(false);
     const pickerWrapperRef = ref<HTMLElement | null>(null);
 
@@ -264,6 +265,9 @@
     };
 
     const emitOnAutoApply = (ignoreClose: boolean): void => {
+        if (inputRef.value && props.textInput) {
+            inputRef.value.setParsedDate(internalModelValue.value);
+        }
         emitModelValue();
         if (props.closeOnAutoApply && !ignoreClose) {
             closeMenu();
