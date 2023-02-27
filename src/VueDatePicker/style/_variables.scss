@@ -1,7 +1,7 @@
 // General
 $dp__font_family: -apple-system, blinkmacsystemfont, "Segoe UI", roboto, oxygen, ubuntu, cantarell, "Open Sans",
   "Helvetica Neue", sans-serif !default; // Font size for the menu
-$dp__border_radius: 4px !default; // Border radius everywhere
+$dp__border_radius: var(--dp-border-radius, 4px) !default; // Configurable border-radius
 $dp__cell_border_radius: $dp__border_radius !default; // Specific border radius for the calendar cell
 
 // Transitions
