@@ -69,6 +69,7 @@ export const AllProps = {
     monthChangeOnArrows: { type: Boolean as PropType<boolean>, default: true },
     presetRanges: { type: Array as PropType<PresetRange[]>, default: () => [] },
     flow: { type: Array as PropType<Flow[]>, default: () => [] },
+    partialFlow: { type: Boolean as PropType<boolean>, default: false },
     preventMinMaxNavigation: { type: Boolean as PropType<boolean>, default: false },
     minRange: { type: [Number, String] as PropType<number | string>, default: null },
     maxRange: { type: [Number, String] as PropType<number | string>, default: null },

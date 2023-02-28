@@ -188,6 +188,7 @@ export interface VueDatePicker {
     multiDates?: boolean;
     presetRanges?: { label: string; range: Date[] | string[]; style?: Record<string, string>; slot?: string }[];
     flow?: ('month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds')[];
+    partialFlow?: boolean;
     preventMinMaxNavigation?: boolean;
     minRange?: number | string;
     maxRange?: number | string;

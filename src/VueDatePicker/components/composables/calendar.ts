@@ -98,7 +98,7 @@ export const useCalendar = (
     );
 
     const isFlowLastStep = computed(() => {
-        if (props.flow && props.flow.length) {
+        if (props.flow && props.flow.length && !props.partialFlow) {
             return flowStep.value === props.flow.length;
         }
         return true;
@@ -377,7 +377,7 @@ export const useCalendar = (
 
     const autoApply = (): void => {
         if (props.autoApply && isFlowLastStep.value) {
-            emit('auto-apply');
+            emit('auto-apply', props.partialFlow);
         }
     };
 
