@@ -37,6 +37,7 @@
                 @blur="handleBlur"
                 @focus="handleFocus"
                 @keypress="handleKeyPress"
+                @keydown="handleKeyDown"
             />
             <span class="dp__input_icon" v-if="$slots['input-icon'] && !hideInputIcon"><slot name="input-icon" /></span>
             <CalendarIcon
@@ -234,6 +235,12 @@
 
     const setParsedDate = (date: Date) => {
         parsedDate.value = date;
+    };
+
+    const handleKeyDown = (ev: KeyboardEvent) => {
+        if (!props.textInput) {
+            ev.preventDefault();
+        }
     };
 
     defineExpose({
