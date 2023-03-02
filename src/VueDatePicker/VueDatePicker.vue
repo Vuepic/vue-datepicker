@@ -40,6 +40,7 @@
                 @recalculate-position="setMenuPosition"
                 @tooltip-open="$emit('tooltip-open', $event)"
                 @tooltip-close="$emit('tooltip-close', $event)"
+                @time-picker-open="$emit('time-picker-open', $event)"
             >
                 <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
                     <slot :name="slot" v-bind="{ ...args }" />
@@ -95,6 +96,7 @@
         'invalid-fixed-range',
         'tooltip-open',
         'tooltip-close',
+        'time-picker-open',
     ]);
     const props = defineProps({
         ...AllProps,

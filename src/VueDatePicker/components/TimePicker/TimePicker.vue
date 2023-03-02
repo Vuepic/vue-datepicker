@@ -97,6 +97,7 @@
         'update:seconds',
         'mount',
         'reset-flow',
+        'overlay-opened',
         'overlay-closed',
     ]);
 
@@ -159,6 +160,10 @@
             emit('reset-flow');
         }
         showTimePicker.value = show;
+
+        if (show) {
+            emit('overlay-opened');
+        }
 
         if (props.arrowNavigation) {
             setTimePicker(show);

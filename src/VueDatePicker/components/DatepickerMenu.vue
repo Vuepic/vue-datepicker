@@ -123,6 +123,7 @@
                                 @update:seconds="updateTime($event, false, true)"
                                 @reset-flow="resetFlow"
                                 @overlay-closed="focusMenu"
+                                @overlay-opened="$emit('time-picker-open', $event)"
                             >
                                 <template v-for="(slot, i) in timePickerSlots" #[slot]="args" :key="i">
                                     <slot :name="slot" v-bind="args" />
@@ -205,6 +206,7 @@
         'invalid-fixed-range',
         'tooltip-open',
         'tooltip-close',
+        'time-picker-open',
     ]);
     const props = defineProps({
         openOnTop: { type: Boolean as PropType<boolean>, default: false },
