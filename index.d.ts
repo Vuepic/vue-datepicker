@@ -17,7 +17,8 @@ export type EmitEvents =
     | 'invalid-select'
     | 'tooltip-open'
     | 'tooltip-close'
-    | 'invalid-fixed-range';
+    | 'invalid-fixed-range'
+    | 'time-picker-open';
 
 export interface VueDatePicker {
     uid?: string;
