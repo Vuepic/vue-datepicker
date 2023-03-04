@@ -3,7 +3,6 @@
         <DatepickerInput
             ref="inputRef"
             :is-menu-open="isOpen"
-            :internal-model-value="internalModelValue"
             v-model:input-value="inputValue"
             v-bind="$props"
             @clear="clearValue"
