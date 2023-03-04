@@ -68,9 +68,7 @@ export const useCalendar = (
     });
     const tempRange = ref<Date[]>([]);
     watch(modelValue, () => {
-        if (!props.multiCalendars) {
-            mapInternalModuleValues();
-        }
+        mapInternalModuleValues();
     });
 
     // Calendar data per instance
