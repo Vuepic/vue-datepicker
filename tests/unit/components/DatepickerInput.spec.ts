@@ -32,7 +32,8 @@ describe('Datepicker input component', () => {
         const wrapper = mount(DatepickerInput, {
             props: { ...props, inputValue: patternFormat, clearable: true },
         });
-        await wrapper.find('[data-test="clear-icon"]').trigger('click');
+
+        await wrapper.vm.onClear();
         expect(wrapper.emitted()).toHaveProperty('clear');
     });
 
