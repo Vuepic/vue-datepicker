@@ -266,12 +266,16 @@
     };
 
     const emitOnAutoApply = (ignoreClose: boolean): void => {
-        if (inputRef.value && props.textInput) {
-            inputRef.value.setParsedDate(internalModelValue.value);
-        }
+        updateTextInputWithDateTimeValue();
         emitModelValue();
         if (props.closeOnAutoApply && !ignoreClose) {
             closeMenu();
+        }
+    };
+
+    const updateTextInputWithDateTimeValue = () => {
+        if (inputRef.value && props.textInput) {
+            inputRef.value.setParsedDate(internalModelValue.value);
         }
     };
 
@@ -345,6 +349,7 @@
         if (props.autoApply && isValidTime(internalModelValue.value)) {
             emitModelValue();
         }
+        updateTextInputWithDateTimeValue();
     };
 
     const toggleMenu = (): void => {
