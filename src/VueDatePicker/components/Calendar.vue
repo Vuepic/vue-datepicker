@@ -76,6 +76,7 @@
                                     <div
                                         class="dp__marker_tooltip"
                                         v-if="dateMatch(dayVal.value)"
+                                        ref="activeTooltip"
                                         :style="markerTooltipStyle"
                                     >
                                         <div class="dp__tooltip_content" @click.stop v-if="dayVal.marker?.tooltip">
@@ -98,7 +99,7 @@
                                                     <div>{{ tooltip.text }}</div>
                                                 </template>
                                             </div>
-                                            <div class="dp__arrow_bottom_tp"></div>
+                                            <div class="dp__arrow_bottom_tp" :style="tpArrowStyle"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -150,12 +151,18 @@
     const { setDateMonthOrYear, defaults } = useUtils(props);
 
     const showMakerTooltip = ref<Date | null>(null);
-    const markerTooltipStyle = ref({ bottom: '', left: '', transform: '' });
+    const markerTooltipStyle = ref<{ bottom: string; left?: string; right?: string; transform: string }>({
+        bottom: '',
+        left: '',
+        transform: '',
+    });
     const dayRefs = ref<HTMLElement[][]>([]);
     const calendarWrapRef = ref<HTMLElement | null>(null);
     const showCalendar = ref(true);
     const transitionName = ref('');
     const touch = ref({ startX: 0, endX: 0, startY: 0, endY: 0 });
+    const activeTooltip = ref<HTMLElement[]>([]);
+    const tpArrowStyle = ref<{ left?: string; right?: string }>({ left: '50%' });
 
     const weekDays = computed(() => {
         if (props.dayNames) {
@@ -223,19 +230,38 @@
 
     const contentWrapStyle = computed(() => (props.specificMode ? { height: `${props.modeHeight}px` } : undefined));
 
-    const onMouseOver = (day: UnwrapRef<ICalendarDay>, weekInd: number, dayInd: number): void => {
+    const onMouseOver = async (day: UnwrapRef<ICalendarDay>, weekInd: number, dayInd: number): Promise<void> => {
         emit('set-hover-date', day);
         if (day.marker?.tooltip?.length) {
             const el = unrefElement(dayRefs.value[weekInd][dayInd]);
             if (el) {
                 const { width, height } = el.getBoundingClientRect();
+                showMakerTooltip.value = day.value;
+                let defaultPosition: { left?: string; right?: string } = { left: `${width / 2}px` };
+                let transform = -50;
+                await nextTick();
+
+                if (activeTooltip.value[0]) {
+                    const { left, width: tpWidth } = activeTooltip.value[0].getBoundingClientRect();
+                    if (left < 0) {
+                        defaultPosition = { left: `0` };
+                        transform = 0;
+                        tpArrowStyle.value.left = `${width / 2}px`;
+                    }
+
+                    if (window.innerWidth < left + tpWidth) {
+                        defaultPosition = { right: `0` };
+                        transform = 0;
+                        tpArrowStyle.value.left = `${tpWidth - width / 2}px`;
+                    }
+                }
 
                 markerTooltipStyle.value = {
                     bottom: `${height}px`,
-                    left: `${width / 2}px`,
-                    transform: `translateX(-50%)`,
+                    ...defaultPosition,
+                    transform: `translateX(${transform}%)`,
                 };
-                showMakerTooltip.value = day.value;
+
                 emit('tooltip-open', day.marker);
             }
         }
@@ -244,6 +270,7 @@
     const onMouseLeave = (day: UnwrapRef<ICalendarDay>): void => {
         if (showMakerTooltip.value) {
             showMakerTooltip.value = null;
+            markerTooltipStyle.value = JSON.parse(JSON.stringify({ bottom: '', left: '', transform: '' }));
             emit('tooltip-close', day.marker);
         }
     };
