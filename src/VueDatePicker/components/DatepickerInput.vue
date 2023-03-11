@@ -91,7 +91,7 @@
         ...AllProps,
     });
 
-    const { getDefaultPattern, isValidDate, defaults } = useUtils(props);
+    const { getDefaultPattern, isValidDate, defaults, getDefaultStartTime, assignDefaultTime } = useUtils(props);
 
     const parsedDate = ref();
     const inputRef = ref<HTMLElement | null>(null);
@@ -121,7 +121,12 @@
     };
 
     const parser = (value: string): Date | null => {
-        return parseFreeInput(value, defaults.value.textInputOptions?.format || getDefaultPattern());
+        const defaultTime = getDefaultStartTime();
+        return parseFreeInput(
+            value,
+            defaults.value.textInputOptions?.format || getDefaultPattern(),
+            defaultTime || assignDefaultTime({}),
+        );
     };
 
     const handleRangeTextInput = (value: string) => {

@@ -1,11 +1,20 @@
 import { describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { addDays, format, set } from 'date-fns';
+import { addDays, format, getHours, getMinutes, set } from 'date-fns';
 
 import DatepickerInput from '@/components/DatepickerInput.vue';
 import DatePicker from '@/VueDatePicker.vue';
 
 import { getDefaultTextInputOptions } from '@/utils/defaults';
+
+const getCurrentTime = () => {
+    return {
+        hours: getHours(new Date()),
+        minutes: getMinutes(new Date()),
+        seconds: 0,
+        milliseconds: 0,
+    };
+};
 
 const resetSeconds = (date: Date) => set(date, { seconds: 0, milliseconds: 0 });
 describe('Datepicker input component', () => {
@@ -43,9 +52,7 @@ describe('Datepicker input component', () => {
         await el.setValue(patternFormat);
         await el.trigger('keydown.enter');
 
-        expect(wrapper.emitted()['set-input-date'][0]).toEqual([
-            set(new Date(), { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 }),
-        ]);
+        expect(wrapper.emitted()['set-input-date'][0]).toEqual([set(new Date(), getCurrentTime())]);
     });
 
     it('Should select range on text-input', async () => {
@@ -63,8 +70,8 @@ describe('Datepicker input component', () => {
         await el.trigger('keydown.enter');
 
         expect((wrapper.emitted()['set-input-date'][0] as Array<any>)[0]).toEqual([
-            set(new Date(), { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 }),
-            set(new Date(), { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 }),
+            set(new Date(), getCurrentTime()),
+            set(new Date(), getCurrentTime()),
         ]);
     });
 
@@ -87,9 +94,7 @@ describe('Datepicker input component', () => {
 
         await wrapper.find('input').trigger('keydown.tab');
 
-        expect(wrapper.emitted()['set-input-date'][0]).toEqual([
-            set(new Date(), { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 }),
-        ]);
+        expect(wrapper.emitted()['set-input-date'][0]).toEqual([set(new Date(), getCurrentTime())]);
     });
 
     it('Should clear date with tab key', async () => {

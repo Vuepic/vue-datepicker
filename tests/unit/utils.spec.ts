@@ -27,6 +27,14 @@ import type { AllPropsType } from '@/utils/props';
 import addDays from 'date-fns/addDays';
 import { defaultMultiCalendars, defaultTransitions } from '@/utils/defaults';
 
+const getCurrentTime = () => {
+    return {
+        hours: getHours(new Date()),
+        minutes: getMinutes(0),
+        seconds: 0,
+    };
+};
+
 describe('Utils and date utils formatting', () => {
     it('Should get calendar days', () => {
         const { getCalendarDays } = useUtils({ weekStart: 1, hideOffsetDates: false } as AllPropsType);
@@ -96,7 +104,7 @@ describe('Utils and date utils formatting', () => {
     });
 
     it('Should parse free input', () => {
-        const date = parseFreeInput('01/01/2021', 'MM/dd/yyyy, HH:mm');
+        const date = parseFreeInput('01/01/2021', 'MM/dd/yyyy, HH:mm', getCurrentTime());
 
         expect(date).toBeDefined();
         expect(date?.getMonth()).toEqual(0);
@@ -120,13 +128,13 @@ describe('Utils and date utils formatting', () => {
     });
 
     it('Should parse text input to date with pattern text', () => {
-        const parsed = parseFreeInput('2', 'MM/dd/yyyy');
+        const parsed = parseFreeInput('2', 'MM/dd/yyyy', getCurrentTime());
         expect(getMonth(parsed as Date)).toEqual(1);
     });
 
     it('Should parse text input with pattern function', () => {
         const parser = (value: string) => setMonth(new Date(), +value);
-        const parsed = parseFreeInput('2', parser);
+        const parsed = parseFreeInput('2', parser, getCurrentTime());
 
         expect(getMonth(parsed as Date)).toEqual(2);
     });
@@ -161,12 +169,12 @@ describe('Utils and date utils formatting', () => {
     });
 
     it('Should parse text input date from the pattern array', () => {
-        const parsed = parseFreeInput('2', ['MM/dd/yyyy', 'MM/dd/yyyy']);
+        const parsed = parseFreeInput('2', ['MM/dd/yyyy', 'MM/dd/yyyy'], getCurrentTime());
         expect(getMonth(parsed as Date)).toEqual(1);
     });
 
     it('Should return null on invalid text input', () => {
-        const parsed = parseFreeInput('random', ['MM/dd/yyyy', 'MM/dd/yyyy']);
+        const parsed = parseFreeInput('random', ['MM/dd/yyyy', 'MM/dd/yyyy'], getCurrentTime());
         expect(parsed).toBeNull();
     });
 

@@ -9,13 +9,19 @@ import {
     isBefore,
     isEqual,
     isAfter,
+    set,
 } from 'date-fns';
-import type { DateTimeSetter, DateValue } from '@/interfaces';
+import type { DateTimeSetter, DateValue, TimeModel } from '@/interfaces';
 
-const parseTextToDate = (value: string, pattern: string): Date | null => {
+const parseTextToDate = (value: string, pattern: string, time: TimeModel): Date | null => {
     const parsedDate = parse(value, pattern.slice(0, value.length), new Date());
     if (isValid(parsedDate) && isDate(parsedDate)) {
-        return parsedDate;
+        return set(parsedDate, {
+            hours: +time.hours,
+            minutes: +time?.minutes,
+            seconds: +time?.seconds,
+            milliseconds: 0,
+        });
     }
     return null;
 };
@@ -23,15 +29,17 @@ const parseTextToDate = (value: string, pattern: string): Date | null => {
 export const parseFreeInput = (
     value: string,
     pattern: string | string[] | ((value: string) => Date | null),
+    time: TimeModel | TimeModel[],
 ): Date | null => {
+    const defaultTime = Array.isArray(time) ? time[0] : time;
     if (typeof pattern === 'string') {
-        return parseTextToDate(value, pattern);
+        return parseTextToDate(value, pattern, defaultTime);
     }
 
     if (Array.isArray(pattern)) {
         let parsedDate = null;
         for (const textVal of pattern) {
-            parsedDate = parseTextToDate(value, textVal);
+            parsedDate = parseTextToDate(value, textVal, defaultTime);
             if (parsedDate) {
                 break;
             }

@@ -142,11 +142,11 @@ export const useUtils = (props: AllPropsType) => {
         );
     };
 
-    const assignDefaultTime = (obj: TimeModel): TimeModel => {
+    const assignDefaultTime = (obj: TimeModel | Record<string, string | number>): TimeModel => {
         const defaultTime = {
             hours: getHours(getDate()),
             minutes: getMinutes(getDate()),
-            seconds: getSeconds(getDate()),
+            seconds: props.enableSeconds ? getSeconds(getDate()) : 0,
         };
         return Object.assign(defaultTime, obj);
     };
@@ -407,6 +407,7 @@ export const useUtils = (props: AllPropsType) => {
         validateMonthYearInRange,
         validateMaxDate,
         validateMinDate,
+        assignDefaultTime,
         defaults,
         hideNavigationButtons,
     };
