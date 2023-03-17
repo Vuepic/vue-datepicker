@@ -217,12 +217,17 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
 
     // Common classes to be checked for any mode
     const sharedClasses = (day: ICalendarDay): Record<string, boolean> => {
+        const { isRangeStart, isRangeEnd } = rangeStartEnd(day);
+        const isRangeStartEnd = props.range ? isRangeStart || isRangeEnd : false;
         return {
             dp__cell_offset: !day.current,
             dp__pointer: !props.disabled && !(!day.current && props.hideOffsetDates) && !isDisabled(day.value),
             dp__cell_disabled: isDisabled(day.value),
             dp__cell_highlight:
-                !disableHighlight(day) && (highlighted(day) || highlightedWeekDay(day)) && !isActive(day),
+                !disableHighlight(day) &&
+                (highlighted(day) || highlightedWeekDay(day)) &&
+                !isActive(day) &&
+                !isRangeStartEnd,
             dp__cell_highlight_active:
                 !disableHighlight(day) && (highlighted(day) || highlightedWeekDay(day)) && isActive(day),
             dp__today: !props.noToday && isDateEqual(day.value, today.value) && day.current,
@@ -246,17 +251,25 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
         };
     };
 
+    const rangeStartEnd = (day: ICalendarDay) => {
+        const isRangeStart =
+            props.multiCalendars > 0
+                ? day.current && rangeActiveStartEnd(day) && isModelAutoActive()
+                : rangeActiveStartEnd(day) && isModelAutoActive();
+
+        const isRangeEnd =
+            props.multiCalendars > 0
+                ? day.current && rangeActiveStartEnd(day, false) && isModelAutoActive()
+                : rangeActiveStartEnd(day, false) && isModelAutoActive();
+        return { isRangeStart, isRangeEnd };
+    };
+
     // Get set of classes for the range
     const rangeDateClasses = (day: ICalendarDay): Record<string, boolean> => {
+        const { isRangeStart, isRangeEnd } = rangeStartEnd(day);
         return {
-            dp__range_start:
-                props.multiCalendars > 0
-                    ? day.current && rangeActiveStartEnd(day) && isModelAutoActive()
-                    : rangeActiveStartEnd(day) && isModelAutoActive(),
-            dp__range_end:
-                props.multiCalendars > 0
-                    ? day.current && rangeActiveStartEnd(day, false) && isModelAutoActive()
-                    : rangeActiveStartEnd(day, false) && isModelAutoActive(),
+            dp__range_start: isRangeStart,
+            dp__range_end: isRangeEnd,
             dp__range_between: isBetween(day) && !props.weekPicker,
             dp__date_hover_start: isHoverDateStartEnd(dateHover(day), day, true),
             dp__date_hover_end: isHoverDateStartEnd(dateHover(day), day, false),
