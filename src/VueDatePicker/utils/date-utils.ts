@@ -13,9 +13,10 @@ import {
 } from 'date-fns';
 import type { DateTimeSetter, DateValue, TimeModel } from '@/interfaces';
 
-const parseTextToDate = (value: string, pattern: string, time: TimeModel): Date | null => {
+const parseTextToDate = (value: string, pattern: string, time: TimeModel, inputVal: string): Date | null => {
     const parsedDate = parse(value, pattern.slice(0, value.length), new Date());
     if (isValid(parsedDate) && isDate(parsedDate)) {
+        if (inputVal) return parsedDate;
         return set(parsedDate, {
             hours: +time.hours,
             minutes: +time?.minutes,
@@ -30,16 +31,17 @@ export const parseFreeInput = (
     value: string,
     pattern: string | string[] | ((value: string) => Date | null),
     time: TimeModel | TimeModel[],
+    inputVal: string,
 ): Date | null => {
     const defaultTime = Array.isArray(time) ? time[0] : time;
     if (typeof pattern === 'string') {
-        return parseTextToDate(value, pattern, defaultTime);
+        return parseTextToDate(value, pattern, defaultTime, inputVal);
     }
 
     if (Array.isArray(pattern)) {
         let parsedDate = null;
         for (const textVal of pattern) {
-            parsedDate = parseTextToDate(value, textVal, defaultTime);
+            parsedDate = parseTextToDate(value, textVal, defaultTime, inputVal);
             if (parsedDate) {
                 break;
             }

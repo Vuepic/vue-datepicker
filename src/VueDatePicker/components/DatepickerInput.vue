@@ -126,6 +126,7 @@
             value,
             defaults.value.textInputOptions?.format || getDefaultPattern(),
             defaultTime || assignDefaultTime({}),
+            props.inputValue,
         );
     };
 
