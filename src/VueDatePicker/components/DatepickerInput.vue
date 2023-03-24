@@ -229,6 +229,7 @@
 
     const handleKeyPress = (ev: KeyboardEvent): void => {
         if (!props.textInput) {
+            if (ev.code === 'Tab') return;
             ev.preventDefault();
         }
     };

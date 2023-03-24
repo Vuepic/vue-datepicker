@@ -327,9 +327,6 @@
                 }
             }
             clearInternalValues();
-            if (inputRef.value) {
-                (inputRef.value as { focusInput: () => void }).focusInput();
-            }
         }
     };
 
@@ -364,6 +361,7 @@
     const shouldFormatInputValue = computed(() => props.textInput && defaults.value.textInputOptions.format);
 
     const handleInputFocus = () => {
+        console.log('are we here');
         if (shouldFormatInputValue.value) {
             isInputFocused.value = true;
             formatInputValue();
