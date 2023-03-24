@@ -56,7 +56,7 @@
     import { convertType, unrefElement } from '@/utils/util';
     import { useArrowNavigation, useUtils } from '@/components/composables';
     import { AllProps } from '@/utils/props';
-    import { getDate, isDateAfter, isDateBefore } from '@/utils/date-utils';
+    import { getDate, isDateAfter, isDateBefore, isDateEqual } from '@/utils/date-utils';
 
     import type { PropType } from 'vue';
     import type { InternalModuleValue } from '@/interfaces';
@@ -103,6 +103,10 @@
 
     const isMonthValid = computed((): boolean => {
         if (!props.monthPicker) return true;
+        if (props.range && Array.isArray(props.internalModelValue)) {
+            const invalid = props.internalModelValue.filter((value) => !isMonthWithinRange(value));
+            return !invalid.length;
+        }
         return isMonthWithinRange(props.internalModelValue as Date);
     });
 
@@ -154,10 +158,14 @@
             );
         }
         if (props.minDate) {
-            valid = isDateAfter(getDate(date), getDate(props.minDate));
+            valid =
+                isDateAfter(getDate(date), getDate(props.minDate)) ||
+                isDateEqual(getDate(date), getDate(props.minDate));
         }
         if (props.maxDate) {
-            valid = isDateBefore(getDate(date), getDate(props.maxDate));
+            valid =
+                isDateBefore(getDate(date), getDate(props.maxDate)) ||
+                isDateEqual(getDate(date), getDate(props.maxDate));
         }
 
         return valid;
