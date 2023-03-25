@@ -361,7 +361,6 @@
     const shouldFormatInputValue = computed(() => props.textInput && defaults.value.textInputOptions.format);
 
     const handleInputFocus = () => {
-        console.log('are we here');
         if (shouldFormatInputValue.value) {
             isInputFocused.value = true;
             formatInputValue();
