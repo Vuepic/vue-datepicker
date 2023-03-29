@@ -35,12 +35,12 @@ export const getDayNames = (locale: string, weekStart: number): string[] => {
 /**
  * Generate array of years for selection display
  */
-export const getYears = (yearRange: number[] | string[]): IDefaultSelect[] => {
+export const getYears = (yearRange: number[] | string[], reverse?: boolean): IDefaultSelect[] => {
     const years: IDefaultSelect[] = [];
     for (let year = +yearRange[0]; year <= +yearRange[1]; year++) {
         years.push({ value: +year, text: `${year}` });
     }
-    return years;
+    return reverse ? years.reverse() : years;
 };
 
 /**

@@ -338,20 +338,16 @@
             : [];
     });
 
-    // @SONAR_START@
-    const reverseList = (list: IDefaultSelect[]) => list.reverse();
-    // @SONAR_STOP@
-
-    const getGroupedList = (items: IDefaultSelect[], reverse = false): IDefaultSelect[][] => {
+    const getGroupedList = (items: IDefaultSelect[]): IDefaultSelect[][] => {
         const list = [];
         const setList = (listItems: IDefaultSelect[]) => {
-            return reverse ? reverseList(listItems) : listItems;
+            return listItems;
         };
         for (let i = 0; i < items.length; i += 3) {
             const listItems = [items[i], items[i + 1], items[i + 2]];
             list.push(setList(listItems));
         }
-        return reverse ? list.reverse() : list;
+        return list;
     };
 
     const getMonthDisplayVal = computed((): IDefaultSelect => {
@@ -365,7 +361,7 @@
     });
 
     const groupedYears = computed((): IDefaultSelect[][] => {
-        return getGroupedList(props.years, props.reverseYears);
+        return getGroupedList(props.years);
     });
 
     const showLeftIcon = computed(() => {

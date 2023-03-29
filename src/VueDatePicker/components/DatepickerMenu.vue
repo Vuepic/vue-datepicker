@@ -341,7 +341,7 @@
 
     // Generate array of years depending on provided range that will be available for picker
     const years = computed((): IDefaultSelect[] => {
-        return getYears(props.yearRange);
+        return getYears(props.yearRange, props.reverseYears);
     });
 
     // Get generated months
