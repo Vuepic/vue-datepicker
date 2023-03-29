@@ -201,7 +201,7 @@ export const usePosition = (menuRef: ComponentRef, inputRef: ComponentRef, emit:
     };
 
     const getScrollableParent = function (el: HTMLElement | null): Window | HTMLElement {
-        if (!el || el === document.body) return window;
+        if (!el || el === document.body || el.nodeType === Node.DOCUMENT_FRAGMENT_NODE) return window;
         if (isScrollable(el)) return el;
         return getScrollableParent(el.parentNode as HTMLElement);
     };
