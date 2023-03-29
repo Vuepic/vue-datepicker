@@ -1,4 +1,4 @@
-import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, reactive, ref, toRef, watch } from 'vue';
 import {
     add,
     addDays,
@@ -69,6 +69,10 @@ export const useCalendar = (
     const tempRange = ref<Date[]>([]);
     watch(modelValue, () => {
         mapInternalModuleValues();
+    });
+    const multiCalendars = toRef(props, 'multiCalendars');
+    watch(multiCalendars, () => {
+        autoChangeMultiCalendars(0);
     });
 
     // Calendar data per instance
