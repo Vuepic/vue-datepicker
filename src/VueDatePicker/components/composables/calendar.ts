@@ -223,7 +223,11 @@ export const useCalendar = (
 
     // On initial empty month picker assign value
     const assignMonthPicker = () => {
-        modelValue.value = setDateMonthOrYear(getDate(), month.value(0), year.value(0));
+        if (props.multiDates) {
+            modelValue.value = [setDateMonthOrYear(getDate(), month.value(0), year.value(0))];
+        } else {
+            modelValue.value = setDateMonthOrYear(getDate(), month.value(0), year.value(0));
+        }
     };
 
     // On initial empty year picker, assign value
@@ -538,6 +542,10 @@ export const useCalendar = (
         return setDateTime(dateValue, time.hours as number, time.minutes as number, getSecondsValue());
     };
 
+    const setMonthYearMultiDatesModel = (instance: number) => {
+        handleMultiDateSelect(getMonthYearValue(instance));
+    };
+
     // Handles selection of month/year
     const updateMonthYear = (instance: number, val: { month: number; year: number; fromNav?: boolean }): void => {
         const isValueChange = props.monthPicker
@@ -551,7 +559,11 @@ export const useCalendar = (
         }
 
         if (props.monthPicker || props.yearPicker) {
-            if (props.range) {
+            if (props.multiDates) {
+                if (isValueChange) {
+                    setMonthYearMultiDatesModel(instance);
+                }
+            } else if (props.range) {
                 if (isValueChange) {
                     let rangeDate = modelValue.value ? (modelValue.value as Date[]).slice() : [];
                     if (rangeDate.length === 2 && rangeDate[1] !== null) {

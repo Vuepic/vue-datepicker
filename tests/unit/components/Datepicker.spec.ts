@@ -476,4 +476,28 @@ describe('Logic connection', () => {
 
         expect(timeInput.vm.disabledInGrid('hours')).toEqual([0, 1, 2, 3, 4, 5, 6]);
     });
+
+    it('Should select multi dates with month picker mode', async () => {
+        const { menu, dp } = await mountDatepicker({ modelValue: null, multiDates: true, monthPicker: true });
+        const today = new Date();
+        const months = [addMonths(today, 1), addMonths(today, 2), addMonths(today, 3)];
+
+        await Promise.all(
+            months.map(async (date) => {
+                menu.vm.updateMonthYear(0, { month: getMonth(date), year: getYear(date) });
+                await menu.vm.$nextTick();
+            }),
+        );
+        await dp.vm.$nextTick();
+        dp.vm.selectDate();
+        await dp.vm.$nextTick();
+
+        const emitted = (dp.emitted()['update:model-value'][0] as any)[0];
+        expect(emitted).toHaveLength(4);
+        const lastSelection = emitted[3];
+        expect({ month: lastSelection.month, year: lastSelection.year }).toEqual({
+            month: getMonth(months[2]),
+            year: getYear(months[2]),
+        });
+    });
 });

@@ -250,4 +250,16 @@ describe('v-model mapping', () => {
         wrapper.vm.emitModelValue();
         expect((wrapper.emitted()['update:model-value'][0] as any)[0]).toEqual([date, addDays(date, 1)]);
     });
+
+    it('Should properly map month-picker multi dates', async () => {
+        const setMonthItem = (toAdd: number) => addMonths(new Date(), toAdd);
+        const dates = [setMonthItem(1), setMonthItem(2), setMonthItem(3)];
+        const modelValue = dates.map((date) => ({ month: getMonth(date), year: getYear(date) }));
+        const wrapper = shallowMount(VueDatepicker, { props: { multiDates: true, monthPicker: true, modelValue } });
+
+        expect(wrapper.vm.internalModelValue).toHaveLength(3);
+        expect((wrapper.vm.internalModelValue as Date[]).map((date) => resetDateTime(date))).toEqual(
+            dates.map((date) => resetDateTime(date)),
+        );
+    });
 });

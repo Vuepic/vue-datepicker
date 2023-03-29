@@ -87,6 +87,9 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
 
     const mapMonthExternalToInternal = (value: MonthModel | MonthModel[]): Date | Date[] => {
         if (Array.isArray(value)) {
+            if (props.multiDates) {
+                return value.map((val) => convertCustomModeType(val, setDateMonthOrYear(null, +val.month, +val.year)));
+            }
             return checkRangeEnabled(() => [
                 convertCustomModeType(value[0], setDateMonthOrYear(null, +value[0].month, +value[0].year)),
                 convertCustomModeType(
@@ -274,6 +277,9 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
      */
     const mapInternalToSpecificExternal = <T extends (val: Date) => ReturnType<T> | ReturnType<T>[]>(mapper: T) => {
         if (Array.isArray(internalModelValue.value)) {
+            if (props.multiDates) {
+                return internalModelValue.value.map((value) => mapper(value));
+            }
             return [
                 mapper(internalModelValue.value[0]),
                 internalModelValue.value[1] ? mapper(internalModelValue.value[1]) : checkPartialRangeValue(),

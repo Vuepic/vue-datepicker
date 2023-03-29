@@ -175,7 +175,8 @@
                             dp__overlay_cell_disabled: disabled,
                             dp__overlay_cell_active_disabled: disabled && active,
                             dp__overlay_cell_pad: true,
-                            dp__cell_in_between: props.multiModelValue?.length ? rangeActive(itemVal.value) : false,
+                            dp__cell_in_between:
+                                props.multiModelValue?.length && props.skipActive ? rangeActive(itemVal.value) : false,
                         },
                     };
                 });

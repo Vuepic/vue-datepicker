@@ -333,7 +333,7 @@
     });
 
     const multiModelValue = computed(() => {
-        return props.range && props.internalModelValue && (props.monthPicker || props.yearPicker)
+        return (props.range || props.multiDates) && props.internalModelValue && (props.monthPicker || props.yearPicker)
             ? (props.internalModelValue as Date[])
             : [];
     });
