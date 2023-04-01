@@ -13,7 +13,7 @@ import {
 } from 'date-fns';
 import type { DateTimeSetter, DateValue, TimeModel } from '@/interfaces';
 
-const parseTextToDate = (value: string, pattern: string, time: TimeModel, inputVal: string): Date | null => {
+const parseTextToDate = (value: string, pattern: string, time: TimeModel, inputVal?: string): Date | null => {
     const parsedDate = parse(value, pattern.slice(0, value.length), new Date());
     if (isValid(parsedDate) && isDate(parsedDate)) {
         if (inputVal) return parsedDate;
@@ -31,7 +31,7 @@ export const parseFreeInput = (
     value: string,
     pattern: string | string[] | ((value: string) => Date | null),
     time: TimeModel | TimeModel[],
-    inputVal: string,
+    inputVal?: string,
 ): Date | null => {
     const defaultTime = Array.isArray(time) ? time[0] : time;
     if (typeof pattern === 'string') {
@@ -141,4 +141,9 @@ export const isDateBetween = (range: Date[], hoverDate: Date | null, dateToCheck
         );
     }
     return false;
+};
+
+export const resetDate = (date: Date | string): Date => {
+    const onFirst = set(new Date(date), { date: 1 });
+    return resetDateTime(onFirst);
 };

@@ -56,7 +56,7 @@
     import { convertType, unrefElement } from '@/utils/util';
     import { useArrowNavigation, useUtils } from '@/components/composables';
     import { AllProps } from '@/utils/props';
-    import { getDate, isDateAfter, isDateBefore, isDateEqual } from '@/utils/date-utils';
+    import { getDate, isDateAfter, isDateBefore, isDateEqual, resetDate } from '@/utils/date-utils';
 
     import type { PropType } from 'vue';
     import type { InternalModuleValue } from '@/interfaces';
@@ -151,21 +151,24 @@
     const isMonthWithinRange = (date: Date | string): boolean => {
         if (!props.monthPicker) return true;
         let valid = true;
+        const dateToCompare = getDate(resetDate(date));
         if (props.minDate && props.maxDate) {
+            const minDate = getDate(resetDate(props.minDate));
+            const maxDate = getDate(resetDate(props.maxDate));
             return (
-                isDateAfter(getDate(date), getDate(props.minDate)) &&
-                isDateBefore(getDate(date), getDate(props.maxDate))
+                (isDateAfter(dateToCompare, minDate) && isDateBefore(dateToCompare, maxDate)) ||
+                isDateEqual(dateToCompare, minDate) ||
+                isDateEqual(dateToCompare, maxDate)
             );
         }
         if (props.minDate) {
-            valid =
-                isDateAfter(getDate(date), getDate(props.minDate)) ||
-                isDateEqual(getDate(date), getDate(props.minDate));
+            const minDate = getDate(resetDate(props.minDate));
+
+            valid = isDateAfter(dateToCompare, minDate) || isDateEqual(dateToCompare, minDate);
         }
         if (props.maxDate) {
-            valid =
-                isDateBefore(getDate(date), getDate(props.maxDate)) ||
-                isDateEqual(getDate(date), getDate(props.maxDate));
+            const maxDate = getDate(resetDate(props.maxDate));
+            valid = isDateBefore(dateToCompare, maxDate) || isDateEqual(dateToCompare, maxDate);
         }
 
         return valid;

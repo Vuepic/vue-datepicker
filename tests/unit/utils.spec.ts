@@ -1,5 +1,16 @@
 import { describe, it, expect } from 'vitest';
-import { addHours, getHours, getMinutes, getMonth, getSeconds, set, setMonth, subHours } from 'date-fns';
+import {
+    addHours,
+    getDate,
+    getHours,
+    getMinutes,
+    getMonth,
+    getSeconds,
+    getYear,
+    set,
+    setMonth,
+    subHours,
+} from 'date-fns';
 import { getTimezoneOffset, zonedTimeToUtc } from 'date-fns-tz';
 import { reactive } from 'vue';
 
@@ -18,6 +29,7 @@ import {
     isDateBefore,
     isDateBetween,
     parseFreeInput,
+    resetDate,
     resetDateTime,
     setDateTime,
 } from '@/utils/date-utils';
@@ -253,5 +265,14 @@ describe('Utils and date utils formatting', () => {
 
         const validNum = getNumVal(1);
         expect(validNum).toEqual(1);
+    });
+
+    it('Should reset date', () => {
+        const dateToReset = set(new Date(), { date: 5, month: getMonth(new Date()), year: getYear(new Date()) });
+        const reset = resetDate(dateToReset);
+
+        expect(getDate(reset)).toEqual(1);
+        expect(getHours(reset)).toEqual(0);
+        expect(getMonth(reset)).toEqual(getMonth(new Date()));
     });
 });
