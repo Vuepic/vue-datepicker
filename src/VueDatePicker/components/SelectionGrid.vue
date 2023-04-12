@@ -6,7 +6,13 @@
                 <slot name="overlay" />
             </template>
             <template v-else>
-                <div class="dp__overlay_row" v-for="(row, i) in mappedItems" :key="i" role="row">
+                <div
+                    class="dp__overlay_row"
+                    :class="{ dp__flex_row: mappedItems.length >= 3 }"
+                    v-for="(row, i) in mappedItems"
+                    :key="i"
+                    role="row"
+                >
                     <div
                         v-for="(col, ind) in row"
                         role="gridcell"

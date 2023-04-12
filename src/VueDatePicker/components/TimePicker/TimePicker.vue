@@ -30,7 +30,7 @@
                         :set-seconds="updateSeconds"
                     ></slot>
                     <template v-if="!$slots['time-picker-overlay']">
-                        <div class="dp__overlay_row">
+                        <div class="dp__overlay_row dp__flex_row">
                             <TimeInput
                                 v-for="(tInput, index) in timeInputs"
                                 :key="index"
