@@ -358,10 +358,8 @@
         internalModelValue.value = value;
     };
 
-    const shouldFormatInputValue = computed(() => props.textInput && defaults.value.textInputOptions.format);
-
     const handleInputFocus = () => {
-        if (shouldFormatInputValue.value) {
+        if (props.textInput) {
             isInputFocused.value = true;
             formatInputValue();
         }
@@ -370,9 +368,9 @@
     };
 
     const handleBlur = () => {
-        if (shouldFormatInputValue.value) {
+        if (props.textInput) {
             isInputFocused.value = false;
-            formatInputValue();
+            parseExternalModelValue(props.modelValue);
         }
         emit('blur');
     };
