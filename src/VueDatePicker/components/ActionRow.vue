@@ -1,5 +1,5 @@
 <template>
-    <div class="dp__action_row" :style="calendarWidth ? { width: `${calendarWidth}px` } : {}">
+    <div class="dp__action_row">
         <template v-if="$slots['action-row']">
             <slot
                 name="action-row"
@@ -64,7 +64,6 @@
     const emit = defineEmits(['close-picker', 'select-date', 'invalid-select']);
 
     const props = defineProps({
-        calendarWidth: { type: Number as PropType<number>, default: 0 },
         menuMount: { type: Boolean as PropType<boolean>, default: false },
         internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
         ...AllProps,
