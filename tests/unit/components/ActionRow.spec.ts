@@ -5,13 +5,7 @@ import { useArrowNavigation } from '@/components/composables';
 import { addMonths, subMonths } from 'date-fns';
 
 describe('ActionRow component', () => {
-    const props = { menuMount: true, calendarWidth: 400, internalModelValue: null };
-
-    it('Should set proper row width', () => {
-        const wrapper = mount(ActionRow, { props });
-
-        expect(wrapper.html()).to.include('width: 400px');
-    });
+    const props = { menuMount: true, internalModelValue: null };
 
     it('Should build arrow navigation matrix', async () => {
         const { refSets } = useArrowNavigation();
