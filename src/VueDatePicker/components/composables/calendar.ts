@@ -554,7 +554,7 @@ export const useCalendar = (
     const updateMonthYear = (instance: number, val: { month: number; year: number; fromNav?: boolean }): void => {
         const isValueChange = props.monthPicker
             ? month.value(instance) !== val.month || !val.fromNav
-            : year.value(instance) !== val.year;
+            : year.value(instance) !== val.year || !val.fromNav;
 
         setCalendarMonthYear(instance, val.month, val.year);
 
