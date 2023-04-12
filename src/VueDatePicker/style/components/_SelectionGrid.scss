@@ -7,7 +7,7 @@
   left: 0;
   transition: opacity 1s ease-out;
   z-index: 99999;
-  font-family: $dp__font_family;
+  font-family: $dp__font_family_def;
   color: var(--dp-text-color);
   box-sizing: border-box;
 }

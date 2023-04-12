@@ -3,7 +3,7 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  font-family: $dp__font_family;
+  font-family: $dp__font_family_def;
   flex: 0;
 }
 
@@ -30,7 +30,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: $dp__row_margin;
+  margin: $dp__row_margin_def;
 }
 
 .dp__calendar_item {

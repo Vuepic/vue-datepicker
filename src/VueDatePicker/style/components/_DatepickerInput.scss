@@ -12,14 +12,14 @@
 .dp__input {
   background-color: var(--dp-background-color);
   border-radius: $dp__border_radius;
-  font-family: $dp__font_family;
+  font-family: $dp__font_family_def;
   border: 1px solid var(--dp-border-color);
   outline: none;
   transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
   width: 100%;
   font-size: $dp__font_size;
-  line-height: $dp__font_size * 1.5;
-  padding: $dp__input_padding;
+  line-height: calc($dp__font_size  * 1.5);
+  padding: $dp__input_padding_def;
   color: var(--dp-text-color);
   box-sizing: border-box;
 
@@ -54,7 +54,7 @@
   height: $dp__font_size;
   stroke-width: 0;
   font-size: $dp__font_size;
-  line-height: $dp__font_size * 1.5;
+  line-height: calc($dp__font_size  * 1.5);
   padding: 6px 12px;
   color: var(--dp-icon-color);
   box-sizing: content-box;
