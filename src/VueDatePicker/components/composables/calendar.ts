@@ -568,7 +568,7 @@ export const useCalendar = (
                     setMonthYearMultiDatesModel(instance);
                 }
             } else if (props.range) {
-                if (isValueChange) {
+                if (isValueChange && checkMinMaxRange(getMonthYearValue(instance))) {
                     let rangeDate = modelValue.value ? (modelValue.value as Date[]).slice() : [];
                     if (rangeDate.length === 2 && rangeDate[1] !== null) {
                         rangeDate = [];
