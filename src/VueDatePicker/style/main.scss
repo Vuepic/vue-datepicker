@@ -7,6 +7,13 @@
 @import "components/TimeInput";
 @import "components/ActionRow";
 
+
+:root {
+  --dp-slide-translate: -24px;
+  --dp-slide-duration: 0.15s;
+  --dp-slide-timing: ease;
+}
+
 .dp__theme_dark {
   --dp-background-color: #212121;
   --dp-text-color: #fff;
@@ -147,8 +154,6 @@
   transform: translateX($dp__transition_length);
 }
 
-.dp-menu-appear-enter-active,
-.dp-menu-appear-leave-active,
 .dp-slide-up-enter-active,
 .dp-slide-up-leave-active,
 .dp-slide-down-enter-active,
@@ -168,15 +173,34 @@
   transform: translateY(-$dp__transition_length);
 }
 
-.dp-menu-appear-enter-from {
+.dp-menu-appear-enter-active,
+.dp-menu-appear-leave-active
+ {
+  transition: all var(--dp-slide-duration) var(--dp-slide-timing),
+  opacity calc(var(--dp-slide-duration) * 3) var(--dp-slide-timing);
+  backface-visibility: hidden;
+  pointer-events: none;
+}
+
+.dp-menu-appear-leave-active {
+  position: absolute !important;
+  width: 100%;
+}
+
+.dp-menu-appear-enter-from,
+.dp-menu-appear-leave-to {
   opacity: 0;
 }
 
-.dp-menu-appear-enter-active,
-.dp-menu-appear-leave-active {
-  transition: opacity 0.1s ease;
+
+.dp-menu-appear-enter-from{
+  transform: translateY(var(--dp-slide-translate));
 }
 
 .dp-menu-appear-leave-to {
-  opacity: 1;
+  transform: translateY(var(--dp-slide-translate));
+}
+
+.dp__menu_visible {
+  visibility: visible;
 }

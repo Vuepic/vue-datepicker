@@ -2,7 +2,6 @@
 $dp__font_family: -apple-system, blinkmacsystemfont, "Segoe UI", roboto, oxygen, ubuntu, cantarell, "Open Sans",
   "Helvetica Neue", sans-serif !default; // Font size for the menu
 $dp__font_family_def: var(--dp-font-family, $dp__font_family) !default;
-
 $dp__border_radius: var(--dp-border-radius, 4px) !default; // Configurable border-radius
 $dp__cell_border_radius: var(--dp-cell-border-radius, $dp__border_radius) !default; // Specific border radius for the calendar cell
 
@@ -22,16 +21,12 @@ $dp__input_icon_padding: var(--dp-input-icon-padding, 35px)  !default; // Paddin
 
 $dp__input_padding: 6px 30px 6px 12px !default; // padding in the input
 $dp__input_padding_def: var(--dp-input-padding, $dp__input_padding) !default;
-
-
 $dp__menu_min_width: var(--dp-menu-min-width, 260px) !default; // Adjust the min width of the menu
 
 $dp__action_buttons_padding: 2px 5px !default; // Adjust padding for the action buttons in action row
 $dp__action_buttons_padding_def: var(--dp-action-buttons-padding, $dp__action_buttons_padding) !default;
-
 $dp__row_margin: 5px 0 !default; // Adjust the spacing between rows in the calendar
 $dp__row_margin_def: var(--dp-row-maring, $dp__row_margin) !default;
-
 $dp__calendar_header_cell_padding: var(--dp-calendar-header-cell-padding, 0.5rem) !default; // Adjust padding in calendar header cells
 $dp__two_calendars_spacing: var(--dp-two-calendars-spacing, 10px) !default; // Space between two calendars if using two calendars
 $dp__overlay_col_padding: var(--dp-overlay-col-padding, 3px) !default; // Padding in the overlay column
