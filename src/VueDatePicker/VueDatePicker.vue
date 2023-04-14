@@ -77,7 +77,7 @@
     import { AllProps } from '@/utils/props';
     import { getNumVal } from '@/utils/util';
 
-    import type { DynamicClass, MonthYearOpt, DatepickerMenuRef, DatepickerInputRef } from '@/interfaces';
+    import type { DynamicClass, MonthYearOpt, DatepickerMenuRef, DatepickerInputRef, ModelValue } from '@/interfaces';
 
     const emit = defineEmits([
         'update:model-value',
@@ -111,7 +111,7 @@
 
     const { setMenuFocused, setShiftKey } = useState();
     const { clearArrowNav } = useArrowNavigation();
-    const { validateDate, isValidTime, defaults } = useUtils(props);
+    const { validateDate, isValidTime } = useUtils(props);
 
     onMounted(() => {
         parseExternalModelValue(props.modelValue);
@@ -384,6 +384,10 @@
         }
     };
 
+    const parseModel = (value?: ModelValue) => {
+        parseExternalModelValue(value || props.modelValue);
+    };
+
     onClickOutside(
         dpMenuRef,
         inputRef,
@@ -399,5 +403,6 @@
         formatInputValue, // exposed for testing purposes
         updateInternalModelValue, // modify internal modelValue
         setMonthYear,
+        parseModel,
     });
 </script>
