@@ -97,6 +97,11 @@
   box-sizing: border-box;
   height: $dp__button_height;
 
+  &.dp__overlay_action {
+    position: absolute;
+    bottom: 0;
+  }
+
   &:hover {
     background: var(--dp-hover-color);
     color: var(--dp-hover-icon-color);
