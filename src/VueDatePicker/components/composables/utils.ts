@@ -192,7 +192,7 @@ export const useUtils = (props: AllPropsType) => {
         if (Array.isArray(pattern)) {
             return pattern.some((includedDate) => isDateEqual(getZonedDate(getDate(includedDate)), getZonedDate(date)));
         }
-        return pattern(date);
+        return pattern(getDate(JSON.parse(JSON.stringify(date))));
     };
 
     const setDateMonthOrYear = (date: DateValue, month?: number | null, year?: number | null): Date => {
