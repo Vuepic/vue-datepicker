@@ -12,7 +12,7 @@
             />
         </template>
         <template v-else>
-            <div class="dp__selection_preview">
+            <div class="dp__selection_preview" :title="!Array.isArray(previewValue) ? previewValue : ''">
                 <slot name="action-preview" v-if="$slots['action-preview']" :value="internalModelValue" />
                 <template v-if="!$slots['action-preview']">
                     <template v-if="!Array.isArray(previewValue)">{{ previewValue }}</template>

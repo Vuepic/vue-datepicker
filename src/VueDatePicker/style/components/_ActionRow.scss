@@ -38,6 +38,8 @@
 .dp__action_button {
   background: transparent;
   border: 1px solid transparent;
+  padding: 1px 6px;
+  line-height: initial;
   margin-left: 3px;
   cursor: pointer;
   border-radius: $dp__border_radius;
