@@ -1,5 +1,5 @@
 <template>
-    <div class="dp__action_row">
+    <div class="dp__action_row" :style="calendarWidth ? { width: `${calendarWidth}px` } : {}">
         <template v-if="$slots['action-row']">
             <slot
                 name="action-row"
@@ -24,26 +24,27 @@
             <div class="dp__action_buttons">
                 <slot name="action-select" v-if="$slots['action-select']" :value="internalModelValue" />
                 <template v-if="!$slots['action-select']">
-                    <span
-                        v-if="!inline"
-                        class="dp__action dp__cancel"
+                    <button
                         ref="cancelButtonRef"
-                        tabindex="0"
+                        v-if="!inline"
+                        class="dp__action_button dp__action_cancel"
                         @click="$emit('close-picker')"
                         @keydown.enter="$emit('close-picker')"
                         @keydown.space="$emit('close-picker')"
-                        >{{ cancelText }}</span
                     >
-                    <span
-                        :class="selectClass"
-                        tabindex="0"
+                        {{ cancelText }}
+                    </button>
+                    <button
+                        class="dp__action_button dp__action_select"
                         @keydown.enter="selectDate"
                         @keydown.space="selectDate"
                         @click="selectDate"
+                        :disabled="disabled"
                         data-test="select-button"
                         ref="selectButtonRef"
-                        >{{ selectText }}</span
                     >
+                        {{ selectText }}
+                    </button>
                 </template>
             </div>
         </template>
@@ -66,6 +67,8 @@
     const props = defineProps({
         menuMount: { type: Boolean as PropType<boolean>, default: false },
         internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
+        calendarWidth: { type: Number as PropType<number>, default: 0 },
+
         ...AllProps,
     });
 
@@ -88,12 +91,6 @@
     });
 
     const disabled = computed(() => !isTimeValid.value || !isMonthValid.value || !validDateRange.value);
-
-    const selectClass = computed(() => ({
-        dp__action: true,
-        dp__select: true,
-        dp__action_disabled: disabled.value,
-    }));
 
     const isTimeValid = computed((): boolean => {
         if (!props.enableTimePicker || props.ignoreTimeValidation) return true;

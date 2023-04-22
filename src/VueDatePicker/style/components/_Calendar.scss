@@ -61,6 +61,10 @@
   border: 1px solid transparent;
   box-sizing: border-box;
   position: relative;
+
+  &:hover {
+    transition: all 0.2s;
+  }
 }
 
 %__dp_range_border_radius_start {

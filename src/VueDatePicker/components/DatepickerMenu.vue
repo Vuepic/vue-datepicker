@@ -151,6 +151,7 @@
             <ActionRow
                 v-if="!autoApply || keepActionRow"
                 :menu-mount="menuMount"
+                :calendar-width="calendarWidth"
                 :internal-model-value="internalModelValue"
                 v-bind="$props"
                 @close-picker="$emit('close-picker')"
@@ -166,7 +167,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, onMounted, reactive, ref, useSlots, watch } from 'vue';
+    import { computed, onMounted, onUnmounted, reactive, ref, useSlots, watch } from 'vue';
 
     import ActionRow from '@/components/ActionRow.vue';
     import Calendar from '@/components/Calendar.vue';
@@ -227,11 +228,16 @@
     const calendarRefs = ref<CalendarRef[]>([]);
     const timePickerRef = ref<TimePickerRef | null>(null);
     const dpMenuRef = ref(null);
+    const calendarWidth = ref(0);
     const menuMount = ref(false);
     const flowStep = ref(0);
 
     onMounted(() => {
         menuMount.value = true;
+        if (!props.presetRanges?.length && !slots['left-sidebar'] && !slots['right-sidebar']) {
+            getCalendarWidth();
+            window.addEventListener('resize', getCalendarWidth);
+        }
 
         const menu = unrefElement(dpMenuRef);
         if (menu && !props.textInput && !props.inline) {
@@ -253,6 +259,10 @@
             menu.addEventListener('pointerdown', stopDefault);
             menu.addEventListener('mousedown', stopDefault);
         }
+    });
+
+    onUnmounted(() => {
+        window.removeEventListener('resize', getCalendarWidth);
     });
 
     const { arrowRight, arrowLeft, arrowDown, arrowUp } = useArrowNavigation();
@@ -338,6 +348,13 @@
     const months = computed((): IDefaultSelect[] => {
         return getMonths(props.locale, props.monthNameFormat);
     });
+
+    const getCalendarWidth = (): void => {
+        const el = unrefElement(calendarWrapperRef);
+        if (el) {
+            calendarWidth.value = el.getBoundingClientRect().width;
+        }
+    };
 
     // Get dates for the currently selected month and year
     const dates = computed(() => (instance: number) => getCalendarDays(month.value(instance), year.value(instance)));
