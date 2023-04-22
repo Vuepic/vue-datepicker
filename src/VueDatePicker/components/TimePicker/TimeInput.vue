@@ -163,7 +163,7 @@
         return !!(
             props.maxTime &&
             props.maxTime[type] &&
-            props.maxTime[type] < props[type] + +props[`${type}Increment`]
+            +props.maxTime[type] < +props[type] + +props[`${type}Increment`]
         );
     });
 
@@ -171,7 +171,7 @@
         return !!(
             props.minTime &&
             props.minTime[type] &&
-            props.minTime[type] > props[type] - +props[`${type}Increment`]
+            +props.minTime[type] > +props[type] - +props[`${type}Increment`]
         );
     });
 
@@ -200,7 +200,7 @@
 
     const timeValueDisplay = computed(() => (type: TimeType) => {
         if (type === 'hours') {
-            const hour = convert24ToAmPm(props.hours);
+            const hour = convert24ToAmPm(+props.hours);
             return { text: hour < 10 ? `0${hour}` : `${hour}`, value: hour };
         }
         return { text: props[type] < 10 ? `0${props[type]}` : `${props[type]}`, value: props[type] };
@@ -228,9 +228,9 @@
     const checkMinMax = (val: number, type: TimeType): boolean => {
         const minValue = props.minTime && props.minTime[type];
         const maxValue = props.maxTime && props.maxTime[type];
-        if (minValue && maxValue) return val < minValue || val > maxValue;
-        if (minValue) return val < minValue;
-        if (maxValue) return val > maxValue;
+        if (minValue && maxValue) return val < +minValue || val > +maxValue;
+        if (minValue) return val < +minValue;
+        if (maxValue) return val > +maxValue;
         return false;
     };
 

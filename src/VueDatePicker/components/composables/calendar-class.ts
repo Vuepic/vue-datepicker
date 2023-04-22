@@ -9,7 +9,7 @@ import type { UnwrapRef, WritableComputedRef } from 'vue';
 import type { ExtendedProps, ICalendarDay, InternalModuleValue } from '@/interfaces';
 
 export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleValue>, props: ExtendedProps) => {
-    const { isDisabled, matchDate, getWeekFromDate } = useUtils(props);
+    const { isDisabled, matchDate, getWeekFromDate, defaults } = useUtils(props);
     // Track hovered date
     const hoveredDate = ref<Date | null>(null);
     // Today date
@@ -205,7 +205,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
     const isBetween = (day: ICalendarDay) => {
         if (
             (props.range || props.weekPicker) &&
-            (props.multiCalendars > 0 ? day.current : true) &&
+            (defaults.value.multiCalendars > 0 ? day.current : true) &&
             isModelAutoActive() &&
             !(!day.current && props.hideOffsetDates) &&
             !isActiveDate(day)
@@ -253,12 +253,12 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
 
     const rangeStartEnd = (day: ICalendarDay) => {
         const isRangeStart =
-            props.multiCalendars > 0
+            defaults.value.multiCalendars > 0
                 ? day.current && rangeActiveStartEnd(day) && isModelAutoActive()
                 : rangeActiveStartEnd(day) && isModelAutoActive();
 
         const isRangeEnd =
-            props.multiCalendars > 0
+            defaults.value.multiCalendars > 0
                 ? day.current && rangeActiveStartEnd(day, false) && isModelAutoActive()
                 : rangeActiveStartEnd(day, false) && isModelAutoActive();
         return { isRangeStart, isRangeEnd };
