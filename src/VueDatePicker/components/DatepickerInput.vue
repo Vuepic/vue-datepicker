@@ -39,6 +39,7 @@
                 @focus="handleFocus"
                 @keypress="handleKeyPress"
                 @keydown="handleKeyPress"
+                @paste="handlePaste"
             />
             <span class="dp__input_icon" v-if="$slots['input-icon'] && !hideInputIcon"><slot name="input-icon" /></span>
             <CalendarIcon
@@ -97,6 +98,7 @@
     const parsedDate = ref();
     const inputRef = ref<HTMLElement | null>(null);
     const isFocused = ref(false);
+    const textPasted = ref(false);
 
     const inputClass = computed(
         (): DynamicClass => ({
@@ -128,6 +130,7 @@
             defaults.value.textInputOptions?.format || getDefaultPattern(),
             defaultTime || assignDefaultTime({}),
             props.inputValue,
+            textPasted.value,
         );
     };
 
@@ -141,6 +144,10 @@
             const parsedArr = parsedDateOne && parsedDateTwo ? [parsedDateOne, parsedDateTwo] : [parsedDateOne];
             parsedDate.value = parsedDateOne ? parsedArr : null;
         }
+    };
+
+    const handlePaste = () => {
+        textPasted.value = true;
     };
 
     const parseInput = (value: string) => {
@@ -169,6 +176,7 @@
         } else {
             handleOnEmptyInput();
         }
+        textPasted.value = false;
         emit('update:input-value', value);
     };
 
