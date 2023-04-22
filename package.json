@@ -37,9 +37,9 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "run-s clean build:lib build:css",
+    "build": "run-s clean typecheck build:lib build:css",
     "clean": "rimraf ./dist",
-    "build:lib": "run-s typecheck build:es build:browser",
+    "build:lib": "run-s build:es build:browser",
     "typecheck": "vue-tsc --noEmit -p tsconfig.type-check.json --composite false",
     "build:es": "cross-env NODE_ENV=production vite build --mode production",
     "build:browser": "cross-env NODE_ENV=production vite -f iife build --mode production",
