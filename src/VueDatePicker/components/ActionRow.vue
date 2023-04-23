@@ -35,6 +35,16 @@
                         {{ cancelText }}
                     </button>
                     <button
+                        ref="cancelButtonRef"
+                        v-if="showNowButton"
+                        class="dp__action_button dp__action_cancel"
+                        @click="$emit('select-now')"
+                        @keydown.enter="$emit('select-now')"
+                        @keydown.space="$emit('select-now')"
+                    >
+                        {{ nowButtonLabel }}
+                    </button>
+                    <button
                         class="dp__action_button dp__action_select"
                         @keydown.enter="selectDate"
                         @keydown.space="selectDate"
@@ -62,7 +72,7 @@
     import type { PropType } from 'vue';
     import type { InternalModuleValue } from '@/interfaces';
 
-    const emit = defineEmits(['close-picker', 'select-date', 'invalid-select']);
+    const emit = defineEmits(['close-picker', 'select-date', 'select-now', 'invalid-select']);
 
     const props = defineProps({
         menuMount: { type: Boolean as PropType<boolean>, default: false },

@@ -135,17 +135,8 @@
                 <div class="dp__sidebar_right" v-if="$slots['right-sidebar']">
                     <slot name="right-sidebar" v-bind="{ handleMonthYearChange }" />
                 </div>
-                <div class="dp__now_wrap" v-if="showNowButton">
-                    <slot name="now-button" v-if="$slots['now-button']" :select-current-date="selectCurrentDate" />
-                    <button
-                        v-if="!$slots['now-button']"
-                        type="button"
-                        role="button"
-                        class="dp__now_button"
-                        @click="selectCurrentDate"
-                    >
-                        {{ nowButtonLabel }}
-                    </button>
+                <div class="dp__action_extra" v-if="$slots['action-extra']">
+                    <slot name="action-extra" v-if="$slots['action-extra']" :select-current-date="selectCurrentDate" />
                 </div>
             </div>
             <ActionRow
@@ -157,6 +148,7 @@
                 @close-picker="$emit('close-picker')"
                 @select-date="$emit('select-date')"
                 @invalid-select="$emit('invalid-select')"
+                @select-now="selectCurrentDate"
             >
                 <template v-for="(slot, i) in actionSlots" #[slot]="args" :key="i">
                     <slot :name="slot" v-bind="{ ...args }" />
