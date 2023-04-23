@@ -3,8 +3,9 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  font-family: $dp__font_family_def;
+  font-family: var(--dp-font-family);
   flex: 0;
+  padding: var(--dp-calendar-wrap-padding);
 }
 
 .dp__calendar_header {
@@ -20,9 +21,9 @@
 .dp__calendar_header_item {
   text-align: center;
   flex-grow: 1;
-  height: $dp__cell_size;
-  padding: $dp__cell_padding;
-  width: $dp__cell_size;
+  height: var(--dp-cell-size);
+  padding: var(--dp-cell-padding);
+  width: var(--dp-cell-size);
   box-sizing: border-box;
 }
 
@@ -30,7 +31,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: $dp__row_margin_def;
+  margin: var(--dp-row-maring);
 }
 
 .dp__calendar_item {
@@ -46,7 +47,7 @@
 
 .dp__calendar_header_cell {
   border-bottom: thin solid var(--dp-border-color);
-  padding: $dp__calendar_header_cell_padding;
+  padding: var(--dp-calendar-header-cell-padding);
 }
 
 .dp__cell_inner {
@@ -54,10 +55,10 @@
   align-items: center;
   text-align: center;
   justify-content: center;
-  border-radius: $dp__cell_border_radius;
-  height: $dp__cell_size;
-  padding: $dp__cell_padding;
-  width: $dp__cell_size;
+  border-radius: var(--dp-cell-border-radius);
+  height: var(--dp-cell-size);
+  padding: var(--dp-cell-padding);
+  width: var(--dp-cell-size);
   border: 1px solid transparent;
   box-sizing: border-box;
   position: relative;
@@ -186,7 +187,7 @@
 }
 
 .dp__calendar_next {
-  margin-left: $dp__two_calendars_spacing;
+  margin-left: var(--dp-multi-calendars-spacing);
 }
 
 %__dp_marker {
@@ -214,7 +215,7 @@
 
 .dp__marker_tooltip {
   position: absolute;
-  border-radius: $dp__border_radius;
+  border-radius: var(--dp-border-radius);
   background-color: var(--dp-tooltip-color);
   padding: 5px;
   border: 1px solid var(--dp-border-color);

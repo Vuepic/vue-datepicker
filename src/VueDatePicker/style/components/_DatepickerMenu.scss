@@ -1,10 +1,10 @@
 .dp__menu {
   position: absolute;
   background: var(--dp-background-color);
-  border-radius: $dp__border_radius;
-  min-width: $dp__menu_min_width;
-  font-family: $dp__font_family_def;
-  font-size: $dp__font_size;
+  border-radius: var(--dp-border-radius);
+  min-width: var(--dp-menu-min-width);
+  font-family: var(--dp-font-family);
+  font-size: var(--dp-font-size);
   user-select: none;
   border: 1px solid var(--dp-menu-border-color);
   box-sizing: border-box;
@@ -74,17 +74,6 @@
 .dp__action_extra {
   text-align: center;
   padding: 2px 0;
-}
-
-.dp__now_button {
-  border: 1px solid var(--dp-primary-color);
-  color: var(--dp-primary-color);
-  padding: 0 4px;
-  font-weight: bold;
-  border-radius: $dp__border_radius;
-  font-size: $dp__font_size;
-  cursor: pointer;
-  background: transparent;
 }
 
 .dp__preset_ranges {

@@ -1,4 +1,3 @@
-@import "variables";
 @import "components/DatepickerInput";
 @import "components/DatepickerMenu";
 @import "components/Calendar";
@@ -12,6 +11,32 @@
   --dp-menu-appear-transition-timing: cubic-bezier(.4, 0, 1, 1);
   --dp-transition-timing: ease-out;
   --dp-action-row-transtion: all 0.2s ease-in;
+  --dp-font-family: -apple-system, blinkmacsystemfont, "Segoe UI", roboto, oxygen, ubuntu, cantarell, "Open Sans",
+  "Helvetica Neue", sans-serif;
+  --dp-border-radius: 4px;
+  --dp-cell-border-radius: 4px;
+  --dp-transition-length: 22px;
+  --dp-transition-timing-general: 0.1s;
+  --dp-button-height: 35px;
+  --dp-month-year-row-height: 35px;
+  --dp-month-year-row-button-size: 25px;
+  --dp-button-icon-height: 20px;
+  --dp-calendar-wrap-padding: 0 5px;
+  --dp-cell-size: 35px;
+  --dp-cell-padding: 5px;
+  --dp-common-padding: 10px;
+  --dp-input-icon-padding: 35px;
+  --dp-input-padding: 6px 30px 6px 12px;
+  --dp-menu-min-width: 260px;
+  --dp-action-buttons-padding: 1px 6px;
+  --dp-row-maring: 5px 0;
+  --dp-calendar-header-cell-padding: 0.5rem;
+  --dp-multi-calendars-spacing: 10px;
+  --dp-overlay-col-padding: 3px;
+  --dp-time-inc-dec-button-size: 32px;
+  --dp-font-size: 1rem;
+  --dp-preview-font-size: 0.8rem;
+  --dp-time-font-size: 2rem;
 }
 
 .dp__theme_dark {
@@ -67,7 +92,7 @@
 }
 
 .dp__main {
-  font-family: $dp__font_family_def;
+  font-family: var(--dp-font-family);
   user-select: none;
   box-sizing: border-box;
   position: relative;
@@ -94,9 +119,9 @@
   align-items: center;
   align-content: center;
   justify-content: center;
-  padding: $dp__common_padding;
+  padding: var(--dp-common-padding);
   box-sizing: border-box;
-  height: $dp__button_height;
+  height: var(--dp-button-height);
 
   &.dp__overlay_action {
     position: absolute;
@@ -109,14 +134,14 @@
   }
 
   svg {
-    height: $dp__button_icon_height;
+    height: var(--dp-button-icon-height);
     width: auto;
   }
 }
 
 .dp__button_bottom {
-  border-bottom-left-radius: $dp__border_radius;
-  border-bottom-right-radius: $dp__border_radius;
+  border-bottom-left-radius: var(--dp-border-radius);
+  border-bottom-right-radius: var(--dp-border-radius);
 }
 
 .dp__flex_display {
@@ -136,27 +161,27 @@
 .calendar-next-leave-active,
 .calendar-prev-enter-active,
 .calendar-prev-leave-active {
-  transition: all $dp__transition_duration ease-out;
+  transition: all var(--dp-transition-timing-general) ease-out;
 }
 
 .calendar-next-enter-from {
   opacity: 0;
-  transform: translateX($dp__transition_length);
+  transform: translateX(var(--dp-transition-length));
 }
 
 .calendar-next-leave-to {
   opacity: 0;
-  transform: translateX(-$dp__transition_length);
+  transform: translateX(calc(var(--dp-transition-length) * -1));
 }
 
 .calendar-prev-enter-from {
   opacity: 0;
-  transform: translateX(-$dp__transition_length);
+  transform: translateX(calc(var(--dp-transition-length) * -1));
 }
 
 .calendar-prev-leave-to {
   opacity: 0;
-  transform: translateX($dp__transition_length);
+  transform: translateX(var(--dp-transition-length));
 }
 
 .dp-slide-up-enter-active,
@@ -168,19 +193,19 @@
 
 .dp-menu-appear-enter-active,
 .dp-menu-appear-leave-active {
-  transition: opacity var( --dp-animation-duration) var(--dp-menu-appear-transition-timing);
+  transition: opacity var(--dp-animation-duration) var(--dp-menu-appear-transition-timing);
 }
 
 .dp-slide-down-leave-to,
 .dp-slide-up-enter-from {
   opacity: 0;
-  transform: translateY($dp__transition_length);
+  transform: translateY(var(--dp-transition-length));
 }
 
 .dp-slide-down-enter-from,
 .dp-slide-up-leave-to {
   opacity: 0;
-  transform: translateY(-$dp__transition_length);
+  transform: translateY(calc(var(--dp-transition-length) * -1));
 }
 
 .dp-menu-appear-enter-from {

@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
   user-select: none;
-  font-family: $dp__font_family_def;
+  font-family: var(--dp-font-family);
   color: var(--dp-text-color);
 }
 
@@ -25,7 +25,7 @@
 }
 
 .dp__time_col {
-  font-size: $dp__time_font_size;
+  font-size: var(--dp-time-font-size);
   text-align: center;
   display: flex;
   align-items: center;
@@ -36,7 +36,7 @@
 .dp__time_display {
   cursor: pointer;
   color: var(--dp-text-color);
-  border-radius: $dp__border_radius;
+  border-radius: var(--dp-border-radius);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -51,8 +51,8 @@
 .dp__inc_dec_button {
   padding: 5px;
   margin: 0;
-  height: $dp__time_inc_dec_button_size;
-  width: $dp__time_inc_dec_button_size;
+  height: var(--dp-time-inc-dec-button-size);
+  width: var(--dp-time-inc-dec-button-size);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -62,8 +62,8 @@
   box-sizing: border-box;
 
   svg {
-    height: $dp__time_inc_dec_button_size;
-    width: $dp__time_inc_dec_button_size;
+    height: var(--dp-time-inc-dec-button-size);
+    width: var(--dp-time-inc-dec-button-size);
   }
 
   &:hover {
@@ -90,7 +90,7 @@
   background: var(--dp-primary-color);
   color: var(--dp-primary-text-color);
   border: none;
-  padding: $dp__common_padding;
-  border-radius: $dp__border_radius;
+  padding: var(--dp-common-padding);
+  border-radius: var(--dp-border-radius);
   cursor: pointer;
 }

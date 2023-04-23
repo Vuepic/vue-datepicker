@@ -1,7 +1,7 @@
 .dp__month_year_row {
   display: flex;
   align-items: center;
-  height: $dp__month_year_row_height;
+  height: var(--dp-month-year-row-height);
   color: var(--dp-text-color);
   box-sizing: border-box;
 }
@@ -11,15 +11,15 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  height: $dp__month_year_row_button_size;
-  width: $dp__month_year_row_button_size;
+  height: var(--dp-month-year-row-button-size);
+  width: var(--dp-month-year-row-button-size);
   color: var(--dp-icon-color);
   text-align: center;
   border-radius: 50%;
 
   svg {
-    height: $dp__button_icon_height;
-    width: $dp__button_icon_height;
+    height: var(--dp-button-icon-height);
+    width: var(--dp-button-icon-height);
   }
 
   &:hover {
@@ -46,11 +46,11 @@
   width: 50%;
   text-align: center;
   cursor: pointer;
-  height: $dp__month_year_row_height;
+  height: var(--dp-month-year-row-height);
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: $dp__border_radius;
+  border-radius: var(--dp-border-radius);
   box-sizing: border-box;
 
   &:hover {

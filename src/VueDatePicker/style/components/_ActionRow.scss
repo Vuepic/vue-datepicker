@@ -2,14 +2,14 @@
   display: flex;
   align-items: center;
   width: 100%;
-  padding: $dp__common_padding;
+  padding: var(--dp-common-padding);
   box-sizing: border-box;
   color: var(--dp-text-color);
   flex-flow: row nowrap;
 
 
   svg {
-    height: $dp__button_icon_height;
+    height: var(--dp-button-icon-height);
     width: auto;
   }
 }
@@ -19,9 +19,8 @@
   align-items: center;
   justify-content: flex-start;
   flex-basis: 50%;
-
   color: var(--dp-text-color);
-  font-size: $dp__preview_font_size;
+  font-size: var(--dp-preview-font-size);
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -38,11 +37,11 @@
 .dp__action_button {
   background: transparent;
   border: 1px solid transparent;
-  padding: 1px 6px;
+  padding: var(--dp-action-buttons-padding);
   line-height: initial;
   margin-left: 3px;
   cursor: pointer;
-  border-radius: $dp__border_radius;
+  border-radius: var(--dp-border-radius);
 }
 
 .dp__action_select {
