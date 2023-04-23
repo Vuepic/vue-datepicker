@@ -198,3 +198,9 @@ export type DatepickerInputRef = ComponentPublicInstance<{
     setParsedDate: (date: Date | Date[]) => void;
     focusInput: () => void;
 }>;
+
+export interface ActionRowData {
+    showSelect: boolean;
+    showCancel: boolean;
+    showNow: boolean;
+}

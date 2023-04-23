@@ -20,6 +20,7 @@ import type {
     WeekStartStr,
     CustomAltPosition,
     SixWeekMode,
+    ActionRowData,
 } from '@/interfaces';
 
 export const AllProps = {
@@ -157,6 +158,7 @@ export const AllProps = {
     onClickOutside: { type: Function as PropType<(validate: () => boolean) => void>, default: null },
     noDisabledRange: { type: Boolean as PropType<boolean>, default: false },
     sixWeeks: { type: [Boolean, String] as PropType<boolean | SixWeekMode>, default: false },
+    actionRow: { type: Object as PropType<Partial<ActionRowData>>, default: () => ({}) },
 };
 
 export type AllPropsType = ExtractPropTypes<typeof AllProps>;
