@@ -17,7 +17,7 @@
 .dp__selection_preview {
   display: block;
   align-items: center;
-  justify-content: start;
+  justify-content: flex-start;
   flex-basis: 50%;
 
   color: var(--dp-text-color);
@@ -30,7 +30,7 @@
 .dp__action_buttons {
   display: flex;
   align-items: center;
-  justify-content: end;
+  justify-content: flex-end;
   flex-basis: 50%;
   text-align: right;
 }
