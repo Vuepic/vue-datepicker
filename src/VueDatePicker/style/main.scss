@@ -193,7 +193,7 @@
 
 .dp-menu-appear-enter-active,
 .dp-menu-appear-leave-active {
-  transition: opacity var(--dp-animation-duration) var(--dp-menu-appear-transition-timing);
+  transition: all var(--dp-animation-duration) var(--dp-menu-appear-transition-timing);
 }
 
 .dp-slide-down-leave-to,

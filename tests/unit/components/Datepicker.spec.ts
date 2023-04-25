@@ -26,6 +26,7 @@ const mountDatepicker = async (props: any = {}): Promise<{ dp: VueWrapper<any>; 
     const dp = mount<{ openMenu: () => void }>(Datepicker, { props });
 
     dp.vm.openMenu();
+    await flushPromises();
 
     await dp.vm.$nextTick();
 

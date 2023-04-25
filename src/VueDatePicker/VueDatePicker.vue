@@ -24,7 +24,8 @@
                 v-if="isOpen"
                 ref="dpMenuRef"
                 :class="theme"
-                :style="menuPosition"
+                :ready="ready"
+                :style="!inline ? menuStyle : undefined"
                 :open-on-top="openOnTop"
                 v-bind="$props"
                 v-model:internal-model-value="internalModelValue"
@@ -52,7 +53,6 @@
 <script lang="ts" setup>
     import {
         computed,
-        nextTick,
         onMounted,
         onUnmounted,
         ref,
@@ -60,6 +60,7 @@
         useSlots,
         watch,
         Teleport as TeleportCmp,
+        nextTick,
     } from 'vue';
 
     import DatepickerInput from '@/components/DatepickerInput.vue';
@@ -108,6 +109,7 @@
     const inputRef = ref<DatepickerInputRef | null>(null);
     const isInputFocused = ref(false);
     const pickerWrapperRef = ref<HTMLElement | null>(null);
+    const ready = ref(0);
 
     const { setMenuFocused, setShiftKey } = useState();
     const { clearArrowNav } = useArrowNavigation();
@@ -148,12 +150,8 @@
         { deep: true },
     );
 
-    const { openOnTop, menuPosition, setMenuPosition, setInitialPosition, getScrollableParent } = usePosition(
-        dpMenuRef,
-        inputRef,
-        emit,
-        props,
-    );
+    const { openOnTop, menuStyle, resetPosition, setMenuPosition, setInitialPosition, getScrollableParent } =
+        usePosition(dpMenuRef, inputRef, emit, props);
 
     const {
         inputValue,
@@ -209,16 +207,21 @@
         }
     };
 
-    const openMenu = (): void => {
+    const openMenu = async () => {
         if (!props.disabled && !props.readonly) {
-            setInitialPosition();
+            resetPosition();
+            await nextTick();
             isOpen.value = true;
-            nextTick().then(() => {
-                setMenuPosition();
-                if (isOpen.value) {
-                    emit('open');
-                }
-            });
+            await nextTick();
+            setInitialPosition();
+            ready.value = Date.now();
+            await nextTick();
+            setMenuPosition();
+            delete menuStyle.value.opacity;
+
+            if (isOpen.value) {
+                emit('open');
+            }
 
             if (!isOpen.value) {
                 clearInternalValues();
@@ -349,7 +352,7 @@
         updateTextInputWithDateTimeValue();
     };
 
-    const toggleMenu = (): void => {
+    const toggleMenu = () => {
         if (isOpen.value) return closeMenu();
         return openMenu();
     };
