@@ -1,4 +1,4 @@
-import type { AriaLabels, IFormat, Transition, TextInputOptions, DateFilter } from '@/interfaces';
+import type { AriaLabels, IFormat, Transition, TextInputOptions, DateFilter, ActionRowData } from '@/interfaces';
 
 export const mergeDefaultTransitions = (conf: Partial<Transition>): Transition =>
     Object.assign(
@@ -77,3 +77,6 @@ export const getDefaultTextInputOptions = (): TextInputOptions => ({
  */
 export const getDefaultFilters = (filters: Partial<DateFilter>): DateFilter =>
     Object.assign({ months: [], years: [], times: { hours: [], minutes: [], seconds: [] } }, filters);
+
+export const getDefaultActionRowData = (actionRow: Partial<ActionRowData>): ActionRowData =>
+    Object.assign({ showSelect: true, showCancel: true, showNow: false }, actionRow);

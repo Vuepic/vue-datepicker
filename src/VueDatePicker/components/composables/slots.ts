@@ -22,7 +22,7 @@ export const slots = [
     { name: 'minutes', use: ['calendar', 'time'] },
     { name: 'month', use: ['calendar', 'month-year'] },
     { name: 'year', use: ['calendar', 'month-year'] },
-    { name: 'action-select', use: ['action'] },
+    { name: 'action-buttons', use: ['action'] },
     { name: 'action-preview', use: ['action'] },
     { name: 'calendar-header', use: ['calendar'] },
     { name: 'marker-tooltip', use: ['calendar'] },

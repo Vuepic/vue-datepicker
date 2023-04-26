@@ -39,6 +39,7 @@ import {
     defaultTransitions,
     getDefaultTextInputOptions,
     getDefaultFilters,
+    getDefaultActionRowData,
 } from '@/utils/defaults';
 import { getDate, isDateAfter, isDateBefore, isDateEqual, resetDateTime } from '@/utils/date-utils';
 
@@ -59,6 +60,7 @@ export const useUtils = (props: AllPropsType) => {
         filters: getDefaultFilters(props.filters),
         transitions: defaultTransitions(props.transitions),
         startTime: getDefaultStartTime(),
+        actionRow: getDefaultActionRowData(props.actionRow),
     }));
 
     // Execute some code depending on the range prop, if not, throw error

@@ -22,11 +22,11 @@
                 </template>
             </div>
             <div class="dp__action_buttons">
-                <slot name="action-select" v-if="$slots['action-select']" :value="internalModelValue" />
-                <template v-if="!$slots['action-select']">
+                <slot name="action-buttons" v-if="$slots['action-buttons']" :value="internalModelValue" />
+                <template v-if="!$slots['action-buttons']">
                     <button
                         ref="cancelButtonRef"
-                        v-if="!inline"
+                        v-if="!inline && defaults.actionRow.showCancel"
                         class="dp__action_button dp__action_cancel"
                         @click="$emit('close-picker')"
                         @keydown.enter="$emit('close-picker')"
@@ -36,7 +36,7 @@
                     </button>
                     <button
                         ref="cancelButtonRef"
-                        v-if="showNowButton"
+                        v-if="showNowButton || defaults.actionRow.showNow"
                         class="dp__action_button dp__action_cancel"
                         @click="$emit('select-now')"
                         @keydown.enter="$emit('select-now')"
@@ -45,6 +45,7 @@
                         {{ nowButtonLabel }}
                     </button>
                     <button
+                        v-if="defaults.actionRow.showSelect"
                         class="dp__action_button dp__action_select"
                         @keydown.enter="selectDate"
                         @keydown.space="selectDate"
