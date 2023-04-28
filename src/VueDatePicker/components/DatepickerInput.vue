@@ -1,12 +1,5 @@
 <template>
-    <div
-        @click="handleOpen"
-        :aria-label="defaults.ariaLabels?.input"
-        role="textbox"
-        aria-multiline="false"
-        :aria-disabled="disabled"
-        :aria-readonly="readonly"
-    >
+    <div @click="handleOpen">
         <slot v-if="$slots.trigger && !$slots['dp-input'] && !inline" name="trigger" />
         <div v-if="!$slots.trigger && (!inline || inlineWithInput)" class="dp__input_wrap">
             <slot
@@ -32,6 +25,7 @@
                 :required="required"
                 :value="inputValue"
                 :autocomplete="autocomplete"
+                :aria-label="defaults.ariaLabels?.input"
                 @input="handleInput"
                 @keydown.enter="handleOpen"
                 @keydown.tab="handleTab"
