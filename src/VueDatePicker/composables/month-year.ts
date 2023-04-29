@@ -1,9 +1,9 @@
 import { computed } from 'vue';
 import { addMonths, addYears, getMonth, getYear, set, subMonths, subYears } from 'date-fns';
 
-import { useUtils } from '@/components/composables';
+import { useUtils } from '@/composables/index.ts';
 
-import type { ExtendedProps, VueEmit } from '@/interfaces';
+import type { ExtendedProps, VueEmit } from '@/interfaces.ts';
 
 export const useMontYearPick = (props: { month: number; year: number } & ExtendedProps, emit: VueEmit) => {
     const { validateMonthYearInRange, validateMaxDate, validateMinDate, defaults } = useUtils(props);

@@ -166,9 +166,9 @@
     import MonthYearPicker from '@/components/MonthYearPicker/MonthYearPicker.vue';
     import TimePickerCmp from '@/components/TimePicker/TimePicker.vue';
 
-    import { useCalendar, mapSlots, useArrowNavigation, useState, useUtils } from '@/components/composables';
+    import { useCalendar, mapSlots, useArrowNavigation, useState, useUtils } from '@/composables';
     import { getMonths, getYears, unrefElement } from '@/utils/util';
-    import { useCalendarClass } from '@/components/composables/calendar-class';
+    import { useCalendarClass } from '@/composables/calendar-class';
     import { AllProps } from '@/utils/props';
 
     import type {

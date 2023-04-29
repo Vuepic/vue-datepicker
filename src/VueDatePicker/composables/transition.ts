@@ -1,6 +1,6 @@
 import { computed } from 'vue';
 
-import type { Transition } from '@/interfaces';
+import type { Transition } from '@/interfaces.ts';
 
 export const useTransitions = (transitions: Transition | boolean) => {
     const transitionName = computed(() => (isOpen: boolean): string => {

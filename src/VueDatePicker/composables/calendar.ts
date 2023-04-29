@@ -19,9 +19,9 @@ import {
     subMonths,
 } from 'date-fns';
 
-import { isModelValueRange, isNumberArray, isRange } from '@/utils/type-guard';
-import { useUtils } from '@/components/composables/utils';
-import { isDateAfter, isDateBefore, isDateEqual, getDate, setDateTime } from '@/utils/date-utils';
+import { isModelValueRange, isNumberArray, isRange } from '@/utils/type-guard.ts';
+import { useUtils } from '@/composables/utils.ts';
+import { isDateAfter, isDateBefore, isDateEqual, getDate, setDateTime } from '@/utils/date-utils.ts';
 
 import type {
     ExtendedProps,
@@ -32,7 +32,7 @@ import type {
     TimeType,
     VueEmit,
     WeekStartNum,
-} from '@/interfaces';
+} from '@/interfaces.ts';
 import type { UnwrapRef, Ref } from 'vue';
 
 // @SONAR_START@

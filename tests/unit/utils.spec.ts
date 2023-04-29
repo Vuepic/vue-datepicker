@@ -33,7 +33,7 @@ import {
     resetDateTime,
     setDateTime,
 } from '@/utils/date-utils';
-import { useTransitions, useUtils } from '@/components/composables';
+import { useTransitions, useUtils } from '@/composables';
 
 import type { AllPropsType } from '@/utils/props';
 import addDays from 'date-fns/addDays';

@@ -63,7 +63,7 @@
     import { computed, onMounted, ref } from 'vue';
 
     import { convertType, unrefElement } from '@/utils/util';
-    import { useArrowNavigation, useUtils } from '@/components/composables';
+    import { useArrowNavigation, useUtils } from '@/composables';
     import { AllProps } from '@/utils/props';
     import { getDate, isDateAfter, isDateBefore, isDateEqual, resetDate } from '@/utils/date-utils';
 

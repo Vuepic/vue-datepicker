@@ -83,7 +83,7 @@
     import TimeInput from '@/components/TimePicker/TimeInput.vue';
 
     import { isModelAuto, unrefElement } from '@/utils/util';
-    import { mapSlots, useTransitions, useArrowNavigation, useUtils } from '@/components/composables';
+    import { mapSlots, useTransitions, useArrowNavigation, useUtils } from '@/composables';
     import { AllProps } from '@/utils/props';
 
     import type { PropType } from 'vue';

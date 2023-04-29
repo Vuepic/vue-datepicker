@@ -1,12 +1,12 @@
 import { ref, toRef, watch } from 'vue';
 import { format, getHours, getMinutes, getMonth, getSeconds, getYear, parse, setYear } from 'date-fns';
 
-import { dateToUtc, getDate, setDateTime } from '@/utils/date-utils';
-import { convertType, errors } from '@/utils/util';
-import { useUtils } from '@/components/composables';
+import { dateToUtc, getDate, setDateTime } from '@/utils/date-utils.ts';
+import { convertType, errors } from '@/utils/util.ts';
+import { useUtils } from '@/composables/index.ts';
 
-import type { ModelValue, VueEmit, TimeModel, MonthModel, ModelTypeConverted } from '@/interfaces';
-import type { AllPropsType } from '@/utils/props';
+import type { ModelValue, VueEmit, TimeModel, MonthModel, ModelTypeConverted } from '@/interfaces.ts';
+import type { AllPropsType } from '@/utils/props.ts';
 import type { Ref } from 'vue';
 
 /**

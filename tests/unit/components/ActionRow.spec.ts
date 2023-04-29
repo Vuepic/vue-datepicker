@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import ActionRow from '@/components/ActionRow.vue';
-import { useArrowNavigation } from '@/components/composables';
+import { useArrowNavigation } from '@/composables';
 import { addMonths, subMonths } from 'date-fns';
 
 describe('ActionRow component', () => {

@@ -57,7 +57,7 @@
     import { setMonth, setYear } from 'date-fns';
 
     import { unrefElement, convertType } from '@/utils/util';
-    import { useArrowNavigation, useUtils } from '@/components/composables';
+    import { useArrowNavigation, useUtils } from '@/composables';
     import { isDateBetween, isDateEqual } from '@/utils/date-utils';
 
     import type { PropType } from 'vue';

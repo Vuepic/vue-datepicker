@@ -73,7 +73,7 @@
         useArrowNavigation,
         useState,
         useUtils,
-    } from '@/components/composables';
+    } from '@/composables';
     import { onClickOutside } from '@/directives/clickOutside';
     import { AllProps } from '@/utils/props';
     import { getNumVal } from '@/utils/util';

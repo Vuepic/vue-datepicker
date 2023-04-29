@@ -13,7 +13,7 @@ import MonthYearInput from '@/components/MonthYearPicker/MonthYearPicker.vue';
 import ActionRow from '@/components/ActionRow.vue';
 import SelectionGrid from '@/components/SelectionGrid.vue';
 
-import { useUtils } from '@/components/composables';
+import { useUtils } from '@/composables';
 import type { AllPropsType } from '@/utils/props';
 import { resetDateTime } from '@/utils/date-utils';
 import TimeInput from '@/components/TimePicker/TimeInput.vue';

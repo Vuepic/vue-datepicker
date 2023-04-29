@@ -214,7 +214,7 @@
     import RegularPicker from '@/components/MonthYearPicker/RegularPicker.vue';
     import SelectionGrid from '@/components/SelectionGrid.vue';
 
-    import { useMontYearPick, useTransitions, useArrowNavigation, useUtils } from '@/components/composables';
+    import { useMontYearPick, useTransitions, useArrowNavigation, useUtils } from '@/composables';
     import { unrefElement } from '@/utils/util';
     import { AllProps } from '@/utils/props';
 

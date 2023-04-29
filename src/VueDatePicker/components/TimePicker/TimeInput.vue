@@ -113,7 +113,7 @@
 
     import { ChevronUpIcon, ChevronDownIcon, ClockIcon } from '@/components/Icons';
     import SelectionGrid from '@/components/SelectionGrid.vue';
-    import { useTransitions, useArrowNavigation, useUtils } from '@/components/composables';
+    import { useTransitions, useArrowNavigation, useUtils } from '@/composables';
     import { AllProps } from '@/utils/props';
     import { getArrayInArray, hoursToAmPmHours } from '@/utils/util';
 

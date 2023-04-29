@@ -115,7 +115,7 @@
     import { computed, nextTick, onMounted, ref } from 'vue';
 
     import { getDayNames, getDefaultMarker, unrefElement } from '@/utils/util';
-    import { useArrowNavigation, useUtils } from '@/components/composables';
+    import { useArrowNavigation, useUtils } from '@/composables';
     import { AllProps } from '@/utils/props';
     import { getDate, isDateAfter, isDateEqual, resetDateTime } from '@/utils/date-utils';
 

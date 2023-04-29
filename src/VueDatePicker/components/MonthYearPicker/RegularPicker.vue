@@ -53,7 +53,7 @@
 
     import SelectionGrid from '@/components/SelectionGrid.vue';
     import { CalendarIcon } from '@/components/Icons';
-    import { useTransitions } from '@/components/composables';
+    import { useTransitions } from '@/composables';
 
     import type { PropType } from 'vue';
     import type { IDefaultSelect, Transition, AriaLabels, Flow } from '@/interfaces';

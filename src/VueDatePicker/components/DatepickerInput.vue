@@ -64,7 +64,7 @@
     import { CalendarIcon, CancelIcon } from '@/components/Icons';
 
     import { parseFreeInput } from '@/utils/date-utils';
-    import { useUtils } from '@/components/composables';
+    import { useUtils } from '@/composables';
     import { AllProps } from '@/utils/props';
 
     import type { PropType } from 'vue';

@@ -5,7 +5,7 @@ import { mount, VueWrapper } from '@vue/test-utils';
 import MonthYearPicker from '@/components/MonthYearPicker/MonthYearPicker.vue';
 
 import { getMonths, getYears } from '@/utils/util';
-import { useArrowNavigation } from '@/components/composables';
+import { useArrowNavigation } from '@/composables';
 import { getDefaultFilters } from '@/utils/defaults';
 
 describe('MonthYearPicker component', () => {
