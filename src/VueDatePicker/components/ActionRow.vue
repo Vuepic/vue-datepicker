@@ -12,13 +12,10 @@
             />
         </template>
         <template v-else>
-            <div class="dp__selection_preview" :title="!Array.isArray(previewValue) ? previewValue : ''">
+            <div v-if="defaults.actionRow.showPreview" class="dp__selection_preview" :title="formatValue">
                 <slot name="action-preview" v-if="$slots['action-preview']" :value="internalModelValue" />
                 <template v-if="!$slots['action-preview']">
-                    <template v-if="!Array.isArray(previewValue)">{{ previewValue }}</template>
-                    <template v-if="Array.isArray(previewValue)">
-                        <div v-for="(preview, i) in previewValue" :key="i">{{ preview }}</div>
-                    </template>
+                    {{ formatValue }}
                 </template>
             </div>
             <div class="dp__action_buttons">
@@ -154,6 +151,12 @@
         }
         return handleCustomPreviewFormat();
     });
+
+    const formatValue = computed(() =>
+        !Array.isArray(previewValue.value)
+            ? previewValue.value
+            : previewValue.value.join(props.multiDates ? '; ' : ' - '),
+    );
 
     const isMonthWithinRange = (date: Date | string): boolean => {
         if (!props.monthPicker) return true;

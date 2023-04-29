@@ -79,4 +79,4 @@ export const getDefaultFilters = (filters: Partial<DateFilter>): DateFilter =>
     Object.assign({ months: [], years: [], times: { hours: [], minutes: [], seconds: [] } }, filters);
 
 export const getDefaultActionRowData = (actionRow: Partial<ActionRowData>): ActionRowData =>
-    Object.assign({ showSelect: true, showCancel: true, showNow: false }, actionRow);
+    Object.assign({ showSelect: true, showCancel: true, showNow: false, showPreview: true }, actionRow);
