@@ -6,8 +6,21 @@ import minimist from 'minimist';
 
 const { f } = minimist(process.argv.slice(2));
 
+function removeDataTestAttrs(node) {
+    if (node.type === 1) {
+        node.props = node.props.filter((prop) => (prop.type === 6 ? prop.name !== 'data-test' : true));
+    }
+}
 export default defineConfig({
-    plugins: [vue()],
+    plugins: [
+        vue({
+            template: {
+                compilerOptions: {
+                    nodeTransforms: process.env.NODE_ENV === 'production' ? [removeDataTestAttrs] : [],
+                },
+            },
+        }),
+    ],
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src/VueDatePicker', import.meta.url)),
