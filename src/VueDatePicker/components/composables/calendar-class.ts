@@ -57,7 +57,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
      * Check when to add a proper active start/end date class on range picker
      */
     const rangeActiveStartEnd = (day: UnwrapRef<ICalendarDay>, isStart = true): boolean => {
-        if ((props.range || props.weekPicker) && Array.isArray(modelValue.value)) {
+        if ((props.range || props.weekPicker) && Array.isArray(modelValue.value) && modelValue.value.length === 2) {
             if (props.hideOffsetDates && !day.current) return false;
             return isDateEqual(getDate(day.value), modelValue.value[isStart ? 0 : 1]);
         }
