@@ -10,12 +10,10 @@ module.exports = {
         'plugin:vue/vue3-strongly-recommended',
         'eslint:recommended',
         '@vue/eslint-config-typescript/recommended',
-        '@vue/eslint-config-prettier',
-        'plugin:prettier/recommended',
+        '@vue/eslint-config-prettier/skip-formatting'
     ],
-    plugins: ['prettier'],
     parserOptions: {
-        ecmaVersion: 2020,
+        ecmaVersion: 'latest',
     },
     rules: {
         'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
