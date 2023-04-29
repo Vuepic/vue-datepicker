@@ -1,4 +1,13 @@
 /* eslint-disable @typescript-eslint/ban-types */
+import type {
+    ComponentOptionsMixin,
+    ComponentPropsOptions,
+    ComponentPublicInstance,
+    ComputedOptions,
+    DefineComponent,
+    MethodOptions,
+} from 'vue';
+import type { Locale } from 'date-fns';
 
 export type ModelValue =
     | Date
@@ -184,7 +193,7 @@ export interface VueDatePicker {
     escClose?: boolean;
     spaceConfirm?: boolean;
     monthChangeOnArrows?: boolean;
-    formatLocale?: import('date-fns').Locale;
+    formatLocale?: Locale;
     autocomplete?: string;
     multiDates?: boolean;
     presetRanges?: { label: string; range: Date[] | string[]; style?: Record<string, string>; slot?: string }[];
@@ -241,9 +250,9 @@ export interface VueDatePicker {
     timezone?: string;
 }
 
-export type DatePickerInstance = import('vue').ComponentPublicInstance<PublicMethods> | null;
+export type DatePickerInstance = ComponentPublicInstance<PublicMethods> | null;
 
-export interface PublicMethods extends import('vue').MethodOptions {
+export interface PublicMethods extends MethodOptions {
     selectDate: () => void;
     closeMenu: () => void;
     openMenu: () => void;
@@ -254,14 +263,14 @@ export interface PublicMethods extends import('vue').MethodOptions {
     parseModel: (value?: ModelValue) => void;
 }
 
-declare const _default: import('vue').DefineComponent<
-    import('vue').ComponentPropsOptions<VueDatePicker>,
+declare const _default: DefineComponent<
+    ComponentPropsOptions<VueDatePicker>,
     {},
     {},
-    import('vue').ComputedOptions,
+    ComputedOptions,
     PublicMethods,
-    import('vue').ComponentOptionsMixin,
-    import('vue').ComponentOptionsMixin,
+    ComponentOptionsMixin,
+    ComponentOptionsMixin,
     EmitEvents[],
     EmitEvents,
     VueDatePicker
