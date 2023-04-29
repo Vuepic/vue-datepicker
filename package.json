@@ -29,10 +29,6 @@
     "./dist/main.css": {
       "import": "./dist/main.css",
       "require": "./dist/main.css"
-    },
-    "./src/VueDatePicker/style/main.scss": {
-      "import": "./src/VueDatePicker/style/main.scss",
-      "require": "./src/VueDatePicker/style/main.scss"
     }
   },
   "scripts": {
