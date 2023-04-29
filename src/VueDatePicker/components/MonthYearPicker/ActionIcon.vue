@@ -19,13 +19,15 @@
 <script lang="ts" setup>
     import { onMounted, ref } from 'vue';
 
-    import type { PropType } from 'vue';
-
     const emit = defineEmits(['activate', 'set-ref']);
-    defineProps({
-        ariaLabel: { type: String as PropType<string>, default: '' },
-        disabled: { type: Boolean as PropType<boolean>, default: false },
-    });
+
+    interface Props {
+        ariaLabel?: string;
+        disabled: boolean;
+    }
+
+    defineProps<Props>();
+
     const elRef = ref(null);
 
     onMounted(() => emit('set-ref', elRef));

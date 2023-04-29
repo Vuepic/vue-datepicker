@@ -1,10 +1,10 @@
 import { computed, onMounted, ref, toRef, watch } from 'vue';
 
-import { OpenPosition } from '@/interfaces.ts';
-import { unrefElement } from '@/utils/util.ts';
+import { OpenPosition } from '@/interfaces';
+import { unrefElement } from '@/utils/util';
 
-import type { ComponentRef, VueEmit } from '@/interfaces.ts';
-import type { AllPropsType } from '@/utils/props.ts';
+import type { ComponentRef, VueEmit } from '@/interfaces';
+import type { AllPropsType } from '@/utils/props';
 
 enum MenuPlacement {
     top = 'top',

@@ -20,7 +20,7 @@ import {
     startOfWeek,
 } from 'date-fns';
 import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz/esm';
-import { errors, convertType } from '@/utils/util.ts';
+import { errors, convertType } from '@/utils/util';
 
 import type {
     DateValue,
@@ -30,8 +30,8 @@ import type {
     InternalModuleValue,
     ICalendarDate,
     ICalendarDay,
-} from '@/interfaces.ts';
-import type { AllPropsType } from '@/utils/props.ts';
+} from '@/interfaces';
+import type { AllPropsType } from '@/utils/props';
 import {
     defaultAriaLabels,
     defaultMultiCalendars,
@@ -40,8 +40,8 @@ import {
     getDefaultTextInputOptions,
     getDefaultFilters,
     getDefaultActionRowData,
-} from '@/utils/defaults.ts';
-import { getDate, isDateAfter, isDateBefore, isDateEqual, resetDateTime } from '@/utils/date-utils.ts';
+} from '@/utils/defaults';
+import { getDate, isDateAfter, isDateBefore, isDateEqual, resetDateTime } from '@/utils/date-utils';
 
 // Instead of using everywhere new Date(), this is the central place for getting or parsing the date
 

@@ -1,5 +1,5 @@
 import type { Slots } from 'vue';
-import type { PresetRange } from '@/interfaces.ts';
+import type { PresetRange } from '@/interfaces';
 
 export const slots = [
     { name: 'clock-icon', use: ['time', 'calendar'] },

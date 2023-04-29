@@ -11,7 +11,6 @@
                 :on-tab="handleTab"
                 :on-clear="onClear"
                 :on-blur="handleBlur"
-                :on-focus="onfocus"
                 :on-keypress="handleKeyPress"
                 :on-paste="handlePaste"
             />

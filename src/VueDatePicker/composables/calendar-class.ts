@@ -1,12 +1,12 @@
 import { ref } from 'vue';
 import { addDays } from 'date-fns';
 
-import { useUtils } from '@/composables/index.ts';
-import { isModelAuto } from '@/utils/util.ts';
-import { isDateAfter, isDateBefore, isDateBetween, isDateEqual, getDate } from '@/utils/date-utils.ts';
+import { useUtils } from '@/composables/index';
+import { isModelAuto } from '@/utils/util';
+import { isDateAfter, isDateBefore, isDateBetween, isDateEqual, getDate } from '@/utils/date-utils';
 
 import type { UnwrapRef, WritableComputedRef } from 'vue';
-import type { ExtendedProps, ICalendarDay, InternalModuleValue } from '@/interfaces.ts';
+import type { ExtendedProps, ICalendarDay, InternalModuleValue } from '@/interfaces';
 
 export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleValue>, props: ExtendedProps) => {
     const { isDisabled, matchDate, getWeekFromDate, defaults } = useUtils(props);
