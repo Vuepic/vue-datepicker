@@ -367,6 +367,7 @@
 
     const menuCalendarClassWrapper = computed(
         (): DynamicClass => ({
+            dp__menu_inner: true,
             dp__flex_display: defaults.value.multiCalendars > 0,
         }),
     );

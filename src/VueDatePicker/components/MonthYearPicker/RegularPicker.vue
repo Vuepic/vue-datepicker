@@ -1,16 +1,15 @@
 <template>
-    <div
-        class="dp__month_year_select"
+    <button
+        class="dp__btn dp__month_year_select"
         @click="$emit('toggle')"
         @keydown.enter="$emit('toggle')"
         @keydown.space="$emit('toggle')"
-        role="button"
         :aria-label="ariaLabel"
         tabindex="0"
         ref="elRef"
     >
         <slot name="default" />
-    </div>
+    </button>
     <transition :name="transitionName(showSelectionGrid)" :css="showTransition">
         <SelectionGrid
             v-if="showSelectionGrid"

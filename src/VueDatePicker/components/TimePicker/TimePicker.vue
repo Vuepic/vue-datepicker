@@ -1,10 +1,9 @@
 <template>
     <div>
-        <div
+        <button
             v-if="!timePicker"
             v-show="!hideNavigationButtons('time')"
             :class="toggleButtonClass"
-            role="button"
             :aria-label="defaults.ariaLabels?.openTimePicker"
             tabindex="0"
             data-test="open-time-picker-btn"
@@ -15,7 +14,7 @@
         >
             <slot name="clock-icon" v-if="$slots['clock-icon']" />
             <ClockIcon v-if="!$slots['clock-icon']" />
-        </div>
+        </button>
         <transition :name="transitionName(showTimePicker)" :css="showTransition">
             <div v-if="showTimePicker || timePicker" class="dp__overlay" ref="overlayRef" tabindex="0">
                 <div class="dp__overlay_container dp__container_flex dp__time_picker_overlay_container">
@@ -57,12 +56,11 @@
                             </TimeInput>
                         </div>
                     </template>
-                    <div
+                    <button
                         v-if="!timePicker"
                         v-show="!hideNavigationButtons('time')"
                         ref="closeTimePickerBtn"
                         :class="toggleButtonClass"
-                        role="button"
                         :aria-label="defaults.ariaLabels?.closeTimePicker"
                         tabindex="0"
                         @keydown.enter="toggleTimePicker(false)"
@@ -71,7 +69,7 @@
                     >
                         <slot name="calendar-icon" v-if="$slots['calendar-icon']" />
                         <CalendarIcon v-if="!$slots['calendar-icon']" />
-                    </div>
+                    </button>
                 </div>
             </div>
         </transition>
@@ -180,8 +178,9 @@
     };
 
     const toggleButtonClass = computed(() => ({
+        dp__btn: true,
         dp__button: true,
-        dp__button_bottom: props.autoApply,
+        dp__button_bottom: props.autoApply && !props.keepActionRow,
     }));
 
     const timeInputSlots = mapSlots(slots, 'timePicker');

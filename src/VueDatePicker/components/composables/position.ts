@@ -101,14 +101,8 @@ export const usePosition = (menuRef: ComponentRef, inputRef: ComponentRef, emit:
             const { top, left, width, height } = getInputPositions(inputEl);
             const placement = getMenuPlacement();
 
-            if (placement === MenuPlacement.bottom) {
-                menuStyle.value.top = `${top + height}px`;
-                setHorizontalPositioning(left, width, 0);
-            } else {
-                menuStyle.value.top = `${top}px`;
-
-                setHorizontalPositioning(left, width, 100);
-            }
+            menuStyle.value.top = `${top + height / 2}px`;
+            setHorizontalPositioning(left, width, placement === MenuPlacement.top ? 100 : 0);
         }
     };
 

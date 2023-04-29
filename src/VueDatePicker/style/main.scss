@@ -7,6 +7,8 @@
 @import "components/ActionRow";
 
 :root {
+  --dp-common-transition: all 0.1s ease-in;
+  --dp-menu-padding: 6px 8px;
   --dp-animation-duration: 0.1s;
   --dp-menu-appear-transition-timing: cubic-bezier(.4, 0, 1, 1);
   --dp-transition-timing: ease-out;
@@ -90,6 +92,14 @@
   --dp-tooltip-color: #fafafa;
   --dp-disabled-color-text: #8e8e8e;
   --dp-highlight-color: rgb(25 118 210 / 10%);
+}
+
+.dp__btn {
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  transition: var(--dp-common-transition);
 }
 
 .dp__main {

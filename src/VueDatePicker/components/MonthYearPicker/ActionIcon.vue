@@ -1,6 +1,6 @@
 <template>
-    <div
-        class="dp__month_year_col_nav"
+    <button
+        class="dp__btn dp__month_year_col_nav"
         @click="$emit('activate')"
         @keydown.enter="$emit('activate')"
         @keydown.space="$emit('activate')"
@@ -10,10 +10,10 @@
         :aria-disabled="disabled"
         ref="elRef"
     >
-        <div class="dp__inner_nav" :class="{ dp__inner_nav_disabled: disabled }">
+        <span class="dp__inner_nav" :class="{ dp__inner_nav_disabled: disabled }">
             <slot />
-        </div>
-    </div>
+        </span>
+    </button>
 </template>
 
 <script lang="ts" setup>

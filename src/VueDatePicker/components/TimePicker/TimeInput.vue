@@ -3,12 +3,12 @@
         <div v-for="(timeInput, i) in timeInputs" :key="i" :class="timeColClass">
             <template v-if="timeInput.separator"> : </template>
             <template v-else>
-                <div
+                <button
                     :class="{
+                        dp__btn: true,
                         dp__inc_dec_button: true,
                         dp__inc_dec_button_disabled: disabledArrowUpBtn(timeInput.type),
                     }"
-                    role="button"
                     data-test="time-inc-btn"
                     :aria-label="defaults.ariaLabels?.incrementValue(timeInput.type)"
                     tabindex="0"
@@ -19,10 +19,10 @@
                 >
                     <slot name="arrow-up" v-if="$slots['arrow-up']" />
                     <ChevronUpIcon v-if="!$slots['arrow-up']" />
-                </div>
-                <div
-                    role="button"
+                </button>
+                <button
                     :aria-label="defaults.ariaLabels?.openTpOverlay(timeInput.type)"
+                    class="dp__btn"
                     :class="checkOverlayDisabled(timeInput.type) ? '' : 'dp__time_display'"
                     tabindex="0"
                     :data-test="`${timeInput.type}-toggle-overlay-btn`"
@@ -38,13 +38,13 @@
                         :value="timeValueDisplay(timeInput.type).value"
                     />
                     <template v-if="!$slots[timeInput.type]">{{ timeValueDisplay(timeInput.type).text }}</template>
-                </div>
-                <div
+                </button>
+                <button
                     :class="{
+                        dp__btn: true,
                         dp__inc_dec_button: true,
                         dp__inc_dec_button_disabled: disabledArrowDownBtn(timeInput.type),
                     }"
-                    role="button"
                     data-test="time-dec-btn"
                     :aria-label="defaults.ariaLabels?.decrementValue(timeInput.type)"
                     tabindex="0"
@@ -55,7 +55,7 @@
                 >
                     <slot name="arrow-down" v-if="$slots['arrow-down']" />
                     <ChevronDownIcon v-if="!$slots['arrow-down']" />
-                </div>
+                </button>
             </template>
         </div>
         <div v-if="!is24">

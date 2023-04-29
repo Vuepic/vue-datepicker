@@ -23,6 +23,10 @@
   }
 }
 
+.dp__menu_inner {
+  padding: var(--dp-menu-padding);
+}
+
 .dp__menu_index {
   z-index: 99999;
 }
