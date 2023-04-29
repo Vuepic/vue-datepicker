@@ -97,6 +97,11 @@
 
 .dp__preset_range {
   padding: 5px;
+  display: block;
+  white-space: nowrap;
+  color: var(--dp-text-color);
+  border-radius: var(--dp-border-radius);
+  transition: var(--dp-common-transition);
 
   &:hover {
     background-color: var(--dp-hover-color);
