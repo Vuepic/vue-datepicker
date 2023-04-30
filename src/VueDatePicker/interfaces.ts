@@ -75,6 +75,8 @@ export type ModelValue =
 export type WeekStartNum = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 export type WeekStartStr = '0' | '1' | '2' | '3' | '4' | '5' | '6';
 
+export type SixWeekMode = 'append' | 'prepend' | 'center' | 'fair';
+
 export type MaybeRef<T> = T | Ref<T>;
 export type Fn = () => void;
 

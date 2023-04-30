@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import {
     addHours,
     getDate,
@@ -38,6 +38,7 @@ import { useTransitions, useUtils } from '@/components/composables';
 import type { AllPropsType } from '@/utils/props';
 import addDays from 'date-fns/addDays';
 import { defaultMultiCalendars, defaultTransitions } from '@/utils/defaults';
+import type { SixWeekMode } from '@/interfaces.ts';
 
 const getCurrentTime = () => {
     return {
@@ -73,6 +74,143 @@ describe('Utils and date utils formatting', () => {
 
         expect(days).toHaveLength(5);
         expect(days[0].days[0].text).toEqual('');
+    });
+
+    describe('getCalendar should get the correct weeks depending on six week mode', () => {
+        const getCalendarDaysWithSixWeekMode = (sixWeeks: boolean | SixWeekMode) => {
+            const { getCalendarDays } = useUtils({
+                weekStart: 1,
+                hideOffsetDates: false,
+                sixWeeks,
+            } as AllPropsType);
+
+            const jan = getCalendarDays(0, 2021); // ends on a sunday
+            const feb = getCalendarDays(1, 2021); // spans exactly 4 weeks from monday to sunday
+            const mar = getCalendarDays(2, 2021); // starts on a monday
+            const apr = getCalendarDays(3, 2021); // has five weeks with more days in the end week
+            const may = getCalendarDays(4, 2021); // has six weeks
+            const jun = getCalendarDays(5, 2021); // has five weeks with more days in the start week
+            return { jan, feb, mar, apr, may, jun };
+        };
+
+        it('In `false` mode, it should get only weeks that contain dates of the queried month', () => {
+            const { jan, feb, mar, apr, may, jun } = getCalendarDaysWithSixWeekMode(false);
+
+            expect(jan).toHaveLength(5);
+            expect(jan[0].days[0].text).toEqual(28);
+            expect(jan[4].days[6].text).toEqual(31);
+            expect(feb).toHaveLength(4);
+            expect(feb[0].days[0].text).toEqual(1);
+            expect(feb[3].days[6].text).toEqual(28);
+            expect(mar).toHaveLength(5);
+            expect(mar[0].days[0].text).toEqual(1);
+            expect(mar[4].days[6].text).toEqual(4);
+            expect(apr).toHaveLength(5);
+            expect(apr[0].days[0].text).toEqual(29);
+            expect(apr[4].days[6].text).toEqual(2);
+            expect(may).toHaveLength(6);
+            expect(may[0].days[0].text).toEqual(26);
+            expect(may[5].days[6].text).toEqual(6);
+            expect(jun).toHaveLength(5);
+            expect(jun[0].days[0].text).toEqual(31);
+            expect(jun[4].days[6].text).toEqual(4);
+        });
+
+        it('In `true` or `append` mode, it should return six weeks, padded to the end of the calendar', () => {
+            const appendResult = getCalendarDaysWithSixWeekMode('append');
+
+            expect(getCalendarDaysWithSixWeekMode(true)).toEqual(appendResult);
+
+            const { jan, feb, mar, apr, may, jun } = appendResult;
+
+            expect(jan).toHaveLength(6);
+            expect(jan[0].days[0].text).toEqual(28);
+            expect(jan[5].days[6].text).toEqual(7);
+            expect(feb).toHaveLength(6);
+            expect(feb[0].days[0].text).toEqual(1);
+            expect(feb[5].days[6].text).toEqual(14);
+            expect(mar).toHaveLength(6);
+            expect(mar[0].days[0].text).toEqual(1);
+            expect(mar[5].days[6].text).toEqual(11);
+            expect(apr).toHaveLength(6);
+            expect(apr[0].days[0].text).toEqual(29);
+            expect(apr[5].days[6].text).toEqual(9);
+            expect(may).toHaveLength(6);
+            expect(may[0].days[0].text).toEqual(26);
+            expect(may[5].days[6].text).toEqual(6);
+            expect(jun).toHaveLength(6);
+            expect(jun[0].days[0].text).toEqual(31);
+            expect(jun[5].days[6].text).toEqual(11);
+        });
+
+        it('In `prepend` mode, it should return six weeks, padded to the start of the calendar', () => {
+            const { jan, feb, mar, apr, may, jun } = getCalendarDaysWithSixWeekMode('prepend');
+
+            expect(jan).toHaveLength(6);
+            expect(jan[0].days[0].text).toEqual(21);
+            expect(jan[5].days[6].text).toEqual(31);
+            expect(feb).toHaveLength(6);
+            expect(feb[0].days[0].text).toEqual(18);
+            expect(feb[5].days[6].text).toEqual(28);
+            expect(mar).toHaveLength(6);
+            expect(mar[0].days[0].text).toEqual(22);
+            expect(mar[5].days[6].text).toEqual(4);
+            expect(apr).toHaveLength(6);
+            expect(apr[0].days[0].text).toEqual(22);
+            expect(apr[5].days[6].text).toEqual(2);
+            expect(may).toHaveLength(6);
+            expect(may[0].days[0].text).toEqual(26);
+            expect(may[5].days[6].text).toEqual(6);
+            expect(jun).toHaveLength(6);
+            expect(jun[0].days[0].text).toEqual(24);
+            expect(jun[5].days[6].text).toEqual(4);
+        });
+
+        it('In `center` mode, it should return six weeks, padded so that months that start with a full week get a week of leading offset', () => {
+            const { jan, feb, mar, apr, may, jun } = getCalendarDaysWithSixWeekMode('center');
+
+            expect(jan).toHaveLength(6);
+            expect(jan[0].days[0].text).toEqual(28);
+            expect(jan[5].days[6].text).toEqual(7);
+            expect(feb).toHaveLength(6);
+            expect(feb[0].days[0].text).toEqual(25);
+            expect(feb[5].days[6].text).toEqual(7);
+            expect(mar).toHaveLength(6);
+            expect(mar[0].days[0].text).toEqual(22);
+            expect(mar[5].days[6].text).toEqual(4);
+            expect(apr).toHaveLength(6);
+            expect(apr[0].days[0].text).toEqual(29);
+            expect(apr[5].days[6].text).toEqual(9);
+            expect(may).toHaveLength(6);
+            expect(may[0].days[0].text).toEqual(26);
+            expect(may[5].days[6].text).toEqual(6);
+            expect(jun).toHaveLength(6);
+            expect(jun[0].days[0].text).toEqual(31);
+            expect(jun[5].days[6].text).toEqual(11);
+        });
+
+        it('In `fair` mode, it should return six weeks, padded to start and end of the month depending on which has the smaller offset in the partial week', () => {
+            const { jan, feb, mar, apr, may, jun } = getCalendarDaysWithSixWeekMode('fair');
+
+            expect(jan).toHaveLength(6);
+            expect(jan[0].days[0].text).toEqual(28);
+            expect(jan[5].days[6].text).toEqual(7);
+            expect(feb).toHaveLength(6);
+            expect(feb[0].days[0].text).toEqual(25);
+            expect(feb[5].days[6].text).toEqual(7);
+            expect(mar).toHaveLength(6);
+            expect(mar[0].days[0].text).toEqual(22);
+            expect(mar[5].days[6].text).toEqual(4);
+            expect(apr).toHaveLength(6);
+            expect(apr[0].days[0].text).toEqual(29);
+            expect(apr[5].days[6].text).toEqual(9);
+            expect(may).toHaveLength(6);
+            expect(may[0].days[0].text).toEqual(26);
+            expect(may[5].days[6].text).toEqual(6);
+            expect(jun).toHaveLength(6);
+            expect(jun[0].days[0].text).toEqual(24);
+            expect(jun[5].days[6].text).toEqual(4);
+        });
     });
 
     it('Should group array by 3', () => {
