@@ -5,7 +5,6 @@
   "author": "Vuepic",
   "private": false,
   "license": "MIT",
-  "sideEffects": false,
   "homepage": "https://vue3datepicker.com",
   "types": "index.d.ts",
   "type": "module",
