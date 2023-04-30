@@ -63,7 +63,7 @@
                                 :year="year(instance)"
                                 :instance="instance"
                                 :internal-model-value="internalModelValue"
-                                v-bind="$props"
+                                v-bind="baseProps"
                                 @mount="childMount('monthYearInput')"
                                 @reset-flow="resetFlow"
                                 @update-month-year="updateMonthYear(instance, $event)"
@@ -86,8 +86,7 @@
                                 :mapped-dates="mappedDates(instance)"
                                 :month="month(instance)"
                                 :year="year(instance)"
-                                v-bind="$props"
-                                v-model:flow-step="flowStep"
+                                v-bind="baseProps"
                                 @select-date="selectDate($event, !isFirstInstance(instance))"
                                 @handle-space="handleSpace($event, !isFirstInstance(instance))"
                                 @set-hover-date="setHoverDate($event)"
@@ -116,7 +115,7 @@
                                 :minutes="time.minutes"
                                 :seconds="time.seconds"
                                 :internal-model-value="internalModelValue"
-                                v-bind="$props"
+                                v-bind="baseProps"
                                 @mount="childMount('timePicker')"
                                 @update:hours="updateTime($event)"
                                 @update:minutes="updateTime($event, false)"
@@ -144,7 +143,7 @@
                 :menu-mount="menuMount"
                 :calendar-width="calendarWidth"
                 :internal-model-value="internalModelValue"
-                v-bind="$props"
+                v-bind="baseProps"
                 @close-picker="$emit('close-picker')"
                 @select-date="$emit('select-date')"
                 @invalid-select="$emit('invalid-select')"
@@ -205,6 +204,12 @@
         ready: { type: Number as PropType<number>, default: 0 },
         internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
         ...AllProps,
+    });
+
+    const baseProps = computed(() => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { openOnTop, ready, internalModelValue, ...initProps } = props;
+        return initProps;
     });
 
     const { setMenuFocused, setShiftKey, control } = useState();
