@@ -11,7 +11,9 @@ import {
     isAfter,
     set,
 } from 'date-fns';
-import type { DateTimeSetter, DateValue, TimeModel } from '@/interfaces';
+
+import type { DateTimeSetter, DateValue, TimeModel, TimeType } from '@/interfaces';
+import type { Duration } from 'date-fns';
 
 const parseTextToDate = (
     value: string,
@@ -153,4 +155,20 @@ export const isDateBetween = (range: Date[], hoverDate: Date | null, dateToCheck
 export const resetDate = (date: Date | string): Date => {
     const onFirst = set(new Date(date), { date: 1 });
     return resetDateTime(onFirst);
+};
+
+export const sanitizeTime = (time: TimeModel, type?: TimeType, value?: number): Duration => {
+    if (type && (value || value === 0)) {
+        return Object.fromEntries(
+            (['hours', 'minutes', 'seconds'] as TimeType[]).map((timeType) => {
+                if (timeType === type) return [timeType, value];
+                return [timeType, !isNaN(+time[timeType]) ? +time[timeType] : undefined];
+            }),
+        );
+    }
+    return {
+        hours: !isNaN(+time.hours) ? +time.hours : undefined,
+        minutes: !isNaN(+time.minutes) ? +time.minutes : undefined,
+        seconds: !isNaN(+time.seconds) ? +time.seconds : undefined,
+    };
 };

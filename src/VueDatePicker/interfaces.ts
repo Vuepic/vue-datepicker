@@ -1,7 +1,7 @@
 import type { ComponentPublicInstance, Ref } from 'vue';
 import type { AllPropsType } from '@/utils/props';
 
-export type DynamicClass = Record<string, boolean>;
+export type DynamicClass = Record<string, boolean | undefined>;
 
 export interface IDefaultSelect<T = number> {
     value: T;

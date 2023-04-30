@@ -109,18 +109,18 @@
 <script lang="ts" setup>
     import { computed, onMounted, reactive, ref } from 'vue';
 
-    import { add, getHours, getMinutes, getSeconds, set, sub } from 'date-fns';
+    import { add, getHours, getMinutes, getSeconds, isAfter, isBefore, isEqual, set, sub } from 'date-fns';
 
     import { ChevronUpIcon, ChevronDownIcon, ClockIcon } from '@/components/Icons';
     import SelectionGrid from '@/components/SelectionGrid.vue';
     import { useTransitions, useArrowNavigation, useUtils } from '@/composables';
     import { AllProps } from '@/utils/props';
     import { getArrayInArray, hoursToAmPmHours } from '@/utils/util';
+    import { getDate, sanitizeTime } from '@/utils/date-utils';
 
     import type { PropType } from 'vue';
     import type { Duration } from 'date-fns';
     import type { DynamicClass, IDefaultSelect, TimeType, TimeOverlayCheck } from '@/interfaces';
-    import { getDate } from '@/utils/date-utils';
 
     const emit = defineEmits([
         'set-hours',
@@ -159,25 +159,28 @@
         emit('mounted');
     });
 
+    const setTime = (time: Duration) => {
+        return set(new Date(), {
+            hours: time.hours,
+            minutes: time.minutes,
+            seconds: props.enableSeconds ? time.seconds : 0,
+            milliseconds: 0,
+        });
+    };
+
+    const timeValues = computed(() => ({ hours: props.hours, minutes: props.minutes, seconds: props.seconds }));
+
     const disabledArrowUpBtn = computed(() => (type: TimeType) => {
-        return !!(
-            props.maxTime &&
-            props.maxTime[type] &&
-            +props.maxTime[type] < +props[type] + +props[`${type}Increment`]
-        );
+        return !isDateInRange(+props[type] + +props[`${type}Increment`], type);
     });
 
     const disabledArrowDownBtn = computed(() => (type: TimeType) => {
-        return !!(
-            props.minTime &&
-            props.minTime[type] &&
-            +props.minTime[type] > +props[type] - +props[`${type}Increment`]
-        );
+        return !isDateInRange(+props[type] - +props[`${type}Increment`], type);
     });
 
-    const addTime = (initial: Record<string, number>, toAdd: Duration) => add(set(getDate(), initial), toAdd);
+    const addTime = (initial: Duration, toAdd: Duration) => add(set(getDate(), initial), toAdd);
 
-    const subTime = (initial: Record<string, number>, toSub: Duration) => sub(set(getDate(), initial), toSub);
+    const subTime = (initial: Duration, toSub: Duration) => sub(set(getDate(), initial), toSub);
 
     const timeColClass = computed(
         (): DynamicClass => ({
@@ -225,22 +228,33 @@
         return getArrayInArray(generatedArray);
     };
 
-    const checkMinMax = (val: number, type: TimeType): boolean => {
-        const minValue = props.minTime && props.minTime[type];
-        const maxValue = props.maxTime && props.maxTime[type];
-        if (minValue && maxValue) return val < +minValue || val > +maxValue;
-        if (minValue) return val < +minValue;
-        if (maxValue) return val > +maxValue;
+    const isDateInRange = (val: number, type: TimeType): boolean => {
+        const minTime = props.minTime ? setTime(sanitizeTime(props.minTime)) : null;
+        const maxTime = props.maxTime ? setTime(sanitizeTime(props.maxTime)) : null;
+        const selectedDate = setTime(sanitizeTime(timeValues.value, type, val));
+
+        if (minTime && maxTime)
+            return (
+                (isBefore(selectedDate, maxTime) || isEqual(selectedDate, maxTime)) &&
+                (isAfter(selectedDate, minTime) || isEqual(selectedDate, minTime))
+            );
+        if (minTime) return isAfter(selectedDate, minTime) || isEqual(selectedDate, minTime);
+        if (maxTime) return isBefore(selectedDate, maxTime) || isEqual(selectedDate, maxTime);
         return false;
     };
 
     const disabledInGrid = computed(() => (type: TimeType) => {
         const times = getGridItems(type)
             .flat()
-            .filter((item) => item)
+            .filter((item) => item || (item as IDefaultSelect).value === 0)
             .map((item) => item.value);
 
-        return times.filter((item) => checkMinMax(item, type));
+        return times.filter((item) => {
+            if (type === 'hours') {
+                console.log(!isDateInRange(item, type), item);
+            }
+            return !isDateInRange(item, type);
+        });
     });
 
     const checkOverlayDisabled = (type: TimeType): boolean => {
@@ -264,8 +278,9 @@
 
     const handleTimeValue = (type: TimeType, inc = true): void => {
         const addOrSub = inc ? addTime : subTime;
-        const disabled = inc ? disabledArrowUpBtn.value(type) : disabledArrowDownBtn.value(type);
-        if (!disabled) {
+        const inVal = inc ? +props[`${type}Increment`] : -+props[`${type}Increment`];
+        const isInRange = isDateInRange(+props[type] + inVal, type);
+        if (isInRange) {
             emit(
                 `update:${type}`,
                 getTimeGetter(type)(addOrSub({ [type]: +props[type] }, { [type]: +props[`${type}Increment`] })),
