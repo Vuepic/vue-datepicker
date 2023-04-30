@@ -313,7 +313,9 @@ export const useUtils = (props: AllPropsType) => {
         const firstDate = getDate(getZonedDate(new Date(year, month)));
         const lastDate = getDate(getZonedDate(new Date(year, month + 1, 0)));
 
-        const firstDateInCalendar = startOfWeek(firstDate, { weekStartsOn: props.weekStart as WeekStartNum });
+        const weekStartsOn = props.weekStart as WeekStartNum;
+
+        const firstDateInCalendar = startOfWeek(firstDate, { weekStartsOn });
 
         const addDaysToWeek = (date: Date) => {
             const days = getWeekDays(date, month);
@@ -331,11 +333,39 @@ export const useUtils = (props: AllPropsType) => {
 
         if (props.sixWeeks && weeks.length < 6) {
             const diff = 6 - weeks.length;
+
+            const firstWeekday = (firstDate.getDay() + 7 - weekStartsOn) % 7;
+            const lastWeekday = (lastDate.getDay() + 7 - weekStartsOn) % 7;
+            const gapToEnd = 6 - lastWeekday;
+            const [requiresLeadingWeek, doesAlternate] = (() => {
+                switch (props.sixWeeks === true ? 'append' : props.sixWeeks) {
+                    case 'prepend':
+                        return [true, false];
+                    case 'center':
+                        return [firstWeekday == 0, true];
+                    case 'fair':
+                        return [firstWeekday == 0 || gapToEnd > firstWeekday, true];
+                    default:
+                    case 'append':
+                        return [false, false];
+                }
+            })();
+
+            // const doesAlternate = true;
+            // const requiresLeadingWeek = firstWeekday == 0 || gapToEnd > firstWeekday;
+
             for (let i = 1; i <= diff; i++) {
-                const lastWeek = weeks[weeks.length - 1];
-                const last = lastWeek.days[lastWeek.days.length - 1];
-                const days = getWeekDays(addDays(last.value, 1), getMonth(firstDate));
-                weeks.push({ days });
+                const addLeadingWeek = doesAlternate ? !!(i % 2) == requiresLeadingWeek : requiresLeadingWeek;
+                if (addLeadingWeek) {
+                    const first = weeks[0].days[0];
+                    const days = getWeekDays(addDays(first.value, -7), getMonth(firstDate));
+                    weeks.unshift({ days });
+                } else {
+                    const lastWeek = weeks[weeks.length - 1];
+                    const last = lastWeek.days[lastWeek.days.length - 1];
+                    const days = getWeekDays(addDays(last.value, 1), getMonth(firstDate));
+                    weeks.push({ days });
+                }
             }
         }
 
