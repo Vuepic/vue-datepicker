@@ -48,7 +48,7 @@ export type EmitEvents =
     | 'invalid-fixed-range'
     | 'time-picker-open';
 
-export interface VueDatePicker {
+export interface VueDatePickerProps {
     uid?: string;
     name?: string;
     is24?: boolean;
@@ -246,7 +246,7 @@ export interface VueDatePicker {
     hideNavigation?: ('month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds')[];
     onClickOutside?: (validate: () => boolean) => void;
     noDisabledRange?: boolean;
-    sixWeeks?: boolean;
+    sixWeeks?: boolean | 'append' | 'prepend' | 'center' | 'fair';
     timezone?: string;
 }
 
@@ -264,7 +264,7 @@ export interface PublicMethods extends MethodOptions {
 }
 
 declare const _default: DefineComponent<
-    ComponentPropsOptions<VueDatePicker>,
+    ComponentPropsOptions<VueDatePickerProps>,
     {},
     {},
     ComputedOptions,
@@ -273,7 +273,7 @@ declare const _default: DefineComponent<
     ComponentOptionsMixin,
     EmitEvents[],
     EmitEvents,
-    VueDatePicker
+    VueDatePickerProps
 >;
 
 export default _default;
