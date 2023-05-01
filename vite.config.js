@@ -8,7 +8,10 @@ const { f } = minimist(process.argv.slice(2));
 
 function removeDataTestAttrs(node) {
     if (node.type === 1) {
-        node.props = node.props.filter((prop) => (prop.type === 6 ? prop.name !== 'data-test' : true));
+        node.props = node.props.filter((prop) => {
+            if (prop.name === 'data-test') return false;
+            return !(prop.name === 'bind' && prop.arg && prop.arg.content && prop.arg.content === 'data-test');
+        });
     }
 }
 export default defineConfig({
