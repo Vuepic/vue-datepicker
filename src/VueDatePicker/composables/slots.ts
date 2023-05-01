@@ -26,7 +26,7 @@ export const slots = [
     { name: 'action-preview', use: ['action'] },
     { name: 'calendar-header', use: ['calendar'] },
     { name: 'marker-tooltip', use: ['calendar'] },
-    { name: 'now-button', use: [] },
+    { name: 'action-extra', use: ['menu'] },
     { name: 'time-picker-overlay', use: ['calendar', 'time'] },
     { name: 'am-pm-button', use: ['calendar', 'time'] },
     { name: 'left-sidebar', use: ['menu'] },
