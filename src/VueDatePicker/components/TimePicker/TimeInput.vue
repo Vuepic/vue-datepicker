@@ -240,7 +240,7 @@
             );
         if (minTime) return isAfter(selectedDate, minTime) || isEqual(selectedDate, minTime);
         if (maxTime) return isBefore(selectedDate, maxTime) || isEqual(selectedDate, maxTime);
-        return false;
+        return true;
     };
 
     const disabledInGrid = computed(() => (type: TimeType) => {
