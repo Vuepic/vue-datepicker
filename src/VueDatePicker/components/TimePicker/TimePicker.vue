@@ -1,6 +1,7 @@
 <template>
     <div>
         <button
+            type="button"
             v-if="!timePicker"
             v-show="!hideNavigationButtons('time')"
             :class="toggleButtonClass"
@@ -57,6 +58,7 @@
                         </div>
                     </template>
                     <button
+                        type="button"
                         v-if="!timePicker"
                         v-show="!hideNavigationButtons('time')"
                         ref="closeTimePickerBtn"

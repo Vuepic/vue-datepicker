@@ -4,6 +4,7 @@
             <template v-if="timeInput.separator"> : </template>
             <template v-else>
                 <button
+                    type="button"
                     :class="{
                         dp__btn: true,
                         dp__inc_dec_button: true,
@@ -21,6 +22,7 @@
                     <ChevronUpIcon v-if="!$slots['arrow-up']" />
                 </button>
                 <button
+                    type="button"
                     :aria-label="defaults.ariaLabels?.openTpOverlay(timeInput.type)"
                     class="dp__btn"
                     :class="checkOverlayDisabled(timeInput.type) ? '' : 'dp__time_display'"
@@ -40,6 +42,7 @@
                     <template v-if="!$slots[timeInput.type]">{{ timeValueDisplay(timeInput.type).text }}</template>
                 </button>
                 <button
+                    type="button"
                     :class="{
                         dp__btn: true,
                         dp__inc_dec_button: true,

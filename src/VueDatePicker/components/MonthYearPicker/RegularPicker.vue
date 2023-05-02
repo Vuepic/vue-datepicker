@@ -1,5 +1,6 @@
 <template>
     <button
+        type="button"
         class="dp__btn dp__month_year_select"
         @click="$emit('toggle')"
         @keydown.enter="$emit('toggle')"

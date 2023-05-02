@@ -1,11 +1,11 @@
 <template>
     <button
+        type="button"
         class="dp__btn dp__month_year_col_nav"
         @click="$emit('activate')"
         @keydown.enter="$emit('activate')"
         @keydown.space="$emit('activate')"
         tabindex="0"
-        role="button"
         :aria-label="ariaLabel"
         :aria-disabled="disabled"
         ref="elRef"

@@ -22,6 +22,7 @@
                 <slot name="action-buttons" v-if="$slots['action-buttons']" :value="internalModelValue" />
                 <template v-if="!$slots['action-buttons']">
                     <button
+                        type="button"
                         ref="cancelButtonRef"
                         v-if="!inline && defaults.actionRow.showCancel"
                         class="dp__action_button dp__action_cancel"
@@ -32,6 +33,7 @@
                         {{ cancelText }}
                     </button>
                     <button
+                        type="button"
                         ref="cancelButtonRef"
                         v-if="showNowButton || defaults.actionRow.showNow"
                         class="dp__action_button dp__action_cancel"
@@ -42,6 +44,7 @@
                         {{ nowButtonLabel }}
                     </button>
                     <button
+                        type="button"
                         v-if="defaults.actionRow.showSelect"
                         class="dp__action_button dp__action_select"
                         @keydown.enter="selectDate"
