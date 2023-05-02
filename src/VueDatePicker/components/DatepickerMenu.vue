@@ -244,11 +244,7 @@
         }
         if (menu) {
             const stopDefault = (event: Event) => {
-                if (
-                    !['action-row', 'time-picker', 'month-year'].some((slotName) =>
-                        Object.keys(slots).includes(slotName),
-                    )
-                ) {
+                if (props.allowPreventDefault) {
                     event.preventDefault();
                 }
                 event.stopImmediatePropagation();

@@ -248,6 +248,7 @@ export interface VueDatePickerProps {
     noDisabledRange?: boolean;
     sixWeeks?: boolean | 'append' | 'prepend' | 'center' | 'fair';
     timezone?: string;
+    allowPreventDefault?: boolean;
 }
 
 export type DatePickerInstance = ComponentPublicInstance<PublicMethods> | null;
