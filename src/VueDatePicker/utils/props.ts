@@ -1,6 +1,6 @@
 import type { Locale } from 'date-fns';
 
-import type { ExtractPropTypes, PropType } from 'vue';
+import { ExtractPropTypes, PropType } from 'vue';
 
 import type {
     AriaLabels,
@@ -46,6 +46,7 @@ export const AllProps = {
     timezone: { type: String as PropType<string>, default: null },
     vertical: { type: Boolean as PropType<boolean>, default: false },
     disableMonthYearSelect: { type: Boolean as PropType<boolean>, default: false },
+    disableYearSelect: { type: Boolean as PropType<boolean>, default: false },
     menuClassName: { type: String as PropType<string>, default: null },
     dayClass: { type: Function as PropType<(date: Date) => string>, default: null },
     yearRange: { type: Array as PropType<number[]>, default: () => [1900, 2100] },

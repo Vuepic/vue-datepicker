@@ -18,7 +18,12 @@
                     <slot name="arrow-left" v-if="$slots['arrow-left']" />
                     <ChevronLeftIcon v-if="!$slots['arrow-left']" />
                 </ActionIcon>
-                <div class="dp__month_year_wrap">
+                <div
+                    class="dp__month_year_wrap"
+                    :class="{
+                        dp__year_disable_select: props.disableYearSelect,
+                    }"
+                >
                     <RegularPicker
                         type="month"
                         slot-name="month-overlay-val"
@@ -45,6 +50,7 @@
                         </template>
                     </RegularPicker>
                     <RegularPicker
+                        v-if="!props.disableYearSelect"
                         type="year"
                         slot-name="year-overlay-val"
                         overlay-slot="overlay-year"
