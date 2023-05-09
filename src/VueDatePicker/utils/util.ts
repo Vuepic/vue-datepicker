@@ -52,10 +52,13 @@ export const getMonths = (locale: string, format: 'long' | 'short'): IDefaultSel
         const mm = month < 10 ? `0${month}` : month;
         return new Date(`2017-${mm}-01T00:00:00+00:00`);
     });
-    return months.map((date, i) => ({
-        text: formatter.format(date),
-        value: i,
-    }));
+    return months.map((date, i) => {
+        let month = formatter.format(date);
+        return {
+            text: month.charAt(0).toUpperCase() + month.substring(1),
+            value: i,
+        };
+    });
 };
 
 /**
