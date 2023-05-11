@@ -1,6 +1,5 @@
 import type { Locale } from 'date-fns';
-
-import { ExtractPropTypes, PropType } from 'vue';
+import type { ExtractPropTypes, PropType } from 'vue';
 
 import type {
     AriaLabels,

@@ -1,5 +1,5 @@
 import { computed } from 'vue';
-import { addMonths, addYears, getMonth, getYear, set, subMonths, subYears } from 'date-fns';
+import { addMonths, addYears, getMonth, getYear, set, setYear, subMonths, subYears } from 'date-fns';
 
 import { useUtils } from '@/composables/index';
 
@@ -29,6 +29,9 @@ export const useMontYearPick = (props: { month: number; year: number } & Extende
     const handleMonthYearChange = (isNext: boolean): void => {
         const initialDate = set(new Date(), { month: props.month, year: props.year });
         let date = isNext ? addMonths(initialDate, 1) : subMonths(initialDate, 1);
+        if (props.disableYearSelect) {
+            date = setYear(date, props.year);
+        }
 
         let month = getMonth(date);
         let year = getYear(date);
