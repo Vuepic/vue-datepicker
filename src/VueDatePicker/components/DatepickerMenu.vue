@@ -121,7 +121,7 @@
                                 @update:minutes="updateTime($event, false)"
                                 @update:seconds="updateTime($event, false, true)"
                                 @reset-flow="resetFlow"
-                                @overlay-closed="focusMenu"
+                                @overlay-closed="onTimePickerClose"
                                 @overlay-opened="$emit('time-picker-open', $event)"
                             >
                                 <template v-for="(slot, i) in timePickerSlots" #[slot]="args" :key="i">
@@ -198,6 +198,7 @@
         'tooltip-open',
         'tooltip-close',
         'time-picker-open',
+        'time-picker-close',
     ]);
     const props = defineProps({
         openOnTop: { type: Boolean as PropType<boolean>, default: false },
@@ -493,6 +494,12 @@
         if (monthYearPickerRefs.value[0]) {
             monthYearPickerRefs.value[0].handleMonthYearChange(isNext);
         }
+    };
+
+    const onTimePickerClose = () => {
+        console.log('am i here');
+        focusMenu();
+        emit('time-picker-close');
     };
 
     defineExpose({

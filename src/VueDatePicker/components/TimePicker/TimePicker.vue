@@ -161,15 +161,10 @@
         }
         showTimePicker.value = show;
 
-        if (show) {
-            emit('overlay-opened');
-        }
+        emit(show ? 'overlay-opened' : 'overlay-closed');
 
         if (props.arrowNavigation) {
             setTimePicker(show);
-            if (!show) {
-                emit('overlay-closed');
-            }
         }
 
         nextTick(() => {
