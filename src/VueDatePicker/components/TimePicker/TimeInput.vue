@@ -253,9 +253,6 @@
             .map((item) => item.value);
 
         return times.filter((item) => {
-            if (type === 'hours') {
-                console.log(!isDateInRange(item, type), item);
-            }
             return !isDateInRange(item, type);
         });
     });
