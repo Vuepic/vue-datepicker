@@ -50,6 +50,7 @@
                                 @update:seconds="updateSeconds(getEvent($event, index, 'seconds'))"
                                 @mounted="focusOverlay"
                                 @overlay-closed="focusOverlay"
+                                @am-pm-change="$emit('am-pm-change', $event)"
                             >
                                 <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
                                     <slot :name="slot" v-bind="args" />
@@ -99,6 +100,7 @@
         'reset-flow',
         'overlay-opened',
         'overlay-closed',
+        'am-pm-change',
     ]);
 
     const props = defineProps({

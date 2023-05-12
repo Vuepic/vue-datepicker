@@ -134,6 +134,7 @@
         'reset-flow',
         'mounted',
         'overlay-closed',
+        'am-pm-change',
     ]);
     const props = defineProps({
         hours: { type: Number as PropType<number>, default: 0 },
@@ -308,6 +309,7 @@
             amPm.value = 'PM';
             emit('update:hours', props.hours + 12);
         }
+        emit('am-pm-change', amPm.value);
     };
 
     const openChildCmp = (child: TimeType): void => {

@@ -123,6 +123,7 @@
                                 @reset-flow="resetFlow"
                                 @overlay-closed="onTimePickerClose"
                                 @overlay-opened="$emit('time-picker-open', $event)"
+                                @am-pm-change="$emit('am-pm-change', $event)"
                             >
                                 <template v-for="(slot, i) in timePickerSlots" #[slot]="args" :key="i">
                                     <slot :name="slot" v-bind="args" />
@@ -199,6 +200,7 @@
         'tooltip-close',
         'time-picker-open',
         'time-picker-close',
+        'am-pm-change',
     ]);
     const props = defineProps({
         openOnTop: { type: Boolean as PropType<boolean>, default: false },

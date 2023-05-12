@@ -47,7 +47,8 @@ export type EmitEvents =
     | 'tooltip-close'
     | 'invalid-fixed-range'
     | 'time-picker-open'
-    | 'time-picker-close';
+    | 'time-picker-close'
+    | 'am-pm-change';
 
 export interface VueDatePickerProps {
     uid?: string;

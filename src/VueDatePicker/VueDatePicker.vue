@@ -42,6 +42,7 @@
                 @tooltip-close="$emit('tooltip-close', $event)"
                 @time-picker-open="$emit('time-picker-open', $event)"
                 @time-picker-close="$emit('time-picker-close', $event)"
+                @am-pm-change="$emit('am-pm-change', $event)"
             >
                 <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
                     <slot :name="slot" v-bind="{ ...args }" />
@@ -99,6 +100,7 @@
         'tooltip-close',
         'time-picker-open',
         'time-picker-close',
+        'am-pm-change',
     ]);
     const props = defineProps({
         ...AllProps,
