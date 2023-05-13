@@ -1,5 +1,5 @@
 <template>
-    <transition appear :name="defaults.transitions?.menuAppear" :css="!!transitions" :key="ready">
+    <transition appear :name="defaults.transitions?.menuAppear" :css="!!transitions">
         <div
             :id="uid ? `dp-menu-${uid}` : undefined"
             tabindex="0"
@@ -204,7 +204,6 @@
     ]);
     const props = defineProps({
         openOnTop: { type: Boolean as PropType<boolean>, default: false },
-        ready: { type: Number as PropType<number>, default: 0 },
         internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
         ...AllProps,
     });

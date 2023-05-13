@@ -3,7 +3,7 @@ import type { AriaLabels, IFormat, Transition, TextInputOptions, DateFilter, Act
 export const mergeDefaultTransitions = (conf: Partial<Transition>): Transition =>
     Object.assign(
         {
-            menuAppear: 'dp-menu-appear',
+            menuAppear: '',
             open: 'dp-slide-down',
             close: 'dp-slide-up',
             next: 'calendar-next',

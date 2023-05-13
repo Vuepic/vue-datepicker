@@ -24,7 +24,6 @@
                 v-if="isOpen"
                 ref="dpMenuRef"
                 :class="theme"
-                :ready="ready"
                 :style="!inline ? menuStyle : undefined"
                 :open-on-top="openOnTop"
                 v-bind="$props"
@@ -113,11 +112,10 @@
     const inputRef = ref<DatepickerInputRef | null>(null);
     const isInputFocused = ref(false);
     const pickerWrapperRef = ref<HTMLElement | null>(null);
-    const ready = ref(0);
 
     const { setMenuFocused, setShiftKey } = useState();
     const { clearArrowNav } = useArrowNavigation();
-    const { validateDate, isValidTime } = useUtils(props);
+    const { validateDate, isValidTime, defaults } = useUtils(props);
 
     onMounted(() => {
         parseExternalModelValue(props.modelValue);
@@ -218,10 +216,12 @@
             isOpen.value = true;
             await nextTick();
             setInitialPosition();
-            ready.value = Date.now();
             await nextTick();
             setMenuPosition();
             delete menuStyle.value.opacity;
+            if (!defaults.value.transitions?.menuAppear) {
+                dpMenuRef.value?.$el?.classList.add('dp__menu_transitioned');
+            }
 
             if (isOpen.value) {
                 emit('open');
