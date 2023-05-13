@@ -221,7 +221,7 @@
         if (!props.isMenuOpen) {
             emit('blur');
         }
-        if (props.autoApply && props.textInput && parsedDate.value) {
+        if (props.autoApply && props.textInput && parsedDate.value && !props.isMenuOpen) {
             emit('set-input-date', parsedDate.value);
             emit('select-date');
             parsedDate.value = null;
