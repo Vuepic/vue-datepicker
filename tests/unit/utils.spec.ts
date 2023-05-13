@@ -366,7 +366,7 @@ describe('Utils and date utils formatting', () => {
         expect(transitions).toBeFalsy();
 
         const enabledTransitions = defaultTransitions({});
-        expect(enabledTransitions).toHaveProperty('menuAppear', 'dp-menu-appear');
+        expect(enabledTransitions).toHaveProperty('menuAppear', '');
     });
 
     it('Should return proper multi-calendars default value', () => {

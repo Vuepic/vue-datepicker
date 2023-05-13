@@ -210,7 +210,7 @@
 
     const baseProps = computed(() => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { openOnTop, ready, internalModelValue, ...initProps } = props;
+        const { openOnTop, internalModelValue, ...initProps } = props;
         return initProps;
     });
 
