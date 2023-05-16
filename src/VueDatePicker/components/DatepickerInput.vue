@@ -6,6 +6,7 @@
                 v-if="$slots['dp-input'] && !$slots.trigger && !inline"
                 name="dp-input"
                 :value="inputValue"
+                :is-menu-open="isMenuOpen"
                 :on-input="handleInput"
                 :on-enter="handleEnter"
                 :on-tab="handleTab"
