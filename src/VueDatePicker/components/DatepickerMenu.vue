@@ -498,7 +498,6 @@
     };
 
     const onTimePickerClose = () => {
-        console.log('am i here');
         focusMenu();
         emit('time-picker-close');
     };
