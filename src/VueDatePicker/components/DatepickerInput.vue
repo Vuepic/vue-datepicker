@@ -30,7 +30,7 @@
                 :autocomplete="autocomplete"
                 :aria-label="defaults.ariaLabels?.input"
                 @input="handleInput"
-                @keydown.enter="handleOpen"
+                @keydown.enter="handleEnter"
                 @keydown.tab="handleTab"
                 @blur="handleBlur"
                 @focus="handleFocus"
@@ -177,13 +177,22 @@
         emit('update:input-value', value);
     };
 
-    const handleEnter = (): void => {
-        if (defaults.value.textInputOptions?.enterSubmit && isValidDate(parsedDate.value) && props.inputValue !== '') {
-            emit('set-input-date', parsedDate.value, true);
-            parsedDate.value = null;
-        } else if (defaults.value.textInputOptions?.enterSubmit && props.inputValue === '') {
-            parsedDate.value = null;
-            emit('clear');
+    const handleEnter = (ev: KeyboardEvent): void => {
+        if (props.textInput) {
+            parseInput((ev.target as HTMLInputElement).value);
+            if (
+                defaults.value.textInputOptions?.enterSubmit &&
+                isValidDate(parsedDate.value) &&
+                props.inputValue !== ''
+            ) {
+                emit('set-input-date', parsedDate.value, true);
+                parsedDate.value = null;
+            } else if (defaults.value.textInputOptions?.enterSubmit && props.inputValue === '') {
+                parsedDate.value = null;
+                emit('clear');
+            }
+        } else {
+            handleOpen(ev);
         }
     };
 
@@ -241,9 +250,7 @@
     };
 
     const focusInput = () => {
-        if (inputRef.value) {
-            inputRef.value.focus({ preventScroll: true });
-        }
+        inputRef.value?.focus({ preventScroll: true });
     };
 
     const setParsedDate = (date: Date) => {
