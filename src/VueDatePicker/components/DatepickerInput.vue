@@ -82,6 +82,7 @@
         'focus-prev',
         'focus',
         'blur',
+        'real-blur',
     ]);
 
     const props = defineProps({
@@ -227,6 +228,7 @@
     };
 
     const handleBlur = (): void => {
+        emit('real-blur');
         isFocused.value = false;
         if (!props.isMenuOpen) {
             emit('blur');

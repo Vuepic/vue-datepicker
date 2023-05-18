@@ -14,6 +14,7 @@
             @close="closeMenu"
             @focus="handleInputFocus"
             @blur="handleBlur"
+            @real-blur="isInputFocused = false"
         >
             <template v-for="(slot, i) in inputSlots" #[slot]="args" :key="i">
                 <slot :name="slot" v-bind="args" />
