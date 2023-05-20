@@ -8,7 +8,5 @@
     "paths": {
       "@/*": ["./src/VueDatePicker/*"]
     },
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "target": "esnext"
   }
 }
