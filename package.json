@@ -37,7 +37,7 @@
     "build": "run-s clean typecheck build:lib build:css",
     "clean": "rimraf ./dist",
     "build:lib": "run-s build:es build:browser",
-    "typecheck": "vue-tsc --noEmit -p tsconfig.type-check.json --composite false",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
     "build:es": "cross-env NODE_ENV=production vite build --mode production",
     "build:browser": "cross-env NODE_ENV=production vite -f iife build --mode production",
     "build:css": "cross-env NODE_ENV=production node_modules/.bin/sass src/VueDatePicker/style/main.scss dist/main.css --style compressed",
@@ -58,10 +58,10 @@
     "@vue/eslint-config-prettier": "^7.1.0",
     "@vue/eslint-config-typescript": "^11.0.3",
     "@vue/test-utils": "^2.3.2",
-    "@vue/tsconfig": "^0.3.2",
+    "@vue/tsconfig": "^0.4.0",
     "c8": "^7.13.0",
     "cross-env": "^7.0.3",
-    "eslint": "^8.40.0",
+    "eslint": "^8.41.0",
     "eslint-plugin-vue": "^9.13.0",
     "jsdom": "^22.0.0",
     "minimist": "^1.2.8",
@@ -77,8 +77,8 @@
     "typescript": "^5.0.4",
     "vite": "^4.3.8",
     "vitest": "^0.31.1",
-    "vue": "^3.2.47",
-    "vue-tsc": "^1.4.3"
+    "vue": "^3.3.4",
+    "vue-tsc": "^1.6.5"
   },
   "dependencies": {
     "date-fns": "^2.30.0",
