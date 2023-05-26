@@ -252,6 +252,7 @@ export interface VueDatePickerProps {
     timezone?: string;
     allowPreventDefault?: boolean;
     disableYearSelect?: boolean;
+    closeOnClearValue?: boolean;
 }
 
 export type DatePickerInstance = ComponentPublicInstance<PublicMethods> | null;
