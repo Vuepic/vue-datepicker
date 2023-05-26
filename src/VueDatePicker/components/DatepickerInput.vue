@@ -38,11 +38,11 @@
                 @keydown="handleKeyPress"
                 @paste="handlePaste"
             />
-            <span class="dp__input_icon" v-if="$slots['input-icon'] && !hideInputIcon"><slot name="input-icon" /></span>
-            <CalendarIcon
-                v-if="!$slots['input-icon'] && !hideInputIcon && !$slots['dp-input']"
-                class="dp__input_icon dp__input_icons"
-            />
+            <div @click="emit('toggle')">
+                <span class="dp__input_icon" v-if="$slots['input-icon'] && !hideInputIcon"><slot name="input-icon" /></span>
+                <CalendarIcon v-if="!$slots['input-icon'] && !hideInputIcon && !$slots['dp-input']"
+                              class="dp__input_icon dp__input_icons"/>
+            </div>
             <span
                 class="dp__clear_icon"
                 v-if="$slots['clear-icon'] && inputValue && clearable && !disabled && !readonly"
