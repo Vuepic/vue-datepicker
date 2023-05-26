@@ -245,7 +245,9 @@
         clearInternalValues();
         emit('update:model-value', null);
         emit('cleared');
-        closeMenu();
+        if (props.closeOnClearValue) {
+            closeMenu();
+        }
     };
 
     const validateBeforeEmit = () => {
