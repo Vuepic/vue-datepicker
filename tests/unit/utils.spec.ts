@@ -10,6 +10,7 @@ import {
     set,
     setMonth,
     subHours,
+    addDays,
 } from 'date-fns';
 import { getTimezoneOffset, zonedTimeToUtc } from 'date-fns-tz';
 import { reactive } from 'vue';
@@ -36,9 +37,8 @@ import {
 import { useTransitions, useUtils } from '@/composables';
 
 import type { AllPropsType } from '@/utils/props';
-import addDays from 'date-fns/addDays';
 import { defaultMultiCalendars, defaultTransitions } from '@/utils/defaults';
-import type { SixWeekMode } from '@/interfaces.ts';
+import type { SixWeekMode } from '@/interfaces';
 
 const getCurrentTime = () => {
     return {

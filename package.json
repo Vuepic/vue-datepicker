@@ -37,7 +37,7 @@
     "build": "run-s clean typecheck build:lib build:css",
     "clean": "rimraf ./dist",
     "build:lib": "run-s build:es build:browser",
-    "typecheck": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.type-check.json",
     "build:es": "cross-env NODE_ENV=production vite build --mode production",
     "build:browser": "cross-env NODE_ENV=production vite -f iife build --mode production",
     "build:css": "cross-env NODE_ENV=production node_modules/.bin/sass src/VueDatePicker/style/main.scss dist/main.css --style compressed",
@@ -78,7 +78,7 @@
     "vite": "^4.3.9",
     "vitest": "^0.31.1",
     "vue": "^3.3.4",
-    "vue-tsc": "^1.6.5"
+    "vue-tsc": "^1.4.3"
   },
   "dependencies": {
     "date-fns": "^2.30.0",

@@ -4,6 +4,12 @@ import { describe, it, expect } from 'vitest';
 
 import VueDatepicker from '@/VueDatePicker.vue';
 import { resetDateTime } from '@/utils/date-utils';
+// import type { ComponentPublicInstance } from 'vue';
+// import type { ModelValue } from '@/interfaces';
+//
+// type DpInstance = ComponentPublicInstance<{
+//     internalModelValue: ModelValue;
+// }>;
 
 const mountModelAuto = () => {
     const date = new Date();
