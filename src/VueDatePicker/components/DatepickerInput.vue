@@ -221,9 +221,8 @@
         ev.stopImmediatePropagation();
         ev.stopPropagation();
         if (props.textInput && defaults.value.textInputOptions?.openMenu && !props.inlineWithInput) {
-            if (!props.isMenuOpen) {
-                emit('open');
-            } else if (defaults.value.textInputOptions.enterSubmit) {
+            emit('toggle');
+            if (defaults.value.textInputOptions.enterSubmit) {
                 emit('select-date');
             }
         } else if (!props.textInput) {
