@@ -250,7 +250,7 @@
     const disabledInGrid = computed(() => (type: TimeType) => {
         const times = getGridItems(type)
             .flat()
-            .filter((item) => item || (item as IDefaultSelect).value === 0)
+            .filter((item) => item || (item as IDefaultSelect)?.value === 0)
             .map((item) => item.value);
 
         return times.filter((item) => {
