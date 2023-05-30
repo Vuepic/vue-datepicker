@@ -213,7 +213,7 @@ export const useCalendar = (
 
         if (props.multiDates) {
             const lastEntry = dates[dates.length - 1];
-            return assignSingleValue(lastEntry);
+            return assignSingleValue(lastEntry, fromMount);
         }
     };
 
