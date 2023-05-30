@@ -14,6 +14,7 @@ import {
     getYear,
     isAfter,
     isBefore,
+    isEqual,
     set,
     setMilliseconds,
     subMonths,
@@ -67,8 +68,14 @@ export const useCalendar = (
         },
     });
     const tempRange = ref<Date[]>([]);
-    watch(modelValue, () => {
-        mapInternalModuleValues();
+    watch(modelValue, (newVal, oldVal) => {
+        if (props.range) {
+            mapInternalModuleValues();
+        } else {
+            if (!isEqual(newVal as Date, oldVal as Date)) {
+                mapInternalModuleValues();
+            }
+        }
     });
     const multiCalendars = toRef(props, 'multiCalendars');
     watch(multiCalendars, () => {
@@ -120,20 +127,26 @@ export const useCalendar = (
         time[property] = value;
     };
 
+    const setStartDate = () => {
+        if (props.startDate) {
+            setCalendarMonthYear(0, getMonth(getDate(props.startDate)), getYear(getDate(props.startDate)));
+            if (defaults.value.multiCalendars) {
+                autoChangeMultiCalendars(0);
+            }
+        }
+    };
+
     onMounted(() => {
         if (!modelValue.value) {
-            if (props.startDate) {
-                setCalendarMonthYear(0, getMonth(getDate(props.startDate)), getYear(getDate(props.startDate)));
-
-                if (defaults.value.multiCalendars) {
-                    autoChangeMultiCalendars(0);
-                }
-            }
+            setStartDate();
             if (defaults.value.startTime) {
                 assignStartTime();
             }
         }
         mapInternalModuleValues(true);
+        if (props.focusStartDate && props.startDate) {
+            setStartDate();
+        }
     });
 
     /**

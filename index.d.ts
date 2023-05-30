@@ -189,7 +189,15 @@ export interface VueDatePickerProps {
     }[];
     transitions?:
         | boolean
-        | { menuAppear?: string, open?: string; close?: string; next?: string; previous?: string; vNext?: string; vPrevious?: string };
+        | {
+              menuAppear?: string;
+              open?: string;
+              close?: string;
+              next?: string;
+              previous?: string;
+              vNext?: string;
+              vPrevious?: string;
+          };
     modeHeight?: string | number;
     enableSeconds?: boolean;
     escClose?: boolean;
@@ -253,6 +261,7 @@ export interface VueDatePickerProps {
     allowPreventDefault?: boolean;
     disableYearSelect?: boolean;
     closeOnClearValue?: boolean;
+    focusStartDate?: boolean;
 }
 
 export type DatePickerInstance = ComponentPublicInstance<PublicMethods> | null;

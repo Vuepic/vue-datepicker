@@ -161,6 +161,7 @@ export const AllProps = {
     actionRow: { type: Object as PropType<Partial<ActionRowData>>, default: () => ({}) },
     allowPreventDefault: { type: Boolean as PropType<boolean>, default: false },
     closeOnClearValue: { type: Boolean as PropType<boolean>, default: true },
+    focusStartDate: { type: Boolean as PropType<boolean>, default: false },
 };
 
 export type AllPropsType = ExtractPropTypes<typeof AllProps>;
