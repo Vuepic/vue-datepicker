@@ -145,7 +145,7 @@ export const useCalendar = (
                 tempRange.value = modelValue.value;
                 return assignExistingModelValueArr(fromMount);
             }
-            return assignSingleValue(modelValue.value);
+            return assignSingleValue(modelValue.value, fromMount);
         }
         // On initial empty picker, note: range values are not set on month and year
         if (props.timePicker) return assignTimePicker();
@@ -170,11 +170,14 @@ export const useCalendar = (
     };
 
     // Assign singe value
-    const assignSingleValue = (date: Date): void => {
+    const assignSingleValue = (date: Date, fromMount: boolean): void => {
         assignMonthAndYear(date);
         setTime('hours', getHours(date));
         setTime('minutes', getMinutes(date));
         setTime('seconds', getSeconds(date));
+        if (defaults.value.multiCalendars && fromMount) {
+            handleNextMonthYear();
+        }
     };
 
     // Assign range values
@@ -281,7 +284,6 @@ export const useCalendar = (
     /**
      * Extracted method to map month and year
      */
-
     const handleNextMonthYear = (): void => {
         if (Array.isArray(modelValue.value) && modelValue.value.length === 2) {
             const date = getDate(
@@ -296,6 +298,8 @@ export const useCalendar = (
             ) {
                 setCalendarMonthYear(1, getMonth(date), getYear(date));
             }
+        } else if (modelValue.value && !Array.isArray(modelValue.value)) {
+            setCalendarMonthYear(0, getMonth(modelValue.value), getYear(modelValue.value));
         }
     };
 

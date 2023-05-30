@@ -356,7 +356,7 @@
     const dates = computed(() => (instance: number) => getCalendarDays(month.value(instance), year.value(instance)));
 
     const calendarAmm = computed((): number[] =>
-        defaults.value.multiCalendars > 0 && props.range ? [...Array(defaults.value.multiCalendars).keys()] : [0],
+        defaults.value.multiCalendars > 0 ? [...Array(defaults.value.multiCalendars).keys()] : [0],
     );
 
     const isFirstInstance = computed(
