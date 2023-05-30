@@ -201,6 +201,8 @@
         'time-picker-open',
         'time-picker-close',
         'am-pm-change',
+        'range-start',
+        'range-end',
     ]);
     const props = defineProps({
         openOnTop: { type: Boolean as PropType<boolean>, default: false },

@@ -43,6 +43,8 @@
                 @time-picker-open="$emit('time-picker-open', $event)"
                 @time-picker-close="$emit('time-picker-close', $event)"
                 @am-pm-change="$emit('am-pm-change', $event)"
+                @range-start="$emit('range-start', $event)"
+                @range-end="$emit('range-end', $event)"
             >
                 <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
                     <slot :name="slot" v-bind="{ ...args }" />
@@ -101,6 +103,8 @@
         'time-picker-open',
         'time-picker-close',
         'am-pm-change',
+        'range-start',
+        'range-end',
     ]);
     const props = defineProps({
         ...AllProps,

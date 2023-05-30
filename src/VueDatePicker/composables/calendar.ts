@@ -472,12 +472,15 @@ export const useCalendar = (
         if (props.fixedStart || props.fixedEnd) return setFixedDateRange(day);
         if (!tempRange.value[0]) {
             tempRange.value[0] = getDate(day.value);
+            emit('range-start', tempRange.value[0]);
         } else {
             if (checkMinMaxRange(getDate(day.value)) && !includesDisabled(day.value)) {
                 if (isDateBefore(getDate(day.value), getDate(tempRange.value[0]))) {
                     tempRange.value.unshift(getDate(day.value));
+                    emit('range-end', tempRange.value[0]);
                 } else {
                     tempRange.value[1] = getDate(day.value);
+                    emit('range-end', tempRange.value[1]);
                 }
             }
         }
