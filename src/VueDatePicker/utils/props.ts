@@ -20,6 +20,7 @@ import type {
     CustomAltPosition,
     SixWeekMode,
     ActionRowData,
+    DisabledTimesFn,
 } from '@/interfaces';
 
 export const AllProps = {
@@ -162,6 +163,7 @@ export const AllProps = {
     allowPreventDefault: { type: Boolean as PropType<boolean>, default: false },
     closeOnClearValue: { type: Boolean as PropType<boolean>, default: true },
     focusStartDate: { type: Boolean as PropType<boolean>, default: false },
+    disabledTimes: { type: Function as PropType<DisabledTimesFn | undefined>, default: undefined },
 };
 
 export type AllPropsType = ExtractPropTypes<typeof AllProps>;

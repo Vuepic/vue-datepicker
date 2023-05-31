@@ -53,7 +53,7 @@ export const getMonths = (locale: string, format: 'long' | 'short'): IDefaultSel
         return new Date(`2017-${mm}-01T00:00:00+00:00`);
     });
     return months.map((date, i) => {
-        let month = formatter.format(date);
+        const month = formatter.format(date);
         return {
             text: month.charAt(0).toUpperCase() + month.substring(1),
             value: i,

@@ -205,3 +205,7 @@ export interface ActionRowData {
     showNow: boolean;
     showPreview: true;
 }
+
+export type TimeObj = { hours: number; minutes: number; seconds: number };
+
+export type DisabledTimesFn = (time: TimeObj | TimeObj[] | (TimeObj | undefined)[]) => boolean;

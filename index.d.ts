@@ -9,27 +9,6 @@ import type {
 } from 'vue';
 import type { Locale } from 'date-fns';
 
-export type ModelValue =
-    | Date
-    | Date[]
-    | string
-    | string[]
-    | number
-    | number[]
-    | {
-          hours: number | string;
-          minutes: number | string;
-          seconds?: number | string;
-      }
-    | {
-          hours: number | string;
-          minutes: number | string;
-          seconds?: number | string;
-      }[]
-    | { month: number | string; year: number | string }
-    | { month: number | string; year: number | string }[]
-    | null;
-
 export type EmitEvents =
     | 'update:model-value'
     | 'text-submit'
@@ -51,6 +30,26 @@ export type EmitEvents =
     | 'am-pm-change'
     | 'range-start'
     | 'range-end';
+
+export type TimeObj = { hours: number; minutes: number; seconds: number };
+export type PartialTimeObj = { hours?: number | string; minutes?: number | string; seconds?: number | string };
+export type TimeModel = {
+    hours: number | string;
+    minutes: number | string;
+    seconds?: number | string;
+};
+export type ModelValue =
+    | Date
+    | Date[]
+    | string
+    | string[]
+    | number
+    | number[]
+    | TimeModel
+    | TimeModel[]
+    | { month: number | string; year: number | string }
+    | { month: number | string; year: number | string }[]
+    | null;
 
 export interface VueDatePickerProps {
     uid?: string;
@@ -75,8 +74,8 @@ export interface VueDatePickerProps {
     secondsIncrement?: number | string;
     minDate?: Date | string;
     maxDate?: Date | string;
-    minTime?: { hours?: number | string; minutes?: number | string; seconds?: number | string };
-    maxTime?: { hours?: number | string; minutes?: number | string; seconds?: number | string };
+    minTime?: PartialTimeObj;
+    maxTime?: PartialTimeObj;
     weekStart?: '0' | '1' | '2' | '3' | '4' | '5' | '6' | 0 | 1 | 2 | 3 | 4 | 5 | 6;
     disabled?: boolean;
     readonly?: boolean;
@@ -87,16 +86,8 @@ export interface VueDatePickerProps {
               date:
                   | Date
                   | Date[]
-                  | {
-                        hours: number | string;
-                        minutes: number | string;
-                        seconds?: number | string;
-                    }
-                  | {
-                        hours: number | string;
-                        minutes: number | string;
-                        seconds?: number | string;
-                    }[]
+                  | TimeModel
+                  | TimeModel[]
                   | {
                         month: number | string;
                         year: number | string;
@@ -108,16 +99,8 @@ export interface VueDatePickerProps {
               date:
                   | Date
                   | Date[]
-                  | {
-                        hours: number | string;
-                        minutes: number | string;
-                        seconds?: number | string;
-                    }
-                  | {
-                        hours: number | string;
-                        minutes: number | string;
-                        seconds?: number | string;
-                    }[]
+                  | TimeModel
+                  | TimeModel[]
                   | {
                         month: number | string;
                         year: number | string;
@@ -159,17 +142,7 @@ export interface VueDatePickerProps {
     };
     monthNameFormat?: 'long' | 'short';
     startDate?: string | Date;
-    startTime?:
-        | {
-              hours?: number | string;
-              minutes?: number | string;
-              seconds?: number | string;
-          }
-        | {
-              hours?: number | string;
-              minutes?: number | string;
-              seconds?: number | string;
-          }[];
+    startTime?: PartialTimeObj | PartialTimeObj[];
     hideOffsetDates?: boolean;
     autoRange?: number | string;
     noToday?: boolean;
@@ -264,6 +237,7 @@ export interface VueDatePickerProps {
     disableYearSelect?: boolean;
     closeOnClearValue?: boolean;
     focusStartDate?: boolean;
+    disabledTimes: (time: TimeObj | TimeObj[] | (TimeObj | undefined)[]) => boolean;
 }
 
 export type DatePickerInstance = ComponentPublicInstance<PublicMethods> | null;

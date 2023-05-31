@@ -26,6 +26,7 @@ import {
 } from '@/utils/util';
 import {
     dateToUtc,
+    getTimeObj,
     isDateAfter,
     isDateBefore,
     isDateBetween,
@@ -412,5 +413,13 @@ describe('Utils and date utils formatting', () => {
         expect(getDate(reset)).toEqual(1);
         expect(getHours(reset)).toEqual(0);
         expect(getMonth(reset)).toEqual(getMonth(new Date()));
+    });
+
+    it('Should convert date to time object', () => {
+        const now = new Date();
+        const timeObj = getTimeObj(now);
+        expect(timeObj).toHaveProperty('hours', getHours(now));
+        expect(timeObj).toHaveProperty('minutes', getMinutes(now));
+        expect(timeObj).toHaveProperty('seconds', getSeconds(now));
     });
 });

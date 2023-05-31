@@ -41,7 +41,7 @@ import {
     getDefaultFilters,
     getDefaultActionRowData,
 } from '@/utils/defaults';
-import { getDate, isDateAfter, isDateBefore, isDateEqual, resetDateTime } from '@/utils/date-utils';
+import { getDate, getTimeObj, isDateAfter, isDateBefore, isDateEqual, resetDateTime } from '@/utils/date-utils';
 
 // Instead of using everywhere new Date(), this is the central place for getting or parsing the date
 
@@ -209,8 +209,7 @@ export const useUtils = (props: AllPropsType) => {
     };
 
     // Returns a getDate object with a set of time from a provided date
-    const setTimeValue = (date: Date): Date =>
-        set(getDate(), { hours: getHours(date), minutes: getMinutes(date), seconds: getSeconds(date) });
+    const setTimeValue = (date: Date): Date => set(getDate(), getTimeObj(date));
 
     const getMinMaxTime = (time: TimeModel): Date => {
         return set(getDate(), {
@@ -288,6 +287,12 @@ export const useUtils = (props: AllPropsType) => {
 
         if (props.minTime || props.minDate) {
             isValid = checkTimeMin(convertType(selectedDateTime), isValid);
+        }
+        if (props.disabledTimes) {
+            const param = Array.isArray(date)
+                ? [getTimeObj(date[0]), date[1] ? getTimeObj(date[1]) : undefined]
+                : getTimeObj(date);
+            isValid = !props.disabledTimes(param);
         }
         return isValid;
     };

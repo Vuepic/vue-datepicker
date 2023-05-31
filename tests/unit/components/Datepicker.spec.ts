@@ -1,8 +1,17 @@
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import { describe, it, expect, afterEach } from 'vitest';
 import { nextTick } from 'vue';
-import { addMonths, getHours, getMonth, getYear, set, setMilliseconds, setSeconds, startOfYear } from 'date-fns';
-import addDays from 'date-fns/addDays';
+import {
+    addMonths,
+    getHours,
+    getMonth,
+    getYear,
+    set,
+    setMilliseconds,
+    setSeconds,
+    startOfYear,
+    addDays,
+} from 'date-fns';
 import { ja } from 'date-fns/locale';
 
 import Datepicker from '@/VueDatePicker.vue';
@@ -12,11 +21,13 @@ import TimePicker from '@/components/TimePicker/TimePicker.vue';
 import MonthYearInput from '@/components/MonthYearPicker/MonthYearPicker.vue';
 import ActionRow from '@/components/ActionRow.vue';
 import SelectionGrid from '@/components/SelectionGrid.vue';
+import TimeInput from '@/components/TimePicker/TimeInput.vue';
 
 import { useUtils } from '@/composables';
-import type { AllPropsType } from '@/utils/props';
 import { resetDateTime } from '@/utils/date-utils';
-import TimeInput from '@/components/TimePicker/TimeInput.vue';
+
+import type { AllPropsType } from '@/utils/props';
+import type { TimeObj } from '@/interfaces';
 
 const format = (date: Date): string => {
     return `Selected year is ${date.getFullYear()}`;
@@ -60,6 +71,17 @@ const selectRange = async (menu: VueWrapper<any>, start: Date, end: Date) => {
     menu.vm.selectDate({ value: end, current: true });
     await nextTick();
     await flushPromises();
+};
+
+const validateSelectedTime = async (menu: VueWrapper<any>, hours: number, minutes: number) => {
+    const timePicker = menu.findComponent(TimePicker);
+    timePicker.vm.$emit('update:hours', hours);
+    timePicker.vm.$emit('update:minutes', minutes);
+    await timePicker.vm.$nextTick();
+    await flushPromises();
+
+    expect(menu.vm.modelValue.getHours()).toEqual(hours);
+    expect(menu.vm.modelValue.getMinutes()).toEqual(minutes);
 };
 
 describe('Logic connection', () => {
@@ -134,14 +156,8 @@ describe('Logic connection', () => {
         const date = new Date();
         const { dp, menu } = await mountDatepicker({ modelValue: date });
 
-        const timePicker = menu.findComponent(TimePicker);
-        timePicker.vm.$emit('update:hours', val);
-        timePicker.vm.$emit('update:minutes', val);
-        await timePicker.vm.$nextTick();
-        await flushPromises();
+        await validateSelectedTime(menu, val, val);
 
-        expect(menu.vm.modelValue.getHours()).toEqual(val);
-        expect(menu.vm.modelValue.getMinutes()).toEqual(val);
         dp.unmount();
     });
 
@@ -500,5 +516,25 @@ describe('Logic connection', () => {
             month: getMonth(months[2]),
             year: getYear(months[2]),
         });
+    });
+
+    it('Should validate the time based on the disabled times option', async () => {
+        const hours = 10;
+        const minutes = 15;
+        const disabledTimes = (time: TimeObj) => {
+            return time.hours === hours && time.minutes === minutes;
+        };
+        const { menu, dp } = await mountDatepicker({ modelValue: new Date(), disabledTimes });
+        await menu.find(`[data-test="open-time-picker-btn"]`).trigger('click');
+        await menu.vm.$nextTick();
+
+        await validateSelectedTime(menu, hours, minutes);
+
+        const actionRow = menu.findComponent(ActionRow);
+        const button = await actionRow.find('[data-test="select-button"]');
+
+        expect(button.attributes().disabled).toBeDefined();
+
+        dp.unmount();
     });
 });

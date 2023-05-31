@@ -10,9 +10,12 @@ import {
     isEqual,
     isAfter,
     set,
+    getHours,
+    getMinutes,
+    getSeconds,
 } from 'date-fns';
 
-import type { DateTimeSetter, DateValue, TimeModel, TimeType } from '@/interfaces';
+import type { DateTimeSetter, DateValue, TimeModel, TimeType, TimeObj } from '@/interfaces';
 import type { Duration } from 'date-fns';
 
 const parseTextToDate = (
@@ -171,5 +174,13 @@ export const sanitizeTime = (time: TimeModel, type?: TimeType, value?: number): 
         hours: !isNaN(+time.hours) ? +time.hours : undefined,
         minutes: !isNaN(+time.minutes) ? +time.minutes : undefined,
         seconds: !isNaN(+time.seconds) ? +time.seconds : undefined,
+    };
+};
+
+export const getTimeObj = (date: Date): TimeObj => {
+    return {
+        hours: getHours(date),
+        minutes: getMinutes(date),
+        seconds: getSeconds(date),
     };
 };
