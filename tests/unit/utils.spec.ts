@@ -291,7 +291,7 @@ describe('Utils and date utils formatting', () => {
 
     it('Should get UTC date', () => {
         const date = new Date();
-        const utcDate = dateToUtc(date, false);
+        const utcDate = dateToUtc(date, false, false);
 
         const utcString = set(zonedTimeToUtc(date, Intl.DateTimeFormat().resolvedOptions().timeZone), {
             milliseconds: 0,
@@ -303,7 +303,7 @@ describe('Utils and date utils formatting', () => {
     it('Should return UTC date with preserved value', () => {
         const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         const date = new Date();
-        const utcDate = dateToUtc(date, true);
+        const utcDate = dateToUtc(date, true, false);
         const offset = getTimezoneOffset(timezone);
         const mapHour = offset > 0 ? addHours : subHours;
         const offsetHours = Math.floor((offset / (1000 * 60 * 60)) % 24);
