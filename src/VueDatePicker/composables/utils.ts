@@ -92,9 +92,9 @@ export const useUtils = (props: AllPropsType) => {
         const options = props.formatLocale ? { locale: props.formatLocale } : undefined;
 
         if (Array.isArray(value)) {
-            return `${format(value[0], pattern, options)} ${
+            return `${format(value[0], pattern, options)}${
                 props.modelAuto && !value[1] ? '' : defaults.value.textInputOptions.rangeSeparator || '-'
-            } ${value[1] ? format(value[1], pattern, options) : ''}`;
+            }${value[1] ? format(value[1], pattern, options) : ''}`;
         }
 
         return format(value, pattern, options);
