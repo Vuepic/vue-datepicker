@@ -24,7 +24,7 @@
                 }"
             >
                 <div class="dp__sidebar_left" v-if="$slots['left-sidebar']">
-                    <slot name="left-sidebar" v-bind="{ handleMonthYearChange }" />
+                    <slot name="left-sidebar" v-bind="sidebarProps" />
                 </div>
                 <div class="dp__preset_ranges" v-if="presetRanges?.length">
                     <div
@@ -133,7 +133,7 @@
                     </div>
                 </div>
                 <div class="dp__sidebar_right" v-if="$slots['right-sidebar']">
-                    <slot name="right-sidebar" v-bind="{ handleMonthYearChange }" />
+                    <slot name="right-sidebar" v-bind="sidebarProps" />
                 </div>
                 <div class="dp__action_extra" v-if="$slots['action-extra']">
                     <slot name="action-extra" v-if="$slots['action-extra']" :select-current-date="selectCurrentDate" />
@@ -318,6 +318,24 @@
 
     const { setHoverDate, clearHoverDate, getDayClassData } = useCalendarClass(modelValue, props);
 
+    const handleMonthYearChange = (isNext: boolean) => {
+        if (monthYearPickerRefs.value[0]) {
+            monthYearPickerRefs.value[0].handleMonthYearChange(isNext);
+        }
+    };
+
+    const sidebarProps = {
+        modelValue,
+        month,
+        year,
+        time,
+        updateTime,
+        updateMonthYear,
+        selectDate,
+        presetDateRange,
+        handleMonthYearChange,
+    };
+
     watch(
         calendars,
         () => {
@@ -490,12 +508,6 @@
                 ev.stopImmediatePropagation();
                 emit('close-picker');
             }
-        }
-    };
-
-    const handleMonthYearChange = (isNext: boolean) => {
-        if (monthYearPickerRefs.value[0]) {
-            monthYearPickerRefs.value[0].handleMonthYearChange(isNext);
         }
     };
 
