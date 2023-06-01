@@ -182,6 +182,7 @@
         TimePickerRef,
         ICalendarDay,
         InternalModuleValue,
+        MenuView,
     } from '@/interfaces';
     import type { ComputedRef, PropType, Ref, UnwrapRef } from 'vue';
 
@@ -516,7 +517,21 @@
         emit('time-picker-close');
     };
 
+    const closeOverlays = (instance: number) => {
+        timePickerRef.value?.toggleTimePicker(false, false);
+        monthYearPickerRefs.value?.[instance]?.toggleMonthPicker(false, false);
+        monthYearPickerRefs.value?.[instance]?.toggleYearPicker(false, false);
+    };
+
+    const switchView = (view: MenuView, instance = 0) => {
+        if (view === 'month') return monthYearPickerRefs.value?.[instance]?.toggleMonthPicker(false, true);
+        if (view === 'year') return monthYearPickerRefs.value?.[instance]?.toggleYearPicker(false, true);
+        if (view === 'time') return timePickerRef.value?.toggleTimePicker(true, false);
+        return closeOverlays(instance);
+    };
+
     defineExpose({
         updateMonthYear,
+        switchView,
     });
 </script>

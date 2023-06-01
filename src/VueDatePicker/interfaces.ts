@@ -126,8 +126,8 @@ export type Flow = 'month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' 
 export type MenuChildCmp = 'timePicker' | 'monthYearInput' | 'calendar';
 
 export interface MonthYearPickerRef {
-    toggleMonthPicker: (auto: boolean) => void;
-    toggleYearPicker: (auto: boolean) => void;
+    toggleMonthPicker: (auto: boolean, show?: boolean) => void;
+    toggleYearPicker: (auto: boolean, show?: boolean) => void;
     handleMonthYearChange: (isNext: boolean) => void;
 }
 
@@ -192,6 +192,7 @@ export interface MonthYearOpt {
 
 export type DatepickerMenuRef = ComponentPublicInstance<{
     updateMonthYear: (ins: number, val: { month: number | null; year: number | null }) => void;
+    switchView: (view: MenuView, instance?: number) => void;
 }>;
 
 export type DatepickerInputRef = ComponentPublicInstance<{
@@ -209,3 +210,5 @@ export interface ActionRowData {
 export type TimeObj = { hours: number; minutes: number; seconds: number };
 
 export type DisabledTimesFn = (time: TimeObj | TimeObj[] | (TimeObj | undefined)[]) => boolean;
+
+export type MenuView = 'month' | 'year' | 'calendar' | 'time';

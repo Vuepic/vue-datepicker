@@ -224,7 +224,7 @@
     import { unrefElement } from '@/utils/util';
     import { AllProps } from '@/utils/props';
 
-    import type { PropType } from 'vue';
+    import type { PropType, Ref } from 'vue';
     import type { IDefaultSelect, InternalModuleValue } from '@/interfaces';
     import { getDate } from '@/utils/date-utils';
 
@@ -384,17 +384,25 @@
         return true;
     });
 
-    const toggleMonthPicker = (flow = false): void => {
+    const toggleWrap = (val: Ref<boolean>, show?: boolean) => {
+        if (show !== undefined) {
+            val.value = show;
+        } else {
+            val.value = !val.value;
+        }
+    };
+
+    const toggleMonthPicker = (flow = false, show?: boolean): void => {
         checkFlow(flow);
-        showMonthPicker.value = !showMonthPicker.value;
+        toggleWrap(showMonthPicker, show);
         if (!showMonthPicker.value) {
             emit('overlay-closed');
         }
     };
 
-    const toggleYearPicker = (flow = false): void => {
+    const toggleYearPicker = (flow = false, show?: boolean): void => {
         checkFlow(flow);
-        showYearPicker.value = !showYearPicker.value;
+        toggleWrap(showYearPicker, show);
         if (!showYearPicker.value) {
             emit('overlay-closed');
         }

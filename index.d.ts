@@ -38,6 +38,7 @@ export type TimeModel = {
     minutes: number | string;
     seconds?: number | string;
 };
+export type MenuView = 'month' | 'year' | 'calendar' | 'time';
 export type ModelValue =
     | Date
     | Date[]
@@ -251,6 +252,7 @@ export interface PublicMethods extends MethodOptions {
     updateInternalModelValue: (value: Date | Date[]) => void;
     setMonthYear: (value: { month?: number | string; year?: number | string }) => void;
     parseModel: (value?: ModelValue) => void;
+    switchView: (view: MenuView, instance?: number) => void;
 }
 
 declare const _default: DefineComponent<

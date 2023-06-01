@@ -82,7 +82,14 @@
     import { AllProps } from '@/utils/props';
     import { getNumVal } from '@/utils/util';
 
-    import type { DynamicClass, MonthYearOpt, DatepickerMenuRef, DatepickerInputRef, ModelValue } from '@/interfaces';
+    import type {
+        DynamicClass,
+        MonthYearOpt,
+        DatepickerMenuRef,
+        DatepickerInputRef,
+        ModelValue,
+        MenuView,
+    } from '@/interfaces';
 
     const emit = defineEmits([
         'update:model-value',
@@ -402,6 +409,10 @@
         parseExternalModelValue(value || props.modelValue);
     };
 
+    const switchView = (view: MenuView, instance?: number) => {
+        dpMenuRef.value?.switchView(view, instance);
+    };
+
     onClickOutside(
         dpMenuRef,
         inputRef,
@@ -418,5 +429,6 @@
         updateInternalModelValue, // modify internal modelValue
         setMonthYear,
         parseModel,
+        switchView,
     });
 </script>
