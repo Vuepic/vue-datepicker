@@ -69,7 +69,7 @@
 
     import { parseFreeInput } from '@/utils/date-utils';
     import { useUtils } from '@/composables';
-    import { AllProps } from '@/utils/props';
+    import { AllProps } from '@/props';
 
     import type { PropType } from 'vue';
     import type { DynamicClass } from '@/interfaces';

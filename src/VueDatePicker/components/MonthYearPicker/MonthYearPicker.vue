@@ -222,7 +222,7 @@
 
     import { useMontYearPick, useTransitions, useArrowNavigation, useUtils } from '@/composables';
     import { unrefElement } from '@/utils/util';
-    import { AllProps } from '@/utils/props';
+    import { AllProps } from '@/props';
 
     import type { PropType, Ref } from 'vue';
     import type { IDefaultSelect, InternalModuleValue } from '@/interfaces';

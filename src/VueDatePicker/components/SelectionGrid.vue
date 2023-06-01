@@ -62,7 +62,7 @@
 
     import type { PropType } from 'vue';
     import type { IDefaultSelect, DynamicClass, Flow, AriaLabels } from '@/interfaces';
-    import type { AllPropsType } from '@/utils/props';
+    import type { AllPropsType } from '@/props';
 
     const { setSelectionGrid, buildMultiLevelMatrix, setMonthPicker } = useArrowNavigation();
 

@@ -4,7 +4,7 @@ import { OpenPosition } from '@/interfaces';
 import { unrefElement } from '@/utils/util';
 
 import type { ComponentRef, VueEmit } from '@/interfaces';
-import type { AllPropsType } from '@/utils/props';
+import type { AllPropsType } from '@/props';
 
 enum MenuPlacement {
     top = 'top',

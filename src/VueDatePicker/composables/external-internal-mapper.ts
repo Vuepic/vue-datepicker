@@ -6,7 +6,7 @@ import { convertType, errors } from '@/utils/util';
 import { useUtils } from '@/composables/index';
 
 import type { ModelValue, VueEmit, TimeModel, MonthModel, ModelTypeConverted } from '@/interfaces';
-import type { AllPropsType } from '@/utils/props';
+import type { AllPropsType } from '@/props';
 import type { Ref } from 'vue';
 
 /**

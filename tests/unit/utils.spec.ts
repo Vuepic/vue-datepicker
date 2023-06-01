@@ -37,7 +37,7 @@ import {
 } from '@/utils/date-utils';
 import { useTransitions, useUtils } from '@/composables';
 
-import type { AllPropsType } from '@/utils/props';
+import type { AllPropsType } from '@/props';
 import { defaultMultiCalendars, defaultTransitions } from '@/utils/defaults';
 import type { SixWeekMode } from '@/interfaces';
 

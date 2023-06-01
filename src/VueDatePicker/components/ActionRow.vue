@@ -67,7 +67,7 @@
 
     import { convertType, unrefElement } from '@/utils/util';
     import { useArrowNavigation, useUtils } from '@/composables';
-    import { AllProps } from '@/utils/props';
+    import { AllProps } from '@/props';
     import { getDate, isDateAfter, isDateBefore, isDateEqual, resetDate } from '@/utils/date-utils';
 
     import type { PropType } from 'vue';

@@ -31,7 +31,7 @@ import type {
     ICalendarDate,
     ICalendarDay,
 } from '@/interfaces';
-import type { AllPropsType } from '@/utils/props';
+import type { AllPropsType } from '@/props';
 import {
     defaultAriaLabels,
     defaultMultiCalendars,

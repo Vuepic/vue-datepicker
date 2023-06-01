@@ -26,7 +26,7 @@ import TimeInput from '@/components/TimePicker/TimeInput.vue';
 import { useUtils } from '@/composables';
 import { resetDateTime } from '@/utils/date-utils';
 
-import type { AllPropsType } from '@/utils/props';
+import type { AllPropsType } from '@/props';
 import type { TimeObj } from '@/interfaces';
 
 const format = (date: Date): string => {

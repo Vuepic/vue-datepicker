@@ -87,7 +87,7 @@
 
     import { isModelAuto, unrefElement } from '@/utils/util';
     import { mapSlots, useTransitions, useArrowNavigation, useUtils } from '@/composables';
-    import { AllProps } from '@/utils/props';
+    import { AllProps } from '@/props';
 
     import type { PropType } from 'vue';
     import type { TimeInputRef, InternalModuleValue } from '@/interfaces';

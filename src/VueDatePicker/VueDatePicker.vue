@@ -79,7 +79,7 @@
         useUtils,
     } from '@/composables';
     import { onClickOutside } from '@/directives/clickOutside';
-    import { AllProps } from '@/utils/props';
+    import { AllProps } from '@/props';
     import { getNumVal } from '@/utils/util';
 
     import type {

@@ -1,5 +1,5 @@
 import type { ComponentPublicInstance, Ref } from 'vue';
-import type { AllPropsType } from '@/utils/props';
+import type { AllPropsType } from '@/props';
 
 export type DynamicClass = Record<string, boolean | undefined>;
 

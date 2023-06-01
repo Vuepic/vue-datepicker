@@ -169,7 +169,7 @@
     import { useCalendar, mapSlots, useArrowNavigation, useState, useUtils } from '@/composables';
     import { getMonths, getYears, unrefElement } from '@/utils/util';
     import { useCalendarClass } from '@/composables/calendar-class';
-    import { AllProps } from '@/utils/props';
+    import { AllProps } from '@/props';
 
     import type {
         CalendarRef,
