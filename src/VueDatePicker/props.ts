@@ -164,6 +164,7 @@ export const AllProps = {
     closeOnClearValue: { type: Boolean as PropType<boolean>, default: true },
     focusStartDate: { type: Boolean as PropType<boolean>, default: false },
     disabledTimes: { type: Function as PropType<DisabledTimesFn | undefined>, default: undefined },
+    showLastInRange: { type: Boolean as PropType<boolean>, default: true },
 };
 
 export type AllPropsType = ExtractPropTypes<typeof AllProps>;

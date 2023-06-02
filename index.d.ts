@@ -238,7 +238,8 @@ export interface VueDatePickerProps {
     disableYearSelect?: boolean;
     closeOnClearValue?: boolean;
     focusStartDate?: boolean;
-    disabledTimes: (time: TimeObj | TimeObj[] | (TimeObj | undefined)[]) => boolean;
+    disabledTimes?: (time: TimeObj | TimeObj[] | (TimeObj | undefined)[]) => boolean;
+    showLastInRange?: boolean;
 }
 
 export type DatePickerInstance = ComponentPublicInstance<PublicMethods> | null;

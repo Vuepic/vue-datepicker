@@ -195,7 +195,11 @@ export const useCalendar = (
 
     // Assign range values
     const assignRangeValue = (dates: Date[], fromMount: boolean) => {
-        assignMonthAndYear(dates[0], fromMount);
+        if (dates[1] && props.showLastInRange) {
+            assignMonthAndYear(dates[1], fromMount);
+        } else {
+            assignMonthAndYear(dates[0], fromMount);
+        }
         const getValue = (mapper: (date: Date) => number, keys: TimeType): number[] => [
             mapper(dates[0]),
             dates[1] ? mapper(dates[1]) : (time[keys] as number[])[1],
