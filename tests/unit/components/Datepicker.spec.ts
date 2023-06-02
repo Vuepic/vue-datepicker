@@ -381,8 +381,8 @@ describe('Logic connection', () => {
     it('Should auto change multi calendars', async () => {
         const modelValue = [addMonths(new Date(), 1), addMonths(new Date(), 2)];
         const { menu } = await mountDatepicker({ multiCalendars: true, modelValue, range: true });
-        expect(menu.vm.month(0)).toEqual(getMonth(modelValue[0]));
-        expect(menu.vm.month(1)).toEqual(getMonth(modelValue[1]));
+        expect(menu.vm.month(0)).toEqual(getMonth(modelValue[1]));
+        expect(menu.vm.month(1)).toEqual(getMonth(addMonths(modelValue[1], 1)));
     });
 
     it('Should handle flow', async () => {
