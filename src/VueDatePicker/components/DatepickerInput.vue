@@ -201,7 +201,11 @@
         }
     };
 
-    const handleTab = (): void => {
+    const handleTab = (ev): void => {
+        if (props.textInput && defaults.value.textInputOptions?.tabSubmit) {
+            parseInput((ev.target as HTMLInputElement).value);
+        }
+
         if (defaults.value.textInputOptions?.tabSubmit && isValidDate(parsedDate.value) && props.inputValue !== '') {
             emit('set-input-date', parsedDate.value, true);
             parsedDate.value = null;
