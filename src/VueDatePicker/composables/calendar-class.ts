@@ -302,6 +302,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
 
     // Get needed classes
     const getDayClassData = (day: ICalendarDay): Record<string, boolean> => {
+        if (props.hideOffsetDates && !day.current) return {};
         return {
             ...sharedClasses(day),
             ...getModeClasses(day),
