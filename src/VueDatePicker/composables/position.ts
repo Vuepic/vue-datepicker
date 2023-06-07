@@ -178,7 +178,7 @@ export const usePosition = (menuRef: ComponentRef, inputRef: ComponentRef, emit:
         if (props.autoPosition) {
             const { left, width } = getInputPositions(inputEl);
             const { left: menuLeft, right: menuRight } = menuEl.getBoundingClientRect();
-            if (menuLeft <= 0 || menuLeft <= left) return setPositionLeft(left);
+            if (menuLeft <= 0) return setPositionLeft(left);
             if (menuRight >= document.documentElement.clientWidth) return setPositionRight(left, width);
             return setHorizontalPositioning(left, width);
         }
