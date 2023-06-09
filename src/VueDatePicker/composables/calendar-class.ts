@@ -189,7 +189,10 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
     // Check if the date should be highlighted
     const highlighted = (day: ICalendarDay) => {
         if (props.highlight) {
-            return matchDate(day.value, props.highlight);
+            return matchDate(
+                day.value,
+                props.arrMapValues?.highlightedDates ? props.arrMapValues.highlightedDates : props.highlight,
+            );
         }
         return false;
     };

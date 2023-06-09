@@ -183,6 +183,7 @@ export type ModelTypeConverted = string | number | Date;
 
 export interface ExtendedProps extends AllPropsType {
     internalModelValue: InternalModuleValue;
+    arrMapValues: ArrMapValues;
 }
 
 export interface MonthYearOpt {
@@ -212,3 +213,10 @@ export type TimeObj = { hours: number; minutes: number; seconds: number };
 export type DisabledTimesFn = (time: TimeObj | TimeObj[] | (TimeObj | undefined)[]) => boolean;
 
 export type MenuView = 'month' | 'year' | 'calendar' | 'time';
+
+type ArrMapValue = Map<string, boolean> | null;
+export interface ArrMapValues {
+    disabledDates: ArrMapValue;
+    allowedDates: ArrMapValue;
+    highlightedDates: ArrMapValue;
+}

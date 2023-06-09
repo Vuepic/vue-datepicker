@@ -30,6 +30,7 @@ import type {
     InternalModuleValue,
     ICalendarDate,
     ICalendarDay,
+    ArrMapValues,
 } from '@/interfaces';
 import type { AllPropsType } from '@/props';
 import {
@@ -43,9 +44,11 @@ import {
 } from '@/utils/defaults';
 import { getDate, getTimeObj, isDateAfter, isDateBefore, isDateEqual, resetDateTime } from '@/utils/date-utils';
 
-// Instead of using everywhere new Date(), this is the central place for getting or parsing the date
+interface UtilsProps extends AllPropsType {
+    arrMapValues?: ArrMapValues;
+}
 
-export const useUtils = (props: AllPropsType) => {
+export const useUtils = (props: UtilsProps) => {
     // Check for partial range enabled on null value as second item in the array
     const checkPartialRangeValue = (): Date => {
         if (props.partialRange) return null as unknown as Date;
@@ -119,15 +122,19 @@ export const useUtils = (props: AllPropsType) => {
         const bellowMin = props.minDate
             ? isDateBefore(getZonedDate(date), getZonedDate(getDate(props.minDate)))
             : false;
-        const inDisableArr = matchDate(date, props.disabledDates);
+        const inDisableArr = matchDate(
+            date,
+            props.arrMapValues?.disabledDates ? props.arrMapValues.disabledDates : props.disabledDates,
+        );
         const disabledMonths = defaults.value.filters.months.map((month) => +month);
         const inDisabledMonths = disabledMonths.includes(getMonth(date));
         const weekDayDisabled = props.disabledWeekDays.length
             ? props.disabledWeekDays.some((day) => +day === getDay(date))
             : false;
-        const notInSpecific = props.allowedDates.length
-            ? !props.allowedDates.some((dateVal) => isDateEqual(getZonedDate(getDate(dateVal)), getZonedDate(date)))
-            : false;
+        const notInSpecific = matchDate(
+            date,
+            props.arrMapValues?.allowedDates ? props.arrMapValues.allowedDates : props.allowedDates,
+        );
 
         const dateYear = getYear(date);
 
@@ -190,7 +197,14 @@ export const useUtils = (props: AllPropsType) => {
         return [start, end];
     };
 
-    const matchDate = (date: Date, pattern: Date[] | string[] | number[] | ((date: Date) => boolean)): boolean => {
+    const matchDate = (
+        date: Date,
+        pattern: Date[] | string[] | number[] | ((date: Date) => boolean) | Map<string, any>,
+    ): boolean => {
+        if (!date) return true;
+        if (pattern instanceof Map) {
+            return !!pattern.get(getMapKey(date));
+        }
         if (Array.isArray(pattern)) {
             return pattern.some((includedDate) => isDateEqual(getZonedDate(getDate(includedDate)), getZonedDate(date)));
         }
@@ -424,6 +438,32 @@ export const useUtils = (props: AllPropsType) => {
         return valid;
     };
 
+    const getMapKey = (date: Date | string | number) => {
+        const d = resetDateTime(getZonedDate(getDate(date))).toISOString();
+        const [stringVal] = d.split('T');
+        return stringVal;
+    };
+
+    const datesArrToMap = (datesArr: (Date | string | number)[]): Map<string, boolean> => {
+        return new Map(datesArr.map((date) => [getMapKey(date), true]));
+    };
+
+    const shouldMap = (arr: any): arr is Date[] => {
+        return Array.isArray(arr);
+    };
+
+    const mapDatesArrToMap = (arrMapValues: ArrMapValues) => {
+        if (shouldMap(props.allowedDates)) {
+            arrMapValues.allowedDates = datesArrToMap(props.allowedDates);
+        }
+        if (shouldMap(props.highlight)) {
+            arrMapValues.highlightedDates = datesArrToMap(props.highlight);
+        }
+        if (shouldMap(props.disabledDates)) {
+            arrMapValues.disabledDates = datesArrToMap(props.disabledDates);
+        }
+    };
+
     return {
         checkPartialRangeValue,
         checkRangeEnabled,
@@ -445,6 +485,7 @@ export const useUtils = (props: AllPropsType) => {
         validateMaxDate,
         validateMinDate,
         assignDefaultTime,
+        mapDatesArrToMap,
         defaults,
         hideNavigationButtons,
     };

@@ -406,7 +406,7 @@ describe('Logic connection', () => {
         const date = resetDateTime(new Date());
         const { menu, dp } = await mountDatepicker({ autoApply: true, range: true, modelAuto: true });
 
-        menu.vm.selectDate(new Date());
+        menu.vm.selectDate({ value: new Date(), current: true });
         await menu.vm.$nextTick();
 
         const emittedDate = resetDateTime((dp.emitted()['update:model-value'][0] as any)[0]);

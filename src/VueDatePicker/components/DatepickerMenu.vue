@@ -183,6 +183,7 @@
         ICalendarDay,
         InternalModuleValue,
         MenuView,
+        ArrMapValues,
     } from '@/interfaces';
     import type { ComputedRef, PropType, Ref, UnwrapRef } from 'vue';
 
@@ -208,6 +209,7 @@
     const props = defineProps({
         openOnTop: { type: Boolean as PropType<boolean>, default: false },
         internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
+        arrMapValues: { type: Object as PropType<ArrMapValues>, default: () => ({}) },
         ...AllProps,
     });
 

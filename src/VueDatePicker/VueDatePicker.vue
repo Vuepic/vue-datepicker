@@ -27,6 +27,7 @@
                 :class="theme"
                 :style="!inline ? menuStyle : undefined"
                 :open-on-top="openOnTop"
+                :arr-map-values="arrMapValues"
                 v-bind="$props"
                 v-model:internal-model-value="internalModelValue"
                 @close-picker="closeMenu"
@@ -65,6 +66,7 @@
         watch,
         Teleport as TeleportCmp,
         nextTick,
+        reactive,
     } from 'vue';
 
     import DatepickerInput from '@/components/DatepickerInput.vue';
@@ -89,6 +91,7 @@
         DatepickerInputRef,
         ModelValue,
         MenuView,
+        ArrMapValues,
     } from '@/interfaces';
 
     const emit = defineEmits([
@@ -124,10 +127,15 @@
     const inputRef = ref<DatepickerInputRef | null>(null);
     const isInputFocused = ref(false);
     const pickerWrapperRef = ref<HTMLElement | null>(null);
+    const arrMapValues = reactive<ArrMapValues>({
+        disabledDates: null,
+        allowedDates: null,
+        highlightedDates: null,
+    });
 
     const { setMenuFocused, setShiftKey } = useState();
     const { clearArrowNav } = useArrowNavigation();
-    const { validateDate, isValidTime, defaults } = useUtils(props);
+    const { validateDate, isValidTime, defaults, mapDatesArrToMap } = useUtils(props);
 
     onMounted(() => {
         parseExternalModelValue(props.modelValue);
@@ -141,6 +149,7 @@
         if (props.inline) {
             isOpen.value = true;
         }
+        mapDatesArrToMap(arrMapValues);
     });
 
     onUnmounted(() => {
