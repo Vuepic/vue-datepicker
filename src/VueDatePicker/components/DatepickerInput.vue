@@ -201,7 +201,7 @@
         }
     };
 
-    const handleTab = (ev): void => {
+    const handleTab = (ev: KeyboardEvent): void => {
         if (props.textInput && defaults.value.textInputOptions?.tabSubmit) {
             parseInput((ev.target as HTMLInputElement).value);
         }

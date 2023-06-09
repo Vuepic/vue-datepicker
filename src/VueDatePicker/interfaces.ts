@@ -183,7 +183,7 @@ export type ModelTypeConverted = string | number | Date;
 
 export interface ExtendedProps extends AllPropsType {
     internalModelValue: InternalModuleValue;
-    arrMapValues: ArrMapValues;
+    arrMapValues?: ArrMapValues;
 }
 
 export interface MonthYearOpt {
