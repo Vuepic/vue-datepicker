@@ -101,11 +101,9 @@ export const getNumVal = (num?: string | number | null): number | null => {
 };
 
 export const findFocusableEl = (container: HTMLElement | null): HTMLElement | undefined => {
-    console.log(container);
     if (container) {
         const elementsList = container.querySelectorAll('input, button, select, textarea, a[href]');
         const elArr = [...elementsList] as HTMLElement[];
-        console.log(elArr);
         return elArr[0];
     }
     return undefined;
