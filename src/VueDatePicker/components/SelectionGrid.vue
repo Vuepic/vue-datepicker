@@ -46,6 +46,7 @@
             ref="toggleButton"
             @click="toggle"
             @keydown.enter="toggle"
+            @keydown.tab="toggle"
         >
             <slot name="button-icon" />
         </div>

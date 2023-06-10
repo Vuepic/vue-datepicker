@@ -85,7 +85,7 @@
     import { ClockIcon, CalendarIcon } from '@/components/Icons';
     import TimeInput from '@/components/TimePicker/TimeInput.vue';
 
-    import { isModelAuto, unrefElement } from '@/utils/util';
+    import { findFocusableEl, isModelAuto, unrefElement } from '@/utils/util';
     import { mapSlots, useTransitions, useArrowNavigation, useUtils } from '@/composables';
     import { AllProps } from '@/props';
 
@@ -207,8 +207,11 @@
     };
 
     const focusOverlay = () => {
-        if (overlayRef.value && props.arrowNavigation) {
-            overlayRef.value.focus({ preventScroll: true });
+        if (overlayRef.value) {
+            const el = findFocusableEl(overlayRef.value);
+            if (el) {
+                el.focus({ preventScroll: true });
+            }
         }
     };
 
