@@ -117,6 +117,15 @@ export const useUtils = (props: UtilsProps) => {
         return props.hideNavigation?.includes(key);
     });
 
+    const checkAllowedDates = (date: Date) => {
+        if (props.arrMapValues?.allowedDates) return !matchDate(date, props.arrMapValues.allowedDates);
+        if (props.allowedDates?.length)
+            return !props.allowedDates?.some((dateVal) =>
+                isDateEqual(getZonedDate(getDate(dateVal)), getZonedDate(date)),
+            );
+        return false;
+    };
+
     const validateDate = (date: Date) => {
         const aboveMax = props.maxDate ? isDateAfter(getZonedDate(date), getZonedDate(getDate(props.maxDate))) : false;
         const bellowMin = props.minDate
@@ -131,10 +140,8 @@ export const useUtils = (props: UtilsProps) => {
         const weekDayDisabled = props.disabledWeekDays.length
             ? props.disabledWeekDays.some((day) => +day === getDay(date))
             : false;
-        const notInSpecific = matchDate(
-            date,
-            props.arrMapValues?.allowedDates ? props.arrMapValues.allowedDates : props.allowedDates,
-        );
+
+        const notInSpecific = checkAllowedDates(date);
 
         const dateYear = getYear(date);
 
@@ -448,8 +455,8 @@ export const useUtils = (props: UtilsProps) => {
         return new Map(datesArr.map((date) => [getMapKey(date), true]));
     };
 
-    const shouldMap = (arr: any): arr is Date[] => {
-        return Array.isArray(arr);
+    const shouldMap = (arr: any): arr is Date[] | boolean => {
+        return Array.isArray(arr) && arr.length > 0;
     };
 
     const mapDatesArrToMap = (arrMapValues: ArrMapValues) => {
