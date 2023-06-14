@@ -240,6 +240,7 @@ export interface VueDatePickerProps {
     focusStartDate?: boolean;
     disabledTimes?: (time: TimeObj | TimeObj[] | (TimeObj | undefined)[]) => boolean;
     showLastInRange?: boolean;
+    timePickerInline?: boolean;
 }
 
 export type DatePickerInstance = ComponentPublicInstance<PublicMethods> | null;

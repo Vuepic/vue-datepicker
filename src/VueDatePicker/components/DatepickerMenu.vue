@@ -108,7 +108,7 @@
                             <slot name="time-picker" v-bind="{ time, updateTime }" />
                         </template>
                         <template v-else>
-                            <TimePickerCmp
+                            <TimePicker
                                 v-if="enableTimePicker && !monthPicker && !weekPicker"
                                 ref="timePickerRef"
                                 :hours="time.hours"
@@ -128,7 +128,7 @@
                                 <template v-for="(slot, i) in timePickerSlots" #[slot]="args" :key="i">
                                     <slot :name="slot" v-bind="args" />
                                 </template>
-                            </TimePickerCmp>
+                            </TimePicker>
                         </template>
                     </div>
                 </div>
@@ -164,7 +164,7 @@
     import ActionRow from '@/components/ActionRow.vue';
     import Calendar from '@/components/Calendar.vue';
     import MonthYearPicker from '@/components/MonthYearPicker/MonthYearPicker.vue';
-    import TimePickerCmp from '@/components/TimePicker/TimePicker.vue';
+    import TimePicker from '@/components/TimePicker/TimePicker.vue';
 
     import { useCalendar, mapSlots, useArrowNavigation, useState, useUtils } from '@/composables';
     import { getMonths, getYears, unrefElement } from '@/utils/util';

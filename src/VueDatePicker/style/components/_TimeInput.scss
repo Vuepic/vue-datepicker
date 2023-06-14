@@ -8,8 +8,12 @@
   color: var(--dp-text-color);
 }
 
-.dp__time_col_reg {
+.dp__time_col_reg_block {
   padding: 0 20px;
+}
+
+.dp__time_col_reg_inline {
+  padding: 0 10px;
 }
 
 .dp__time_col_reg_with_button {
@@ -25,12 +29,15 @@
 }
 
 .dp__time_col {
-  font-size: var(--dp-time-font-size);
   text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
+}
+
+.dp__time_col_block {
+  font-size: var(--dp-time-font-size);
 }
 
 .dp__time_display {
@@ -40,12 +47,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 3px;
 
   &:hover {
     background: var(--dp-hover-color);
     color: var(--dp-hover-text-color);
   }
+}
+
+.dp__time_display_block {
+  padding: 0 3px;
+}
+
+.dp__time_display_inline {
+  padding: 5px 5px;
+}
+
+.dp__time_picker_inline_container {
+  display: flex;
+  width: 100%;
+  justify-content: center;
 }
 
 .dp__inc_dec_button {
@@ -72,6 +92,16 @@
   }
 }
 
+
+.dp__inc_dec_button_inline {
+  width: 100%;
+  padding: 0;
+  height: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
 %__dp_time_arrow_disabled {
   background: var(--dp-disabled-color);
   color: var(--dp-disabled-color-text);
@@ -93,4 +123,37 @@
   padding: var(--dp-common-padding);
   border-radius: var(--dp-border-radius);
   cursor: pointer;
+}
+
+.dp__tp_inline_btn_bar {
+  width: 100%;
+  height: 4px;
+  background-color: var(--dp-secondary-color);
+  transition: var(--dp-common-transition);
+  border-collapse: collapse;
+
+}
+
+.dp__tp_inline_btn_top:hover {
+  .dp__tp_btn_in_r {
+    background-color: var(--dp-primary-color);
+    transform: rotate(12deg) scale(1.15) translateY(-2px);
+  }
+
+  .dp__tp_btn_in_l {
+    background-color: var(--dp-primary-color);
+    transform: rotate(-12deg) scale(1.15) translateY(-2px);
+  }
+}
+
+.dp__tp_inline_btn_bottom:hover {
+  .dp__tp_btn_in_r {
+    background-color: var(--dp-primary-color);
+    transform: rotate(-12deg) scale(1.15) translateY(-2px);
+  }
+
+  .dp__tp_btn_in_l {
+    background-color: var(--dp-primary-color);
+    transform: rotate(12deg) scale(1.15) translateY(-2px);
+  }
 }

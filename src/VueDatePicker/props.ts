@@ -165,6 +165,7 @@ export const AllProps = {
     focusStartDate: { type: Boolean as PropType<boolean>, default: false },
     disabledTimes: { type: Function as PropType<DisabledTimesFn | undefined>, default: undefined },
     showLastInRange: { type: Boolean as PropType<boolean>, default: true },
+    timePickerInline: { type: Boolean as PropType<boolean>, default: false },
 };
 
 export type AllPropsType = ExtractPropTypes<typeof AllProps>;

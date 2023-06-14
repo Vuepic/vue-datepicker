@@ -7,7 +7,9 @@
                     type="button"
                     :class="{
                         dp__btn: true,
-                        dp__inc_dec_button: true,
+                        dp__inc_dec_button: !props.timePickerInline,
+                        dp__inc_dec_button_inline: props.timePickerInline,
+                        dp__tp_inline_btn_top: props.timePickerInline,
                         dp__inc_dec_button_disabled: disabledArrowUpBtn(timeInput.type),
                     }"
                     data-test="time-inc-btn"
@@ -18,14 +20,28 @@
                     @click="handleTimeValue(timeInput.type)"
                     :ref="(el) => assignRefs(el, i, 0)"
                 >
-                    <slot name="arrow-up" v-if="$slots['arrow-up']" />
-                    <ChevronUpIcon v-if="!$slots['arrow-up']" />
+                    <template v-if="!props.timePickerInline">
+                        <slot name="arrow-up" v-if="$slots['arrow-up']" />
+                        <ChevronUpIcon v-if="!$slots['arrow-up']" />
+                    </template>
+                    <template v-else>
+                        <span class="dp__tp_inline_btn_bar dp__tp_btn_in_l"></span>
+                        <span class="dp__tp_inline_btn_bar dp__tp_btn_in_r"></span>
+                    </template>
                 </button>
                 <button
                     type="button"
                     :aria-label="defaults.ariaLabels?.openTpOverlay(timeInput.type)"
                     class="dp__btn"
-                    :class="checkOverlayDisabled(timeInput.type) ? '' : 'dp__time_display'"
+                    :class="
+                        checkOverlayDisabled(timeInput.type)
+                            ? undefined
+                            : {
+                                  dp__time_display: true,
+                                  dp__time_display_block: !props.timePickerInline,
+                                  dp__time_display_inline: props.timePickerInline,
+                              }
+                    "
                     tabindex="0"
                     :data-test="`${timeInput.type}-toggle-overlay-btn`"
                     @keydown.enter="toggleOverlay(timeInput.type)"
@@ -45,7 +61,9 @@
                     type="button"
                     :class="{
                         dp__btn: true,
-                        dp__inc_dec_button: true,
+                        dp__inc_dec_button: !props.timePickerInline,
+                        dp__inc_dec_button_inline: props.timePickerInline,
+                        dp__tp_inline_btn_bottom: props.timePickerInline,
                         dp__inc_dec_button_disabled: disabledArrowDownBtn(timeInput.type),
                     }"
                     data-test="time-dec-btn"
@@ -56,8 +74,14 @@
                     @click="handleTimeValue(timeInput.type, false)"
                     :ref="(el) => assignRefs(el, i, 2)"
                 >
-                    <slot name="arrow-down" v-if="$slots['arrow-down']" />
-                    <ChevronDownIcon v-if="!$slots['arrow-down']" />
+                    <template v-if="!props.timePickerInline">
+                        <slot name="arrow-down" v-if="$slots['arrow-down']" />
+                        <ChevronDownIcon v-if="!$slots['arrow-down']" />
+                    </template>
+                    <template v-else>
+                        <span class="dp__tp_inline_btn_bar dp__tp_btn_in_l"></span>
+                        <span class="dp__tp_inline_btn_bar dp__tp_btn_in_r"></span>
+                    </template>
                 </button>
             </template>
         </div>
@@ -142,6 +166,7 @@
         seconds: { type: Number as PropType<number>, default: 0 },
         closeTimePickerBtn: { type: Object as PropType<HTMLElement | null>, default: null },
         order: { type: Number as PropType<number>, default: 0 },
+        timePickerInline: { type: Boolean as PropType<boolean>, default: false },
         ...AllProps,
     });
 
@@ -189,7 +214,9 @@
     const timeColClass = computed(
         (): DynamicClass => ({
             dp__time_col: true,
-            dp__time_col_reg: !props.enableSeconds && props.is24,
+            dp__time_col_block: !props.timePickerInline,
+            dp__time_col_reg_block: !props.enableSeconds && props.is24 && !props.timePickerInline,
+            dp__time_col_reg_inline: !props.enableSeconds && props.is24 && props.timePickerInline,
             dp__time_col_reg_with_button: !props.enableSeconds && !props.is24,
             dp__time_col_sec: props.enableSeconds && props.is24,
             dp__time_col_sec_with_button: props.enableSeconds && !props.is24,

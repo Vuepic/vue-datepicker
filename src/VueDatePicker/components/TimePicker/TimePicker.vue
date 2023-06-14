@@ -2,7 +2,7 @@
     <div>
         <button
             type="button"
-            v-if="!timePicker"
+            v-if="!timePicker && !timePickerInline"
             v-show="!hideNavigationButtons('time')"
             :class="toggleButtonClass"
             :aria-label="defaults.ariaLabels?.openTimePicker"
@@ -16,9 +16,21 @@
             <slot name="clock-icon" v-if="$slots['clock-icon']" />
             <ClockIcon v-if="!$slots['clock-icon']" />
         </button>
-        <transition :name="transitionName(showTimePicker)" :css="showTransition">
-            <div v-if="showTimePicker || timePicker" class="dp__overlay" ref="overlayRef" tabindex="0">
-                <div class="dp__overlay_container dp__container_flex dp__time_picker_overlay_container">
+        <transition :name="transitionName(showTimePicker)" :css="showTransition && !timePickerInline">
+            <div
+                v-if="showTimePicker || timePicker || timePickerInline"
+                :class="{ dp__overlay: !timePickerInline }"
+                ref="overlayRef"
+                :tabindex="timePickerInline ? undefined : 0"
+            >
+                <div
+                    :class="
+                        !timePickerInline
+                            ? 'dp__overlay_container dp__container_flex dp__time_picker_overlay_container'
+                            : 'dp__time_picker_inline_container'
+                    "
+                    style="display: flex"
+                >
                     <slot
                         name="time-picker-overlay"
                         v-if="$slots['time-picker-overlay']"
@@ -30,7 +42,7 @@
                         :set-seconds="updateSeconds"
                     ></slot>
                     <template v-if="!$slots['time-picker-overlay']">
-                        <div class="dp__overlay_row dp__flex_row">
+                        <div :class="timePickerInline ? 'dp__flex' : 'dp__overlay_row dp__flex_row'">
                             <TimeInput
                                 v-for="(tInput, index) in timeInputs"
                                 :key="index"
@@ -60,7 +72,7 @@
                     </template>
                     <button
                         type="button"
-                        v-if="!timePicker"
+                        v-if="!timePicker && !timePickerInline"
                         v-show="!hideNavigationButtons('time')"
                         ref="closeTimePickerBtn"
                         :class="toggleButtonClass"

@@ -94,6 +94,11 @@
   --dp-highlight-color: rgb(25 118 210 / 10%);
 }
 
+.dp__flex {
+  display: flex;
+  align-items: center;
+}
+
 .dp__btn {
   background: none;
   border: none;
