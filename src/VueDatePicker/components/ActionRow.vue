@@ -130,9 +130,13 @@
     const formatRangeDate = () => {
         const dates = props.internalModelValue as Date[];
         if (defaults.value.multiCalendars > 0) {
-            return `${formatDate(dates[0])} - ${formatDate(dates[1])}`;
+            return `${formatDatePreview(dates[0])} - ${formatDatePreview(dates[1])}`;
         }
-        return [formatDate(dates[0]), formatDate(dates[1])];
+        return [formatDatePreview(dates[0]), formatDatePreview(dates[1])];
+    };
+
+    const formatDatePreview = (date: Date) => {
+        return formatDate(date, defaults.value.previewFormat as string);
     };
 
     const previewValue = computed((): string | string[] => {
@@ -143,14 +147,14 @@
                     return formatRangeDate();
                 }
                 if (props.multiDates) {
-                    return props.internalModelValue.map((date) => `${formatDate(date)}`);
+                    return props.internalModelValue.map((date) => `${formatDatePreview(date)}`);
                 }
                 if (props.modelAuto) {
-                    return `${formatDate(props.internalModelValue[0])}`;
+                    return `${formatDatePreview(props.internalModelValue[0])}`;
                 }
-                return `${formatDate(props.internalModelValue[0])} -`;
+                return `${formatDatePreview(props.internalModelValue[0])} -`;
             }
-            return formatDate(props.internalModelValue);
+            return formatDatePreview(props.internalModelValue);
         }
         return handleCustomPreviewFormat();
     });
