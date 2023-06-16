@@ -609,7 +609,13 @@ export const useCalendar = (
                     modelValue.value = rangeDate;
                 }
             } else {
-                modelValue.value = getMonthYearValue(instance);
+                if (props.autoApplyMonth) {
+                    modelValue.value = getMonthYearValue(instance);
+                } else {
+                    if (isValueChange) {
+                        modelValue.value = getMonthYearValue(instance);
+                    }
+                }
             }
         }
         emit('update-month-year', { instance, month: val.month, year: val.year });

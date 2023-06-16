@@ -106,8 +106,9 @@
             <template v-if="monthPicker">
                 <SelectionGrid
                     v-bind="childProps('month')"
-                    :skip-active="range"
+                    :internal-model-value="internalModelValue"
                     :year="year"
+                    :auto-apply-month="autoApplyMonth"
                     :multi-model-value="multiModelValue"
                     month-picker
                     v-model="monthModelBind"

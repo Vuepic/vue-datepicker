@@ -55,14 +55,14 @@
 
 <script lang="ts" setup>
     import { computed, nextTick, onBeforeUpdate, onMounted, onUnmounted, ref } from 'vue';
-    import { setMonth, setYear } from 'date-fns';
+    import { getYear, setMonth, setYear } from 'date-fns';
 
     import { unrefElement, convertType } from '@/utils/util';
     import { useArrowNavigation, useUtils } from '@/composables';
     import { isDateBetween, isDateEqual } from '@/utils/date-utils';
 
     import type { PropType } from 'vue';
-    import type { IDefaultSelect, DynamicClass, Flow, AriaLabels } from '@/interfaces';
+    import type { IDefaultSelect, DynamicClass, Flow, AriaLabels, InternalModuleValue } from '@/interfaces';
     import type { AllPropsType } from '@/props';
 
     const { setSelectionGrid, buildMultiLevelMatrix, setMonthPicker } = useArrowNavigation();
@@ -89,6 +89,8 @@
         textInput: { type: Boolean as PropType<boolean>, default: false },
         ariaLabels: { type: Object as PropType<AriaLabels>, default: () => ({}) },
         hideNavigation: { type: Array as PropType<Flow[]>, default: () => [] },
+        internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
+        autoApplyMonth: { type: Boolean as PropType<boolean>, default: false },
     });
 
     const { hideNavigationButtons } = useUtils(props as unknown as AllPropsType);
@@ -149,6 +151,12 @@
     }));
 
     const isActive = (itemVal: IDefaultSelect) => {
+        if (props.monthPicker && !props.autoApplyMonth) {
+            return isDateEqual(
+                props.internalModelValue as Date,
+                setYear(setMonth(new Date(), itemVal.value), props.year),
+            );
+        }
         if (props.skipActive) return false;
         return itemVal.value === props.modelValue;
     };

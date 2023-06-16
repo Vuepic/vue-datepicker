@@ -252,6 +252,7 @@ export interface VueDatePickerProps {
     showLastInRange?: boolean;
     timePickerInline?: boolean;
     calendar?: (weeks: CalendarDay[]) => CalendarDay[];
+    autoApplyMonth?: boolean;
 }
 
 export type DatePickerInstance = ComponentPublicInstance<PublicMethods> | null;
