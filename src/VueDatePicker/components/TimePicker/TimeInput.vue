@@ -166,7 +166,6 @@
         seconds: { type: Number as PropType<number>, default: 0 },
         closeTimePickerBtn: { type: Object as PropType<HTMLElement | null>, default: null },
         order: { type: Number as PropType<number>, default: 0 },
-        timePickerInline: { type: Boolean as PropType<boolean>, default: false },
         ...AllProps,
     });
 
