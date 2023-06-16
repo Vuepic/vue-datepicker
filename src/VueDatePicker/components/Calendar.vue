@@ -33,7 +33,12 @@
                         :aria-label="defaults.ariaLabels?.calendarDays"
                         v-if="showCalendar"
                     >
-                        <div class="dp__calendar_row" role="row" v-for="(week, weekInd) in mappedDates" :key="weekInd">
+                        <div
+                            class="dp__calendar_row"
+                            role="row"
+                            v-for="(week, weekInd) in calendarWeeks"
+                            :key="weekInd"
+                        >
                             <div role="gridcell" v-if="weekNumbers" class="dp__calendar_item dp__week_num">
                                 <div class="dp__cell_inner">
                                     {{ getWeekNum(week.days) }}
@@ -163,6 +168,11 @@
     const touch = ref({ startX: 0, endX: 0, startY: 0, endY: 0 });
     const activeTooltip = ref<HTMLElement[]>([]);
     const tpArrowStyle = ref<{ left?: string; right?: string }>({ left: '50%' });
+
+    const calendarWeeks = computed(() => {
+        if (props.calendar) return props.calendar(props.mappedDates);
+        return props.mappedDates;
+    });
 
     const weekDays = computed(() => {
         if (props.dayNames) {

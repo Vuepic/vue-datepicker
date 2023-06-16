@@ -52,6 +52,21 @@ export type ModelValue =
     | { month: number | string; year: number | string }[]
     | null;
 
+export interface DatePickerMarker {
+    date: Date | string;
+    type?: 'dot' | 'line';
+    tooltip?: { text?: string; html?: string; color?: string }[];
+    color?: string;
+}
+
+export interface CalendarDay {
+    text: number | string;
+    value: Date;
+    current: boolean;
+    classData: Record<string, boolean>;
+    marker?: DatePickerMarker;
+}
+
 export interface VueDatePickerProps {
     uid?: string;
     name?: string;
@@ -157,12 +172,7 @@ export interface VueDatePickerProps {
     nowButtonLabel?: string;
     partialRange?: boolean;
     monthChangeOnScroll?: boolean | 'inverse';
-    markers?: {
-        date: Date | string;
-        type?: 'dot' | 'line';
-        tooltip?: { text?: string; html?: string; color?: string }[];
-        color?: string;
-    }[];
+    markers?: DatePickerMarker[];
     transitions?:
         | boolean
         | {
@@ -241,6 +251,7 @@ export interface VueDatePickerProps {
     disabledTimes?: (time: TimeObj | TimeObj[] | (TimeObj | undefined)[]) => boolean;
     showLastInRange?: boolean;
     timePickerInline?: boolean;
+    calendar?: (weeks: CalendarDay[]) => CalendarDay[];
 }
 
 export type DatePickerInstance = ComponentPublicInstance<PublicMethods> | null;

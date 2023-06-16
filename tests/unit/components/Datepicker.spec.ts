@@ -27,7 +27,7 @@ import { useUtils } from '@/composables';
 import { resetDateTime } from '@/utils/date-utils';
 
 import type { AllPropsType } from '@/props';
-import type { TimeObj } from '@/interfaces';
+import type { TimeObj, ICalendarDate } from '@/interfaces';
 
 const format = (date: Date): string => {
     return `Selected year is ${date.getFullYear()}`;
@@ -536,5 +536,25 @@ describe('Logic connection', () => {
         expect(button.attributes().disabled).toBeDefined();
 
         dp.unmount();
+    });
+
+    it('Should display modified calendar', async () => {
+        const mapDates = (dates: ICalendarDate[]) => {
+            return dates
+                .filter((week) => week.days.some((day) => day.text === 15))
+                .map((week) => ({
+                    ...week,
+                    days: week.days.map((day) => {
+                        day.classData['custom-class'] = true;
+                        return day;
+                    }),
+                }));
+        };
+        const { menu } = await mountDatepicker({ calendar: mapDates });
+
+        const calendar = menu.findComponent(Calendar);
+
+        expect(calendar.vm.calendarWeeks).toHaveLength(1);
+        expect(calendar.html().includes('custom-class')).toBeTruthy();
     });
 });

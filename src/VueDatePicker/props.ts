@@ -21,6 +21,7 @@ import type {
     SixWeekMode,
     ActionRowData,
     DisabledTimesFn,
+    ICalendarDate,
 } from '@/interfaces';
 
 export const AllProps = {
@@ -166,6 +167,7 @@ export const AllProps = {
     disabledTimes: { type: Function as PropType<DisabledTimesFn | undefined>, default: undefined },
     showLastInRange: { type: Boolean as PropType<boolean>, default: true },
     timePickerInline: { type: Boolean as PropType<boolean>, default: false },
+    calendar: { type: Function as PropType<(month: ICalendarDate[]) => ICalendarDate[]>, default: null },
 };
 
 export type AllPropsType = ExtractPropTypes<typeof AllProps>;
