@@ -531,7 +531,7 @@ describe('Logic connection', () => {
         await validateSelectedTime(menu, hours, minutes);
 
         const actionRow = menu.findComponent(ActionRow);
-        const button = await actionRow.find('[data-test="select-button"]');
+        const button = actionRow.find('[data-test="select-button"]');
 
         expect(button.attributes().disabled).toBeDefined();
 

@@ -159,10 +159,10 @@
         return handleCustomPreviewFormat();
     });
 
+    const dateSeparator = () => (props.multiDates ? '; ' : ' - ');
+
     const formatValue = computed(() =>
-        !Array.isArray(previewValue.value)
-            ? previewValue.value
-            : previewValue.value.join(props.multiDates ? '; ' : ' - '),
+        !Array.isArray(previewValue.value) ? previewValue.value : previewValue.value.join(dateSeparator()),
     );
 
     const isMonthWithinRange = (date: Date | string): boolean => {

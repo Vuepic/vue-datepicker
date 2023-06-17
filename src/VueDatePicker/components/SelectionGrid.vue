@@ -55,7 +55,7 @@
 
 <script lang="ts" setup>
     import { computed, nextTick, onBeforeUpdate, onMounted, onUnmounted, ref } from 'vue';
-    import { getYear, setMonth, setYear } from 'date-fns';
+    import { setMonth, setYear } from 'date-fns';
 
     import { unrefElement, convertType } from '@/utils/util';
     import { useArrowNavigation, useUtils } from '@/composables';

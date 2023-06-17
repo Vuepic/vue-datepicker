@@ -35,6 +35,7 @@ import type {
     WeekStartNum,
 } from '@/interfaces';
 import type { UnwrapRef, Ref } from 'vue';
+import { isNumNullish } from '@/utils/util';
 
 // @SONAR_START@
 export const useCalendar = (
@@ -107,7 +108,7 @@ export const useCalendar = (
     );
 
     const isFlowLastStep = computed(() => {
-        if (props.flow && props.flow.length && !props.partialFlow) {
+        if (props.flow?.length && !props.partialFlow) {
             return flowStep.value === props.flow.length;
         }
         return true;
@@ -118,8 +119,8 @@ export const useCalendar = (
         if (!calendars.value[instance]) {
             calendars.value[instance] = { month: 0, year: 0 };
         }
-        calendars.value[instance].month = month === null ? calendars.value[instance]?.month : month;
-        calendars.value[instance].year = year === null ? calendars.value[instance]?.year : year;
+        calendars.value[instance].month = isNumNullish(month) ? calendars.value[instance]?.month : month;
+        calendars.value[instance].year = isNumNullish(year) ? calendars.value[instance]?.year : year;
     };
 
     // Any time modification will go through this function

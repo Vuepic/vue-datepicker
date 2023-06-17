@@ -100,6 +100,15 @@ export const getNumVal = (num?: string | number | null): number | null => {
     return +num;
 };
 
+export const hasNumValue = (num?: number | null): boolean => {
+    if (num === 0) return true;
+    return !!num;
+};
+
+export const isNumNullish = (num?: number | null): num is null => {
+    return num === null;
+};
+
 export const findFocusableEl = (container: HTMLElement | null): HTMLElement | undefined => {
     if (container) {
         const elementsList = container.querySelectorAll('input, button, select, textarea, a[href]');

@@ -335,6 +335,21 @@ export const useUtils = (props: UtilsProps) => {
         return dates;
     };
 
+    const getSixWeeksMode = (firstWeekday: number, gapToEnd: number) => {
+        switch (props.sixWeeks === true ? 'append' : props.sixWeeks) {
+            case 'prepend':
+                return [true, false];
+            case 'center':
+                return [firstWeekday == 0, true];
+            case 'fair':
+                return [firstWeekday == 0 || gapToEnd > firstWeekday, true];
+            case 'append':
+                return [false, false];
+            default:
+                return [false, false];
+        }
+    };
+
     // Get days for the calendar to be displayed in a table grouped by weeks
     const getCalendarDays = (month: number, year: number): ICalendarDate[] => {
         const weeks: ICalendarDate[] = [];
@@ -365,22 +380,7 @@ export const useUtils = (props: UtilsProps) => {
             const firstWeekday = (firstDate.getDay() + 7 - weekStartsOn) % 7;
             const lastWeekday = (lastDate.getDay() + 7 - weekStartsOn) % 7;
             const gapToEnd = 6 - lastWeekday;
-            const [requiresLeadingWeek, doesAlternate] = (() => {
-                switch (props.sixWeeks === true ? 'append' : props.sixWeeks) {
-                    case 'prepend':
-                        return [true, false];
-                    case 'center':
-                        return [firstWeekday == 0, true];
-                    case 'fair':
-                        return [firstWeekday == 0 || gapToEnd > firstWeekday, true];
-                    default:
-                    case 'append':
-                        return [false, false];
-                }
-            })();
-
-            // const doesAlternate = true;
-            // const requiresLeadingWeek = firstWeekday == 0 || gapToEnd > firstWeekday;
+            const [requiresLeadingWeek, doesAlternate] = getSixWeeksMode(firstWeekday, gapToEnd);
 
             for (let i = 1; i <= diff; i++) {
                 const addLeadingWeek = doesAlternate ? !!(i % 2) == requiresLeadingWeek : requiresLeadingWeek;

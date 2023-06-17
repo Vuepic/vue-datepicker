@@ -142,7 +142,7 @@
     import SelectionGrid from '@/components/SelectionGrid.vue';
     import { useTransitions, useArrowNavigation, useUtils } from '@/composables';
     import { AllProps } from '@/props';
-    import { getArrayInArray, hoursToAmPmHours } from '@/utils/util';
+    import { getArrayInArray, hasNumValue, hoursToAmPmHours } from '@/utils/util';
     import { getDate, sanitizeTime } from '@/utils/date-utils';
 
     import type { PropType } from 'vue';
@@ -276,7 +276,7 @@
     const disabledInGrid = computed(() => (type: TimeType) => {
         const times = getGridItems(type)
             .flat()
-            .filter((item) => item || (item as IDefaultSelect)?.value === 0)
+            .filter((item) => hasNumValue(item.value))
             .map((item) => item.value);
 
         return times.filter((item) => {
