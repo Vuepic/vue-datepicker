@@ -59,6 +59,9 @@ export interface DatePickerMarker {
     color?: string;
 }
 
+export interface CalendarWeek {
+    days: CalendarDay[];
+}
 export interface CalendarDay {
     text: number | string;
     value: Date;
@@ -251,7 +254,7 @@ export interface VueDatePickerProps {
     disabledTimes?: (time: TimeObj | TimeObj[] | (TimeObj | undefined)[]) => boolean;
     showLastInRange?: boolean;
     timePickerInline?: boolean;
-    calendar?: (weeks: CalendarDay[]) => CalendarDay[];
+    calendar?: (weeks: CalendarWeek[]) => CalendarWeek[];
     autoApplyMonth?: boolean;
 }
 
