@@ -102,34 +102,31 @@
                 {{ amPm }}
             </button>
         </div>
-        <transition
-            v-for="(timeInput, i) in timeInputOverlays"
-            :key="i"
-            :name="transitionName(overlays[timeInput.type])"
-            :css="showTransition"
-        >
-            <SelectionGrid
-                v-if="overlays[timeInput.type]"
-                :items="getGridItems(timeInput.type)"
-                :disabled-values="defaults.filters.times[timeInput.type].concat(disabledInGrid(timeInput.type))"
-                :esc-close="escClose"
-                :aria-labels="defaults.ariaLabels"
-                :hide-navigation="hideNavigation"
-                @update:model-value="handleTimeFromOverlay(timeInput.type, $event)"
-                @selected="toggleOverlay(timeInput.type)"
-                @toggle="toggleOverlay(timeInput.type)"
-                @reset-flow="$emit('reset-flow')"
-                :type="timeInput.type"
-            >
-                <template #button-icon>
-                    <slot name="clock-icon" v-if="$slots['clock-icon']" />
-                    <ClockIcon v-if="!$slots['clock-icon']" />
-                </template>
-                <template v-if="$slots[`${timeInput.type}-overlay-value`]" #item="{ item }">
-                    <slot :name="`${timeInput.type}-overlay-value`" :text="item.text" :value="item.value" />
-                </template>
-            </SelectionGrid>
-        </transition>
+        <template v-for="(timeInput, i) in timeInputOverlays" :key="i">
+            <transition :name="transitionName(overlays[timeInput.type])" :css="showTransition">
+                <SelectionGrid
+                    v-if="overlays[timeInput.type]"
+                    :items="getGridItems(timeInput.type)"
+                    :disabled-values="defaults.filters.times[timeInput.type].concat(disabledInGrid(timeInput.type))"
+                    :esc-close="escClose"
+                    :aria-labels="defaults.ariaLabels"
+                    :hide-navigation="hideNavigation"
+                    @update:model-value="handleTimeFromOverlay(timeInput.type, $event)"
+                    @selected="toggleOverlay(timeInput.type)"
+                    @toggle="toggleOverlay(timeInput.type)"
+                    @reset-flow="$emit('reset-flow')"
+                    :type="timeInput.type"
+                >
+                    <template #button-icon>
+                        <slot name="clock-icon" v-if="$slots['clock-icon']" />
+                        <ClockIcon v-if="!$slots['clock-icon']" />
+                    </template>
+                    <template v-if="$slots[`${timeInput.type}-overlay-value`]" #item="{ item }">
+                        <slot :name="`${timeInput.type}-overlay-value`" :text="item.text" :value="item.value" />
+                    </template>
+                </SelectionGrid>
+            </transition>
+        </template>
     </div>
 </template>
 
