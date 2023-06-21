@@ -178,7 +178,7 @@
         if (props.dayNames) {
             return Array.isArray(props.dayNames) ? props.dayNames : props.dayNames(props.locale, +props.weekStart);
         }
-        return getDayNames(props.locale, +props.weekStart);
+        return getDayNames(props.formatLocale, props.locale, +props.weekStart);
     });
 
     onMounted(() => {

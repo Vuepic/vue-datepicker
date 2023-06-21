@@ -365,7 +365,7 @@
 
     // Get generated months
     const months = computed((): IDefaultSelect[] => {
-        return getMonths(props.locale, props.monthNameFormat);
+        return getMonths(props.formatLocale, props.locale, props.monthNameFormat);
     });
 
     const getCalendarWidth = (): void => {
