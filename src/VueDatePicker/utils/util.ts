@@ -2,7 +2,7 @@ import { unref } from 'vue';
 
 import type { IDefaultSelect, IMarker, MaybeElementRef, ModelValue } from '@/interfaces';
 import type { ComponentPublicInstance } from 'vue';
-import {format} from "date-fns";
+import { format } from 'date-fns';
 
 export const getArrayInArray = <T>(list: T[], increment = 3): T[][] => {
     const items = [];
@@ -15,7 +15,7 @@ export const getArrayInArray = <T>(list: T[], increment = 3): T[][] => {
 
 function dayNameIntlMapper(locale: string) {
     return (day: number) => {
-        return new Intl.DateTimeFormat(locale, {weekday: 'short', timeZone: 'UTC'})
+        return new Intl.DateTimeFormat(locale, { weekday: 'short', timeZone: 'UTC' })
             .format(new Date(`2017-01-0${day}T00:00:00+00:00`))
             .slice(0, 2);
     };
@@ -23,7 +23,7 @@ function dayNameIntlMapper(locale: string) {
 
 function dayNameDateFnsMapper(formatLocale: Locale) {
     return (day: number) => {
-        return format(new Date(`2017-01-0${day}T00:00:00+00:00`), 'EEEEEE' , {locale: formatLocale});
+        return format(new Date(`2017-01-0${day}T00:00:00+00:00`), 'EEEEEE', { locale: formatLocale });
     };
 }
 
@@ -39,8 +39,7 @@ export const getDayNames = (formatLocale: Locale | null, locale: string, weekSta
     if (formatLocale !== null) {
         try {
             days = daysArray.map(dayNameDateFnsMapper(formatLocale));
-        }
-        catch (e) {
+        } catch (e) {
             days = daysArray.map(dayNameIntlMapper(locale));
         }
     } else {
@@ -70,7 +69,11 @@ export const getYears = (yearRange: number[] | string[], reverse?: boolean): IDe
 /**
  * Generate month names based on formatLocale or locale for selection display
  */
-export const getMonths = (formatLocale: Locale | null, locale: string, monthFormat: 'long' | 'short'): IDefaultSelect[] => {
+export const getMonths = (
+    formatLocale: Locale | null,
+    locale: string,
+    monthFormat: 'long' | 'short',
+): IDefaultSelect[] => {
     const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((month) => {
         const mm = month < 10 ? `0${month}` : month;
         return new Date(`2017-${mm}-01T00:00:00+00:00`);
@@ -80,14 +83,13 @@ export const getMonths = (formatLocale: Locale | null, locale: string, monthForm
         try {
             const monthDateFnsFormat = monthFormat === 'long' ? 'MMMM' : 'MMM';
             return months.map((date, i) => {
-                const month =  format(date, monthDateFnsFormat, {locale: formatLocale});
+                const month = format(date, monthDateFnsFormat, { locale: formatLocale });
                 return {
                     text: month.charAt(0).toUpperCase() + month.substring(1),
                     value: i,
                 };
             });
-        }
-        catch (e) {
+        } catch (e) {
             // Do nothing. Go ahead to execute fallback
         }
     }
