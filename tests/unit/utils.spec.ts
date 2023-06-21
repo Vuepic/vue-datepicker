@@ -40,6 +40,7 @@ import { useTransitions, useUtils } from '@/composables';
 import type { AllPropsType } from '@/props';
 import { defaultMultiCalendars, defaultTransitions } from '@/utils/defaults';
 import type { SixWeekMode } from '@/interfaces';
+import { de } from "date-fns/locale";
 
 const getCurrentTime = () => {
     return {
@@ -221,8 +222,23 @@ describe('Utils and date utils formatting', () => {
         expect(items[0]).toHaveLength(3);
     });
 
-    it('Should get day names', () => {
-        const days = getDayNames('de', 1);
+    it('Should get day names according to locale', () => {
+        const days = getDayNames(null,'de', 1);
+
+        expect(days).toHaveLength(7);
+        expect(days[1]).toEqual('Di');
+    });
+
+    it('Should get day names according to formatLocale', () => {
+        const days = getDayNames(de,'en', 1);
+
+        expect(days).toHaveLength(7);
+        expect(days[1]).toEqual('Di');
+    });
+
+    it('Should get day names by fallback to locale', () => {
+        // Pass incorrect formatLocale
+        const days = getDayNames({},'de', 1);
 
         expect(days).toHaveLength(7);
         expect(days[1]).toEqual('Di');
@@ -235,11 +251,26 @@ describe('Utils and date utils formatting', () => {
         expect(years[1].value).toEqual(2022);
     });
 
-    it('Should get month values', () => {
-        const months = getMonths('en', 'long');
+    it('Should get month values according to locale', () => {
+        const months = getMonths(null,'en', 'long');
 
         expect(months).toHaveLength(12);
         expect(months[0].text).toEqual('January');
+    });
+
+    it('Should get month values according to formatLocale', () => {
+        const months = getMonths(de,'en', 'long');
+
+        expect(months).toHaveLength(12);
+        expect(months[0].text).toEqual('Januar');
+    });
+
+    it('Should get month values by fallback to locale', () => {
+        // Pass incorrect formatLocale
+        const months = getMonths({},'de', 'long');
+
+        expect(months).toHaveLength(12);
+        expect(months[0].text).toEqual('Januar');
     });
 
     it('Should get default pattern', () => {

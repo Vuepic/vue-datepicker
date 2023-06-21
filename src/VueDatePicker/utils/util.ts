@@ -2,6 +2,7 @@ import { unref } from 'vue';
 
 import type { IDefaultSelect, IMarker, MaybeElementRef, ModelValue } from '@/interfaces';
 import type { ComponentPublicInstance } from 'vue';
+import {format} from "date-fns";
 
 export const getArrayInArray = <T>(list: T[], increment = 3): T[][] => {
     const items = [];
@@ -12,16 +13,39 @@ export const getArrayInArray = <T>(list: T[], increment = 3): T[][] => {
     return items;
 };
 
-/**
- * Generate week day names based on locale and in order specified in week start
- */
-export const getDayNames = (locale: string, weekStart: number): string[] => {
-    // Get list in order from sun ... sat
-    const days = [1, 2, 3, 4, 5, 6, 7].map((day) => {
-        return new Intl.DateTimeFormat(locale, { weekday: 'short', timeZone: 'UTC' })
+function dayNameIntlMapper(locale: string) {
+    return (day: number) => {
+        return new Intl.DateTimeFormat(locale, {weekday: 'short', timeZone: 'UTC'})
             .format(new Date(`2017-01-0${day}T00:00:00+00:00`))
             .slice(0, 2);
-    });
+    };
+}
+
+function dayNameDateFnsMapper(formatLocale: Locale) {
+    return (day: number) => {
+        return format(new Date(`2017-01-0${day}T00:00:00+00:00`), 'EEEEEE' , {locale: formatLocale});
+    };
+}
+
+/**
+ * Generate week day names based on formatLocale or locale and in order specified in week start
+ */
+export const getDayNames = (formatLocale: Locale | null, locale: string, weekStart: number): string[] => {
+    // Get list in order from sun ... sat
+    const daysArray = [1, 2, 3, 4, 5, 6, 7];
+    let days;
+
+    // Map day order numbers to names
+    if (formatLocale !== null) {
+        try {
+            days = daysArray.map(dayNameDateFnsMapper(formatLocale));
+        }
+        catch (e) {
+            days = daysArray.map(dayNameIntlMapper(locale));
+        }
+    } else {
+        days = daysArray.map(dayNameIntlMapper(locale));
+    }
 
     // Get days that are in order before specified week start
     const beforeWeekStart = days.slice(0, weekStart);
@@ -44,14 +68,31 @@ export const getYears = (yearRange: number[] | string[], reverse?: boolean): IDe
 };
 
 /**
- * Generate month names based on locale for selection display
+ * Generate month names based on formatLocale or locale for selection display
  */
-export const getMonths = (locale: string, format: 'long' | 'short'): IDefaultSelect[] => {
-    const formatter = new Intl.DateTimeFormat(locale, { month: format, timeZone: 'UTC' });
+export const getMonths = (formatLocale: Locale | null, locale: string, monthFormat: 'long' | 'short'): IDefaultSelect[] => {
     const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((month) => {
         const mm = month < 10 ? `0${month}` : month;
         return new Date(`2017-${mm}-01T00:00:00+00:00`);
     });
+
+    if (formatLocale !== null) {
+        try {
+            const monthDateFnsFormat = monthFormat === 'long' ? 'MMMM' : 'MMM';
+            return months.map((date, i) => {
+                const month =  format(date, monthDateFnsFormat, {locale: formatLocale});
+                return {
+                    text: month.charAt(0).toUpperCase() + month.substring(1),
+                    value: i,
+                };
+            });
+        }
+        catch (e) {
+            // Do nothing. Go ahead to execute fallback
+        }
+    }
+
+    const formatter = new Intl.DateTimeFormat(locale, { month: monthFormat, timeZone: 'UTC' });
     return months.map((date, i) => {
         const month = formatter.format(date);
         return {
