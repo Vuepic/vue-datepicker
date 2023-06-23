@@ -238,7 +238,7 @@
     const handleBlur = (): void => {
         emit('real-blur');
         isFocused.value = false;
-        if (!props.isMenuOpen) {
+        if (!props.isMenuOpen || (props.inline && props.inlineWithInput)) {
             emit('blur');
         }
         if (props.autoApply && props.textInput && parsedDate.value && !props.isMenuOpen) {
