@@ -39,10 +39,11 @@
                 @paste="handlePaste"
             />
             <div @click="emit('toggle')">
-                <span class="dp__input_icon" v-if="$slots['input-icon'] && !hideInputIcon"
+                <span class="dp__input_icon" @click="emit('toggle')" v-if="$slots['input-icon'] && !hideInputIcon"
                     ><slot name="input-icon"
                 /></span>
                 <CalendarIcon
+                    @click="emit('toggle')"
                     v-if="!$slots['input-icon'] && !hideInputIcon && !$slots['dp-input']"
                     class="dp__input_icon dp__input_icons"
                 />
