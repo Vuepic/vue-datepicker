@@ -501,6 +501,16 @@ export const useCalendar = (
         );
     };
 
+    const validateRangeAfterTimeSet = () => {
+        if (tempRange.value[0] && tempRange.value[1]) {
+            if (+tempRange.value?.[0] > +tempRange.value?.[1]) {
+                tempRange.value.reverse();
+                emit('range-start', tempRange.value[0]);
+                emit('range-end', tempRange.value[1]);
+            }
+        }
+    };
+
     // After range date is select, ensure that proper times are set and assign to modelValue
     const postRangeSelect = () => {
         if (tempRange.value.length) {
@@ -511,6 +521,7 @@ export const useCalendar = (
                 assignTime(1);
                 updateFlow();
             }
+            validateRangeAfterTimeSet();
             modelValue.value = tempRange.value.slice();
 
             if (tempRange.value[0] && tempRange.value[1] && props.autoApply) {
