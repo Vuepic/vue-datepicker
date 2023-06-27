@@ -166,8 +166,8 @@
         }
     };
 
-    const handleInput = (event: Event): void => {
-        const { value } = event.target as HTMLInputElement;
+    const handleInput = (event: Event | string): void => {
+        const value = typeof event === 'string' ? event : (event.target as HTMLInputElement)?.value;
 
         if (value !== '') {
             if (defaults.value.textInputOptions?.openMenu && !props.isMenuOpen) {
