@@ -227,7 +227,11 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
      * Map the date value(s) to the human-readable text for the input field
      */
     const formatInputValue = (): void => {
-        if (!props.format || typeof props.format === 'string') {
+        if (
+            !props.format ||
+            typeof props.format === 'string' ||
+            (props.textInput && typeof props.textInputOptions.format === 'string')
+        ) {
             inputValue.value = getInputValue();
         } else {
             inputValue.value = props.format(internalModelValue.value as Date | Date[]);
