@@ -1,5 +1,15 @@
 <template>
-    <div ref="gridWrapRef" :class="dpOverlayClass" role="dialog" tabindex="0" @keydown.esc="handleEsc">
+    <div
+        ref="gridWrapRef"
+        :class="dpOverlayClass"
+        role="dialog"
+        tabindex="0"
+        @keydown.esc="handleEsc"
+        @keydown.left="handleArrowKey($event)"
+        @keydown.up="handleArrowKey($event)"
+        @keydown.down="handleArrowKey($event)"
+        @keydown.right="handleArrowKey($event)"
+    >
         <div :class="containerClass" ref="containerRef" role="grid" :style="{ height: `${containerHeight}px` }">
             <div class="dp__selection_grid_header"><slot name="header"></slot></div>
             <template v-if="$slots.overlay">
@@ -115,6 +125,7 @@
         nextTick().then(() => setScrollPosition());
         focusGrid();
         handleArrowNav(true);
+        selectionActiveRef.value?.focus({ preventScroll: true });
     });
 
     onUnmounted(() => handleArrowNav(false));
@@ -314,6 +325,11 @@
             : elementRefs.value.concat([props.skipButtonRef ? [] : [toggleButton.value]]);
 
         buildMultiLevelMatrix(convertType(refs), props.headerRefs?.length ? 'monthPicker' : 'selectionGrid');
+    };
+
+    const handleArrowKey = (ev: KeyboardEvent) => {
+        if (props.arrowNavigation) return;
+        ev.stopImmediatePropagation();
     };
 
     defineExpose({ focusGrid });
