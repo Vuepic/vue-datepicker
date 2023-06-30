@@ -73,11 +73,20 @@
                                         :date="dayVal.value"
                                     ></slot>
                                     <template v-if="!$slots.day"> {{ dayVal.text }} </template>
-                                    <div
-                                        v-if="dayVal.marker && showDay(dayVal)"
-                                        :class="markerClass(dayVal.marker)"
-                                        :style="dayVal.marker.color ? { backgroundColor: dayVal.marker.color } : {}"
-                                    ></div>
+                                    <template v-if="dayVal.marker && showDay(dayVal)">
+                                        <slot
+                                            v-if="$slots.marker"
+                                            name="marker"
+                                            :marker="dayVal.marker"
+                                            :day="+dayVal.text"
+                                            :date="dayVal.value"
+                                        ></slot>
+                                        <div
+                                            v-else
+                                            :class="markerClass(dayVal.marker)"
+                                            :style="dayVal.marker.color ? { backgroundColor: dayVal.marker.color } : {}"
+                                        ></div>
+                                    </template>
                                     <div
                                         class="dp__marker_tooltip"
                                         v-if="dateMatch(dayVal.value)"

@@ -34,6 +34,7 @@ export const slots = [
     { name: 'month-year', use: ['month-year'] },
     { name: 'time-picker', use: ['menu'] },
     { name: 'action-row', use: ['action'] },
+    { name: 'marker', use: ['calendar'] },
 ];
 
 export const inputSlots = [{ name: 'trigger' }, { name: 'input-icon' }, { name: 'clear-icon' }, { name: 'dp-input' }];
