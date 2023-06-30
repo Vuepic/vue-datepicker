@@ -118,6 +118,7 @@ export const useUtils = (props: UtilsProps) => {
     });
 
     const checkAllowedDates = (date: Date) => {
+        if (Array.isArray(props.allowedDates) && !props.allowedDates?.length) return true;
         if (props.arrMapValues?.allowedDates) return !matchDate(date, props.arrMapValues.allowedDates);
         if (props.allowedDates?.length)
             return !props.allowedDates?.some((dateVal) =>
