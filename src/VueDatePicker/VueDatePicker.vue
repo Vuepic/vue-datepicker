@@ -240,7 +240,7 @@
             await nextTick();
             setMenuPosition();
             delete menuStyle.value.opacity;
-            if (!defaults.value.transitions?.menuAppear) {
+            if (!defaults.value.transitions?.menuAppear && props.transitions) {
                 dpMenuRef.value?.$el?.classList.add('dp__menu_transitioned');
             }
 
