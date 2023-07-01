@@ -86,6 +86,16 @@ export const useCalendar = (
     // Calendar data per instance
     const calendars = ref<ICalendarData[]>([{ month: getMonth(getDate()), year: getYear(getDate()) }]);
 
+    watch(
+        calendars,
+        () => {
+            calendars.value.forEach((calendar, i) => {
+                emit('update-month-year', { instance: i, month: calendar.month, year: calendar.year });
+            });
+        },
+        { deep: true },
+    );
+
     // Time values
     const time = reactive({
         hours: props.range ? [getHours(getDate()), getHours(getDate())] : getHours(getDate()),
@@ -630,7 +640,6 @@ export const useCalendar = (
                 }
             }
         }
-        emit('update-month-year', { instance, month: val.month, year: val.year });
         triggerCalendarTransition(props.multiCalendarsSolo ? instance : undefined);
     };
 
@@ -657,7 +666,6 @@ export const useCalendar = (
             if (defaults.value.multiCalendars && !props.multiCalendarsSolo) {
                 autoChangeMultiCalendars(instance);
             }
-            emit('update-month-year', { instance, month: getMonth(date), year: getYear(date) });
             triggerCalendarTransition();
         }
     };
