@@ -1,6 +1,6 @@
 import { createElementBlock, createElementVNode, openBlock } from 'vue';
 
-export default function render() {
+function render() {
     return (
         openBlock(),
         createElementBlock(
@@ -29,3 +29,9 @@ export default function render() {
         )
     );
 }
+
+render.compatConfig = {
+    MODE: 3,
+};
+
+export default render;

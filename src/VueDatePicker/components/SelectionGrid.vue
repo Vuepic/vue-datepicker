@@ -75,6 +75,12 @@
     import type { IDefaultSelect, DynamicClass, Flow, AriaLabels, InternalModuleValue } from '@/interfaces';
     import type { AllPropsType } from '@/props';
 
+    defineOptions({
+        compatConfig: {
+            MODE: 3,
+        }
+    });
+
     const { setSelectionGrid, buildMultiLevelMatrix, setMonthPicker } = useArrowNavigation();
 
     const emit = defineEmits(['update:model-value', 'selected', 'toggle', 'reset-flow']);
