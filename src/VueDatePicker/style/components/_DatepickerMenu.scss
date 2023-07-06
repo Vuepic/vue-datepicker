@@ -58,7 +58,7 @@
   width: 12px;
   background-color: var(--dp-background-color);
   position: absolute;
-  border-left: 1px solid var(--dp-menu-border-color);
+  border-inline-end: 1px solid var(--dp-menu-border-color);
   border-top: 1px solid var(--dp-menu-border-color);
   transform: translate(-50%, -50%) rotate(45deg);
 }
@@ -70,7 +70,7 @@
   width: 12px;
   background-color: var(--dp-background-color);
   position: absolute;
-  border-right: 1px solid var(--dp-menu-border-color);
+  border-inline-end: 1px solid var(--dp-menu-border-color);
   border-bottom: 1px solid var(--dp-menu-border-color);
   transform: translate(-50%, 50%) rotate(45deg);
 }
@@ -82,17 +82,17 @@
 
 .dp__preset_ranges {
   padding: 5px;
-  border-right: 1px solid var(--dp-border-color);
+  border-inline-end: 1px solid var(--dp-border-color);
 }
 
 .dp__sidebar_left {
   padding: 5px;
-  border-right: 1px solid var(--dp-border-color);
+  border-inline-end: 1px solid var(--dp-border-color);
 }
 
 .dp__sidebar_right {
   padding: 5px;
-  border-left: 1px solid var(--dp-border-color);
+  margin-inline-end: 1px solid var(--dp-border-color);
 }
 
 .dp__preset_range {

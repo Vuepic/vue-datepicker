@@ -59,13 +59,13 @@
 }
 
 %__dp_range_border_radius_start {
-  border-bottom-right-radius: 0;
-  border-top-right-radius: 0;
+  border-end-end-radius: 0;
+  border-start-end-radius: 0;
 }
 
 %__dp_range_border_radius_end {
-  border-bottom-left-radius: 0;
-  border-top-left-radius: 0;
+  border-end-start-radius: 0;
+  border-start-start-radius: 0;
 }
 
 %__dp_active {
@@ -159,14 +159,14 @@
   @extend %__dp_range_border_radius_start;
   @extend %__dp_range_preview;
 
-  border-left: 1px dashed var(--dp-primary-color);
+  margin-inline-end: 1px dashed var(--dp-primary-color);
 }
 
 .dp__cell_auto_range_end {
   @extend %__dp_range_border_radius_end;
   @extend %__dp_range_preview;
 
-  border-right: 1px dashed var(--dp-primary-color);
+  border-inline-end: 1px dashed var(--dp-primary-color);
 }
 
 .dp__calendar_header_separator {
@@ -176,7 +176,7 @@
 }
 
 .dp__calendar_next {
-  margin-left: var(--dp-multi-calendars-spacing);
+  margin-inline-start: var(--dp-multi-calendars-spacing);
 }
 
 %__dp_marker {
@@ -230,7 +230,7 @@
   border-radius: 50%;
   background-color: var(--dp-text-color);
   color: var(--dp-text-color);
-  margin-right: 5px;
+  margin-inline-end: 5px;
 }
 
 .dp__arrow_bottom_tp {
@@ -239,7 +239,7 @@
   width: 8px;
   background-color: var(--dp-tooltip-color);
   position: absolute;
-  border-right: 1px solid var(--dp-border-color);
+  border-inline-end: 1px solid var(--dp-border-color);
   border-bottom: 1px solid var(--dp-border-color);
   transform: translate(-50%, 50%) rotate(45deg);
 }

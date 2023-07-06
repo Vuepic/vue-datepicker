@@ -28,7 +28,7 @@
   flex: 0;
   align-items: center;
   justify-content: flex-end;
-  margin-left: auto;
+  margin-inline-start: auto;
 }
 
 .dp__action_button {
@@ -36,7 +36,7 @@
   border: 1px solid transparent;
   padding: var(--dp-action-buttons-padding);
   line-height: initial;
-  margin-left: 3px;
+  margin-inline-start: 3px;
   height: var(--dp-action-button-height);
   cursor: pointer;
   border-radius: var(--dp-border-radius);
