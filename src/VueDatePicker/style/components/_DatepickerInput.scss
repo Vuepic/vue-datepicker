@@ -64,6 +64,7 @@
   cursor: pointer;
   position: absolute;
   top: 50%;
+  inset-inline-start:0;
   transform: translateY(-50%);
   color: var(--dp-icon-color);
 }
@@ -71,7 +72,7 @@
 .dp__clear_icon {
   position: absolute;
   top: 50%;
-  right: 0;
+  inset-inline-end: 0;
   transform: translateY(-50%);
   cursor: pointer;
   color: var(--dp-icon-color);
