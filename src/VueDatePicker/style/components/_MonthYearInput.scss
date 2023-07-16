@@ -28,6 +28,10 @@
   }
 }
 
+[dir="rtl"] .dp__inner_nav {
+  transform: rotate(180deg);
+}
+
 %__dp_inner_nav_disabled {
   background: var(--dp-disabled-color);
   color: var(--dp-disabled-color-text);

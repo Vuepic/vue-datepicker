@@ -64,7 +64,7 @@
   cursor: pointer;
   position: absolute;
   top: 50%;
-  left: 0;
+  inset-inline-start:0;
   transform: translateY(-50%);
   color: var(--dp-icon-color);
 }
@@ -72,14 +72,14 @@
 .dp__clear_icon {
   position: absolute;
   top: 50%;
-  right: 0;
+  inset-inline-end: 0;
   transform: translateY(-50%);
   cursor: pointer;
   color: var(--dp-icon-color);
 }
 
 .dp__input_icon_pad {
-  padding-left: var(--dp-input-icon-padding);
+  padding-inline-start: var(--dp-input-icon-padding);
 }
 
 .dp__input_valid {
