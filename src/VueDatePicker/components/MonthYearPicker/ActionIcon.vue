@@ -19,6 +19,12 @@
 <script lang="ts" setup>
     import { onMounted, ref } from 'vue';
 
+    defineOptions({
+        compatConfig: {
+            MODE: 3,
+        }
+    });
+
     const emit = defineEmits(['activate', 'set-ref']);
 
     interface Props {

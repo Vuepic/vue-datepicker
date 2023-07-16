@@ -104,6 +104,12 @@
     import type { PropType } from 'vue';
     import type { TimeInputRef, InternalModuleValue } from '@/interfaces';
 
+    defineOptions({
+        compatConfig: {
+            MODE: 3,
+        }
+    });
+
     const emit = defineEmits([
         'update:hours',
         'update:minutes',

@@ -187,6 +187,12 @@
     } from '@/interfaces';
     import type { ComputedRef, PropType, Ref, UnwrapRef } from 'vue';
 
+    defineOptions({
+        compatConfig: {
+            MODE: 3,
+        }
+    });
+
     const emit = defineEmits([
         'close-picker',
         'select-date',

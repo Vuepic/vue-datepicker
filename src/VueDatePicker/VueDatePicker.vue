@@ -116,6 +116,13 @@
         'range-start',
         'range-end',
     ]);
+
+    defineOptions({
+        compatConfig: {
+            MODE: 3,
+        }
+    });
+
     const props = defineProps({
         ...AllProps,
     });

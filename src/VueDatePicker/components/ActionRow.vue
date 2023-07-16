@@ -73,6 +73,12 @@
     import type { PropType } from 'vue';
     import type { InternalModuleValue } from '@/interfaces';
 
+    defineOptions({
+        compatConfig: {
+            MODE: 3,
+        }
+    });
+
     const emit = defineEmits(['close-picker', 'select-date', 'select-now', 'invalid-select']);
 
     const props = defineProps({

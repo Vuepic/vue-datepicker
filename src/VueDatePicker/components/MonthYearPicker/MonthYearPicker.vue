@@ -230,6 +230,12 @@
     import type { IDefaultSelect, InternalModuleValue } from '@/interfaces';
     import { getDate } from '@/utils/date-utils';
 
+    defineOptions({
+        compatConfig: {
+            MODE: 3,
+        }
+    });
+
     const emit = defineEmits(['update-month-year', 'month-year-select', 'mount', 'reset-flow', 'overlay-closed']);
     const props = defineProps({
         month: { type: Number as PropType<number>, default: 0 },

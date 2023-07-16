@@ -146,6 +146,12 @@
     import type { Duration } from 'date-fns';
     import type { DynamicClass, IDefaultSelect, TimeType, TimeOverlayCheck } from '@/interfaces';
 
+    defineOptions({
+        compatConfig: {
+            MODE: 3,
+        }
+    });
+
     const emit = defineEmits([
         'set-hours',
         'set-minutes',

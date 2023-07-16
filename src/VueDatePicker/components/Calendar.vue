@@ -137,6 +137,12 @@
     import type { PropType, UnwrapRef } from 'vue';
     import type { DynamicClass, ICalendarDate, ICalendarDay, IMarker } from '@/interfaces';
 
+    defineOptions({
+        compatConfig: {
+            MODE: 3,
+        }
+    });
+
     const emit = defineEmits([
         'select-date',
         'set-hover-date',

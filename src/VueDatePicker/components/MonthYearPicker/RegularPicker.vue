@@ -59,6 +59,12 @@
     import type { PropType } from 'vue';
     import type { IDefaultSelect, Transition, AriaLabels, Flow } from '@/interfaces';
 
+    defineOptions({
+        compatConfig: {
+            MODE: 3,
+        }
+    });
+
     const emit = defineEmits(['update:model-value', 'toggle', 'set-ref']);
     const props = defineProps({
         ariaLabel: { type: String as PropType<string>, default: '' },

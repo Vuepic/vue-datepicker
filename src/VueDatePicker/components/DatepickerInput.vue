@@ -75,6 +75,12 @@
     import type { PropType } from 'vue';
     import type { DynamicClass } from '@/interfaces';
 
+    defineOptions({
+        compatConfig: {
+            MODE: 3,
+        }
+    });
+
     const emit = defineEmits([
         'clear',
         'open',
