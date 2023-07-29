@@ -1,15 +1,22 @@
 .dp__overlay {
-  position: absolute;
   width: 100%;
-  height: 100%;
   background: var(--dp-background-color);
-  top: 0;
-  left: 0;
   transition: opacity 1s ease-out;
   z-index: 99999;
   font-family: var(--dp-font-family);
   color: var(--dp-text-color);
   box-sizing: border-box;
+}
+
+.dp--overlay-absolute {
+  position: absolute;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.dp--overlay-relative {
+  position: relative;
 }
 
 .dp__overlay_container::-webkit-scrollbar-track {
@@ -93,6 +100,7 @@
   &:hover {
     background: var(--dp-hover-color);
     color: var(--dp-hover-text-color);
+    transition: var(--dp-common-transition)
   }
 }
 

@@ -22,6 +22,8 @@ import type {
     ActionRowData,
     DisabledTimesFn,
     ICalendarDate,
+    ArrMapValues,
+    InternalModuleValue,
 } from '@/interfaces';
 
 export const AllProps = {
@@ -171,4 +173,13 @@ export const AllProps = {
     autoApplyMonth: { type: Boolean as PropType<boolean>, default: true },
 };
 
+export const PickerBaseProps = {
+    ...AllProps,
+    shadow: { type: Boolean as PropType<boolean>, default: false },
+    flowStep: { type: Number as PropType<number>, default: 0 },
+    internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
+    arrMapValues: { type: Object as PropType<ArrMapValues>, default: () => ({}) },
+};
+
 export type AllPropsType = ExtractPropTypes<typeof AllProps>;
+export type PickerBasePropsType = ExtractPropTypes<typeof PickerBaseProps>;

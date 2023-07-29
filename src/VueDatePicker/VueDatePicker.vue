@@ -20,38 +20,46 @@
                 <slot :name="slot" v-bind="args" />
             </template>
         </DatepickerInput>
-        <component v-if="isOpen" :is="teleport ? TeleportCmp : 'div'" v-bind="menuWrapProps">
-            <DatepickerMenu
+        <transition :name="menuTransition(openOnTop)" :css="showTransition">
+            <component
+                ref="dpWrapMenuRef"
                 v-if="isOpen"
-                ref="dpMenuRef"
-                :class="theme"
+                :is="teleport ? TeleportCmp : 'div'"
+                v-bind="menuWrapProps"
+                class="dp--menu-wrapper"
                 :style="!inline ? menuStyle : undefined"
-                :open-on-top="openOnTop"
-                :arr-map-values="arrMapValues"
-                v-bind="$props"
-                v-model:internal-model-value="internalModelValue"
-                @close-picker="closeMenu"
-                @select-date="selectDate"
-                @auto-apply="autoApplyValue"
-                @time-update="timeUpdate"
-                @flow-step="$emit('flow-step', $event)"
-                @update-month-year="$emit('update-month-year', $event)"
-                @invalid-select="$emit('invalid-select', internalModelValue)"
-                @invalid-fixed-range="$emit('invalid-fixed-range', $event)"
-                @recalculate-position="setMenuPosition"
-                @tooltip-open="$emit('tooltip-open', $event)"
-                @tooltip-close="$emit('tooltip-close', $event)"
-                @time-picker-open="$emit('time-picker-open', $event)"
-                @time-picker-close="$emit('time-picker-close', $event)"
-                @am-pm-change="$emit('am-pm-change', $event)"
-                @range-start="$emit('range-start', $event)"
-                @range-end="$emit('range-end', $event)"
             >
-                <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
-                    <slot :name="slot" v-bind="{ ...args }" />
-                </template>
-            </DatepickerMenu>
-        </component>
+                <DatepickerMenu
+                    ref="dpMenuRef"
+                    :class="{ [theme]: true, 'dp--menu-wrapper': teleport }"
+                    :style="teleport ? menuStyle : undefined"
+                    :open-on-top="openOnTop"
+                    :arr-map-values="arrMapValues"
+                    v-bind="$props"
+                    v-model:internal-model-value="internalModelValue"
+                    @close-picker="closeMenu"
+                    @select-date="selectDate"
+                    @auto-apply="autoApplyValue"
+                    @time-update="timeUpdate"
+                    @flow-step="$emit('flow-step', $event)"
+                    @update-month-year="$emit('update-month-year', $event)"
+                    @invalid-select="$emit('invalid-select', internalModelValue)"
+                    @invalid-fixed-range="$emit('invalid-fixed-range', $event)"
+                    @recalculate-position="setMenuPosition"
+                    @tooltip-open="$emit('tooltip-open', $event)"
+                    @tooltip-close="$emit('tooltip-close', $event)"
+                    @time-picker-open="$emit('time-picker-open', $event)"
+                    @time-picker-close="$emit('time-picker-close', $event)"
+                    @am-pm-change="$emit('am-pm-change', $event)"
+                    @range-start="$emit('range-start', $event)"
+                    @range-end="$emit('range-end', $event)"
+                >
+                    <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
+                        <slot :name="slot" v-bind="{ ...args }" />
+                    </template>
+                </DatepickerMenu>
+            </component>
+        </transition>
     </div>
 </template>
 
@@ -65,7 +73,6 @@
         useSlots,
         watch,
         Teleport as TeleportCmp,
-        nextTick,
         reactive,
     } from 'vue';
 
@@ -78,11 +85,14 @@
         mapSlots,
         useArrowNavigation,
         useState,
-        useUtils,
+        useTransitions,
+        useValidation,
     } from '@/composables';
     import { onClickOutside } from '@/directives/clickOutside';
     import { AllProps } from '@/props';
     import { getNumVal } from '@/utils/util';
+
+    import type { ComponentPublicInstance } from 'vue';
 
     import type {
         DynamicClass,
@@ -93,6 +103,7 @@
         MenuView,
         ArrMapValues,
     } from '@/interfaces';
+    import { useDefaults } from '@/composables/defaults';
 
     const emit = defineEmits([
         'update:model-value',
@@ -130,6 +141,7 @@
     const isOpen = ref(false);
     const modelValueRef = toRef(props, 'modelValue');
     const timezoneRef = toRef(props, 'timezone');
+    const dpWrapMenuRef = ref<HTMLElement | null>(null);
     const dpMenuRef = ref<DatepickerMenuRef | null>(null);
     const inputRef = ref<DatepickerInputRef | null>(null);
     const isInputFocused = ref(false);
@@ -142,7 +154,9 @@
 
     const { setMenuFocused, setShiftKey } = useState();
     const { clearArrowNav } = useArrowNavigation();
-    const { validateDate, isValidTime, defaults, mapDatesArrToMap } = useUtils(props);
+    const { mapDatesArrToMap, validateDate, isValidTime } = useValidation(props);
+    const { defaultedTransitions } = useDefaults(props);
+    const { menuTransition, showTransition } = useTransitions(defaultedTransitions);
 
     onMounted(() => {
         parseExternalModelValue(props.modelValue);
@@ -180,8 +194,12 @@
         { deep: true },
     );
 
-    const { openOnTop, menuStyle, resetPosition, setMenuPosition, setInitialPosition, getScrollableParent } =
-        usePosition(dpMenuRef, inputRef, emit, props);
+    const { openOnTop, menuStyle, setMenuPosition, getScrollableParent, shadowRender } = usePosition(
+        dpWrapMenuRef,
+        inputRef,
+        emit,
+        props,
+    );
 
     const {
         inputValue,
@@ -237,19 +255,11 @@
         }
     };
 
-    const openMenu = async () => {
+    const openMenu = () => {
         if (!props.disabled && !props.readonly) {
-            resetPosition();
-            await nextTick();
-            isOpen.value = true;
-            await nextTick();
-            setInitialPosition();
-            await nextTick();
+            shadowRender(DatepickerMenu, props);
             setMenuPosition();
-            delete menuStyle.value.opacity;
-            if (!defaults.value.transitions?.menuAppear && props.transitions) {
-                dpMenuRef.value?.$el?.classList.add('dp__menu_transitioned');
-            }
+            isOpen.value = true;
 
             if (isOpen.value) {
                 emit('open');
@@ -358,7 +368,6 @@
                 setShiftKey(false);
                 clearArrowNav();
                 emit('closed');
-                setInitialPosition();
                 if (inputValue.value) {
                     parseExternalModelValue(modelValueRef.value);
                 }
@@ -430,7 +439,7 @@
     };
 
     onClickOutside(
-        dpMenuRef,
+        dpWrapMenuRef,
         inputRef,
         props.onClickOutside ? () => props.onClickOutside(validateBeforeEmit) : closeMenu,
     );

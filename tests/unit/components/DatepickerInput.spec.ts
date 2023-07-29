@@ -1,11 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { mount, VueWrapper } from '@vue/test-utils';
 import { addDays, format, getHours, getMinutes, set } from 'date-fns';
 
 import DatepickerInput from '@/components/DatepickerInput.vue';
 import DatePicker from '@/VueDatePicker.vue';
 
 import { getDefaultTextInputOptions } from '@/utils/defaults';
+import type { ComponentPublicInstance } from 'vue';
 
 const getCurrentTime = () => {
     return {
@@ -40,9 +41,9 @@ describe('Datepicker input component', () => {
     it('Should clear the input', async () => {
         const wrapper = mount(DatepickerInput, {
             props: { ...props, inputValue: patternFormat, clearable: true },
-        });
+        }) as unknown as VueWrapper<ComponentPublicInstance<{ onClear: () => void }>>;
 
-        await wrapper.vm.onClear();
+        wrapper.vm.onClear();
         expect(wrapper.emitted()).toHaveProperty('clear');
     });
 

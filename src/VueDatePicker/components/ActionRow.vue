@@ -12,7 +12,7 @@
             />
         </template>
         <template v-else>
-            <div v-if="defaults.actionRow.showPreview" class="dp__selection_preview" :title="formatValue">
+            <div v-if="defaultedActionRow.showPreview" class="dp__selection_preview" :title="formatValue">
                 <slot name="action-preview" v-if="$slots['action-preview']" :value="internalModelValue" />
                 <template v-if="!$slots['action-preview']">
                     {{ formatValue }}
@@ -24,7 +24,7 @@
                     <button
                         type="button"
                         ref="cancelButtonRef"
-                        v-if="!inline && defaults.actionRow.showCancel"
+                        v-if="!inline && defaultedActionRow.showCancel"
                         class="dp__action_button dp__action_cancel"
                         @click="$emit('close-picker')"
                         @keydown.enter="$emit('close-picker')"
@@ -35,7 +35,7 @@
                     <button
                         type="button"
                         ref="cancelButtonRef"
-                        v-if="showNowButton || defaults.actionRow.showNow"
+                        v-if="showNowButton || defaultedActionRow.showNow"
                         class="dp__action_button dp__action_cancel"
                         @click="$emit('select-now')"
                         @keydown.enter="$emit('select-now')"
@@ -45,7 +45,7 @@
                     </button>
                     <button
                         type="button"
-                        v-if="defaults.actionRow.showSelect"
+                        v-if="defaultedActionRow.showSelect"
                         class="dp__action_button dp__action_select"
                         @keydown.enter="selectDate"
                         @keydown.space="selectDate"
@@ -66,9 +66,9 @@
     import { computed, onMounted, ref } from 'vue';
 
     import { convertType, unrefElement } from '@/utils/util';
-    import { useArrowNavigation, useUtils } from '@/composables';
+    import { useArrowNavigation, useDefaults, useValidation } from '@/composables';
     import { AllProps } from '@/props';
-    import { getDate, isDateAfter, isDateBefore, isDateEqual, resetDate } from '@/utils/date-utils';
+    import { formatDate, getDate, isDateAfter, isDateBefore, isDateEqual, resetDate } from '@/utils/date-utils';
 
     import type { PropType } from 'vue';
     import type { InternalModuleValue } from '@/interfaces';
@@ -89,7 +89,14 @@
         ...AllProps,
     });
 
-    const { formatDate, isValidTime, defaults } = useUtils(props);
+    const {
+        defaultedActionRow,
+        defaultedPreviewFormat,
+        defaultedMultiCalendars,
+        defaultedTextInputOptions,
+        getDefaultPattern,
+    } = useDefaults(props);
+    const { isValidTime } = useValidation(props);
     const { buildMatrix } = useArrowNavigation();
 
     const cancelButtonRef = ref(null);
@@ -124,7 +131,7 @@
     });
 
     const handleCustomPreviewFormat = () => {
-        const formatFn = defaults.value.previewFormat as (val: Date | Date[]) => string | string[];
+        const formatFn = defaultedPreviewFormat.value as (val: Date | Date[]) => string | string[];
 
         if (props.timePicker) return formatFn(convertType(props.internalModelValue));
 
@@ -135,19 +142,26 @@
 
     const formatRangeDate = () => {
         const dates = props.internalModelValue as Date[];
-        if (defaults.value.multiCalendars > 0) {
+        if (defaultedMultiCalendars.value > 0) {
             return `${formatDatePreview(dates[0])} - ${formatDatePreview(dates[1])}`;
         }
         return [formatDatePreview(dates[0]), formatDatePreview(dates[1])];
     };
 
     const formatDatePreview = (date: Date) => {
-        return formatDate(date, defaults.value.previewFormat as string);
+        return formatDate(
+            date,
+            defaultedPreviewFormat.value as string,
+            props.formatLocale,
+            defaultedTextInputOptions.value.rangeSeparator,
+            props.modelAuto,
+            getDefaultPattern(),
+        );
     };
 
     const previewValue = computed((): string | string[] => {
         if (!props.internalModelValue || !props.menuMount) return '';
-        if (typeof defaults.value.previewFormat === 'string') {
+        if (typeof defaultedPreviewFormat.value === 'string') {
             if (Array.isArray(props.internalModelValue)) {
                 if (props.internalModelValue.length === 2 && props.internalModelValue[1]) {
                     return formatRangeDate();

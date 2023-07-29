@@ -1,8 +1,8 @@
 import { unref } from 'vue';
-
-import type { IDefaultSelect, IMarker, MaybeElementRef, ModelValue } from '@/interfaces';
-import type { ComponentPublicInstance } from 'vue';
 import { format } from 'date-fns';
+
+import type { IDefaultSelect, IMarker, MaybeElementRef, ModelValue, OverlayGridItem } from '@/interfaces';
+import type { ComponentPublicInstance } from 'vue';
 
 export const getArrayInArray = <T>(list: T[], increment = 3): T[][] => {
     const items = [];
@@ -159,4 +159,68 @@ export const findFocusableEl = (container: HTMLElement | null): HTMLElement | un
         return elArr[0];
     }
     return undefined;
+};
+
+/**
+ * Create array for the SelectionOverlay grouped by 3
+ */
+export const getGroupedList = (items: IDefaultSelect[]): IDefaultSelect[][] => {
+    const list = [];
+    const setList = (listItems: IDefaultSelect[]) => {
+        return listItems.filter((item) => item);
+    };
+    for (let i = 0; i < items.length; i += 3) {
+        const listItems = [items[i], items[i + 1], items[i + 2]];
+        list.push(setList(listItems));
+    }
+    return list;
+};
+
+/**
+ * Check if number is between min and max values
+ */
+export const checkMinMaxValue = (value: number | string, min?: number, max?: number): boolean => {
+    const hasMax = max || max === 0;
+    const hasMin = min || min === 0;
+    if (!hasMax && !hasMin) return false;
+
+    if (hasMax && hasMin) {
+        return +value > +max || +value < +min;
+    }
+    if (hasMax) {
+        return +value > +max;
+    }
+
+    if (hasMin) {
+        return +value < +min;
+    }
+
+    return false;
+};
+
+/**
+ * Maps data for the SelectionOverlay
+ */
+export const groupListAndMap = (
+    list: IDefaultSelect[],
+    cb: (item: IDefaultSelect) => { active: boolean; disabled: boolean; isBetween?: boolean },
+): OverlayGridItem[][] => {
+    return getGroupedList(list).map((items) => {
+        return items.map((item) => {
+            const { active, disabled, isBetween } = cb(item);
+            return {
+                ...item,
+                active,
+                disabled: disabled,
+                className: {
+                    dp__overlay_cell_active: active,
+                    dp__overlay_cell: !active,
+                    dp__overlay_cell_disabled: disabled,
+                    dp__overlay_cell_pad: true,
+                    dp__overlay_cell_active_disabled: disabled && active,
+                    dp__cell_in_between: isBetween,
+                },
+            };
+        });
+    });
 };

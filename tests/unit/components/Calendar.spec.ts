@@ -1,14 +1,17 @@
 import { describe, expect, it } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { mount, VueWrapper } from '@vue/test-utils';
 
-import Calendar from '@/components/Calendar.vue';
+import DpCalendar from '@/components/DatePicker/DpCalendar.vue';
 import DatepickerMenu from '@/components/DatepickerMenu.vue';
+import DatePicker from '@/components/DatePicker/DatePicker.vue';
+
 import { resetDateTime } from '@/utils/date-utils';
+import type { ComponentPublicInstance } from 'vue';
 
 const mountCalendar = async () => {
     const menu = mount(DatepickerMenu, {});
     await menu.vm.$nextTick();
-    const calendar = menu.findComponent(Calendar);
+    const calendar = menu.findComponent(DpCalendar);
     const date = new Date();
 
     return { calendar, date };
@@ -16,7 +19,7 @@ const mountCalendar = async () => {
 
 describe('Calendar component', () => {
     it('Should render custom day names', () => {
-        const calendar = mount(Calendar, { props: { dayNames: ['1', '2', '3', '4', '5', '6', '7'] } });
+        const calendar = mount(DpCalendar, { props: { dayNames: ['1', '2', '3', '4', '5', '6', '7'] } });
 
         const header = calendar.find('[data-test="calendar-header"]');
 
@@ -29,7 +32,7 @@ describe('Calendar component', () => {
         };
         const menu = mount(DatepickerMenu, { props: { markers: [marker] } });
         await menu.vm.$nextTick();
-        const calendar = menu.findComponent(Calendar);
+        const calendar = menu.findComponent(DpCalendar);
 
         expect(calendar.html()).toContain('dp__marker_dot');
     });
@@ -41,7 +44,7 @@ describe('Calendar component', () => {
         };
         const menu = mount(DatepickerMenu, { props: { markers: [marker] } });
         await menu.vm.$nextTick();
-        const calendar = menu.findComponent(Calendar);
+        const calendar = menu.findComponent(DpCalendar);
 
         await calendar.find(`[data-test="${resetDateTime(new Date())}"]`).trigger('mouseenter');
         await calendar.vm.$nextTick();
@@ -70,9 +73,14 @@ describe('Calendar component', () => {
     });
 
     it('Should display six weeks', async () => {
-        const menu = mount(DatepickerMenu, { props: { sixWeeks: true } });
+        const menu = mount(DatepickerMenu, {
+            props: { sixWeeks: true },
+        });
         await menu.vm.$nextTick();
+        const datePicker = menu.findComponent(DatePicker) as unknown as VueWrapper<
+            ComponentPublicInstance<{ mappedDates: (i: number) => Array<any> }>
+        >;
 
-        expect(menu.vm.dates(0)).toHaveLength(6);
+        expect(datePicker.vm.mappedDates(0)).toHaveLength(6);
     });
 });

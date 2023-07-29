@@ -1,13 +1,12 @@
 <template>
     <div :class="calendarParentClass">
         <div
-            :style="contentWrapStyle"
             ref="calendarWrapRef"
             role="grid"
             :class="calendarWrapClass"
-            :aria-label="defaults.ariaLabels?.calendarWrap"
+            :aria-label="defaultedAriaLabels?.calendarWrap"
         >
-            <template v-if="!specificMode">
+            <template v-if="true">
                 <div class="dp__calendar_header" role="row">
                     <div class="dp__calendar_header_item" role="gridcell" v-if="weekNumbers">
                         {{ weekNumName }}
@@ -30,7 +29,7 @@
                     <div
                         class="dp__calendar"
                         role="grid"
-                        :aria-label="defaults.ariaLabels?.calendarDays"
+                        :aria-label="defaultedAriaLabels?.calendarDays"
                         v-if="showCalendar"
                     >
                         <div
@@ -56,7 +55,7 @@
                                     dayVal.classData.dp__range_start
                                 "
                                 :aria-disabled="dayVal.classData.dp__cell_disabled"
-                                :aria-label="defaults.ariaLabels?.day?.(dayVal)"
+                                :aria-label="defaultedAriaLabels?.day?.(dayVal)"
                                 tabindex="0"
                                 :data-test="dayVal.value"
                                 @click.stop.prevent="$emit('select-date', dayVal)"
@@ -128,14 +127,15 @@
 
 <script lang="ts" setup>
     import { computed, nextTick, onMounted, ref } from 'vue';
+    import { getISOWeek, getWeek } from 'date-fns';
 
     import { getDayNames, getDefaultMarker, unrefElement } from '@/utils/util';
-    import { useArrowNavigation, useUtils } from '@/composables';
+    import { useArrowNavigation, useDefaults } from '@/composables';
     import { AllProps } from '@/props';
-    import { getDate, isDateAfter, isDateEqual, resetDateTime } from '@/utils/date-utils';
+    import { getDate, isDateAfter, isDateEqual, resetDateTime, setDateMonthOrYear } from '@/utils/date-utils';
 
     import type { PropType, UnwrapRef } from 'vue';
-    import type { DynamicClass, ICalendarDate, ICalendarDay, IMarker } from '@/interfaces';
+    import type { DynamicClass, ICalendarDate, ICalendarDay, IMarker, WeekStartNum } from '@/interfaces';
 
     defineOptions({
         compatConfig: {
@@ -156,11 +156,6 @@
 
     const props = defineProps({
         mappedDates: { type: Array as PropType<ICalendarDate[]>, default: () => [] },
-        getWeekNum: {
-            type: Function as PropType<(dates: UnwrapRef<ICalendarDay[]>) => string | number>,
-            default: () => '',
-        },
-        specificMode: { type: Boolean as PropType<boolean>, default: false },
         instance: { type: Number as PropType<number>, default: 0 },
         month: { type: Number as PropType<number>, default: 0 },
         year: { type: Number as PropType<number>, default: 0 },
@@ -168,7 +163,7 @@
     });
 
     const { buildMultiLevelMatrix } = useArrowNavigation();
-    const { setDateMonthOrYear, defaults } = useUtils(props);
+    const { defaultedTransitions, defaultedAriaLabels, defaultedMultiCalendars } = useDefaults(props);
 
     const showMakerTooltip = ref<Date | null>(null);
     const markerTooltipStyle = ref<{ bottom: string; left?: string; right?: string; transform: string }>({
@@ -219,8 +214,8 @@
         if (props.transitions) {
             const newDate = resetDateTime(setDateMonthOrYear(getDate(), props.month, props.year));
             transitionName.value = isDateAfter(resetDateTime(setDateMonthOrYear(getDate(), month, year)), newDate)
-                ? defaults.value.transitions[getTransitionName(true)]
-                : defaults.value.transitions[getTransitionName(false)];
+                ? defaultedTransitions.value[getTransitionName(true)]
+                : defaultedTransitions.value[getTransitionName(false)];
             showCalendar.value = false;
             nextTick(() => {
                 showCalendar.value = true;
@@ -247,12 +242,10 @@
 
     const calendarParentClass = computed(() => ({
         dp__calendar: true,
-        dp__calendar_next: defaults.value.multiCalendars > 0 && props.instance !== 0,
+        dp__calendar_next: defaultedMultiCalendars.value > 0 && props.instance !== 0,
     }));
 
-    const showDay = computed(() => (day: ICalendarDay) => props.hideOffsetDates ? day.current : true);
-
-    const contentWrapStyle = computed(() => (props.specificMode ? { height: `${props.modeHeight}px` } : undefined));
+    const showDay = computed(() => (day: ICalendarDay) => (props.hideOffsetDates ? day.current : true));
 
     const onMouseOver = async (day: UnwrapRef<ICalendarDay>, weekInd: number, dayInd: number): Promise<void> => {
         emit('set-hover-date', day);
@@ -341,6 +334,16 @@
             ev.preventDefault();
             emit('handle-scroll', ev);
         }
+    };
+
+    // Get week number if enabled
+    const getWeekNum = (days: UnwrapRef<ICalendarDay[]>): string | number => {
+        const firstCurrentDate = days[0];
+        if (props.weekNumbers === 'local')
+            return getWeek(firstCurrentDate.value, { weekStartsOn: +props.weekStart as WeekStartNum });
+        if (props.weekNumbers === 'iso') return getISOWeek(firstCurrentDate.value);
+        if (typeof props.weekNumbers === 'function') return props.weekNumbers(firstCurrentDate.value);
+        return '';
     };
 
     defineExpose({ triggerTransition });

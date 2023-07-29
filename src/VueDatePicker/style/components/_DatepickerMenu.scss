@@ -1,5 +1,5 @@
 .dp__menu {
-  position: absolute;
+  //position: absolute;
   background: var(--dp-background-color);
   border-radius: var(--dp-border-radius);
   min-width: var(--dp-menu-min-width);
@@ -25,6 +25,10 @@
 
 .dp__menu_inner {
   padding: var(--dp-menu-padding);
+}
+
+.dp--menu--inner-stretched  {
+  padding: 6px 0;
 }
 
 .dp__menu_index {
@@ -53,7 +57,7 @@
 
 .dp__arrow_top {
   left: 50%;
-  top: -1px;
+  top: 0;
   height: 12px;
   width: 12px;
   background-color: var(--dp-background-color);
@@ -65,7 +69,7 @@
 
 .dp__arrow_bottom {
   left: 50%;
-  bottom: -1px;
+  bottom: 0;
   height: 12px;
   width: 12px;
   background-color: var(--dp-background-color);

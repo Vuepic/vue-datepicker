@@ -3,7 +3,8 @@ import type { AriaLabels, IFormat, Transition, TextInputOptions, DateFilter, Act
 export const mergeDefaultTransitions = (conf: Partial<Transition>): Transition =>
     Object.assign(
         {
-            menuAppear: '',
+            menuAppearTop: 'dp-menu-appear-top',
+            menuAppearBottom: 'dp-menu-appear-bottom',
             open: 'dp-slide-down',
             close: 'dp-slide-up',
             next: 'calendar-next',
@@ -32,6 +33,8 @@ export const defaultAriaLabels = (labels: Partial<AriaLabels>): AriaLabels => {
             openMonthsOverlay: 'Open months overlay',
             nextMonth: 'Next month',
             prevMonth: 'Previous month',
+            nextYear: 'Next year',
+            prevYear: 'Previous year',
             day: () => '',
         },
         labels,

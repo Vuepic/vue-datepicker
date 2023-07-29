@@ -2,7 +2,7 @@
 @import "components/DatepickerMenu";
 @import "components/Calendar";
 @import "components/MonthYearInput";
-@import "components/SelectionGrid";
+@import "components/SelectionOverlay";
 @import "components/TimeInput";
 @import "components/ActionRow";
 
@@ -201,6 +201,10 @@
   transform: translateX(var(--dp-transition-length));
 }
 
+.dp-menu-appear-bottom-enter-active,
+.dp-menu-appear-bottom-leave-active,
+.dp-menu-appear-top-enter-active,
+.dp-menu-appear-top-leave-active,
 .dp-slide-up-enter-active,
 .dp-slide-up-leave-active,
 .dp-slide-down-enter-active,
@@ -208,18 +212,26 @@
   transition: all var(--dp-animation-duration) var(--dp-transition-timing);
 }
 
+.dp-menu-appear-top-enter-from,
+.dp-menu-appear-top-leave-to,
 .dp-slide-down-leave-to,
 .dp-slide-up-enter-from {
   opacity: 0;
   transform: translateY(var(--dp-transition-length));
 }
 
+.dp-menu-appear-bottom-enter-from,
+.dp-menu-appear-bottom-leave-to,
 .dp-slide-down-enter-from,
 .dp-slide-up-leave-to {
   opacity: 0;
   transform: translateY(calc(var(--dp-transition-length) * -1));
 }
 
-.dp__menu_transitioned {
-  transition: all var(--dp-animation-duration) var(--dp-menu-appear-transition-timing);
+.dp--menu-wrapper {
+  position: absolute;
+}
+
+.dp--arrow-btn-nav {
+  transition: var(--dp-common-transition);
 }

@@ -1,7 +1,7 @@
 <template>
     <button
         type="button"
-        class="dp__btn dp__month_year_col_nav"
+        class="dp__btn dp--arrow-btn-nav"
         @click="$emit('activate')"
         @keydown.enter.prevent="$emit('activate')"
         @keydown.space.prevent="$emit('activate')"

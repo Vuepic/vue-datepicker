@@ -5,7 +5,7 @@
             v-if="!timePicker && !timePickerInline"
             v-show="!hideNavigationButtons('time')"
             :class="toggleButtonClass"
-            :aria-label="defaults.ariaLabels?.openTimePicker"
+            :aria-label="defaultedAriaLabels?.openTimePicker"
             tabindex="0"
             data-test="open-time-picker-btn"
             ref="openTimePickerBtn"
@@ -19,7 +19,12 @@
         <transition :name="transitionName(showTimePicker)" :css="showTransition && !timePickerInline">
             <div
                 v-if="showTimePicker || timePicker || timePickerInline"
-                :class="{ dp__overlay: !timePickerInline }"
+                :class="{
+                    dp__overlay: !timePickerInline,
+                    'dp--overlay-absolute': !props.timePicker,
+                    'dp--overlay-relative': props.timePicker,
+                }"
+                :style="timePicker ? { height: `${modeHeight}px` } : undefined"
                 ref="overlayRef"
                 :tabindex="timePickerInline ? undefined : 0"
             >
@@ -76,7 +81,7 @@
                         v-show="!hideNavigationButtons('time')"
                         ref="closeTimePickerBtn"
                         :class="toggleButtonClass"
-                        :aria-label="defaults.ariaLabels?.closeTimePicker"
+                        :aria-label="defaultedAriaLabels?.closeTimePicker"
                         tabindex="0"
                         @keydown.enter="toggleTimePicker(false)"
                         @keydown.space="toggleTimePicker(false)"
@@ -92,17 +97,17 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, nextTick, onMounted, ref, useSlots } from 'vue';
+    import { computed, nextTick, onMounted, ref, useSlots, toRef } from 'vue';
 
     import { ClockIcon, CalendarIcon } from '@/components/Icons';
     import TimeInput from '@/components/TimePicker/TimeInput.vue';
 
     import { findFocusableEl, isModelAuto, unrefElement } from '@/utils/util';
-    import { mapSlots, useTransitions, useArrowNavigation, useUtils } from '@/composables';
-    import { AllProps } from '@/props';
+    import { mapSlots, useTransitions, useArrowNavigation, useDefaults, useCommon } from '@/composables';
+    import { PickerBaseProps } from '@/props';
 
     import type { PropType } from 'vue';
-    import type { TimeInputRef, InternalModuleValue } from '@/interfaces';
+    import type { TimeInputRef } from '@/interfaces';
 
     defineOptions({
         compatConfig: {
@@ -125,15 +130,16 @@
         hours: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         minutes: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         seconds: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
-        internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
-        ...AllProps,
+        ...PickerBaseProps,
     });
 
     const { buildMatrix, setTimePicker } = useArrowNavigation();
     const slots = useSlots();
-    const { hideNavigationButtons, defaults } = useUtils(props);
 
-    const { transitionName, showTransition } = useTransitions(defaults.value.transitions);
+    const { defaultedTransitions, defaultedAriaLabels } = useDefaults(props);
+    const { transitionName, showTransition } = useTransitions(defaultedTransitions);
+    const { hideNavigationButtons } = useCommon(toRef(props, 'hideNavigation'));
+
     const openTimePickerBtn = ref(null);
     const closeTimePickerBtn = ref(null);
     const timeInputRefs = ref<TimeInputRef[]>([]);

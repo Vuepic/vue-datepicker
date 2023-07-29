@@ -1,5 +1,7 @@
 import type { ComponentPublicInstance, Ref } from 'vue';
 import type { AllPropsType } from '@/props';
+import type { HeaderPicker } from '@/constants';
+import type { PickerBasePropsType } from '@/props';
 
 export type DynamicClass = Record<string, boolean | undefined>;
 
@@ -102,7 +104,8 @@ export interface IMarker {
 }
 
 export interface Transition {
-    menuAppear: string;
+    menuAppearTop: string;
+    menuAppearBottom: string;
     open: string;
     close: string;
     next: string;
@@ -112,7 +115,7 @@ export interface Transition {
 }
 
 export type IDisableDates = (date: Date) => boolean;
-export type TimeType = 'hours' | 'minutes' | 'seconds';
+export type TimeType = keyof Time;
 
 export type CustomAltPosition = (el: HTMLElement | null) => {
     top: number | string;
@@ -147,11 +150,15 @@ export interface AriaLabels {
     openMonthsOverlay: string;
     nextMonth: string;
     prevMonth: string;
+    nextYear: string;
+    prevYear: string;
     day: (dayVal: ICalendarDay) => string;
 }
 
-export interface CalendarRef extends ComponentPublicInstance {
-    triggerTransition: (m: number, year: number) => void;
+export interface Time {
+    hours: number | number[];
+    minutes: number | number[];
+    seconds: number | number[];
 }
 
 export interface TimePickerRef extends Element {
@@ -214,9 +221,44 @@ export type DisabledTimesFn = (time: TimeObj | TimeObj[] | (TimeObj | undefined)
 
 export type MenuView = 'month' | 'year' | 'calendar' | 'time';
 
-type ArrMapValue = Map<string, boolean> | null;
+export type ArrMapValue = Map<string, boolean> | null;
 export interface ArrMapValues {
     disabledDates: ArrMapValue;
     allowedDates: ArrMapValue;
     highlightedDates: ArrMapValue;
 }
+
+export interface OverlayGridItem {
+    value: number;
+    text: string;
+    active: boolean;
+    disabled: boolean;
+    className: DynamicClass;
+}
+
+export type PossibleDate = Date | string | number | null;
+
+export interface HeaderSelectionBtn {
+    type: HeaderPicker;
+    index: 1 | 2;
+    toggle: () => void;
+    modelValue: number;
+    updateModelValue: (val: number) => void;
+    text: string | number;
+    showSelectionGrid: boolean;
+    items: OverlayGridItem[][];
+    ariaLabel: string;
+}
+
+export type TimePickerProps = Partial<PickerBasePropsType> & {
+    enableSeconds: boolean;
+    disableTimeRangeValidation: boolean;
+    range: boolean;
+};
+
+export type MenuExposedFn =
+    | 'selectCurrentDate'
+    | 'presetDateRange'
+    | 'clearHoverDate'
+    | 'handleArrow'
+    | 'updateMonthYear';

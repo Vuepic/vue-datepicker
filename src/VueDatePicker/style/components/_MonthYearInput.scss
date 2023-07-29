@@ -46,8 +46,7 @@
   }
 }
 
-.dp__month_year_select {
-  width: 50%;
+%dp--month-year-select-base {
   text-align: center;
   cursor: pointer;
   height: var(--dp-month-year-row-height);
@@ -61,7 +60,18 @@
   &:hover {
     background: var(--dp-hover-color);
     color: var(--dp-hover-text-color);
+    transition: var(--dp-common-transition);
   }
+}
+
+.dp__month_year_select {
+  width: 50%;
+  @extend %dp--month-year-select-base;
+}
+
+.dp--year-select {
+  width: 100%;
+  @extend %dp--month-year-select-base;
 }
 
 .dp__month_year_wrap {
