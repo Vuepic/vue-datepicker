@@ -332,7 +332,7 @@ describe('Logic connection', () => {
     it('Should assign empty time picker', async () => {
         const hours = getHours(new Date());
         const { menu } = await mountDatepicker({ timePicker: true });
-        const timePicker = menu.findComponent(TimePickerSolo) as VueWrapper<any>;
+        const timePicker = menu.findComponent(TimePickerSolo) as unknown as VueWrapper<{ time: { hours: number } }>;
         expect(timePicker.vm.time.hours).toEqual(hours);
     });
 
