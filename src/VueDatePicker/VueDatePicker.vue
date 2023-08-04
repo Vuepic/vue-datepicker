@@ -92,8 +92,6 @@
     import { AllProps } from '@/props';
     import { getNumVal } from '@/utils/util';
 
-    import type { ComponentPublicInstance } from 'vue';
-
     import type {
         DynamicClass,
         MonthYearOpt,
@@ -131,7 +129,7 @@
     defineOptions({
         compatConfig: {
             MODE: 3,
-        }
+        },
     });
 
     const props = defineProps({
@@ -431,7 +429,7 @@
     };
 
     const parseModel = (value?: ModelValue) => {
-        parseExternalModelValue(value || props.modelValue);
+        parseExternalModelValue(value ?? props.modelValue);
     };
 
     const switchView = (view: MenuView, instance?: number) => {

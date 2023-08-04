@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { addMonths, addYears, getMonth, getYear, subMonths, subYears } from 'date-fns';
+import { addMonths, addYears, getMonth, getYear, subMonths } from 'date-fns';
 import { mount, VueWrapper } from '@vue/test-utils';
 
 import DpHeader from '@/components/DatePicker/DpHeader.vue';

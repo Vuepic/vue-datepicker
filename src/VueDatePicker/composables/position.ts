@@ -81,7 +81,7 @@ export const usePosition = (
     const customAltPosition = () => {
         const el = unrefElement(inputRef);
         const { top, left, transform } = props.altPosition(el);
-        menuStyle.value = { top: `${top}px`, left: `${left}px`, transform: transform || '' };
+        menuStyle.value = { top: `${top}px`, left: `${left}px`, transform: transform ?? '' };
     };
 
     /**

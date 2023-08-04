@@ -52,7 +52,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
 
     const checkDateBefore = (isStart: boolean) => {
         const dateToCompare = Array.isArray(modelValue.value) ? modelValue.value[0] : null;
-        return isStart ? !isDateBefore(hoveredDate.value || null, dateToCompare) : true;
+        return isStart ? !isDateBefore(hoveredDate.value ?? null, dateToCompare) : true;
     };
 
     /**

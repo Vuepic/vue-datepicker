@@ -86,7 +86,7 @@ export interface ConfigurableWindow {
     window?: Window;
 }
 
-export type MaybeElementRef = MaybeRef<HTMLElement | SVGElement | ComponentPublicInstance | undefined | null>;
+export type MaybeElementRef = MaybeRef<HTMLElement | SVGElement | ComponentPublicInstance | undefined | null | Element>;
 export type OnClickOutsideEvents = Pick<
     WindowEventMap,
     'click' | 'mousedown' | 'mouseup' | 'touchstart' | 'touchend' | 'pointerdown' | 'pointerup'

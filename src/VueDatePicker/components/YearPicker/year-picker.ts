@@ -7,8 +7,7 @@ import { getMinMaxYear, isDateBetween, resetDate } from '@/utils/date-utils';
 import { handleMultiDatesSelect, setMonthOrYearRange } from '@/composables/shared';
 
 import type { PickerBasePropsType } from '@/props';
-import type { VueEmit } from '@/interfaces';
-import type { IDefaultSelect } from '@/interfaces';
+import type { VueEmit, IDefaultSelect } from '@/interfaces';
 
 export const useYearPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     const { modelValue } = useModel(props, emit);

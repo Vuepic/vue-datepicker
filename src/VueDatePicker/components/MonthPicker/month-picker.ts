@@ -98,13 +98,23 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     const selectSingleMonth = (month: number, instance: number) => {
         const date = modelValue.value ? (modelValue.value as Date) : resetDate(new Date());
         modelValue.value = setDateMonthOrYear(date, month, year.value(instance));
+        emit('auto-apply');
+    };
+
+    const selectRangedMonth = (month: number, instance: number) => {
+        setMonthOrYearRange(modelValue, monthToDate(month, instance), emit);
+        emit('auto-apply', (modelValue.value as Date[])?.length === 1);
+    };
+
+    const selectMultiMonths = (month: number, instance: number) => {
+        handleMultiDatesSelect(monthToDate(month, instance), modelValue, props.multiDatesLimit);
+        emit('auto-apply', true);
     };
 
     const selectMonth = (month: number, instance: number) => {
         calendars.value[instance].month = month;
-        if (props.multiDates)
-            return handleMultiDatesSelect(monthToDate(month, instance), modelValue, props.multiDatesLimit);
-        if (props.range) return setMonthOrYearRange(modelValue, monthToDate(month, instance), emit);
+        if (props.multiDates) return selectMultiMonths(month, instance);
+        if (props.range) return selectRangedMonth(month, instance);
         return selectSingleMonth(month, instance);
     };
 
@@ -115,30 +125,6 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     const setHoverDate = (month: number, instance: number) => {
         hoverDate.value = monthToDate(month, instance);
     };
-
-    /**
-     * // todo needs to be in header too
-     *    disabledValues: defaults.value.filters[isMonth ? 'months' : 'years'].concat(getDisabledMonths.value),
-     *    const minYear = computed(() => (props.minDate ? getYear(getDate(props.minDate)) : null));
-     *     const maxYear = computed(() => (props.maxDate ? getYear(getDate(props.maxDate)) : null));
-     *
-     *     const minMonth = computed(() => {
-     *         if (props.minDate && minYear.value) {
-     *             if (minYear.value > props.year) return 12;
-     *             if (minYear.value === props.year) return getMonth(getDate(props.minDate));
-     *         }
-     *         return null;
-     *     });
-     *
-     *     const maxMonth = computed(() => {
-     *         if (props.maxDate && maxYear.value) {
-     *             if (maxYear.value < props.year) return -1;
-     *             if (maxYear.value === props.year) return getMonth(getDate(props.maxDate));
-     *             return null;
-     *         }
-     *         return null;
-     *     });
-     */
 
     return {
         groupedMonths,

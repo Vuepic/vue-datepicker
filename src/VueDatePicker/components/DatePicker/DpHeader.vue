@@ -111,7 +111,7 @@
     import { checkMinMaxValue, groupListAndMap, unrefElement } from '@/utils/util';
     import { HeaderPicker } from '@/constants';
 
-    import type { HeaderSelectionBtn, IDefaultSelect, OverlayGridItem } from '@/interfaces';
+    import type { HeaderSelectionBtn, IDefaultSelect, MaybeElementRef, OverlayGridItem } from '@/interfaces';
 
     const emit = defineEmits(['update-month-year', 'mount', 'reset-flow', 'overlay-closed']);
     const props = defineProps({
@@ -230,7 +230,7 @@
         }
     };
 
-    const setElRefs = (el: HTMLElement | any, i: number): void => {
+    const setElRefs = (el: MaybeElementRef, i: number): void => {
         if (props.arrowNavigation) {
             elementRefs.value[i] = unrefElement(el);
             buildMatrix(elementRefs.value, 'monthYear');

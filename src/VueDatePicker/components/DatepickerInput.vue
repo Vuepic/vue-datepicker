@@ -78,7 +78,7 @@
     defineOptions({
         compatConfig: {
             MODE: 3,
-        }
+        },
     });
 
     const emit = defineEmits([
@@ -137,8 +137,8 @@
         const defaultTime = getDefaultStartTime();
         return parseFreeInput(
             value,
-            defaultedTextInputOptions.value.format || getDefaultPattern(),
-            defaultTime || assignDefaultTime({}, props.enableSeconds),
+            defaultedTextInputOptions.value.format ?? getDefaultPattern(),
+            defaultTime ?? assignDefaultTime({}, props.enableSeconds),
             props.inputValue,
             textPasted.value,
         );

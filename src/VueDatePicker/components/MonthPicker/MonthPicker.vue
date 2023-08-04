@@ -87,6 +87,7 @@
         'reset-flow',
         'range-start',
         'range-end',
+        'auto-apply',
     ]);
     const props = defineProps({
         ...PickerBaseProps,

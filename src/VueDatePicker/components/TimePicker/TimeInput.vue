@@ -138,7 +138,7 @@
 
     import { useTransitions, useArrowNavigation, useDefaults } from '@/composables';
     import { PickerBaseProps } from '@/props';
-    import { groupListAndMap, hasNumValue, hoursToAmPmHours } from '@/utils/util';
+    import { groupListAndMap, hoursToAmPmHours } from '@/utils/util';
     import { getDate, sanitizeTime } from '@/utils/date-utils';
 
     import type { PropType } from 'vue';
@@ -148,7 +148,7 @@
     defineOptions({
         compatConfig: {
             MODE: 3,
-        }
+        },
     });
 
     const emit = defineEmits([
@@ -259,12 +259,9 @@
 
         return groupListAndMap(generatedArray, (value: IDefaultSelect) => {
             const active = false;
-            const inDisabled = defaultedFilters.value.times[type].includes(value.value);
-            // disabledInGrid.value(type).includes(value.value);
-            //     .concat(disabledInGrid.value(type))
-            //     .includes(value.value);
+            const disabled =
+                defaultedFilters.value.times[type].includes(value.value) || !isDateInRange(value.value, type);
 
-            const disabled = inDisabled;
             return { active, disabled };
         });
     };
@@ -283,17 +280,6 @@
         if (maxTime) return isBefore(selectedDate, maxTime) || isEqual(selectedDate, maxTime);
         return true;
     };
-
-    const disabledInGrid = computed(() => (type: TimeType) => {
-        const times = getGridItems(type)
-            .flat()
-            .filter((item) => hasNumValue(item.value))
-            .map((item) => item.value);
-
-        return times.filter((item) => {
-            return !isDateInRange(item, type);
-        });
-    });
 
     const checkOverlayDisabled = (type: TimeType): boolean => {
         return props[`no${type[0].toUpperCase() + type.slice(1)}Overlay` as TimeOverlayCheck];

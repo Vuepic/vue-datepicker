@@ -1,97 +1,77 @@
-import { isAfter, isBefore, setMilliseconds } from 'date-fns';
+import { onMounted } from 'vue';
 
-import { isDateEqual, setDateTime } from '@/utils/date-utils';
+import { useDefaults, useModel } from '@/composables';
+import { useTimePickerUtils } from '@/components/TimePicker/time-picker-utils';
+import { getDate, getTimeObj } from '@/utils/date-utils';
 
-import type { InternalModuleValue, Time, TimeType, TimePickerProps } from '@/interfaces';
-import type { UnwrapNestedRefs, WritableComputedRef } from 'vue';
+import type { PickerBasePropsType } from '@/props';
+import type { VueEmit } from '@/interfaces';
 
-export const useTimePicker = (
-    props: TimePickerProps,
-    time: UnwrapNestedRefs<Time>,
-    modelValue: WritableComputedRef<InternalModuleValue>,
-    updateFlow: () => void,
-) => {
-    const getTimeValue = (type: TimeType, i?: number): number => {
-        if (Array.isArray(time[type])) return (time[type] as number[])[i as number];
-        return time[type] as number;
+export const useTimePicker = (props: PickerBasePropsType, emit: VueEmit) => {
+    const { modelValue, time } = useModel(props, emit);
+    const { defaultedStartTime } = useDefaults(props);
+    const { updateTimeValues, getSetDateTime, setTime, assignStartTime } = useTimePickerUtils(props, time, modelValue);
+
+    const assignEmptyModel = () => {
+        if (props.range) {
+            modelValue.value = [getDate(), getDate()];
+        } else {
+            modelValue.value = getDate();
+        }
     };
-    // Check if seconds are enabled, and return proper value
-    const getSecondsValue = (i?: number): number => {
+
+    const getTimeValue = (dates: Date | Date[] | null) => {
+        if (Array.isArray(dates)) {
+            return [getTimeObj(getDate(dates[0])), getTimeObj(getDate(dates[1]))];
+        }
+        return [getTimeObj(dates ?? getDate())];
+    };
+
+    const assignTime = (hours: number | number[], minutes: number | number[], seconds: number | number[]) => {
+        setTime('hours', hours);
+        setTime('minutes', minutes);
         if (props.enableSeconds) {
-            if (Array.isArray(time.seconds)) {
-                return time.seconds[i as number];
-            }
-            return time.seconds;
+            setTime('seconds', seconds);
         }
-        return 0;
     };
-    const getSetDateTime = (dateValue: Date, i?: number): Date => {
-        if (i !== undefined) {
-            return setDateTime(
-                dateValue,
-                getTimeValue('hours', i),
-                getTimeValue('minutes', i) as number,
-                getSecondsValue(i),
+
+    const setTimeFromModel = () => {
+        const [first, second] = getTimeValue(modelValue.value);
+
+        if (props.range) {
+            return assignTime(
+                [first.hours, second.hours],
+                [first.minutes, second.minutes],
+                [first.seconds, second.minutes],
             );
         }
-        return setDateTime(dateValue, time.hours as number, time.minutes as number, getSecondsValue());
-    };
-    // Any time modification will go through this function
-    const setTime = (property: TimeType, value: number | number[]): void => {
-        time[property] = value;
+        return assignTime(first.hours, first.minutes, first.seconds);
     };
 
-    const validateTime = (type: TimeType, value: number | number[]) => {
-        const copies = Object.fromEntries(
-            Object.keys(time).map((key) => {
-                if (key === type) return [key, value];
-                return [key, time[key as TimeType]];
-            }),
-        );
+    onMounted(() => {
+        assignStartTime(defaultedStartTime.value);
+        if (!modelValue.value) return assignEmptyModel();
+        return setTimeFromModel();
+    });
 
-        if (props.range && !props.disableTimeRangeValidation) {
-            const setTime = (index: number) =>
-                setDateTime(
-                    (modelValue.value as Date[])[index],
-                    (copies.hours as number[])[index],
-                    (copies.minutes as number[])[index],
-                    (copies.seconds as number[])[index],
-                );
-
-            const resetMilliseconds = (index: number) => setMilliseconds((modelValue.value as Date[])[index], 0);
-            return !(
-                isDateEqual((modelValue.value as Date[])[0], (modelValue.value as Date[])[1]) &&
-                (isAfter(setTime(0), resetMilliseconds(1)) || isBefore(setTime(1), resetMilliseconds(0)))
-            );
+    const handleTimeUpdate = () => {
+        if (Array.isArray(modelValue.value)) {
+            modelValue.value = modelValue.value.map((date, i) => {
+                if (date) return getSetDateTime(date, i);
+                return date;
+            });
+        } else {
+            modelValue.value = getSetDateTime(modelValue.value);
         }
-        return true;
+        emit('time-update');
     };
 
-    const updateTime = (type: TimeType, value: number | number[]) => {
-        const valid = validateTime(type, value);
-        if (valid) {
-            setTime(type, value);
-            updateFlow();
-        }
-    };
-
-    const updateHours = (value: number | number[]) => {
-        updateTime('hours', value);
-    };
-
-    const updateMinutes = (value: number | number[]) => {
-        updateTime('minutes', value);
-    };
-
-    const updateSeconds = (value: number | number[]) => {
-        updateTime('seconds', value);
+    const updateTime = (value: number | number[], isHours = true, isSeconds = false) => {
+        updateTimeValues(value, isHours, isSeconds, handleTimeUpdate);
     };
 
     return {
-        setTime,
-        updateHours,
-        updateMinutes,
-        updateSeconds,
-        getSetDateTime,
+        time,
+        updateTime,
     };
 };

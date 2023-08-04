@@ -25,7 +25,8 @@ import {
     subMonths,
     format,
 } from 'date-fns';
-import { utcToZonedTime } from 'date-fns-tz/esm';
+import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz/esm';
+import { errors } from '@/utils/util';
 
 import type {
     DateTimeSetter,
@@ -38,9 +39,8 @@ import type {
     IFormat,
     IDisableDates,
 } from '@/interfaces';
+
 import type { Duration } from 'date-fns';
-import { zonedTimeToUtc } from 'date-fns-tz/esm';
-import { errors } from '@/utils/util';
 
 const parseTextToDate = (
     value: string,
@@ -92,7 +92,7 @@ export const parseFreeInput = (
     return null;
 };
 
-export const getDate = (value?: Date | string | number) => (value ? new Date(value) : new Date());
+export const getDate = (value?: PossibleDate) => (value ? new Date(value) : new Date());
 
 export const dateToUtc = (date: Date, preserve: boolean, enableSeconds: boolean) => {
     if (preserve) {

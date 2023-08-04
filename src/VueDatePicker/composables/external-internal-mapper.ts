@@ -54,12 +54,12 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
             props.formatLocale,
             defaultedTextInputOptions.value.rangeSeparator,
             props.modelAuto,
-            customPattern || getDefaultPattern(),
+            customPattern ?? getDefaultPattern(),
         );
     };
 
     const getTimeVal = (date?: Date): TimeModel | ModelTypeConverted => {
-        const dateValue = date || getDate();
+        const dateValue = date ?? getDate();
         if (props.modelType) return toModelType(dateValue);
         return {
             hours: getHours(dateValue),

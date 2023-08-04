@@ -3,7 +3,6 @@ import { describe, it, expect, afterEach } from 'vitest';
 import { nextTick } from 'vue';
 import {
     addMonths,
-    getHours,
     getMonth,
     getYear,
     set,
@@ -11,6 +10,7 @@ import {
     setSeconds,
     startOfYear,
     addDays,
+    getHours,
 } from 'date-fns';
 import { ja } from 'date-fns/locale';
 
@@ -23,6 +23,7 @@ import ActionRow from '@/components/ActionRow.vue';
 import SelectionOverlay from '@/components/Common/SelectionOverlay.vue';
 import TimeInput from '@/components/TimePicker/TimeInput.vue';
 import DpHeader from '@/components/DatePicker/DpHeader.vue';
+import TimePickerSolo from '@/components/TimePicker/TimePickerSolo.vue';
 
 import { getWeekFromDate, resetDateTime } from '@/utils/date-utils';
 
@@ -328,11 +329,12 @@ describe('Logic connection', () => {
         expect(datePicker.vm.time.hours).toEqual(10);
     });
 
-    // it('Should assign empty time picker', async () => {
-    //     const hours = getHours(new Date());
-    //     const { datePicker } = await mountDatepicker({ timePicker: true });
-    //     expect(datePicker.vm.time.hours).toEqual(hours);
-    // });
+    it('Should assign empty time picker', async () => {
+        const hours = getHours(new Date());
+        const { menu } = await mountDatepicker({ timePicker: true });
+        const timePicker = menu.findComponent(TimePickerSolo) as VueWrapper<any>;
+        expect(timePicker.vm.time.hours).toEqual(hours);
+    });
     //
     // it('Should assign empty month picker', async () => {
     //     const month = getMonth(new Date());
@@ -479,8 +481,6 @@ describe('Logic connection', () => {
         const incBtn = timeInput.find(`[data-test="time-inc-btn"]`);
 
         expect(incBtn.classes()).toContain('dp__inc_dec_button_disabled');
-
-        expect(timeInput.vm.disabledInGrid('hours')).toEqual([22, 23]);
     });
 
     it('Should disable times that are out of min time validation', async () => {
@@ -493,8 +493,6 @@ describe('Logic connection', () => {
         const incBtn = timeInput.find(`[data-test="time-dec-btn"]`);
 
         expect(incBtn.classes()).toContain('dp__inc_dec_button_disabled');
-
-        expect(timeInput.vm.disabledInGrid('hours')).toEqual([0, 1, 2, 3, 4, 5, 6]);
     });
 
     it('Should select multi dates with month picker mode', async () => {
@@ -615,6 +613,30 @@ describe('Logic connection', () => {
             return { jan, feb, mar, apr, may, jun };
         };
 
+        const ValidateAprToJun = (apr: ICalendarDate[], may: ICalendarDate[], jun: ICalendarDate[]) => {
+            expect(apr[0].days[0].text).toEqual(29);
+            expect(apr[5].days[6].text).toEqual(9);
+            expect(may).toHaveLength(6);
+            expect(may[0].days[0].text).toEqual(26);
+            expect(may[5].days[6].text).toEqual(6);
+            expect(jun).toHaveLength(6);
+        };
+
+        const validateFairAndCenter = (months: { [key: string]: ICalendarDate[] }) => {
+            const { jan, feb, mar, apr, may, jun } = months;
+            expect(jan).toHaveLength(6);
+            expect(jan[0].days[0].text).toEqual(28);
+            expect(jan[5].days[6].text).toEqual(7);
+            expect(feb).toHaveLength(6);
+            expect(feb[0].days[0].text).toEqual(25);
+            expect(feb[5].days[6].text).toEqual(7);
+            expect(mar).toHaveLength(6);
+            expect(mar[0].days[0].text).toEqual(22);
+            expect(mar[5].days[6].text).toEqual(4);
+            expect(apr).toHaveLength(6);
+            ValidateAprToJun(apr, may, jun);
+        };
+
         it('In `false` mode, it should get only weeks that contain dates of the queried month', async () => {
             const { jan, feb, mar, apr, may, jun } = await getCalendarDaysWithSixWeekMode(false);
 
@@ -654,13 +676,7 @@ describe('Logic connection', () => {
             expect(mar).toHaveLength(6);
             expect(mar[0].days[0].text).toEqual(1);
             expect(mar[5].days[6].text).toEqual(11);
-            expect(apr).toHaveLength(6);
-            expect(apr[0].days[0].text).toEqual(29);
-            expect(apr[5].days[6].text).toEqual(9);
-            expect(may).toHaveLength(6);
-            expect(may[0].days[0].text).toEqual(26);
-            expect(may[5].days[6].text).toEqual(6);
-            expect(jun).toHaveLength(6);
+            ValidateAprToJun(apr, may, jun);
             expect(jun[0].days[0].text).toEqual(31);
             expect(jun[5].days[6].text).toEqual(11);
         });
@@ -689,49 +705,19 @@ describe('Logic connection', () => {
         });
 
         it('In `center` mode, it should return six weeks, padded so that months that start with a full week get a week of leading offset', async () => {
-            const { jan, feb, mar, apr, may, jun } = await getCalendarDaysWithSixWeekMode('center');
+            const months = await getCalendarDaysWithSixWeekMode('center');
 
-            expect(jan).toHaveLength(6);
-            expect(jan[0].days[0].text).toEqual(28);
-            expect(jan[5].days[6].text).toEqual(7);
-            expect(feb).toHaveLength(6);
-            expect(feb[0].days[0].text).toEqual(25);
-            expect(feb[5].days[6].text).toEqual(7);
-            expect(mar).toHaveLength(6);
-            expect(mar[0].days[0].text).toEqual(22);
-            expect(mar[5].days[6].text).toEqual(4);
-            expect(apr).toHaveLength(6);
-            expect(apr[0].days[0].text).toEqual(29);
-            expect(apr[5].days[6].text).toEqual(9);
-            expect(may).toHaveLength(6);
-            expect(may[0].days[0].text).toEqual(26);
-            expect(may[5].days[6].text).toEqual(6);
-            expect(jun).toHaveLength(6);
-            expect(jun[0].days[0].text).toEqual(31);
-            expect(jun[5].days[6].text).toEqual(11);
+            validateFairAndCenter(months);
+            expect(months.jun[0].days[0].text).toEqual(31);
+            expect(months.jun[5].days[6].text).toEqual(11);
         });
 
         it('In `fair` mode, it should return six weeks, padded to start and end of the month depending on which has the smaller offset in the partial week', async () => {
-            const { jan, feb, mar, apr, may, jun } = await getCalendarDaysWithSixWeekMode('fair');
+            const months = await getCalendarDaysWithSixWeekMode('fair');
 
-            expect(jan).toHaveLength(6);
-            expect(jan[0].days[0].text).toEqual(28);
-            expect(jan[5].days[6].text).toEqual(7);
-            expect(feb).toHaveLength(6);
-            expect(feb[0].days[0].text).toEqual(25);
-            expect(feb[5].days[6].text).toEqual(7);
-            expect(mar).toHaveLength(6);
-            expect(mar[0].days[0].text).toEqual(22);
-            expect(mar[5].days[6].text).toEqual(4);
-            expect(apr).toHaveLength(6);
-            expect(apr[0].days[0].text).toEqual(29);
-            expect(apr[5].days[6].text).toEqual(9);
-            expect(may).toHaveLength(6);
-            expect(may[0].days[0].text).toEqual(26);
-            expect(may[5].days[6].text).toEqual(6);
-            expect(jun).toHaveLength(6);
-            expect(jun[0].days[0].text).toEqual(24);
-            expect(jun[5].days[6].text).toEqual(4);
+            validateFairAndCenter(months);
+            expect(months.jun[0].days[0].text).toEqual(24);
+            expect(months.jun[5].days[6].text).toEqual(4);
         });
     });
 });

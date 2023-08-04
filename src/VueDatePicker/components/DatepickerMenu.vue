@@ -111,7 +111,7 @@
 
     import MonthPicker from '@/components/MonthPicker/MonthPicker.vue';
     import YearPicker from '@/components/YearPicker/YearPicker.vue';
-    import TimePicker from '@/components/TimePicker/TimePicker.vue';
+    import TimePickerSolo from '@/components/TimePicker/TimePickerSolo.vue';
     import DatePicker from '@/components/DatePicker/DatePicker.vue';
 
     import type {
@@ -127,7 +127,7 @@
     defineOptions({
         compatConfig: {
             MODE: 3,
-        }
+        },
     });
 
     const emit = defineEmits([
@@ -212,7 +212,7 @@
     const displayComponent = computed(() => {
         if (props.monthPicker) return MonthPicker;
         if (props.yearPicker) return YearPicker;
-        if (props.timePicker) return TimePicker;
+        if (props.timePicker) return TimePickerSolo;
         return DatePicker;
     });
 
