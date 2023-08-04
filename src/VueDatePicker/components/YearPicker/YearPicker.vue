@@ -25,5 +25,11 @@
         ...PickerBaseProps,
     });
 
+    defineOptions({
+        compatConfig: {
+            MODE: 3,
+        },
+    });
+
     const { groupedYears, selectYear, setHoverValue } = useYearPicker(props, emit);
 </script>

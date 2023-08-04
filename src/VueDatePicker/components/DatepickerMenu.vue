@@ -22,7 +22,7 @@
             }"
         >
             <div class="dp__sidebar_left" v-if="$slots['left-sidebar']">
-                <slot name="left-sidebar" v-bind="sidebarProps" />
+                <slot name="left-sidebar" v-bind="getSidebarProps()" />
             </div>
           <div
               v-for="(preset, i) in presetRanges"
@@ -69,6 +69,7 @@
                     @am-pm-change="$emit('am-pm-change', $event)"
                     @time-picker-open="$emit('time-picker-open', $event)"
                     @time-picker-close="onTimePickerClose"
+                    @recalculate-position="recalculatePosition"
                     @update:internal-model-value="$emit('update:internal-model-value', $event)"
                 >
                     <template v-for="(slot, i) in sharedSlots" #[slot]="args" :key="i">
@@ -77,7 +78,7 @@
                 </component>
             </div>
             <div class="dp__sidebar_right" v-if="$slots['right-sidebar']">
-                <slot name="right-sidebar" v-bind="sidebarProps" />
+                <slot name="right-sidebar" v-bind="getSidebarProps()" />
             </div>
             <div class="dp__action_extra" v-if="$slots['action-extra']">
                 <slot name="action-extra" v-if="$slots['action-extra']" :select-current-date="selectCurrentDate" />
@@ -223,36 +224,15 @@
         }
     };
 
-    // const handleMonthYearChange = (isNext: boolean) => {
-    //     if (monthYearPickerRefs.value[0]) {
-    //         monthYearPickerRefs.value[0].handleMonthYearChange(isNext);
-    //     }
-    // };
+    const getSidebarProps = () => {
+        return dynCmpRef.value?.getSidebarProps();
+    };
 
-    // const sidebarProps = {
-    //     modelValue,
-    //     month,
-    //     year,
-    //     time,
-    //     updateTime,
-    //     updateMonthYear,
-    //     selectDate,
-    //     presetDateRange,
-    //     handleMonthYearChange,
-    // };
-    const sidebarProps = {};
-
-    // watch(
-    //     calendars,
-    //     () => {
-    //         if (props.openOnTop) {
-    //             setTimeout(() => {
-    //                 emit('recalculate-position');
-    //             }, 0);
-    //         }
-    //     },
-    //     { deep: true },
-    // );
+    const recalculatePosition = () => {
+        if (props.openOnTop) {
+            emit('recalculate-position');
+        }
+    };
 
     const actionSlots = mapSlots(slots, 'action');
 

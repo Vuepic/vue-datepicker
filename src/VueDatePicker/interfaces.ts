@@ -1,7 +1,6 @@
 import type { ComponentPublicInstance, Ref } from 'vue';
-import type { AllPropsType } from '@/props';
+import type { AllPropsType, PickerBasePropsType } from '@/props';
 import type { HeaderPicker } from '@/constants';
-import type { PickerBasePropsType } from '@/props';
 
 export type DynamicClass = Record<string, boolean | undefined>;
 

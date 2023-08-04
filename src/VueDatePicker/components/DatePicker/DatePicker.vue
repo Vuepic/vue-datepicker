@@ -71,7 +71,7 @@
 </template>
 
 <script setup lang="ts">
-    import { computed, ref, useSlots } from 'vue';
+    import { computed, ref, useSlots, watch } from 'vue';
 
     import DpHeader from '@/components/DatePicker/DpHeader.vue';
     import DpCalendar from '@/components/DatePicker/DpCalendar.vue';
@@ -103,12 +103,14 @@
         'am-pm-change',
         'time-picker-open',
         'time-picker-close',
+        'recalculate-position',
     ]);
     const props = defineProps({
         ...PickerBaseProps,
     });
 
     const {
+        calendars,
         month,
         year,
         modelValue,
@@ -141,6 +143,18 @@
             emit('mount', cmp);
         }
     };
+
+    watch(
+        calendars,
+        () => {
+            if (!props.shadow) {
+                setTimeout(() => {
+                    emit('recalculate-position');
+                }, 0);
+            }
+        },
+        { deep: true },
+    );
 
     /**
      * Array of the dates from which calendar is built.
@@ -190,6 +204,19 @@
         timePickerRef.value?.toggleTimePicker(flow, show, childOpen);
     };
 
+    const getSidebarProps = () => {
+        return {
+            modelValue,
+            month,
+            year,
+            time,
+            updateTime,
+            updateMonthYear,
+            selectDate,
+            presetDateRange,
+        };
+    };
+
     defineExpose({
         clearHoverDate,
         presetDateRange,
@@ -199,5 +226,6 @@
         toggleTimePicker,
         handleArrow,
         updateMonthYear,
+        getSidebarProps,
     });
 </script>

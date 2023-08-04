@@ -335,18 +335,6 @@ describe('Logic connection', () => {
         const timePicker = menu.findComponent(TimePickerSolo) as VueWrapper<any>;
         expect(timePicker.vm.time.hours).toEqual(hours);
     });
-    //
-    // it('Should assign empty month picker', async () => {
-    //     const month = getMonth(new Date());
-    //     const { datePicker } = await mountDatepicker({ monthPicker: true });
-    //     expect(datePicker.vm.month(0)).toEqual(month);
-    // });
-    //
-    // it('Should assign empty year picker', async () => {
-    //     const year = getMonth(new Date());
-    //     const { datePicker } = await mountDatepicker({ yearPicker: true });
-    //     expect(datePicker.vm.month(0)).toEqual(year);
-    // });
 
     it('Should get seconds value depending on the mode', async () => {
         const { datePicker } = await mountDatepicker({ enableSeconds: true });
@@ -476,7 +464,7 @@ describe('Logic connection', () => {
         const { menu } = await mountDatepicker({ maxTime: { hours: 21 }, modelValue: date });
         await menu.find(`[data-test="open-time-picker-btn"]`).trigger('click');
         await menu.vm.$nextTick();
-        const timeInput = menu.findComponent(TimeInput) as VueWrapper<any>;
+        const timeInput = menu.findComponent(TimeInput);
 
         const incBtn = timeInput.find(`[data-test="time-inc-btn"]`);
 
@@ -488,7 +476,7 @@ describe('Logic connection', () => {
         const { menu } = await mountDatepicker({ minTime: { hours: 7 }, modelValue: date });
         await menu.find(`[data-test="open-time-picker-btn"]`).trigger('click');
         await menu.vm.$nextTick();
-        const timeInput = menu.findComponent(TimeInput) as VueWrapper<any>;
+        const timeInput = menu.findComponent(TimeInput);
 
         const incBtn = timeInput.find(`[data-test="time-dec-btn"]`);
 
@@ -499,7 +487,9 @@ describe('Logic connection', () => {
         const { menu, dp } = await mountDatepicker({ modelValue: null, multiDates: true, monthPicker: true });
         const today = new Date();
         const months = [addMonths(today, 1), addMonths(today, 2), addMonths(today, 3)];
-        const monthPicker = menu.findComponent(MonthPicker) as VueWrapper<any>;
+        const monthPicker = menu.findComponent(MonthPicker) as unknown as VueWrapper<{
+            selectMonth: (month: number, instance: number) => void;
+        }>;
         for (const date of months) {
             monthPicker.vm.selectMonth(getMonth(date), 0);
             await monthPicker.vm.$nextTick();
@@ -551,7 +541,7 @@ describe('Logic connection', () => {
         };
         const { datePicker } = await mountDatepicker({ calendar: mapDates });
 
-        const calendar = datePicker.findComponent(DpCalendar) as VueWrapper<any>;
+        const calendar = datePicker.findComponent(DpCalendar) as unknown as VueWrapper<{ calendarWeeks: any }>;
 
         expect(calendar.vm.calendarWeeks).toHaveLength(1);
         expect(calendar.html().includes('custom-class')).toBeTruthy();
@@ -582,7 +572,6 @@ describe('Logic connection', () => {
     });
 
     it('Should get calendar days with hidden offset dats', async () => {
-        // const { getCalendarDays } = useUtils({ weekStart: 1, hideOffsetDates: true } as AllPropsType);
         const { datePicker } = await mountDatepicker({
             weekStart: 1,
             hideOffsetDates: true,

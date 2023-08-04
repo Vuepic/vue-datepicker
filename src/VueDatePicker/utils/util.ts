@@ -175,19 +175,23 @@ export const getGroupedList = (items: IDefaultSelect[]): IDefaultSelect[][] => {
  * Check if number is between min and max values
  */
 export const checkMinMaxValue = (value: number | string, min?: number, max?: number): boolean => {
-    const hasMax = max || max === 0;
-    const hasMin = min || min === 0;
+    const hasMax = max ?? max === 0;
+    const hasMin = min ?? min === 0;
+
     if (!hasMax && !hasMin) return false;
 
+    const maxVal = +(max as number);
+    const minVal = +(min as number);
+
     if (hasMax && hasMin) {
-        return +value > +max || +value < +min;
+        return +value > maxVal || +value < minVal;
     }
     if (hasMax) {
-        return +value > +max;
+        return +value > maxVal;
     }
 
     if (hasMin) {
-        return +value < +min;
+        return +value < minVal;
     }
 
     return false;

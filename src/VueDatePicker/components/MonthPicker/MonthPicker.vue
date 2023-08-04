@@ -93,6 +93,12 @@
         ...PickerBaseProps,
     });
 
+    defineOptions({
+        compatConfig: {
+            MODE: 3,
+        },
+    });
+
     const { defaultedMultiCalendars, defaultedAriaLabels, defaultedTransitions } = useDefaults(props);
     const { groupedMonths, groupedYears, year, isDisabled, setHoverDate, selectMonth, selectYear } = useMonthPicker(
         props,

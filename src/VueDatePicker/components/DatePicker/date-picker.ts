@@ -89,15 +89,17 @@ export const useDatePicker = (
     });
 
     onMounted(() => {
-        if (!modelValue.value) {
-            setStartDate();
-            if (defaultedStartTime.value) {
-                assignStartTime(defaultedStartTime.value);
+        if (!props.shadow) {
+            if (!modelValue.value) {
+                setStartDate();
+                if (defaultedStartTime.value) {
+                    assignStartTime(defaultedStartTime.value);
+                }
             }
-        }
-        mapInternalModuleValues(true);
-        if (props.focusStartDate && props.startDate) {
-            setStartDate();
+            mapInternalModuleValues(true);
+            if (props.focusStartDate && props.startDate) {
+                setStartDate();
+            }
         }
     });
 
@@ -601,6 +603,7 @@ export const useDatePicker = (
     };
 
     return {
+        calendars,
         modelValue,
         month,
         year,

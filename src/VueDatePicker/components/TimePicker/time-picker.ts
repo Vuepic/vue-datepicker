@@ -14,9 +14,9 @@ export const useTimePicker = (props: PickerBasePropsType, emit: VueEmit) => {
 
     const assignEmptyModel = () => {
         if (props.range) {
-            modelValue.value = [getDate(), getDate()];
+            modelValue.value = [getSetDateTime(null, 0), getSetDateTime(null, 1)];
         } else {
-            modelValue.value = getDate();
+            modelValue.value = getSetDateTime(null);
         }
     };
 
@@ -49,9 +49,11 @@ export const useTimePicker = (props: PickerBasePropsType, emit: VueEmit) => {
     };
 
     onMounted(() => {
-        assignStartTime(defaultedStartTime.value);
-        if (!modelValue.value) return assignEmptyModel();
-        return setTimeFromModel();
+        if (!props.shadow) {
+            assignStartTime(defaultedStartTime.value);
+            if (!modelValue.value) return assignEmptyModel();
+            return setTimeFromModel();
+        }
     });
 
     const handleTimeUpdate = () => {

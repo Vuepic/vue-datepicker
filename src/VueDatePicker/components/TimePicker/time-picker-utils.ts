@@ -1,4 +1,4 @@
-import { isAfter, isBefore, isEqual, setMilliseconds } from 'date-fns';
+import { isAfter, isBefore, setMilliseconds } from 'date-fns';
 
 import { getDate, isDateEqual, setDateTime } from '@/utils/date-utils';
 
@@ -56,7 +56,7 @@ export const useTimePickerUtils = (
 
             const resetMilliseconds = (index: number) => setMilliseconds((modelValue.value as Date[])[index], 0);
             return !(
-                isEqual(setTime(0), setTime(1)) &&
+                isDateEqual(setTime(0), setTime(1)) &&
                 (isAfter(setTime(0), resetMilliseconds(1)) || isBefore(setTime(1), resetMilliseconds(0)))
             );
         }

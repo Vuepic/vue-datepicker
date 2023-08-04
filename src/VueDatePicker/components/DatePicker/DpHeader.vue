@@ -123,6 +123,12 @@
         ...PickerBaseProps,
     });
 
+    defineOptions({
+        compatConfig: {
+            MODE: 3,
+        },
+    });
+
     const { defaultedTransitions, defaultedMultiCalendars, defaultedAriaLabels } = useDefaults(props);
     const { transitionName, showTransition } = useTransitions(defaultedTransitions);
     const { buildMatrix } = useArrowNavigation();

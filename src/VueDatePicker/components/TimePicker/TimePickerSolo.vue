@@ -32,6 +32,11 @@
     const props = defineProps({
         ...PickerBaseProps,
     });
+    defineOptions({
+        compatConfig: {
+            MODE: 3,
+        },
+    });
     const slots = useSlots();
     const timePickerSlots = mapSlots(slots, 'timePicker');
 
