@@ -47,7 +47,10 @@
             </template>
         </DpCalendar>
     </InstanceWrap>
-    <div>
+    <div v-if="enableTimePicker">
+        <template v-if="$slots['time-picker']">
+            <slot name="time-picker" v-bind="{ time, updateTime }" />
+        </template>
         <TimePicker
             ref="timePickerRef"
             v-bind="$props"

@@ -159,7 +159,7 @@
   @extend %__dp_range_border_radius_start;
   @extend %__dp_range_preview;
 
-  margin-inline-end: 1px dashed var(--dp-primary-color);
+  border-inline-start: 1px dashed var(--dp-primary-color);
 }
 
 .dp__cell_auto_range_end {

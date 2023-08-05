@@ -225,7 +225,7 @@
     };
 
     const getSidebarProps = () => {
-        return dynCmpRef.value?.getSidebarProps();
+        return computed(() => dynCmpRef.value?.getSidebarProps());
     };
 
     const recalculatePosition = () => {

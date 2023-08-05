@@ -1,92 +1,101 @@
 <template>
     <div class="dp__month_year_row">
-        <ArrowBtn
-            v-if="showLeftIcon && !vertical"
-            :aria-label="defaultedAriaLabels?.prevMonth"
-            :disabled="isDisabled(false)"
-            @activate="handleMonthYearChange(false)"
-            @set-ref="setElRefs($event, 0)"
-        >
-            <slot name="arrow-left" v-if="$slots['arrow-left']" />
-            <ChevronLeftIcon v-if="!$slots['arrow-left']" />
-        </ArrowBtn>
-        <div
-            class="dp__month_year_wrap"
-            :class="{
-                dp__year_disable_select: disableYearSelect,
-            }"
-        >
-            <template v-for="(type, i) in selectionButtonsDisplay" :key="type.type">
-                <button
-                    type="button"
-                    class="dp__btn dp__month_year_select"
-                    @click="type.toggle"
-                    @keydown.enter.prevent="type.toggle"
-                    @keydown.space.prevent="type.toggle"
-                    :aria-label="type.ariaLabel"
-                    tabindex="0"
-                    :ref="(el) => setElRefs(el, i + 1)"
-                >
-                    <slot v-if="$slots[type.type]" :name="type.type" v-bind="{ text: type.text }" />
-                    <template v-if="!$slots[type.type]">{{ type.text }}</template>
-                </button>
-                <transition :name="transitionName(type.showSelectionGrid)" :css="showTransition">
-                    <SelectionOverlay
-                        v-if="type.showSelectionGrid"
-                        :items="type.items"
-                        :arrow-navigation="arrowNavigation"
-                        :is-last="autoApply && !keepActionRow"
-                        :skip-button-ref="false"
-                        :type="type.type"
-                        :header-refs="[]"
-                        :esc-close="escClose"
-                        :text-input="textInput"
-                        @selected="type.updateModelValue"
-                        @toggle="type.toggle"
-                    >
-                        <template #button-icon>
-                            <slot name="calendar-icon" v-if="$slots['calendar-icon']" />
-                            <CalendarIcon v-if="!$slots['calendar-icon']" />
-                        </template>
-                        <template v-if="$slots[`${type.type}-overlay-val`]" #item="{ item }">
-                            <slot :name="`${type.type}-overlay-val`" :text="item.text" :value="item.value" />
-                        </template>
-                        <template v-if="$slots[`${type.type}-overlay`]" #overlay>
-                            <slot :name="`${type.type}-overlay`" v-bind="overlaySlotProps(type.type)" />
-                        </template>
-                        <template v-if="$slots[`${type.type}-overlay-header`]" #header>
-                            <slot :name="`${type.type}-overlay-header`" :toggle="type.toggle" />
-                        </template>
-                    </SelectionOverlay>
-                </transition>
-            </template>
-        </div>
-        <ArrowBtn
-            v-if="showLeftIcon && vertical"
-            :aria-label="defaultedAriaLabels?.prevMonth"
-            :disabled="isDisabled(false)"
-            @activate="handleMonthYearChange(false)"
-        >
-            <slot name="arrow-up" v-if="$slots['arrow-up']" />
-            <ChevronUpIcon v-if="!$slots['arrow-up']" />
-        </ArrowBtn>
-        <ArrowBtn
-            v-if="showRightIcon"
-            ref="rightIcon"
-            :disabled="isDisabled(true)"
-            :aria-label="defaultedAriaLabels?.nextMonth"
-            @activate="handleMonthYearChange(true)"
-            @set-ref="setElRefs($event, disableYearSelect ? 2 : 3)"
-        >
+        <template v-if="$slots['month-year']">
             <slot
-                :name="vertical ? 'arrow-down' : 'arrow-right'"
-                v-if="$slots[vertical ? 'arrow-down' : 'arrow-right']"
+                name="month-year"
+                v-bind="{ month, year, months, years, updateMonthYear, handleMonthYearChange, instance }"
             />
-            <component
-                :is="vertical ? ChevronDownIcon : ChevronRightIcon"
-                v-if="!$slots[vertical ? 'arrow-down' : 'arrow-right']"
-            />
-        </ArrowBtn>
+        </template>
+        <template v-else>
+            <ArrowBtn
+                v-if="showLeftIcon && !vertical"
+                :aria-label="defaultedAriaLabels?.prevMonth"
+                :disabled="isDisabled(false)"
+                @activate="handleMonthYearChange(false)"
+                @set-ref="setElRefs($event, 0)"
+            >
+                <slot name="arrow-left" v-if="$slots['arrow-left']" />
+                <ChevronLeftIcon v-if="!$slots['arrow-left']" />
+            </ArrowBtn>
+            <div
+                class="dp__month_year_wrap"
+                :class="{
+                    dp__year_disable_select: disableYearSelect,
+                }"
+            >
+                <template v-for="(type, i) in selectionButtonsDisplay" :key="type.type">
+                    <button
+                        type="button"
+                        class="dp__btn dp__month_year_select"
+                        @click="type.toggle"
+                        @keydown.enter.prevent="type.toggle"
+                        @keydown.space.prevent="type.toggle"
+                        :aria-label="type.ariaLabel"
+                        tabindex="0"
+                        :ref="(el) => setElRefs(el, i + 1)"
+                    >
+                        <slot v-if="$slots[type.type]" :name="type.type" v-bind="{ text: type.text }" />
+                        <template v-if="!$slots[type.type]">{{ type.text }}</template>
+                    </button>
+                    <transition :name="transitionName(type.showSelectionGrid)" :css="showTransition">
+                        <SelectionOverlay
+                            v-if="type.showSelectionGrid"
+                            :items="type.items"
+                            :arrow-navigation="arrowNavigation"
+                            :hide-navigation="hideNavigation"
+                            :is-last="autoApply && !keepActionRow"
+                            :skip-button-ref="false"
+                            :type="type.type"
+                            :header-refs="[]"
+                            :esc-close="escClose"
+                            :text-input="textInput"
+                            @selected="type.updateModelValue"
+                            @toggle="type.toggle"
+                        >
+                            <template #button-icon>
+                                <slot name="calendar-icon" v-if="$slots['calendar-icon']" />
+                                <CalendarIcon v-if="!$slots['calendar-icon']" />
+                            </template>
+                            <template v-if="$slots[`${type.type}-overlay-val`]" #item="{ item }">
+                                <slot :name="`${type.type}-overlay-val`" :text="item.text" :value="item.value" />
+                            </template>
+                            <template v-if="$slots[`${type.type}-overlay`]" #overlay>
+                                <slot :name="`${type.type}-overlay`" v-bind="overlaySlotProps(type.type)" />
+                            </template>
+                            <template v-if="$slots[`${type.type}-overlay-header`]" #header>
+                                <slot :name="`${type.type}-overlay-header`" :toggle="type.toggle" />
+                            </template>
+                        </SelectionOverlay>
+                    </transition>
+                </template>
+            </div>
+            <ArrowBtn
+                v-if="showLeftIcon && vertical"
+                :aria-label="defaultedAriaLabels?.prevMonth"
+                :disabled="isDisabled(false)"
+                @activate="handleMonthYearChange(false)"
+            >
+                <slot name="arrow-up" v-if="$slots['arrow-up']" />
+                <ChevronUpIcon v-if="!$slots['arrow-up']" />
+            </ArrowBtn>
+            <ArrowBtn
+                v-if="showRightIcon"
+                ref="rightIcon"
+                :disabled="isDisabled(true)"
+                :aria-label="defaultedAriaLabels?.nextMonth"
+                @activate="handleMonthYearChange(true)"
+                @set-ref="setElRefs($event, disableYearSelect ? 2 : 3)"
+            >
+                <slot
+                    :name="vertical ? 'arrow-down' : 'arrow-right'"
+                    v-if="$slots[vertical ? 'arrow-down' : 'arrow-right']"
+                />
+                <component
+                    :is="vertical ? ChevronDownIcon : ChevronRightIcon"
+                    v-if="!$slots[vertical ? 'arrow-down' : 'arrow-right']"
+                />
+            </ArrowBtn>
+        </template>
     </div>
 </template>
 
@@ -129,7 +138,7 @@
         },
     });
 
-    const { defaultedTransitions, defaultedMultiCalendars, defaultedAriaLabels } = useDefaults(props);
+    const { defaultedTransitions, defaultedMultiCalendars, defaultedAriaLabels, defaultedFilters } = useDefaults(props);
     const { transitionName, showTransition } = useTransitions(defaultedTransitions);
     const { buildMatrix } = useArrowNavigation();
     const { handleMonthYearChange, isDisabled, updateMonthYear } = useMonthYearPick(props, emit);
@@ -177,11 +186,12 @@
     const groupedMonths = computed((): OverlayGridItem[][] => {
         return groupListAndMap(props.months, (month: IDefaultSelect) => {
             const active = props.month === month.value;
-            const disabled = checkMinMaxValue(
-                month.value,
-                getMinMonth(props.year, props.minDate),
-                getMaxMonth(props.year, props.maxDate),
-            );
+            const disabled =
+                checkMinMaxValue(
+                    month.value,
+                    getMinMonth(props.year, props.minDate),
+                    getMaxMonth(props.year, props.maxDate),
+                ) || defaultedFilters.value.months.includes(month.value);
             return { active, disabled };
         });
     });
@@ -189,7 +199,9 @@
     const groupedYears = computed((): OverlayGridItem[][] => {
         return groupListAndMap(props.years, (year: IDefaultSelect) => {
             const active = props.year === year.value;
-            const disabled = checkMinMaxValue(year.value, getMinMaxYear(props.minDate), getMinMaxYear(props.maxDate));
+            const disabled =
+                checkMinMaxValue(year.value, getMinMaxYear(props.minDate), getMinMaxYear(props.maxDate)) ||
+                defaultedFilters.value.years.includes(year.value);
             return { active, disabled };
         });
     });

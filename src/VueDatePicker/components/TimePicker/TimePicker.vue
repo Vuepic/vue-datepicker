@@ -21,7 +21,7 @@
                 v-if="showTimePicker || timePicker || timePickerInline"
                 :class="{
                     dp__overlay: !timePickerInline,
-                    'dp--overlay-absolute': !props.timePicker,
+                    'dp--overlay-absolute': !props.timePicker && !timePickerInline,
                     'dp--overlay-relative': props.timePicker,
                 }"
                 :style="timePicker ? { height: `${modeHeight}px` } : undefined"
@@ -112,7 +112,7 @@
     defineOptions({
         compatConfig: {
             MODE: 3,
-        }
+        },
     });
 
     const emit = defineEmits([

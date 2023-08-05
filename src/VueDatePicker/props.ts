@@ -83,7 +83,7 @@ export const AllProps = {
     reverseYears: { type: Boolean as PropType<boolean>, default: false },
     keepActionRow: { type: Boolean as PropType<boolean>, default: false },
     weekPicker: { type: Boolean as PropType<boolean>, default: false },
-    filters: { type: Object as PropType<DateFilter>, default: () => ({}) },
+    filters: { type: Object as PropType<Partial<DateFilter>>, default: () => ({}) },
     arrowNavigation: { type: Boolean as PropType<boolean>, default: false },
     multiStatic: { type: Boolean as PropType<boolean>, default: true },
     disableTimeRangeValidation: { type: Boolean as PropType<boolean>, default: false },
