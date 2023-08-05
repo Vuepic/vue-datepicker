@@ -11,6 +11,7 @@
             :years="getYears(yearRange, reverseYears)"
             :month="month(instance)"
             :year="year(instance)"
+            :instance="instance"
             v-bind="$props"
             @mount="componentMounted(CMP.header)"
             @reset-flow="$emit('reset-flow')"
