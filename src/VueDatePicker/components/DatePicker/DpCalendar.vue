@@ -131,7 +131,7 @@
 
     import { getDayNames, getDefaultMarker, unrefElement } from '@/utils/util';
     import { useArrowNavigation, useDefaults } from '@/composables';
-    import { AllProps } from '@/props';
+    import { PickerBaseProps } from '@/props';
     import { getDate, isDateAfter, isDateEqual, resetDateTime, setDateMonthOrYear } from '@/utils/date-utils';
 
     import type { PropType, UnwrapRef } from 'vue';
@@ -140,7 +140,7 @@
     defineOptions({
         compatConfig: {
             MODE: 3,
-        }
+        },
     });
 
     const emit = defineEmits([
@@ -159,7 +159,7 @@
         instance: { type: Number as PropType<number>, default: 0 },
         month: { type: Number as PropType<number>, default: 0 },
         year: { type: Number as PropType<number>, default: 0 },
-        ...AllProps,
+        ...PickerBaseProps,
     });
 
     const { buildMultiLevelMatrix } = useArrowNavigation();

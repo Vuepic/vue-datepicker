@@ -67,26 +67,24 @@
 
     import { convertType, unrefElement } from '@/utils/util';
     import { useArrowNavigation, useDefaults, useValidation } from '@/composables';
-    import { AllProps } from '@/props';
+    import { PickerBaseProps } from '@/props';
     import { formatDate, getDate, isDateAfter, isDateBefore, isDateEqual, resetDate } from '@/utils/date-utils';
 
     import type { PropType } from 'vue';
-    import type { InternalModuleValue } from '@/interfaces';
 
     defineOptions({
         compatConfig: {
             MODE: 3,
-        }
+        },
     });
 
     const emit = defineEmits(['close-picker', 'select-date', 'select-now', 'invalid-select']);
 
     const props = defineProps({
         menuMount: { type: Boolean as PropType<boolean>, default: false },
-        internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
         calendarWidth: { type: Number as PropType<number>, default: 0 },
 
-        ...AllProps,
+        ...PickerBaseProps,
     });
 
     const {
