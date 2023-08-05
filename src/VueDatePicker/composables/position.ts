@@ -206,7 +206,8 @@ export const usePosition = (
     const shadowRender = (DPMenu: Component, props: AllPropsType) => {
         const container = document.createElement('div');
         container.setAttribute('id', 'dp--temp-container');
-        pickerWrapperRef.value?.append(container);
+        const wrap = pickerWrapperRef.value?.clientWidth ? pickerWrapperRef.value : document.body;
+        wrap.append(container);
 
         const renderContainer = document.getElementById('dp--temp-container') as HTMLElement;
         const el = h(DPMenu, {
@@ -219,7 +220,7 @@ export const usePosition = (
         menuRect.value = el.el?.getBoundingClientRect();
 
         render(null, renderContainer);
-        pickerWrapperRef.value?.removeChild(renderContainer);
+        wrap.removeChild(renderContainer);
     };
 
     return {
