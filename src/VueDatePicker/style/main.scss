@@ -228,10 +228,6 @@
   transform: translateY(calc(var(--dp-transition-length) * -1));
 }
 
-.dp--menu-wrapper {
-  position: absolute;
-}
-
 .dp--arrow-btn-nav {
   transition: var(--dp-common-transition);
 }

@@ -1,5 +1,4 @@
 .dp__menu {
-  //position: absolute;
   background: var(--dp-background-color);
   border-radius: var(--dp-border-radius);
   min-width: var(--dp-menu-min-width);
@@ -21,6 +20,11 @@
     border: 1px solid var(--dp-menu-border-color);
     outline: none;
   }
+}
+
+.dp--menu-wrapper {
+  position: absolute;
+  z-index: 99999;
 }
 
 .dp__menu_inner {
@@ -64,7 +68,7 @@
   position: absolute;
   border-inline-end: 1px solid var(--dp-menu-border-color);
   border-top: 1px solid var(--dp-menu-border-color);
-  transform: translate(-50%, -50%) rotate(45deg);
+  transform: translate(-50%, -50%) rotate(-45deg);
 }
 
 .dp__arrow_bottom {

@@ -4,7 +4,7 @@ import { OpenPosition } from '@/interfaces';
 import { unrefElement } from '@/utils/util';
 import { MenuPlacement } from '@/constants';
 
-import type { Component, Ref } from 'vue';
+import type { Component, Ref, ComponentPublicInstance } from 'vue';
 import type { ComponentRef, VueEmit } from '@/interfaces';
 import type { AllPropsType } from '@/props';
 
@@ -13,7 +13,9 @@ import type { AllPropsType } from '@/props';
  */
 export const usePosition = (
     menuRef: Ref<HTMLElement | null>,
+    menuRefInner: Ref<ComponentPublicInstance | null>,
     inputRef: ComponentRef,
+    pickerWrapperRef: Ref<HTMLElement | null>,
     emit: VueEmit,
     props: AllPropsType,
 ) => {
@@ -95,8 +97,10 @@ export const usePosition = (
             if (props.altPosition !== null) return customAltPosition();
 
             if (recalculate) {
-                if (menuRef.value) {
-                    menuRect.value = menuRef.value.getBoundingClientRect();
+                const el = props.teleport ? menuRefInner.value?.$el : menuRef.value;
+
+                if (el) {
+                    menuRect.value = el.getBoundingClientRect();
                 }
                 emit('recalculate-position');
             }
@@ -202,7 +206,7 @@ export const usePosition = (
     const shadowRender = (DPMenu: Component, props: AllPropsType) => {
         const container = document.createElement('div');
         container.setAttribute('id', 'dp--temp-container');
-        document.body.append(container);
+        pickerWrapperRef.value?.append(container);
 
         const renderContainer = document.getElementById('dp--temp-container') as HTMLElement;
         const el = h(DPMenu, {
@@ -215,7 +219,7 @@ export const usePosition = (
         menuRect.value = el.el?.getBoundingClientRect();
 
         render(null, renderContainer);
-        document.body.removeChild(renderContainer);
+        pickerWrapperRef.value?.removeChild(renderContainer);
     };
 
     return {

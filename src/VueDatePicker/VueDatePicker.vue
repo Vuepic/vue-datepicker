@@ -20,13 +20,13 @@
                 <slot :name="slot" v-bind="args" />
             </template>
         </DatepickerInput>
-        <transition :name="menuTransition(openOnTop)" :css="showTransition">
+        <transition :name="menuTransition(openOnTop)" :css="showTransition && !inline">
             <component
                 ref="dpWrapMenuRef"
                 v-if="isOpen"
                 :is="teleport ? TeleportCmp : 'div'"
                 v-bind="menuWrapProps"
-                class="dp--menu-wrapper"
+                :class="{ 'dp--menu-wrapper': !inline }"
                 :style="!inline ? menuStyle : undefined"
             >
                 <DatepickerMenu
@@ -194,7 +194,9 @@
 
     const { openOnTop, menuStyle, setMenuPosition, getScrollableParent, shadowRender } = usePosition(
         dpWrapMenuRef,
+        dpMenuRef,
         inputRef,
+        pickerWrapperRef,
         emit,
         props,
     );
