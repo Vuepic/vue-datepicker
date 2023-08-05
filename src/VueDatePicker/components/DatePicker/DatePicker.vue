@@ -52,6 +52,7 @@
             <slot name="time-picker" v-bind="{ time, updateTime }" />
         </template>
         <TimePicker
+            v-else
             ref="timePickerRef"
             v-bind="$props"
             :hours="time.hours"
