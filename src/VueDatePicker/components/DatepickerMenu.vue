@@ -32,7 +32,6 @@
                         :key="i"
                         :style="preset.style || {}"
                         class="dp__preset_range"
-                        @click="presetDateRange(preset.range, !!preset.slot)"
                     >
                         <template v-if="preset.slot">
                             <slot
@@ -43,7 +42,13 @@
                             />
                         </template>
                         <template v-else>
-                            {{ preset.label }}
+                            <span
+                                role="button"
+                                tabindex="0"
+                                @click="presetDateRange(preset.range)"
+                                @keydown.enter.prevent="presetDateRange(preset.range)"
+                                @keydown.space.prevent="presetDateRange(preset.range)"
+                            >{{ preset.label }}</span>
                         </template>
                     </div>
                 </div>
