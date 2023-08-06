@@ -24,10 +24,11 @@ import type {
     ICalendarDate,
     ArrMapValues,
     InternalModuleValue,
+    MultiCalendarsProp,
 } from '@/interfaces';
 
 export const AllProps = {
-    multiCalendars: { type: [Boolean, Number, String] as PropType<boolean | number | string>, default: null },
+    multiCalendars: { type: [Boolean, Number, String, Array] as PropType<MultiCalendarsProp>, default: null },
     modelValue: { type: [String, Date, Array, Object, Number] as PropType<ModelValue>, default: null },
     modelType: { type: String as PropType<ModelType>, default: null },
     position: { type: String as PropType<OpenPosition>, default: 'center' },
@@ -53,7 +54,6 @@ export const AllProps = {
     menuClassName: { type: String as PropType<string>, default: null },
     dayClass: { type: Function as PropType<(date: Date) => string>, default: null },
     yearRange: { type: Array as PropType<number[]>, default: () => [1900, 2100] },
-    multiCalendarsSolo: { type: Boolean as PropType<boolean>, default: false },
     calendarCellClassName: { type: String as PropType<string>, default: null },
     enableTimePicker: { type: Boolean as PropType<boolean>, default: true },
     autoApply: { type: Boolean as PropType<boolean>, default: false },
@@ -85,7 +85,6 @@ export const AllProps = {
     weekPicker: { type: Boolean as PropType<boolean>, default: false },
     filters: { type: Object as PropType<Partial<DateFilter>>, default: () => ({}) },
     arrowNavigation: { type: Boolean as PropType<boolean>, default: false },
-    multiStatic: { type: Boolean as PropType<boolean>, default: true },
     disableTimeRangeValidation: { type: Boolean as PropType<boolean>, default: false },
     highlight: {
         type: [Array, Function] as PropType<Date[] | string[] | number[] | ((date: Date) => boolean)>,

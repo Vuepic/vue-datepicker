@@ -261,3 +261,16 @@ export type MenuExposedFn =
     | 'clearHoverDate'
     | 'handleArrow'
     | 'updateMonthYear';
+
+export type OptionEnabled = boolean | number | string;
+
+export interface MultiCalendarsPropOptions {
+    static: boolean;
+    solo: boolean;
+}
+
+export type MultiCalendarsProp = OptionEnabled | [OptionEnabled, Partial<MultiCalendarsPropOptions> | undefined];
+
+export interface MultiCalendarsOptions extends MultiCalendarsPropOptions {
+    count: number;
+}

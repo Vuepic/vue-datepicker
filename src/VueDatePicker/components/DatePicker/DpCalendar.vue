@@ -242,7 +242,7 @@
 
     const calendarParentClass = computed(() => ({
         dp__calendar: true,
-        dp__calendar_next: defaultedMultiCalendars.value > 0 && props.instance !== 0,
+        dp__calendar_next: defaultedMultiCalendars.value.count > 0 && props.instance !== 0,
     }));
 
     const showDay = computed(() => (day: ICalendarDay) => (props.hideOffsetDates ? day.current : true));

@@ -1,4 +1,14 @@
-import type { AriaLabels, IFormat, Transition, TextInputOptions, DateFilter, ActionRowData } from '@/interfaces';
+import type {
+    AriaLabels,
+    IFormat,
+    Transition,
+    TextInputOptions,
+    DateFilter,
+    ActionRowData,
+    MultiCalendarsProp,
+    MultiCalendarsOptions,
+    OptionEnabled,
+} from '@/interfaces';
 
 export const mergeDefaultTransitions = (conf: Partial<Transition>): Transition =>
     Object.assign(
@@ -41,10 +51,25 @@ export const defaultAriaLabels = (labels: Partial<AriaLabels>): AriaLabels => {
     );
 };
 
-export const defaultMultiCalendars = (multiCalendars: boolean | string | number | null): number => {
-    if (multiCalendars === null) return 0;
-    if (typeof multiCalendars === 'boolean') return multiCalendars ? 2 : 0;
-    return +multiCalendars >= 2 ? +multiCalendars : 2;
+const getMultiCalendarsCount = (option: OptionEnabled) => {
+    if (!option) return 0;
+    if (typeof option === 'boolean') return option ? 2 : 0;
+    return +option >= 2 ? +option : 2;
+};
+
+export const defaultMultiCalendars = (multiCalendars: MultiCalendarsProp): MultiCalendarsOptions => {
+    const option = Array.isArray(multiCalendars) ? multiCalendars[0] : multiCalendars;
+    const addOptions = Array.isArray(multiCalendars) ? multiCalendars[1] : {};
+    const count = getMultiCalendarsCount(option);
+
+    return Object.assign(
+        {
+            count,
+            static: false,
+            solo: false,
+        },
+        addOptions,
+    );
 };
 
 export const defaultPreviewFormat = (

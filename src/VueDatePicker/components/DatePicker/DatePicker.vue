@@ -1,5 +1,5 @@
 <template>
-    <InstanceWrap v-slot="{ instance, index }" :multi-calendars="defaultedMultiCalendars">
+    <InstanceWrap v-slot="{ instance, index }" :multi-calendars="defaultedMultiCalendars.count">
         <DpHeader
             :ref="
                 (el: any) => {

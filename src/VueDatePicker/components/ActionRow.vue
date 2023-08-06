@@ -140,7 +140,7 @@
 
     const formatRangeDate = () => {
         const dates = props.internalModelValue as Date[];
-        if (defaultedMultiCalendars.value > 0) {
+        if (defaultedMultiCalendars.value.count > 0) {
             return `${formatDatePreview(dates[0])} - ${formatDatePreview(dates[1])}`;
         }
         return [formatDatePreview(dates[0]), formatDatePreview(dates[1])];

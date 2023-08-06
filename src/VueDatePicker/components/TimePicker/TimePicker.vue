@@ -3,7 +3,7 @@
         <button
             type="button"
             v-if="!timePicker && !timePickerInline"
-            v-show="!hideNavigationButtons('time')"
+            v-show="!hideNavigationButtons(hideNavigation, 'time')"
             :class="toggleButtonClass"
             :aria-label="defaultedAriaLabels?.openTimePicker"
             tabindex="0"
@@ -78,7 +78,7 @@
                     <button
                         type="button"
                         v-if="!timePicker && !timePickerInline"
-                        v-show="!hideNavigationButtons('time')"
+                        v-show="!hideNavigationButtons(hideNavigation, 'time')"
                         ref="closeTimePickerBtn"
                         :class="toggleButtonClass"
                         :aria-label="defaultedAriaLabels?.closeTimePicker"
@@ -97,7 +97,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, nextTick, onMounted, ref, useSlots, toRef } from 'vue';
+    import { computed, nextTick, onMounted, ref, useSlots } from 'vue';
 
     import { ClockIcon, CalendarIcon } from '@/components/Icons';
     import TimeInput from '@/components/TimePicker/TimeInput.vue';
@@ -138,7 +138,7 @@
 
     const { defaultedTransitions, defaultedAriaLabels } = useDefaults(props);
     const { transitionName, showTransition } = useTransitions(defaultedTransitions);
-    const { hideNavigationButtons } = useCommon(toRef(props, 'hideNavigation'));
+    const { hideNavigationButtons } = useCommon();
 
     const openTimePickerBtn = ref(null);
     const closeTimePickerBtn = ref(null);

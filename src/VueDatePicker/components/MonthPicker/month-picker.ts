@@ -1,8 +1,9 @@
-import { computed, ref } from 'vue';
-import { getMonth, getYear, set } from 'date-fns';
+import { computed, onMounted, ref } from 'vue';
+import { addYears, getMonth, getYear, set, subYears } from 'date-fns';
 
 import { checkMinMaxValue, getMonths, getYears, groupListAndMap } from '@/utils/util';
 import {
+    getDate,
     getDisabledMonths,
     getMaxMonth,
     getMinMaxYear,
@@ -12,17 +13,56 @@ import {
     setDateMonthOrYear,
     validateMonthYear,
 } from '@/utils/date-utils';
-import { useModel } from '@/composables';
+import { useDefaults, useModel } from '@/composables';
 import { handleMultiDatesSelect, setMonthOrYearRange } from '@/composables/shared';
 
 import type { IDefaultSelect, OverlayGridItem, VueEmit } from '@/interfaces';
 import type { PickerBasePropsType } from '@/props';
 
 export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
+    const { defaultedMultiCalendars, defaultedAriaLabels, defaultedTransitions } = useDefaults(props);
+
     const { modelValue, year, month: instanceMonth, calendars } = useModel(props, emit);
     const months = computed(() => getMonths(props.formatLocale, props.locale, props.monthNameFormat));
     const years = computed(() => getYears(props.yearRange, props.reverseYears));
     const hoverDate = ref<Date | null>(null);
+
+    const assignMultiCalendars = () => {
+        for (let i = 0; i < defaultedMultiCalendars.value.count; i++) {
+            if (i === 0) {
+                calendars.value[i] = calendars.value[0];
+            } else {
+                const prevDate = set(getDate(), calendars.value[i - 1]);
+                calendars.value[i] = { month: getMonth(prevDate), year: getYear(addYears(prevDate, i)) };
+            }
+        }
+    };
+
+    const updateMultiCalendars = (instance: number) => {
+        if (!instance) return assignMultiCalendars();
+        const date = set(getDate(), calendars.value[instance]);
+        calendars.value[0].year = getYear(subYears(date, defaultedMultiCalendars.value.count - 1));
+        return assignMultiCalendars();
+    };
+
+    const getRangedValueDate = (dates: Date[]) => {
+        if (props.focusStartDate) return dates[0];
+        return dates[1] ? dates[1] : dates[0];
+    };
+
+    const checkModelValue = () => {
+        if (modelValue.value) {
+            const firstDate = Array.isArray(modelValue.value) ? getRangedValueDate(modelValue.value) : modelValue.value;
+            calendars.value[0] = { month: getMonth(firstDate), year: getYear(firstDate) };
+        }
+    };
+
+    onMounted(() => {
+        checkModelValue();
+        if (defaultedMultiCalendars.value.count) {
+            assignMultiCalendars();
+        }
+    });
 
     const isDisabled = computed(() => (instance: number, next: boolean) => {
         const currentDate = set(resetDate(new Date()), {
@@ -53,16 +93,29 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         const calendar = calendars.value[instance];
         const activeMonthYear = getModelMonthYear();
         if (Array.isArray(activeMonthYear)) {
-            return activeMonthYear.some((value) => value.year === calendar.year && value.month === month);
+            return activeMonthYear.some((value) => value.year === calendar?.year && value.month === month);
         }
-        return calendar.year === activeMonthYear.year && month === activeMonthYear.month;
+        return calendar?.year === activeMonthYear.year && month === activeMonthYear.month;
+    };
+
+    const isSameMonthYear = (month: number, instance: number, i: number) => {
+        const currentModel = getModelMonthYear();
+
+        if (Array.isArray(currentModel)) {
+            const currentYear = year.value(instance);
+
+            return currentYear === currentModel[i]?.year && month === currentModel[i]?.month;
+        }
+        return false;
     };
 
     const isMonthBetween = (month: number, instance: number) => {
         if (props.range) {
-            if (Array.isArray(modelValue.value)) {
-                const current = setDateMonthOrYear(resetDate(new Date()), month, year.value(instance));
-                return isDateBetween(modelValue.value, hoverDate.value, current);
+            const currentModel = getModelMonthYear();
+            if (Array.isArray(modelValue.value) && Array.isArray(currentModel)) {
+                const isModel = isSameMonthYear(month, instance, 0) || isSameMonthYear(month, instance, 1);
+                const current = setDateMonthOrYear(resetDate(getDate()), month, year.value(instance));
+                return isDateBetween(modelValue.value, hoverDate.value, current) && !isModel;
             }
             return false;
         }
@@ -79,6 +132,7 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
                     getMaxMonth(year.value(instance), props.maxDate),
                 ) || getDisabledMonths(props.disabledDates, year.value(instance)).includes(month.value);
             const isBetween = isMonthBetween(month.value, instance);
+            // const isBetween = false;
             return { active, disabled, isBetween };
         });
     });
@@ -92,7 +146,7 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     });
 
     const monthToDate = (month: number, instance: number) => {
-        return setDateMonthOrYear(resetDate(new Date()), month, year.value(instance));
+        return setDateMonthOrYear(resetDate(getDate()), month, year.value(instance));
     };
 
     const selectSingleMonth = (month: number, instance: number) => {
@@ -120,6 +174,9 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
 
     const selectYear = (year: number, instance: number) => {
         calendars.value[instance].year = year;
+        if (defaultedMultiCalendars.value.count && !defaultedMultiCalendars.value.solo) {
+            updateMultiCalendars(instance);
+        }
     };
 
     const setHoverDate = (month: number, instance: number) => {
@@ -131,6 +188,9 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         groupedYears,
         year,
         isDisabled,
+        defaultedMultiCalendars,
+        defaultedAriaLabels,
+        defaultedTransitions,
         setHoverDate,
         selectMonth,
         selectYear,

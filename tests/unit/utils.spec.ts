@@ -263,13 +263,13 @@ describe('Utils and date utils formatting', () => {
 
     it('Should return proper multi-calendars default value', () => {
         const enabled = defaultMultiCalendars(true);
-        expect(enabled).toEqual(2);
+        expect(enabled.count).toEqual(2);
 
         const stringEnabled = defaultMultiCalendars('3');
-        expect(stringEnabled).toEqual(3);
+        expect(stringEnabled.count).toEqual(3);
 
         const invalid = defaultMultiCalendars(1);
-        expect(invalid).toEqual(2);
+        expect(invalid.count).toEqual(2);
     });
 
     it('Should return empty transition name', () => {

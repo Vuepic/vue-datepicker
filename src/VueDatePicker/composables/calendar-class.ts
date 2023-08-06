@@ -210,7 +210,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
     const isBetween = (day: ICalendarDay) => {
         if (
             (props.range || props.weekPicker) &&
-            (defaultedMultiCalendars.value > 0 ? day.current : true) &&
+            (defaultedMultiCalendars.value.count > 0 ? day.current : true) &&
             isModelAutoActive() &&
             !(!day.current && props.hideOffsetDates) &&
             !isActiveDate(day)
@@ -258,12 +258,12 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
 
     const rangeStartEnd = (day: ICalendarDay) => {
         const isRangeStart =
-            defaultedMultiCalendars.value > 0
+            defaultedMultiCalendars.value.count > 0
                 ? day.current && rangeActiveStartEnd(day) && isModelAutoActive()
                 : rangeActiveStartEnd(day) && isModelAutoActive();
 
         const isRangeEnd =
-            defaultedMultiCalendars.value > 0
+            defaultedMultiCalendars.value.count > 0
                 ? day.current && rangeActiveStartEnd(day, false) && isModelAutoActive()
                 : rangeActiveStartEnd(day, false) && isModelAutoActive();
         return { isRangeStart, isRangeEnd };

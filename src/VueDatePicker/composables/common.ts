@@ -1,12 +1,25 @@
 import { computed } from 'vue';
 
-import type { Flow } from '@/interfaces';
-import type { Ref } from 'vue';
+import type { Flow, MultiCalendarsOptions } from '@/interfaces';
 
-export const useCommon = (hideNavigation: Ref<Flow[] | undefined>) => {
-    const hideNavigationButtons = computed(() => (key: Flow) => {
-        return hideNavigation.value?.includes(key);
+export const useCommon = () => {
+    const hideNavigationButtons = computed(() => (hideNavigation: Flow[] | undefined, key: Flow) => {
+        return hideNavigation?.includes(key);
     });
 
-    return { hideNavigationButtons };
+    const showLeftIcon = computed(() => (multiCalendars: MultiCalendarsOptions, instance: number) => {
+        if (multiCalendars.count) {
+            return !multiCalendars.solo ? instance === 0 : true;
+        }
+        return true;
+    });
+
+    const showRightIcon = computed(() => (multiCalendars: MultiCalendarsOptions, instance: number) => {
+        if (multiCalendars.count) {
+            return !multiCalendars.solo ? instance === multiCalendars.count - 1 : true;
+        }
+        return true;
+    });
+
+    return { hideNavigationButtons, showLeftIcon, showRightIcon };
 };

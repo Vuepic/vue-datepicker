@@ -70,15 +70,15 @@ export interface CalendarDay {
     marker?: DatePickerMarker;
 }
 
+export type DpOptionEnabled = boolean | number | string;
+
 export interface VueDatePickerProps {
     uid?: string;
     name?: string;
     is24?: boolean;
     enableTimePicker?: boolean;
     range?: boolean;
-    multiCalendars?: boolean | number | string;
-    multiCalendarsSolo?: boolean;
-    multiStatic?: boolean;
+    multiCalendars?: DpOptionEnabled | [DpOptionEnabled, Partial<{ static: boolean; solo: boolean }> | undefined];
     modelValue?: ModelValue;
     locale?: string;
     position?: 'left' | 'center' | 'right';

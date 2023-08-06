@@ -8,7 +8,7 @@
         </template>
         <template v-else>
             <ArrowBtn
-                v-if="showLeftIcon && !vertical"
+                v-if="showLeftIcon(defaultedMultiCalendars, instance) && !vertical"
                 :aria-label="defaultedAriaLabels?.prevMonth"
                 :disabled="isDisabled(false)"
                 @activate="handleMonthYearChange(false)"
@@ -70,7 +70,7 @@
                 </template>
             </div>
             <ArrowBtn
-                v-if="showLeftIcon && vertical"
+                v-if="showLeftIcon(defaultedMultiCalendars, instance) && vertical"
                 :aria-label="defaultedAriaLabels?.prevMonth"
                 :disabled="isDisabled(false)"
                 @activate="handleMonthYearChange(false)"
@@ -79,7 +79,7 @@
                 <ChevronUpIcon v-if="!$slots['arrow-up']" />
             </ArrowBtn>
             <ArrowBtn
-                v-if="showRightIcon"
+                v-if="showRightIcon(defaultedMultiCalendars, instance)"
                 ref="rightIcon"
                 :disabled="isDisabled(true)"
                 :aria-label="defaultedAriaLabels?.nextMonth"
@@ -115,7 +115,7 @@
 
     import { PickerBaseProps } from '@/props';
 
-    import { useArrowNavigation, useMonthYearPick, useTransitions, useDefaults } from '@/composables';
+    import { useArrowNavigation, useMonthYearPick, useTransitions, useDefaults, useCommon } from '@/composables';
     import { getMaxMonth, getMinMaxYear, getMinMonth } from '@/utils/date-utils';
     import { checkMinMaxValue, groupListAndMap, unrefElement } from '@/utils/util';
     import { HeaderPicker } from '@/constants';
@@ -138,10 +138,11 @@
         },
     });
 
-    const { defaultedTransitions, defaultedMultiCalendars, defaultedAriaLabels, defaultedFilters } = useDefaults(props);
+    const { defaultedTransitions, defaultedAriaLabels, defaultedMultiCalendars, defaultedFilters } = useDefaults(props);
     const { transitionName, showTransition } = useTransitions(defaultedTransitions);
     const { buildMatrix } = useArrowNavigation();
     const { handleMonthYearChange, isDisabled, updateMonthYear } = useMonthYearPick(props, emit);
+    const { showLeftIcon, showRightIcon } = useCommon();
 
     const showMonthPicker = ref(false);
     const showYearPicker = ref(false);
@@ -204,20 +205,6 @@
                 defaultedFilters.value.years.includes(year.value);
             return { active, disabled };
         });
-    });
-
-    const showLeftIcon = computed(() => {
-        if (defaultedMultiCalendars.value) {
-            return !props.multiCalendarsSolo ? props.instance === 0 : true;
-        }
-        return true;
-    });
-
-    const showRightIcon = computed((): boolean => {
-        if (defaultedMultiCalendars.value) {
-            return !props.multiCalendarsSolo ? props.instance === defaultedMultiCalendars.value - 1 : true;
-        }
-        return true;
     });
 
     const toggleWrap = (val: Ref<boolean>, show?: boolean) => {

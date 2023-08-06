@@ -49,7 +49,7 @@
         </div>
         <button
             v-if="$slots['button-icon']"
-            v-show="!hideNavigationButtons(type)"
+            v-show="!hideNavigationButtons(hideNavigation, type)"
             role="button"
             :aria-label="defaultedAriaLabels?.toggleOverlay"
             :class="actionButtonClass"
@@ -65,7 +65,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, nextTick, onBeforeUpdate, onMounted, onUnmounted, ref, toRef } from 'vue';
+    import { computed, nextTick, onBeforeUpdate, onMounted, onUnmounted, ref } from 'vue';
 
     import { convertType, unrefElement } from '@/utils/util';
     import { useArrowNavigation, useCommon, useDefaults } from '@/composables';
@@ -94,7 +94,7 @@
     const props = defineProps<Props>();
 
     const { defaultedAriaLabels } = useDefaults(props as unknown as PickerBasePropsType);
-    const { hideNavigationButtons } = useCommon(toRef(props, 'hideNavigation'));
+    const { hideNavigationButtons } = useCommon();
 
     const scrollable = ref(false);
     const selectionActiveRef = ref<HTMLElement | null>(null);
@@ -154,7 +154,9 @@
         }),
     );
 
-    const dpOverlayStyle = computed(() => (props.useRelative ? { height: `${props.height}px` } : undefined));
+    const dpOverlayStyle = computed(() =>
+        props.useRelative ? { height: `${props.height}px`, width: `${260}px` } : undefined,
+    );
 
     const cellClassName = computed(() => ({
         dp__overlay_col: true,
