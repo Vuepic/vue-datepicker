@@ -24,30 +24,26 @@
             <div class="dp__sidebar_left" v-if="$slots['left-sidebar']">
                 <slot name="left-sidebar" v-bind="getSidebarProps()" />
             </div>
-          <div
-              v-for="(preset, i) in presetRanges"
-              :key="i"
-              :style="preset.style || {}"
-              class="dp__preset_range"
-          >
-            <template v-if="preset.slot">
-              <slot
-                  :name="preset.slot"
-                  :preset-date-range="presetDateRange"
-                  :label="preset.label"
-                  :range="preset.range"
-              />
-            </template>
-            <template v-else>
-                            <span
-                                role="button"
-                                tabindex="0"
-                                @click="presetDateRange(preset.range)"
-                                @keydown.enter.prevent="presetDateRange(preset.range)"
-                                @keydown.space.prevent="presetDateRange(preset.range)"
-                            >{{ preset.label }}</span>
-            </template>
-          </div>
+            <div v-for="(preset, i) in presetRanges" :key="i" :style="preset.style || {}" class="dp__preset_range">
+                <template v-if="preset.slot">
+                    <slot
+                        :name="preset.slot"
+                        :preset-date-range="presetDateRange"
+                        :label="preset.label"
+                        :range="preset.range"
+                    />
+                </template>
+                <template v-else>
+                    <span
+                        role="button"
+                        tabindex="0"
+                        @click="presetDateRange(preset.range)"
+                        @keydown.enter.prevent="presetDateRange(preset.range)"
+                        @keydown.space.prevent="presetDateRange(preset.range)"
+                        >{{ preset.label }}</span
+                    >
+                </template>
+            </div>
             <div class="dp__instance_calendar" ref="calendarWrapperRef" role="document">
                 <component
                     ref="dynCmpRef"
