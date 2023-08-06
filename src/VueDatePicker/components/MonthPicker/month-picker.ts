@@ -132,7 +132,6 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
                     getMaxMonth(year.value(instance), props.maxDate),
                 ) || getDisabledMonths(props.disabledDates, year.value(instance)).includes(month.value);
             const isBetween = isMonthBetween(month.value, instance);
-            // const isBetween = false;
             return { active, disabled, isBetween };
         });
     });
