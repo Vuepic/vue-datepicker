@@ -47,12 +47,14 @@ export const useTimePickerUtils = (
 
         if (props.range && !props.disableTimeRangeValidation) {
             const setTime = (index: number) =>
-                setDateTime(
-                    (modelValue.value as Date[])[index],
-                    (copies.hours as number[])[index],
-                    (copies.minutes as number[])[index],
-                    (copies.seconds as number[])[index],
-                );
+                !modelValue.value
+                    ? (null as unknown as Date)
+                    : setDateTime(
+                          (modelValue.value as Date[])[index],
+                          (copies.hours as number[])[index],
+                          (copies.minutes as number[])[index],
+                          (copies.seconds as number[])[index],
+                      );
 
             const resetMilliseconds = (index: number) => setMilliseconds((modelValue.value as Date[])[index], 0);
             return !(

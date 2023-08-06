@@ -1,5 +1,5 @@
 import type { ComponentPublicInstance, Ref } from 'vue';
-import type { AllPropsType, PickerBasePropsType } from '@/props';
+import type { PickerBasePropsType } from '@/props';
 import type { HeaderPicker } from '@/constants';
 
 export type DynamicClass = Record<string, boolean | undefined>;
@@ -122,16 +122,15 @@ export type CustomAltPosition = (el: HTMLElement | null) => {
     transform?: string;
 };
 
-export type PresetRange = { label: string; range: Date[] | string[]; style?: Record<string, string>; slot?: string };
+export type PresetRange = {
+    label: string;
+    range: Date[] | string[];
+    style?: Record<string, string>;
+    slot?: string;
+    noTz?: boolean;
+};
 
 export type Flow = 'month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds';
-export type MenuChildCmp = 'timePicker' | 'monthYearInput' | 'calendar';
-
-export interface MonthYearPickerRef {
-    toggleMonthPicker: (auto: boolean, show?: boolean) => void;
-    toggleYearPicker: (auto: boolean, show?: boolean) => void;
-    handleMonthYearChange: (isNext: boolean) => void;
-}
 
 export interface AriaLabels {
     toggleOverlay: string;
@@ -160,10 +159,6 @@ export interface Time {
     seconds: number | number[];
 }
 
-export interface TimePickerRef extends Element {
-    toggleTimePicker: (show: boolean, flow: boolean, child?: TimeType) => void;
-}
-
 export interface TimeInputRef extends Element {
     openChildCmp: (child: string) => void;
 }
@@ -186,11 +181,6 @@ export type DateTimeSetter = number | string | null;
 export type DateValue = Date | string | null;
 
 export type ModelTypeConverted = string | number | Date;
-
-export interface ExtendedProps extends AllPropsType {
-    internalModelValue: InternalModuleValue;
-    arrMapValues?: ArrMapValues;
-}
 
 export interface MonthYearOpt {
     month?: number | string;

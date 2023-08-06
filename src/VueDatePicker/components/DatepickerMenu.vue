@@ -24,25 +24,28 @@
             <div class="dp__sidebar_left" v-if="$slots['left-sidebar']">
                 <slot name="left-sidebar" v-bind="getSidebarProps()" />
             </div>
-            <div v-for="(preset, i) in presetRanges" :key="i" :style="preset.style || {}" class="dp__preset_range">
-                <template v-if="preset.slot">
-                    <slot
-                        :name="preset.slot"
-                        :preset-date-range="presetDateRange"
-                        :label="preset.label"
-                        :range="preset.range"
-                    />
-                </template>
-                <template v-else>
-                    <span
-                        role="button"
-                        tabindex="0"
-                        @click="presetDateRange(preset.range)"
-                        @keydown.enter.prevent="presetDateRange(preset.range)"
-                        @keydown.space.prevent="presetDateRange(preset.range)"
-                        >{{ preset.label }}</span
-                    >
-                </template>
+            <div class="dp__preset_ranges">
+                <div v-for="(preset, i) in presetRanges" :key="i" :style="preset.style || {}" class="dp__preset_range">
+                    <template v-if="preset.slot">
+                        <slot
+                            :name="preset.slot"
+                            :preset-date-range="presetDateRange"
+                            :label="preset.label"
+                            :range="preset.range"
+                        />
+                    </template>
+                    <template v-else>
+                        <div
+                            role="button"
+                            tabindex="0"
+                            @click="presetDateRange(preset.range, !!preset.slot, preset.noTz)"
+                            @keydown.enter.prevent="presetDateRange(preset.range, !!preset.slot, preset.noTz)"
+                            @keydown.space.prevent="presetDateRange(preset.range, !!preset.slot, preset.noTz)"
+                        >
+                            {{ preset.label }}
+                        </div>
+                    </template>
+                </div>
             </div>
             <div class="dp__instance_calendar" ref="calendarWrapperRef" role="document">
                 <component
@@ -326,8 +329,8 @@
         callChildFn('selectCurrentDate');
     };
 
-    const presetDateRange = (range: Date[] | string[], hasSlot?: boolean) => {
-        callChildFn('presetDateRange', range, hasSlot);
+    const presetDateRange = (range: Date[] | string[], hasSlot?: boolean, noTz?: boolean) => {
+        callChildFn('presetDateRange', range, hasSlot, noTz);
     };
 
     const clearHoverDate = () => {

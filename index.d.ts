@@ -195,7 +195,13 @@ export interface VueDatePickerProps {
     formatLocale?: Locale;
     autocomplete?: string;
     multiDates?: boolean;
-    presetRanges?: { label: string; range: Date[] | string[]; style?: Record<string, string>; slot?: string }[];
+    presetRanges?: {
+        label: string;
+        range: Date[] | string[];
+        style?: Record<string, string>;
+        slot?: string;
+        noTz?: boolean;
+    }[];
     flow?: ('month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds')[];
     partialFlow?: boolean;
     preventMinMaxNavigation?: boolean;

@@ -546,10 +546,10 @@ export const useDatePicker = (
     };
 
     // Called when the preset range is clicked
-    const presetDateRange = (dates: Date[] | string[], hasSlot?: boolean): void => {
+    const presetDateRange = (dates: Date[] | string[], hasSlot?: boolean, noTz?: boolean): void => {
         if (hasSlot) return;
         if (dates.length && dates.length <= 2 && props.range) {
-            modelValue.value = dates.map((date) => getDate(date));
+            modelValue.value = dates.map((date) => getZonedDate(getDate(date), noTz ? undefined : props.timezone));
             selectOnAutoApply();
             if (props.multiCalendars) {
                 nextTick().then(() => mapInternalModuleValues(true));

@@ -233,11 +233,11 @@ export const getMinMaxYear = (minMaxDate: PossibleDate) => {
 };
 
 // Converts utc date to a timezone date
-export const getZonedDate = (date: Date, timezone: string): Date => {
+export const getZonedDate = (date: Date, timezone?: string): Date => {
     return timezone ? utcToZonedTime(date, timezone) : date;
 };
 
-export const getUtcDate = (date: Date, timezone: string): Date => {
+export const getUtcDate = (date: Date, timezone?: string): Date => {
     return timezone ? zonedTimeToUtc(date, timezone) : date;
 };
 

@@ -105,6 +105,7 @@
 
 .dp__preset_range {
   display: block;
+  padding: 5px;
   white-space: nowrap;
   color: var(--dp-text-color);
   border-radius: var(--dp-border-radius);
@@ -115,11 +116,8 @@
     cursor: pointer;
   }
 
-  :first-child {
-    padding: 5px;
-    display: block;
-  }
 }
+
 
 .dp__menu_content_wrapper {
   display: flex;
