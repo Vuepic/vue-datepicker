@@ -32,14 +32,18 @@
 }
 
 .dp__action_button {
+  display: inline-flex;
+  align-items: center;
   background: transparent;
   border: 1px solid transparent;
   padding: var(--dp-action-buttons-padding);
-  line-height: initial;
+  line-height: var(--dp-action-button-height);
   margin-inline-start: 3px;
   height: var(--dp-action-button-height);
   cursor: pointer;
   border-radius: var(--dp-border-radius);
+  font-size: var(--dp-preview-font-size);
+  font-family: var(--dp-font-family);
 }
 
 .dp__action_select {
