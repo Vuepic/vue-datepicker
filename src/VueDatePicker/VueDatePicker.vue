@@ -74,6 +74,7 @@
         watch,
         Teleport as TeleportCmp,
         reactive,
+        nextTick,
     } from 'vue';
 
     import DatepickerInput from '@/components/DatepickerInput.vue';
@@ -158,12 +159,14 @@
 
     onMounted(() => {
         parseExternalModelValue(props.modelValue);
-        if (!props.inline) {
-            const el = getScrollableParent(pickerWrapperRef.value);
-            el.addEventListener('scroll', onScroll);
+        nextTick().then(() => {
+            if (!props.inline) {
+                const el = getScrollableParent(pickerWrapperRef.value);
+                el.addEventListener('scroll', onScroll);
 
-            window.addEventListener('resize', onResize);
-        }
+                window.addEventListener('resize', onResize);
+            }
+        });
 
         if (props.inline) {
             isOpen.value = true;
