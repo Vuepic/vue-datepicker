@@ -183,6 +183,26 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
         return setTimeValue(date);
     };
 
+    const checkDisabledTimes = (date: Date | Date[], isValid: boolean) => {
+        let valid = true;
+        if (props.disabledTimes) {
+            if (Array.isArray(props.disabledTimes)) {
+                const dates = Array.isArray(date) ? date : [date];
+                valid = !dates.some((dt) => {
+                    return (props.disabledTimes as TimeModel[]).find((time) =>
+                        +time.hours === getHours(dt) && time.minutes === '*' ? true : +time.minutes === getMinutes(dt),
+                    );
+                });
+            } else {
+                const param = Array.isArray(date)
+                    ? [getTimeObj(date[0]), date[1] ? getTimeObj(date[1]) : undefined]
+                    : getTimeObj(date);
+                valid = !props.disabledTimes(param);
+            }
+        }
+        return valid && isValid;
+    };
+
     // Validate time
     const isValidTime = (date: InternalModuleValue): boolean => {
         let isValid = true;
@@ -198,22 +218,8 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
         if (props.minTime || props.minDate) {
             isValid = checkTimeMinMax(props.minTime, props.minDate, 'min', convertType(selectedDateTime), isValid);
         }
-        if (props.disabledTimes) {
-            if (Array.isArray(props.disabledTimes)) {
-                const dates = Array.isArray(date) ? date : [date];
-                isValid = !dates.some((dt) => {
-                    return (props.disabledTimes as TimeModel[]).find((time) =>
-                        +time.hours === getHours(dt) && time.minutes === '*' ? true : +time.minutes === getMinutes(dt),
-                    );
-                });
-            } else {
-                const param = Array.isArray(date)
-                    ? [getTimeObj(date[0]), date[1] ? getTimeObj(date[1]) : undefined]
-                    : getTimeObj(date);
-                isValid = !props.disabledTimes(param);
-            }
-        }
-        return isValid;
+
+        return checkDisabledTimes(date, isValid);
     };
 
     return {
