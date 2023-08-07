@@ -5,6 +5,7 @@
 @import "components/SelectionOverlay";
 @import "components/TimeInput";
 @import "components/ActionRow";
+@import "components/shared";
 
 :root {
   --dp-common-transition: all 0.1s ease-in;
@@ -100,12 +101,8 @@
 }
 
 .dp__btn {
+  @extend %dp--btn-placeholder;
   background: none;
-  border: none;
-  font: inherit;
-  cursor: pointer;
-  transition: var(--dp-common-transition);
-  line-height: normal;
 }
 
 .dp__main {

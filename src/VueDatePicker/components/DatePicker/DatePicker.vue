@@ -59,6 +59,7 @@
             :minutes="time.minutes"
             :seconds="time.seconds"
             :internal-model-value="internalModelValue"
+            :disabled-times-config="disabledTimesConfig"
             @mount="componentMounted(CMP.timePicker)"
             @update:hours="updateTime($event)"
             @update:minutes="updateTime($event, false)"
@@ -120,6 +121,7 @@
         year,
         modelValue,
         time,
+        disabledTimesConfig,
         getCalendarDays,
         getMarker,
         handleArrow,

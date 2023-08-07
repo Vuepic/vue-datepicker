@@ -1,3 +1,5 @@
+@import "shared";
+
 .dp__time_input {
   width: 100%;
   display: flex;
@@ -156,4 +158,14 @@
     background-color: var(--dp-primary-color);
     transform: rotate(12deg) scale(1.15) translateY(-2px);
   }
+}
+
+.dp--time-overlay-btn {
+  @extend %dp--btn-placeholder;
+  background: none;
+}
+
+.dp--time-invalid {
+  @extend %dp--btn-placeholder;
+  background-color: var(--dp-disabled-color);
 }

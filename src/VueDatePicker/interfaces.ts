@@ -264,3 +264,15 @@ export type MultiCalendarsProp = OptionEnabled | [OptionEnabled, Partial<MultiCa
 export interface MultiCalendarsOptions extends MultiCalendarsPropOptions {
     count: number;
 }
+
+export interface DisabledTime {
+    hours: number | string;
+    minutes: number | string;
+    seconds?: number | string;
+}
+
+export interface TimeValuesInv {
+    hours: number[];
+    minutes?: number[];
+    seconds?: (number | undefined)[];
+}

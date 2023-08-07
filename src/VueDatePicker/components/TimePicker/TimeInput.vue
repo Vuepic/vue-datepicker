@@ -12,7 +12,7 @@
                         dp__tp_inline_btn_top: props.timePickerInline,
                         dp__inc_dec_button_disabled: disabledArrowUpBtn(timeInput.type),
                     }"
-                    data-test="time-inc-btn"
+                    :data-test="`${timeInput.type}-time-inc-btn`"
                     :aria-label="defaultedAriaLabels?.incrementValue(timeInput.type)"
                     tabindex="0"
                     @keydown.enter.prevent="handleTimeValue(timeInput.type)"
@@ -32,7 +32,6 @@
                 <button
                     type="button"
                     :aria-label="defaultedAriaLabels?.openTpOverlay(timeInput.type)"
-                    class="dp__btn"
                     :class="
                         checkOverlayDisabled(timeInput.type)
                             ? undefined
@@ -40,6 +39,8 @@
                                   dp__time_display: true,
                                   dp__time_display_block: !props.timePickerInline,
                                   dp__time_display_inline: props.timePickerInline,
+                                  'dp--time-invalid': disabledBox(timeInput.type),
+                                  'dp--time-overlay-btn': !disabledBox(timeInput.type),
                               }
                     "
                     tabindex="0"
@@ -66,7 +67,7 @@
                         dp__tp_inline_btn_bottom: props.timePickerInline,
                         dp__inc_dec_button_disabled: disabledArrowDownBtn(timeInput.type),
                     }"
-                    data-test="time-dec-btn"
+                    :data-test="`${timeInput.type}-time-dec-btn`"
                     :aria-label="defaultedAriaLabels?.decrementValue(timeInput.type)"
                     tabindex="0"
                     @keydown.enter.prevent="handleTimeValue(timeInput.type, false)"
@@ -143,7 +144,14 @@
 
     import type { PropType } from 'vue';
     import type { Duration } from 'date-fns';
-    import type { DynamicClass, IDefaultSelect, TimeType, TimeOverlayCheck, OverlayGridItem } from '@/interfaces';
+    import type {
+        DynamicClass,
+        IDefaultSelect,
+        TimeType,
+        TimeOverlayCheck,
+        OverlayGridItem,
+        TimeValuesInv,
+    } from '@/interfaces';
 
     defineOptions({
         compatConfig: {
@@ -168,6 +176,7 @@
         seconds: { type: Number as PropType<number>, default: 0 },
         closeTimePickerBtn: { type: Object as PropType<HTMLElement | null>, default: null },
         order: { type: Number as PropType<number>, default: 0 },
+        disabledTimesConfig: { type: Object as PropType<TimeValuesInv>, default: () => ({}) },
         ...PickerBaseProps,
     });
 
@@ -197,6 +206,8 @@
             milliseconds: 0,
         });
     };
+
+    const disabledBox = computed(() => (type: TimeType) => isValueDisabled(type, props[type]));
 
     const timeValues = computed(() => ({ hours: props.hours, minutes: props.minutes, seconds: props.seconds }));
 
@@ -241,6 +252,11 @@
         return { text: props[type] < 10 ? `0${props[type]}` : `${props[type]}`, value: props[type] };
     });
 
+    const isValueDisabled = (type: TimeType, value: number): boolean => {
+        if (!props.disabledTimesConfig[type]) return true;
+        return Boolean(props.disabledTimesConfig[type]?.includes(value));
+    };
+
     const getGridItems = (type: TimeType): OverlayGridItem[][] => {
         const timeRange = props.is24 ? 24 : 12;
         const max = type === 'hours' ? timeRange : 60;
@@ -260,7 +276,9 @@
         return groupListAndMap(generatedArray, (value: IDefaultSelect) => {
             const active = false;
             const disabled =
-                defaultedFilters.value.times[type].includes(value.value) || !isDateInRange(value.value, type);
+                defaultedFilters.value.times[type].includes(value.value) ||
+                !isDateInRange(value.value, type) ||
+                isValueDisabled(type, value.value);
 
             return { active, disabled };
         });

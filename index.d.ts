@@ -257,7 +257,9 @@ export interface VueDatePickerProps {
     disableYearSelect?: boolean;
     closeOnClearValue?: boolean;
     focusStartDate?: boolean;
-    disabledTimes?: (time: TimeObj | TimeObj[] | (TimeObj | undefined)[]) => boolean;
+    disabledTimes?:
+        | ((time: TimeObj | TimeObj[] | (TimeObj | undefined)[]) => boolean)
+        | { hours: number | string; minutes: number | string; seconds?: number | string }[];
     showLastInRange?: boolean;
     timePickerInline?: boolean;
     calendar?: (weeks: CalendarWeek[]) => CalendarWeek[];

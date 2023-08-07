@@ -1,4 +1,4 @@
-import { differenceInCalendarDays, eachDayOfInterval, getDay, getMonth, getYear } from 'date-fns';
+import { differenceInCalendarDays, eachDayOfInterval, getDay, getHours, getMinutes, getMonth, getYear } from 'date-fns';
 import {
     checkTimeMinMax,
     getDate,
@@ -15,7 +15,7 @@ import {
 import { useDefaults } from '@/composables/defaults';
 import { convertType } from '@/utils/util';
 
-import type { InternalModuleValue, ArrMapValues, ArrMapValue } from '@/interfaces';
+import type { InternalModuleValue, ArrMapValues, ArrMapValue, TimeModel } from '@/interfaces';
 import type { PickerBasePropsType, AllPropsType } from '@/props';
 
 export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
@@ -199,10 +199,19 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
             isValid = checkTimeMinMax(props.minTime, props.minDate, 'min', convertType(selectedDateTime), isValid);
         }
         if (props.disabledTimes) {
-            const param = Array.isArray(date)
-                ? [getTimeObj(date[0]), date[1] ? getTimeObj(date[1]) : undefined]
-                : getTimeObj(date);
-            isValid = !props.disabledTimes(param);
+            if (Array.isArray(props.disabledTimes)) {
+                const dates = Array.isArray(date) ? date : [date];
+                isValid = !dates.some((dt) => {
+                    return (props.disabledTimes as TimeModel[]).find((time) =>
+                        +time.hours === getHours(dt) && time.minutes === '*' ? true : +time.minutes === getMinutes(dt),
+                    );
+                });
+            } else {
+                const param = Array.isArray(date)
+                    ? [getTimeObj(date[0]), date[1] ? getTimeObj(date[1]) : undefined]
+                    : getTimeObj(date);
+                isValid = !props.disabledTimes(param);
+            }
         }
         return isValid;
     };

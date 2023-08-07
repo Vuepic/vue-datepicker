@@ -1,8 +1,10 @@
+import { computed } from 'vue';
+
 import { isAfter, isBefore, setMilliseconds } from 'date-fns';
 
 import { getDate, isDateEqual, setDateTime } from '@/utils/date-utils';
 
-import type { InternalModuleValue, Time, TimeType, TimePickerProps, TimeModel } from '@/interfaces';
+import type { InternalModuleValue, Time, TimeType, TimePickerProps, TimeModel, TimeValuesInv } from '@/interfaces';
 import type { UnwrapNestedRefs, WritableComputedRef } from 'vue';
 
 export const useTimePickerUtils = (
@@ -119,6 +121,21 @@ export const useTimePickerUtils = (
         }
     };
 
+    const disabledTimesConfig = computed(() => (ind: number): TimeValuesInv => {
+        if (Array.isArray(props.disabledTimes)) {
+            const hours = Array.isArray(time.hours) ? time.hours[ind] : time.hours;
+
+            const timeFound = props.disabledTimes.filter((time) => +time.hours === hours);
+            if (timeFound[0]?.minutes === '*') return { hours: [hours], minutes: undefined, seconds: undefined };
+            return {
+                hours: [],
+                minutes: timeFound?.map((t) => +t.minutes) ?? [],
+                seconds: timeFound?.map((t) => (t.seconds ? +t.seconds : undefined)) ?? [],
+            };
+        }
+        return { hours: [], minutes: [], seconds: [] };
+    });
+
     return {
         setTime,
         updateHours,
@@ -128,5 +145,6 @@ export const useTimePickerUtils = (
         updateTimeValues,
         getSecondsValue,
         assignStartTime,
+        disabledTimesConfig,
     };
 };
