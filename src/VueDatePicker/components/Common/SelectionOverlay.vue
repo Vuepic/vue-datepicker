@@ -185,21 +185,23 @@
      * Set scroll position in overlay based on active selection
      */
     const setScrollPosition = (): void => {
-        const el = unrefElement(selectionActiveRef);
-        const parent = unrefElement(gridWrapRef);
-        const btn = unrefElement(toggleButton);
-        const container = unrefElement(containerRef);
-        const toggleBtnHeight = btn ? btn.getBoundingClientRect().height : 0;
-        if (parent) {
-            containerHeight.value = parent.getBoundingClientRect().height - toggleBtnHeight;
-        }
-        if (el && container) {
-            container.scrollTop =
-                el.offsetTop -
-                container.offsetTop -
-                (containerHeight.value / 2 - el.getBoundingClientRect().height) -
-                toggleBtnHeight;
-        }
+        nextTick().then(() => {
+            const el = unrefElement(selectionActiveRef);
+            const parent = unrefElement(gridWrapRef);
+            const btn = unrefElement(toggleButton);
+            const container = unrefElement(containerRef);
+            const toggleBtnHeight = btn ? btn.getBoundingClientRect().height : 0;
+            if (parent) {
+                containerHeight.value = parent.getBoundingClientRect().height - toggleBtnHeight;
+            }
+            if (el && container) {
+                container.scrollTop =
+                    el.offsetTop -
+                    container.offsetTop -
+                    (containerHeight.value / 2 - el.getBoundingClientRect().height) -
+                    toggleBtnHeight;
+            }
+        });
     };
 
     /**

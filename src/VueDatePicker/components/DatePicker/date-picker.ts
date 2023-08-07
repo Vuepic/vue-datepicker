@@ -372,7 +372,9 @@ export const useDatePicker = (
             modelValue.value = date;
         }
         updateFlow();
-        autoApply();
+        nextTick().then(() => {
+            autoApply();
+        });
     };
 
     const includesDisabled = (day: Date) => {
