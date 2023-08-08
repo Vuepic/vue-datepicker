@@ -1,11 +1,10 @@
+import type { Component, ComponentPublicInstance, Ref } from 'vue';
 import { h, ref, render, toRef, watch } from 'vue';
 
+import type { ComponentRef, VueEmit } from '@/interfaces';
 import { OpenPosition } from '@/interfaces';
 import { unrefElement } from '@/utils/util';
 import { MenuPlacement } from '@/constants';
-
-import type { Component, Ref, ComponentPublicInstance } from 'vue';
-import type { ComponentRef, VueEmit } from '@/interfaces';
 import type { AllPropsType } from '@/props';
 
 /**
@@ -20,6 +19,7 @@ export const usePosition = (
     props: AllPropsType,
 ) => {
     const menuRect = ref<DOMRect>({} as DOMRect);
+    const xCorrect = ref(false);
 
     const menuStyle = ref<Partial<CSSStyleDeclaration>>({
         top: '0',
@@ -109,7 +109,7 @@ export const usePosition = (
     };
 
     const setLeftRightPosition = ({ inputEl, left, width }: { inputEl: HTMLElement; left: number; width: number }) => {
-        if (window.screen.width > 768) {
+        if (window.screen.width > 768 && !xCorrect.value) {
             setHorizontalPositioning(left, width);
         }
 
@@ -121,7 +121,9 @@ export const usePosition = (
         const { top: offset, left, height, width } = getInputPositions(inputEl);
         menuStyle.value.top = `${height + offset + +props.offset}px`;
         openOnTop.value = false;
-        menuStyle.value.left = `${left + width / 2 - menuRect.value.width / 2}px`;
+        if (!xCorrect.value) {
+            menuStyle.value.left = `${left + width / 2 - menuRect.value.width / 2}px`;
+        }
         setLeftRightPosition({ inputEl, left, width });
     };
 
@@ -139,9 +141,17 @@ export const usePosition = (
         if (props.autoPosition) {
             const { left, width } = getInputPositions(inputEl);
             const { left: menuLeft, right: menuRight } = menuRect.value;
-            if (menuLeft <= 0) return setPositionLeft(left);
-            if (menuRight >= document.documentElement.clientWidth) return setPositionRight(left, width);
-            return setHorizontalPositioning(left, width);
+            if (!xCorrect.value) {
+                if (menuLeft <= 0) {
+                    xCorrect.value = true;
+                    return setPositionLeft(left);
+                }
+                if (menuRight >= document.documentElement.clientWidth) {
+                    xCorrect.value = true;
+                    return setPositionRight(left, width);
+                }
+                return setHorizontalPositioning(left, width);
+            }
         }
     };
 
@@ -202,18 +212,34 @@ export const usePosition = (
         return getScrollableParent(el.parentNode as HTMLElement);
     };
 
+    const getShadowPos = (rect?: DOMRect) => {
+        if (rect) {
+            switch (props.position) {
+                case OpenPosition.left:
+                    return { left: 0, transform: 'translateX(0)' };
+                case OpenPosition.right:
+                    return { left: `${rect.width}px`, transform: 'translateX(-100%)' };
+                default:
+                    return { left: `${rect.width / 2}px`, transform: 'translateX(-50%)' };
+            }
+        }
+        return {};
+    };
+
     // Renders invisible menu on open to determine the menu dimensions
     const shadowRender = (DPMenu: Component, props: AllPropsType) => {
         const container = document.createElement('div');
+        const input = unrefElement(inputRef)?.getBoundingClientRect();
         container.setAttribute('id', 'dp--temp-container');
         const wrap = pickerWrapperRef.value?.clientWidth ? pickerWrapperRef.value : document.body;
         wrap.append(container);
 
         const renderContainer = document.getElementById('dp--temp-container') as HTMLElement;
+        const pos = getShadowPos(input);
         const el = h(DPMenu, {
             ...props,
             shadow: true,
-            style: { opacity: 0, position: 'absolute' },
+            style: { opacity: 0, position: 'absolute', ...pos },
         });
 
         render(el, renderContainer);
@@ -226,6 +252,7 @@ export const usePosition = (
     return {
         openOnTop,
         menuStyle,
+        xCorrect,
         setMenuPosition,
         getScrollableParent,
         shadowRender,

@@ -195,7 +195,7 @@
         { deep: true },
     );
 
-    const { openOnTop, menuStyle, setMenuPosition, getScrollableParent, shadowRender } = usePosition(
+    const { openOnTop, menuStyle, xCorrect, setMenuPosition, getScrollableParent, shadowRender } = usePosition(
         dpWrapMenuRef,
         dpMenuRef,
         inputRef,
@@ -367,6 +367,7 @@
         if (!props.inline) {
             if (isOpen.value) {
                 isOpen.value = false;
+                xCorrect.value = false;
                 setMenuFocused(false);
                 setShiftKey(false);
                 clearArrowNav();
