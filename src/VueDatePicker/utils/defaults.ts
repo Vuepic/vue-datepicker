@@ -62,14 +62,12 @@ export const defaultMultiCalendars = (multiCalendars: MultiCalendarsProp): Multi
     const addOptions = Array.isArray(multiCalendars) ? multiCalendars[1] : {};
     const count = getMultiCalendarsCount(option);
 
-    return Object.assign(
-        {
-            count,
-            static: false,
-            solo: false,
-        },
-        addOptions,
-    );
+    return {
+        count,
+        static: true,
+        solo: false,
+        ...(addOptions ? addOptions : {}),
+    };
 };
 
 export const defaultPreviewFormat = (

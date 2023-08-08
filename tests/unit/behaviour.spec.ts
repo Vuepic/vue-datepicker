@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { add, getYear, set } from 'date-fns';
+import { add, addMonths, getMonth, getYear, set } from 'date-fns';
 
 import { flushPromises, mount } from '@vue/test-utils';
 
@@ -73,5 +73,24 @@ describe('It should validate various picker scenarios', () => {
         await dp.find(`[data-test="${dateVal}"]`).trigger('click');
         const emitted = dp.emitted();
         expect(emitted).toHaveProperty('update:model-value', [[set(date, { seconds: 0, milliseconds: 0 })]]);
+    });
+
+    it('Should not switch calendars in 1 month range with multi-calendars enabled (#472)', async () => {
+        const dp = await openMenu({ multiCalendars: true, range: true });
+        const firstDate = resetDateTime(new Date());
+        const secondDate = resetDateTime(set(firstDate, { month: getMonth(addMonths(firstDate, 1)), date: 15 }));
+
+        const firstDateEl = dp.find(`[data-test="${firstDate}"]`);
+        const secondDateEl = dp.find(`[data-test="${secondDate}"]`);
+
+        await firstDateEl.trigger('click');
+        await secondDateEl.trigger('click');
+
+        const innerStartCell = firstDateEl.find('.dp__cell_inner');
+
+        const innerEndCell = secondDateEl.find('.dp__cell_inner');
+
+        expect(innerStartCell.classes()).toContain('dp__range_start');
+        expect(innerEndCell.classes()).toContain('dp__range_end');
     });
 });

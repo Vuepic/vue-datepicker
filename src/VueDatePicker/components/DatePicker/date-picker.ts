@@ -3,6 +3,7 @@ import {
     add,
     addDays,
     addMonths,
+    differenceInMonths,
     getHours,
     getMinutes,
     getMonth,
@@ -156,7 +157,12 @@ export const useDatePicker = (
     // Assign range values
     const assignRangeValue = (dates: Date[], fromMount: boolean) => {
         if (dates[1] && props.showLastInRange) {
-            assignMonthAndYear(dates[1], fromMount);
+            const ind =
+                defaultedMultiCalendars.value.count &&
+                Math.abs(differenceInMonths(dates[0], dates[1])) >= defaultedMultiCalendars.value.count
+                    ? 1
+                    : 0;
+            assignMonthAndYear(dates[ind], fromMount);
         } else {
             assignMonthAndYear(dates[0], fromMount);
         }
