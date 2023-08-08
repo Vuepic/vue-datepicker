@@ -142,13 +142,15 @@ export const usePosition = (
             const { left, width } = getInputPositions(inputEl);
             const { left: menuLeft, right: menuRight } = menuRect.value;
             if (!xCorrect.value) {
-                if (menuLeft <= 0) {
-                    xCorrect.value = true;
-                    return setPositionLeft(left);
-                }
-                if (menuRight >= document.documentElement.clientWidth) {
-                    xCorrect.value = true;
-                    return setPositionRight(left, width);
+                if (Math.abs(menuLeft) !== Math.abs(menuRight)) {
+                    if (menuLeft <= 0) {
+                        xCorrect.value = true;
+                        return setPositionLeft(left);
+                    }
+                    if (menuRight >= document.documentElement.clientWidth) {
+                        xCorrect.value = true;
+                        return setPositionRight(left, width);
+                    }
                 }
                 return setHorizontalPositioning(left, width);
             }
