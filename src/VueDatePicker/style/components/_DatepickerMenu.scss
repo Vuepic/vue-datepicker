@@ -91,6 +91,12 @@
 .dp__preset_ranges {
   padding: 5px;
   border-inline-end: 1px solid var(--dp-border-color);
+
+  @media only screen and (width <= 600px) {
+    display: flex;
+    overflow-x: auto;
+    contain: inline-size;
+  }
 }
 
 .dp__sidebar_left {
@@ -116,9 +122,17 @@
     cursor: pointer;
   }
 
+  @media only screen and (width <= 600px) {
+    border: 1px solid var(--dp-border-color);
+    margin: 0 3px;
+  }
 }
-
 
 .dp__menu_content_wrapper {
   display: flex;
+
+  @media only screen and (width <= 600px) {
+    flex-direction: column-reverse;
+  }
 }
+

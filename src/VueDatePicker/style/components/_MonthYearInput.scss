@@ -66,11 +66,13 @@
 
 .dp__month_year_select {
   width: 50%;
+
   @extend %dp--month-year-select-base;
 }
 
 .dp--year-select {
   width: 100%;
+
   @extend %dp--month-year-select-base;
 }
 

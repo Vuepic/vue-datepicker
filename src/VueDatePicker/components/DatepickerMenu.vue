@@ -86,7 +86,6 @@
         <ActionRow
             v-if="!autoApply || keepActionRow"
             :menu-mount="menuMount"
-            :calendar-width="calendarWidth"
             v-bind="baseProps"
             @close-picker="$emit('close-picker')"
             @select-date="$emit('select-date')"
@@ -101,7 +100,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, onMounted, onUnmounted, ref, useSlots } from 'vue';
+    import { computed, onMounted, ref, useSlots } from 'vue';
 
     import ActionRow from '@/components/ActionRow.vue';
 
@@ -173,37 +172,30 @@
     const calendarWrapperRef = ref(null);
 
     const dpMenuRef = ref(null);
-    const calendarWidth = ref(0);
     const menuMount = ref(false);
     const dynCmpRef = ref<any>(null);
 
     onMounted(() => {
-        menuMount.value = true;
-        if (!props.presetRanges?.length && !slots['left-sidebar'] && !slots['right-sidebar']) {
-            getCalendarWidth();
-            window.addEventListener('resize', getCalendarWidth);
-        }
+        if (!props.shadow) {
+            menuMount.value = true;
 
-        const menu = unrefElement(dpMenuRef);
-        if (menu && !props.textInput && !props.inline) {
-            setMenuFocused(true);
-            focusMenu();
+            const menu = unrefElement(dpMenuRef);
+            if (menu && !props.textInput && !props.inline) {
+                setMenuFocused(true);
+                focusMenu();
+            }
+            if (menu) {
+                const stopDefault = (event: Event) => {
+                    if (props.allowPreventDefault) {
+                        event.preventDefault();
+                    }
+                    event.stopImmediatePropagation();
+                    event.stopPropagation();
+                };
+                menu.addEventListener('pointerdown', stopDefault);
+                menu.addEventListener('mousedown', stopDefault);
+            }
         }
-        if (menu) {
-            const stopDefault = (event: Event) => {
-                if (props.allowPreventDefault) {
-                    event.preventDefault();
-                }
-                event.stopImmediatePropagation();
-                event.stopPropagation();
-            };
-            menu.addEventListener('pointerdown', stopDefault);
-            menu.addEventListener('mousedown', stopDefault);
-        }
-    });
-
-    onUnmounted(() => {
-        window.removeEventListener('resize', getCalendarWidth);
     });
 
     const { arrowRight, arrowLeft, arrowDown, arrowUp } = useArrowNavigation();
@@ -242,13 +234,6 @@
     });
 
     const arrowClass = computed(() => (!props.openOnTop ? 'dp__arrow_top' : 'dp__arrow_bottom'));
-
-    const getCalendarWidth = (): void => {
-        const el = unrefElement(calendarWrapperRef);
-        if (el) {
-            calendarWidth.value = el.getBoundingClientRect().width;
-        }
-    };
 
     const disabledReadonlyOverlay = computed(() => ({
         dp__menu_disabled: props.disabled,

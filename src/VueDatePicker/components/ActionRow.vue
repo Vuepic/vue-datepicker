@@ -1,5 +1,5 @@
 <template>
-    <div class="dp__action_row" :style="calendarWidth ? { width: `${calendarWidth}px` } : {}">
+    <div class="dp__action_row">
         <template v-if="$slots['action-row']">
             <slot
                 name="action-row"
@@ -82,7 +82,6 @@
 
     const props = defineProps({
         menuMount: { type: Boolean as PropType<boolean>, default: false },
-        calendarWidth: { type: Number as PropType<number>, default: 0 },
 
         ...PickerBaseProps,
     });

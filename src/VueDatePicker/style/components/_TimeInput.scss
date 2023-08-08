@@ -162,10 +162,12 @@
 
 .dp--time-overlay-btn {
   @extend %dp--btn-placeholder;
+
   background: none;
 }
 
 .dp--time-invalid {
   @extend %dp--btn-placeholder;
+
   background-color: var(--dp-disabled-color);
 }
