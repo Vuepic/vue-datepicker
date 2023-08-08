@@ -211,7 +211,6 @@
     const getCalendarWidth = (): void => {
         const el = unrefElement(innerMenuRef);
         if (el) {
-            console.log(el.getBoundingClientRect());
             calendarWidth.value = el.getBoundingClientRect().width;
         }
     };
