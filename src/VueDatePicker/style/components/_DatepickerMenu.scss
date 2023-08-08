@@ -94,8 +94,10 @@
 
   @media only screen and (width <= 600px) {
     display: flex;
+    align-self: center;
+    border: none;
     overflow-x: auto;
-    contain: inline-size;
+    max-width: calc(var(--dp-menu-width) - var(--dp-action-row-padding) * 2);
   }
 }
 
@@ -125,6 +127,14 @@
   @media only screen and (width <= 600px) {
     border: 1px solid var(--dp-border-color);
     margin: 0 3px;
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
   }
 }
 

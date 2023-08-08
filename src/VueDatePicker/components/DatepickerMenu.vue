@@ -17,9 +17,11 @@
         <div :class="disabledReadonlyOverlay" v-if="(disabled || readonly) && inline"></div>
         <div :class="arrowClass" v-if="!inline && !teleportCenter"></div>
         <div
+            ref="innerMenuRef"
             :class="{
                 dp__menu_content_wrapper: presetRanges?.length || !!$slots['left-sidebar'] || !!$slots['right-sidebar'],
             }"
+            :style="{ '--dp-menu-width': `${calendarWidth}px` }"
         >
             <div class="dp__sidebar_left" v-if="$slots['left-sidebar']">
                 <slot name="left-sidebar" v-bind="getSidebarProps()" />
@@ -87,6 +89,7 @@
             v-if="!autoApply || keepActionRow"
             :menu-mount="menuMount"
             v-bind="baseProps"
+            :calendar-width="calendarWidth"
             @close-picker="$emit('close-picker')"
             @select-date="$emit('select-date')"
             @invalid-select="$emit('invalid-select')"
@@ -100,7 +103,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, onMounted, ref, useSlots } from 'vue';
+    import { computed, onMounted, onUnmounted, ref, useSlots } from 'vue';
 
     import ActionRow from '@/components/ActionRow.vue';
 
@@ -170,14 +173,17 @@
     const slots = useSlots();
 
     const calendarWrapperRef = ref(null);
-
+    const calendarWidth = ref(0);
     const dpMenuRef = ref(null);
+    const innerMenuRef = ref(null);
     const menuMount = ref(false);
     const dynCmpRef = ref<any>(null);
 
     onMounted(() => {
         if (!props.shadow) {
             menuMount.value = true;
+            getCalendarWidth();
+            window.addEventListener('resize', getCalendarWidth);
 
             const menu = unrefElement(dpMenuRef);
             if (menu && !props.textInput && !props.inline) {
@@ -197,6 +203,18 @@
             }
         }
     });
+
+    onUnmounted(() => {
+        window.removeEventListener('resize', getCalendarWidth);
+    });
+
+    const getCalendarWidth = (): void => {
+        const el = unrefElement(innerMenuRef);
+        if (el) {
+            console.log(el.getBoundingClientRect());
+            calendarWidth.value = el.getBoundingClientRect().width;
+        }
+    };
 
     const { arrowRight, arrowLeft, arrowDown, arrowUp } = useArrowNavigation();
     const { flowStep, updateFlowStep, childMount, resetFlow } = useFlow(props, emit, dynCmpRef);
