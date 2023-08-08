@@ -10,7 +10,11 @@ import type { VueEmit } from '@/interfaces';
 export const useTimePicker = (props: PickerBasePropsType, emit: VueEmit) => {
     const { modelValue, time } = useModel(props, emit);
     const { defaultedStartTime } = useDefaults(props);
-    const { updateTimeValues, getSetDateTime, setTime, assignStartTime } = useTimePickerUtils(props, time, modelValue);
+    const { updateTimeValues, getSetDateTime, setTime, assignStartTime, disabledTimesConfig } = useTimePickerUtils(
+        props,
+        time,
+        modelValue,
+    );
 
     const assignEmptyModel = () => {
         if (props.range) {
@@ -74,6 +78,7 @@ export const useTimePicker = (props: PickerBasePropsType, emit: VueEmit) => {
 
     return {
         time,
+        disabledTimesConfig,
         updateTime,
     };
 };

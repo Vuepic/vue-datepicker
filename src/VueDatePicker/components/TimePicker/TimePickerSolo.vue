@@ -1,11 +1,12 @@
 <template>
-    <InstanceWrap :multi-calendars="0" :stretch="false">
+    <InstanceWrap :multi-calendars="0" stretch>
         <TimePicker
             v-bind="$props"
             :hours="time.hours"
             :minutes="time.minutes"
             :seconds="time.seconds"
             :internal-model-value="internalModelValue"
+            :disabled-times-config="disabledTimesConfig"
             @update:hours="updateTime($event)"
             @update:minutes="updateTime($event, false)"
             @update:seconds="updateTime($event, false, true)"
@@ -40,5 +41,5 @@
     const slots = useSlots();
     const timePickerSlots = mapSlots(slots, 'timePicker');
 
-    const { time, updateTime } = useTimePicker(props, emit);
+    const { time, disabledTimesConfig, updateTime } = useTimePicker(props, emit);
 </script>
