@@ -1,23 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { add, addMonths, getMonth, getYear, set } from 'date-fns';
 
-import { flushPromises, mount } from '@vue/test-utils';
-
-import VueDatePicker from '@/VueDatePicker.vue';
-
 import { resetDateTime } from '@/utils/date-utils';
 
-import type { AllPropsType } from '@/props';
-
-const openMenu = async (props: Partial<AllPropsType>) => {
-    const dp = mount(VueDatePicker, { props });
-
-    dp.vm.openMenu();
-    await flushPromises();
-
-    await dp.vm.$nextTick();
-    return dp;
-};
+import { openMenu } from '../utils';
 
 describe('It should validate various picker scenarios', () => {
     it('Should dynamically disable times', async () => {

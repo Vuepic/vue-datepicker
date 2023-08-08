@@ -6,9 +6,12 @@ import { mount, VueWrapper } from '@vue/test-utils';
 import DpHeader from '@/components/DatePicker/DpHeader.vue';
 import MonthPicker from '@/components/MonthPicker/MonthPicker.vue';
 
+import { openMenu } from '../../utils';
+
 import { getMonths, getYears } from '@/utils/util';
 import { useArrowNavigation } from '@/composables';
 import { getDefaultFilters } from '@/utils/defaults';
+
 import type { ComponentPublicInstance } from 'vue';
 import type { DateFilter, OverlayGridItem } from '@/interfaces';
 
@@ -170,5 +173,40 @@ describe('Month and Year picker components', () => {
         await nextTick();
         expect(wrapper.vm.year(0)).toEqual(getYear(new Date()));
         expect(wrapper.vm.year(1)).toEqual(getYear(addYears(new Date(), 1)));
+    });
+
+    it('Should display year picker', async () => {
+        const dp = await openMenu({ yearPicker: true });
+
+        const currentYear = getYear(new Date());
+
+        const el = dp.find(`[data-test="${currentYear}"]`);
+        expect(el).toBeDefined();
+    });
+
+    it('Should select single year', async () => {
+        const dp = await openMenu({ yearPicker: true });
+
+        const currentYear = getYear(new Date());
+
+        await dp.find(`[data-test="${currentYear}"]`).trigger('click');
+
+        await dp.find(`[data-test="select-button"]`).trigger('click');
+
+        expect(dp.emitted()).toHaveProperty('update:model-value', [[currentYear]]);
+    });
+
+    it('Should select year range', async () => {
+        const dp = await openMenu({ yearPicker: true, range: true });
+        const today = new Date();
+        const rangeStart = getYear(addYears(today, 1));
+        const rangeEnd = rangeStart + 5;
+
+        await dp.find(`[data-test="${rangeStart}"]`).trigger('click');
+        await dp.find(`[data-test="${rangeEnd}"]`).trigger('click');
+
+        await dp.find(`[data-test="select-button"]`).trigger('click');
+
+        expect(dp.emitted()).toHaveProperty('update:model-value', [[[rangeStart, rangeEnd]]]);
     });
 });
