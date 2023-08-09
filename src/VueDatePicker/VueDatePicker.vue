@@ -261,7 +261,7 @@
     const openMenu = () => {
         if (!props.disabled && !props.readonly) {
             shadowRender(DatepickerMenu, props);
-            setMenuPosition();
+            setMenuPosition(false);
             isOpen.value = true;
 
             if (isOpen.value) {

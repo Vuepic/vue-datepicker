@@ -29,6 +29,7 @@ export const usePosition = (
     const centered = toRef(props, 'teleportCenter');
 
     watch(centered, () => {
+        menuStyle.value = JSON.parse(JSON.stringify({}));
         setMenuPosition();
     });
 
