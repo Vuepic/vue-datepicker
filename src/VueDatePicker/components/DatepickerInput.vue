@@ -229,9 +229,6 @@
         ev.stopPropagation();
         if (defaultedTextInput.value.enabled && defaultedTextInput.value.openMenu && !props.inlineWithInput) {
             emit('toggle');
-            if (defaultedTextInput.value.enterSubmit) {
-                emit('select-date');
-            }
         } else if (!defaultedTextInput.value.enabled) {
             emit('toggle');
         }
