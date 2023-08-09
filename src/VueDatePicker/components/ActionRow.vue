@@ -90,7 +90,7 @@
         defaultedActionRow,
         defaultedPreviewFormat,
         defaultedMultiCalendars,
-        defaultedTextInputOptions,
+        defaultedTextInput,
         getDefaultPattern,
     } = useDefaults(props);
     const { isValidTime } = useValidation(props);
@@ -150,7 +150,7 @@
             date,
             defaultedPreviewFormat.value as string,
             props.formatLocale,
-            defaultedTextInputOptions.value.rangeSeparator,
+            defaultedTextInput.value.rangeSeparator,
             props.modelAuto,
             getDefaultPattern(),
         );

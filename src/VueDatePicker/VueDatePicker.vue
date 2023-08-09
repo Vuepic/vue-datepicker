@@ -154,7 +154,7 @@
     const { setMenuFocused, setShiftKey } = useState();
     const { clearArrowNav } = useArrowNavigation();
     const { mapDatesArrToMap, validateDate, isValidTime } = useValidation(props);
-    const { defaultedTransitions } = useDefaults(props);
+    const { defaultedTransitions, defaultedTextInput } = useDefaults(props);
     const { menuTransition, showTransition } = useTransitions(defaultedTransitions);
 
     onMounted(() => {
@@ -324,7 +324,7 @@
     };
 
     const updateTextInputWithDateTimeValue = () => {
-        if (inputRef.value && props.textInput) {
+        if (inputRef.value && defaultedTextInput.value.enabled) {
             inputRef.value.setParsedDate(internalModelValue.value);
         }
     };
@@ -355,7 +355,7 @@
      * update, just clears internal data
      */
     const clearInternalValues = (): void => {
-        if (!props.textInput) {
+        if (!defaultedTextInput.value.enabled) {
             internalModelValue.value = null;
         }
     };
@@ -409,7 +409,7 @@
     };
 
     const handleInputFocus = () => {
-        if (props.textInput) {
+        if (defaultedTextInput.value.enabled) {
             isInputFocused.value = true;
             formatInputValue();
         }
@@ -418,7 +418,7 @@
     };
 
     const handleBlur = () => {
-        if (props.textInput) {
+        if (defaultedTextInput.value.enabled) {
             isInputFocused.value = false;
             parseExternalModelValue(props.modelValue);
         }

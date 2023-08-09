@@ -21,7 +21,7 @@
                 :id="uid ? `dp-input-${uid}` : undefined"
                 :name="name"
                 :class="inputClass"
-                :inputmode="textInput ? 'text' : 'none'"
+                :inputmode="defaultedTextInput.enabled ? 'text' : 'none'"
                 :placeholder="placeholder"
                 :disabled="disabled"
                 :readonly="readonly"
@@ -102,8 +102,7 @@
         ...AllProps,
     });
 
-    const { defaultedTextInputOptions, defaultedAriaLabels, getDefaultPattern, getDefaultStartTime } =
-        useDefaults(props);
+    const { defaultedTextInput, defaultedAriaLabels, getDefaultPattern, getDefaultStartTime } = useDefaults(props);
 
     const parsedDate = ref();
     const inputRef = ref<HTMLElement | null>(null);
@@ -112,15 +111,15 @@
 
     const inputClass = computed(
         (): DynamicClass => ({
-            dp__pointer: !props.disabled && !props.readonly && !props.textInput,
+            dp__pointer: !props.disabled && !props.readonly && !defaultedTextInput.value.enabled,
             dp__disabled: props.disabled,
-            dp__input_readonly: !props.textInput,
+            dp__input_readonly: !defaultedTextInput.value.enabled,
             dp__input: true,
             dp__input_icon_pad: !props.hideInputIcon,
             dp__input_valid: props.state,
             dp__input_invalid: props.state === false,
             dp__input_focus: isFocused.value || props.isMenuOpen,
-            dp__input_reg: !props.textInput,
+            dp__input_reg: !defaultedTextInput.value.enabled,
             [props.inputClassName]: !!props.inputClassName,
         }),
     );
@@ -137,7 +136,7 @@
         const defaultTime = getDefaultStartTime();
         return parseFreeInput(
             value,
-            defaultedTextInputOptions.value.format ?? getDefaultPattern(),
+            defaultedTextInput.value.format ?? getDefaultPattern(),
             defaultTime ?? assignDefaultTime({}, props.enableSeconds),
             props.inputValue,
             textPasted.value,
@@ -145,7 +144,7 @@
     };
 
     const handleRangeTextInput = (value: string) => {
-        const { rangeSeparator } = defaultedTextInputOptions.value;
+        const { rangeSeparator } = defaultedTextInput.value;
         const [dateOne, dateTwo] = value.split(`${rangeSeparator}`);
 
         if (dateOne) {
@@ -177,7 +176,7 @@
         const value = typeof event === 'string' ? event : (event.target as HTMLInputElement)?.value;
 
         if (value !== '') {
-            if (defaultedTextInputOptions.value.openMenu && !props.isMenuOpen) {
+            if (defaultedTextInput.value.openMenu && !props.isMenuOpen) {
                 emit('open');
             }
             parseInput(value);
@@ -191,16 +190,12 @@
     };
 
     const handleEnter = (ev: KeyboardEvent): void => {
-        if (props.textInput) {
+        if (defaultedTextInput.value.enabled) {
             parseInput((ev.target as HTMLInputElement).value);
-            if (
-                defaultedTextInputOptions.value.enterSubmit &&
-                isValidDate(parsedDate.value) &&
-                props.inputValue !== ''
-            ) {
+            if (defaultedTextInput.value.enterSubmit && isValidDate(parsedDate.value) && props.inputValue !== '') {
                 emit('set-input-date', parsedDate.value, true);
                 parsedDate.value = null;
-            } else if (defaultedTextInputOptions.value.enterSubmit && props.inputValue === '') {
+            } else if (defaultedTextInput.value.enterSubmit && props.inputValue === '') {
                 parsedDate.value = null;
                 emit('clear');
             }
@@ -210,14 +205,14 @@
     };
 
     const handleTab = (ev: KeyboardEvent): void => {
-        if (props.textInput && defaultedTextInputOptions.value.tabSubmit) {
+        if (defaultedTextInput.value.enabled && defaultedTextInput.value.tabSubmit) {
             parseInput((ev.target as HTMLInputElement).value);
         }
 
-        if (defaultedTextInputOptions.value.tabSubmit && isValidDate(parsedDate.value) && props.inputValue !== '') {
+        if (defaultedTextInput.value.tabSubmit && isValidDate(parsedDate.value) && props.inputValue !== '') {
             emit('set-input-date', parsedDate.value, true);
             parsedDate.value = null;
-        } else if (defaultedTextInputOptions.value.tabSubmit && props.inputValue === '') {
+        } else if (defaultedTextInput.value.tabSubmit && props.inputValue === '') {
             parsedDate.value = null;
             emit('clear');
         }
@@ -232,12 +227,12 @@
         ev.preventDefault();
         ev.stopImmediatePropagation();
         ev.stopPropagation();
-        if (props.textInput && defaultedTextInputOptions.value.openMenu && !props.inlineWithInput) {
+        if (defaultedTextInput.value.enabled && defaultedTextInput.value.openMenu && !props.inlineWithInput) {
             emit('toggle');
-            if (defaultedTextInputOptions.value.enterSubmit) {
+            if (defaultedTextInput.value.enterSubmit) {
                 emit('select-date');
             }
-        } else if (!props.textInput) {
+        } else if (!defaultedTextInput.value.enabled) {
             emit('toggle');
         }
     };
@@ -248,7 +243,7 @@
         if (!props.isMenuOpen || (props.inline && props.inlineWithInput)) {
             emit('blur');
         }
-        if (props.autoApply && props.textInput && parsedDate.value && !props.isMenuOpen) {
+        if (props.autoApply && defaultedTextInput.value.enabled && parsedDate.value && !props.isMenuOpen) {
             emit('set-input-date', parsedDate.value);
             emit('select-date');
             parsedDate.value = null;
@@ -260,7 +255,7 @@
     };
 
     const handleKeyPress = (ev: KeyboardEvent): void => {
-        if (!props.textInput) {
+        if (!defaultedTextInput.value.enabled) {
             if (ev.code === 'Tab') return;
             ev.preventDefault();
         }

@@ -70,7 +70,7 @@
     import { convertType, unrefElement } from '@/utils/util';
     import { useArrowNavigation, useCommon, useDefaults } from '@/composables';
 
-    import type { DynamicClass, Flow, OverlayGridItem } from '@/interfaces';
+    import type { DynamicClass, Flow, OverlayGridItem, TextInputProp } from '@/interfaces';
     import type { PickerBasePropsType } from '@/props';
 
     const { setSelectionGrid, buildMultiLevelMatrix, setMonthPicker } = useArrowNavigation();
@@ -88,12 +88,12 @@
         escClose?: boolean;
         useRelative?: boolean;
         height?: number | string;
-        textInput?: boolean;
+        textInput?: TextInputProp;
     }
 
     const props = defineProps<Props>();
 
-    const { defaultedAriaLabels } = useDefaults(props as unknown as PickerBasePropsType);
+    const { defaultedAriaLabels, defaultedTextInput } = useDefaults(props as unknown as PickerBasePropsType);
     const { hideNavigationButtons } = useCommon();
 
     const scrollable = ref(false);
@@ -133,7 +133,7 @@
     const focusGrid = (): void => {
         const elm = unrefElement(gridWrapRef);
         if (elm) {
-            if (!props.textInput) {
+            if (!defaultedTextInput.value.enabled) {
                 if (selectionActiveRef.value) {
                     selectionActiveRef.value?.focus({ preventScroll: true });
                 } else {

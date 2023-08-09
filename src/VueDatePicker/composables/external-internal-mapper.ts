@@ -26,7 +26,7 @@ import type { Ref } from 'vue';
 export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, isInputFocused: Ref<boolean>) => {
     const internalModelValue = ref();
 
-    const { defaultedTextInputOptions, getDefaultPattern } = useDefaults(props);
+    const { defaultedTextInput, getDefaultPattern } = useDefaults(props);
 
     const inputValue = ref('');
     const formatRef = toRef(props, 'format');
@@ -52,7 +52,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
             value,
             props.format,
             props.formatLocale,
-            defaultedTextInputOptions.value.rangeSeparator,
+            defaultedTextInput.value.rangeSeparator,
             props.modelAuto,
             customPattern ?? getDefaultPattern(),
         );
@@ -232,8 +232,8 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
     };
 
     const formatRangeTextInput = () => {
-        const formatter = (value: Date) => format(value, defaultedTextInputOptions.value.format as string);
-        return `${formatter(internalModelValue.value[0])} ${defaultedTextInputOptions.value.rangeSeparator} ${
+        const formatter = (value: Date) => format(value, defaultedTextInput.value.format as string);
+        return `${formatter(internalModelValue.value[0])} ${defaultedTextInput.value.rangeSeparator} ${
             internalModelValue.value[1] ? formatter(internalModelValue.value[1]) : ''
         }`;
     };
@@ -242,7 +242,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
     const formatForTextInput = () => {
         if (isInputFocused.value && internalModelValue.value) {
             if (Array.isArray(internalModelValue.value)) return formatRangeTextInput();
-            return format(internalModelValue.value, defaultedTextInputOptions.value.format as string);
+            return format(internalModelValue.value, defaultedTextInput.value.format as string);
         }
         return formatDateFn(internalModelValue.value);
     };
@@ -251,7 +251,8 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
     const getInputValue = (): string => {
         if (!internalModelValue.value) return '';
         if (props.multiDates) return (internalModelValue.value as Date[]).map((date) => formatDateFn(date)).join('; ');
-        if (props.textInput && typeof defaultedTextInputOptions.value.format === 'string') return formatForTextInput();
+        if (defaultedTextInput.value.enabled && typeof defaultedTextInput.value.format === 'string')
+            return formatForTextInput();
         return formatDateFn(internalModelValue.value);
     };
 
@@ -262,7 +263,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
         if (
             !props.format ||
             typeof props.format === 'string' ||
-            (props.textInput && typeof props.textInputOptions.format === 'string')
+            (defaultedTextInput.value.enabled && typeof defaultedTextInput.value.format === 'string')
         ) {
             inputValue.value = getInputValue();
         } else {

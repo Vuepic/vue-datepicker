@@ -8,6 +8,7 @@ import type {
     MultiCalendarsProp,
     MultiCalendarsOptions,
     OptionEnabled,
+    TextInputProp,
 } from '@/interfaces';
 
 export const mergeDefaultTransitions = (conf: Partial<Transition>): Transition =>
@@ -91,12 +92,19 @@ export const defaultTransitions = (transitions: boolean | Partial<Transition>): 
 /**
  * Default options to merge with user provided ones
  */
-export const getDefaultTextInputOptions = (): TextInputOptions => ({
-    enterSubmit: true,
-    tabSubmit: true,
-    openMenu: true,
-    rangeSeparator: ' - ',
-});
+export const getDefaultTextInputOptions = (textInput: TextInputProp): TextInputOptions & { enabled: boolean } => {
+    const defaultOptions = {
+        enterSubmit: true,
+        tabSubmit: true,
+        openMenu: true,
+        rangeSeparator: ' - ',
+    };
+
+    if (Array.isArray(textInput)) {
+        return { enabled: textInput[0], ...defaultOptions, ...(textInput[1] ? textInput[1] : {}) };
+    }
+    return { ...defaultOptions, enabled: textInput };
+};
 
 /**
  * Default filters to merge with user provided values

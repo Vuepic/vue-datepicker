@@ -276,3 +276,5 @@ export interface TimeValuesInv {
     minutes?: number[];
     seconds?: (number | undefined)[];
 }
+
+export type TextInputProp = boolean | [boolean, Partial<TextInputOptions>];

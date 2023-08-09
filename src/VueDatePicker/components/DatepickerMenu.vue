@@ -107,7 +107,7 @@
 
     import ActionRow from '@/components/ActionRow.vue';
 
-    import { mapSlots, useArrowNavigation, useState, useFlow } from '@/composables';
+    import { mapSlots, useArrowNavigation, useState, useFlow, useDefaults } from '@/composables';
     import { unrefElement } from '@/utils/util';
     import { AllProps } from '@/props';
 
@@ -171,6 +171,7 @@
 
     const { setMenuFocused, setShiftKey, control } = useState();
     const slots = useSlots();
+    const { defaultedTextInput } = useDefaults(props);
 
     const calendarWrapperRef = ref(null);
     const calendarWidth = ref(0);
@@ -186,7 +187,7 @@
             window.addEventListener('resize', getCalendarWidth);
 
             const menu = unrefElement(dpMenuRef);
-            if (menu && !props.textInput && !props.inline) {
+            if (menu && !defaultedTextInput.value.enabled && !props.inline) {
                 setMenuFocused(true);
                 focusMenu();
             }

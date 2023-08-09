@@ -151,14 +151,18 @@ export interface VueDatePickerProps {
     monthPicker?: boolean;
     timePicker?: boolean;
     closeOnAutoApply?: boolean;
-    textInput?: boolean;
-    textInputOptions?: {
-        enterSubmit?: boolean;
-        tabSubmit?: boolean;
-        openMenu?: boolean;
-        rangeSeparator?: string;
-        format?: string | string[] | ((value: string) => Date | null);
-    };
+    textInput?:
+        | boolean
+        | [
+              boolean,
+              {
+                  enterSubmit?: boolean;
+                  tabSubmit?: boolean;
+                  openMenu?: boolean;
+                  rangeSeparator?: string;
+                  format?: string | string[] | ((value: string) => Date | null);
+              },
+          ];
     monthNameFormat?: 'long' | 'short';
     startDate?: string | Date;
     startTime?: PartialTimeObj | PartialTimeObj[];

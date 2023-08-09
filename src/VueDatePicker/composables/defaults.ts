@@ -57,9 +57,7 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
         defaultPreviewFormat(props.previewFormat, props.format, getDefaultPattern()),
     );
 
-    const defaultedTextInputOptions = computed(() =>
-        Object.assign(getDefaultTextInputOptions(), props.textInputOptions),
-    );
+    const defaultedTextInput = computed(() => getDefaultTextInputOptions(props.textInput));
 
     return {
         defaultedTransitions,
@@ -69,7 +67,7 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
         defaultedFilters,
         defaultedActionRow,
         defaultedPreviewFormat,
-        defaultedTextInputOptions,
+        defaultedTextInput,
         getDefaultPattern,
         getDefaultStartTime,
     };

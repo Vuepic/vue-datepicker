@@ -5,7 +5,6 @@ import { addDays, format, getHours, getMinutes, set } from 'date-fns';
 import DatepickerInput from '@/components/DatepickerInput.vue';
 import DatePicker from '@/VueDatePicker.vue';
 
-import { getDefaultTextInputOptions } from '@/utils/defaults';
 import type { ComponentPublicInstance } from 'vue';
 
 const getCurrentTime = () => {
@@ -63,7 +62,6 @@ describe('Datepicker input component', () => {
                 textInput: true,
                 format: 'MM/dd/yyyy',
                 range: true,
-                textInputOptions: getDefaultTextInputOptions(),
             },
         });
         const el = wrapper.find('input');
@@ -87,7 +85,7 @@ describe('Datepicker input component', () => {
 
     it('Should submit date with tab key', async () => {
         const wrapper = mount(DatepickerInput, {
-            props: { ...props, textInput: true, format: 'MM/dd/yyyy', textInputOptions: { tabSubmit: true } },
+            props: { ...props, textInput: true, format: 'MM/dd/yyyy' },
         });
 
         const el = wrapper.find('input');
@@ -100,7 +98,7 @@ describe('Datepicker input component', () => {
 
     it('Should clear date with tab key', async () => {
         const wrapper = mount(DatepickerInput, {
-            props: { ...props, textInput: true, format: 'MM/dd/yyyy', textInputOptions: { tabSubmit: true } },
+            props: { ...props, textInput: true, format: 'MM/dd/yyyy' },
         });
 
         await wrapper.find('input').trigger('keydown.tab');
@@ -115,10 +113,9 @@ describe('Datepicker input component', () => {
 
         const wrapper = mount(DatePicker, {
             props: {
-                textInput: true,
+                textInput: [true, { format: inputPattern }],
                 format: formatPattern,
                 modelValue: new Date(),
-                textInputOptions: { format: inputPattern, enterSubmit: true },
             },
         });
         const inputCmp = wrapper.findComponent(DatepickerInput);
