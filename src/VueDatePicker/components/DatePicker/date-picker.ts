@@ -239,6 +239,7 @@ export const useDatePicker = (
             }
         } else if (modelValue.value && !Array.isArray(modelValue.value)) {
             setCalendarMonthYear(0, getMonth(modelValue.value), getYear(modelValue.value));
+            assignMonthAndYear(getDate());
         }
     };
 
