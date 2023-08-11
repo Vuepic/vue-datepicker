@@ -263,18 +263,31 @@ describe('Logic connection', () => {
         expect(calendar.emitted()['select-date']).toHaveLength(4);
     });
 
-    it('Should preset range from preset-dates', async () => {
+    it('Should preset range from preset-ranges', async () => {
         const range = [new Date(), new Date()];
         const { dp, menu } = await mountDatepicker({
             modeValue: null,
             range: true,
-            presetDates: [{ label: 'Today', range }],
+            presetRanges: [{ label: 'Today', range }],
         });
 
-        menu.vm.presetDateRange(range);
+        await menu.find('.dp__preset_range span[role="button"]').trigger('click');
 
         expect(dp.vm.internalModelValue).toHaveLength(2);
         expect(dp.vm.internalModelValue).toEqual(range);
+        dp.unmount();
+    });
+
+    it('Should preset date from preset-dates', async () => {
+        const date = new Date();
+        const { dp, menu } = await mountDatepicker({
+            modeValue: null,
+            presetDates: [{ label: 'Today', date }],
+        });
+
+        await menu.find('.dp__preset_date span[role="button"]').trigger('click');
+
+        expect(dp.vm.internalModelValue).toEqual(date);
         dp.unmount();
     });
 

@@ -20,7 +20,7 @@
             <div
                 :class="{
                     dp__menu_content_wrapper:
-                        presetRanges?.length || !!$slots['left-sidebar'] || !!$slots['right-sidebar'],
+                    presetDates?.length || presetRanges?.length || !!$slots['left-sidebar'] || !!$slots['right-sidebar'],
                 }"
             >
                 <div class="dp__sidebar_left" v-if="$slots['left-sidebar']">
@@ -48,6 +48,32 @@
                                 @click="presetDateRange(preset.range)"
                                 @keydown.enter.prevent="presetDateRange(preset.range)"
                                 @keydown.space.prevent="presetDateRange(preset.range)"
+                            >{{ preset.label }}</span>
+                        </template>
+                    </div>
+                </div>
+                <div class="dp__preset_dates" v-if="presetDates?.length">
+                    <div
+                        v-for="(preset, i) in presetDates"
+                        :key="i"
+                        :style="preset.style || {}"
+                        class="dp__preset_date"
+                    >
+                        <template v-if="preset.slot">
+                            <slot
+                                :name="preset.slot"
+                                :preset-date="presetDate"
+                                :label="preset.label"
+                                :date="preset.date"
+                            />
+                        </template>
+                        <template v-else>
+                            <span
+                                role="button"
+                                tabindex="0"
+                                @click="presetDate(preset.date)"
+                                @keydown.enter.prevent="presetDate(preset.date)"
+                                @keydown.space.prevent="presetDate(preset.date)"
                             >{{ preset.label }}</span>
                         </template>
                     </div>
@@ -250,7 +276,7 @@
 
     onMounted(() => {
         menuMount.value = true;
-        if (!props.presetRanges?.length && !slots['left-sidebar'] && !slots['right-sidebar']) {
+        if (!props.presetDates?.length && !props.presetRanges?.length && !slots['left-sidebar'] && !slots['right-sidebar']) {
             getCalendarWidth();
             window.addEventListener('resize', getCalendarWidth);
         }
@@ -328,6 +354,7 @@
         getMarker,
         selectCurrentDate,
         presetDateRange,
+        presetDate,
     } = useCalendar(props, emit, updateFlowStep, triggerCalendarTransition, flowStep);
 
     const { setHoverDate, clearHoverDate, getDayClassData } = useCalendarClass(modelValue, props);
@@ -347,6 +374,7 @@
         updateMonthYear,
         selectDate,
         presetDateRange,
+        presetDate,
         handleMonthYearChange,
     };
 

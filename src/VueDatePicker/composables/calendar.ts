@@ -786,6 +786,17 @@ export const useCalendar = (
         }
     };
 
+    const presetDate = (date: Date | string, hasSlot?: boolean): void => {
+        if (hasSlot) return;
+        if (date && !props.range) {
+            modelValue.value = getDate(date);
+            selectOnAutoApply();
+            if (props.multiCalendars) {
+                nextTick().then(() => mapInternalModuleValues(true));
+            }
+        }
+    };
+
     return {
         time,
         month,
@@ -804,5 +815,6 @@ export const useCalendar = (
         handleSwipe,
         selectCurrentDate,
         presetDateRange,
+        presetDate,
     };
 };

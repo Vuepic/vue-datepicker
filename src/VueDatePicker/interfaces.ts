@@ -121,6 +121,7 @@ export type CustomAltPosition = (el: HTMLElement | null) => {
 };
 
 export type PresetRange = { label: string; range: Date[] | string[]; style?: Record<string, string>; slot?: string };
+export type PresetDate = { label: string; date: Date | string; style?: Record<string, string>; slot?: string };
 
 export type Flow = 'month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds';
 export type MenuChildCmp = 'timePicker' | 'monthYearInput' | 'calendar';

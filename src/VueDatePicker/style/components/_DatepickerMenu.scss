@@ -80,7 +80,8 @@
   padding: 2px 0;
 }
 
-.dp__preset_ranges {
+.dp__preset_ranges,
+.dp__preset_dates {
   padding: 5px;
   border-inline-end: 1px solid var(--dp-border-color);
 }
@@ -95,7 +96,8 @@
   margin-inline-end: 1px solid var(--dp-border-color);
 }
 
-.dp__preset_range {
+.dp__preset_range,
+.dp__preset_date {
   display: block;
   white-space: nowrap;
   color: var(--dp-text-color);
