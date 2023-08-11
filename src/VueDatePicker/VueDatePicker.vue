@@ -298,7 +298,8 @@
             if (date.length === 2 && validateDate(date[0]) && validateDate(date[1])) {
                 return true;
             }
-            return validateDate(date[0]);
+            if (props.partialRange && !props.timePicker) return validateDate(date[0]);
+            return false;
         }
         return false;
     };

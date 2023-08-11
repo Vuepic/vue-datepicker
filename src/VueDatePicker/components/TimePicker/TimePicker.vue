@@ -138,7 +138,7 @@
     const { buildMatrix, setTimePicker } = useArrowNavigation();
     const slots = useSlots();
 
-    const { defaultedTransitions, defaultedAriaLabels } = useDefaults(props);
+    const { defaultedTransitions, defaultedAriaLabels, defaultedTextInput } = useDefaults(props);
     const { transitionName, showTransition } = useTransitions(defaultedTransitions);
     const { hideNavigationButtons } = useCommon();
 
@@ -233,7 +233,7 @@
     };
 
     const focusOverlay = () => {
-        if (overlayRef.value) {
+        if (overlayRef.value && !defaultedTextInput.value.enabled) {
             const el = findFocusableEl(overlayRef.value);
             if (el) {
                 el.focus({ preventScroll: true });

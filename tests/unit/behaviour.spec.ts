@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { add, addMonths, getMonth, getYear, set } from 'date-fns';
+import { add, addMonths, getHours, getMinutes, getMonth, getYear, set } from 'date-fns';
 
 import { resetDateTime } from '@/utils/date-utils';
 
@@ -78,5 +78,25 @@ describe('It should validate various picker scenarios', () => {
 
         expect(innerStartCell.classes()).toContain('dp__range_start');
         expect(innerEndCell.classes()).toContain('dp__range_end');
+    });
+
+    it('Should not enable partial range with text-input on time-picker (#505)', async () => {
+        const dp = await openMenu({ textInput: true, timePicker: true, range: true });
+        const today = new Date();
+        const hours = getHours(today);
+        const minutes = getMinutes(today);
+
+        const singleTime = `${hours}:${minutes}`;
+
+        const input = dp.find('input');
+        await input.setValue(singleTime);
+
+        expect(input.element.value).toBe(singleTime);
+
+        await input.trigger('keydown.enter');
+
+        expect(dp.emitted()).toHaveProperty('invalid-select', [
+            [[set(new Date(), { hours, minutes, seconds: 0, milliseconds: 0 })]],
+        ]);
     });
 });
