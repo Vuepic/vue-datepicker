@@ -227,8 +227,13 @@
         ev.preventDefault();
         ev.stopImmediatePropagation();
         ev.stopPropagation();
-        if (defaultedTextInput.value.enabled && defaultedTextInput.value.openMenu && !props.inlineWithInput) {
-            emit('toggle');
+        if (
+            defaultedTextInput.value.enabled &&
+            defaultedTextInput.value.openMenu &&
+            !props.inlineWithInput &&
+            !props.isMenuOpen
+        ) {
+            emit('open');
         } else if (!defaultedTextInput.value.enabled) {
             emit('toggle');
         }
