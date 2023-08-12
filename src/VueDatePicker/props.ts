@@ -13,7 +13,6 @@ import type {
     ModelType,
     ModelValue,
     OpenPosition,
-    PresetRange,
     WeekStartNum,
     WeekStartStr,
     CustomAltPosition,
@@ -26,6 +25,7 @@ import type {
     MultiCalendarsProp,
     DisabledTime,
     TextInputProp,
+    PresetDate,
 } from '@/interfaces';
 
 export const AllProps = {
@@ -74,7 +74,7 @@ export const AllProps = {
     escClose: { type: Boolean as PropType<boolean>, default: true },
     spaceConfirm: { type: Boolean as PropType<boolean>, default: true },
     monthChangeOnArrows: { type: Boolean as PropType<boolean>, default: true },
-    presetRanges: { type: Array as PropType<PresetRange[]>, default: () => [] },
+    presetDates: { type: Array as PropType<PresetDate[]>, default: () => [] },
     flow: { type: Array as PropType<Flow[]>, default: () => [] },
     partialFlow: { type: Boolean as PropType<boolean>, default: false },
     preventMinMaxNavigation: { type: Boolean as PropType<boolean>, default: false },

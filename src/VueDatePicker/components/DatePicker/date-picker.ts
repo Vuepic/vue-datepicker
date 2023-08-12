@@ -555,14 +555,17 @@ export const useDatePicker = (
     };
 
     // Called when the preset range is clicked
-    const presetDateRange = (dates: Date[] | string[], hasSlot?: boolean, noTz?: boolean): void => {
+    const presetDate = (value: Date[] | string[] | Date | string, hasSlot?: boolean, noTz?: boolean): void => {
         if (hasSlot) return;
-        if (dates.length && dates.length <= 2 && props.range) {
-            modelValue.value = dates.map((date) => getZonedDate(getDate(date), noTz ? undefined : props.timezone));
-            selectOnAutoApply();
-            if (props.multiCalendars) {
-                nextTick().then(() => mapInternalModuleValues(true));
-            }
+        if (Array.isArray(value) && value.length <= 2 && props.range) {
+            modelValue.value = value.map((date) => getZonedDate(getDate(date), noTz ? undefined : props.timezone));
+        } else if (!Array.isArray(value)) {
+            modelValue.value = getZonedDate(getDate(value), noTz ? undefined : props.timezone);
+        }
+
+        selectOnAutoApply();
+        if (props.multiCalendars) {
+            nextTick().then(() => mapInternalModuleValues(true));
         }
     };
 
@@ -625,7 +628,7 @@ export const useDatePicker = (
         handleArrow,
         selectDate,
         updateMonthYear,
-        presetDateRange,
+        presetDate,
         selectCurrentDate,
         updateTime,
     };

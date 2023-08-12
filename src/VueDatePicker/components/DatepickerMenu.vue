@@ -19,30 +19,30 @@
         <div
             ref="innerMenuRef"
             :class="{
-                dp__menu_content_wrapper: presetRanges?.length || !!$slots['left-sidebar'] || !!$slots['right-sidebar'],
+                dp__menu_content_wrapper: presetDates?.length || !!$slots['left-sidebar'] || !!$slots['right-sidebar'],
             }"
             :style="{ '--dp-menu-width': `${calendarWidth}px` }"
         >
             <div class="dp__sidebar_left" v-if="$slots['left-sidebar']">
                 <slot name="left-sidebar" v-bind="getSidebarProps()" />
             </div>
-            <div class="dp__preset_ranges">
-                <div v-for="(preset, i) in presetRanges" :key="i" :style="preset.style || {}" class="dp__preset_range">
+            <div class="dp--preset-dates">
+                <div v-for="(preset, i) in presetDates" :key="i" :style="preset.style || {}" class="dp--preset-range">
                     <template v-if="preset.slot">
                         <slot
                             :name="preset.slot"
-                            :preset-date-range="presetDateRange"
+                            :preset-date="presetDate"
                             :label="preset.label"
-                            :range="preset.range"
+                            :value="preset.value"
                         />
                     </template>
                     <template v-else>
                         <div
                             role="button"
                             tabindex="0"
-                            @click="presetDateRange(preset.range, !!preset.slot, preset.noTz)"
-                            @keydown.enter.prevent="presetDateRange(preset.range, !!preset.slot, preset.noTz)"
-                            @keydown.space.prevent="presetDateRange(preset.range, !!preset.slot, preset.noTz)"
+                            @click="presetDate(preset.value, !!preset.slot, preset.noTz)"
+                            @keydown.enter.prevent="presetDate(preset.value, !!preset.slot, preset.noTz)"
+                            @keydown.space.prevent="presetDate(preset.value, !!preset.slot, preset.noTz)"
                         >
                             {{ preset.label }}
                         </div>
@@ -332,8 +332,8 @@
         callChildFn('selectCurrentDate');
     };
 
-    const presetDateRange = (range: Date[] | string[], hasSlot?: boolean, noTz?: boolean) => {
-        callChildFn('presetDateRange', range, hasSlot, noTz);
+    const presetDate = (value: Date[] | string[] | string | Date, hasSlot?: boolean, noTz?: boolean) => {
+        callChildFn('presetDate', value, hasSlot, noTz);
     };
 
     const clearHoverDate = () => {

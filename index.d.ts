@@ -199,9 +199,9 @@ export interface VueDatePickerProps {
     formatLocale?: Locale;
     autocomplete?: string;
     multiDates?: boolean;
-    presetRanges?: {
+    presetDates?: {
         label: string;
-        range: Date[] | string[];
+        value: Date[] | string[] | string | Date;
         style?: Record<string, string>;
         slot?: string;
         noTz?: boolean;

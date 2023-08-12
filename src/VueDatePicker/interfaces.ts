@@ -122,9 +122,9 @@ export type CustomAltPosition = (el: HTMLElement | null) => {
     transform?: string;
 };
 
-export type PresetRange = {
+export type PresetDate = {
     label: string;
-    range: Date[] | string[];
+    value: Date[] | string[] | Date | string;
     style?: Record<string, string>;
     slot?: string;
     noTz?: boolean;
@@ -245,12 +245,7 @@ export type TimePickerProps = Partial<PickerBasePropsType> & {
     range: boolean;
 };
 
-export type MenuExposedFn =
-    | 'selectCurrentDate'
-    | 'presetDateRange'
-    | 'clearHoverDate'
-    | 'handleArrow'
-    | 'updateMonthYear';
+export type MenuExposedFn = 'selectCurrentDate' | 'presetDate' | 'clearHoverDate' | 'handleArrow' | 'updateMonthYear';
 
 export type OptionEnabled = boolean | number | string;
 

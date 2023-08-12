@@ -1,5 +1,5 @@
 import type { Slots } from 'vue';
-import type { PresetRange } from '@/interfaces';
+import type { PresetDate } from '@/interfaces';
 
 export const slots = [
     { name: 'clock-icon', use: ['time', 'calendar', 'shared'] },
@@ -53,7 +53,7 @@ const slotNames = {
 export const mapSlots = (
     slots: Slots,
     usage: 'all' | 'monthYear' | 'timePicker' | 'input' | 'action' | 'calendar' | 'menu' | 'shared',
-    presetRanges?: PresetRange[],
+    presetDates?: PresetDate[],
 ): string[] => {
     const toReturn: string[] = [];
 
@@ -63,8 +63,8 @@ export const mapSlots = (
         }
     });
 
-    if (presetRanges && presetRanges.length) {
-        presetRanges.forEach((preset) => {
+    if (presetDates && presetDates.length) {
+        presetDates.forEach((preset) => {
             if (preset.slot) {
                 toReturn.push(preset.slot);
             }

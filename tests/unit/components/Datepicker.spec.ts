@@ -275,7 +275,7 @@ describe('Logic connection', () => {
             presetDates: [{ label: 'Today', range }],
         });
 
-        menu.vm.presetDateRange(range);
+        menu.vm.presetDate(range);
 
         expect(dp.vm.internalModelValue).toHaveLength(2);
         expect(dp.vm.internalModelValue).toEqual(range);

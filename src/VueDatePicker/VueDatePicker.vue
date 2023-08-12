@@ -184,7 +184,7 @@
         }
     });
 
-    const slotList = mapSlots(slots, 'all', props.presetRanges);
+    const slotList = mapSlots(slots, 'all', props.presetDates);
     const inputSlots = mapSlots(slots, 'input');
 
     watch(

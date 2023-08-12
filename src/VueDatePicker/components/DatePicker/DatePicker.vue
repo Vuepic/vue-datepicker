@@ -129,7 +129,7 @@
         handleSwipe,
         selectDate,
         updateMonthYear,
-        presetDateRange,
+        presetDate,
         selectCurrentDate,
         updateTime,
     } = useDatePicker(props, emit, triggerCalendarTransition, updateFlowStep);
@@ -220,13 +220,13 @@
             updateTime,
             updateMonthYear,
             selectDate,
-            presetDateRange,
+            presetDate,
         };
     };
 
     defineExpose({
         clearHoverDate,
-        presetDateRange,
+        presetDate,
         selectCurrentDate,
         toggleMonthPicker,
         toggleYearPicker,
