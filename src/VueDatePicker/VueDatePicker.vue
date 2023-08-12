@@ -378,6 +378,7 @@
                 }
             }
             clearInternalValues();
+            emit('blur');
         }
     };
 
