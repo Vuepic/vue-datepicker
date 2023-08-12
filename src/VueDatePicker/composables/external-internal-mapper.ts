@@ -206,7 +206,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
     };
 
     const mapExternalToInternal = (value: ModelValue) => {
-        if (!value) return null;
+        if (!value || (Array.isArray(value) && !value.length)) return null;
         if (props.timePicker) return mapTimeExternalToInternal(convertType(value));
         if (props.monthPicker) return mapMonthExternalToInternal(convertType(value));
         if (props.yearPicker) return mapYearExternalToInternal(convertType(value));
