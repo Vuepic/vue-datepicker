@@ -154,15 +154,16 @@ export const useDatePicker = (
         }
     };
 
+    const getRangeFocusIndex = (dates: Date[]) => {
+        if (defaultedMultiCalendars.value.count) {
+            return Math.abs(differenceInMonths(dates[0], dates[1])) >= defaultedMultiCalendars.value.count ? 1 : 0;
+        }
+        return 1;
+    };
     // Assign range values
     const assignRangeValue = (dates: Date[], fromMount: boolean) => {
         if (dates[1] && props.showLastInRange) {
-            const ind =
-                defaultedMultiCalendars.value.count &&
-                Math.abs(differenceInMonths(dates[0], dates[1])) >= defaultedMultiCalendars.value.count
-                    ? 1
-                    : 0;
-            assignMonthAndYear(dates[ind], fromMount);
+            assignMonthAndYear(dates[getRangeFocusIndex(dates)], fromMount);
         } else {
             assignMonthAndYear(dates[0], fromMount);
         }
