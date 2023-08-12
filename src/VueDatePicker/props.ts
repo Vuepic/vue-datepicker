@@ -67,7 +67,6 @@ export const AllProps = {
     noToday: { type: Boolean as PropType<boolean>, default: false },
     disabledWeekDays: { type: Array as PropType<string[] | number[]>, default: () => [] },
     allowedDates: { type: Array as PropType<string[] | Date[]>, default: null },
-    showNowButton: { type: Boolean as PropType<boolean>, default: false },
     nowButtonLabel: { type: String as PropType<string>, default: 'Now' },
     markers: { type: Array as PropType<IMarker[]>, default: () => [] },
     modeHeight: { type: [Number, String] as PropType<number | string>, default: 255 },

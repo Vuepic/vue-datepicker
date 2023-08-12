@@ -175,7 +175,6 @@ export interface VueDatePickerProps {
     altPosition?: (el: HTMLElement | undefined) => { top: number | string; left: number | string; transform?: string };
     disabledWeekDays?: number[] | string[];
     allowedDates?: string[] | Date[];
-    showNowButton?: boolean;
     nowButtonLabel?: string;
     partialRange?: boolean;
     monthChangeOnScroll?: boolean | 'inverse';

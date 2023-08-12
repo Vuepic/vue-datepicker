@@ -35,7 +35,7 @@
                     <button
                         type="button"
                         ref="cancelButtonRef"
-                        v-if="showNowButton || defaultedActionRow.showNow"
+                        v-if="defaultedActionRow.showNow"
                         class="dp__action_button dp__action_cancel"
                         @click="$emit('select-now')"
                         @keydown.enter="$emit('select-now')"
