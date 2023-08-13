@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { add, addMonths, getHours, getMinutes, getMonth, getYear, set } from 'date-fns';
+import { add, addHours, addMinutes, addMonths, getHours, getMinutes, getMonth, getYear, set } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz/esm';
 
 import { resetDateTime } from '@/utils/date-utils';
@@ -114,5 +114,26 @@ describe('It should validate various picker scenarios', () => {
 
         expect(emitted).toHaveProperty('update:model-value', [[value]]);
         expect(emitted).toHaveProperty('update:model-timezone-value', [[utcToZonedTime(value, timezone)]]);
+    });
+
+    it('Should set predefined value in the time-picker and emit updated value', async () => {
+        const today = new Date();
+        const modelValue = { hours: getHours(today), minutes: getMinutes(today), seconds: 0 };
+        const dp = await openMenu({ timePicker: true, modelValue });
+
+        const hours = dp.find(`[data-test="hours-toggle-overlay-btn"]`);
+        const minutes = dp.find(`[data-test="minutes-toggle-overlay-btn"]`);
+
+        expect(hours.text()).toEqual(`${modelValue.hours}`);
+        expect(minutes.text()).toEqual(`${modelValue.minutes}`);
+
+        await dp.find(`[data-test="hours-time-inc-btn"]`).trigger('click');
+        await dp.find(`[data-test="minutes-time-inc-btn"]`).trigger('click');
+        await dp.find(`[data-test="select-button"]`).trigger('click');
+
+        const emitted = dp.emitted();
+        expect(emitted).toHaveProperty('update:model-value', [
+            [{ hours: getHours(addHours(today, 1)), minutes: getMinutes(addMinutes(today, 1)), seconds: 0 }],
+        ]);
     });
 });
