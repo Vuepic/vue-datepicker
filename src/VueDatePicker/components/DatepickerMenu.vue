@@ -26,7 +26,7 @@
             <div class="dp__sidebar_left" v-if="$slots['left-sidebar']">
                 <slot name="left-sidebar" v-bind="getSidebarProps()" />
             </div>
-            <div class="dp--preset-dates">
+            <div class="dp--preset-dates" v-if="presetDates.length">
                 <div v-for="(preset, i) in presetDates" :key="i" :style="preset.style || {}" class="dp--preset-range">
                     <template v-if="preset.slot">
                         <slot
