@@ -1,10 +1,11 @@
-import type { Component, ComponentPublicInstance, Ref } from 'vue';
 import { h, ref, render, toRef, watch } from 'vue';
-
-import type { ComponentRef, VueEmit } from '@/interfaces';
 import { OpenPosition } from '@/interfaces';
+
 import { unrefElement } from '@/utils/util';
 import { MenuPlacement } from '@/constants';
+
+import type { Component, ComponentPublicInstance, ComputedRef, Ref } from 'vue';
+import type { ComponentRef, InlineOptions, VueEmit } from '@/interfaces';
 import type { AllPropsType } from '@/props';
 
 /**
@@ -15,6 +16,7 @@ export const usePosition = (
     menuRefInner: Ref<ComponentPublicInstance | null>,
     inputRef: ComponentRef,
     pickerWrapperRef: Ref<HTMLElement | null>,
+    inline: ComputedRef<InlineOptions>,
     emit: VueEmit,
     props: AllPropsType,
 ) => {
@@ -92,7 +94,7 @@ export const usePosition = (
      * Recalculate param is added when the position is recalculated on scroll or resize
      */
     const setMenuPosition = (recalculate = true): void => {
-        if (!props.inline) {
+        if (!inline.value.enabled) {
             if (centered.value) return teleportCenter();
 
             if (props.altPosition !== null) return customAltPosition();

@@ -14,8 +14,8 @@
         @keydown.right.prevent="handleArrowKey('right')"
         @keydown="checkShiftKey"
     >
-        <div :class="disabledReadonlyOverlay" v-if="(disabled || readonly) && inline"></div>
-        <div :class="arrowClass" v-if="!inline && !teleportCenter"></div>
+        <div :class="disabledReadonlyOverlay" v-if="(disabled || readonly) && defaultedInline.enabled"></div>
+        <div :class="arrowClass" v-if="!defaultedInline.enabled && !teleportCenter"></div>
         <div
             ref="innerMenuRef"
             :class="{
@@ -171,7 +171,7 @@
 
     const { setMenuFocused, setShiftKey, control } = useState();
     const slots = useSlots();
-    const { defaultedTextInput } = useDefaults(props);
+    const { defaultedTextInput, defaultedInline } = useDefaults(props);
 
     const calendarWrapperRef = ref(null);
     const calendarWidth = ref(0);
@@ -187,7 +187,7 @@
             window.addEventListener('resize', getCalendarWidth);
 
             const menu = unrefElement(dpMenuRef);
-            if (menu && !defaultedTextInput.value.enabled && !props.inline) {
+            if (menu && !defaultedTextInput.value.enabled && !defaultedInline.value.enabled) {
                 setMenuFocused(true);
                 focusMenu();
             }
@@ -261,8 +261,8 @@
     const dpMenuClass = computed(
         (): DynamicClass => ({
             dp__menu: true,
-            dp__menu_index: !props.inline,
-            dp__relative: props.inline,
+            dp__menu_index: !defaultedInline.value.enabled,
+            dp__relative: defaultedInline.value.enabled,
             [props.menuClassName]: !!props.menuClassName,
         }),
     );

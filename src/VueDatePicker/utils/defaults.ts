@@ -9,6 +9,8 @@ import type {
     MultiCalendarsOptions,
     OptionEnabled,
     TextInputProp,
+    InlineProp,
+    InlineOptions,
 } from '@/interfaces';
 
 export const mergeDefaultTransitions = (conf: Partial<Transition>): Transition =>
@@ -60,14 +62,14 @@ const getMultiCalendarsCount = (option: OptionEnabled) => {
 
 export const defaultMultiCalendars = (multiCalendars: MultiCalendarsProp): MultiCalendarsOptions => {
     const option = Array.isArray(multiCalendars) ? multiCalendars[0] : multiCalendars;
-    const addOptions = Array.isArray(multiCalendars) ? multiCalendars[1] : {};
+    const addOptions = Array.isArray(multiCalendars) ? multiCalendars[1] ?? {} : {};
     const count = getMultiCalendarsCount(option);
 
     return {
         count,
         static: true,
         solo: false,
-        ...(addOptions ? addOptions : {}),
+        ...addOptions,
     };
 };
 
@@ -114,3 +116,14 @@ export const getDefaultFilters = (filters: Partial<DateFilter>): DateFilter =>
 
 export const getDefaultActionRowData = (actionRow: Partial<ActionRowData>): ActionRowData =>
     Object.assign({ showSelect: true, showCancel: true, showNow: false, showPreview: true }, actionRow);
+
+export const getDefaultInlineOptions = (inline: InlineProp): InlineOptions => {
+    const defaultOptions = { input: false };
+    if (Array.isArray(inline)) {
+        return { enabled: inline[0], ...defaultOptions, ...(inline[1] ? inline[1] : {}) };
+    }
+    return {
+        enabled: inline,
+        ...defaultOptions,
+    };
+};

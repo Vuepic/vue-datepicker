@@ -273,3 +273,10 @@ export interface TimeValuesInv {
 }
 
 export type TextInputProp = boolean | [boolean, Partial<TextInputOptions>];
+
+export interface InlineOptions {
+    enabled: boolean;
+    input: boolean;
+}
+
+export type InlineProp = boolean | [boolean, { input?: boolean }];

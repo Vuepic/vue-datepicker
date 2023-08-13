@@ -1,9 +1,9 @@
 <template>
     <div @click="handleOpen">
-        <slot v-if="$slots.trigger && !$slots['dp-input'] && !inline" name="trigger" />
-        <div v-if="!$slots.trigger && (!inline || inlineWithInput)" class="dp__input_wrap">
+        <slot v-if="$slots.trigger && !$slots['dp-input'] && !defaultedInline.enabled" name="trigger" />
+        <div v-if="!$slots.trigger && (!defaultedInline.enabled || defaultedInline.input)" class="dp__input_wrap">
             <slot
-                v-if="$slots['dp-input'] && !$slots.trigger && !inline"
+                v-if="$slots['dp-input'] && !$slots.trigger && !defaultedInline.enabled"
                 name="dp-input"
                 :value="inputValue"
                 :is-menu-open="isMenuOpen"
@@ -102,7 +102,8 @@
         ...AllProps,
     });
 
-    const { defaultedTextInput, defaultedAriaLabels, getDefaultPattern, getDefaultStartTime } = useDefaults(props);
+    const { defaultedTextInput, defaultedAriaLabels, defaultedInline, getDefaultPattern, getDefaultStartTime } =
+        useDefaults(props);
 
     const parsedDate = ref();
     const inputRef = ref<HTMLElement | null>(null);
@@ -230,7 +231,7 @@
         if (
             defaultedTextInput.value.enabled &&
             defaultedTextInput.value.openMenu &&
-            !props.inlineWithInput &&
+            !defaultedInline.value.input &&
             !props.isMenuOpen
         ) {
             emit('open');
@@ -242,7 +243,7 @@
     const handleBlur = (): void => {
         emit('real-blur');
         isFocused.value = false;
-        if (!props.isMenuOpen || (props.inline && props.inlineWithInput)) {
+        if (!props.isMenuOpen || (defaultedInline.value.enabled && defaultedInline.value.input)) {
             emit('blur');
         }
         if (props.autoApply && defaultedTextInput.value.enabled && parsedDate.value && !props.isMenuOpen) {

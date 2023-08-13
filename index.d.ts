@@ -143,8 +143,7 @@ export interface VueDatePickerProps {
     disableMonthYearSelect?: boolean;
     yearRange?: number[];
     disabledDates?: Date[] | string[] | ((date: Date) => boolean);
-    inline?: boolean;
-    inlineWithInput?: boolean;
+    inline?: boolean | [boolean, { input?: boolean }];
     selectText?: string;
     cancelText?: string;
     weekNumName?: string;

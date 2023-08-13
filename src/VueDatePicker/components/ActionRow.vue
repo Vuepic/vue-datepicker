@@ -24,7 +24,7 @@
                     <button
                         type="button"
                         ref="cancelButtonRef"
-                        v-if="!inline && defaultedActionRow.showCancel"
+                        v-if="!defaultedInline.enabled && defaultedActionRow.showCancel"
                         class="dp__action_button dp__action_cancel"
                         @click="$emit('close-picker')"
                         @keydown.enter="$emit('close-picker')"
@@ -91,6 +91,7 @@
         defaultedPreviewFormat,
         defaultedMultiCalendars,
         defaultedTextInput,
+        defaultedInline,
         getDefaultPattern,
     } = useDefaults(props);
     const { isValidTime } = useValidation(props);

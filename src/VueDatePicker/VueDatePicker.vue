@@ -20,14 +20,14 @@
                 <slot :name="slot" v-bind="args" />
             </template>
         </DatepickerInput>
-        <transition :name="menuTransition(openOnTop)" :css="showTransition && !inline">
+        <transition :name="menuTransition(openOnTop)" :css="showTransition && !defaultedInline.enabled">
             <component
                 ref="dpWrapMenuRef"
                 v-if="isOpen"
                 :is="teleport ? TeleportCmp : 'div'"
                 v-bind="menuWrapProps"
-                :class="{ 'dp--menu-wrapper': !inline }"
-                :style="!inline ? menuStyle : undefined"
+                :class="{ 'dp--menu-wrapper': !defaultedInline.enabled }"
+                :style="!defaultedInline.enabled ? menuStyle : undefined"
             >
                 <DatepickerMenu
                     ref="dpMenuRef"
@@ -155,13 +155,13 @@
     const { setMenuFocused, setShiftKey } = useState();
     const { clearArrowNav } = useArrowNavigation();
     const { mapDatesArrToMap, validateDate, isValidTime } = useValidation(props);
-    const { defaultedTransitions, defaultedTextInput } = useDefaults(props);
+    const { defaultedTransitions, defaultedTextInput, defaultedInline } = useDefaults(props);
     const { menuTransition, showTransition } = useTransitions(defaultedTransitions);
 
     onMounted(() => {
         parseExternalModelValue(props.modelValue);
         nextTick().then(() => {
-            if (!props.inline) {
+            if (!defaultedInline.value.enabled) {
                 const el = getScrollableParent(pickerWrapperRef.value);
                 el.addEventListener('scroll', onScroll);
 
@@ -169,14 +169,14 @@
             }
         });
 
-        if (props.inline) {
+        if (defaultedInline.value.enabled) {
             isOpen.value = true;
         }
         mapDatesArrToMap(arrMapValues);
     });
 
     onUnmounted(() => {
-        if (!props.inline) {
+        if (!defaultedInline.value.enabled) {
             const el = getScrollableParent(pickerWrapperRef.value);
             if (el) {
                 el.removeEventListener('scroll', onScroll);
@@ -201,6 +201,7 @@
         dpMenuRef,
         inputRef,
         pickerWrapperRef,
+        defaultedInline,
         emit,
         props,
     );
@@ -219,8 +220,8 @@
             dp__main: true,
             dp__theme_dark: props.dark,
             dp__theme_light: !props.dark,
-            dp__flex_display: props.inline,
-            dp__flex_display_with_input: props.inlineWithInput,
+            dp__flex_display: defaultedInline.value.enabled,
+            dp__flex_display_with_input: defaultedInline.value.input,
         }),
     );
 
@@ -229,7 +230,7 @@
         if (props.teleport) {
             return {
                 to: typeof props.teleport === 'boolean' ? 'body' : props.teleport,
-                disabled: props.inline,
+                disabled: defaultedInline.value.enabled,
             };
         }
         return { class: 'dp__outer_menu_wrap' };
@@ -367,7 +368,7 @@
      * Closes the menu and clears the internal data
      */
     const closeMenu = (): void => {
-        if (!props.inline) {
+        if (!defaultedInline.value.enabled) {
             if (isOpen.value) {
                 isOpen.value = false;
                 xCorrect.value = false;

@@ -26,6 +26,7 @@ import type {
     DisabledTime,
     TextInputProp,
     PresetDate,
+    InlineProp,
 } from '@/interfaces';
 
 export const AllProps = {
@@ -137,7 +138,6 @@ export const AllProps = {
     required: { type: Boolean as PropType<boolean>, default: false },
     autocomplete: { type: String as PropType<string>, default: 'off' },
     inputClassName: { type: String as PropType<string>, default: null },
-    inlineWithInput: { type: Boolean as PropType<boolean>, default: false },
     fixedStart: { type: Boolean as PropType<boolean>, default: false },
     fixedEnd: { type: Boolean as PropType<boolean>, default: false },
     timePicker: { type: Boolean as PropType<boolean>, default: false },
@@ -156,7 +156,7 @@ export const AllProps = {
     uid: { type: String as PropType<string>, default: null },
     disabled: { type: Boolean as PropType<boolean>, default: false },
     readonly: { type: Boolean as PropType<boolean>, default: false },
-    inline: { type: Boolean as PropType<boolean>, default: false },
+    inline: { type: [Boolean, Array] as PropType<InlineProp>, default: false },
     textInput: { type: [Boolean, Array] as PropType<TextInputProp>, default: false },
     onClickOutside: { type: Function as PropType<(validate: () => boolean) => void>, default: null },
     noDisabledRange: { type: Boolean as PropType<boolean>, default: false },
