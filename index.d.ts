@@ -79,7 +79,7 @@ export interface VueDatePickerProps {
     is24?: boolean;
     enableTimePicker?: boolean;
     range?: boolean;
-    multiCalendars?: DpOptionEnabled | [DpOptionEnabled, Partial<{ static: boolean; solo: boolean }> | undefined];
+    multiCalendars?: DpOptionEnabled | Partial<{ static: boolean; solo: boolean; count: number | string }>;
     modelValue?: ModelValue;
     locale?: string;
     position?: 'left' | 'center' | 'right';
@@ -143,7 +143,7 @@ export interface VueDatePickerProps {
     disableMonthYearSelect?: boolean;
     yearRange?: number[];
     disabledDates?: Date[] | string[] | ((date: Date) => boolean);
-    inline?: boolean | [boolean, { input?: boolean }];
+    inline?: boolean | { input?: boolean };
     selectText?: string;
     cancelText?: string;
     weekNumName?: string;
@@ -153,16 +153,13 @@ export interface VueDatePickerProps {
     closeOnAutoApply?: boolean;
     textInput?:
         | boolean
-        | [
-              boolean,
-              {
-                  enterSubmit?: boolean;
-                  tabSubmit?: boolean;
-                  openMenu?: boolean;
-                  rangeSeparator?: string;
-                  format?: string | string[] | ((value: string) => Date | null);
-              },
-          ];
+        | {
+              enterSubmit?: boolean;
+              tabSubmit?: boolean;
+              openMenu?: boolean;
+              rangeSeparator?: string;
+              format?: string | string[] | ((value: string) => Date | null);
+          };
     monthNameFormat?: 'long' | 'short';
     startDate?: string | Date;
     startTime?: PartialTimeObj | PartialTimeObj[];
@@ -267,7 +264,6 @@ export interface VueDatePickerProps {
     showLastInRange?: boolean;
     timePickerInline?: boolean;
     calendar?: (weeks: CalendarWeek[]) => CalendarWeek[];
-    autoApplyMonth?: boolean;
 }
 
 export type DatePickerInstance = ComponentPublicInstance<PublicMethods> | null;

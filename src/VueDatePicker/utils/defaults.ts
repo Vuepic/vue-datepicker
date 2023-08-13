@@ -54,23 +54,23 @@ export const defaultAriaLabels = (labels: Partial<AriaLabels>): AriaLabels => {
     );
 };
 
-const getMultiCalendarsCount = (option: OptionEnabled) => {
+const getMultiCalendarsCount = (option?: OptionEnabled) => {
     if (!option) return 0;
     if (typeof option === 'boolean') return option ? 2 : 0;
     return +option >= 2 ? +option : 2;
 };
 
-export const defaultMultiCalendars = (multiCalendars: MultiCalendarsProp): MultiCalendarsOptions => {
-    const option = Array.isArray(multiCalendars) ? multiCalendars[0] : multiCalendars;
-    const addOptions = Array.isArray(multiCalendars) ? multiCalendars[1] ?? {} : {};
-    const count = getMultiCalendarsCount(option);
-
-    return {
-        count,
+export const defaultMultiCalendars = (multiCalendars?: MultiCalendarsProp): MultiCalendarsOptions => {
+    const isConfig = typeof multiCalendars === 'object';
+    const defaultOptions = {
         static: true,
         solo: false,
-        ...addOptions,
     };
+    const addOptions = isConfig ? multiCalendars : ({} as MultiCalendarsOptions);
+    const option = isConfig ? addOptions.count ?? true : multiCalendars;
+    const count = getMultiCalendarsCount(option);
+
+    return Object.assign(defaultOptions, addOptions, { count });
 };
 
 export const defaultPreviewFormat = (
@@ -102,8 +102,8 @@ export const getDefaultTextInputOptions = (textInput: TextInputProp): TextInputO
         rangeSeparator: ' - ',
     };
 
-    if (Array.isArray(textInput)) {
-        return { enabled: textInput[0], ...defaultOptions, ...(textInput[1] ? textInput[1] : {}) };
+    if (typeof textInput === 'object') {
+        return Object.assign({ enabled: true }, defaultOptions, textInput);
     }
     return { ...defaultOptions, enabled: textInput };
 };
@@ -119,8 +119,8 @@ export const getDefaultActionRowData = (actionRow: Partial<ActionRowData>): Acti
 
 export const getDefaultInlineOptions = (inline: InlineProp): InlineOptions => {
     const defaultOptions = { input: false };
-    if (Array.isArray(inline)) {
-        return { enabled: inline[0], ...defaultOptions, ...(inline[1] ? inline[1] : {}) };
+    if (typeof inline === 'object') {
+        return Object.assign(defaultOptions, inline, { enabled: true });
     }
     return {
         enabled: inline,

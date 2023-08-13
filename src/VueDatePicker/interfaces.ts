@@ -249,16 +249,13 @@ export type MenuExposedFn = 'selectCurrentDate' | 'presetDate' | 'clearHoverDate
 
 export type OptionEnabled = boolean | number | string;
 
-export interface MultiCalendarsPropOptions {
+export interface MultiCalendarsOptions {
     static: boolean;
     solo: boolean;
-}
-
-export type MultiCalendarsProp = OptionEnabled | [OptionEnabled, Partial<MultiCalendarsPropOptions> | undefined];
-
-export interface MultiCalendarsOptions extends MultiCalendarsPropOptions {
     count: number;
 }
+
+export type MultiCalendarsProp = OptionEnabled | Partial<MultiCalendarsOptions>;
 
 export interface DisabledTime {
     hours: number | string;
@@ -272,11 +269,11 @@ export interface TimeValuesInv {
     seconds?: (number | undefined)[];
 }
 
-export type TextInputProp = boolean | [boolean, Partial<TextInputOptions>];
+export type TextInputProp = boolean | Partial<TextInputOptions>;
 
 export interface InlineOptions {
     enabled: boolean;
     input: boolean;
 }
 
-export type InlineProp = boolean | [boolean, { input?: boolean }];
+export type InlineProp = boolean | { input?: boolean };

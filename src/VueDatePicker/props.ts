@@ -30,7 +30,7 @@ import type {
 } from '@/interfaces';
 
 export const AllProps = {
-    multiCalendars: { type: [Boolean, Number, String, Array] as PropType<MultiCalendarsProp>, default: null },
+    multiCalendars: { type: [Boolean, Number, String, Object] as PropType<MultiCalendarsProp>, default: undefined },
     modelValue: { type: [String, Date, Array, Object, Number] as PropType<ModelValue>, default: null },
     modelType: { type: String as PropType<ModelType>, default: null },
     position: { type: String as PropType<OpenPosition>, default: 'center' },
@@ -156,8 +156,8 @@ export const AllProps = {
     uid: { type: String as PropType<string>, default: null },
     disabled: { type: Boolean as PropType<boolean>, default: false },
     readonly: { type: Boolean as PropType<boolean>, default: false },
-    inline: { type: [Boolean, Array] as PropType<InlineProp>, default: false },
-    textInput: { type: [Boolean, Array] as PropType<TextInputProp>, default: false },
+    inline: { type: [Boolean, Object] as PropType<InlineProp>, default: false },
+    textInput: { type: [Boolean, Object] as PropType<TextInputProp>, default: false },
     onClickOutside: { type: Function as PropType<(validate: () => boolean) => void>, default: null },
     noDisabledRange: { type: Boolean as PropType<boolean>, default: false },
     sixWeeks: { type: [Boolean, String] as PropType<boolean | SixWeekMode>, default: false },
@@ -169,7 +169,6 @@ export const AllProps = {
     showLastInRange: { type: Boolean as PropType<boolean>, default: true },
     timePickerInline: { type: Boolean as PropType<boolean>, default: false },
     calendar: { type: Function as PropType<(month: ICalendarDate[]) => ICalendarDate[]>, default: null },
-    autoApplyMonth: { type: Boolean as PropType<boolean>, default: true },
 };
 
 export const PickerBaseProps = {

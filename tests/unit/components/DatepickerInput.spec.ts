@@ -113,7 +113,7 @@ describe('Datepicker input component', () => {
 
         const wrapper = mount(DatePicker, {
             props: {
-                textInput: [true, { format: inputPattern }],
+                textInput: { format: inputPattern },
                 format: formatPattern,
                 modelValue: new Date(),
             },
