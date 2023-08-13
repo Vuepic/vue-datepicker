@@ -37,14 +37,12 @@ export const usePosition = (
 
     // Get correct offset of an element
     const getOffset = (el: HTMLElement): { top: number; left: number } => {
-        if (props.teleport) {
-            const rect = el.getBoundingClientRect();
-            return {
-                left: rect.left + window.scrollX,
-                top: rect.top + window.scrollY,
-            };
-        }
-        return { top: 0, left: 0 };
+        const rect = el.getBoundingClientRect();
+
+        return {
+            left: rect.left + window.scrollX,
+            top: rect.top + window.scrollY,
+        };
     };
 
     const setPositionRight = (left: number, width: number): void => {

@@ -111,8 +111,10 @@
   font-family: var(--dp-font-family);
   user-select: none;
   box-sizing: border-box;
-  position: relative;
+  //position: relative;
   width: 100%;
+  height: 100%;
+  overflow: auto;
 }
 
 .dp__pointer {
