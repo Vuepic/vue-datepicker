@@ -11,6 +11,7 @@ import type { Locale } from 'date-fns';
 
 export type EmitEvents =
     | 'update:model-value'
+    | 'update:model-timezone-value'
     | 'text-submit'
     | 'closed'
     | 'cleared'
@@ -256,6 +257,7 @@ export interface VueDatePickerProps {
     noDisabledRange?: boolean;
     sixWeeks?: boolean | 'append' | 'prepend' | 'center' | 'fair';
     timezone?: string;
+    emitTimezone?: string;
     allowPreventDefault?: boolean;
     disableYearSelect?: boolean;
     closeOnClearValue?: boolean;

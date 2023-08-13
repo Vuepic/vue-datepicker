@@ -49,6 +49,7 @@ export const AllProps = {
     offset: { type: [Number, String] as PropType<number | string>, default: 10 },
     hideNavigation: { type: Array as PropType<Flow[]>, default: () => [] },
     timezone: { type: String as PropType<string>, default: null },
+    emitTimezone: { type: String as PropType<string>, default: null },
     vertical: { type: Boolean as PropType<boolean>, default: false },
     disableMonthYearSelect: { type: Boolean as PropType<boolean>, default: false },
     disableYearSelect: { type: Boolean as PropType<boolean>, default: false },

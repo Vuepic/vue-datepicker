@@ -304,8 +304,14 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
         return getZonedToUtc(val);
     };
 
-    const emitValue = (value: ModelValue): void => {
+    const emitValue = (value: ModelValue, useTz = false): void => {
         emit('update:model-value', value);
+        if (props.emitTimezone && useTz) {
+            const zonedValue = Array.isArray(value)
+                ? value.map((date) => getZonedDate(convertType(date)), props.emitTimezone)
+                : getZonedDate(convertType(value), props.emitTimezone);
+            emit('update:model-timezone-value', zonedValue);
+        }
     };
 
     /**
@@ -340,8 +346,8 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
         if (props.monthPicker) return modeEmitter(getMonthVal);
         if (props.timePicker) return modeEmitter(getTimeVal);
         if (props.yearPicker) return modeEmitter(getYear);
-        if (props.weekPicker) return emitValue(internalModelValue.value);
-        return emitValue(mapInternalDatesToExternal());
+        if (props.weekPicker) return emitValue(internalModelValue.value, true);
+        return emitValue(mapInternalDatesToExternal(), true);
     };
 
     // Check if there is any selection before emitting value, to prevent null setting

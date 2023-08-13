@@ -106,6 +106,7 @@
 
     const emit = defineEmits([
         'update:model-value',
+        'update:model-timezone-value',
         'text-submit',
         'closed',
         'cleared',
@@ -284,6 +285,7 @@
         inputValue.value = '';
         clearInternalValues();
         emit('update:model-value', null);
+        emit('update:model-timezone-value', null);
         emit('cleared');
         if (props.closeOnClearValue) {
             closeMenu();

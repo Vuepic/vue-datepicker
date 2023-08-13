@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { add, addMonths, getHours, getMinutes, getMonth, getYear, set } from 'date-fns';
+import { utcToZonedTime } from 'date-fns-tz/esm';
 
 import { resetDateTime } from '@/utils/date-utils';
 
@@ -98,5 +99,20 @@ describe('It should validate various picker scenarios', () => {
         expect(dp.emitted()).toHaveProperty('invalid-select', [
             [[set(new Date(), { hours, minutes, seconds: 0, milliseconds: 0 })]],
         ]);
+    });
+
+    it('Should emit regular and zoned date value', async () => {
+        const timezone = 'UTC';
+        const dp = await openMenu({ emitTimezone: timezone });
+        const today = new Date();
+        const value = set(today, { seconds: 0, milliseconds: 0 });
+
+        await dp.find(`[data-test="${resetDateTime(today)}"]`).trigger('click');
+        await dp.find(`[data-test="select-button"]`).trigger('click');
+
+        const emitted = dp.emitted();
+
+        expect(emitted).toHaveProperty('update:model-value', [[value]]);
+        expect(emitted).toHaveProperty('update:model-timezone-value', [[utcToZonedTime(value, timezone)]]);
     });
 });
