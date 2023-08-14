@@ -61,11 +61,12 @@ const getMultiCalendarsCount = (option?: OptionEnabled) => {
 };
 
 export const defaultMultiCalendars = (multiCalendars?: MultiCalendarsProp): MultiCalendarsOptions => {
-    const isConfig = typeof multiCalendars === 'object';
+    const isConfig = typeof multiCalendars === 'object' && multiCalendars;
     const defaultOptions = {
         static: true,
         solo: false,
     };
+    if (!multiCalendars) return { ...defaultOptions, count: getMultiCalendarsCount(false) };
     const addOptions = isConfig ? multiCalendars : ({} as MultiCalendarsOptions);
     const option = isConfig ? addOptions.count ?? true : multiCalendars;
     const count = getMultiCalendarsCount(option);
