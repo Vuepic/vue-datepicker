@@ -104,7 +104,7 @@ export const getDefaultTextInputOptions = (textInput: TextInputProp): TextInputO
     };
 
     if (typeof textInput === 'object') {
-        return Object.assign({ enabled: true }, defaultOptions, textInput);
+        return { ...defaultOptions, ...(textInput ?? {}), enabled: true };
     }
     return { ...defaultOptions, enabled: textInput };
 };

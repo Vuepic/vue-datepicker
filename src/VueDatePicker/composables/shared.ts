@@ -12,10 +12,8 @@ export const handleMultiDatesSelect = (
         if (modelValue.value.some((dateVal) => isDateEqual(date, dateVal))) {
             const value = modelValue.value.filter((dateVal) => !isDateEqual(dateVal, date));
             modelValue.value = !value.length ? null : value;
-        } else {
-            if ((multiDatesLimit && +multiDatesLimit > modelValue.value.length) || !multiDatesLimit) {
-                modelValue.value.push(date);
-            }
+        } else if ((multiDatesLimit && +multiDatesLimit > modelValue.value.length) || !multiDatesLimit) {
+            modelValue.value.push(date);
         }
     } else {
         modelValue.value = [date];
@@ -35,15 +33,14 @@ export const setMonthOrYearRange = (
     if (!rangeDate.length) {
         rangeDate = [date];
         emit('range-start', date);
+    } else if (isDateBefore(date, rangeDate[0])) {
+        rangeDate.unshift(date);
+        emit('range-start', rangeDate[0]);
+        emit('range-start', rangeDate[1]);
     } else {
-        if (isDateBefore(date, rangeDate[0])) {
-            rangeDate.unshift(date);
-            emit('range-start', rangeDate[0]);
-            emit('range-start', rangeDate[1]);
-        } else {
-            rangeDate[1] = date;
-            emit('range-end', date);
-        }
+        rangeDate[1] = date;
+        emit('range-end', date);
     }
+
     modelValue.value = rangeDate;
 };

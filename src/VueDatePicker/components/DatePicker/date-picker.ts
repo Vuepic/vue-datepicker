@@ -460,15 +460,13 @@ export const useDatePicker = (
         if (!tempRange.value[0]) {
             tempRange.value[0] = getDate(day.value);
             emit('range-start', tempRange.value[0]);
-        } else {
-            if (checkMinMaxRange(getDate(day.value), modelValue.value) && !includesDisabled(day.value)) {
-                if (isDateBefore(getDate(day.value), getDate(tempRange.value[0]))) {
-                    tempRange.value.unshift(getDate(day.value));
-                    emit('range-end', tempRange.value[0]);
-                } else {
-                    tempRange.value[1] = getDate(day.value);
-                    emit('range-end', tempRange.value[1]);
-                }
+        } else if (checkMinMaxRange(getDate(day.value), modelValue.value) && !includesDisabled(day.value)) {
+            if (isDateBefore(getDate(day.value), getDate(tempRange.value[0]))) {
+                tempRange.value.unshift(getDate(day.value));
+                emit('range-end', tempRange.value[0]);
+            } else {
+                tempRange.value[1] = getDate(day.value);
+                emit('range-end', tempRange.value[1]);
             }
         }
     };
@@ -574,15 +572,14 @@ export const useDatePicker = (
     const selectCurrentDate = (): void => {
         if (!props.range) {
             modelValue.value = getDate();
+        } else if (modelValue.value && Array.isArray(modelValue.value) && modelValue.value[0]) {
+            modelValue.value = isDateBefore(getDate(), modelValue.value[0])
+                ? [getDate(), modelValue.value[0]]
+                : [modelValue.value[0], getDate()];
         } else {
-            if (modelValue.value && Array.isArray(modelValue.value) && modelValue.value[0]) {
-                modelValue.value = isDateBefore(getDate(), modelValue.value[0])
-                    ? [getDate(), modelValue.value[0]]
-                    : [modelValue.value[0], getDate()];
-            } else {
-                modelValue.value = [getDate()];
-            }
+            modelValue.value = [getDate()];
         }
+
         selectOnAutoApply();
     };
 

@@ -63,7 +63,7 @@ export const mapSlots = (
         }
     });
 
-    if (presetDates && presetDates.length) {
+    if (presetDates?.length) {
         presetDates.forEach((preset) => {
             if (preset.slot) {
                 toReturn.push(preset.slot);
