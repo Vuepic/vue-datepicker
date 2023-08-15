@@ -168,10 +168,10 @@ export const isDateAfter = (date: DateValue, dateToCompare: DateValue): boolean 
 };
 
 export const isDateBetween = (range: Date[], hoverDate: Date | null, dateToCheck: Date): boolean => {
-    if (range && range[0] && range[1]) {
+    if (range?.[0] && range?.[1]) {
         return isDateAfter(dateToCheck, range[0]) && isDateBefore(dateToCheck, range[1]);
     }
-    if (range && range[0] && hoverDate) {
+    if (range?.[0] && hoverDate) {
         return (
             (isDateAfter(dateToCheck, range[0]) && isDateBefore(dateToCheck, hoverDate)) ||
             (isDateBefore(dateToCheck, range[0]) && isDateAfter(dateToCheck, hoverDate))

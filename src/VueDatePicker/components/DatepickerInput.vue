@@ -163,13 +163,11 @@
     const parseInput = (value: string) => {
         if (props.range) {
             handleRangeTextInput(value);
+        } else if (props.multiDates) {
+            const dates = value.split(`;`);
+            parsedDate.value = dates.map((val) => parser(val.trim())).filter((val) => val);
         } else {
-            if (props.multiDates) {
-                const dates = value.split(`;`);
-                parsedDate.value = dates.map((val) => parser(val.trim())).filter((val) => val);
-            } else {
-                parsedDate.value = parser(value);
-            }
+            parsedDate.value = parser(value);
         }
     };
 

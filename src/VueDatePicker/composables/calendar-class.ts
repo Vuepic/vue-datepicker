@@ -204,7 +204,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
 
     // Check if the given week day should be highlighted
     const highlightedWeekDay = (day: ICalendarDay) => {
-        return props.highlightWeekDays && props.highlightWeekDays.includes(day.value.getDay());
+        return props.highlightWeekDays?.includes(day.value.getDay());
     };
 
     const isBetween = (day: ICalendarDay) => {

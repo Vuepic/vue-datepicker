@@ -13,45 +13,40 @@ import type {
     InlineOptions,
 } from '@/interfaces';
 
-export const mergeDefaultTransitions = (conf: Partial<Transition>): Transition =>
-    Object.assign(
-        {
-            menuAppearTop: 'dp-menu-appear-top',
-            menuAppearBottom: 'dp-menu-appear-bottom',
-            open: 'dp-slide-down',
-            close: 'dp-slide-up',
-            next: 'calendar-next',
-            previous: 'calendar-prev',
-            vNext: 'dp-slide-up',
-            vPrevious: 'dp-slide-down',
-        },
-        conf,
-    );
+export const mergeDefaultTransitions = (conf: Partial<Transition>): Transition => ({
+    menuAppearTop: 'dp-menu-appear-top',
+    menuAppearBottom: 'dp-menu-appear-bottom',
+    open: 'dp-slide-down',
+    close: 'dp-slide-up',
+    next: 'calendar-next',
+    previous: 'calendar-prev',
+    vNext: 'dp-slide-up',
+    vPrevious: 'dp-slide-down',
+    ...(conf ?? {}),
+});
 
 export const defaultAriaLabels = (labels: Partial<AriaLabels>): AriaLabels => {
-    return Object.assign(
-        {
-            toggleOverlay: 'Toggle overlay',
-            menu: 'Datepicker menu',
-            input: 'Datepicker input',
-            calendarWrap: 'Calendar wrapper',
-            calendarDays: 'Calendar days',
-            openTimePicker: 'Open time picker',
-            closeTimePicker: 'Close time Picker',
-            incrementValue: (type: string) => `Increment ${type}`,
-            decrementValue: (type: string) => `Decrement ${type}`,
-            openTpOverlay: (type: string) => `Open ${type} overlay`,
-            amPmButton: 'Switch AM/PM mode',
-            openYearsOverlay: 'Open years overlay',
-            openMonthsOverlay: 'Open months overlay',
-            nextMonth: 'Next month',
-            prevMonth: 'Previous month',
-            nextYear: 'Next year',
-            prevYear: 'Previous year',
-            day: () => '',
-        },
-        labels,
-    );
+    return {
+        toggleOverlay: 'Toggle overlay',
+        menu: 'Datepicker menu',
+        input: 'Datepicker input',
+        calendarWrap: 'Calendar wrapper',
+        calendarDays: 'Calendar days',
+        openTimePicker: 'Open time picker',
+        closeTimePicker: 'Close time Picker',
+        incrementValue: (type: string) => `Increment ${type}`,
+        decrementValue: (type: string) => `Decrement ${type}`,
+        openTpOverlay: (type: string) => `Open ${type} overlay`,
+        amPmButton: 'Switch AM/PM mode',
+        openYearsOverlay: 'Open years overlay',
+        openMonthsOverlay: 'Open months overlay',
+        nextMonth: 'Next month',
+        prevMonth: 'Previous month',
+        nextYear: 'Next year',
+        prevYear: 'Previous year',
+        day: () => '',
+        ...(labels ?? {}),
+    };
 };
 
 const getMultiCalendarsCount = (option?: OptionEnabled) => {
@@ -112,16 +107,25 @@ export const getDefaultTextInputOptions = (textInput: TextInputProp): TextInputO
 /**
  * Default filters to merge with user provided values
  */
-export const getDefaultFilters = (filters: Partial<DateFilter>): DateFilter =>
-    Object.assign({ months: [], years: [], times: { hours: [], minutes: [], seconds: [] } }, filters);
+export const getDefaultFilters = (filters: Partial<DateFilter>): DateFilter => ({
+    months: [],
+    years: [],
+    times: { hours: [], minutes: [], seconds: [] },
+    ...(filters ?? {}),
+});
 
-export const getDefaultActionRowData = (actionRow: Partial<ActionRowData>): ActionRowData =>
-    Object.assign({ showSelect: true, showCancel: true, showNow: false, showPreview: true }, actionRow);
+export const getDefaultActionRowData = (actionRow: Partial<ActionRowData>): ActionRowData => ({
+    showSelect: true,
+    showCancel: true,
+    showNow: false,
+    showPreview: true,
+    ...(actionRow ?? {}),
+});
 
 export const getDefaultInlineOptions = (inline: InlineProp): InlineOptions => {
     const defaultOptions = { input: false };
     if (typeof inline === 'object') {
-        return Object.assign(defaultOptions, inline, { enabled: true });
+        return { ...defaultOptions, ...(inline ?? {}), enabled: true };
     }
     return {
         enabled: inline,
