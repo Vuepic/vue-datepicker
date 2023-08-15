@@ -123,9 +123,10 @@ describe('It should validate various picker scenarios', () => {
 
         const hours = dp.find(`[data-test="hours-toggle-overlay-btn"]`);
         const minutes = dp.find(`[data-test="minutes-toggle-overlay-btn"]`);
+        const padZero = (val: number) => (val < 10 ? `0${val}` : val);
 
-        expect(hours.text()).toEqual(`${modelValue.hours}`);
-        expect(minutes.text()).toEqual(`${modelValue.minutes}`);
+        expect(hours.text()).toEqual(`${padZero(modelValue.hours)}`);
+        expect(minutes.text()).toEqual(`${padZero(modelValue.minutes)}`);
 
         await dp.find(`[data-test="hours-time-inc-btn"]`).trigger('click');
         await dp.find(`[data-test="minutes-time-inc-btn"]`).trigger('click');
