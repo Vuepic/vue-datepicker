@@ -40,9 +40,9 @@
                         <div
                             role="button"
                             tabindex="0"
-                            @click="presetDate(preset.value, !!preset.slot, preset.noTz)"
-                            @keydown.enter.prevent="presetDate(preset.value, !!preset.slot, preset.noTz)"
-                            @keydown.space.prevent="presetDate(preset.value, !!preset.slot, preset.noTz)"
+                            @click="presetDate(preset.value, preset.noTz)"
+                            @keydown.enter.prevent="presetDate(preset.value, preset.noTz)"
+                            @keydown.space.prevent="presetDate(preset.value, preset.noTz)"
                         >
                             {{ preset.label }}
                         </div>
@@ -332,8 +332,8 @@
         callChildFn('selectCurrentDate');
     };
 
-    const presetDate = (value: Date[] | string[] | string | Date, hasSlot?: boolean, noTz?: boolean) => {
-        callChildFn('presetDate', value, hasSlot, noTz);
+    const presetDate = (value: Date[] | string[] | string | Date, noTz?: boolean) => {
+        callChildFn('presetDate', value, noTz);
     };
 
     const clearHoverDate = () => {

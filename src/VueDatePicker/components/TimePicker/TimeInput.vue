@@ -32,17 +32,14 @@
                 <button
                     type="button"
                     :aria-label="defaultedAriaLabels?.openTpOverlay(timeInput.type)"
-                    :class="
-                        checkOverlayDisabled(timeInput.type)
-                            ? undefined
-                            : {
-                                  dp__time_display: true,
-                                  dp__time_display_block: !props.timePickerInline,
-                                  dp__time_display_inline: props.timePickerInline,
-                                  'dp--time-invalid': disabledBox(timeInput.type),
-                                  'dp--time-overlay-btn': !disabledBox(timeInput.type),
-                              }
-                    "
+                    :class="{
+                        dp__time_display: true,
+                        dp__time_display_block: !props.timePickerInline,
+                        dp__time_display_inline: props.timePickerInline,
+                        'dp--time-invalid': disabledBox(timeInput.type),
+                        'dp--time-overlay-btn': !disabledBox(timeInput.type),
+                    }"
+                    :disabled="checkOverlayDisabled(timeInput.type)"
                     tabindex="0"
                     :data-test="`${timeInput.type}-toggle-overlay-btn`"
                     @keydown.enter.prevent="toggleOverlay(timeInput.type)"

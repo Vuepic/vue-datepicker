@@ -50,7 +50,7 @@
   align-items: center;
   justify-content: center;
 
-  &:hover {
+  &:hover:enabled {
     background: var(--dp-hover-color);
     color: var(--dp-hover-text-color);
   }

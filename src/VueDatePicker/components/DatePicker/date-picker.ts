@@ -554,8 +554,7 @@ export const useDatePicker = (
     };
 
     // Called when the preset range is clicked
-    const presetDate = (value: Date[] | string[] | Date | string, hasSlot?: boolean, noTz?: boolean): void => {
-        if (hasSlot) return;
+    const presetDate = (value: Date[] | string[] | Date | string, noTz?: boolean): void => {
         if (Array.isArray(value) && value.length <= 2 && props.range) {
             modelValue.value = value.map((date) => getZonedDate(getDate(date), noTz ? undefined : props.timezone));
         } else if (!Array.isArray(value)) {
