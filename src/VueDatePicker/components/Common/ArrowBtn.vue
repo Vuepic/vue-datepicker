@@ -22,7 +22,7 @@
     defineOptions({
         compatConfig: {
             MODE: 3,
-        }
+        },
     });
 
     const emit = defineEmits(['activate', 'set-ref']);
