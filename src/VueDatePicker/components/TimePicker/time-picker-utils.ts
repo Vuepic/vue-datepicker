@@ -149,7 +149,7 @@ export const useTimePickerUtils = (
         if (Array.isArray(props.disabledTimes)) {
             const { disabledArr, hours } = getDisabledTimesData(ind, hoursVal);
 
-            const timeFound = (disabledArr as DisabledTime[]).filter((time) => +time.hours === hours);
+            const timeFound = disabledArr.filter((time) => +time.hours === hours);
             if (timeFound[0]?.minutes === '*') return { hours: [hours], minutes: undefined, seconds: undefined };
             return {
                 hours: [],
