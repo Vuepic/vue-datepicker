@@ -41,7 +41,7 @@ describe('It should validate various picker scenarios', () => {
 
         await setHours(15);
         const hoursOverlayBtn = dp.find(`[data-test="hours-toggle-overlay-btn"]`);
-        expect(hoursOverlayBtn.classes()).toContain('dp--time-invalid');
+        expect(hoursOverlayBtn.text()).toEqual('14');
         dp.unmount();
     });
 
@@ -136,6 +136,7 @@ describe('It should validate various picker scenarios', () => {
         expect(emitted).toHaveProperty('update:model-value', [
             [{ hours: getHours(addHours(today, 1)), minutes: getMinutes(addMinutes(today, 1)), seconds: 0 }],
         ]);
+        dp.unmount();
     });
 
     it('Should dynamically update disabled dates when the prop is updated', async () => {
@@ -156,5 +157,6 @@ describe('It should validate various picker scenarios', () => {
 
         await dp.setProps({ disabledDates: updatedDisabledDates });
         expect(getCellClasses(resetDateTime(updatedDisabledDates[1]))).toContain('dp__cell_disabled');
+        dp.unmount();
     });
 });

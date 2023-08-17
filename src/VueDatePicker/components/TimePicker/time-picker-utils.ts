@@ -4,7 +4,15 @@ import { isAfter, isBefore, setMilliseconds } from 'date-fns';
 
 import { getDate, isDateEqual, setDateTime } from '@/utils/date-utils';
 
-import type { InternalModuleValue, Time, TimeType, TimePickerProps, TimeModel, TimeValuesInv } from '@/interfaces';
+import type {
+    InternalModuleValue,
+    Time,
+    TimeType,
+    TimePickerProps,
+    TimeModel,
+    TimeValuesInv,
+    DisabledTime,
+} from '@/interfaces';
 import type { UnwrapNestedRefs, WritableComputedRef } from 'vue';
 
 export const useTimePickerUtils = (
@@ -121,11 +129,15 @@ export const useTimePickerUtils = (
         }
     };
 
-    const disabledTimesConfig = computed(() => (ind: number): TimeValuesInv => {
+    const disabledTimesConfig = computed(() => (ind: number, hours?: number): TimeValuesInv => {
         if (Array.isArray(props.disabledTimes)) {
-            const hours = Array.isArray(time.hours) ? time.hours[ind] : time.hours;
+            if (!hours) {
+                hours = Array.isArray(time.hours) ? time.hours[ind] : time.hours;
+            }
+            const disabledArr =
+                props.range && Array.isArray(props.disabledTimes[ind]) ? props.disabledTimes[ind] : props.disabledTimes;
 
-            const timeFound = props.disabledTimes.filter((time) => +time.hours === hours);
+            const timeFound = (disabledArr as DisabledTime[]).filter((time) => +time.hours === hours);
             if (timeFound[0]?.minutes === '*') return { hours: [hours], minutes: undefined, seconds: undefined };
             return {
                 hours: [],

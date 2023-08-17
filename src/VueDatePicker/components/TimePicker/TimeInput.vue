@@ -147,7 +147,7 @@
         TimeType,
         TimeOverlayCheck,
         OverlayGridItem,
-        TimeValuesInv,
+        DisabledTimesArrProp,
     } from '@/interfaces';
 
     defineOptions({
@@ -173,7 +173,7 @@
         seconds: { type: Number as PropType<number>, default: 0 },
         closeTimePickerBtn: { type: Object as PropType<HTMLElement | null>, default: null },
         order: { type: Number as PropType<number>, default: 0 },
-        disabledTimesConfig: { type: Object as PropType<TimeValuesInv>, default: () => ({}) },
+        disabledTimesConfig: { type: Function as PropType<DisabledTimesArrProp>, default: null },
         ...PickerBaseProps,
     });
 
@@ -250,8 +250,10 @@
     });
 
     const isValueDisabled = (type: TimeType, value: number): boolean => {
-        if (!props.disabledTimesConfig[type]) return true;
-        return Boolean(props.disabledTimesConfig[type]?.includes(value));
+        if (!props.disabledTimesConfig) return false;
+        const disabledTimes = props.disabledTimesConfig(props.order, type === 'hours' ? value : undefined);
+        if (!disabledTimes[type]) return true;
+        return Boolean(disabledTimes[type]?.includes(value));
     };
 
     const getGridItems = (type: TimeType): OverlayGridItem[][] => {

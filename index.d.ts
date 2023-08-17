@@ -60,6 +60,12 @@ export interface DatePickerMarker {
     color?: string;
 }
 
+export interface DisabledTime {
+    hours: number | string;
+    minutes: number | string;
+    seconds?: number | string;
+}
+
 export interface CalendarWeek {
     days: CalendarDay[];
 }
@@ -262,7 +268,8 @@ export interface VueDatePickerProps {
     focusStartDate?: boolean;
     disabledTimes?:
         | ((time: TimeObj | TimeObj[] | (TimeObj | undefined)[]) => boolean)
-        | { hours: number | string; minutes: number | string; seconds?: number | string }[];
+        | DisabledTime[]
+        | [DisabledTime[], DisabledTime[]];
     showLastInRange?: boolean;
     timePickerInline?: boolean;
     calendar?: (weeks: CalendarWeek[]) => CalendarWeek[];

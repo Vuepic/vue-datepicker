@@ -263,6 +263,8 @@ export interface DisabledTime {
     seconds?: number | string;
 }
 
+export type DisabledTimeArrProp = DisabledTime[] | [DisabledTime[], DisabledTime[]];
+
 export interface TimeValuesInv {
     hours: number[];
     minutes?: number[];
@@ -277,3 +279,5 @@ export interface InlineOptions {
 }
 
 export type InlineProp = boolean | { input?: boolean };
+
+export type DisabledTimesArrProp = (ind: number, hours?: number) => TimeValuesInv;

@@ -59,7 +59,7 @@
                                     minutes: tInput.minutes,
                                     seconds: tInput.seconds,
                                     closeTimePickerBtn,
-                                    disabledTimesConfig: disabledTimesConfig(index),
+                                    disabledTimesConfig,
                                     disabled: index === 0 ? fixedStart : fixedEnd,
                                 }"
                                 ref="timeInputRefs"
@@ -108,7 +108,7 @@
     import { PickerBaseProps } from '@/props';
 
     import type { PropType } from 'vue';
-    import type { TimeInputRef, TimeValuesInv } from '@/interfaces';
+    import type { DisabledTimesArrProp, TimeInputRef } from '@/interfaces';
 
     defineOptions({
         compatConfig: {
@@ -131,7 +131,7 @@
         hours: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         minutes: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         seconds: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
-        disabledTimesConfig: { type: Function as PropType<(ind: number) => TimeValuesInv>, default: () => ({}) },
+        disabledTimesConfig: { type: Function as PropType<DisabledTimesArrProp>, default: null },
         ...PickerBaseProps,
     });
 

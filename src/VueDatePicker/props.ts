@@ -23,10 +23,10 @@ import type {
     ArrMapValues,
     InternalModuleValue,
     MultiCalendarsProp,
-    DisabledTime,
     TextInputProp,
     PresetDate,
     InlineProp,
+    DisabledTimeArrProp,
 } from '@/interfaces';
 
 export const AllProps = {
@@ -165,7 +165,7 @@ export const AllProps = {
     allowPreventDefault: { type: Boolean as PropType<boolean>, default: false },
     closeOnClearValue: { type: Boolean as PropType<boolean>, default: true },
     focusStartDate: { type: Boolean as PropType<boolean>, default: false },
-    disabledTimes: { type: [Function, Array] as PropType<DisabledTimesFn | DisabledTime[]>, default: undefined },
+    disabledTimes: { type: [Function, Array] as PropType<DisabledTimesFn | DisabledTimeArrProp>, default: undefined },
     showLastInRange: { type: Boolean as PropType<boolean>, default: true },
     timePickerInline: { type: Boolean as PropType<boolean>, default: false },
     calendar: { type: Function as PropType<(month: ICalendarDate[]) => ICalendarDate[]>, default: null },
