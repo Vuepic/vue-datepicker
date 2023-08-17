@@ -146,11 +146,6 @@
     const inputRef = ref<DatepickerInputRef | null>(null);
     const isInputFocused = ref(false);
     const pickerWrapperRef = ref<HTMLElement | null>(null);
-    const arrMapValues = reactive<ArrMapValues>({
-        disabledDates: null,
-        allowedDates: null,
-        highlightedDates: null,
-    });
 
     const { setMenuFocused, setShiftKey } = useState();
     const { clearArrowNav } = useArrowNavigation();
@@ -172,8 +167,9 @@
         if (defaultedInline.value.enabled) {
             isOpen.value = true;
         }
-        mapDatesArrToMap(arrMapValues);
     });
+
+    const arrMapValues = computed(() => mapDatesArrToMap());
 
     onUnmounted(() => {
         if (!defaultedInline.value.enabled) {

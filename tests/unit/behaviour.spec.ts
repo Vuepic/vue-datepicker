@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { add, addHours, addMinutes, addMonths, getHours, getMinutes, getMonth, getYear, set } from 'date-fns';
+import { add, addDays, addHours, addMinutes, addMonths, getHours, getMinutes, getMonth, getYear, set } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz/esm';
 
 import { resetDateTime } from '@/utils/date-utils';
@@ -136,5 +136,25 @@ describe('It should validate various picker scenarios', () => {
         expect(emitted).toHaveProperty('update:model-value', [
             [{ hours: getHours(addHours(today, 1)), minutes: getMinutes(addMinutes(today, 1)), seconds: 0 }],
         ]);
+    });
+
+    it('Should dynamically update disabled dates when the prop is updated', async () => {
+        const today = new Date();
+        const disabledDates = [addDays(today, 1)];
+        const dp = await openMenu({ disabledDates });
+
+        const getCellClasses = (date: Date) => {
+            const el = dp.find(`[data-test="${date}"]`);
+            const innerCell = el.find('.dp__cell_inner');
+
+            return innerCell.classes();
+        };
+
+        expect(getCellClasses(resetDateTime(disabledDates[0]))).toContain('dp__cell_disabled');
+
+        const updatedDisabledDates = [...disabledDates, addDays(today, 2)];
+
+        await dp.setProps({ disabledDates: updatedDisabledDates });
+        expect(getCellClasses(resetDateTime(updatedDisabledDates[1]))).toContain('dp__cell_disabled');
     });
 });

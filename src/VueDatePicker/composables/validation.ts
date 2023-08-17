@@ -158,7 +158,12 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
         return Array.isArray(arr) && arr.length > 0;
     };
 
-    const mapDatesArrToMap = (arrMapValues: ArrMapValues) => {
+    const mapDatesArrToMap = () => {
+        const arrMapValues: ArrMapValues = {
+            disabledDates: null,
+            allowedDates: null,
+            highlightedDates: null,
+        };
         if (shouldMap(props.allowedDates)) {
             arrMapValues.allowedDates = datesArrToMap(props.allowedDates);
         }
@@ -168,6 +173,7 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
         if (shouldMap(props.disabledDates)) {
             arrMapValues.disabledDates = datesArrToMap(props.disabledDates);
         }
+        return arrMapValues;
     };
 
     // Check if we need to do a time validation
