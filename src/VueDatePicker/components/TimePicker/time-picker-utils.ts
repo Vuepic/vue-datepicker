@@ -129,13 +129,25 @@ export const useTimePickerUtils = (
         }
     };
 
-    const disabledTimesConfig = computed(() => (ind: number, hours?: number): TimeValuesInv => {
+    const getDisabledTimesData = (ind: number, hours?: number) => {
+        const data: { hours: number; disabledArr: DisabledTime[] } = {
+            hours: Array.isArray(time.hours) ? time.hours[ind] : time.hours,
+            disabledArr: [],
+        };
+
+        if (hours || hours === 0) data.hours = hours;
+
         if (Array.isArray(props.disabledTimes)) {
-            if (!hours) {
-                hours = Array.isArray(time.hours) ? time.hours[ind] : time.hours;
-            }
-            const disabledArr =
-                props.range && Array.isArray(props.disabledTimes[ind]) ? props.disabledTimes[ind] : props.disabledTimes;
+            data.disabledArr = (
+                props.range && Array.isArray(props.disabledTimes[ind]) ? props.disabledTimes[ind] : props.disabledTimes
+            ) as DisabledTime[];
+        }
+        return data;
+    };
+
+    const disabledTimesConfig = computed(() => (ind: number, hoursVal?: number): TimeValuesInv => {
+        if (Array.isArray(props.disabledTimes)) {
+            const { disabledArr, hours } = getDisabledTimesData(ind, hoursVal);
 
             const timeFound = (disabledArr as DisabledTime[]).filter((time) => +time.hours === hours);
             if (timeFound[0]?.minutes === '*') return { hours: [hours], minutes: undefined, seconds: undefined };
