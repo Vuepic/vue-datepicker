@@ -20,7 +20,7 @@
     import { PickerBaseProps } from '@/props';
     import { useYearPicker } from '@/components/YearPicker/year-picker';
 
-    const emit = defineEmits(['update:internal-model-value', 'reset-flow', 'range-start', 'range-end']);
+    const emit = defineEmits(['update:internal-model-value', 'reset-flow', 'range-start', 'range-end', 'auto-apply']);
     const props = defineProps({
         ...PickerBaseProps,
     });

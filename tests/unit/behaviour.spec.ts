@@ -139,7 +139,7 @@ describe('It should validate various picker scenarios', () => {
         dp.unmount();
     });
 
-    it('Should dynamically update disabled dates when the prop is updated', async () => {
+    it('Should dynamically update disabled dates when the prop is updated (#528)', async () => {
         const today = new Date();
         const disabledDates = [addDays(today, 1)];
         const dp = await openMenu({ disabledDates });
@@ -157,6 +157,18 @@ describe('It should validate various picker scenarios', () => {
 
         await dp.setProps({ disabledDates: updatedDisabledDates });
         expect(getCellClasses(resetDateTime(updatedDisabledDates[1]))).toContain('dp__cell_disabled');
+        dp.unmount();
+    });
+
+    it('Should auto-apply values in year-picker (#529)', async () => {
+        const dp = await openMenu({ yearPicker: true, autoApply: true });
+
+        const year = getYear(new Date());
+
+        await dp.find(`[data-test="${year}"]`).trigger('click');
+
+        expect(dp.emitted()).toHaveProperty('update:model-value', [[year]]);
+
         dp.unmount();
     });
 });

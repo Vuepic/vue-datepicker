@@ -4,7 +4,7 @@ import { getYear, setYear } from 'date-fns';
 import { useModel } from '@/composables';
 import { checkMinMaxValue, getYears, groupListAndMap } from '@/utils/util';
 import { getMinMaxYear, isDateBetween, resetDate } from '@/utils/date-utils';
-import { handleMultiDatesSelect, setMonthOrYearRange } from '@/composables/shared';
+import { checkRangeAutoApply, handleMultiDatesSelect, setMonthOrYearRange } from '@/composables/shared';
 
 import type { PickerBasePropsType } from '@/props';
 import type { VueEmit, IDefaultSelect } from '@/interfaces';
@@ -44,9 +44,16 @@ export const useYearPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     };
 
     const selectYear = (year: number) => {
-        if (props.multiDates) return handleMultiDatesSelect(yearToDate(year), modelValue, props.multiDatesLimit);
-        if (props.range) return setMonthOrYearRange(modelValue, yearToDate(year), emit);
+        if (props.multiDates) {
+            handleMultiDatesSelect(yearToDate(year), modelValue, props.multiDatesLimit);
+            return emit('auto-apply', true);
+        }
+        if (props.range) {
+            const range = setMonthOrYearRange(modelValue, yearToDate(year), emit);
+            return checkRangeAutoApply(range, emit, props.autoApply, props.modelAuto);
+        }
         modelValue.value = yearToDate(year);
+        emit('auto-apply');
     };
 
     const setHoverValue = (value: number) => {

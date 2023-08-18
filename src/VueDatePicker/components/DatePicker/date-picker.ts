@@ -31,7 +31,7 @@ import { useDefaults, useModel, useValidation } from '@/composables';
 import { isNumNullish } from '@/utils/util';
 import { isNumberArray } from '@/utils/type-guard';
 import { useTimePickerUtils } from '@/components/TimePicker/time-picker-utils';
-import { handleMultiDatesSelect } from '@/composables/shared';
+import { checkRangeAutoApply, handleMultiDatesSelect } from '@/composables/shared';
 
 import type { ICalendarDate, ICalendarDay, WeekStartNum, IMarker, VueEmit, TimeType } from '@/interfaces';
 import type { UnwrapRef } from 'vue';
@@ -515,12 +515,7 @@ export const useDatePicker = (
             validateRangeAfterTimeSet();
             modelValue.value = tempRange.value.slice();
 
-            if (tempRange.value[0] && tempRange.value[1] && props.autoApply) {
-                emit('auto-apply');
-            }
-            if (tempRange.value[0] && !tempRange.value[1] && props.modelAuto && props.autoApply) {
-                emit('auto-apply');
-            }
+            checkRangeAutoApply(tempRange.value, emit, props.autoApply, props.modelAuto);
         }
     };
 
