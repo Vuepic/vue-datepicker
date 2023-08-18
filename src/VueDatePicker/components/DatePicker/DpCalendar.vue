@@ -29,7 +29,7 @@
                     <div
                         class="dp__calendar"
                         role="grid"
-                        :aria-label="defaultedAriaLabels?.calendarDays"
+                        :aria-label="defaultedAriaLabels?.calendarDays || undefined"
                         v-if="showCalendar"
                     >
                         <div
@@ -54,7 +54,7 @@
                                     dayVal.classData.dp__range_start ||
                                     dayVal.classData.dp__range_start
                                 "
-                                :aria-disabled="dayVal.classData.dp__cell_disabled"
+                                :aria-disabled="dayVal.classData.dp__cell_disabled || undefined"
                                 :aria-label="defaultedAriaLabels?.day?.(dayVal)"
                                 tabindex="0"
                                 :data-test="dayVal.value"

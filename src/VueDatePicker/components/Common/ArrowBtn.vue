@@ -7,7 +7,7 @@
         @keydown.space.prevent="$emit('activate')"
         tabindex="0"
         :aria-label="ariaLabel"
-        :aria-disabled="disabled"
+        :aria-disabled="disabled || undefined"
         ref="elRef"
     >
         <span class="dp__inner_nav" :class="{ dp__inner_nav_disabled: disabled }">
