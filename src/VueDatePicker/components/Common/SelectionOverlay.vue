@@ -30,7 +30,7 @@
                         :class="cellClassName"
                         :key="col.value"
                         :aria-selected="col.active"
-                        :aria-disabled="col.disabled"
+                        :aria-disabled="col.disabled || undefined"
                         :ref="(el) => assignRef(el, col, i, ind)"
                         tabindex="0"
                         :data-test="col.text"
