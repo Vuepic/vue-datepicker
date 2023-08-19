@@ -15,7 +15,7 @@ import {
 import { useDefaults } from '@/composables/defaults';
 import { convertType } from '@/utils/util';
 
-import type { InternalModuleValue, ArrMapValues, ArrMapValue, TimeModel, DisabledTimesFn } from '@/interfaces';
+import type { InternalModuleValue, ArrMapValues, ArrMapValue, DisabledTimesFn, DisabledTime } from '@/interfaces';
 import type { PickerBasePropsType, AllPropsType } from '@/props';
 
 export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
@@ -189,14 +189,36 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
         return setTimeValue(date);
     };
 
+    const checkDisabledTimePerRange = (disabledTimes: DisabledTime[], date: Date, isValid: boolean) => {
+        return (
+            disabledTimes.find((time) =>
+                +time.hours === getHours(date) && time.minutes === '*' ? true : +time.minutes === getMinutes(date),
+            ) && isValid
+        );
+    };
+
+    // In case range is used, and separate set of disabled is provided for start and end dates, validate separately
+    const checkDisabledTimesRanged = (disabledTimes: DisabledTime[][], dates: Date[], isValid: boolean) => {
+        const [disabledTimesStart, disabledTimesEnd] = disabledTimes;
+        const [startDate, endDate] = dates;
+        return (
+            !checkDisabledTimePerRange(disabledTimesStart, startDate, isValid) &&
+            !checkDisabledTimePerRange(disabledTimesEnd, endDate, isValid) &&
+            isValid
+        );
+    };
+
     const checkDisabledTimesOnArr = (isValid: boolean, date: Date[] | Date) => {
         const dates = Array.isArray(date) ? date : [date];
-        const valid = !dates.some((dt) => {
-            return (props.disabledTimes as TimeModel[]).find((time) =>
-                +time.hours === getHours(dt) && time.minutes === '*' ? true : +time.minutes === getMinutes(dt),
-            );
-        });
-        return valid && isValid;
+        if (Array.isArray(props.disabledTimes)) {
+            if (Array.isArray(props.disabledTimes[0])) {
+                return checkDisabledTimesRanged(props.disabledTimes as DisabledTime[][], dates, isValid);
+            }
+            return !dates.some((dt) => {
+                return checkDisabledTimePerRange(props.disabledTimes as DisabledTime[], dt, isValid);
+            });
+        }
+        return isValid;
     };
 
     const checkDisabledTimesFn = (isValid: boolean, date: Date | Date[]) => {

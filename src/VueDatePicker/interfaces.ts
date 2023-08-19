@@ -263,7 +263,7 @@ export interface DisabledTime {
     seconds?: number | string;
 }
 
-export type DisabledTimeArrProp = DisabledTime[] | [DisabledTime[], DisabledTime[]];
+export type DisabledTimeArrProp = DisabledTime[] | DisabledTime[][];
 
 export interface TimeValuesInv {
     hours: number[];
