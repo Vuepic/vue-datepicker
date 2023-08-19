@@ -466,7 +466,7 @@ describe('Logic connection', () => {
         await menu.vm.$nextTick();
         const timeInput = menu.findComponent(TimeInput);
 
-        const incBtn = timeInput.find(`[data-test="hours-time-inc-btn"]`);
+        const incBtn = timeInput.find(`[data-test="hours-time-inc-btn-0"]`);
 
         expect(incBtn.classes()).toContain('dp__inc_dec_button_disabled');
     });
@@ -478,7 +478,7 @@ describe('Logic connection', () => {
         await menu.vm.$nextTick();
         const timeInput = menu.findComponent(TimeInput);
 
-        const incBtn = timeInput.find(`[data-test="hours-time-dec-btn"]`);
+        const incBtn = timeInput.find(`[data-test="hours-time-dec-btn-0"]`);
 
         expect(incBtn.classes()).toContain('dp__inc_dec_button_disabled');
     });

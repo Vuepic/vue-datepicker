@@ -19,13 +19,13 @@ describe('It should validate various picker scenarios', () => {
         const setHours = async (val: number) => {
             await dp.find(`[data-test="open-time-picker-btn"]`).trigger('click');
 
-            await dp.find(`[data-test="hours-toggle-overlay-btn"]`).trigger('click');
+            await dp.find(`[data-test="hours-toggle-overlay-btn-0"]`).trigger('click');
             await dp.find(`[data-test="${val}"]`).trigger('click');
         };
 
         await setHours(14);
 
-        await dp.find(`[data-test="minutes-toggle-overlay-btn"]`).trigger('click');
+        await dp.find(`[data-test="minutes-toggle-overlay-btn-0"]`).trigger('click');
 
         await dp.vm.$nextTick();
         const el = dp.find(`[data-test="15"]`);
@@ -33,14 +33,14 @@ describe('It should validate various picker scenarios', () => {
         expect(el.attributes()['aria-disabled']).toEqual('true');
 
         for (let i = 0; i < 20; i++) {
-            await dp.find(`[data-test="minutes-time-inc-btn"]`).trigger('click');
+            await dp.find(`[data-test="minutes-time-inc-btn-0"]`).trigger('click');
         }
 
-        const minutesOverlayBtn = dp.find(`[data-test="minutes-toggle-overlay-btn"]`);
+        const minutesOverlayBtn = dp.find(`[data-test="minutes-toggle-overlay-btn-0"]`);
         expect(minutesOverlayBtn.classes()).toContain('dp--time-invalid');
 
         await setHours(15);
-        const hoursOverlayBtn = dp.find(`[data-test="hours-toggle-overlay-btn"]`);
+        const hoursOverlayBtn = dp.find(`[data-test="hours-toggle-overlay-btn-0"]`);
         expect(hoursOverlayBtn.text()).toEqual('14');
         dp.unmount();
     });
@@ -121,15 +121,15 @@ describe('It should validate various picker scenarios', () => {
         const modelValue = { hours: getHours(today), minutes: getMinutes(today), seconds: 0 };
         const dp = await openMenu({ timePicker: true, modelValue });
 
-        const hours = dp.find(`[data-test="hours-toggle-overlay-btn"]`);
-        const minutes = dp.find(`[data-test="minutes-toggle-overlay-btn"]`);
+        const hours = dp.find(`[data-test="hours-toggle-overlay-btn-0"]`);
+        const minutes = dp.find(`[data-test="minutes-toggle-overlay-btn-0"]`);
         const padZero = (val: number) => (val < 10 ? `0${val}` : val);
 
         expect(hours.text()).toEqual(`${padZero(modelValue.hours)}`);
         expect(minutes.text()).toEqual(`${padZero(modelValue.minutes)}`);
 
-        await dp.find(`[data-test="hours-time-inc-btn"]`).trigger('click');
-        await dp.find(`[data-test="minutes-time-inc-btn"]`).trigger('click');
+        await dp.find(`[data-test="hours-time-inc-btn-0"]`).trigger('click');
+        await dp.find(`[data-test="minutes-time-inc-btn-0"]`).trigger('click');
         await dp.find(`[data-test="select-button"]`).trigger('click');
 
         const emitted = dp.emitted();
@@ -170,5 +170,26 @@ describe('It should validate various picker scenarios', () => {
         expect(dp.emitted()).toHaveProperty('update:model-value', [[year]]);
 
         dp.unmount();
+    });
+
+    it('Should disable date select on invalid times in range mode with different start/end sets', async () => {
+        const disabledTimes = [[{ hours: 12, minutes: '*' }], [{ hours: 15, minutes: 20 }]];
+        const modelValue = [set(new Date(), { hours: 11 }), set(new Date(), { hours: 15, minutes: 19 })];
+        const dp = await openMenu({ disabledTimes, range: true, modelValue });
+
+        await dp.find(`[data-test="open-time-picker-btn"]`).trigger('click');
+        await dp.find(`[data-test="hours-time-inc-btn-0"]`).trigger('click');
+
+        const selectBtn = dp.find(`[data-test="select-button"]`);
+        expect(selectBtn.attributes()).toHaveProperty('disabled');
+
+        await dp.find(`[data-test="hours-time-inc-btn-0"]`).trigger('click');
+        expect(selectBtn.attributes().disabled).toBeFalsy();
+
+        await dp.find(`[data-test="minutes-time-inc-btn-1"]`).trigger('click');
+        expect(selectBtn.attributes()).toHaveProperty('disabled');
+
+        await dp.find(`[data-test="minutes-time-inc-btn-1"]`).trigger('click');
+        expect(selectBtn.attributes().disabled).toBeFalsy();
     });
 });

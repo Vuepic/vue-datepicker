@@ -12,7 +12,7 @@
                         dp__tp_inline_btn_top: props.timePickerInline,
                         dp__inc_dec_button_disabled: disabledArrowUpBtn(timeInput.type),
                     }"
-                    :data-test="`${timeInput.type}-time-inc-btn`"
+                    :data-test="`${timeInput.type}-time-inc-btn-${props.order}`"
                     :aria-label="defaultedAriaLabels?.incrementValue(timeInput.type)"
                     tabindex="0"
                     @keydown.enter.prevent="handleTimeValue(timeInput.type)"
@@ -41,7 +41,7 @@
                     }"
                     :disabled="checkOverlayDisabled(timeInput.type)"
                     tabindex="0"
-                    :data-test="`${timeInput.type}-toggle-overlay-btn`"
+                    :data-test="`${timeInput.type}-toggle-overlay-btn-${props.order}`"
                     @keydown.enter.prevent="toggleOverlay(timeInput.type)"
                     @keydown.space.prevent="toggleOverlay(timeInput.type)"
                     @click="toggleOverlay(timeInput.type)"
@@ -64,7 +64,7 @@
                         dp__tp_inline_btn_bottom: props.timePickerInline,
                         dp__inc_dec_button_disabled: disabledArrowDownBtn(timeInput.type),
                     }"
-                    :data-test="`${timeInput.type}-time-dec-btn`"
+                    :data-test="`${timeInput.type}-time-dec-btn-${props.order}`"
                     :aria-label="defaultedAriaLabels?.decrementValue(timeInput.type)"
                     tabindex="0"
                     @keydown.enter.prevent="handleTimeValue(timeInput.type, false)"
