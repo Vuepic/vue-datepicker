@@ -5,6 +5,8 @@ import { utcToZonedTime } from 'date-fns-tz/esm';
 import { resetDateTime } from '@/utils/date-utils';
 
 import { openMenu } from '../utils';
+import type { TimeModel } from '@/interfaces';
+import type { VueWrapper } from '@vue/test-utils';
 
 describe('It should validate various picker scenarios', () => {
     it('Should dynamically disable times', async () => {
@@ -191,5 +193,24 @@ describe('It should validate various picker scenarios', () => {
 
         await dp.find(`[data-test="minutes-time-inc-btn-1"]`).trigger('click');
         expect(selectBtn.attributes().disabled).toBeFalsy();
+        dp.unmount();
+    });
+
+    it('Should properly set start time value on internal model value in time-picker mode (#535)', async () => {
+        const startTime = { hours: 0, minutes: 0, seconds: 0 };
+        const dp = await openMenu({ timePicker: true, startTime });
+
+        const validate = async (time: TimeModel | TimeModel[], instance: VueWrapper) => {
+            await instance.find(`[data-test="select-button"]`).trigger('click');
+            expect(instance.emitted()).toHaveProperty('update:model-value', [[time]]);
+            instance.unmount();
+        };
+
+        await validate(startTime, dp);
+
+        const startTimes = [startTime, { ...startTime, hours: 1 }];
+        const dpRange = await openMenu({ timePicker: true, range: true, startTime: startTimes });
+
+        await validate(startTimes, dpRange);
     });
 });

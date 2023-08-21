@@ -1,11 +1,12 @@
 import { onMounted } from 'vue';
+import { set } from 'date-fns';
 
 import { useDefaults, useModel } from '@/composables';
 import { useTimePickerUtils } from '@/components/TimePicker/time-picker-utils';
 import { getDate, getTimeObj } from '@/utils/date-utils';
 
 import type { PickerBasePropsType } from '@/props';
-import type { VueEmit } from '@/interfaces';
+import type { TimeModel, VueEmit } from '@/interfaces';
 
 export const useTimePicker = (props: PickerBasePropsType, emit: VueEmit) => {
     const { modelValue, time } = useModel(props, emit);
@@ -16,11 +17,30 @@ export const useTimePicker = (props: PickerBasePropsType, emit: VueEmit) => {
         modelValue,
     );
 
+    const parseStartTime = (startTime: TimeModel) => {
+        const { hours, minutes, seconds } = startTime;
+        return { hours: +hours, minutes: +minutes, seconds: seconds ? +seconds : 0 };
+    };
+
+    const getDateFromStartTime = () => {
+        if (props.startTime) {
+            if (Array.isArray(props.startTime)) {
+                const parsedFirst = parseStartTime(props.startTime[0]);
+                const parsedSecond = parseStartTime(props.startTime[1]);
+                return [set(getDate(), parsedFirst), set(getDate(), parsedSecond)];
+            }
+            const parsed = parseStartTime(props.startTime);
+            return set(getDate(), parsed);
+        }
+        return props.range ? [null, null] : null;
+    };
+
     const assignEmptyModel = () => {
         if (props.range) {
-            modelValue.value = [getSetDateTime(null, 0), getSetDateTime(null, 1)];
+            const [firstStartTime, secondStartTime] = getDateFromStartTime() as Date[];
+            modelValue.value = [getSetDateTime(firstStartTime, 0), getSetDateTime(secondStartTime, 1)];
         } else {
-            modelValue.value = getSetDateTime(null);
+            modelValue.value = getSetDateTime(getDateFromStartTime() as Date);
         }
     };
 
