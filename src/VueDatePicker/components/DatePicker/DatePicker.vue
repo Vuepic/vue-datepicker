@@ -110,6 +110,7 @@
         'time-picker-open',
         'time-picker-close',
         'recalculate-position',
+        'update-month-year',
     ]);
     const props = defineProps({
         ...PickerBaseProps,

@@ -543,7 +543,7 @@ export const useDatePicker = (
         if (defaultedMultiCalendars.value.count && !defaultedMultiCalendars.value.solo) {
             autoChangeMultiCalendars(instance);
         }
-
+        emit('update-month-year', { instance, month: val.month, year: val.year });
         triggerCalendarTransition(defaultedMultiCalendars.value.solo ? instance : undefined);
         updateFlow();
     };

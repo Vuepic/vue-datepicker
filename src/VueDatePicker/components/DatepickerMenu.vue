@@ -71,6 +71,7 @@
                     @time-picker-open="$emit('time-picker-open', $event)"
                     @time-picker-close="onTimePickerClose"
                     @recalculate-position="recalculatePosition"
+                    @update-month-year="$emit('update-month-year', $event)"
                     @update:internal-model-value="$emit('update:internal-model-value', $event)"
                 >
                     <template v-for="(slot, i) in sharedSlots" #[slot]="args" :key="i">
