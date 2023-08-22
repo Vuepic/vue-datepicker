@@ -182,7 +182,7 @@ export const useDatePicker = (
             return assignRangeValue(dates, fromMount);
         }
 
-        if (props.multiDates) {
+        if (props.multiDates && fromMount) {
             const lastEntry = dates[dates.length - 1];
             return assignSingleValue(lastEntry, fromMount);
         }
