@@ -13,3 +13,8 @@ export const openMenu = async (props: Partial<AllPropsType>) => {
     await dp.vm.$nextTick();
     return dp;
 };
+
+export const getMonthName = (date: Date) => {
+    const month = new Intl.DateTimeFormat('en-Us', { month: 'short', timeZone: 'UTC' }).format(date);
+    return month.charAt(0).toUpperCase() + month.substring(1);
+};

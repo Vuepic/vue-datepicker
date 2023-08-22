@@ -3,7 +3,6 @@ import {
     add,
     addDays,
     addMonths,
-    differenceInMonths,
     getHours,
     getMinutes,
     getMonth,
@@ -154,9 +153,18 @@ export const useDatePicker = (
         }
     };
 
+    /**
+     * In case of multi-calendars, check if the range can fit within the view
+     * If it can, set focus index to the first date in the range, rest will be auto adjusted
+     * In case of solo multi calendars, always take 0 index as reference
+     */
     const getRangeFocusIndex = (dates: Date[]) => {
         if (defaultedMultiCalendars.value.count) {
-            return Math.abs(differenceInMonths(dates[0], dates[1])) >= defaultedMultiCalendars.value.count ? 1 : 0;
+            if (defaultedMultiCalendars.value.solo) return 0;
+            const startMonth = getMonth(dates[0]);
+            const endMonth = getMonth(dates[1]);
+            const showInTheSameView = Math.abs(endMonth - startMonth) < defaultedMultiCalendars.value.count;
+            return showInTheSameView ? 0 : 1;
         }
         return 1;
     };

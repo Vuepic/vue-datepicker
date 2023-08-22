@@ -27,12 +27,13 @@
                     <button
                         type="button"
                         class="dp__btn dp__month_year_select"
+                        tabindex="0"
+                        :aria-label="type.ariaLabel"
+                        :ref="(el) => setElRefs(el, i + 1)"
+                        :data-test="`${type.type}-toggle-overlay-${instance}`"
                         @click="type.toggle"
                         @keydown.enter.prevent="type.toggle"
                         @keydown.space.prevent="type.toggle"
-                        :aria-label="type.ariaLabel"
-                        tabindex="0"
-                        :ref="(el) => setElRefs(el, i + 1)"
                     >
                         <slot v-if="$slots[type.type]" :name="type.type" v-bind="{ text: type.text }" />
                         <template v-if="!$slots[type.type]">{{ type.text }}</template>

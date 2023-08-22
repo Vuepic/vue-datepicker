@@ -4,9 +4,10 @@ import { utcToZonedTime } from 'date-fns-tz/esm';
 
 import { resetDateTime } from '@/utils/date-utils';
 
-import { openMenu } from '../utils';
+import { getMonthName, openMenu } from '../utils';
 import type { TimeModel } from '@/interfaces';
 import type { VueWrapper } from '@vue/test-utils';
+import type { AllPropsType } from '@/props';
 
 describe('It should validate various picker scenarios', () => {
     it('Should dynamically disable times', async () => {
@@ -53,8 +54,7 @@ describe('It should validate various picker scenarios', () => {
 
         const year = getYear(date);
 
-        const month = new Intl.DateTimeFormat('en-Us', { month: 'short', timeZone: 'UTC' }).format(date);
-        const monthName = month.charAt(0).toUpperCase() + month.substring(1);
+        const monthName = getMonthName(date);
 
         await dp.find(`[data-test="${monthName}"]`).trigger('click');
         await dp.find(`[data-test="${year}"]`).trigger('click');
@@ -212,5 +212,40 @@ describe('It should validate various picker scenarios', () => {
         const dpRange = await openMenu({ timePicker: true, range: true, startTime: startTimes });
 
         await validate(startTimes, dpRange);
+    });
+
+    it('Should correctly display months in multi-calendars based on the given range', async () => {
+        const today = new Date();
+        const sameViewRange = [today, addMonths(today, 1)];
+        const diffViewRange = [today, addMonths(today, 3)];
+
+        const dp = await openMenu({ modelValue: sameViewRange, multiCalendars: true, range: true });
+
+        const validateMonthAndYearValues = (index: number, date: Date) => {
+            const month = dp.find(`[data-test="month-toggle-overlay-${index}"]`);
+            const year = dp.find(`[data-test="year-toggle-overlay-${index}"]`);
+            expect(month.text()).toEqual(getMonthName(date));
+            expect(+year.text()).toEqual(getYear(date));
+        };
+
+        const reOpenMenu = async (newProps: Partial<AllPropsType>) => {
+            dp.vm.closeMenu();
+            await dp.setProps(newProps);
+            await dp.vm.$nextTick();
+            dp.vm.openMenu();
+            await dp.vm.$nextTick();
+        };
+
+        validateMonthAndYearValues(0, sameViewRange[0]);
+        validateMonthAndYearValues(1, sameViewRange[1]);
+
+        await reOpenMenu({ modelValue: diffViewRange });
+
+        validateMonthAndYearValues(0, diffViewRange[1]);
+
+        await reOpenMenu({ modelValue: diffViewRange, multiCalendars: { solo: true } });
+
+        validateMonthAndYearValues(0, diffViewRange[0]);
+        validateMonthAndYearValues(1, diffViewRange[1]);
     });
 });
