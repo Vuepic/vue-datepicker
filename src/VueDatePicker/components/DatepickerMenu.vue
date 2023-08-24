@@ -24,7 +24,7 @@
             :style="{ '--dp-menu-width': `${calendarWidth}px` }"
         >
             <div class="dp__sidebar_left" v-if="$slots['left-sidebar']">
-                <slot name="left-sidebar" v-bind="getSidebarProps()" />
+                <slot name="left-sidebar" v-bind="getSidebarProps" />
             </div>
             <div class="dp--preset-dates" v-if="presetDates.length">
                 <div v-for="(preset, i) in presetDates" :key="i" :style="preset.style || {}" class="dp--preset-range">
@@ -79,7 +79,7 @@
                 </component>
             </div>
             <div class="dp__sidebar_right" v-if="$slots['right-sidebar']">
-                <slot name="right-sidebar" v-bind="getSidebarProps()" />
+                <slot name="right-sidebar" v-bind="getSidebarProps" />
             </div>
             <div class="dp__action_extra" v-if="$slots['action-extra']">
                 <slot name="action-extra" v-if="$slots['action-extra']" :select-current-date="selectCurrentDate" />
@@ -233,9 +233,7 @@
         }
     };
 
-    const getSidebarProps = () => {
-        return computed(() => dynCmpRef.value?.getSidebarProps());
-    };
+    const getSidebarProps =computed(() => dynCmpRef.value?.getSidebarProps() || {});
 
     const recalculatePosition = () => {
         if (props.openOnTop) {
