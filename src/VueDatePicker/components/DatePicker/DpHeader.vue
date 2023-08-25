@@ -35,7 +35,7 @@
                         @keydown.enter.prevent="type.toggle"
                         @keydown.space.prevent="type.toggle"
                     >
-                        <slot v-if="$slots[type.type]" :name="type.type" v-bind="{ text: type.text }" />
+                        <slot v-if="$slots[type.type]" :name="type.type" :text="type.text" :value="props[type.type]" />
                         <template v-if="!$slots[type.type]">{{ type.text }}</template>
                     </button>
                     <transition :name="transitionName(type.showSelectionGrid)" :css="showTransition">
