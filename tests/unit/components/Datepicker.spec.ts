@@ -37,7 +37,7 @@ const format = (date: Date): string => {
 const mountDatepicker = async (
     props: any = {},
 ): Promise<{ dp: VueWrapper<any>; menu: VueWrapper<any>; datePicker: VueWrapper<any> }> => {
-    const dp = mount(MainComponent, { props }) as VueWrapper<any>;
+    const dp = mount(MainComponent, { props });
 
     dp.vm.openMenu();
     await flushPromises();
