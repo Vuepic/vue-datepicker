@@ -29,6 +29,8 @@
                 :value="inputValue"
                 :autocomplete="autocomplete"
                 :aria-label="defaultedAriaLabels?.input"
+                :aria-disabled="disabled || undefined"
+                :aria-invalid="state === false"
                 @input="handleInput"
                 @keydown.enter="handleEnter"
                 @keydown.tab="handleTab"
@@ -117,7 +119,7 @@
             dp__input_readonly: !defaultedTextInput.value.enabled,
             dp__input: true,
             dp__input_icon_pad: !props.hideInputIcon,
-            dp__input_valid: props.state,
+            dp__input_valid: Boolean(props.state),
             dp__input_invalid: props.state === false,
             dp__input_focus: isFocused.value || props.isMenuOpen,
             dp__input_reg: !defaultedTextInput.value.enabled,

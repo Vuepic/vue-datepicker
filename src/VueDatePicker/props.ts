@@ -133,7 +133,7 @@ export const AllProps = {
     placeholder: { type: String as PropType<string>, default: '' },
     hideInputIcon: { type: Boolean as PropType<boolean>, default: false },
     clearable: { type: Boolean as PropType<boolean>, default: true },
-    state: { type: Boolean as PropType<boolean>, default: null },
+    state: { type: Boolean as PropType<boolean | null>, default: null },
     required: { type: Boolean as PropType<boolean>, default: false },
     autocomplete: { type: String as PropType<string>, default: 'off' },
     inputClassName: { type: String as PropType<string>, default: null },
