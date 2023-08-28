@@ -50,7 +50,7 @@
         <button
             v-if="$slots['button-icon']"
             v-show="!hideNavigationButtons(hideNavigation, type)"
-            role="button"
+            type="button"
             :aria-label="defaultedAriaLabels?.toggleOverlay"
             :class="actionButtonClass"
             tabindex="0"
