@@ -3,7 +3,6 @@ import { OpenPosition } from '@/interfaces';
 
 import { unrefElement } from '@/utils/util';
 import { MenuPlacement } from '@/constants';
-import { mapSlots } from '@/composables/slots';
 
 import type { Component, ComponentPublicInstance, ComputedRef, Ref, Slots } from 'vue';
 import type { ComponentRef, InlineOptions, VueEmit } from '@/interfaces';
@@ -24,7 +23,6 @@ export const usePosition = (
 ) => {
     const menuRect = ref<DOMRect>({} as DOMRect);
     const xCorrect = ref(false);
-    const slotList = mapSlots(slots, 'all', props.presetDates);
 
     const menuStyle = ref<Partial<CSSStyleDeclaration>>({
         top: '0',
@@ -252,7 +250,7 @@ export const usePosition = (
                 shadow: true,
                 style: { opacity: 0, position: 'absolute', ...pos },
             },
-            Object.fromEntries(slotList.map((slot) => [slot, slots[slot]])),
+            Object.fromEntries(Object.keys(slots).map((slot) => [slot, slots[slot]])),
         );
 
         render(el, renderContainer);
