@@ -198,6 +198,7 @@
         defaultedInline,
         emit,
         props,
+        slots,
     );
 
     const {

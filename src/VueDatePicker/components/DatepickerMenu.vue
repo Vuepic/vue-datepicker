@@ -234,7 +234,7 @@
         }
     };
 
-    const getSidebarProps =computed(() => dynCmpRef.value?.getSidebarProps() || {});
+    const getSidebarProps = computed(() => dynCmpRef.value?.getSidebarProps() || {});
 
     const recalculatePosition = () => {
         if (props.openOnTop) {
