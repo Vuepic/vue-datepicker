@@ -1,17 +1,30 @@
 <template>
-    <selection-overlay
-        :items="groupedYears"
-        :is-last="autoApply && !keepActionRow"
-        :height="modeHeight"
-        type="year"
-        use-relative
-        @selected="selectYear"
-        @hover-value="setHoverValue"
-    >
-        <template v-if="$slots['year-overlay-value']" #item="{ item }">
-            <slot name="year-overlay-value" :text="item.text" :value="item.value" />
+    <div>
+        <template v-if="$slots['month-year']">
+            <slot
+                name="month-year"
+                v-bind="{
+                    years: groupedYears,
+                    selectYear,
+                }"
+            />
         </template>
-    </selection-overlay>
+        <template v-else>
+            <selection-overlay
+                :items="groupedYears"
+                :is-last="autoApply && !keepActionRow"
+                :height="modeHeight"
+                type="year"
+                use-relative
+                @selected="selectYear"
+                @hover-value="setHoverValue"
+            >
+                <template v-if="$slots['year-overlay-value']" #item="{ item }">
+                    <slot name="year-overlay-value" :text="item.text" :value="item.value" />
+                </template>
+            </selection-overlay>
+        </template>
+    </div>
 </template>
 
 <script lang="ts" setup>

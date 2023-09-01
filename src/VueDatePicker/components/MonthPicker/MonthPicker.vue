@@ -1,73 +1,88 @@
 <template>
     <InstanceWrap v-slot="{ instance }" :multi-calendars="defaultedMultiCalendars.count" stretch>
-        <SelectionOverlay
-            :items="groupedMonths(instance)"
-            :arrow-navigation="arrowNavigation"
-            :is-last="autoApply && !keepActionRow"
-            :esc-close="escClose"
-            :height="modeHeight"
-            @selected="selectMonth($event, instance)"
-            @hover-value="setHoverDate($event, instance)"
-            use-relative
-            type="month"
-        >
-            <template #header>
-                <div class="dp__month_picker_header">
-                    <ArrowBtn
-                        v-if="showLeftIcon(defaultedMultiCalendars, instance)"
-                        ref="mpPrevIconRef"
-                        :aria-label="defaultedAriaLabels?.prevYear"
-                        :disabled="isDisabled(instance, false)"
-                        @activate="handleYear(instance, false)"
-                    >
-                        <slot name="arrow-left" v-if="$slots['arrow-left']" />
-                        <ChevronLeftIcon v-if="!$slots['arrow-left']" />
-                    </ArrowBtn>
-                    <div
-                        class="dp--year-select"
-                        role="button"
-                        ref="mpYearButtonRef"
-                        :aria-label="defaultedAriaLabels?.openYearsOverlay"
-                        tabindex="0"
-                        @click="() => toggleYearPicker(instance, false)"
-                        @keydown.enter="() => toggleYearPicker(instance, false)"
-                    >
-                        <slot v-if="$slots.year" name="year" :year="year(instance)" />
-                        <template v-if="!$slots.year">{{ year(instance) }}</template>
-                    </div>
-                    <ArrowBtn
-                        v-if="showRightIcon(defaultedMultiCalendars, instance)"
-                        ref="mpNextIconRef"
-                        :aria-label="defaultedAriaLabels?.nextYear"
-                        :disabled="isDisabled(instance, false)"
-                        @activate="handleYear(instance, true)"
-                    >
-                        <slot name="arrow-right" v-if="$slots['arrow-right']" />
-                        <ChevronRightIcon v-if="!$slots['arrow-right']" />
-                    </ArrowBtn>
-                    <transition :name="transitionName(showYearPicker[instance])" :css="showTransition">
-                        <SelectionOverlay
-                            v-if="showYearPicker[instance]"
-                            :items="groupedYears(instance)"
-                            :text-input="textInput"
-                            :esc-close="escClose"
-                            @toggle="toggleYearPicker(instance)"
-                            @selected="handleYearSelect($event, instance)"
-                            :is-last="autoApply && !keepActionRow"
-                            type="year"
+        <template v-if="$slots['month-year']">
+            <slot
+                name="month-year"
+                v-bind="{
+                    year,
+                    months: groupedMonths(instance),
+                    years: groupedYears(instance),
+                    selectMonth,
+                    selectYear,
+                    instance,
+                }"
+            />
+        </template>
+        <template v-else>
+            <SelectionOverlay
+                :items="groupedMonths(instance)"
+                :arrow-navigation="arrowNavigation"
+                :is-last="autoApply && !keepActionRow"
+                :esc-close="escClose"
+                :height="modeHeight"
+                @selected="selectMonth($event, instance)"
+                @hover-value="setHoverDate($event, instance)"
+                use-relative
+                type="month"
+            >
+                <template #header>
+                    <div class="dp__month_picker_header">
+                        <ArrowBtn
+                            v-if="showLeftIcon(defaultedMultiCalendars, instance)"
+                            ref="mpPrevIconRef"
+                            :aria-label="defaultedAriaLabels?.prevYear"
+                            :disabled="isDisabled(instance, false)"
+                            @activate="handleYear(instance, false)"
                         >
-                            <template #button-icon>
-                                <slot name="calendar-icon" v-if="$slots['calendar-icon']" />
-                                <CalendarIcon v-if="!$slots['calendar-icon']" />
-                            </template>
-                            <template v-if="$slots['year-overlay-value']" #item="{ item }">
-                                <slot name="year-overlay-value" :text="item.text" :value="item.value" />
-                            </template>
-                        </SelectionOverlay>
-                    </transition>
-                </div>
-            </template>
-        </SelectionOverlay>
+                            <slot name="arrow-left" v-if="$slots['arrow-left']" />
+                            <ChevronLeftIcon v-if="!$slots['arrow-left']" />
+                        </ArrowBtn>
+                        <div
+                            class="dp--year-select"
+                            role="button"
+                            ref="mpYearButtonRef"
+                            :aria-label="defaultedAriaLabels?.openYearsOverlay"
+                            tabindex="0"
+                            @click="() => toggleYearPicker(instance, false)"
+                            @keydown.enter="() => toggleYearPicker(instance, false)"
+                        >
+                            <slot v-if="$slots.year" name="year" :year="year(instance)" />
+                            <template v-if="!$slots.year">{{ year(instance) }}</template>
+                        </div>
+                        <ArrowBtn
+                            v-if="showRightIcon(defaultedMultiCalendars, instance)"
+                            ref="mpNextIconRef"
+                            :aria-label="defaultedAriaLabels?.nextYear"
+                            :disabled="isDisabled(instance, false)"
+                            @activate="handleYear(instance, true)"
+                        >
+                            <slot name="arrow-right" v-if="$slots['arrow-right']" />
+                            <ChevronRightIcon v-if="!$slots['arrow-right']" />
+                        </ArrowBtn>
+                        <transition :name="transitionName(showYearPicker[instance])" :css="showTransition">
+                            <SelectionOverlay
+                                v-if="showYearPicker[instance]"
+                                :items="groupedYears(instance)"
+                                :text-input="textInput"
+                                :esc-close="escClose"
+                                @toggle="toggleYearPicker(instance)"
+                                @selected="handleYearSelect($event, instance)"
+                                :is-last="autoApply && !keepActionRow"
+                                type="year"
+                            >
+                                <template #button-icon>
+                                    <slot name="calendar-icon" v-if="$slots['calendar-icon']" />
+                                    <CalendarIcon v-if="!$slots['calendar-icon']" />
+                                </template>
+                                <template v-if="$slots['year-overlay-value']" #item="{ item }">
+                                    <slot name="year-overlay-value" :text="item.text" :value="item.value" />
+                                </template>
+                            </SelectionOverlay>
+                        </transition>
+                    </div>
+                </template>
+            </SelectionOverlay>
+        </template>
     </InstanceWrap>
 </template>
 
