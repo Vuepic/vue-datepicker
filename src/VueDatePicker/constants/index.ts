@@ -13,3 +13,13 @@ export enum CMP {
     calendar = 'calendar',
     timePicker = 'timePicker',
 }
+
+export enum FlowStep {
+    month = 'month',
+    year = 'year',
+    calendar = 'calendar',
+    time = 'time',
+    minutes = 'minutes',
+    hours = 'hours',
+    seconds = 'seconds',
+}

@@ -1,4 +1,4 @@
-import { flushPromises, mount } from '@vue/test-utils';
+import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 
 import VueDatePicker from '@/VueDatePicker.vue';
 
@@ -12,6 +12,16 @@ export const openMenu = async (props: Partial<AllPropsType>) => {
 
     await dp.vm.$nextTick();
     return dp;
+};
+
+export const reOpenMenu = async (dp: VueWrapper<any>, newProps?: Partial<AllPropsType>) => {
+    dp.vm.closeMenu();
+    if (newProps) {
+        await dp.setProps(newProps);
+    }
+    await dp.vm.$nextTick();
+    dp.vm.openMenu();
+    await dp.vm.$nextTick();
 };
 
 export const getMonthName = (date: Date) => {

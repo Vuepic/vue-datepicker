@@ -1,6 +1,6 @@
 import { ref, reactive } from 'vue';
 
-import { CMP } from '@/constants';
+import { CMP, FlowStep } from '@/constants';
 
 import type { Ref } from 'vue';
 import type { Flow, VueEmit } from '@/interfaces';
@@ -47,13 +47,13 @@ export const useFlow = (props: AllPropsType, emit: VueEmit, dynCmpRef: Ref<any>)
     };
 
     const handleFlow = (): void => {
-        handleFlowStep('month', 'toggleMonthPicker', true);
-        handleFlowStep('year', 'toggleYearPicker', true);
-        handleFlowStep('calendar', 'toggleTimePicker', false, true);
-        handleFlowStep('time', 'toggleTimePicker', true, true);
+        handleFlowStep(FlowStep.month, 'toggleMonthPicker', true);
+        handleFlowStep(FlowStep.year, 'toggleYearPicker', true);
+        handleFlowStep(FlowStep.calendar, 'toggleTimePicker', false, true);
+        handleFlowStep(FlowStep.time, 'toggleTimePicker', true, true);
 
         const flowValue = props.flow[flowStep.value];
-        if (flowValue === 'hours' || flowValue === 'minutes' || flowValue === 'seconds') {
+        if (flowValue === FlowStep.hours || flowValue === FlowStep.minutes || flowValue === FlowStep.seconds) {
             handleFlowStep(flowValue, 'toggleTimePicker', true, true, flowValue);
         }
     };

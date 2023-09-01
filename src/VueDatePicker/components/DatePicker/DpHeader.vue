@@ -11,7 +11,7 @@
                 v-if="showLeftIcon(defaultedMultiCalendars, instance) && !vertical"
                 :aria-label="defaultedAriaLabels?.prevMonth"
                 :disabled="isDisabled(false)"
-                @activate="handleMonthYearChange(false)"
+                @activate="handleMonthYearChange(false, true)"
                 @set-ref="setElRefs($event, 0)"
             >
                 <slot name="arrow-left" v-if="$slots['arrow-left']" />
@@ -74,7 +74,7 @@
                 v-if="showLeftIcon(defaultedMultiCalendars, instance) && vertical"
                 :aria-label="defaultedAriaLabels?.prevMonth"
                 :disabled="isDisabled(false)"
-                @activate="handleMonthYearChange(false)"
+                @activate="handleMonthYearChange(false, true)"
             >
                 <slot name="arrow-up" v-if="$slots['arrow-up']" />
                 <ChevronUpIcon v-if="!$slots['arrow-up']" />
@@ -84,7 +84,7 @@
                 ref="rightIcon"
                 :disabled="isDisabled(true)"
                 :aria-label="defaultedAriaLabels?.nextMonth"
-                @activate="handleMonthYearChange(true)"
+                @activate="handleMonthYearChange(true, true)"
                 @set-ref="setElRefs($event, disableYearSelect ? 2 : 3)"
             >
                 <slot

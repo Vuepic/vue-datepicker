@@ -29,7 +29,7 @@ export const useMonthYearPick = (props: { month: number; year: number } & Picker
         return yearDate;
     };
 
-    const handleMonthYearChange = (isNext: boolean): void => {
+    const handleMonthYearChange = (isNext: boolean, fromNav = false): void => {
         const initialDate = set(new Date(), { month: props.month, year: props.year });
         let date = isNext ? addMonths(initialDate, 1) : subMonths(initialDate, 1);
         if (props.disableYearSelect) {
@@ -50,12 +50,12 @@ export const useMonthYearPick = (props: { month: number; year: number } & Picker
             year = getYear(date);
         }
         if (validateMonthYearInRange(month, year, isNext, props.preventMinMaxNavigation)) {
-            updateMonthYear(month, year);
+            updateMonthYear(month, year, fromNav);
         }
     };
 
-    const updateMonthYear = (month: number, year: number): void => {
-        emit('update-month-year', { month, year });
+    const updateMonthYear = (month: number, year: number, fromNav: boolean): void => {
+        emit('update-month-year', { month, year, fromNav });
     };
 
     const isDisabled = computed(() => (next: boolean) => {

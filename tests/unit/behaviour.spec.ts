@@ -4,10 +4,10 @@ import { utcToZonedTime } from 'date-fns-tz/esm';
 
 import { resetDateTime } from '@/utils/date-utils';
 
-import { getMonthName, openMenu } from '../utils';
+import { getMonthName, openMenu, reOpenMenu } from '../utils';
+import { FlowStep } from '@/constants';
 import type { TimeModel } from '@/interfaces';
 import type { VueWrapper } from '@vue/test-utils';
-import type { AllPropsType } from '@/props';
 
 describe('It should validate various picker scenarios', () => {
     it('Should dynamically disable times', async () => {
@@ -212,6 +212,7 @@ describe('It should validate various picker scenarios', () => {
         const dpRange = await openMenu({ timePicker: true, range: true, startTime: startTimes });
 
         await validate(startTimes, dpRange);
+        dp.unmount();
     });
 
     it('Should correctly display months in multi-calendars based on the given range', async () => {
@@ -228,24 +229,38 @@ describe('It should validate various picker scenarios', () => {
             expect(+year.text()).toEqual(getYear(date));
         };
 
-        const reOpenMenu = async (newProps: Partial<AllPropsType>) => {
-            dp.vm.closeMenu();
-            await dp.setProps(newProps);
-            await dp.vm.$nextTick();
-            dp.vm.openMenu();
-            await dp.vm.$nextTick();
-        };
-
         validateMonthAndYearValues(0, sameViewRange[0]);
         validateMonthAndYearValues(1, sameViewRange[1]);
 
-        await reOpenMenu({ modelValue: diffViewRange });
+        await reOpenMenu(dp, { modelValue: diffViewRange });
 
         validateMonthAndYearValues(0, diffViewRange[1]);
 
-        await reOpenMenu({ modelValue: diffViewRange, multiCalendars: { solo: true } });
+        await reOpenMenu(dp, { modelValue: diffViewRange, multiCalendars: { solo: true } });
 
         validateMonthAndYearValues(0, diffViewRange[0]);
         validateMonthAndYearValues(1, diffViewRange[1]);
+        dp.unmount();
+    });
+
+    it('Should not break flow on changing months and years when calendar is first step', async () => {
+        const flow = [FlowStep.calendar, FlowStep.time];
+        const dp = await openMenu({ flow });
+        const today = resetDateTime(new Date());
+        const nextMonth = addMonths(today, 1);
+
+        await dp.find(`[data-test="${today}"]`).trigger('click');
+
+        expect(dp.html()).toContain('dp__overlay');
+
+        await reOpenMenu(dp);
+
+        await dp.find(`[data-test="month-toggle-overlay-0"]`).trigger('click');
+        await dp.find(`[data-test="${getMonthName(nextMonth)}"]`).trigger('click');
+
+        const cell = dp.find(`[data-test="${nextMonth}"]`);
+
+        expect(cell.html()).toBeTruthy();
+        dp.unmount();
     });
 });

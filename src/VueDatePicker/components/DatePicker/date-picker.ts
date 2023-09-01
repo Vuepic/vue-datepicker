@@ -31,6 +31,7 @@ import { isNumNullish } from '@/utils/util';
 import { isNumberArray } from '@/utils/type-guard';
 import { useTimePickerUtils } from '@/components/TimePicker/time-picker-utils';
 import { checkRangeAutoApply, handleMultiDatesSelect } from '@/composables/shared';
+import { FlowStep } from '@/constants';
 
 import type { ICalendarDate, ICalendarDay, WeekStartNum, IMarker, VueEmit, TimeType } from '@/interfaces';
 import type { UnwrapRef } from 'vue';
@@ -553,7 +554,11 @@ export const useDatePicker = (
         }
         emit('update-month-year', { instance, month: val.month, year: val.year });
         triggerCalendarTransition(defaultedMultiCalendars.value.solo ? instance : undefined);
-        updateFlow();
+
+        const flowActive = props.flow?.length ? props.flow[props.flowStep] : undefined;
+        if (!val.fromNav && (flowActive === FlowStep.month || flowActive === FlowStep.year)) {
+            updateFlow();
+        }
     };
 
     // Called when the preset range is clicked
