@@ -11,16 +11,26 @@ import type { AllPropsType } from '@/props';
 /**
  * Extracted code from the main component, used for calculating the position of the menu
  */
-export const usePosition = (
-    menuRef: Ref<HTMLElement | null>,
-    menuRefInner: Ref<ComponentPublicInstance | null>,
-    inputRef: ComponentRef,
-    pickerWrapperRef: Ref<HTMLElement | null>,
-    inline: ComputedRef<InlineOptions>,
-    emit: VueEmit,
-    props: AllPropsType,
-    slots: Slots,
-) => {
+interface Params {
+    menuRef: Ref<HTMLElement | null>;
+    menuRefInner: Ref<ComponentPublicInstance | null>;
+    inputRef: ComponentRef;
+    pickerWrapperRef: Ref<HTMLElement | null>;
+    inline: ComputedRef<InlineOptions>;
+    emit: VueEmit;
+    props: AllPropsType;
+    slots: Slots;
+}
+export const usePosition = ({
+    menuRef,
+    menuRefInner,
+    inputRef,
+    pickerWrapperRef,
+    inline,
+    emit,
+    props,
+    slots,
+}: Params) => {
     const menuRect = ref<DOMRect>({} as DOMRect);
     const xCorrect = ref(false);
 

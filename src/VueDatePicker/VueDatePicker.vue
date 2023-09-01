@@ -190,16 +190,16 @@
         { deep: true },
     );
 
-    const { openOnTop, menuStyle, xCorrect, setMenuPosition, getScrollableParent, shadowRender } = usePosition(
-        dpWrapMenuRef,
-        dpMenuRef,
+    const { openOnTop, menuStyle, xCorrect, setMenuPosition, getScrollableParent, shadowRender } = usePosition({
+        menuRef: dpWrapMenuRef,
+        menuRefInner: dpMenuRef,
         inputRef,
         pickerWrapperRef,
-        defaultedInline,
+        inline: defaultedInline,
         emit,
         props,
         slots,
-    );
+    });
 
     const {
         inputValue,
