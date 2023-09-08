@@ -267,7 +267,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
         ) {
             inputValue.value = getInputValue();
         } else {
-            inputValue.value = props.format(internalModelValue.value as Date | Date[]);
+            inputValue.value = props.format(internalModelValue.value);
         }
     };
 

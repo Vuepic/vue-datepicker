@@ -106,32 +106,8 @@ export interface VueDatePickerProps {
     disabled?: boolean;
     readonly?: boolean;
     required?: boolean;
-    format?:
-        | string
-        | ((
-              date:
-                  | Date
-                  | Date[]
-                  | TimeModel
-                  | TimeModel[]
-                  | {
-                        month: number | string;
-                        year: number | string;
-                    },
-          ) => string);
-    previewFormat?:
-        | string
-        | ((
-              date:
-                  | Date
-                  | Date[]
-                  | TimeModel
-                  | TimeModel[]
-                  | {
-                        month: number | string;
-                        year: number | string;
-                    },
-          ) => string);
+    format?: string | ((date: Date) => string) | ((dates: Date[]) => string);
+    previewFormat?: string | ((date: Date) => string) | ((dates: Date[]) => string);
     inputClassName?: string;
     menuClassName?: string;
     calendarClassName?: string;
