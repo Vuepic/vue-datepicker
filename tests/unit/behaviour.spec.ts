@@ -263,4 +263,25 @@ describe('It should validate various picker scenarios', () => {
         expect(cell.html()).toBeTruthy();
         dp.unmount();
     });
+
+    it('Should enable or disable auto range selecting with no-disabled-range prop (#555)', async () => {
+        const today = set(new Date(), { seconds: 0, milliseconds: 0 });
+        const disabledDates = [addDays(today, 1), addDays(today, 2)];
+        const dp = await openMenu({ disabledDates, noDisabledRange: true, range: true, autoRange: 5 });
+
+        const selectAutoRange = async () => {
+            await dp.find(`[data-test="${resetDateTime(today)}"]`).trigger('click');
+            await dp.find(`[data-test="select-button"]`).trigger('click');
+        };
+
+        await selectAutoRange();
+
+        expect(dp.emitted()).toHaveProperty('invalid-select');
+
+        await reOpenMenu(dp, { noDisabledRange: false });
+
+        await selectAutoRange();
+
+        expect(dp.emitted()).toHaveProperty('update:model-value', [[[today, addDays(today, 5)]]]);
+    });
 });

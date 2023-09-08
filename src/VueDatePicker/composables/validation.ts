@@ -131,8 +131,11 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
 
     // Check if there are disabled dates for a given range
     const isDateRangeAllowed = (range: Date[]): boolean => {
-        const datesInBetween = eachDayOfInterval({ start: range[0], end: range[1] });
-        return !datesInBetween.some((date) => isDisabled(date));
+        if (props.noDisabledRange) {
+            const datesInBetween = eachDayOfInterval({ start: range[0], end: range[1] });
+            return !datesInBetween.some((date) => isDisabled(date));
+        }
+        return true;
     };
 
     // If min or max range is set, validate given range
