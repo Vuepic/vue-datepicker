@@ -5,6 +5,7 @@ import {
     getDateForCompare,
     getDaysInBetween,
     getTimeObj,
+    getUtcDate,
     getZonedDate,
     isDateAfter,
     isDateBefore,
@@ -20,17 +21,23 @@ import type { PickerBasePropsType, AllPropsType } from '@/props';
 
 export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
     const { defaultedFilters } = useDefaults(props);
+    const getTimezone = () => {
+        if (props.timezone) return props.timezone;
+        if (props.utc) return 'UTC';
+        return undefined;
+    };
     const getMapKey = (date: Date | string | number) => {
         const d = resetDateTime(getTzDate(getDate(date))).toISOString();
         const [stringVal] = d.split('T');
         return stringVal;
     };
-    const getTzDate = (date: Date) => getZonedDate(date, props.timezone);
+    const getTzDate = (date: Date) =>
+        props.utc === 'preserve' ? getUtcDate(date, getTimezone()) : getZonedDate(date, getTimezone());
     const validateDate = (date: Date) => {
         const aboveMax = props.maxDate ? isDateAfter(getTzDate(date), getTzDate(getDate(props.maxDate))) : false;
         const bellowMin = props.minDate ? isDateBefore(getTzDate(date), getTzDate(getDate(props.minDate))) : false;
         const inDisableArr = matchDate(
-            date,
+            getTzDate(date),
             (props as PickerBasePropsType).arrMapValues?.disabledDates
                 ? (props as PickerBasePropsType).arrMapValues.disabledDates
                 : props.disabledDates,

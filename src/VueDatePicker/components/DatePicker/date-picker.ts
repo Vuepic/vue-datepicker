@@ -332,7 +332,7 @@ export const useDatePicker = (
     };
     // Get 7 days from the provided start date, month is used to check whether the date is from the specified month or in the offset
     const getWeekDays = (startDay: Date, month: number): ICalendarDay[] => {
-        const startDate = getDate(JSON.parse(JSON.stringify(startDay)));
+        const startDate = getDate(startDay);
         const dates = [];
         for (let i = 0; i < 7; i++) {
             const next = addDays(startDate, i);
