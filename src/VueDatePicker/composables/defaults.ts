@@ -6,6 +6,7 @@ import {
     defaultPreviewFormat,
     defaultTransitions,
     getDefaultActionRowData,
+    getDefaultConfig,
     getDefaultFilters,
     getDefaultInlineOptions,
     getDefaultTextInputOptions,
@@ -62,6 +63,8 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
 
     const defaultedInline = computed(() => getDefaultInlineOptions(props.inline));
 
+    const defaultedConfig = computed(() => getDefaultConfig(props.config));
+
     return {
         defaultedTransitions,
         defaultedMultiCalendars,
@@ -72,6 +75,7 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
         defaultedPreviewFormat,
         defaultedTextInput,
         defaultedInline,
+        defaultedConfig,
         getDefaultPattern,
         getDefaultStartTime,
     };

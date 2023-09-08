@@ -26,6 +26,7 @@ import type {
     PresetDate,
     InlineProp,
     DisabledTimeArrProp,
+    Config,
 } from '@/interfaces';
 
 export const AllProps = {
@@ -168,6 +169,7 @@ export const AllProps = {
     showLastInRange: { type: Boolean as PropType<boolean>, default: true },
     timePickerInline: { type: Boolean as PropType<boolean>, default: false },
     calendar: { type: Function as PropType<(month: ICalendarDate[]) => ICalendarDate[]>, default: null },
+    config: { type: Object as PropType<Partial<Config>>, default: undefined },
 };
 
 export const PickerBaseProps = {

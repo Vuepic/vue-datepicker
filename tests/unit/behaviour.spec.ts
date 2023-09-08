@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { add, addDays, addHours, addMinutes, addMonths, getHours, getMinutes, getMonth, getYear, set } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz/esm';
 
@@ -215,7 +215,7 @@ describe('It should validate various picker scenarios', () => {
         dp.unmount();
     });
 
-    it('Should correctly display months in multi-calendars based on the given range', async () => {
+    it('Should correctly display months in multi-calendars based on the given range (#540)', async () => {
         const today = new Date();
         const sameViewRange = [today, addMonths(today, 1)];
         const diffViewRange = [today, addMonths(today, 3)];
@@ -243,7 +243,7 @@ describe('It should validate various picker scenarios', () => {
         dp.unmount();
     });
 
-    it('Should not break flow on changing months and years when calendar is first step', async () => {
+    it('Should not break flow on changing months and years when calendar is first step (#553)', async () => {
         const flow = [FlowStep.calendar, FlowStep.time];
         const dp = await openMenu({ flow });
         const today = resetDateTime(new Date());

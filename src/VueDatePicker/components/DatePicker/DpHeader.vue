@@ -46,6 +46,7 @@
                             :hide-navigation="hideNavigation"
                             :is-last="autoApply && !keepActionRow"
                             :skip-button-ref="false"
+                            :config="config"
                             :type="type.type"
                             :header-refs="[]"
                             :esc-close="escClose"

@@ -109,6 +109,7 @@
                     :esc-close="escClose"
                     :type="timeInput.type"
                     :text-input="textInput"
+                    :config="config"
                     :arrow-navigation="arrowNavigation"
                     @selected="handleTimeFromOverlay(timeInput.type, $event)"
                     @toggle="toggleOverlay(timeInput.type)"

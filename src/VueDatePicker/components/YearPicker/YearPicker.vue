@@ -13,7 +13,8 @@
             <selection-overlay
                 :items="groupedYears"
                 :is-last="autoApply && !keepActionRow"
-                :height="modeHeight"
+                :height="modeHeight !== 255 ? modeHeight : defaultedConfig.modeHeight"
+                :config="config"
                 type="year"
                 use-relative
                 @selected="selectYear"
@@ -32,6 +33,7 @@
 
     import { PickerBaseProps } from '@/props';
     import { useYearPicker } from '@/components/YearPicker/year-picker';
+    import { useDefaults } from '@/composables';
 
     const emit = defineEmits(['update:internal-model-value', 'reset-flow', 'range-start', 'range-end', 'auto-apply']);
     const props = defineProps({
@@ -45,4 +47,5 @@
     });
 
     const { groupedYears, selectYear, setHoverValue } = useYearPicker(props, emit);
+    const { defaultedConfig } = useDefaults(props);
 </script>

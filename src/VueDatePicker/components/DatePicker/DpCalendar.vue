@@ -58,7 +58,7 @@
                                 :aria-label="defaultedAriaLabels?.day?.(dayVal)"
                                 tabindex="0"
                                 :data-test="dayVal.value"
-                                @click.stop.prevent="$emit('select-date', dayVal)"
+                                @click.prevent="onDateSelect($event, dayVal)"
                                 @keydown.enter="$emit('select-date', dayVal)"
                                 @keydown.space="$emit('handle-space', dayVal)"
                                 @mouseenter="onMouseOver(dayVal, weekInd, dayInd)"
@@ -92,7 +92,11 @@
                                         ref="activeTooltip"
                                         :style="markerTooltipStyle"
                                     >
-                                        <div class="dp__tooltip_content" @click.stop v-if="dayVal.marker?.tooltip">
+                                        <div
+                                            class="dp__tooltip_content"
+                                            @click="onTpClick"
+                                            v-if="dayVal.marker?.tooltip"
+                                        >
                                             <div
                                                 v-for="(tooltip, i) in dayVal.marker.tooltip"
                                                 :key="i"
@@ -129,7 +133,7 @@
     import { computed, nextTick, onMounted, ref } from 'vue';
     import { getISOWeek, getWeek } from 'date-fns';
 
-    import { getDayNames, getDefaultMarker, unrefElement } from '@/utils/util';
+    import { checkStopPropagation, getDayNames, getDefaultMarker, unrefElement } from '@/utils/util';
     import { useArrowNavigation, useDefaults } from '@/composables';
     import { PickerBaseProps } from '@/props';
     import { getDate, isDateAfter, isDateEqual, resetDateTime, setDateMonthOrYear } from '@/utils/date-utils';
@@ -163,7 +167,7 @@
     });
 
     const { buildMultiLevelMatrix } = useArrowNavigation();
-    const { defaultedTransitions, defaultedAriaLabels, defaultedMultiCalendars } = useDefaults(props);
+    const { defaultedTransitions, defaultedConfig, defaultedAriaLabels, defaultedMultiCalendars } = useDefaults(props);
 
     const showMakerTooltip = ref<Date | null>(null);
     const markerTooltipStyle = ref<{ bottom: string; left?: string; right?: string; transform: string }>({
@@ -344,6 +348,15 @@
         if (props.weekNumbers === 'iso') return getISOWeek(firstCurrentDate.value);
         if (typeof props.weekNumbers === 'function') return props.weekNumbers(firstCurrentDate.value);
         return '';
+    };
+
+    const onDateSelect = (ev: Event, dayVal: ICalendarDay) => {
+        checkStopPropagation(ev, defaultedConfig.value);
+        emit('select-date', dayVal);
+    };
+
+    const onTpClick = (ev: Event) => {
+        checkStopPropagation(ev, defaultedConfig.value);
     };
 
     defineExpose({ triggerTransition });

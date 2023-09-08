@@ -24,7 +24,11 @@
                     'dp--overlay-absolute': !props.timePicker && !timePickerInline,
                     'dp--overlay-relative': props.timePicker,
                 }"
-                :style="timePicker ? { height: `${modeHeight}px` } : undefined"
+                :style="
+                    timePicker
+                        ? { height: `${modeHeight !== 255 ? modeHeight : defaultedConfig.modeHeight}px` }
+                        : undefined
+                "
                 ref="overlayRef"
                 :tabindex="timePickerInline ? undefined : 0"
             >
@@ -138,7 +142,7 @@
     const { buildMatrix, setTimePicker } = useArrowNavigation();
     const slots = useSlots();
 
-    const { defaultedTransitions, defaultedAriaLabels, defaultedTextInput } = useDefaults(props);
+    const { defaultedTransitions, defaultedAriaLabels, defaultedTextInput, defaultedConfig } = useDefaults(props);
     const { transitionName, showTransition } = useTransitions(defaultedTransitions);
     const { hideNavigationButtons } = useCommon();
 

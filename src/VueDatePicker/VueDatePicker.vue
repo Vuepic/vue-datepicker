@@ -148,7 +148,7 @@
     const { setMenuFocused, setShiftKey } = useState();
     const { clearArrowNav } = useArrowNavigation();
     const { mapDatesArrToMap, validateDate, isValidTime } = useValidation(props);
-    const { defaultedTransitions, defaultedTextInput, defaultedInline } = useDefaults(props);
+    const { defaultedTransitions, defaultedTextInput, defaultedInline, defaultedConfig } = useDefaults(props);
     const { menuTransition, showTransition } = useTransitions(defaultedTransitions);
 
     onMounted(() => {
@@ -237,7 +237,7 @@
      */
     const onScroll = (): void => {
         if (isOpen.value) {
-            if (props.closeOnScroll) {
+            if (props.closeOnScroll || defaultedConfig.value.closeOnScroll) {
                 closeMenu();
             } else {
                 setMenuPosition();

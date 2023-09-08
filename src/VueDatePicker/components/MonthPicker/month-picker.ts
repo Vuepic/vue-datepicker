@@ -20,7 +20,7 @@ import type { IDefaultSelect, OverlayGridItem, VueEmit } from '@/interfaces';
 import type { PickerBasePropsType } from '@/props';
 
 export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
-    const { defaultedMultiCalendars, defaultedAriaLabels, defaultedTransitions } = useDefaults(props);
+    const { defaultedMultiCalendars, defaultedAriaLabels, defaultedTransitions, defaultedConfig } = useDefaults(props);
 
     const { modelValue, year, month: instanceMonth, calendars } = useModel(props, emit);
     const months = computed(() => getMonths(props.formatLocale, props.locale, props.monthNameFormat));
@@ -190,6 +190,7 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         defaultedMultiCalendars,
         defaultedAriaLabels,
         defaultedTransitions,
+        defaultedConfig,
         setHoverDate,
         selectMonth,
         selectYear,

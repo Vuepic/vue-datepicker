@@ -59,7 +59,7 @@
                 v-if="clearable && !$slots['clear-icon'] && inputValue && !disabled && !readonly"
                 class="dp__clear_icon dp__input_icons"
                 data-test="clear-icon"
-                @click.stop.prevent="onClear"
+                @click.prevent="onClear($event)"
             />
         </div>
     </div>
@@ -76,6 +76,7 @@
 
     import type { PropType } from 'vue';
     import type { DynamicClass } from '@/interfaces';
+    import { checkStopPropagation } from '@/utils/util';
 
     defineOptions({
         compatConfig: {
@@ -104,8 +105,14 @@
         ...AllProps,
     });
 
-    const { defaultedTextInput, defaultedAriaLabels, defaultedInline, getDefaultPattern, getDefaultStartTime } =
-        useDefaults(props);
+    const {
+        defaultedTextInput,
+        defaultedAriaLabels,
+        defaultedInline,
+        defaultedConfig,
+        getDefaultPattern,
+        getDefaultStartTime,
+    } = useDefaults(props);
 
     const parsedDate = ref();
     const inputRef = ref<HTMLElement | null>(null);
@@ -226,8 +233,7 @@
 
     const handleOpen = (ev: KeyboardEvent | MouseEvent) => {
         ev.preventDefault();
-        ev.stopImmediatePropagation();
-        ev.stopPropagation();
+        checkStopPropagation(ev, defaultedConfig.value, true);
         if (
             defaultedTextInput.value.enabled &&
             defaultedTextInput.value.openMenu &&
@@ -253,7 +259,8 @@
         }
     };
 
-    const onClear = () => {
+    const onClear = (ev?: Event) => {
+        checkStopPropagation(ev, defaultedConfig.value, true);
         emit('clear');
     };
 

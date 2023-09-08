@@ -67,10 +67,10 @@
 <script lang="ts" setup>
     import { computed, nextTick, onBeforeUpdate, onMounted, onUnmounted, ref } from 'vue';
 
-    import { convertType, unrefElement } from '@/utils/util';
+    import { checkStopPropagation, convertType, unrefElement } from '@/utils/util';
     import { useArrowNavigation, useCommon, useDefaults } from '@/composables';
 
-    import type { DynamicClass, Flow, OverlayGridItem, TextInputProp } from '@/interfaces';
+    import type { Config, DynamicClass, Flow, OverlayGridItem, TextInputProp } from '@/interfaces';
     import type { PickerBasePropsType } from '@/props';
 
     const { setSelectionGrid, buildMultiLevelMatrix, setMonthPicker } = useArrowNavigation();
@@ -89,11 +89,14 @@
         useRelative?: boolean;
         height?: number | string;
         textInput?: TextInputProp;
+        config?: Partial<Config>;
     }
 
     const props = defineProps<Props>();
 
-    const { defaultedAriaLabels, defaultedTextInput } = useDefaults(props as unknown as PickerBasePropsType);
+    const { defaultedAriaLabels, defaultedTextInput, defaultedConfig } = useDefaults(
+        props as unknown as PickerBasePropsType,
+    );
     const { hideNavigationButtons } = useCommon();
 
     const scrollable = ref(false);
@@ -250,7 +253,7 @@
 
     const handleArrowKey = (ev: KeyboardEvent) => {
         if (props.arrowNavigation) return;
-        ev.stopImmediatePropagation();
+        checkStopPropagation(ev, defaultedConfig.value, true);
     };
 
     const setHoverValue = (val: number) => {

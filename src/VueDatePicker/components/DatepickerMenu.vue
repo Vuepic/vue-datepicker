@@ -109,7 +109,7 @@
     import ActionRow from '@/components/ActionRow.vue';
 
     import { mapSlots, useArrowNavigation, useState, useFlow, useDefaults } from '@/composables';
-    import { unrefElement } from '@/utils/util';
+    import { checkStopPropagation, unrefElement } from '@/utils/util';
     import { AllProps } from '@/props';
 
     import MonthPicker from '@/components/MonthPicker/MonthPicker.vue';
@@ -172,7 +172,7 @@
 
     const { setMenuFocused, setShiftKey, control } = useState();
     const slots = useSlots();
-    const { defaultedTextInput, defaultedInline } = useDefaults(props);
+    const { defaultedTextInput, defaultedInline, defaultedConfig } = useDefaults(props);
 
     const calendarWrapperRef = ref(null);
     const calendarWidth = ref(0);
@@ -194,11 +194,10 @@
             }
             if (menu) {
                 const stopDefault = (event: Event) => {
-                    if (props.allowPreventDefault) {
+                    if (props.allowPreventDefault || defaultedConfig.value.allowPreventDefault) {
                         event.preventDefault();
                     }
-                    event.stopImmediatePropagation();
-                    event.stopPropagation();
+                    checkStopPropagation(event, defaultedConfig.value, true);
                 };
                 menu.addEventListener('pointerdown', stopDefault);
                 menu.addEventListener('mousedown', stopDefault);
@@ -266,9 +265,8 @@
         }),
     );
 
-    const handleDpMenuClick = (e: Event) => {
-        e.stopPropagation();
-        e.stopImmediatePropagation();
+    const handleDpMenuClick = (ev: Event) => {
+        checkStopPropagation(ev, defaultedConfig.value, true);
     };
 
     const handleEsc = (): void => {
@@ -297,7 +295,7 @@
         if (!props.disableMonthYearSelect && ev.code === 'Tab') {
             if ((ev.target as HTMLElement).classList.contains('dp__menu') && control.value.shiftKeyInMenu) {
                 ev.preventDefault();
-                ev.stopImmediatePropagation();
+                checkStopPropagation(ev, defaultedConfig.value, true);
                 emit('close-picker');
             }
         }

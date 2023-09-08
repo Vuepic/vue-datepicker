@@ -1,7 +1,7 @@
 import { unref } from 'vue';
 import { format } from 'date-fns';
 
-import type { IDefaultSelect, IMarker, MaybeElementRef, ModelValue, OverlayGridItem } from '@/interfaces';
+import type { Config, IDefaultSelect, IMarker, MaybeElementRef, ModelValue, OverlayGridItem } from '@/interfaces';
 import type { ComponentPublicInstance } from 'vue';
 
 export const getArrayInArray = <T>(list: T[], increment = 3): T[][] => {
@@ -222,4 +222,13 @@ export const groupListAndMap = (
             };
         });
     });
+};
+
+export const checkStopPropagation = (ev: Event | undefined, config: Config, immediate = false) => {
+    if (ev && config.allowStopPropagation) {
+        if (immediate) {
+            ev.stopImmediatePropagation();
+        }
+        ev.stopPropagation();
+    }
 };

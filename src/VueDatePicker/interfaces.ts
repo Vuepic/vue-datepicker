@@ -281,3 +281,10 @@ export interface InlineOptions {
 export type InlineProp = boolean | { input?: boolean };
 
 export type DisabledTimesArrProp = (ind: number, hours?: number) => TimeValuesInv;
+
+export interface Config {
+    allowStopPropagation: boolean;
+    closeOnScroll: boolean;
+    modeHeight: number;
+    allowPreventDefault: boolean;
+}

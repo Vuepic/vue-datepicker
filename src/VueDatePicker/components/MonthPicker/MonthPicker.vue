@@ -19,7 +19,8 @@
                 :arrow-navigation="arrowNavigation"
                 :is-last="autoApply && !keepActionRow"
                 :esc-close="escClose"
-                :height="modeHeight"
+                :height="modeHeight !== 255 ? modeHeight : defaultedConfig.modeHeight"
+                :config="config"
                 @selected="selectMonth($event, instance)"
                 @hover-value="setHoverDate($event, instance)"
                 use-relative
@@ -65,6 +66,7 @@
                                 :items="groupedYears(instance)"
                                 :text-input="textInput"
                                 :esc-close="escClose"
+                                :config="config"
                                 @toggle="toggleYearPicker(instance)"
                                 @selected="handleYearSelect($event, instance)"
                                 :is-last="autoApply && !keepActionRow"
@@ -125,6 +127,7 @@
         defaultedMultiCalendars,
         defaultedAriaLabels,
         defaultedTransitions,
+        defaultedConfig,
         setHoverDate,
         selectMonth,
         selectYear,

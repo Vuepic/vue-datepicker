@@ -11,6 +11,7 @@ import type {
     TextInputProp,
     InlineProp,
     InlineOptions,
+    Config,
 } from '@/interfaces';
 
 export const mergeDefaultTransitions = (conf: Partial<Transition>): Transition => ({
@@ -131,4 +132,14 @@ export const getDefaultInlineOptions = (inline: InlineProp): InlineOptions => {
         enabled: inline,
         ...defaultOptions,
     };
+};
+
+export const getDefaultConfig = (config?: Partial<Config>): Config => {
+    const defaultConfig = {
+        allowStopPropagation: true,
+        closeOnScroll: false,
+        modeHeight: 255,
+        allowPreventDefault: false,
+    };
+    return { ...defaultConfig, ...(config ?? {}) };
 };
