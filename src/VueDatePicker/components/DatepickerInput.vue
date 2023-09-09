@@ -275,7 +275,7 @@
         inputRef.value?.focus({ preventScroll: true });
     };
 
-    const setParsedDate = (date: Date) => {
+    const setParsedDate = (date: Date | null) => {
         parsedDate.value = date;
     };
 

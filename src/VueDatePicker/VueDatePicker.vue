@@ -280,6 +280,7 @@
     const clearValue = (): void => {
         inputValue.value = '';
         clearInternalValues();
+        inputRef.value?.setParsedDate(null);
         emit('update:model-value', null);
         emit('update:model-timezone-value', null);
         emit('cleared');

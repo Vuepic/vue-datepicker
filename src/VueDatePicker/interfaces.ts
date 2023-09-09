@@ -193,7 +193,7 @@ export type DatepickerMenuRef = ComponentPublicInstance<{
 }>;
 
 export type DatepickerInputRef = ComponentPublicInstance<{
-    setParsedDate: (date: Date | Date[]) => void;
+    setParsedDate: (date: Date | Date[]| null) => void;
     focusInput: () => void;
 }>;
 
