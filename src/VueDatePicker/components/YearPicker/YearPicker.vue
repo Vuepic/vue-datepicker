@@ -12,7 +12,7 @@
         <template v-else>
             <selection-overlay
                 :items="groupedYears"
-                :is-last="autoApply && !keepActionRow"
+                :is-last="autoApply && !keepActionRow && !defaultedConfig.keepActionRow"
                 :height="modeHeight !== 255 ? modeHeight : defaultedConfig.modeHeight"
                 :config="config"
                 type="year"

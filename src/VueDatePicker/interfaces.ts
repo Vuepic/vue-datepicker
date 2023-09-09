@@ -287,4 +287,9 @@ export interface Config {
     closeOnScroll: boolean;
     modeHeight: number;
     allowPreventDefault: boolean;
+    closeOnClearValue: boolean;
+    closeOnAutoApply: boolean;
+    noSwipe: boolean;
+    keepActionRow: boolean;
+    onClickOutside?: (validate: () => boolean) => void;
 }

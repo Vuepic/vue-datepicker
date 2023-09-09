@@ -209,7 +209,7 @@
     const toggleButtonClass = computed(() => ({
         dp__btn: true,
         dp__button: true,
-        dp__button_bottom: props.autoApply && !props.keepActionRow,
+        dp__button_bottom: props.autoApply && !props.keepActionRow && !defaultedConfig.value.keepActionRow,
     }));
 
     const timeInputSlots = mapSlots(slots, 'timePicker');

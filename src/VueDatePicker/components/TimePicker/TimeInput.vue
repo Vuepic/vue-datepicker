@@ -105,7 +105,7 @@
                 <SelectionOverlay
                     v-if="overlays[timeInput.type]"
                     :items="getGridItems(timeInput.type)"
-                    :is-last="autoApply && !keepActionRow"
+                    :is-last="autoApply && !keepActionRow && !defaultedConfig.keepActionRow"
                     :esc-close="escClose"
                     :type="timeInput.type"
                     :text-input="textInput"
@@ -179,7 +179,7 @@
     });
 
     const { setTimePickerElements, setTimePickerBackRef } = useArrowNavigation();
-    const { defaultedAriaLabels, defaultedTransitions, defaultedFilters } = useDefaults(props);
+    const { defaultedAriaLabels, defaultedTransitions, defaultedFilters, defaultedConfig } = useDefaults(props);
 
     const { transitionName, showTransition } = useTransitions(defaultedTransitions);
 

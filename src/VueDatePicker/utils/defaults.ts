@@ -140,6 +140,11 @@ export const getDefaultConfig = (config?: Partial<Config>): Config => {
         closeOnScroll: false,
         modeHeight: 255,
         allowPreventDefault: false,
+        closeOnClearValue: true,
+        closeOnAutoApply: true,
+        noSwipe: false,
+        keepActionRow: false,
+        onClickOutside: undefined,
     };
     return { ...defaultConfig, ...(config ?? {}) };
 };

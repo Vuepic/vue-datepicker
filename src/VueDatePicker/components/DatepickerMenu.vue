@@ -87,7 +87,7 @@
             </div>
         </div>
         <ActionRow
-            v-if="!autoApply || keepActionRow"
+            v-if="!autoApply || keepActionRow || defaultedConfig.keepActionRow"
             :menu-mount="menuMount"
             v-bind="baseProps"
             :calendar-width="calendarWidth"

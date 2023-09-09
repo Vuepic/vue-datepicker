@@ -283,7 +283,7 @@
         emit('update:model-value', null);
         emit('update:model-timezone-value', null);
         emit('cleared');
-        if (props.closeOnClearValue) {
+        if (props.closeOnClearValue || defaultedConfig.value.closeOnClearValue) {
             closeMenu();
         }
     };
@@ -317,7 +317,7 @@
     const emitOnAutoApply = (ignoreClose: boolean): void => {
         updateTextInputWithDateTimeValue();
         emitModelValue();
-        if (props.closeOnAutoApply && !ignoreClose) {
+        if ((props.closeOnAutoApply || defaultedConfig.value.closeOnAutoApply) && !ignoreClose) {
             closeMenu();
         }
     };
@@ -442,11 +442,13 @@
         dpMenuRef.value?.switchView(view, instance);
     };
 
-    onClickOutside(
-        dpWrapMenuRef,
-        inputRef,
-        props.onClickOutside ? () => props.onClickOutside(validateBeforeEmit) : closeMenu,
-    );
+    const clickOutside = (validateBeforeEmit: () => boolean) => {
+        if (props.onClickOutside) return props.onClickOutside(validateBeforeEmit);
+        if (defaultedConfig.value.onClickOutside) return defaultedConfig.value.onClickOutside(validateBeforeEmit);
+        return closeMenu();
+    };
+
+    onClickOutside(dpWrapMenuRef, inputRef, () => clickOutside(validateBeforeEmit));
 
     defineExpose({
         closeMenu,

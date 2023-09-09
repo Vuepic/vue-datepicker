@@ -44,7 +44,7 @@
                             :items="type.items"
                             :arrow-navigation="arrowNavigation"
                             :hide-navigation="hideNavigation"
-                            :is-last="autoApply && !keepActionRow"
+                            :is-last="autoApply && !keepActionRow && !defaultedConfig.keepActionRow"
                             :skip-button-ref="false"
                             :config="config"
                             :type="type.type"
@@ -140,7 +140,8 @@
         },
     });
 
-    const { defaultedTransitions, defaultedAriaLabels, defaultedMultiCalendars, defaultedFilters } = useDefaults(props);
+    const { defaultedTransitions, defaultedAriaLabels, defaultedMultiCalendars, defaultedFilters, defaultedConfig } =
+        useDefaults(props);
     const { transitionName, showTransition } = useTransitions(defaultedTransitions);
     const { buildMatrix } = useArrowNavigation();
     const { handleMonthYearChange, isDisabled, updateMonthYear } = useMonthYearPick(props, emit);

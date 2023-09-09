@@ -17,7 +17,7 @@
             <SelectionOverlay
                 :items="groupedMonths(instance)"
                 :arrow-navigation="arrowNavigation"
-                :is-last="autoApply && !keepActionRow"
+                :is-last="autoApply && !keepActionRow && !defaultedConfig.keepActionRow"
                 :esc-close="escClose"
                 :height="modeHeight !== 255 ? modeHeight : defaultedConfig.modeHeight"
                 :config="config"
@@ -69,7 +69,7 @@
                                 :config="config"
                                 @toggle="toggleYearPicker(instance)"
                                 @selected="handleYearSelect($event, instance)"
-                                :is-last="autoApply && !keepActionRow"
+                                :is-last="autoApply && !keepActionRow && !defaultedConfig.keepActionRow"
                                 type="year"
                             >
                                 <template #button-icon>

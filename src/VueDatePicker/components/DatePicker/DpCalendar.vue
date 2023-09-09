@@ -197,7 +197,7 @@
 
     onMounted(() => {
         emit('mount', { cmp: 'calendar', refs: dayRefs });
-        if (!props.noSwipe) {
+        if (!props.noSwipe && !defaultedConfig.value.noSwipe) {
             if (calendarWrapRef.value) {
                 calendarWrapRef.value.addEventListener('touchstart', onTouchStart, { passive: false });
                 calendarWrapRef.value.addEventListener('touchend', onTouchEnd, { passive: false });
