@@ -166,6 +166,7 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
 
     const selectMonth = (month: number, instance: number) => {
         calendars.value[instance].month = month;
+        emitMonthYearUpdate(instance, calendars.value[instance].year, month);
         if (props.multiDates) return selectMultiMonths(month, instance);
         if (props.range) return selectRangedMonth(month, instance);
         return selectSingleMonth(month, instance);
@@ -176,6 +177,16 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         if (defaultedMultiCalendars.value.count && !defaultedMultiCalendars.value.solo) {
             updateMultiCalendars(instance);
         }
+        emitMonthYearUpdate(instance, year, null);
+    };
+
+    const emitMonthYearUpdate = (instance: number, year: number, monthVal: number | null) => {
+        let month = monthVal;
+        if (!month) {
+            const value = getModelMonthYear();
+            month = Array.isArray(value) ? value[instance].month : value.month;
+        }
+        emit('update-month-year', { instance, year, month });
     };
 
     const setHoverDate = (month: number, instance: number) => {

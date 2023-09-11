@@ -107,6 +107,7 @@
         'range-start',
         'range-end',
         'auto-apply',
+        'update-month-year',
     ]);
 
     const props = defineProps({

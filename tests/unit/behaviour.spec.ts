@@ -300,4 +300,15 @@ describe('It should validate various picker scenarios', () => {
 
         expect(dp.emitted()).toHaveProperty('invalid-select', [[secondDate]]);
     });
+
+    it('Should emit update-month-year in month-picker mode (#564)', async () => {
+        const today = new Date();
+        const dp = await openMenu({ monthPicker: true });
+
+        await dp.find(`[data-test="${getMonthName(today)}"]`).trigger('click');
+
+        expect(dp.emitted()).toHaveProperty('update-month-year', [
+            [{ instance: 0, year: getYear(today), month: getMonth(today) }],
+        ]);
+    });
 });
