@@ -284,4 +284,20 @@ describe('It should validate various picker scenarios', () => {
 
         expect(dp.emitted()).toHaveProperty('update:model-value', [[[today, addDays(today, 5)]]]);
     });
+
+    it('Should emit invalid-select when auto-apply is enabled and min/max range is validated (#563)', async () => {
+        const today = resetDateTime(set(new Date(), { date: 1 }));
+        const secondDate = addDays(today, 15);
+
+        const dp = await openMenu({ maxRange: 10, range: true, autoApply: true });
+
+        const selectRange = async () => {
+            await dp.find(`[data-test="${today}"]`).trigger('click');
+            await dp.find(`[data-test="${secondDate}"]`).trigger('click');
+        };
+
+        await selectRange();
+
+        expect(dp.emitted()).toHaveProperty('invalid-select', [[secondDate]]);
+    });
 });

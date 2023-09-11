@@ -72,6 +72,7 @@
                     @time-picker-close="onTimePickerClose"
                     @recalculate-position="recalculatePosition"
                     @update-month-year="$emit('update-month-year', $event)"
+                    @auto-apply-invalid="$emit('auto-apply-invalid', $event)"
                     @update:internal-model-value="$emit('update:internal-model-value', $event)"
                 >
                     <template v-for="(slot, i) in sharedSlots" #[slot]="args" :key="i">
@@ -151,6 +152,7 @@
         'am-pm-change',
         'range-start',
         'range-end',
+        'auto-apply-invalid',
     ]);
 
     const props = defineProps({

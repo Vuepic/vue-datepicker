@@ -477,6 +477,8 @@ export const useDatePicker = (
                 tempRange.value[1] = getDate(day.value);
                 emit('range-end', tempRange.value[1]);
             }
+        } else if (props.autoApply) {
+            emit('auto-apply-invalid', day.value);
         }
     };
 

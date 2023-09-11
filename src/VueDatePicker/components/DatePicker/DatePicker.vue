@@ -111,6 +111,7 @@
         'time-picker-close',
         'recalculate-position',
         'update-month-year',
+        'auto-apply-invalid',
     ]);
     const props = defineProps({
         ...PickerBaseProps,
