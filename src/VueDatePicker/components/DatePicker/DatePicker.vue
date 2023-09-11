@@ -31,6 +31,7 @@
             :mapped-dates="mappedDates(instance)"
             :month="month(instance)"
             :year="year(instance)"
+            :instance="instance"
             v-bind="$props"
             @select-date="selectDate($event, instance !== 1)"
             @handle-space="handleSpace($event, instance !== 1)"
