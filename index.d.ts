@@ -294,7 +294,7 @@ export interface PublicMethods extends MethodOptions {
     openMenu: () => void;
     clearValue: () => void;
     onScroll: () => void;
-    updateInternalModelValue: (value: Date | Date[]) => void;
+    updateInternalModelValue: (value: Date | Date[] | null) => void;
     setMonthYear: (value: { month?: number | string; year?: number | string }) => void;
     parseModel: (value?: ModelValue) => void;
     switchView: (view: MenuView, instance?: number) => void;
