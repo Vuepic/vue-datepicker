@@ -202,7 +202,9 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
     const checkDisabledTimePerRange = (disabledTimes: DisabledTime[], date: Date, isValid: boolean) => {
         return (
             disabledTimes.find((time) =>
-                +time.hours === getHours(date) && time.minutes === '*' ? true : +time.minutes === getMinutes(date),
+                +time.hours === getHours(date) && time.minutes === '*'
+                    ? true
+                    : +time.minutes === getMinutes(date) && +time.hours === getHours(date),
             ) && isValid
         );
     };
@@ -244,6 +246,7 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
             if (Array.isArray(props.disabledTimes)) {
                 return checkDisabledTimesOnArr(isValid, date);
             }
+            console.log('are we here');
             return checkDisabledTimesFn(isValid, date);
         }
         return isValid;
@@ -264,7 +267,7 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
         if (props.minTime || props.minDate) {
             isValid = checkTimeMinMax(props.minTime, props.minDate, 'min', convertType(selectedDateTime), isValid);
         }
-
+        console.log(checkDisabledTimes(date, isValid), isValid);
         return checkDisabledTimes(date, isValid);
     };
 
