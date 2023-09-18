@@ -33,7 +33,7 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
                 calendars.value[i] = calendars.value[0];
             } else {
                 const prevDate = set(getDate(), calendars.value[i - 1]);
-                calendars.value[i] = { month: getMonth(prevDate), year: getYear(addYears(prevDate, i)) };
+                calendars.value[i] = { month: getMonth(prevDate), year: getYear(addYears(prevDate, 1)) };
             }
         }
     };
