@@ -88,6 +88,10 @@ Special thanks to our sponsors 🙏
     <img src="https://avatars.githubusercontent.com/u/99868704?s=200&v=4" width="80" alt="Hapio">
 </a>
 
+## Versioning
+
+This project follows [SemVer](https://semver.org) specification
+
 ## License
 
 Copyright © 2021-present [Vuepic](https://github.com/Vuepic)
