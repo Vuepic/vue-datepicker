@@ -113,7 +113,9 @@
 
 .dp--preset-range {
   display: block;
+  width: 100%;
   padding: 5px;
+  text-align: left;
   white-space: nowrap;
   color: var(--dp-text-color);
   border-radius: var(--dp-border-radius);

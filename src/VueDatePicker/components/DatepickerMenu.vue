@@ -27,7 +27,7 @@
                 <slot name="left-sidebar" v-bind="getSidebarProps" />
             </div>
             <div class="dp--preset-dates" v-if="presetDates.length">
-                <div v-for="(preset, i) in presetDates" :key="i" :style="preset.style || {}" class="dp--preset-range">
+                <template v-for="(preset, i) in presetDates" :key="i">
                     <template v-if="preset.slot">
                         <slot
                             :name="preset.slot"
@@ -37,17 +37,18 @@
                         />
                     </template>
                     <template v-else>
-                        <div
-                            role="button"
-                            tabindex="0"
-                            @click="presetDate(preset.value, preset.noTz)"
+                        <button
+                            type="button"
+                            :style="preset.style || {}"
+                            class="dp__btn dp--preset-range"
+                            @click.prevent="presetDate(preset.value, preset.noTz)"
                             @keydown.enter.prevent="presetDate(preset.value, preset.noTz)"
                             @keydown.space.prevent="presetDate(preset.value, preset.noTz)"
                         >
                             {{ preset.label }}
-                        </div>
+                        </button>
                     </template>
-                </div>
+                </template>
             </div>
             <div class="dp__instance_calendar" ref="calendarWrapperRef" role="document">
                 <component
