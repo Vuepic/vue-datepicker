@@ -3,7 +3,15 @@ import { addDays } from 'date-fns';
 
 import { useDefaults, useValidation } from '@/composables/index';
 import { isModelAuto } from '@/utils/util';
-import { isDateAfter, isDateBefore, isDateBetween, isDateEqual, getDate, getWeekFromDate } from '@/utils/date-utils';
+import {
+    isDateAfter,
+    isDateBefore,
+    isDateBetween,
+    isDateEqual,
+    getDate,
+    getWeekFromDate,
+    getZonedDate,
+} from '@/utils/date-utils';
 
 import type { UnwrapRef, WritableComputedRef } from 'vue';
 import type { ICalendarDay, InternalModuleValue } from '@/interfaces';
@@ -15,7 +23,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
     // Track hovered date
     const hoveredDate = ref<Date | null>(null);
     // Today date
-    const today = ref<Date>(getDate());
+    const today = ref<Date>(getDate(getZonedDate(new Date(), props.timezone)));
 
     /**
      * When using range picker keep track of hovered value in the calendar

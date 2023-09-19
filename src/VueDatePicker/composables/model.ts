@@ -1,19 +1,20 @@
 import { computed, ref, reactive } from 'vue';
 import { getHours, getMinutes, getMonth, getYear } from 'date-fns';
 
-import { getDate } from '@/utils/date-utils';
+import { getDate, getZonedDate } from '@/utils/date-utils';
 
 import type { ICalendarData, InternalModuleValue, VueEmit } from '@/interfaces';
 import type { PickerBasePropsType } from '@/props';
 
 export const useModel = (props: PickerBasePropsType, emit: VueEmit) => {
-    const calendars = ref<ICalendarData[]>([{ month: getMonth(getDate()), year: getYear(getDate()) }]);
+    const today = getDate(getZonedDate(new Date(), props.timezone));
+    const calendars = ref<ICalendarData[]>([{ month: getMonth(today), year: getYear(today) }]);
 
     // Time values
 
     const time = reactive({
-        hours: props.range ? [getHours(getDate()), getHours(getDate())] : getHours(getDate()),
-        minutes: props.range ? [getMinutes(getDate()), getMinutes(getDate())] : getMinutes(getDate()),
+        hours: props.range ? [getHours(today), getHours(today)] : getHours(today),
+        minutes: props.range ? [getMinutes(today), getMinutes(today)] : getMinutes(today),
         seconds: props.range ? [0, 0] : 0,
     });
 
