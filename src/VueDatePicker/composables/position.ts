@@ -260,7 +260,11 @@ export const usePosition = ({
                 shadow: true,
                 style: { opacity: 0, position: 'absolute', ...pos },
             },
-            Object.fromEntries(Object.keys(slots).map((slot) => [slot, slots[slot]])),
+            Object.fromEntries(
+                Object.keys(slots)
+                    .filter((slot) => ['right-sidebar', 'left-sidebar'].includes(slot))
+                    .map((slot) => [slot, slots[slot]]),
+            ),
         );
 
         render(el, renderContainer);
