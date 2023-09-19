@@ -387,10 +387,14 @@
             internalModelValue.value = null;
             return;
         }
-        internalModelValue.value = date;
-        if (submit) {
-            selectDate();
-            emit('text-submit');
+        const validDate = Array.isArray(date) ? !date.some((d) => !validateDate(d)) : validateDate(date);
+        const validTime = isValidTime(date);
+        if (validDate && validTime) {
+            internalModelValue.value = date;
+            if (submit) {
+                selectDate();
+                emit('text-submit');
+            }
         }
     };
 
