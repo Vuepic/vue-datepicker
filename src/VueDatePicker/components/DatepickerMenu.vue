@@ -89,7 +89,7 @@
             </div>
         </div>
         <ActionRow
-            v-if="!autoApply || keepActionRow || defaultedConfig.keepActionRow"
+            v-if="!autoApply || defaultedConfig.keepActionRow"
             :menu-mount="menuMount"
             v-bind="baseProps"
             :calendar-width="calendarWidth"
@@ -197,7 +197,7 @@
             }
             if (menu) {
                 const stopDefault = (event: Event) => {
-                    if (props.allowPreventDefault || defaultedConfig.value.allowPreventDefault) {
+                    if (defaultedConfig.value.allowPreventDefault) {
                         event.preventDefault();
                     }
                     checkStopPropagation(event, defaultedConfig.value, true);

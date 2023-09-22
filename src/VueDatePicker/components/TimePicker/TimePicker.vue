@@ -24,11 +24,7 @@
                     'dp--overlay-absolute': !props.timePicker && !timePickerInline,
                     'dp--overlay-relative': props.timePicker,
                 }"
-                :style="
-                    timePicker
-                        ? { height: `${modeHeight !== 255 ? modeHeight : defaultedConfig.modeHeight}px` }
-                        : undefined
-                "
+                :style="timePicker ? { height: `${defaultedConfig.modeHeight}px` } : undefined"
                 ref="overlayRef"
                 :tabindex="timePickerInline ? undefined : 0"
             >
@@ -209,7 +205,7 @@
     const toggleButtonClass = computed(() => ({
         dp__btn: true,
         dp__button: true,
-        dp__button_bottom: props.autoApply && !props.keepActionRow && !defaultedConfig.value.keepActionRow,
+        dp__button_bottom: props.autoApply && !defaultedConfig.value.keepActionRow,
     }));
 
     const timeInputSlots = mapSlots(slots, 'timePicker');

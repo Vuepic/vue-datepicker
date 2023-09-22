@@ -44,7 +44,7 @@
                             :items="type.items"
                             :arrow-navigation="arrowNavigation"
                             :hide-navigation="hideNavigation"
-                            :is-last="autoApply && !keepActionRow && !defaultedConfig.keepActionRow"
+                            :is-last="autoApply && !defaultedConfig.keepActionRow"
                             :skip-button-ref="false"
                             :config="config"
                             :type="type.type"

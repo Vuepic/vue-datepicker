@@ -238,7 +238,7 @@
      */
     const onScroll = (): void => {
         if (isOpen.value) {
-            if (props.closeOnScroll || defaultedConfig.value.closeOnScroll) {
+            if (defaultedConfig.value.closeOnScroll) {
                 closeMenu();
             } else {
                 setMenuPosition();
@@ -285,7 +285,7 @@
         emit('update:model-value', null);
         emit('update:model-timezone-value', null);
         emit('cleared');
-        if (props.closeOnClearValue || defaultedConfig.value.closeOnClearValue) {
+        if (defaultedConfig.value.closeOnClearValue) {
             closeMenu();
         }
     };
@@ -319,7 +319,7 @@
     const emitOnAutoApply = (ignoreClose: boolean): void => {
         updateTextInputWithDateTimeValue();
         emitModelValue();
-        if ((props.closeOnAutoApply || defaultedConfig.value.closeOnAutoApply) && !ignoreClose) {
+        if (defaultedConfig.value.closeOnAutoApply && !ignoreClose) {
             closeMenu();
         }
     };
@@ -449,7 +449,6 @@
     };
 
     const clickOutside = (validateBeforeEmit: () => boolean) => {
-        if (props.onClickOutside) return props.onClickOutside(validateBeforeEmit);
         if (defaultedConfig.value.onClickOutside) return defaultedConfig.value.onClickOutside(validateBeforeEmit);
         return closeMenu();
     };

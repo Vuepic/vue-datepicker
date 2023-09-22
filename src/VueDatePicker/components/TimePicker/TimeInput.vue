@@ -105,7 +105,7 @@
                 <SelectionOverlay
                     v-if="overlays[timeInput.type]"
                     :items="getGridItems(timeInput.type)"
-                    :is-last="autoApply && !keepActionRow && !defaultedConfig.keepActionRow"
+                    :is-last="autoApply && !defaultedConfig.keepActionRow"
                     :esc-close="escClose"
                     :type="timeInput.type"
                     :text-input="textInput"

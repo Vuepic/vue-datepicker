@@ -115,10 +115,6 @@ export interface VueDatePickerProps {
     hideInputIcon?: boolean;
     state?: boolean;
     clearable?: boolean;
-    /**
-     * @deprecated
-     */
-    closeOnScroll?: boolean;
     autoApply?: boolean;
     filters?: {
         months?: number[];
@@ -135,10 +131,6 @@ export interface VueDatePickerProps {
     autoPosition?: boolean;
     monthPicker?: boolean;
     timePicker?: boolean;
-    /**
-     * @deprecated
-     */
-    closeOnAutoApply?: boolean;
     textInput?:
         | boolean
         | {
@@ -175,10 +167,6 @@ export interface VueDatePickerProps {
               vNext?: string;
               vPrevious?: string;
           };
-    /**
-     * @deprecated
-     */
-    modeHeight?: string | number;
     enableSeconds?: boolean;
     escClose?: boolean;
     spaceConfirm?: boolean;
@@ -203,15 +191,7 @@ export interface VueDatePickerProps {
     utc?: boolean | 'preserve';
     multiDatesLimit?: number | string;
     reverseYears?: boolean;
-    /**
-     * @deprecated
-     */
-    keepActionRow?: boolean;
     weekPicker?: boolean;
-    /**
-     * @deprecated
-     */
-    noSwipe?: boolean;
     vertical?: boolean;
     ariaLabels?: {
         toggleOverlay?: string;
@@ -248,23 +228,11 @@ export interface VueDatePickerProps {
     ignoreTimeValidation?: boolean;
     dayClass?: (date: Date) => string;
     hideNavigation?: ('month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds')[];
-    /**
-     * @deprecated
-     */
-    onClickOutside?: (validate: () => boolean) => void;
     noDisabledRange?: boolean;
     sixWeeks?: boolean | 'append' | 'prepend' | 'center' | 'fair';
     timezone?: string;
     emitTimezone?: string;
-    /**
-     * @deprecated
-     */
-    allowPreventDefault?: boolean;
     disableYearSelect?: boolean;
-    /**
-     * @deprecated
-     */
-    closeOnClearValue?: boolean;
     focusStartDate?: boolean;
     disabledTimes?:
         | ((time: TimeObj | TimeObj[] | (TimeObj | undefined)[]) => boolean)

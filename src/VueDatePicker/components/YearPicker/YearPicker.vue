@@ -12,8 +12,8 @@
         <template v-else>
             <selection-overlay
                 :items="groupedYears"
-                :is-last="autoApply && !keepActionRow && !defaultedConfig.keepActionRow"
-                :height="modeHeight !== 255 ? modeHeight : defaultedConfig.modeHeight"
+                :is-last="autoApply && !defaultedConfig.keepActionRow"
+                :height="defaultedConfig.modeHeight"
                 :config="config"
                 type="year"
                 use-relative
