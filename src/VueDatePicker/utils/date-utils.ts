@@ -330,8 +330,9 @@ export const formatDate = (
     rangeSeparator: string,
     modelAuto: boolean,
     pattern: string,
+    parser?: boolean,
 ) => {
-    if (typeof formatProp === 'function') return formatProp(value);
+    if (typeof formatProp === 'function' && !parser) return formatProp(value);
     const options = formatLocale ? { locale: formatLocale } : undefined;
 
     if (Array.isArray(value)) {

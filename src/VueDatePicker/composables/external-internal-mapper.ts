@@ -47,7 +47,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
         return getZonedDate(date, props.timezone);
     };
 
-    const formatDateFn = (value: Date | Date[], customPattern?: string) => {
+    const formatDateFn = (value: Date | Date[], customPattern?: string, parser = false) => {
         return formatDate(
             value,
             props.format,
@@ -55,6 +55,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
             defaultedTextInput.value.rangeSeparator,
             props.modelAuto,
             customPattern ?? getDefaultPattern(),
+            parser,
         );
     };
 
@@ -299,7 +300,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
             if (props.modelType === 'format' && (typeof props.format === 'string' || !props.format))
                 return formatDateFn(getZonedToUtc(val));
 
-            return formatDateFn(getZonedToUtc(val), props.modelType);
+            return formatDateFn(getZonedToUtc(val), props.modelType, true);
         }
         return getZonedToUtc(val);
     };

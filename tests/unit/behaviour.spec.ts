@@ -1,5 +1,17 @@
 import { describe, expect, it } from 'vitest';
-import { add, addDays, addHours, addMinutes, addMonths, getHours, getMinutes, getMonth, getYear, set } from 'date-fns';
+import {
+    add,
+    addDays,
+    addHours,
+    addMinutes,
+    addMonths,
+    format,
+    getHours,
+    getMinutes,
+    getMonth,
+    getYear,
+    set,
+} from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz/esm';
 
 import { resetDateTime } from '@/utils/date-utils';
@@ -310,5 +322,18 @@ describe('It should validate various picker scenarios', () => {
         expect(dp.emitted()).toHaveProperty('update-month-year', [
             [{ instance: 0, year: getYear(today), month: getMonth(today) }],
         ]);
+    });
+
+    it('Should ignore format function for custom model-type (#582)', async () => {
+        const today = resetDateTime(new Date());
+        const formatFn = (date: Date | Date[]) => {
+            return format(date as Date, 'dd.MM.yyyy');
+        };
+
+        const dp = await openMenu({ modelType: 'dd-MM-yyyy', format: formatFn });
+        await dp.find(`[data-test="${today}"]`).trigger('click');
+        await dp.find(`[data-test="select-button"]`).trigger('click');
+
+        expect(dp.emitted()).toHaveProperty('update:model-value', [[format(today, 'dd-MM-yyyy')]]);
     });
 });
