@@ -347,7 +347,11 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
         if (props.monthPicker) return modeEmitter(getMonthVal);
         if (props.timePicker) return modeEmitter(getTimeVal);
         if (props.yearPicker) return modeEmitter(getYear);
-        if (props.weekPicker) return emitValue(internalModelValue.value, true);
+        if (props.weekPicker)
+            return emitValue(
+                internalModelValue.value.map((val: Date) => toModelType(val) as string),
+                true,
+            );
         return emitValue(mapInternalDatesToExternal(), true);
     };
 
