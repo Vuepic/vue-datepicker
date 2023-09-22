@@ -28,7 +28,7 @@
                 <transition :name="transitionName" :css="!!transitions">
                     <div
                         class="dp__calendar"
-                        role="grid"
+                        role="rowgroup"
                         :aria-label="defaultedAriaLabels?.calendarDays || undefined"
                         v-if="showCalendar"
                     >
