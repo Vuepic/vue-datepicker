@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="dp--tp-wrap">
         <button
             type="button"
             v-if="!timePicker && !timePickerInline"

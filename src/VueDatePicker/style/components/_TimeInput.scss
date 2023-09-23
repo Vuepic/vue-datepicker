@@ -1,5 +1,9 @@
 @import "shared";
 
+.dp--tp-wrap {
+  max-width: var(--dp-menu-min-width);
+}
+
 .dp__time_input {
   width: 100%;
   display: flex;
