@@ -212,7 +212,7 @@
 
     const timeValues = computed(() => ({ hours: props.hours, minutes: props.minutes, seconds: props.seconds }));
 
-    const isOverlayValueDisabled = (type, val) => {
+    const isOverlayValueDisabled = (type: TimeType, val: number) => {
         if (props.range && !props.disableTimeRangeValidation) {
             return !props.validateTime(type, val);
         }

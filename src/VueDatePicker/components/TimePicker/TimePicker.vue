@@ -111,8 +111,7 @@
     import { PickerBaseProps } from '@/props';
 
     import type { PropType } from 'vue';
-    import type { DisabledTimesArrProp, TimeInputRef } from '@/interfaces';
-    import { TimeType } from '@/interfaces';
+    import type { DisabledTimesArrProp, TimeInputRef, TimeType } from '@/interfaces';
 
     defineOptions({
         compatConfig: {
