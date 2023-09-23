@@ -7,9 +7,9 @@
                     type="button"
                     :class="{
                         dp__btn: true,
-                        dp__inc_dec_button: !props.timePickerInline,
-                        dp__inc_dec_button_inline: props.timePickerInline,
-                        dp__tp_inline_btn_top: props.timePickerInline,
+                        dp__inc_dec_button: !timePickerInline,
+                        dp__inc_dec_button_inline: timePickerInline,
+                        dp__tp_inline_btn_top: timePickerInline,
                         dp__inc_dec_button_disabled: disabledArrowUpBtn(timeInput.type),
                     }"
                     :data-test="`${timeInput.type}-time-inc-btn-${props.order}`"
@@ -34,8 +34,8 @@
                     :aria-label="defaultedAriaLabels?.openTpOverlay(timeInput.type)"
                     :class="{
                         dp__time_display: true,
-                        dp__time_display_block: !props.timePickerInline,
-                        dp__time_display_inline: props.timePickerInline,
+                        dp__time_display_block: !timePickerInline,
+                        dp__time_display_inline: timePickerInline,
                         'dp--time-invalid': disabledBox(timeInput.type),
                         'dp--time-overlay-btn': !disabledBox(timeInput.type),
                     }"
@@ -59,9 +59,9 @@
                     type="button"
                     :class="{
                         dp__btn: true,
-                        dp__inc_dec_button: !props.timePickerInline,
-                        dp__inc_dec_button_inline: props.timePickerInline,
-                        dp__tp_inline_btn_bottom: props.timePickerInline,
+                        dp__inc_dec_button: !timePickerInline,
+                        dp__inc_dec_button_inline: timePickerInline,
+                        dp__tp_inline_btn_bottom: timePickerInline,
                         dp__inc_dec_button_disabled: disabledArrowDownBtn(timeInput.type),
                     }"
                     :data-test="`${timeInput.type}-time-dec-btn-${props.order}`"
@@ -175,6 +175,7 @@
         closeTimePickerBtn: { type: Object as PropType<HTMLElement | null>, default: null },
         order: { type: Number as PropType<number>, default: 0 },
         disabledTimesConfig: { type: Function as PropType<DisabledTimesArrProp>, default: null },
+        validateTime: { type: Function as PropType<(type: TimeType, value: number) => boolean>, default: () => false },
         ...PickerBaseProps,
     });
 
@@ -205,16 +206,34 @@
         });
     };
 
-    const disabledBox = computed(() => (type: TimeType) => isValueDisabled(type, props[type]));
+    const disabledBox = computed(
+        () => (type: TimeType) => isValueDisabled(type, props[type]) || isOverlayValueDisabled(type, props[type]),
+    );
 
     const timeValues = computed(() => ({ hours: props.hours, minutes: props.minutes, seconds: props.seconds }));
 
+    const isOverlayValueDisabled = (type, val) => {
+        if (props.range && !props.disableTimeRangeValidation) {
+            return !props.validateTime(type, val);
+        }
+        return false;
+    };
+
+    const disabledRangedArrows = (type: TimeType, inc: boolean) => {
+        if (props.range && !props.disableTimeRangeValidation) {
+            const inVal = inc ? +props[`${type}Increment`] : -+props[`${type}Increment`];
+            const val = props[type] + inVal;
+            return !props.validateTime(type, val);
+        }
+        return false;
+    };
+
     const disabledArrowUpBtn = computed(() => (type: TimeType) => {
-        return !isDateInRange(+props[type] + +props[`${type}Increment`], type);
+        return !isDateInRange(+props[type] + +props[`${type}Increment`], type) || disabledRangedArrows(type, true);
     });
 
     const disabledArrowDownBtn = computed(() => (type: TimeType) => {
-        return !isDateInRange(+props[type] - +props[`${type}Increment`], type);
+        return !isDateInRange(+props[type] - +props[`${type}Increment`], type) || disabledRangedArrows(type, false);
     });
 
     const addTime = (initial: Duration, toAdd: Duration) => add(set(getDate(), initial), toAdd);
@@ -278,7 +297,8 @@
             const disabled =
                 defaultedFilters.value.times[type].includes(value.value) ||
                 !isDateInRange(value.value, type) ||
-                isValueDisabled(type, value.value);
+                isValueDisabled(type, value.value) ||
+                isOverlayValueDisabled(type, value.value);
 
             return { active, disabled };
         });

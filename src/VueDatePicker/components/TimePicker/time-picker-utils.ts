@@ -1,6 +1,6 @@
 import { computed } from 'vue';
 
-import { isAfter, isBefore, setMilliseconds } from 'date-fns';
+import { isAfter, isBefore, setMilliseconds, setSeconds } from 'date-fns';
 
 import { getDate, isDateEqual, setDateTime } from '@/utils/date-utils';
 
@@ -36,7 +36,7 @@ export const useTimePickerUtils = (
         return 0;
     };
     const getSetDateTime = (dateValue: Date | null, i?: number): Date => {
-        if (!dateValue) return getDate();
+        if (!dateValue) return setSeconds(getDate(), getSecondsValue(i));
         if (i !== undefined) {
             return setDateTime(dateValue, getTimeValue('hours', i), getTimeValue('minutes', i), getSecondsValue(i));
         }
@@ -169,6 +169,7 @@ export const useTimePickerUtils = (
         updateTimeValues,
         getSecondsValue,
         assignStartTime,
+        validateTime,
         disabledTimesConfig,
     };
 };

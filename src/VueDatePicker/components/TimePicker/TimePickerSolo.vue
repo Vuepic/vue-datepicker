@@ -7,6 +7,7 @@
             :seconds="time.seconds"
             :internal-model-value="internalModelValue"
             :disabled-times-config="disabledTimesConfig"
+            :validate-time="validateTime"
             @update:hours="updateTime($event)"
             @update:minutes="updateTime($event, false)"
             @update:seconds="updateTime($event, false, true)"
@@ -41,5 +42,5 @@
     const slots = useSlots();
     const timePickerSlots = mapSlots(slots, 'timePicker');
 
-    const { time, disabledTimesConfig, updateTime } = useTimePicker(props, emit);
+    const { time, disabledTimesConfig, updateTime, validateTime } = useTimePicker(props, emit);
 </script>

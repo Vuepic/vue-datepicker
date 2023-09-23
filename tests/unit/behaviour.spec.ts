@@ -18,7 +18,7 @@ import { resetDateTime } from '@/utils/date-utils';
 
 import { getMonthName, openMenu, reOpenMenu } from '../utils';
 import { FlowStep } from '@/constants';
-import type { TimeModel } from '@/interfaces';
+import type { TimeModel, TimeType } from '@/interfaces';
 import type { VueWrapper } from '@vue/test-utils';
 
 describe('It should validate various picker scenarios', () => {
@@ -338,6 +338,23 @@ describe('It should validate various picker scenarios', () => {
         await dp.find(`[data-test="select-button"]`).trigger('click');
 
         expect(dp.emitted()).toHaveProperty('update:model-value', [[format(today, 'dd-MM-yyyy')]]);
+        dp.unmount();
+    });
+
+    it('Should display disabled values for time range validation', async () => {
+        const dp = await openMenu({ timePicker: true, range: true });
+
+        const verifyArrow = async (type: TimeType, order: number, btn: string) => {
+            const arrowBtn = dp.find(`[data-test="${type}-time-${btn}-btn-${order}"]`);
+            await arrowBtn.trigger('mouseover');
+            expect(arrowBtn.classes()).toContain('dp__inc_dec_button_disabled');
+        };
+
+        await verifyArrow('hours', 0, 'inc');
+        await verifyArrow('minutes', 0, 'inc');
+        await verifyArrow('hours', 1, 'dec');
+        await verifyArrow('minutes', 1, 'dec');
+
         dp.unmount();
     });
 });

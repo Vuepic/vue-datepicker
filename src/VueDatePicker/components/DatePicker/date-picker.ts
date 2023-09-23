@@ -48,12 +48,8 @@ export const useDatePicker = (
     const { modelValue, calendars, time } = useModel(props, emit);
     const { defaultedMultiCalendars, defaultedStartTime } = useDefaults(props);
     const { validateMonthYearInRange, isDisabled, isDateRangeAllowed, checkMinMaxRange } = useValidation(props);
-    const { updateTimeValues, getSetDateTime, setTime, assignStartTime, disabledTimesConfig } = useTimePickerUtils(
-        props,
-        time,
-        modelValue,
-        updateFlow,
-    );
+    const { updateTimeValues, getSetDateTime, setTime, assignStartTime, validateTime, disabledTimesConfig } =
+        useTimePickerUtils(props, time, modelValue, updateFlow);
     // Get month based on the calendar instance
     const month = computed(
         () =>
@@ -628,6 +624,7 @@ export const useDatePicker = (
         year,
         time,
         disabledTimesConfig,
+        validateTime,
         getCalendarDays,
         getMarker,
         handleScroll,

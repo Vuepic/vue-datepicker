@@ -62,6 +62,9 @@
                                     disabledTimesConfig,
                                     disabled: index === 0 ? fixedStart : fixedEnd,
                                 }"
+                                :validate-time="
+                                    (type: TimeType, value: number) => validateTime(type, getEvent(value, index, type))
+                                "
                                 ref="timeInputRefs"
                                 @update:hours="updateHours(getEvent($event, index, 'hours'))"
                                 @update:minutes="updateMinutes(getEvent($event, index, 'minutes'))"
@@ -109,6 +112,7 @@
 
     import type { PropType } from 'vue';
     import type { DisabledTimesArrProp, TimeInputRef } from '@/interfaces';
+    import { TimeType } from '@/interfaces';
 
     defineOptions({
         compatConfig: {
@@ -132,6 +136,10 @@
         minutes: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         seconds: { type: [Number, Array] as PropType<number | number[]>, default: 0 },
         disabledTimesConfig: { type: Function as PropType<DisabledTimesArrProp>, default: null },
+        validateTime: {
+            type: Function as PropType<(type: TimeType, value: number | number[]) => boolean>,
+            default: () => false,
+        },
         ...PickerBaseProps,
     });
 
