@@ -1,5 +1,5 @@
 import { computed, ref } from 'vue';
-import { getMonth, getYear, set } from 'date-fns';
+import { getMonth, getYear } from 'date-fns';
 
 import { checkMinMaxValue, getMonths, groupListAndMap } from '@/utils/util';
 import {
@@ -10,7 +10,6 @@ import {
     isDateBetween,
     resetDate,
     setDateMonthOrYear,
-    validateMonthYear,
 } from '@/utils/date-utils';
 import { useDefaults, useModel } from '@/composables';
 import { checkRangeAutoApply, handleMultiDatesSelect, setMonthOrYearRange } from '@/composables/shared';
