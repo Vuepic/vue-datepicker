@@ -295,6 +295,7 @@ describe('It should validate various picker scenarios', () => {
         await selectAutoRange();
 
         expect(dp.emitted()).toHaveProperty('update:model-value', [[[today, addDays(today, 5)]]]);
+        dp.unmount();
     });
 
     it('Should emit invalid-select when auto-apply is enabled and min/max range is validated (#563)', async () => {
@@ -311,6 +312,7 @@ describe('It should validate various picker scenarios', () => {
         await selectRange();
 
         expect(dp.emitted()).toHaveProperty('invalid-select', [[secondDate]]);
+        dp.unmount();
     });
 
     it('Should emit update-month-year in month-picker mode (#564)', async () => {
@@ -322,6 +324,7 @@ describe('It should validate various picker scenarios', () => {
         expect(dp.emitted()).toHaveProperty('update-month-year', [
             [{ instance: 0, year: getYear(today), month: getMonth(today) }],
         ]);
+        dp.unmount();
     });
 
     it('Should ignore format function for custom model-type (#582)', async () => {
@@ -335,5 +338,6 @@ describe('It should validate various picker scenarios', () => {
         await dp.find(`[data-test="select-button"]`).trigger('click');
 
         expect(dp.emitted()).toHaveProperty('update:model-value', [[format(today, 'dd-MM-yyyy')]]);
+        dp.unmount();
     });
 });

@@ -1,12 +1,11 @@
-import { computed, onMounted, ref } from 'vue';
-import { addYears, getMonth, getYear, set, subYears } from 'date-fns';
+import { computed, ref } from 'vue';
+import { getMonth, getYear, set } from 'date-fns';
 
-import { checkMinMaxValue, getMonths, getYears, groupListAndMap } from '@/utils/util';
+import { checkMinMaxValue, getMonths, groupListAndMap } from '@/utils/util';
 import {
     getDate,
     getDisabledMonths,
     getMaxMonth,
-    getMinMaxYear,
     getMinMonth,
     isDateBetween,
     resetDate,
@@ -18,58 +17,31 @@ import { checkRangeAutoApply, handleMultiDatesSelect, setMonthOrYearRange } from
 
 import type { IDefaultSelect, OverlayGridItem, VueEmit } from '@/interfaces';
 import type { PickerBasePropsType } from '@/props';
+import { useMonthOrQuarterPicker } from '@/components/shared/month-quarter-picker';
 
 export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     const { defaultedMultiCalendars, defaultedAriaLabels, defaultedTransitions, defaultedConfig } = useDefaults(props);
 
     const { modelValue, year, month: instanceMonth, calendars } = useModel(props, emit);
     const months = computed(() => getMonths(props.formatLocale, props.locale, props.monthNameFormat));
-    const years = computed(() => getYears(props.yearRange, props.reverseYears));
     const hoverDate = ref<Date | null>(null);
 
-    const assignMultiCalendars = () => {
-        for (let i = 0; i < defaultedMultiCalendars.value.count; i++) {
-            if (i === 0) {
-                calendars.value[i] = calendars.value[0];
-            } else {
-                const prevDate = set(getDate(), calendars.value[i - 1]);
-                calendars.value[i] = { month: getMonth(prevDate), year: getYear(addYears(prevDate, 1)) };
-            }
-        }
-    };
-
-    const updateMultiCalendars = (instance: number) => {
-        if (!instance) return assignMultiCalendars();
-        const date = set(getDate(), calendars.value[instance]);
-        calendars.value[0].year = getYear(subYears(date, defaultedMultiCalendars.value.count - 1));
-        return assignMultiCalendars();
-    };
-
-    const getRangedValueDate = (dates: Date[]) => {
-        if (props.focusStartDate) return dates[0];
-        return dates[1] ? dates[1] : dates[0];
-    };
-
-    const checkModelValue = () => {
-        if (modelValue.value) {
-            const firstDate = Array.isArray(modelValue.value) ? getRangedValueDate(modelValue.value) : modelValue.value;
-            calendars.value[0] = { month: getMonth(firstDate), year: getYear(firstDate) };
-        }
-    };
-
-    onMounted(() => {
-        checkModelValue();
-        if (defaultedMultiCalendars.value.count) {
-            assignMultiCalendars();
-        }
-    });
-
-    const isDisabled = computed(() => (instance: number, next: boolean) => {
-        const currentDate = set(resetDate(new Date()), {
-            month: instanceMonth.value(instance),
-            year: year.value(instance),
-        });
-        return validateMonthYear(currentDate, props.maxDate, props.minDate, props.preventMinMaxNavigation, next);
+    const {
+        selectYear: onYearSelect,
+        groupedYears,
+        showYearPicker,
+        toggleYearPicker,
+        handleYearSelect,
+        handleYear,
+        isDisabled,
+    } = useMonthOrQuarterPicker({
+        modelValue,
+        multiCalendars: defaultedMultiCalendars,
+        calendars,
+        year,
+        month: instanceMonth,
+        props,
+        emit,
     });
 
     const getMonthYear = (date?: Date) => {
@@ -136,14 +108,6 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         });
     });
 
-    const groupedYears = computed(() => (instance: number): OverlayGridItem[][] => {
-        return groupListAndMap(years.value, (y: IDefaultSelect) => {
-            const active = year.value(instance) === y.value;
-            const disabled = checkMinMaxValue(y.value, getMinMaxYear(props.minDate), getMinMaxYear(props.maxDate));
-            return { active, disabled };
-        });
-    });
-
     const monthToDate = (month: number, instance: number) => {
         return setDateMonthOrYear(resetDate(getDate()), month, year.value(instance));
     };
@@ -173,10 +137,7 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     };
 
     const selectYear = (year: number, instance: number) => {
-        calendars.value[instance].year = year;
-        if (defaultedMultiCalendars.value.count && !defaultedMultiCalendars.value.solo) {
-            updateMultiCalendars(instance);
-        }
+        onYearSelect(year, instance);
         emitMonthYearUpdate(instance, year, null);
     };
 
@@ -202,8 +163,12 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         defaultedAriaLabels,
         defaultedTransitions,
         defaultedConfig,
+        showYearPicker,
         setHoverDate,
         selectMonth,
         selectYear,
+        toggleYearPicker,
+        handleYearSelect,
+        handleYear,
     };
 };

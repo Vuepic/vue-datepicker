@@ -118,6 +118,7 @@
     import YearPicker from '@/components/YearPicker/YearPicker.vue';
     import TimePickerSolo from '@/components/TimePicker/TimePickerSolo.vue';
     import DatePicker from '@/components/DatePicker/DatePicker.vue';
+    import QuarterPicker from '@/components/QuarterPicker/QuarterPicker.vue';
 
     import type {
         DynamicClass,
@@ -226,6 +227,7 @@
         if (props.monthPicker) return MonthPicker;
         if (props.yearPicker) return YearPicker;
         if (props.timePicker) return TimePickerSolo;
+        if (props.quarterPicker) return QuarterPicker;
         return DatePicker;
     });
 

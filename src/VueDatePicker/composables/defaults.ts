@@ -30,6 +30,7 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
         if (props.timePicker) return getTimeFormat();
         if (props.weekPicker) return 'MM/dd/yyyy';
         if (props.yearPicker) return 'yyyy';
+        if (props.quarterPicker) return 'QQQ/yyyy';
         return props.enableTimePicker ? `MM/dd/yyyy, ${getTimeFormat()}` : 'MM/dd/yyyy';
     };
     const assignTime = (date: TimeModel) => assignDefaultTime(date, props.enableSeconds);

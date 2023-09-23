@@ -3,14 +3,14 @@ import type { PresetDate } from '@/interfaces';
 
 export const slots = [
     { name: 'clock-icon', use: ['time', 'calendar', 'shared'] },
-    { name: 'arrow-left', use: ['month-year', 'calendar', 'shared'] },
-    { name: 'arrow-right', use: ['month-year', 'calendar', 'shared'] },
+    { name: 'arrow-left', use: ['month-year', 'calendar', 'shared', 'year-mode'] },
+    { name: 'arrow-right', use: ['month-year', 'calendar', 'shared', 'year-mode'] },
     { name: 'arrow-up', use: ['time', 'calendar', 'month-year', 'shared'] },
     { name: 'arrow-down', use: ['time', 'calendar', 'month-year', 'shared'] },
-    { name: 'calendar-icon', use: ['month-year', 'time', 'calendar', 'shared'] },
+    { name: 'calendar-icon', use: ['month-year', 'time', 'calendar', 'shared', 'year-mode'] },
     { name: 'day', use: ['calendar', 'shared'] },
     { name: 'month-overlay-value', use: ['calendar', 'month-year', 'shared'] },
-    { name: 'year-overlay-value', use: ['calendar', 'month-year', 'shared'] },
+    { name: 'year-overlay-value', use: ['calendar', 'month-year', 'shared', 'year-mode'] },
     { name: 'year-overlay', use: ['month-year', 'shared'] },
     { name: 'month-overlay', use: ['month-year', 'shared'] },
     { name: 'month-overlay-header', use: ['month-year', 'shared'] },
@@ -21,7 +21,7 @@ export const slots = [
     { name: 'hours', use: ['calendar', 'time', 'shared'] },
     { name: 'minutes', use: ['calendar', 'time', 'shared'] },
     { name: 'month', use: ['calendar', 'month-year', 'shared'] },
-    { name: 'year', use: ['calendar', 'month-year', 'shared'] },
+    { name: 'year', use: ['calendar', 'month-year', 'shared', 'year-mode'] },
     { name: 'action-buttons', use: ['action'] },
     { name: 'action-preview', use: ['action'] },
     { name: 'calendar-header', use: ['calendar', 'shared'] },
@@ -35,6 +35,7 @@ export const slots = [
     { name: 'time-picker', use: ['menu', 'shared'] },
     { name: 'action-row', use: ['action'] },
     { name: 'marker', use: ['calendar', 'shared'] },
+    { name: 'quarter', use: ['shared'] },
 ];
 
 export const inputSlots = [{ name: 'trigger' }, { name: 'input-icon' }, { name: 'clear-icon' }, { name: 'dp-input' }];
@@ -48,11 +49,12 @@ const slotNames = {
     calendar: () => slots.filter((slot) => slot.use.includes('calendar')),
     menu: () => slots.filter((slot) => slot.use.includes('menu')),
     shared: () => slots.filter((slot) => slot.use.includes('shared')),
+    yearMode: () => slots.filter((slot) => slot.use.includes('year-mode')),
 };
 
 export const mapSlots = (
     slots: Slots,
-    usage: 'all' | 'monthYear' | 'timePicker' | 'input' | 'action' | 'calendar' | 'menu' | 'shared',
+    usage: 'all' | 'monthYear' | 'timePicker' | 'input' | 'action' | 'calendar' | 'menu' | 'shared' | 'yearMode',
     presetDates?: PresetDate[],
 ): string[] => {
     const toReturn: string[] = [];
