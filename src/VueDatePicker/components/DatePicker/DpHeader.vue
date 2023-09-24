@@ -58,8 +58,8 @@
                                 <slot name="calendar-icon" v-if="$slots['calendar-icon']" />
                                 <CalendarIcon v-if="!$slots['calendar-icon']" />
                             </template>
-                            <template v-if="$slots[`${type.type}-overlay-val`]" #item="{ item }">
-                                <slot :name="`${type.type}-overlay-val`" :text="item.text" :value="item.value" />
+                            <template v-if="$slots[`${type.type}-overlay-value`]" #item="{ item }">
+                                <slot :name="`${type.type}-overlay-value`" :text="item.text" :value="item.value" />
                             </template>
                             <template v-if="$slots[`${type.type}-overlay`]" #overlay>
                                 <slot :name="`${type.type}-overlay`" v-bind="overlaySlotProps(type.type)" />
