@@ -21,6 +21,7 @@
 - Time picker
 - Month picker
 - Year picker
+- Quarter picker
 - Week picker
 - Multiple dates select
 - Multiple calendars
