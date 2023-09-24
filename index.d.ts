@@ -252,6 +252,7 @@ export interface VueDatePickerProps {
         keepActionRow?: boolean;
         onClickOutside?: (validate: () => boolean) => void;
     };
+    quarterPicker?: boolean;
 }
 
 export type DatePickerInstance = ComponentPublicInstance<PublicMethods> | null;
