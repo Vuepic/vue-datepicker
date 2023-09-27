@@ -59,13 +59,13 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
         );
     };
 
-    const getTimeVal = (date?: Date): TimeModel | ModelTypeConverted => {
-        const dateValue = date ?? getDate();
-        if (props.modelType) return toModelType(dateValue);
+    const getTimeVal = (date?: Date): TimeModel | ModelTypeConverted | null => {
+        if (!date) return null;
+        if (props.modelType) return toModelType(date);
         return {
-            hours: getHours(dateValue),
-            minutes: getMinutes(dateValue),
-            seconds: props.enableSeconds ? getSeconds(dateValue) : 0,
+            hours: getHours(date),
+            minutes: getMinutes(date),
+            seconds: props.enableSeconds ? getSeconds(date) : 0,
         };
     };
 
