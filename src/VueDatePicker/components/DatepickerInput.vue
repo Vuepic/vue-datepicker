@@ -115,7 +115,7 @@
     } = useDefaults(props);
 
     const parsedDate = ref();
-    const inputRef = ref<HTMLElement | null>(null);
+    const inputRef = ref<HTMLInputElement | null>(null);
     const isFocused = ref(false);
     const textPasted = ref(false);
 
@@ -229,7 +229,7 @@
     const handleFocus = (): void => {
         isFocused.value = true;
         emit('focus');
-        if (defaultedTextInput.value.enabled && defaultedTextInput.value.initialFocusAll) {
+        if (defaultedTextInput.value.enabled && defaultedTextInput.value.selectOnFocus) {
             inputRef.value?.select();
         }
     };
