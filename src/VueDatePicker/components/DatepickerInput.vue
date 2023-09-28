@@ -229,6 +229,9 @@
     const handleFocus = (): void => {
         isFocused.value = true;
         emit('focus');
+        if (defaultedTextInput.value.enabled && defaultedTextInput.value.initialFocusAll) {
+            inputRef.value?.select();
+        }
     };
 
     const handleOpen = (ev: KeyboardEvent | MouseEvent) => {

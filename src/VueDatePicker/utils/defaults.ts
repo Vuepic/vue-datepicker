@@ -96,6 +96,7 @@ export const getDefaultTextInputOptions = (textInput: TextInputProp): TextInputO
         enterSubmit: true,
         tabSubmit: true,
         openMenu: true,
+        initialFocusAll: false,
         rangeSeparator: ' - ',
     };
 

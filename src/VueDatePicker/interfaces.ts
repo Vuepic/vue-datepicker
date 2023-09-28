@@ -46,6 +46,7 @@ export interface TextInputOptions {
     tabSubmit: boolean;
     openMenu: boolean;
     rangeSeparator: string;
+    initialFocusAll: boolean;
     format?: string | string[] | ((value: string) => Date | null);
 }
 
@@ -193,7 +194,7 @@ export type DatepickerMenuRef = ComponentPublicInstance<{
 }>;
 
 export type DatepickerInputRef = ComponentPublicInstance<{
-    setParsedDate: (date: Date | Date[]| null) => void;
+    setParsedDate: (date: Date | Date[] | null) => void;
     focusInput: () => void;
 }>;
 
