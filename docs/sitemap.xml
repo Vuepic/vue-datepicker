@@ -102,7 +102,12 @@
 		<priority>0.6</priority>
 	</url>
 	<url>
-		<loc>https://vue3datepicker.com/migration/</loc>
+		<loc>https://vue3datepicker.com/migration/from-v5/</loc>
+		<lastmod>2023-04-30T21:29:32+00:00</lastmod>
+		<priority>0.6</priority>
+	</url>
+	<url>
+		<loc>https://vue3datepicker.com/migration/from-v6/</loc>
 		<lastmod>2023-04-30T21:29:32+00:00</lastmod>
 		<priority>0.6</priority>
 	</url>
