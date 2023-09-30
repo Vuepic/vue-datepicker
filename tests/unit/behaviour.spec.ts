@@ -11,6 +11,7 @@ import {
     getMonth,
     getYear,
     set,
+    startOfMonth,
 } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz/esm';
 
@@ -154,7 +155,7 @@ describe('It should validate various picker scenarios', () => {
     });
 
     it('Should dynamically update disabled dates when the prop is updated (#528)', async () => {
-        const today = new Date();
+        const today = startOfMonth(new Date());
         const disabledDates = [addDays(today, 1)];
         const dp = await openMenu({ disabledDates });
 
