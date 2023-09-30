@@ -90,6 +90,7 @@
         height?: number | string;
         textInput?: TextInputProp;
         config?: Partial<Config>;
+        noOverlayFocus?: boolean;
     }
 
     const props = defineProps<Props>();
@@ -117,7 +118,9 @@
      */
     onMounted(() => {
         nextTick().then(() => setScrollPosition());
-        focusGrid();
+        if (!props.noOverlayFocus) {
+            focusGrid();
+        }
         handleArrowNav(true);
     });
 

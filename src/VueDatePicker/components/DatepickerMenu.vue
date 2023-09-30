@@ -163,6 +163,7 @@
         openOnTop: { type: Boolean as PropType<boolean>, default: false },
         internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
         arrMapValues: { type: Object as PropType<ArrMapValues>, default: () => ({}) },
+        noOverlayFocus: { type: Boolean as PropType<boolean>, default: false },
     });
 
     const baseProps = computed(() => {
@@ -171,6 +172,7 @@
         return {
             ...initProps,
             flowStep: flowStep.value,
+            noOverlayFocus: props.noOverlayFocus,
         };
     });
 

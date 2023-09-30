@@ -15,6 +15,7 @@
                 :is-last="autoApply && !defaultedConfig.keepActionRow"
                 :height="defaultedConfig.modeHeight"
                 :config="config"
+                :no-overlay-focus="noOverlayFocus"
                 type="year"
                 use-relative
                 @selected="selectYear"

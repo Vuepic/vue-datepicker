@@ -6,7 +6,7 @@
             v-show="!hideNavigationButtons(hideNavigation, 'time')"
             :class="toggleButtonClass"
             :aria-label="defaultedAriaLabels?.openTimePicker"
-            tabindex="0"
+            :tabindex="noOverlayFocus ? undefined : 0"
             data-test="open-time-picker-btn"
             ref="openTimePickerBtn"
             @keydown.enter="toggleTimePicker(true)"
@@ -240,7 +240,7 @@
     };
 
     const focusOverlay = () => {
-        if (overlayRef.value && !defaultedTextInput.value.enabled) {
+        if (overlayRef.value && !defaultedTextInput.value.enabled && !props.noOverlayFocus) {
             const el = findFocusableEl(overlayRef.value);
             if (el) {
                 el.focus({ preventScroll: true });

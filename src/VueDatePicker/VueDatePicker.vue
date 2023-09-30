@@ -35,6 +35,7 @@
                     :style="teleport ? menuStyle : undefined"
                     :open-on-top="openOnTop"
                     :arr-map-values="arrMapValues"
+                    :no-overlay-focus="noOverlayFocus"
                     v-bind="$props"
                     v-model:internal-model-value="internalModelValue"
                     @close-picker="closeMenu"
@@ -230,6 +231,13 @@
             };
         }
         return { class: 'dp__outer_menu_wrap' };
+    });
+
+    const noOverlayFocus = computed(() => {
+        return (
+            defaultedInline.value.enabled &&
+            (props.timePicker || props.monthPicker || props.yearPicker || props.quarterPicker)
+        );
     });
 
     /**
