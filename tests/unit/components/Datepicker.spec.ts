@@ -485,8 +485,8 @@ describe('Logic connection', () => {
 
     it('Should select multi dates with month picker mode', async () => {
         const { menu, dp } = await mountDatepicker({ modelValue: null, multiDates: true, monthPicker: true });
-        const today = new Date();
-        const months = [addMonths(today, 1), addMonths(today, 2), addMonths(today, 3)];
+        const start = startOfYear(new Date());
+        const months = [addMonths(start, 1), addMonths(start, 2), addMonths(start, 3)];
         const monthPicker = menu.findComponent(MonthPicker) as unknown as VueWrapper<{
             selectMonth: (month: number, instance: number) => void;
         }>;

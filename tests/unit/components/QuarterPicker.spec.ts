@@ -28,7 +28,7 @@ describe('Quarter picker component', () => {
     });
 
     it('Should select range quarter', async () => {
-        const start = startOfQuarter(new Date());
+        const start = startOfQuarter(startOfYear(new Date()));
         const end = addQuarters(start, 1);
         const dp = await openMenu({ quarterPicker: true, range: true });
 
