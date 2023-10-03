@@ -207,6 +207,7 @@ export const useDatePicker = (
         const date = increment < 0 ? addMonths(initialDate, 1) : subMonths(initialDate, 1);
         if (validateMonthYearInRange(getMonth(date), getYear(date), increment < 0, props.preventMinMaxNavigation)) {
             setCalendarMonthYear(instance, getMonth(date), getYear(date));
+            emit('update-month-year', { instance, month: getMonth(date), year: getYear(date) });
             if (defaultedMultiCalendars.value.count && !defaultedMultiCalendars.value.solo) {
                 autoChangeMultiCalendars(instance);
             }
