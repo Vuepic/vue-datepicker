@@ -30,7 +30,8 @@ export type EmitEvents =
     | 'time-picker-close'
     | 'am-pm-change'
     | 'range-start'
-    | 'range-end';
+    | 'range-end'
+    | 'date-update';
 
 export type TimeObj = { hours: number; minutes: number; seconds: number };
 export type PartialTimeObj = { hours?: number | string; minutes?: number | string; seconds?: number | string };

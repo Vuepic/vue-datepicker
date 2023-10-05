@@ -358,4 +358,13 @@ describe('It should validate various picker scenarios', () => {
 
         dp.unmount();
     });
+
+    it('Should emit date-update event when calendar date is clicked', async () => {
+        const now = new Date();
+        const dp = await openMenu({});
+
+        await dp.find(`[data-test="${resetDateTime(now)}"]`).trigger('click');
+
+        expect(dp.emitted()).toHaveProperty('date-update', [[set(now, { seconds: 0, milliseconds: 0 })]]);
+    });
 });

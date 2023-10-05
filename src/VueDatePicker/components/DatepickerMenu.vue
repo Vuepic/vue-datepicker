@@ -61,6 +61,7 @@
                     @reset-flow="resetFlow"
                     @focus-menu="focusMenu"
                     @select-date="$emit('select-date')"
+                    @date-update="$emit('date-update', $event)"
                     @tooltip-open="$emit('tooltip-open', $event)"
                     @tooltip-close="$emit('tooltip-close', $event)"
                     @auto-apply="$emit('auto-apply', $event)"
@@ -155,6 +156,7 @@
         'range-start',
         'range-end',
         'auto-apply-invalid',
+        'date-update',
     ]);
 
     const props = defineProps({

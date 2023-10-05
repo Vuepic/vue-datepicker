@@ -380,6 +380,7 @@ export const useDatePicker = (
     // Called on selectDate when the regular single picker is used
     const handleSingleDateSelect = (day: ICalendarDay) => {
         const date = setDateTime(getDate(day.value), time.hours as number, time.minutes as number, getSecondsValue());
+        emit('date-update', date);
         if (props.multiDates) {
             handleMultiDatesSelect(date, modelValue, props.multiDatesLimit);
         } else {

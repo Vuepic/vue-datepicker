@@ -114,6 +114,7 @@
         'recalculate-position',
         'update-month-year',
         'auto-apply-invalid',
+        'date-update',
     ]);
     const props = defineProps({
         ...PickerBaseProps,

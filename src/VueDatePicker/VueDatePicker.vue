@@ -55,6 +55,7 @@
                     @am-pm-change="$emit('am-pm-change', $event)"
                     @range-start="$emit('range-start', $event)"
                     @range-end="$emit('range-end', $event)"
+                    @date-update="$emit('date-update', $event)"
                 >
                     <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
                         <slot :name="slot" v-bind="{ ...args }" />
@@ -126,6 +127,7 @@
         'am-pm-change',
         'range-start',
         'range-end',
+        'date-update',
     ]);
 
     defineOptions({
