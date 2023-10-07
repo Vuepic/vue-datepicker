@@ -163,11 +163,13 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         defaultedTransitions,
         defaultedConfig,
         showYearPicker,
+        modelValue,
         setHoverDate,
         selectMonth,
         selectYear,
         toggleYearPicker,
         handleYearSelect,
         handleYear,
+        getModelMonthYear,
     };
 };

@@ -116,6 +116,7 @@ export const useQuarterPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         isDisabled,
         quarters,
         showYearPicker,
+        modelValue,
         setHoverDate,
         selectYear,
         selectQuarter,

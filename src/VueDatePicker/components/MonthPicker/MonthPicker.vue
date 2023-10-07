@@ -90,11 +90,27 @@
         defaultedMultiCalendars,
         defaultedConfig,
         showYearPicker,
+        modelValue,
         setHoverDate,
         selectMonth,
         selectYear,
         toggleYearPicker,
         handleYearSelect,
         handleYear,
+        getModelMonthYear,
     } = useMonthPicker(props, emit);
+
+    const getSidebarProps = () => {
+        return {
+            modelValue,
+            year,
+            getModelMonthYear,
+            selectMonth,
+            selectYear,
+            handleYearSelect,
+            handleYear,
+        };
+    };
+
+    defineExpose({ getSidebarProps });
 </script>

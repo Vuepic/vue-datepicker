@@ -42,5 +42,15 @@
     const slots = useSlots();
     const timePickerSlots = mapSlots(slots, 'timePicker');
 
-    const { time, disabledTimesConfig, updateTime, validateTime } = useTimePicker(props, emit);
+    const { time, modelValue, disabledTimesConfig, updateTime, validateTime } = useTimePicker(props, emit);
+
+    const getSidebarProps = () => {
+        return {
+            modelValue,
+            time,
+            updateTime,
+        };
+    };
+
+    defineExpose({ getSidebarProps });
 </script>

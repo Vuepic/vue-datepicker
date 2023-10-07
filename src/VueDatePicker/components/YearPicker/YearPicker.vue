@@ -47,6 +47,15 @@
         },
     });
 
-    const { groupedYears, selectYear, setHoverValue } = useYearPicker(props, emit);
+    const { groupedYears, modelValue, selectYear, setHoverValue } = useYearPicker(props, emit);
     const { defaultedConfig } = useDefaults(props);
+
+    const getSidebarProps = () => {
+        return {
+            modelValue,
+            selectYear,
+        };
+    };
+
+    defineExpose({ getSidebarProps });
 </script>

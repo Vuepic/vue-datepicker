@@ -92,6 +92,7 @@ export const useTimePicker = (props: PickerBasePropsType, emit: VueEmit) => {
     };
 
     return {
+        modelValue,
         time,
         disabledTimesConfig,
         updateTime,

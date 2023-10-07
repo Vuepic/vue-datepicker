@@ -62,6 +62,7 @@ export const useYearPicker = (props: PickerBasePropsType, emit: VueEmit) => {
 
     return {
         groupedYears,
+        modelValue,
         setHoverValue,
         selectYear,
     };

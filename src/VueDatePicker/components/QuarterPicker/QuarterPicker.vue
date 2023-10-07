@@ -84,6 +84,7 @@
         year,
         isDisabled,
         quarters,
+        modelValue,
         showYearPicker,
         setHoverDate,
         selectQuarter,
@@ -91,4 +92,16 @@
         handleYearSelect,
         handleYear,
     } = useQuarterPicker(props, emit);
+
+    const getSidebarProps = () => {
+        return {
+            modelValue,
+            year,
+            selectQuarter,
+            handleYearSelect,
+            handleYear,
+        };
+    };
+
+    defineExpose({ getSidebarProps });
 </script>
