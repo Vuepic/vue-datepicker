@@ -10,7 +10,6 @@ export const useFlow = (props: AllPropsType, emit: VueEmit, dynCmpRef: Ref<any>)
     const flowStep = ref(0);
 
     const childrenMounted = reactive({
-        // monthYearInput: !!props.timePicker,
         [CMP.timePicker]: !props.enableTimePicker || props.timePicker || props.monthPicker,
         [CMP.calendar]: false,
         [CMP.header]: false,
