@@ -374,6 +374,7 @@ export const useDatePicker = (
     // Called on selectDate when the week-picker mode is used
     const handleWeekPickerSelect = (day: ICalendarDay) => {
         modelValue.value = getWeekFromDate(getDate(day.value), props.timezone, props.weekStart);
+        emit('date-update', day.value);
         return autoApply();
     };
 
