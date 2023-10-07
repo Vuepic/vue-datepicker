@@ -107,7 +107,6 @@
             getModelMonthYear,
             selectMonth,
             selectYear,
-            handleYearSelect,
             handleYear,
         };
     };
