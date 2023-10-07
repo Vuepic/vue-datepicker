@@ -16,9 +16,9 @@ export const useFlow = (props: AllPropsType, emit: VueEmit, dynCmpRef: Ref<any>)
         [CMP.header]: false,
     });
 
-    const childMount = (cmp: CMP): void => {
+    const childMount = (...cmp: unknown[]): void => {
         if (props.flow?.length) {
-            childrenMounted[cmp] = true;
+            childrenMounted[cmp as unknown as CMP] = true;
 
             if (!Object.keys(childrenMounted).filter((key) => !childrenMounted[key as CMP]).length) {
                 handleFlow();
