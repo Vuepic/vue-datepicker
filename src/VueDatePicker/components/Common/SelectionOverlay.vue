@@ -198,7 +198,11 @@
             const container = unrefElement(containerRef);
             const toggleBtnHeight = btn ? btn.getBoundingClientRect().height : 0;
             if (parent) {
-                containerHeight.value = parent.getBoundingClientRect().height - toggleBtnHeight;
+                if (!parent.getBoundingClientRect().height) {
+                    containerHeight.value = defaultedConfig.value.modeHeight - toggleBtnHeight;
+                } else {
+                    containerHeight.value = parent.getBoundingClientRect().height - toggleBtnHeight;
+                }
             }
             if (el && container) {
                 container.scrollTop =
