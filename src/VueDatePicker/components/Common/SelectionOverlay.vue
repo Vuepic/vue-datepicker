@@ -65,7 +65,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, nextTick, onBeforeUpdate, onMounted, onUnmounted, ref } from 'vue';
+    import { computed, nextTick, onBeforeUpdate, onMounted, onUnmounted, ref, watch } from 'vue';
 
     import { checkStopPropagation, convertType, unrefElement } from '@/utils/util';
     import { useArrowNavigation, useCommon, useDefaults } from '@/composables';
@@ -117,7 +117,7 @@
      * On mounted hook, set the scroll position, if any to a selected value when opening overlay
      */
     onMounted(() => {
-        nextTick().then(() => setScrollPosition());
+        nextTick().then(() => setContainerHeightAndScroll());
         if (!props.noOverlayFocus) {
             focusGrid();
         }
@@ -187,10 +187,13 @@
         dp__container_block: props.items?.length > 6,
     }));
 
-    /**
-     * Set scroll position in overlay based on active selection
-     */
-    const setScrollPosition = (): void => {
+    watch(
+        () => props.items,
+        () => setContainerHeightAndScroll(),
+        { deep: true },
+    );
+
+    const setContainerHeightAndScroll = () => {
         nextTick().then(() => {
             const el = unrefElement(selectionActiveRef);
             const parent = unrefElement(gridWrapRef);
