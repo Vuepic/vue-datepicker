@@ -17,7 +17,7 @@ import { utcToZonedTime } from 'date-fns-tz/esm';
 
 import { resetDateTime } from '@/utils/date-utils';
 
-import { getMonthName, openMenu, reOpenMenu } from '../utils';
+import { clickCalendarDate, getMonthName, openMenu, reOpenMenu } from '../utils';
 import { FlowStep } from '@/constants';
 import type { TimeModel, TimeType } from '@/interfaces';
 import type { VueWrapper } from '@vue/test-utils';
@@ -71,8 +71,7 @@ describe('It should validate various picker scenarios', () => {
 
         await dp.find(`[data-test="${monthName}"]`).trigger('click');
         await dp.find(`[data-test="${year}"]`).trigger('click');
-        const dateVal = resetDateTime(date);
-        await dp.find(`[data-test="${dateVal}"]`).trigger('click');
+        await clickCalendarDate(dp, date);
         const emitted = dp.emitted();
         expect(emitted).toHaveProperty('update:model-value', [[set(date, { seconds: 0, milliseconds: 0 })]]);
     });
@@ -122,7 +121,7 @@ describe('It should validate various picker scenarios', () => {
         const today = new Date();
         const value = set(today, { seconds: 0, milliseconds: 0 });
 
-        await dp.find(`[data-test="${resetDateTime(today)}"]`).trigger('click');
+        await clickCalendarDate(dp, today);
         await dp.find(`[data-test="select-button"]`).trigger('click');
 
         const emitted = dp.emitted();
@@ -262,7 +261,7 @@ describe('It should validate various picker scenarios', () => {
         const today = resetDateTime(new Date());
         const nextMonth = addMonths(today, 1);
 
-        await dp.find(`[data-test="${today}"]`).trigger('click');
+        await clickCalendarDate(dp, today);
 
         expect(dp.html()).toContain('dp__overlay');
 
@@ -283,7 +282,7 @@ describe('It should validate various picker scenarios', () => {
         const dp = await openMenu({ disabledDates, noDisabledRange: true, range: true, autoRange: 5 });
 
         const selectAutoRange = async () => {
-            await dp.find(`[data-test="${resetDateTime(today)}"]`).trigger('click');
+            await clickCalendarDate(dp, today);
             await dp.find(`[data-test="select-button"]`).trigger('click');
         };
 
@@ -306,7 +305,7 @@ describe('It should validate various picker scenarios', () => {
         const dp = await openMenu({ maxRange: 10, range: true, autoApply: true });
 
         const selectRange = async () => {
-            await dp.find(`[data-test="${today}"]`).trigger('click');
+            await clickCalendarDate(dp, today);
             await dp.find(`[data-test="${secondDate}"]`).trigger('click');
         };
 
@@ -335,7 +334,7 @@ describe('It should validate various picker scenarios', () => {
         };
 
         const dp = await openMenu({ modelType: 'dd-MM-yyyy', format: formatFn });
-        await dp.find(`[data-test="${today}"]`).trigger('click');
+        await clickCalendarDate(dp, today);
         await dp.find(`[data-test="select-button"]`).trigger('click');
 
         expect(dp.emitted()).toHaveProperty('update:model-value', [[format(today, 'dd-MM-yyyy')]]);
@@ -363,8 +362,30 @@ describe('It should validate various picker scenarios', () => {
         const now = new Date();
         const dp = await openMenu({});
 
-        await dp.find(`[data-test="${resetDateTime(now)}"]`).trigger('click');
+        await clickCalendarDate(dp, now);
 
         expect(dp.emitted()).toHaveProperty('date-update', [[set(now, { seconds: 0, milliseconds: 0 })]]);
+    });
+
+    it('Should emit invalid-date event on invalid date click', async () => {
+        const today = new Date();
+        const start = set(today, { month: getMonth(today), date: 1 });
+        const range = [resetDateTime(start), addDays(start, 10)];
+
+        const dp = await openMenu({ range: true, maxRange: 5 });
+
+        for (let i = 0; i < range.length; i += 1) {
+            await clickCalendarDate(dp, range[i]);
+        }
+
+        expect(dp.emitted()).toHaveProperty('invalid-date', [[resetDateTime(range[1])]]);
+
+        await reOpenMenu(dp, { range: false, disabledDates: [today] });
+
+        await clickCalendarDate(dp, today);
+
+        const emitted = (dp.emitted()['invalid-date'].flat() as Date[]).map((d) => d.toString());
+
+        expect(emitted).toContain(resetDateTime(today).toString());
     });
 });

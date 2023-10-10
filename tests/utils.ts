@@ -3,6 +3,7 @@ import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
 import VueDatePicker from '@/VueDatePicker.vue';
 
 import type { AllPropsType } from '@/props';
+import { resetDateTime } from '@/utils/date-utils';
 
 export const openMenu = async (props: Partial<AllPropsType>) => {
     const dp = mount(VueDatePicker, { props });
@@ -27,4 +28,8 @@ export const reOpenMenu = async (dp: VueWrapper<any>, newProps?: Partial<AllProp
 export const getMonthName = (date: Date) => {
     const month = new Intl.DateTimeFormat('en-Us', { month: 'short', timeZone: 'UTC' }).format(date);
     return month.charAt(0).toUpperCase() + month.substring(1);
+};
+
+export const clickCalendarDate = async (dp: VueWrapper<any>, date: Date) => {
+    await dp.find(`[data-test="${resetDateTime(date)}"]`).trigger('click');
 };

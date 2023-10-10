@@ -31,7 +31,8 @@ export type EmitEvents =
     | 'am-pm-change'
     | 'range-start'
     | 'range-end'
-    | 'date-update';
+    | 'date-update'
+    | 'invalid-date';
 
 export type TimeObj = { hours: number; minutes: number; seconds: number };
 export type PartialTimeObj = { hours?: number | string; minutes?: number | string; seconds?: number | string };

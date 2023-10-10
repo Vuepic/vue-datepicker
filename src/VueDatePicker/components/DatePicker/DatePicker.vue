@@ -115,6 +115,7 @@
         'update-month-year',
         'auto-apply-invalid',
         'date-update',
+        'invalid-date',
     ]);
     const props = defineProps({
         ...PickerBaseProps,

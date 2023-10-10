@@ -75,6 +75,7 @@
                     @recalculate-position="recalculatePosition"
                     @update-month-year="$emit('update-month-year', $event)"
                     @auto-apply-invalid="$emit('auto-apply-invalid', $event)"
+                    @invalid-date="$emit('invalid-date', $event)"
                     @update:internal-model-value="$emit('update:internal-model-value', $event)"
                 >
                     <template v-for="(slot, i) in sharedSlots" #[slot]="args" :key="i">
@@ -157,6 +158,7 @@
         'range-end',
         'auto-apply-invalid',
         'date-update',
+        'invalid-date',
     ]);
 
     const props = defineProps({

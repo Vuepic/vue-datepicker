@@ -415,6 +415,8 @@ export const useDatePicker = (
                 handleNextCalendarAutoRange(day.value);
             }
             tempRange.value = autoRange;
+        } else {
+            emit('invalid-date', day.value);
         }
     };
 
@@ -455,8 +457,9 @@ export const useDatePicker = (
 
     // Handle range with fixed start/end
     const setFixedDateRange = (day: ICalendarDay) => {
-        if (includesDisabled(day.value) || !checkMinMaxRange(day.value, modelValue.value, props.fixedStart ? 0 : 1))
-            return;
+        if (includesDisabled(day.value) || !checkMinMaxRange(day.value, modelValue.value, props.fixedStart ? 0 : 1)) {
+            return emit('invalid-date', day.value);
+        }
         tempRange.value = getRangeWithFixedDate(getDate(day.value));
     };
 
@@ -476,8 +479,11 @@ export const useDatePicker = (
                 tempRange.value[1] = getDate(day.value);
                 emit('range-end', tempRange.value[1]);
             }
-        } else if (props.autoApply) {
-            emit('auto-apply-invalid', day.value);
+        } else {
+            if (props.autoApply) {
+                emit('auto-apply-invalid', day.value);
+            }
+            emit('invalid-date', day.value);
         }
     };
 
@@ -534,7 +540,7 @@ export const useDatePicker = (
      * Do a necessary formatting and assign value to internal
      */
     const selectDate = (day: ICalendarDay, isNext = false): void => {
-        if (isDisabled(day.value) || (!day.current && props.hideOffsetDates)) return;
+        if (isDisabled(day.value) || (!day.current && props.hideOffsetDates)) return emit('invalid-date', day.value);
 
         if (props.weekPicker) return handleWeekPickerSelect(day);
 
