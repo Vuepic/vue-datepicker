@@ -255,6 +255,7 @@ export interface VueDatePickerProps {
         onClickOutside?: (validate: () => boolean) => void;
     };
     quarterPicker?: boolean;
+    yearFirst?: boolean;
 }
 
 export type DatePickerInstance = ComponentPublicInstance<PublicMethods> | null;

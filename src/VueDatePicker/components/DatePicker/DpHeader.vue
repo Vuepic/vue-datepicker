@@ -270,9 +270,13 @@
         },
     ]);
 
-    const selectionButtonsDisplay = computed(() =>
-        props.disableYearSelect ? [selectionButtons.value[0]] : selectionButtons.value,
-    );
+    const selectionButtonsDisplay = computed(() => {
+        if (props.disableYearSelect) {
+            return [selectionButtons.value[0]];
+        } else {
+            return props.yearFirst ? [...selectionButtons.value].reverse() : selectionButtons.value;
+        }
+    });
 
     defineExpose({
         toggleMonthPicker,
