@@ -163,6 +163,7 @@ export const AllProps = {
     calendar: { type: Function as PropType<(month: ICalendarDate[]) => ICalendarDate[]>, default: null },
     config: { type: Object as PropType<Partial<Config>>, default: undefined },
     quarterPicker: { type: Boolean as PropType<boolean>, default: false },
+    yearFirst: { type: Boolean as PropType<boolean>, default: false },
 };
 
 export const PickerBaseProps = {
