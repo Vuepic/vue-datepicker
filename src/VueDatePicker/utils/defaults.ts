@@ -13,11 +13,9 @@ import type {
     InlineOptions,
     Config,
     HighlightProp,
-    MonthModel,
     Highlight,
     HighlightFn,
 } from '@/interfaces';
-import { hi } from 'date-fns/locale';
 import { getDate } from '@/utils/date-utils';
 
 export const mergeDefaultTransitions = (conf: Partial<Transition>): Transition => ({

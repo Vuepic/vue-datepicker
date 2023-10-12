@@ -10,12 +10,10 @@ import {
     getHours,
     getMinutes,
     getMonth,
-    getQuarter,
     getYear,
     set,
     startOfMonth,
     startOfQuarter,
-    startOfYear,
 } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz/esm';
 
@@ -25,7 +23,6 @@ import { clickCalendarDate, getMonthName, openMenu, reOpenMenu } from '../utils'
 import { FlowStep } from '@/constants';
 import type { TimeModel, TimeType } from '@/interfaces';
 import type { VueWrapper } from '@vue/test-utils';
-import { hi } from 'date-fns/locale';
 
 describe('It should validate various picker scenarios', () => {
     it('Should dynamically disable times', async () => {
@@ -380,8 +377,8 @@ describe('It should validate various picker scenarios', () => {
 
         const dp = await openMenu({ range: true, maxRange: 5 });
 
-        for (let i = 0; i < range.length; i += 1) {
-            await clickCalendarDate(dp, range[i]);
+        for (const date of range) {
+            await clickCalendarDate(dp, date);
         }
 
         expect(dp.emitted()).toHaveProperty('invalid-date', [[resetDateTime(range[1])]]);

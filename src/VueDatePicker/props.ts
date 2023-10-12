@@ -89,16 +89,10 @@ export const AllProps = {
         type: [Array, Function, Object] as PropType<HighlightProp>,
         default: null,
     },
-    /**
-     * @deprecated
-     */
     highlightWeekDays: {
         type: Array as PropType<number[]>,
         default: null,
     },
-    /**
-     * @deprecated
-     */
     highlightDisabledDays: { type: Boolean as PropType<boolean>, default: false },
     teleport: { type: [String, Boolean] as PropType<string | boolean>, default: null },
     teleportCenter: { type: Boolean as PropType<boolean>, default: false },
