@@ -8,9 +8,12 @@
 .dp--qr-btn {
   @extend %dp--btn-placeholder;
 
-  background: none;
   width: 100%;
   padding: var(--dp-common-padding);
+
+  &:not(.dp--highlighted, .dp--qr-btn-active, .dp--qr-btn-disabled, .dp--qr-btn-between) {
+    background: none;
+  }
 
   &:hover:not(.dp--qr-btn-active, .dp--qr-btn-disabled) {
     background: var(--dp-hover-color);

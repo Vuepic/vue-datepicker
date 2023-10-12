@@ -8,6 +8,7 @@ import {
     getDefaultActionRowData,
     getDefaultConfig,
     getDefaultFilters,
+    getDefaultHighlight,
     getDefaultInlineOptions,
     getDefaultTextInputOptions,
 } from '@/utils/defaults';
@@ -66,6 +67,10 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
 
     const defaultedConfig = computed(() => getDefaultConfig(props.config));
 
+    const defaultedHighlight = computed(() =>
+        getDefaultHighlight(props.highlight, props.highlightWeekDays, props.highlightDisabledDays),
+    );
+
     return {
         defaultedTransitions,
         defaultedMultiCalendars,
@@ -77,6 +82,7 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
         defaultedTextInput,
         defaultedInline,
         defaultedConfig,
+        defaultedHighlight,
         getDefaultPattern,
         getDefaultStartTime,
     };

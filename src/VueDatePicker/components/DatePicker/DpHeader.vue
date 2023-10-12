@@ -118,7 +118,13 @@
     import { PickerBaseProps } from '@/props';
 
     import { useArrowNavigation, useMonthYearPick, useTransitions, useDefaults, useCommon } from '@/composables';
-    import { getMaxMonth, getMinMaxYear, getMinMonth } from '@/utils/date-utils';
+    import {
+        checkHighlightMonth,
+        checkHighlightYear,
+        getMaxMonth,
+        getMinMaxYear,
+        getMinMonth,
+    } from '@/utils/date-utils';
     import { checkMinMaxValue, groupListAndMap, unrefElement } from '@/utils/util';
     import { HeaderPicker } from '@/constants';
 
@@ -140,8 +146,14 @@
         },
     });
 
-    const { defaultedTransitions, defaultedAriaLabels, defaultedMultiCalendars, defaultedFilters, defaultedConfig } =
-        useDefaults(props);
+    const {
+        defaultedTransitions,
+        defaultedAriaLabels,
+        defaultedMultiCalendars,
+        defaultedFilters,
+        defaultedConfig,
+        defaultedHighlight,
+    } = useDefaults(props);
     const { transitionName, showTransition } = useTransitions(defaultedTransitions);
     const { buildMatrix } = useArrowNavigation();
     const { handleMonthYearChange, isDisabled, updateMonthYear } = useMonthYearPick(props, emit);
@@ -196,7 +208,8 @@
                     getMinMonth(props.year, props.minDate),
                     getMaxMonth(props.year, props.maxDate),
                 ) || defaultedFilters.value.months.includes(month.value);
-            return { active, disabled };
+            const highlighted = checkHighlightMonth(defaultedHighlight.value, month.value, props.year);
+            return { active, disabled, highlighted };
         });
     });
 
@@ -206,7 +219,8 @@
             const disabled =
                 checkMinMaxValue(year.value, getMinMaxYear(props.minDate), getMinMaxYear(props.maxDate)) ||
                 defaultedFilters.value.years.includes(year.value);
-            return { active, disabled };
+            const highlighted = checkHighlightYear(defaultedHighlight.value, year.value);
+            return { active, disabled, highlighted };
         });
     });
 

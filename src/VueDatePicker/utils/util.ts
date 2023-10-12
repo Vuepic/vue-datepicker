@@ -202,11 +202,11 @@ export const checkMinMaxValue = (value: number | string, min?: number, max?: num
  */
 export const groupListAndMap = (
     list: IDefaultSelect[],
-    cb: (item: IDefaultSelect) => { active: boolean; disabled: boolean; isBetween?: boolean },
+    cb: (item: IDefaultSelect) => { active: boolean; disabled: boolean; highlighted?: boolean; isBetween?: boolean },
 ): OverlayGridItem[][] => {
     return getGroupedList(list).map((items) => {
         return items.map((item) => {
-            const { active, disabled, isBetween } = cb(item);
+            const { active, disabled, isBetween, highlighted } = cb(item);
             return {
                 ...item,
                 active,
@@ -218,6 +218,7 @@ export const groupListAndMap = (
                     dp__overlay_cell_pad: true,
                     dp__overlay_cell_active_disabled: disabled && active,
                     dp__cell_in_between: isBetween,
+                    'dp--highlighted': highlighted,
                 },
             };
         });

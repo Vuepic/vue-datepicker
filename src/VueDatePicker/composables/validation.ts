@@ -20,7 +20,7 @@ import type { InternalModuleValue, ArrMapValues, ArrMapValue, DisabledTimesFn, D
 import type { PickerBasePropsType, AllPropsType } from '@/props';
 
 export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
-    const { defaultedFilters } = useDefaults(props);
+    const { defaultedFilters, defaultedHighlight } = useDefaults(props);
     const getTimezone = () => {
         if (props.timezone) return props.timezone;
         if (props.utc) return 'UTC';
@@ -177,8 +177,8 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
         if (shouldMap(props.allowedDates)) {
             arrMapValues.allowedDates = datesArrToMap(props.allowedDates);
         }
-        if (shouldMap(props.highlight)) {
-            arrMapValues.highlightedDates = datesArrToMap(props.highlight);
+        if (typeof defaultedHighlight.value !== 'function' && shouldMap(defaultedHighlight.value.dates)) {
+            arrMapValues.highlightedDates = datesArrToMap(defaultedHighlight.value.dates);
         }
         if (shouldMap(props.disabledDates)) {
             arrMapValues.disabledDates = datesArrToMap(props.disabledDates);

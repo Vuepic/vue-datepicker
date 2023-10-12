@@ -12,7 +12,13 @@ import type {
     InlineProp,
     InlineOptions,
     Config,
+    HighlightProp,
+    MonthModel,
+    Highlight,
+    HighlightFn,
 } from '@/interfaces';
+import { hi } from 'date-fns/locale';
+import { getDate } from '@/utils/date-utils';
 
 export const mergeDefaultTransitions = (conf: Partial<Transition>): Transition => ({
     menuAppearTop: 'dp-menu-appear-top',
@@ -148,4 +154,23 @@ export const getDefaultConfig = (config?: Partial<Config>): Config => {
         onClickOutside: undefined,
     };
     return { ...defaultConfig, ...(config ?? {}) };
+};
+
+export const getDefaultHighlight = (
+    highlight: HighlightProp,
+    highlightWeekDays: number[],
+    highlightDisabledDays: boolean,
+): Highlight | HighlightFn => {
+    const defaultOptions = {
+        dates: Array.isArray(highlight) ? highlight.map((date) => getDate(date)) : [],
+        years: [],
+        months: [],
+        quarters: [],
+        weeks: [],
+        weekdays: highlightWeekDays,
+        options: { highlightDisabled: highlightDisabledDays },
+    };
+
+    if (typeof highlight === 'function') return highlight;
+    return { ...defaultOptions, ...(highlight ?? {}) };
 };

@@ -27,6 +27,7 @@ import type {
     InlineProp,
     DisabledTimeArrProp,
     Config,
+    HighlightProp,
 } from '@/interfaces';
 
 export const AllProps = {
@@ -85,13 +86,19 @@ export const AllProps = {
     arrowNavigation: { type: Boolean as PropType<boolean>, default: false },
     disableTimeRangeValidation: { type: Boolean as PropType<boolean>, default: false },
     highlight: {
-        type: [Array, Function] as PropType<Date[] | string[] | number[] | ((date: Date) => boolean)>,
+        type: [Array, Function, Object] as PropType<HighlightProp>,
         default: null,
     },
+    /**
+     * @deprecated
+     */
     highlightWeekDays: {
         type: Array as PropType<number[]>,
         default: null,
     },
+    /**
+     * @deprecated
+     */
     highlightDisabledDays: { type: Boolean as PropType<boolean>, default: false },
     teleport: { type: [String, Boolean] as PropType<string | boolean>, default: null },
     teleportCenter: { type: Boolean as PropType<boolean>, default: false },

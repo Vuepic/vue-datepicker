@@ -294,3 +294,15 @@ export interface Config {
     keepActionRow: boolean;
     onClickOutside?: (validate: () => boolean) => void;
 }
+
+export interface Highlight {
+    dates: Date[];
+    years: number[];
+    months: MonthModel[];
+    quarters: { quarter: number; year: number }[];
+    weekdays: number[];
+    options: { highlightDisabled: boolean };
+}
+
+export type HighlightFn = (date: Date | MonthModel | number | { quarter: number; year: number }) => boolean;
+export type HighlightProp = Date[] | string[] | number[] | HighlightFn | Partial<Highlight>;

@@ -3,6 +3,7 @@ import { getMonth, getYear } from 'date-fns';
 
 import { checkMinMaxValue, getMonths, groupListAndMap } from '@/utils/util';
 import {
+    checkHighlightMonth,
     getDate,
     getDisabledMonths,
     getMaxMonth,
@@ -19,7 +20,8 @@ import type { PickerBasePropsType } from '@/props';
 import { useMonthOrQuarterPicker } from '@/components/shared/month-quarter-picker';
 
 export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
-    const { defaultedMultiCalendars, defaultedAriaLabels, defaultedTransitions, defaultedConfig } = useDefaults(props);
+    const { defaultedMultiCalendars, defaultedAriaLabels, defaultedTransitions, defaultedConfig, defaultedHighlight } =
+        useDefaults(props);
 
     const { modelValue, year, month: instanceMonth, calendars } = useModel(props, emit);
     const months = computed(() => getMonths(props.formatLocale, props.locale, props.monthNameFormat));
@@ -36,6 +38,7 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     } = useMonthOrQuarterPicker({
         modelValue,
         multiCalendars: defaultedMultiCalendars,
+        highlight: defaultedHighlight,
         calendars,
         year,
         month: instanceMonth,
@@ -103,7 +106,8 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
                     getMaxMonth(year.value(instance), props.maxDate),
                 ) || getDisabledMonths(props.disabledDates, year.value(instance)).includes(month.value);
             const isBetween = isMonthBetween(month.value, instance);
-            return { active, disabled, isBetween };
+            const highlighted = checkHighlightMonth(defaultedHighlight.value, month.value, year.value(instance));
+            return { active, disabled, isBetween, highlighted };
         });
     });
 

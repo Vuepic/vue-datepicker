@@ -18,7 +18,7 @@ import type { ICalendarDay, InternalModuleValue } from '@/interfaces';
 import type { PickerBasePropsType } from '@/props';
 
 export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleValue>, props: PickerBasePropsType) => {
-    const { defaultedMultiCalendars } = useDefaults(props);
+    const { defaultedMultiCalendars, defaultedHighlight } = useDefaults(props);
     const { isDisabled, matchDate } = useValidation(props);
     // Track hovered date
     const hoveredDate = ref<Date | null>(null);
@@ -198,21 +198,27 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
 
     // Check if the date should be highlighted
     const highlighted = (day: ICalendarDay) => {
-        if (props.highlight) {
+        if (defaultedHighlight.value) {
+            if (typeof defaultedHighlight.value === 'function') return defaultedHighlight.value(day.value);
             return matchDate(
                 day.value,
-                props.arrMapValues?.highlightedDates ? props.arrMapValues.highlightedDates : props.highlight,
+                props.arrMapValues?.highlightedDates
+                    ? props.arrMapValues.highlightedDates
+                    : defaultedHighlight.value.dates,
             );
         }
         return false;
     };
 
     // If enabled, checks the days that are also highlighted to not be marked as disabled
-    const disableHighlight = (day: ICalendarDay) => isDisabled(day.value) && props.highlightDisabledDays === false;
+    const disableHighlight = (day: ICalendarDay) =>
+        isDisabled(day.value) &&
+        (typeof defaultedHighlight.value === 'function' ? false : defaultedHighlight.value.options.highlightDisabled);
 
     // Check if the given week day should be highlighted
     const highlightedWeekDay = (day: ICalendarDay) => {
-        return props.highlightWeekDays?.includes(day.value.getDay());
+        if (typeof defaultedHighlight.value === 'function') return defaultedHighlight.value(day.value);
+        return defaultedHighlight.value.weekdays?.includes(day.value.getDay());
     };
 
     const isBetween = (day: ICalendarDay) => {

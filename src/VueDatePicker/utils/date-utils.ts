@@ -38,6 +38,8 @@ import type {
     WeekStartNum,
     IFormat,
     IDisableDates,
+    Highlight,
+    HighlightFn,
 } from '@/interfaces';
 
 import type { Duration } from 'date-fns';
@@ -418,4 +420,16 @@ export const getDisabledMonths = (disabledDates: Date[] | string[] | IDisableDat
             .map((date) => getMonth(date));
     }
     return [];
+};
+
+export const checkHighlightMonth = (defaultedHighlight: Highlight | HighlightFn, month: number, year: number) => {
+    return typeof defaultedHighlight === 'function'
+        ? defaultedHighlight({ month: month, year })
+        : !!defaultedHighlight.months.find((value) => value.month === month && value.year === year);
+};
+
+export const checkHighlightYear = (defaultedHighlight: Highlight | HighlightFn, year: number) => {
+    return typeof defaultedHighlight === 'function'
+        ? defaultedHighlight(year)
+        : defaultedHighlight.years.includes(year);
 };

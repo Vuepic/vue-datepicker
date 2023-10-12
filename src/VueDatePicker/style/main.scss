@@ -237,3 +237,7 @@
 .dp--arrow-btn-nav {
   transition: var(--dp-common-transition);
 }
+
+.dp--highlighted {
+  background-color: var(--dp-highlight-color);
+}

@@ -79,6 +79,15 @@ export interface CalendarDay {
     marker?: DatePickerMarker;
 }
 
+export interface Highlight {
+    dates: Date[];
+    years: number[];
+    months: { month: number; year: number }[];
+    quarters: { quarter: number; year: number }[];
+    weekdays: number[];
+    options: { highlightDisabled: boolean };
+}
+
 export type DpOptionEnabled = boolean | number | string;
 
 export interface VueDatePickerProps {
@@ -222,8 +231,22 @@ export interface VueDatePickerProps {
     dayNames?: ((lang: string, weekStart: number) => string[]) | string[];
     modelType?: 'timestamp' | 'format' | string;
     modelAuto?: boolean;
-    highlight?: Date[] | string[] | number[] | ((date: Date[]) => boolean);
+    highlight?:
+        | Date[] // deprecated
+        | string[] // deprecated
+        | number[] // deprecated
+        | ((date: Date[]) => boolean)
+        | ((month: { month: number; year: number }) => boolean)
+        | ((year: number) => boolean)
+        | ((quarter: { quarter: number; year: number }) => boolean)
+        | Highlight;
+    /**
+     * @deprecated You should use highlight.weekdays instead
+     */
     highlightWeekDays?: number[];
+    /**
+     * @deprecated You should use highlight.options.highlightDisabledDays
+     */
     highlightDisabledDays?: boolean;
     offset?: string | number;
     teleportCenter?: boolean;

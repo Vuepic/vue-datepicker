@@ -5,6 +5,8 @@ import {
     endOfYear,
     format,
     getMonth,
+    getQuarter,
+    getYear,
     isSameQuarter,
     set,
     startOfQuarter,
@@ -21,13 +23,14 @@ import { isDateBetween, isDateEqual } from '@/utils/date-utils';
 
 export const useQuarterPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     const hoverDate = ref();
-    const { defaultedMultiCalendars, defaultedConfig } = useDefaults(props);
+    const { defaultedMultiCalendars, defaultedConfig, defaultedHighlight } = useDefaults(props);
     const { modelValue, year, month, calendars } = useModel(props, emit);
     const { isDisabled: isDateDisabled } = useValidation(props);
     const { selectYear, groupedYears, showYearPicker, isDisabled, toggleYearPicker, handleYearSelect, handleYear } =
         useMonthOrQuarterPicker({
             modelValue,
             multiCalendars: defaultedMultiCalendars,
+            highlight: defaultedHighlight,
             calendars,
             month,
             year,
@@ -70,10 +73,17 @@ export const useQuarterPicker = (props: PickerBasePropsType, emit: VueEmit) => {
             const end = endOfQuarter(quarter);
             const disabled = isDateDisabled(quarter);
             const isBetween = isQuarterBetween(start);
+            const highlighted =
+                typeof defaultedHighlight.value === 'function'
+                    ? defaultedHighlight.value({ quarter: getQuarter(start), year: getYear(start) })
+                    : !!defaultedHighlight.value.quarters.find(
+                          (value) => value.quarter === getQuarter(start) && value.year === getYear(start),
+                      );
             return {
                 text: formatQuarterText(start, end),
                 value: start,
                 active: isQuarterActive.value(start),
+                highlighted,
                 disabled: disabled,
                 isBetween,
             };

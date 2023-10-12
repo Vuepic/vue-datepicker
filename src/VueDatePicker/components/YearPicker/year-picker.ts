@@ -1,9 +1,9 @@
 import { computed, ref } from 'vue';
 import { getYear, setYear } from 'date-fns';
 
-import { useModel } from '@/composables';
+import { useDefaults, useModel } from '@/composables';
 import { checkMinMaxValue, getYears, groupListAndMap } from '@/utils/util';
-import { getMinMaxYear, isDateBetween, resetDate } from '@/utils/date-utils';
+import { checkHighlightYear, getMinMaxYear, isDateBetween, resetDate } from '@/utils/date-utils';
 import { checkRangeAutoApply, handleMultiDatesSelect, setMonthOrYearRange } from '@/composables/shared';
 
 import type { PickerBasePropsType } from '@/props';
@@ -12,6 +12,7 @@ import type { VueEmit, IDefaultSelect } from '@/interfaces';
 export const useYearPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     const { modelValue } = useModel(props, emit);
     const hoverDate = ref<Date | null>(null);
+    const { defaultedHighlight } = useDefaults(props);
 
     const isYearActive = (year: number) => {
         if (Array.isArray(modelValue.value)) {
@@ -35,7 +36,8 @@ export const useYearPicker = (props: PickerBasePropsType, emit: VueEmit) => {
             const active = isYearActive(year.value);
             const disabled = checkMinMaxValue(year.value, getMinMaxYear(props.minDate), getMinMaxYear(props.maxDate));
             const isBetween = isYearBetween(year.value);
-            return { active, disabled, isBetween };
+            const highlighted = checkHighlightYear(defaultedHighlight.value, year.value);
+            return { active, disabled, isBetween, highlighted };
         });
     });
 

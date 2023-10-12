@@ -5,13 +5,17 @@ import {
     addHours,
     addMinutes,
     addMonths,
+    addYears,
     format,
     getHours,
     getMinutes,
     getMonth,
+    getQuarter,
     getYear,
     set,
     startOfMonth,
+    startOfQuarter,
+    startOfYear,
 } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz/esm';
 
@@ -21,6 +25,7 @@ import { clickCalendarDate, getMonthName, openMenu, reOpenMenu } from '../utils'
 import { FlowStep } from '@/constants';
 import type { TimeModel, TimeType } from '@/interfaces';
 import type { VueWrapper } from '@vue/test-utils';
+import { hi } from 'date-fns/locale';
 
 describe('It should validate various picker scenarios', () => {
     it('Should dynamically disable times', async () => {
@@ -365,6 +370,7 @@ describe('It should validate various picker scenarios', () => {
         await clickCalendarDate(dp, now);
 
         expect(dp.emitted()).toHaveProperty('date-update', [[set(now, { seconds: 0, milliseconds: 0 })]]);
+        dp.unmount();
     });
 
     it('Should emit invalid-date event on invalid date click', async () => {
@@ -387,5 +393,44 @@ describe('It should validate various picker scenarios', () => {
         const emitted = (dp.emitted()['invalid-date'].flat() as Date[]).map((d) => d.toString());
 
         expect(emitted).toContain(resetDateTime(today).toString());
+        dp.unmount();
+    });
+
+    it('Should highlight dates across all modes #607', async () => {
+        const today = new Date();
+        const start = startOfMonth(new Date());
+        const highlight = {
+            dates: [start],
+            months: [{ month: getMonth(today), year: getYear(today) }],
+            years: [getYear(addYears(start, 1))],
+            quarters: [{ quarter: 2, year: getYear(start) }],
+        };
+
+        const dp = await openMenu({ highlight });
+
+        const calendarCell = dp.find(`[data-test="${resetDateTime(start)}"]`).find('.dp__cell_inner');
+
+        expect(calendarCell.classes()).toContain('dp__cell_highlight');
+
+        await reOpenMenu(dp, { monthPicker: true });
+
+        const monthCell = dp.find(`[data-test="${getMonthName(today)}"]`).find('.dp__overlay_cell');
+
+        expect(monthCell.classes()).toContain('dp--highlighted');
+
+        await reOpenMenu(dp, { monthPicker: false, yearPicker: true });
+
+        const yearCell = dp.find(`[data-test="${highlight.years[0]}"]`).find('.dp__overlay_cell');
+
+        expect(yearCell.classes()).toContain('dp--highlighted');
+
+        await reOpenMenu(dp, { yearPicker: false, quarterPicker: true });
+
+        const quarterCell = dp.find(
+            `[data-test="${startOfQuarter(set(new Date(), { month: 5, year: getYear(start) }))}"]`,
+        );
+
+        expect(quarterCell.classes()).toContain('dp--highlighted');
+        dp.unmount();
     });
 });

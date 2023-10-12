@@ -27,6 +27,7 @@
                             'dp--qr-btn-active': quarter.active,
                             'dp--qr-btn-between': quarter.isBetween,
                             'dp--qr-btn-disabled': quarter.disabled,
+                            'dp--highlighted': quarter.highlighted,
                         }"
                         :data-test="quarter.value"
                         :disabled="quarter.disabled"
