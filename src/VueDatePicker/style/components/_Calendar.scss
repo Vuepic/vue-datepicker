@@ -127,9 +127,10 @@
 }
 
 .dp__range_between {
-  background: var(--dp-hover-color);
+  background: var(--dp-range-between-dates-background-color);
+  color: var(--dp-range-between-dates-text-color);
   border-radius: 0;
-  border: 1px solid var(--dp-hover-color);
+  border: 1px solid var(--dp-range-between-border-color);
 }
 
 .dp__range_between_week {
