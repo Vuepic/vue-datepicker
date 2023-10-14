@@ -235,11 +235,11 @@ export interface VueDatePickerProps {
         | Date[] // deprecated
         | string[] // deprecated
         | number[] // deprecated
-        | ((date: Date[]) => boolean)
+        | ((date: Date[], disabled?: boolean) => boolean)
         | ((month: { month: number; year: number }) => boolean)
         | ((year: number) => boolean)
         | ((quarter: { quarter: number; year: number }) => boolean)
-        | Highlight;
+        | Partial<Highlight>;
     /**
      * @deprecated You should use highlight.weekdays instead
      */

@@ -304,5 +304,8 @@ export interface Highlight {
     options: { highlightDisabled: boolean };
 }
 
-export type HighlightFn = (date: Date | MonthModel | number | { quarter: number; year: number }) => boolean;
+export type HighlightFn = (
+    date: Date | MonthModel | number | { quarter: number; year: number },
+    disabled?: boolean,
+) => boolean;
 export type HighlightProp = Date[] | string[] | number[] | HighlightFn | Partial<Highlight>;

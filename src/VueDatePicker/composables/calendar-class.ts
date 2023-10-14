@@ -211,9 +211,15 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
     };
 
     // If enabled, checks the days that are also highlighted to not be marked as disabled
-    const disableHighlight = (day: ICalendarDay) =>
-        isDisabled(day.value) &&
-        (typeof defaultedHighlight.value === 'function' ? false : defaultedHighlight.value.options.highlightDisabled);
+    const disableHighlight = (day: ICalendarDay) => {
+        const disabled = isDisabled(day.value);
+        return !(
+            disabled &&
+            (typeof defaultedHighlight.value === 'function'
+                ? defaultedHighlight.value(day.value, disabled)
+                : defaultedHighlight.value.options.highlightDisabled)
+        );
+    };
 
     // Check if the given week day should be highlighted
     const highlightedWeekDay = (day: ICalendarDay) => {
