@@ -22,7 +22,14 @@ import {
 import { useDefaults } from '@/composables/defaults';
 import { convertType } from '@/utils/util';
 
-import type { InternalModuleValue, ArrMapValues, ArrMapValue, DisabledTimesFn, DisabledTime } from '@/interfaces';
+import type {
+    InternalModuleValue,
+    ArrMapValues,
+    ArrMapValue,
+    DisabledTimesFn,
+    DisabledTime,
+    TimeModel,
+} from '@/interfaces';
 import type { PickerBasePropsType, AllPropsType } from '@/props';
 
 export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
@@ -266,11 +273,23 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
         const selectedDateTime = !props.minDate && !props.maxDate ? getSetTimeValue(date) : date;
 
         if (props.maxTime || props.maxDate) {
-            isValid = checkTimeMinMax(props.maxTime, props.maxDate, 'max', convertType(selectedDateTime), isValid);
+            isValid = checkTimeMinMax(
+                props.maxTime as TimeModel,
+                props.maxDate,
+                'max',
+                convertType(selectedDateTime),
+                isValid,
+            );
         }
 
         if (props.minTime || props.minDate) {
-            isValid = checkTimeMinMax(props.minTime, props.minDate, 'min', convertType(selectedDateTime), isValid);
+            isValid = checkTimeMinMax(
+                props.minTime as TimeModel,
+                props.minDate,
+                'min',
+                convertType(selectedDateTime),
+                isValid,
+            );
         }
         return checkDisabledTimes(date, isValid);
     };

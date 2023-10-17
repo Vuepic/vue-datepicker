@@ -12,6 +12,7 @@ import {
     getMonth,
     getYear,
     set,
+    setHours,
     startOfMonth,
     startOfQuarter,
 } from 'date-fns';
@@ -429,5 +430,31 @@ describe('It should validate various picker scenarios', () => {
 
         expect(quarterCell.classes()).toContain('dp--highlighted');
         dp.unmount();
+    });
+
+    it('Should check min or max time in comparison to the internal model value if any #612', async () => {
+        const modelValue = setHours(new Date(), 19);
+        const minDate = new Date();
+        const maxTime = { hours: 12 };
+
+        const dp = await openMenu({ minDate, maxTime: maxTime as TimeModel, timePickerInline: true, modelValue });
+
+        await dp.find('[data-test="hours-toggle-overlay-btn-0"]').trigger('click');
+        const cell = dp.find('[data-test="15"]');
+
+        expect(cell.html().includes('dp__overlay_cell_disabled')).toBeTruthy();
+
+        await dp.find('[aria-label="Toggle overlay"]').trigger('click');
+
+        await dp.find(`[data-test="select-button"]`).trigger('click');
+
+        expect(dp.emitted()['update:model-value']).toBeFalsy();
+
+        await clickCalendarDate(dp, addDays(minDate, 1));
+        await dp.find('[data-test="hours-toggle-overlay-btn-0"]').trigger('click');
+        await dp.find('[data-test="11"]').trigger('click');
+        await dp.find(`[data-test="select-button"]`).trigger('click');
+
+        expect(dp.emitted()['update:model-value']).toBeTruthy();
     });
 });

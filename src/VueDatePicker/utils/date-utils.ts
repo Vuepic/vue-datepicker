@@ -363,8 +363,8 @@ export const isValidDate = (value: Date | Date[] | null | (Date | null)[]): bool
     return value ? isValid(value) : false;
 };
 
-export const setDateTimeFromObj = (time: TimeModel) => {
-    return set(getDate(), {
+export const setDateTimeFromObj = (time: TimeModel, date?: Date | null) => {
+    return set(date ?? getDate(), {
         hours: +time.hours || 0,
         minutes: +time.minutes || 0,
         seconds: +time.seconds || 0,
@@ -390,21 +390,31 @@ export const validateTime = (
     return compare === 'max' ? date.getTime() <= dateToCompare.getTime() : date.getTime() >= dateToCompare.getTime();
 };
 
+const getDateForCompareValidation = (
+    minOrMax: TimeModel | null,
+    selected: Date,
+    minOrMaxDate: Date | string | null,
+) => {
+    return minOrMax ? setDateTimeFromObj(minOrMax, selected) : getDate(minOrMaxDate ?? selected);
+};
+
 export const checkTimeMinMax = (
     minOrMax: TimeModel | null,
-    dateCompare: Date | string,
+    dateCompare: Date | string | null,
     map: 'min' | 'max',
     selectedDateTime: Date | Date[],
     isValid: boolean,
 ) => {
-    const date = minOrMax ? setDateTimeFromObj(minOrMax) : getDate(dateCompare);
     if (Array.isArray(selectedDateTime)) {
+        const dateOne = getDateForCompareValidation(minOrMax, selectedDateTime[0], dateCompare);
+        const dateTwo = getDateForCompareValidation(minOrMax, selectedDateTime[1], dateCompare);
         return (
-            validateTime(selectedDateTime[0], date, map, !!dateCompare) &&
-            validateTime(selectedDateTime[1], date, map, !!dateCompare) &&
+            validateTime(selectedDateTime[0], dateOne, map, !!dateCompare) &&
+            validateTime(selectedDateTime[1], dateTwo, map, !!dateCompare) &&
             isValid
         );
     }
+    const date = getDateForCompareValidation(minOrMax, selectedDateTime, dateCompare);
     return validateTime(selectedDateTime, date, map, !!dateCompare) && isValid;
 };
 
