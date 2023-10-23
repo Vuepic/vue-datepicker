@@ -94,7 +94,7 @@
     } from '@/composables';
     import { onClickOutside } from '@/directives/clickOutside';
     import { AllProps } from '@/props';
-    import { getNumVal } from '@/utils/util';
+    import { findNextFocusableElement, getNumVal } from '@/utils/util';
 
     import type {
         DynamicClass,
@@ -150,6 +150,7 @@
     const inputRef = ref<DatepickerInputRef | null>(null);
     const isInputFocused = ref(false);
     const pickerWrapperRef = ref<HTMLElement | null>(null);
+    const shouldFocusNext = ref(false);
 
     const { setMenuFocused, setShiftKey } = useState();
     const { clearArrowNav } = useArrowNavigation();
@@ -394,7 +395,7 @@
         }
     };
 
-    const setInputDate = (date: Date | Date[] | null, submit?: boolean): void => {
+    const setInputDate = (date: Date | Date[] | null, submit?: boolean, tabbed = false): void => {
         if (!date) {
             internalModelValue.value = null;
             return;
@@ -404,6 +405,7 @@
         if (validDate && validTime) {
             internalModelValue.value = date;
             if (submit) {
+                shouldFocusNext.value = tabbed;
                 selectDate();
                 emit('text-submit');
             }
@@ -439,6 +441,10 @@
         if (defaultedTextInput.value.enabled) {
             isInputFocused.value = false;
             parseExternalModelValue(props.modelValue);
+            if (shouldFocusNext.value) {
+                const el = findNextFocusableElement(pickerWrapperRef.value);
+                el?.focus();
+            }
         }
         emit('blur');
     };

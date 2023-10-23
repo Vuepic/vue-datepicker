@@ -233,3 +233,48 @@ export const checkStopPropagation = (ev: Event | undefined, config: Config, imme
         ev.stopPropagation();
     }
 };
+
+const getNextElement = (el: HTMLElement) => {
+    if (el.nextElementSibling) {
+        return el.nextElementSibling;
+    }
+
+    while (el.parentElement && !el.parentElement.nextElementSibling) {
+        el = el.parentElement;
+    }
+
+    return el.parentElement ? el.parentElement.nextElementSibling : null;
+};
+
+const isFocusable = (el: HTMLElement | null) => {
+    if (!el) {
+        return false;
+    }
+
+    const focusableElements = [
+        'a[href]',
+        'area[href]',
+        "input:not([disabled]):not([type='hidden'])",
+        'select:not([disabled])',
+        'textarea:not([disabled])',
+        'button:not([disabled])',
+        "[tabindex]:not([tabindex='-1'])",
+    ];
+    const isFocusableElement = el.matches(focusableElements.join(', '));
+
+    const isVisible = el.offsetWidth > 0 || el.offsetHeight > 0 || el.getClientRects().length > 0;
+
+    return isFocusableElement && isVisible;
+};
+
+export const findNextFocusableElement = (startElement: HTMLElement | null): HTMLElement | null => {
+    if (!startElement) return null;
+    let currentElement = startElement;
+    while (currentElement) {
+        currentElement = getNextElement(currentElement) as HTMLElement;
+        if (isFocusable(currentElement)) {
+            return currentElement;
+        }
+    }
+    return null;
+};

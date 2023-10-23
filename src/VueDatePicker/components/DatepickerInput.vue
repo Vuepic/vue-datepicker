@@ -218,11 +218,11 @@
         }
 
         if (defaultedTextInput.value.tabSubmit && isValidDate(parsedDate.value) && props.inputValue !== '') {
-            emit('set-input-date', parsedDate.value, true);
+            emit('set-input-date', parsedDate.value, true, true);
             parsedDate.value = null;
         } else if (defaultedTextInput.value.tabSubmit && props.inputValue === '') {
             parsedDate.value = null;
-            emit('clear');
+            emit('clear', true);
         }
     };
 
