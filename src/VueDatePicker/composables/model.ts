@@ -1,5 +1,8 @@
 import { computed, ref, reactive } from 'vue';
-import { getHours, getMinutes, getMonth, getYear } from 'date-fns';
+import getHours from 'date-fns/getHours';
+import getMinutes from 'date-fns/getMinutes';
+import getMonth from 'date-fns/getMonth';
+import getYear from 'date-fns/getYear';
 
 import { getDate, getZonedDate } from '@/utils/date-utils';
 

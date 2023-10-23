@@ -1,5 +1,12 @@
 import { ref, toRef, watch } from 'vue';
-import { format, getHours, getMinutes, getMonth, getSeconds, getYear, parse, setYear } from 'date-fns';
+import format from 'date-fns/format';
+import getHours from 'date-fns/getHours';
+import getMinutes from 'date-fns/getMinutes';
+import getMonth from 'date-fns/getMonth';
+import getSeconds from 'date-fns/getSeconds';
+import getYear from 'date-fns/getYear';
+import parse from 'date-fns/parse';
+import setYear from 'date-fns/setYear';
 
 import {
     checkPartialRangeValue,

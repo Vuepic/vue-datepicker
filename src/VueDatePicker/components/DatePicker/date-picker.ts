@@ -1,17 +1,15 @@
 import { computed, onMounted, ref, nextTick, watch } from 'vue';
-import {
-    add,
-    addDays,
-    addMonths,
-    getHours,
-    getMinutes,
-    getMonth,
-    getSeconds,
-    getYear,
-    set,
-    startOfWeek,
-    subMonths,
-} from 'date-fns';
+import add from 'date-fns/add';
+import addDays from 'date-fns/addDays';
+import addMonths from 'date-fns/addMonths';
+import getHours from 'date-fns/getHours';
+import getMinutes from 'date-fns/getMinutes';
+import getMonth from 'date-fns/getMonth';
+import getSeconds from 'date-fns/getSeconds';
+import getYear from 'date-fns/getYear';
+import set from 'date-fns/set';
+import startOfWeek from 'date-fns/startOfWeek';
+import subMonths from 'date-fns/subMonths';
 
 import {
     getDate,

@@ -1,5 +1,9 @@
 import { computed, onMounted, ref } from 'vue';
-import { addYears, getMonth, getYear, set, subYears } from 'date-fns';
+import addYears from 'date-fns/addYears';
+import getMonth from 'date-fns/getMonth';
+import getYear from 'date-fns/getYear';
+import set from 'date-fns/set';
+import subYears from 'date-fns/subYears';
 
 import { checkHighlightYear, getDate, getMinMaxYear, resetDate, validateMonthYear } from '@/utils/date-utils';
 import { checkMinMaxValue, getYears, groupListAndMap } from '@/utils/util';
