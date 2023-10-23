@@ -1,5 +1,5 @@
 import { unref } from 'vue';
-import { format } from 'date-fns';
+import format from 'date-fns/format';
 
 import type { Config, IDefaultSelect, IMarker, MaybeElementRef, ModelValue, OverlayGridItem } from '@/interfaces';
 import type { ComponentPublicInstance } from 'vue';

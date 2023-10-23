@@ -1,5 +1,6 @@
 import { computed, ref } from 'vue';
-import { getMonth, getYear } from 'date-fns';
+import getMonth from 'date-fns/getMonth';
+import getYear from 'date-fns/getYear';
 
 import { checkMinMaxValue, getMonths, groupListAndMap } from '@/utils/util';
 import {

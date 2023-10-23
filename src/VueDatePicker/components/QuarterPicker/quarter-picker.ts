@@ -1,17 +1,15 @@
 import { computed, ref } from 'vue';
-import {
-    eachQuarterOfInterval,
-    endOfQuarter,
-    endOfYear,
-    format,
-    getMonth,
-    getQuarter,
-    getYear,
-    isSameQuarter,
-    set,
-    startOfQuarter,
-    startOfYear,
-} from 'date-fns';
+import eachQuarterOfInterval from 'date-fns/eachQuarterOfInterval';
+import endOfQuarter from 'date-fns/endOfQuarter';
+import endOfYear from 'date-fns/endOfYear';
+import format from 'date-fns/format';
+import getMonth from 'date-fns/getMonth';
+import getQuarter from 'date-fns/getQuarter';
+import getYear from 'date-fns/getYear';
+import isSameQuarter from 'date-fns/isSameQuarter';
+import set from 'date-fns/set';
+import startOfQuarter from 'date-fns/startOfQuarter';
+import startOfYear from 'date-fns/startOfYear';
 
 import { useDefaults, useModel, useValidation } from '@/composables';
 import { useMonthOrQuarterPicker } from '@/components/shared/month-quarter-picker';

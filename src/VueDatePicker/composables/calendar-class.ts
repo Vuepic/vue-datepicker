@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import { addDays } from 'date-fns';
+import addDays from 'date-fns/addDays';
 
 import { useDefaults, useValidation } from '@/composables/index';
 import { isModelAuto } from '@/utils/util';
