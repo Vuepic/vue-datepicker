@@ -140,8 +140,7 @@
   cursor: pointer;
   display: flex;
   align-items: center;
-  align-content: center;
-  justify-content: center;
+  place-content: center center;
   padding: var(--dp-common-padding);
   box-sizing: border-box;
   height: var(--dp-button-height);
