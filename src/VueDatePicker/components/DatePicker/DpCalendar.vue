@@ -46,6 +46,7 @@
                             <div
                                 v-for="(dayVal, dayInd) in week.days"
                                 role="gridcell"
+                                :id="dayVal.value.toISOString().split('T')[0]"
                                 class="dp__calendar_item"
                                 :ref="(el) => assignDayRef(el, weekInd, dayInd)"
                                 :key="dayInd + weekInd"
