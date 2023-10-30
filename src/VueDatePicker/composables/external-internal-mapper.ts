@@ -83,6 +83,9 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
 
     const mapYearExternalToInternal = (value: number | number[]): Date | Date[] => {
         if (Array.isArray(value)) {
+            if (props.multiDates) {
+                return value.map((val) => convertCustomModeType(val, setYear(getDate(), val)));
+            }
             return checkRangeEnabled(
                 () => [
                     setYear(getDate(), value[0]),

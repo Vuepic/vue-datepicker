@@ -4,8 +4,15 @@ import setYear from 'date-fns/setYear';
 
 import { useDefaults, useModel } from '@/composables';
 import { checkMinMaxValue, getYears, groupListAndMap } from '@/utils/util';
-import { checkHighlightYear, getMinMaxYear, isDateBetween, resetDate } from '@/utils/date-utils';
-import { checkRangeAutoApply, handleMultiDatesSelect, setMonthOrYearRange } from '@/composables/shared';
+import {
+    checkHighlightYear,
+    getDate,
+    getMinMaxYear,
+    isDateBetween,
+    resetDate,
+    resetDateTime,
+} from '@/utils/date-utils';
+import { checkRangeAutoApply, setMonthOrYearRange } from '@/composables/shared';
 
 import type { PickerBasePropsType } from '@/props';
 import type { VueEmit, IDefaultSelect } from '@/interfaces';
@@ -48,7 +55,16 @@ export const useYearPicker = (props: PickerBasePropsType, emit: VueEmit) => {
 
     const selectYear = (year: number) => {
         if (props.multiDates) {
-            handleMultiDatesSelect(yearToDate(year), modelValue, props.multiDatesLimit);
+            if (!modelValue.value) {
+                modelValue.value = [setYear(resetDateTime(getDate()), year)];
+            } else if (Array.isArray(modelValue.value)) {
+                const years = modelValue.value?.map((date) => getYear(date));
+                if (years.includes(year)) {
+                    modelValue.value = modelValue.value.filter((date) => getYear(date) !== year);
+                } else {
+                    modelValue.value.push(setYear(resetDateTime(getDate()), year));
+                }
+            }
             return emit('auto-apply', true);
         }
         if (props.range) {
