@@ -130,15 +130,15 @@
 
 <script lang="ts" setup>
     import { computed, onMounted, reactive, ref } from 'vue';
-    import add from 'date-fns/add';
-    import getHours from 'date-fns/getHours';
-    import getMinutes from 'date-fns/getMinutes';
-    import getSeconds from 'date-fns/getSeconds';
-    import isAfter from 'date-fns/isAfter';
-    import isBefore from 'date-fns/isBefore';
-    import isEqual from 'date-fns/isEqual';
-    import set from 'date-fns/set';
-    import sub from 'date-fns/sub';
+    import add from 'date-fns/add/index';
+    import getHours from 'date-fns/getHours/index';
+    import getMinutes from 'date-fns/getMinutes/index';
+    import getSeconds from 'date-fns/getSeconds/index';
+    import isAfter from 'date-fns/isAfter/index';
+    import isBefore from 'date-fns/isBefore/index';
+    import isEqual from 'date-fns/isEqual/index';
+    import set from 'date-fns/set/index';
+    import sub from 'date-fns/sub/index';
 
     import { ChevronUpIcon, ChevronDownIcon, ClockIcon } from '@/components/Icons';
     import SelectionOverlay from '@/components/Common/SelectionOverlay.vue';

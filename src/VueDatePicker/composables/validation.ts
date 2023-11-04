@@ -1,10 +1,10 @@
-import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
-import eachDayOfInterval from 'date-fns/eachDayOfInterval';
-import getDay from 'date-fns/getDay';
-import getHours from 'date-fns/getHours';
-import getMinutes from 'date-fns/getMinutes';
-import getMonth from 'date-fns/getMonth';
-import getYear from 'date-fns/getYear';
+import differenceInCalendarDays from 'date-fns/differenceInCalendarDays/index';
+import eachDayOfInterval from 'date-fns/eachDayOfInterval/index';
+import getDay from 'date-fns/getDay/index';
+import getHours from 'date-fns/getHours/index';
+import getMinutes from 'date-fns/getMinutes/index';
+import getMonth from 'date-fns/getMonth/index';
+import getYear from 'date-fns/getYear/index';
 import {
     checkTimeMinMax,
     getDate,

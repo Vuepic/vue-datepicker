@@ -1,9 +1,9 @@
 import { computed } from 'vue';
 
-import isAfter from 'date-fns/isAfter';
-import isBefore from 'date-fns/isBefore';
-import setMilliseconds from 'date-fns/setMilliseconds';
-import setSeconds from 'date-fns/setSeconds';
+import isAfter from 'date-fns/isAfter/index';
+import isBefore from 'date-fns/isBefore/index';
+import setMilliseconds from 'date-fns/setMilliseconds/index';
+import setSeconds from 'date-fns/setSeconds/index';
 
 import { getDate, isDateEqual, setDateTime } from '@/utils/date-utils';
 

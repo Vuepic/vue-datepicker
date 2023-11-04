@@ -1,12 +1,12 @@
 import { computed } from 'vue';
-import addMonths from 'date-fns/addMonths';
-import addYears from 'date-fns/addYears';
-import getMonth from 'date-fns/getMonth';
-import getYear from 'date-fns/getYear';
-import set from 'date-fns/set';
-import setYear from 'date-fns/setYear';
-import subMonths from 'date-fns/subMonths';
-import subYears from 'date-fns/subYears';
+import addMonths from 'date-fns/addMonths/index';
+import addYears from 'date-fns/addYears/index';
+import getMonth from 'date-fns/getMonth/index';
+import getYear from 'date-fns/getYear/index';
+import set from 'date-fns/set/index';
+import setYear from 'date-fns/setYear/index';
+import subMonths from 'date-fns/subMonths/index';
+import subYears from 'date-fns/subYears/index';
 
 import { useDefaults, useValidation } from '@/composables/index';
 import { validateMonthYear } from '@/utils/date-utils';

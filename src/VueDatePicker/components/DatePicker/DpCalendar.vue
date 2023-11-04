@@ -132,8 +132,8 @@
 
 <script lang="ts" setup>
     import { computed, nextTick, onMounted, ref } from 'vue';
-    import getISOWeek from 'date-fns/getISOWeek';
-    import getWeek from 'date-fns/getWeek';
+    import getISOWeek from 'date-fns/getISOWeek/index';
+    import getWeek from 'date-fns/getWeek/index';
 
     import { checkStopPropagation, getDayNames, getDefaultMarker, unrefElement } from '@/utils/util';
     import { useArrowNavigation, useDefaults } from '@/composables';

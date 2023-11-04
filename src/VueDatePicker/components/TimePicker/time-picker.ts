@@ -1,5 +1,5 @@
 import { onMounted } from 'vue';
-import set from 'date-fns/set';
+import set from 'date-fns/set/index';
 
 import { useDefaults, useModel } from '@/composables';
 import { useTimePickerUtils } from '@/components/TimePicker/time-picker-utils';
