@@ -7,13 +7,13 @@
             :disabled="isDisabled(false)"
             @activate="handleYear(false)"
         >
-            <slot name="arrow-left" v-if="$slots['arrow-left']" />
+            <slot v-if="$slots['arrow-left']" name="arrow-left" />
             <ChevronLeftIcon v-if="!$slots['arrow-left']" />
         </ArrowBtn>
         <button
+            ref="mpYearButtonRef"
             class="dp__btn dp--year-select"
             type="button"
-            ref="mpYearButtonRef"
             :aria-label="defaultedAriaLabels?.openYearsOverlay"
             :data-test="`year-mode-btn-${instance}`"
             @click="() => toggleYearPicker(false)"
@@ -29,7 +29,7 @@
             :disabled="isDisabled(true)"
             @activate="handleYear(true)"
         >
-            <slot name="arrow-right" v-if="$slots['arrow-right']" />
+            <slot v-if="$slots['arrow-right']" name="arrow-right" />
             <ChevronRightIcon v-if="!$slots['arrow-right']" />
         </ArrowBtn>
         <transition :name="transitionName(showYearPicker)" :css="showTransition">
@@ -39,13 +39,13 @@
                 :text-input="textInput"
                 :esc-close="escClose"
                 :config="config"
-                @toggle="toggleYearPicker"
-                @selected="handleYearSelect($event)"
                 :is-last="autoApply && !defaultedConfig.keepActionRow"
                 type="year"
+                @toggle="toggleYearPicker"
+                @selected="handleYearSelect($event)"
             >
                 <template #button-icon>
-                    <slot name="calendar-icon" v-if="$slots['calendar-icon']" />
+                    <slot v-if="$slots['calendar-icon']" name="calendar-icon" />
                     <CalendarIcon v-if="!$slots['calendar-icon']" />
                 </template>
                 <template v-if="$slots['year-overlay-value']" #item="{ item }">

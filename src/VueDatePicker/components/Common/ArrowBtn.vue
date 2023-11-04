@@ -1,14 +1,14 @@
 <template>
     <button
+        ref="elRef"
         type="button"
         class="dp__btn dp--arrow-btn-nav"
-        @click="$emit('activate')"
-        @keydown.enter.prevent="$emit('activate')"
-        @keydown.space.prevent="$emit('activate')"
         tabindex="0"
         :aria-label="ariaLabel"
         :aria-disabled="disabled || undefined"
-        ref="elRef"
+        @click="$emit('activate')"
+        @keydown.enter.prevent="$emit('activate')"
+        @keydown.space.prevent="$emit('activate')"
     >
         <span class="dp__inner_nav" :class="{ dp__inner_nav_disabled: disabled }">
             <slot />

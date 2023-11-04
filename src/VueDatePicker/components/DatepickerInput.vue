@@ -17,8 +17,8 @@
             />
             <input
                 v-if="!$slots['dp-input']"
-                ref="inputRef"
                 :id="uid ? `dp-input-${uid}` : undefined"
+                ref="inputRef"
                 :name="name"
                 :class="inputClass"
                 :inputmode="defaultedTextInput.enabled ? 'text' : 'none'"
@@ -41,18 +41,18 @@
                 @paste="handlePaste"
             />
             <div @click="emit('toggle')">
-                <span class="dp__input_icon" @click="emit('toggle')" v-if="$slots['input-icon'] && !hideInputIcon"
+                <span v-if="$slots['input-icon'] && !hideInputIcon" class="dp__input_icon" @click="emit('toggle')"
                     ><slot name="input-icon"
                 /></span>
                 <CalendarIcon
-                    @click="emit('toggle')"
                     v-if="!$slots['input-icon'] && !hideInputIcon && !$slots['dp-input']"
                     class="dp__input_icon dp__input_icons"
+                    @click="emit('toggle')"
                 />
             </div>
             <span
-                class="dp__clear_icon"
                 v-if="$slots['clear-icon'] && inputValue && clearable && !disabled && !readonly"
+                class="dp__clear_icon"
                 ><slot name="clear-icon" :clear="onClear"
             /></span>
             <CancelIcon

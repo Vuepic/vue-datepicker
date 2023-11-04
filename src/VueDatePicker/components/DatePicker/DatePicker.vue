@@ -1,12 +1,12 @@
 <template>
     <InstanceWrap v-slot="{ instance, index }" :multi-calendars="defaultedMultiCalendars.count">
         <DpHeader
+            v-if="!disableMonthYearSelect"
             :ref="
                 (el: any) => {
                     if (el) headerRefs[index] = el;
                 }
             "
-            v-if="!disableMonthYearSelect"
             :months="getMonths(formatLocale, locale, monthNameFormat)"
             :years="getYears(yearRange, reverseYears)"
             :month="month(instance)"

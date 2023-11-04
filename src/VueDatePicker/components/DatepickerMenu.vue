@@ -1,8 +1,8 @@
 <template>
     <div
         :id="uid ? `dp-menu-${uid}` : undefined"
-        tabindex="0"
         ref="dpMenuRef"
+        tabindex="0"
         role="dialog"
         :class="dpMenuClass"
         @mouseleave="clearHoverDate"
@@ -14,8 +14,8 @@
         @keydown.right.prevent="handleArrowKey('right')"
         @keydown="checkShiftKey"
     >
-        <div :class="disabledReadonlyOverlay" v-if="(disabled || readonly) && defaultedInline.enabled"></div>
-        <div :class="arrowClass" v-if="!defaultedInline.enabled && !teleportCenter"></div>
+        <div v-if="(disabled || readonly) && defaultedInline.enabled" :class="disabledReadonlyOverlay"></div>
+        <div v-if="!defaultedInline.enabled && !teleportCenter" :class="arrowClass"></div>
         <div
             ref="innerMenuRef"
             :class="{
@@ -23,10 +23,10 @@
             }"
             :style="{ '--dp-menu-width': `${calendarWidth}px` }"
         >
-            <div class="dp__sidebar_left" v-if="$slots['left-sidebar']">
+            <div v-if="$slots['left-sidebar']" class="dp__sidebar_left">
                 <slot name="left-sidebar" v-bind="getSidebarProps" />
             </div>
-            <div class="dp--preset-dates" v-if="presetDates.length">
+            <div v-if="presetDates.length" class="dp--preset-dates">
                 <template v-for="(preset, i) in presetDates" :key="i">
                     <template v-if="preset.slot">
                         <slot
@@ -50,10 +50,10 @@
                     </template>
                 </template>
             </div>
-            <div class="dp__instance_calendar" ref="calendarWrapperRef" role="document">
+            <div ref="calendarWrapperRef" class="dp__instance_calendar" role="document">
                 <component
-                    ref="dynCmpRef"
                     :is="displayComponent"
+                    ref="dynCmpRef"
                     v-bind="baseProps"
                     :flow-step="flowStep"
                     @mount="childMount"
@@ -83,11 +83,11 @@
                     </template>
                 </component>
             </div>
-            <div class="dp__sidebar_right" v-if="$slots['right-sidebar']">
+            <div v-if="$slots['right-sidebar']" class="dp__sidebar_right">
                 <slot name="right-sidebar" v-bind="getSidebarProps" />
             </div>
-            <div class="dp__action_extra" v-if="$slots['action-extra']">
-                <slot name="action-extra" v-if="$slots['action-extra']" :select-current-date="selectCurrentDate" />
+            <div v-if="$slots['action-extra']" class="dp__action_extra">
+                <slot v-if="$slots['action-extra']" name="action-extra" :select-current-date="selectCurrentDate" />
             </div>
         </div>
         <ActionRow

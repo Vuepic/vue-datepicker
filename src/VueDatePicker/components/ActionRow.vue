@@ -13,18 +13,18 @@
         </template>
         <template v-else>
             <div v-if="defaultedActionRow.showPreview" class="dp__selection_preview" :title="formatValue">
-                <slot name="action-preview" v-if="$slots['action-preview']" :value="internalModelValue" />
+                <slot v-if="$slots['action-preview']" name="action-preview" :value="internalModelValue" />
                 <template v-if="!$slots['action-preview']">
                     {{ formatValue }}
                 </template>
             </div>
             <div class="dp__action_buttons">
-                <slot name="action-buttons" v-if="$slots['action-buttons']" :value="internalModelValue" />
+                <slot v-if="$slots['action-buttons']" name="action-buttons" :value="internalModelValue" />
                 <template v-if="!$slots['action-buttons']">
                     <button
-                        type="button"
-                        ref="cancelButtonRef"
                         v-if="!defaultedInline.enabled && defaultedActionRow.showCancel"
+                        ref="cancelButtonRef"
+                        type="button"
                         class="dp__action_button dp__action_cancel"
                         @click="$emit('close-picker')"
                         @keydown.enter="$emit('close-picker')"
@@ -33,9 +33,9 @@
                         {{ cancelText }}
                     </button>
                     <button
-                        type="button"
-                        ref="cancelButtonRef"
                         v-if="defaultedActionRow.showNow"
+                        ref="cancelButtonRef"
+                        type="button"
                         class="dp__action_button dp__action_cancel"
                         @click="$emit('select-now')"
                         @keydown.enter="$emit('select-now')"
@@ -44,15 +44,15 @@
                         {{ nowButtonLabel }}
                     </button>
                     <button
-                        type="button"
                         v-if="defaultedActionRow.showSelect"
+                        ref="selectButtonRef"
+                        type="button"
                         class="dp__action_button dp__action_select"
+                        :disabled="disabled"
+                        data-test="select-button"
                         @keydown.enter="selectDate"
                         @keydown.space="selectDate"
                         @click="selectDate"
-                        :disabled="disabled"
-                        data-test="select-button"
-                        ref="selectButtonRef"
                     >
                         {{ selectText }}
                     </button>

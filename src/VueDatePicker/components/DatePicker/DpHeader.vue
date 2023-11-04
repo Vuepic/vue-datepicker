@@ -14,7 +14,7 @@
                 @activate="handleMonthYearChange(false, true)"
                 @set-ref="setElRefs($event, 0)"
             >
-                <slot name="arrow-left" v-if="$slots['arrow-left']" />
+                <slot v-if="$slots['arrow-left']" name="arrow-left" />
                 <ChevronLeftIcon v-if="!$slots['arrow-left']" />
             </ArrowBtn>
             <div
@@ -25,11 +25,11 @@
             >
                 <template v-for="(type, i) in selectionButtonsDisplay" :key="type.type">
                     <button
+                        :ref="(el) => setElRefs(el, i + 1)"
                         type="button"
                         class="dp__btn dp__month_year_select"
                         tabindex="0"
                         :aria-label="type.ariaLabel"
-                        :ref="(el) => setElRefs(el, i + 1)"
                         :data-test="`${type.type}-toggle-overlay-${instance}`"
                         @click="type.toggle"
                         @keydown.enter.prevent="type.toggle"
@@ -55,7 +55,7 @@
                             @toggle="type.toggle"
                         >
                             <template #button-icon>
-                                <slot name="calendar-icon" v-if="$slots['calendar-icon']" />
+                                <slot v-if="$slots['calendar-icon']" name="calendar-icon" />
                                 <CalendarIcon v-if="!$slots['calendar-icon']" />
                             </template>
                             <template v-if="$slots[`${type.type}-overlay-value`]" #item="{ item }">
@@ -77,7 +77,7 @@
                 :disabled="isDisabled(false)"
                 @activate="handleMonthYearChange(false, true)"
             >
-                <slot name="arrow-up" v-if="$slots['arrow-up']" />
+                <slot v-if="$slots['arrow-up']" name="arrow-up" />
                 <ChevronUpIcon v-if="!$slots['arrow-up']" />
             </ArrowBtn>
             <ArrowBtn
@@ -89,8 +89,8 @@
                 @set-ref="setElRefs($event, disableYearSelect ? 2 : 3)"
             >
                 <slot
-                    :name="vertical ? 'arrow-down' : 'arrow-right'"
                     v-if="$slots[vertical ? 'arrow-down' : 'arrow-right']"
+                    :name="vertical ? 'arrow-down' : 'arrow-right'"
                 />
                 <component
                     :is="vertical ? ChevronDownIcon : ChevronRightIcon"

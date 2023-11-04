@@ -11,27 +11,27 @@
         @keydown.down.prevent="handleArrowKey($event)"
         @keydown.right.prevent="handleArrowKey($event)"
     >
-        <div :class="containerClass" ref="containerRef" role="grid" :style="{ height: `${containerHeight}px` }">
+        <div ref="containerRef" :class="containerClass" role="grid" :style="{ height: `${containerHeight}px` }">
             <div class="dp__selection_grid_header"><slot name="header"></slot></div>
             <template v-if="$slots.overlay">
                 <slot name="overlay" />
             </template>
             <template v-else>
                 <div
-                    class="dp__overlay_row"
-                    :class="{ dp__flex_row: items.length >= 3 }"
                     v-for="(row, i) in items"
                     :key="i"
+                    class="dp__overlay_row"
+                    :class="{ dp__flex_row: items.length >= 3 }"
                     role="row"
                 >
                     <div
                         v-for="(col, ind) in row"
+                        :key="col.value"
+                        :ref="(el) => assignRef(el, col, i, ind)"
                         role="gridcell"
                         :class="cellClassName"
-                        :key="col.value"
                         :aria-selected="col.active"
                         :aria-disabled="col.disabled || undefined"
-                        :ref="(el) => assignRef(el, col, i, ind)"
                         tabindex="0"
                         :data-test="col.text"
                         @click="onClick(col)"
@@ -50,11 +50,11 @@
         <button
             v-if="$slots['button-icon']"
             v-show="!hideNavigationButtons(hideNavigation, type)"
+            ref="toggleButton"
             type="button"
             :aria-label="defaultedAriaLabels?.toggleOverlay"
             :class="actionButtonClass"
             tabindex="0"
-            ref="toggleButton"
             @click="toggle"
             @keydown.enter="toggle"
             @keydown.tab="toggle"

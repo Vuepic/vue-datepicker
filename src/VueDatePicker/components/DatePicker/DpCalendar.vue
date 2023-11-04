@@ -8,14 +8,14 @@
         >
             <template v-if="true">
                 <div class="dp__calendar_header" role="row">
-                    <div class="dp__calendar_header_item" role="gridcell" v-if="weekNumbers">
+                    <div v-if="weekNumbers" class="dp__calendar_header_item" role="gridcell">
                         {{ weekNumName }}
                     </div>
                     <div
-                        class="dp__calendar_header_item"
-                        role="gridcell"
                         v-for="(dayVal, i) in weekDays"
                         :key="i"
+                        class="dp__calendar_header_item"
+                        role="gridcell"
                         data-test="calendar-header"
                     >
                         <slot v-if="$slots['calendar-header']" name="calendar-header" :day="dayVal" :index="i" />
@@ -27,29 +27,29 @@
                 <div class="dp__calendar_header_separator"></div>
                 <transition :name="transitionName" :css="!!transitions">
                     <div
+                        v-if="showCalendar"
                         class="dp__calendar"
                         role="rowgroup"
                         :aria-label="defaultedAriaLabels?.calendarDays || undefined"
-                        v-if="showCalendar"
                     >
                         <div
-                            class="dp__calendar_row"
-                            role="row"
                             v-for="(week, weekInd) in calendarWeeks"
                             :key="weekInd"
+                            class="dp__calendar_row"
+                            role="row"
                         >
-                            <div role="gridcell" v-if="weekNumbers" class="dp__calendar_item dp__week_num">
+                            <div v-if="weekNumbers" role="gridcell" class="dp__calendar_item dp__week_num">
                                 <div class="dp__cell_inner">
                                     {{ getWeekNum(week.days) }}
                                 </div>
                             </div>
                             <div
                                 v-for="(dayVal, dayInd) in week.days"
-                                role="gridcell"
                                 :id="dayVal.value.toISOString().split('T')[0]"
-                                class="dp__calendar_item"
                                 :ref="(el) => assignDayRef(el, weekInd, dayInd)"
                                 :key="dayInd + weekInd"
+                                role="gridcell"
+                                class="dp__calendar_item"
                                 :aria-selected="
                                     dayVal.classData.dp__active_date ||
                                     dayVal.classData.dp__range_start ||
@@ -67,8 +67,8 @@
                             >
                                 <div class="dp__cell_inner" :class="dayVal.classData">
                                     <slot
-                                        name="day"
                                         v-if="$slots.day && showDay(dayVal)"
+                                        name="day"
                                         :day="+dayVal.text"
                                         :date="dayVal.value"
                                     ></slot>
@@ -88,15 +88,15 @@
                                         ></div>
                                     </template>
                                     <div
-                                        class="dp__marker_tooltip"
                                         v-if="dateMatch(dayVal.value)"
                                         ref="activeTooltip"
+                                        class="dp__marker_tooltip"
                                         :style="markerTooltipStyle"
                                     >
                                         <div
+                                            v-if="dayVal.marker?.tooltip"
                                             class="dp__tooltip_content"
                                             @click="onTpClick"
-                                            v-if="dayVal.marker?.tooltip"
                                         >
                                             <div
                                                 v-for="(tooltip, i) in dayVal.marker.tooltip"
@@ -104,8 +104,8 @@
                                                 class="dp__tooltip_text"
                                             >
                                                 <slot
-                                                    name="marker-tooltip"
                                                     v-if="$slots['marker-tooltip']"
+                                                    name="marker-tooltip"
                                                     :tooltip="tooltip"
                                                     :day="dayVal.value"
                                                 ></slot>

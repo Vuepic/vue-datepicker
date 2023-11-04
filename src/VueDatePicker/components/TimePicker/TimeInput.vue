@@ -1,9 +1,10 @@
 <template>
-    <div class="dp__time_input" v-if="!disabled">
+    <div v-if="!disabled" class="dp__time_input">
         <div v-for="(timeInput, i) in timeInputs" :key="i" :class="timeColClass">
             <template v-if="timeInput.separator"> : </template>
             <template v-else>
                 <button
+                    :ref="(el) => assignRefs(el, i, 0)"
                     type="button"
                     :class="{
                         dp__btn: true,
@@ -18,10 +19,9 @@
                     @keydown.enter.prevent="handleTimeValue(timeInput.type)"
                     @keydown.space.prevent="handleTimeValue(timeInput.type)"
                     @click="handleTimeValue(timeInput.type)"
-                    :ref="(el) => assignRefs(el, i, 0)"
                 >
                     <template v-if="!props.timePickerInline">
-                        <slot name="arrow-up" v-if="$slots['arrow-up']" />
+                        <slot v-if="$slots['arrow-up']" name="arrow-up" />
                         <ChevronUpIcon v-if="!$slots['arrow-up']" />
                     </template>
                     <template v-else>
@@ -30,6 +30,7 @@
                     </template>
                 </button>
                 <button
+                    :ref="(el) => assignRefs(el, i, 1)"
                     type="button"
                     :aria-label="defaultedAriaLabels?.openTpOverlay(timeInput.type)"
                     :class="{
@@ -45,7 +46,6 @@
                     @keydown.enter.prevent="toggleOverlay(timeInput.type)"
                     @keydown.space.prevent="toggleOverlay(timeInput.type)"
                     @click="toggleOverlay(timeInput.type)"
-                    :ref="(el) => assignRefs(el, i, 1)"
                 >
                     <slot
                         v-if="$slots[timeInput.type]"
@@ -56,6 +56,7 @@
                     <template v-if="!$slots[timeInput.type]">{{ timeValueDisplay(timeInput.type).text }}</template>
                 </button>
                 <button
+                    :ref="(el) => assignRefs(el, i, 2)"
                     type="button"
                     :class="{
                         dp__btn: true,
@@ -70,10 +71,9 @@
                     @keydown.enter.prevent="handleTimeValue(timeInput.type, false)"
                     @keydown.space.prevent="handleTimeValue(timeInput.type, false)"
                     @click="handleTimeValue(timeInput.type, false)"
-                    :ref="(el) => assignRefs(el, i, 2)"
                 >
                     <template v-if="!props.timePickerInline">
-                        <slot name="arrow-down" v-if="$slots['arrow-down']" />
+                        <slot v-if="$slots['arrow-down']" name="arrow-down" />
                         <ChevronDownIcon v-if="!$slots['arrow-down']" />
                     </template>
                     <template v-else>
@@ -84,11 +84,11 @@
             </template>
         </div>
         <div v-if="!is24">
-            <slot name="am-pm-button" v-if="$slots['am-pm-button']" :toggle="setAmPm" :value="amPm"></slot>
+            <slot v-if="$slots['am-pm-button']" name="am-pm-button" :toggle="setAmPm" :value="amPm"></slot>
             <button
+                v-if="!$slots['am-pm-button']"
                 ref="amPmButton"
                 type="button"
-                v-if="!$slots['am-pm-button']"
                 class="dp__pm_am_button"
                 role="button"
                 :aria-label="defaultedAriaLabels?.amPmButton"
@@ -116,7 +116,7 @@
                     @reset-flow="$emit('reset-flow')"
                 >
                     <template #button-icon>
-                        <slot name="clock-icon" v-if="$slots['clock-icon']" />
+                        <slot v-if="$slots['clock-icon']" name="clock-icon" />
                         <ClockIcon v-if="!$slots['clock-icon']" />
                     </template>
                     <template v-if="$slots[`${timeInput.type}-overlay-value`]" #item="{ item }">

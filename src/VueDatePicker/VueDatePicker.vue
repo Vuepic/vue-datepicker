@@ -1,9 +1,9 @@
 <template>
-    <div :class="wrapperClass" ref="pickerWrapperRef">
+    <div ref="pickerWrapperRef" :class="wrapperClass">
         <DatepickerInput
             ref="inputRef"
-            :is-menu-open="isOpen"
             v-model:input-value="inputValue"
+            :is-menu-open="isOpen"
             v-bind="$props"
             @clear="clearValue"
             @open="openMenu"
@@ -22,22 +22,22 @@
         </DatepickerInput>
         <transition :name="menuTransition(openOnTop)" :css="showTransition && !defaultedInline.enabled">
             <component
-                ref="dpWrapMenuRef"
-                v-if="isOpen"
                 :is="teleport ? TeleportCmp : 'div'"
+                v-if="isOpen"
+                ref="dpWrapMenuRef"
                 v-bind="menuWrapProps"
                 :class="{ 'dp--menu-wrapper': !defaultedInline.enabled }"
                 :style="!defaultedInline.enabled ? menuStyle : undefined"
             >
                 <DatepickerMenu
                     ref="dpMenuRef"
+                    v-bind="$props"
+                    v-model:internal-model-value="internalModelValue"
                     :class="{ [theme]: true, 'dp--menu-wrapper': teleport }"
                     :style="teleport ? menuStyle : undefined"
                     :open-on-top="openOnTop"
                     :arr-map-values="arrMapValues"
                     :no-overlay-focus="noOverlayFocus"
-                    v-bind="$props"
-                    v-model:internal-model-value="internalModelValue"
                     @close-picker="closeMenu"
                     @select-date="selectDate"
                     @auto-apply="autoApplyValue"

@@ -1,31 +1,31 @@
 <template>
     <div class="dp--tp-wrap">
         <button
-            type="button"
             v-if="!timePicker && !timePickerInline"
             v-show="!hideNavigationButtons(hideNavigation, 'time')"
+            ref="openTimePickerBtn"
+            type="button"
             :class="toggleButtonClass"
             :aria-label="defaultedAriaLabels?.openTimePicker"
             :tabindex="noOverlayFocus ? undefined : 0"
             data-test="open-time-picker-btn"
-            ref="openTimePickerBtn"
             @keydown.enter="toggleTimePicker(true)"
             @keydown.space="toggleTimePicker(true)"
             @click="toggleTimePicker(true)"
         >
-            <slot name="clock-icon" v-if="$slots['clock-icon']" />
+            <slot v-if="$slots['clock-icon']" name="clock-icon" />
             <ClockIcon v-if="!$slots['clock-icon']" />
         </button>
         <transition :name="transitionName(showTimePicker)" :css="showTransition && !timePickerInline">
             <div
                 v-if="showTimePicker || timePicker || timePickerInline"
+                ref="overlayRef"
                 :class="{
                     dp__overlay: !timePickerInline,
                     'dp--overlay-absolute': !props.timePicker && !timePickerInline,
                     'dp--overlay-relative': props.timePicker,
                 }"
                 :style="timePicker ? { height: `${defaultedConfig.modeHeight}px` } : undefined"
-                ref="overlayRef"
                 :tabindex="timePickerInline ? undefined : 0"
             >
                 <div
@@ -37,8 +37,8 @@
                     style="display: flex"
                 >
                     <slot
-                        name="time-picker-overlay"
                         v-if="$slots['time-picker-overlay']"
+                        name="time-picker-overlay"
                         :hours="hours"
                         :minutes="minutes"
                         :seconds="seconds"
@@ -50,8 +50,8 @@
                         <div :class="timePickerInline ? 'dp__flex' : 'dp__overlay_row dp__flex_row'">
                             <TimeInput
                                 v-for="(tInput, index) in timeInputs"
-                                :key="index"
                                 v-show="index === 0 ? true : shouldShowRangedInput"
+                                :key="index"
                                 v-bind="{
                                     ...$props,
                                     order: index,
@@ -62,10 +62,10 @@
                                     disabledTimesConfig,
                                     disabled: index === 0 ? fixedStart : fixedEnd,
                                 }"
+                                ref="timeInputRefs"
                                 :validate-time="
                                     (type: TimeType, value: number) => validateTime(type, getEvent(value, index, type))
                                 "
-                                ref="timeInputRefs"
                                 @update:hours="updateHours(getEvent($event, index, 'hours'))"
                                 @update:minutes="updateMinutes(getEvent($event, index, 'minutes'))"
                                 @update:seconds="updateSeconds(getEvent($event, index, 'seconds'))"
@@ -80,10 +80,10 @@
                         </div>
                     </template>
                     <button
-                        type="button"
                         v-if="!timePicker && !timePickerInline"
                         v-show="!hideNavigationButtons(hideNavigation, 'time')"
                         ref="closeTimePickerBtn"
+                        type="button"
                         :class="toggleButtonClass"
                         :aria-label="defaultedAriaLabels?.closeTimePicker"
                         tabindex="0"
@@ -91,7 +91,7 @@
                         @keydown.space="toggleTimePicker(false)"
                         @click="toggleTimePicker(false)"
                     >
-                        <slot name="calendar-icon" v-if="$slots['calendar-icon']" />
+                        <slot v-if="$slots['calendar-icon']" name="calendar-icon" />
                         <CalendarIcon v-if="!$slots['calendar-icon']" />
                     </button>
                 </div>

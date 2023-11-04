@@ -22,10 +22,10 @@
                 :height="defaultedConfig.modeHeight"
                 :config="config"
                 :no-overlay-focus="noOverlayFocus"
-                @selected="selectMonth($event, instance)"
-                @hover-value="setHoverDate($event, instance)"
                 use-relative
                 type="month"
+                @selected="selectMonth($event, instance)"
+                @hover-value="setHoverDate($event, instance)"
             >
                 <template #header>
                     <YearModePicker
