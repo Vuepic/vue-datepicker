@@ -372,7 +372,8 @@ describe('Logic connection', () => {
     });
 
     it('Should auto change multi calendars', async () => {
-        const modelValue = [addMonths(new Date(), 1), addMonths(new Date(), 2)];
+        const start = startOfYear(new Date());
+        const modelValue = [addMonths(start, 1), addMonths(start, 2)];
         const { datePicker } = await mountDatepicker({ multiCalendars: true, modelValue, range: true });
         expect(datePicker.vm.month(0)).toEqual(getMonth(modelValue[0]));
         expect(datePicker.vm.month(1)).toEqual(getMonth(modelValue[1]));
