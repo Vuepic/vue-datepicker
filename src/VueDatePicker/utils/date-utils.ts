@@ -23,8 +23,8 @@ import setMonth from 'date-fns/setMonth';
 import setYear from 'date-fns/setYear';
 import subMonths from 'date-fns/subMonths';
 import format from 'date-fns/format';
-import utcToZonedTime from 'date-fns-tz/esm/utcToZonedTime';
-import zonedTimeToUtc from 'date-fns-tz/esm/zonedTimeToUtc';
+import utcToZonedTime from 'date-fns-tz/utcToZonedTime';
+import zonedTimeToUtc from 'date-fns-tz/zonedTimeToUtc';
 import { errors } from '@/utils/util';
 
 import type {
