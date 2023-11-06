@@ -252,7 +252,10 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
                 !disableHighlight(day) &&
                 (highlighted(day) || highlightedWeekDay(day)) &&
                 !isActive(day) &&
-                !isRangeStartEnd,
+                !isRangeStartEnd &&
+                !isAutoRangeStart(day) &&
+                !(isBetween(day) && props.weekPicker) &&
+                !isRangeEnd,
             dp__cell_highlight_active:
                 !disableHighlight(day) && (highlighted(day) || highlightedWeekDay(day)) && isActive(day),
             dp__today: !props.noToday && isDateEqual(day.value, today.value) && day.current,
