@@ -42,7 +42,7 @@
 %__dp_menu_readonly_disabled {
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: 999999;
 }
 
 .dp__menu_disabled {
