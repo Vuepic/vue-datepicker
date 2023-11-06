@@ -16,7 +16,7 @@ import {
     startOfWeek,
     endOfWeek,
 } from 'date-fns';
-import { getTimezoneOffset, zonedTimeToUtc } from 'date-fns-tz';
+import { getTimezoneOffset, zonedTimeToUtc } from 'date-fns-tz/esm';
 import { reactive } from 'vue';
 
 import {

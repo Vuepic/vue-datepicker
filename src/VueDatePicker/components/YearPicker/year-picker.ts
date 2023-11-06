@@ -1,6 +1,5 @@
 import { computed, ref } from 'vue';
-import getYear from 'date-fns/getYear/index';
-import setYear from 'date-fns/setYear/index';
+import { getYear, setYear } from 'date-fns';
 
 import { useDefaults, useModel } from '@/composables';
 import { checkMinMaxValue, getYears, groupListAndMap } from '@/utils/util';
