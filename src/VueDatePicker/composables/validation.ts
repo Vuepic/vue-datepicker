@@ -41,8 +41,8 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
     const getTzDate = (date: Date) =>
         props.utc === 'preserve' ? getUtcDate(date, getTimezone()) : getZonedDate(date, getTimezone());
     const validateDate = (date: Date) => {
-        const aboveMax = props.maxDate ? isDateAfter(getTzDate(date), getTzDate(getDate(props.maxDate))) : false;
-        const bellowMin = props.minDate ? isDateBefore(getTzDate(date), getTzDate(getDate(props.minDate))) : false;
+        const aboveMax = props.maxDate ? isDateAfter(date, getTzDate(getDate(props.maxDate))) : false;
+        const bellowMin = props.minDate ? isDateBefore(date, getTzDate(getDate(props.minDate))) : false;
         const inDisableArr = matchDate(
             getTzDate(date),
             (props as PickerBasePropsType).arrMapValues?.disabledDates
@@ -106,7 +106,7 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
             return !!pattern.get(getMapKey(date));
         }
         if (Array.isArray(pattern)) {
-            return pattern.some((includedDate) => isDateEqual(getTzDate(getDate(includedDate)), getTzDate(date)));
+            return pattern.some((includedDate) => isDateEqual(getTzDate(getDate(includedDate)), date));
         }
         return pattern ? pattern(getDate(JSON.parse(JSON.stringify(date)))) : false;
     };
