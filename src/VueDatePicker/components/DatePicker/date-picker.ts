@@ -280,7 +280,9 @@ export const useDatePicker = (
 
     // Check if the calendar day has a marker
     const getMarker = (date: UnwrapRef<ICalendarDay>): IMarker | undefined =>
-        props.markers.find((marker) => isDateEqual(sanitizeDate(date.value), sanitizeDate(marker.date)));
+        props.markers.find((marker) =>
+            isDateEqual(sanitizeDate(date.value), getZonedDate(getDate(marker.date), props.timezone)),
+        );
 
     const getSixWeeksMode = (firstWeekday: number, gapToEnd: number) => {
         switch (props.sixWeeks === true ? 'append' : props.sixWeeks) {
