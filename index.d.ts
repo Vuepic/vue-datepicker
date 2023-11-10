@@ -294,7 +294,6 @@ export interface PublicMethods extends MethodOptions {
     setMonthYear: (value: { month?: number | string; year?: number | string }) => void;
     parseModel: (value?: ModelValue) => void;
     switchView: (view: MenuView, instance?: number) => void;
-    toggleMenu: () => void;
 }
 
 declare const _default: DefineComponent<
