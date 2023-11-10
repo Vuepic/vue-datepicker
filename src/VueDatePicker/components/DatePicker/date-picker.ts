@@ -347,8 +347,8 @@ export const useDatePicker = (
     // Get days for the calendar to be displayed in a table grouped by weeks
     const getCalendarDays = (month: number, year: number): ICalendarDate[] => {
         const weeks: ICalendarDate[] = [];
-        const firstDate = getDate(getZonedDate(new Date(year, month), props.timezone));
-        const lastDate = getDate(getZonedDate(new Date(year, month + 1, 0), props.timezone));
+        const firstDate = new Date(year, month);
+        const lastDate = new Date(year, month + 1, 0);
 
         const weekStartsOn = props.weekStart as WeekStartNum;
 
