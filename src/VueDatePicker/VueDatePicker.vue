@@ -484,5 +484,6 @@
         setMonthYear,
         parseModel,
         switchView,
+        toggleMenu,
     });
 </script>
