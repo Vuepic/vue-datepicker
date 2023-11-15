@@ -308,4 +308,12 @@ export type HighlightFn = (
     date: Date | MonthModel | number | { quarter: number; year: number },
     disabled?: boolean,
 ) => boolean;
+
 export type HighlightProp = Date[] | string[] | number[] | HighlightFn | Partial<Highlight>;
+
+export interface WeekNumbersOpts {
+    type: 'iso' | 'local' | ((date: Date) => string | number);
+    hideOnOffsetDates?: boolean;
+}
+
+export type WeekNumbersProp = 'iso' | 'local' | ((date: Date) => string | number) | WeekNumbersOpts;

@@ -168,7 +168,13 @@
     });
 
     const { buildMultiLevelMatrix } = useArrowNavigation();
-    const { defaultedTransitions, defaultedConfig, defaultedAriaLabels, defaultedMultiCalendars } = useDefaults(props);
+    const {
+        defaultedTransitions,
+        defaultedConfig,
+        defaultedAriaLabels,
+        defaultedMultiCalendars,
+        defaultedWeekNumbers,
+    } = useDefaults(props);
 
     const showMakerTooltip = ref<Date | null>(null);
     const markerTooltipStyle = ref<{ bottom: string; left?: string; right?: string; transform: string }>({
@@ -341,14 +347,22 @@
         }
     };
 
+    const getWeekNumber = (firstCurrentDate: ICalendarDay) => {
+        if (defaultedWeekNumbers.value.type === 'local')
+            return getWeek(firstCurrentDate.value, { weekStartsOn: +props.weekStart as WeekStartNum });
+        if (defaultedWeekNumbers.value.type === 'iso') return getISOWeek(firstCurrentDate.value);
+        if (typeof defaultedWeekNumbers.value.type === 'function')
+            return defaultedWeekNumbers.value.type(firstCurrentDate.value);
+        return '';
+    };
+
     // Get week number if enabled
     const getWeekNum = (days: UnwrapRef<ICalendarDay[]>): string | number => {
         const firstCurrentDate = days[0];
-        if (props.weekNumbers === 'local')
-            return getWeek(firstCurrentDate.value, { weekStartsOn: +props.weekStart as WeekStartNum });
-        if (props.weekNumbers === 'iso') return getISOWeek(firstCurrentDate.value);
-        if (typeof props.weekNumbers === 'function') return props.weekNumbers(firstCurrentDate.value);
-        return '';
+        if (defaultedWeekNumbers.value.hideOnOffsetDates) {
+            return days.some((day) => day.current) ? getWeekNumber(firstCurrentDate) : '';
+        }
+        return getWeekNumber(firstCurrentDate);
     };
 
     const onDateSelect = (ev: Event, dayVal: ICalendarDay) => {

@@ -11,6 +11,7 @@ import {
     getDefaultHighlight,
     getDefaultInlineOptions,
     getDefaultTextInputOptions,
+    getDefaultWeekNumbers,
 } from '@/utils/defaults';
 import { assignDefaultTime } from '@/utils/date-utils';
 
@@ -71,6 +72,8 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
         getDefaultHighlight(props.highlight, props.highlightWeekDays, props.highlightDisabledDays),
     );
 
+    const defaultedWeekNumbers = computed(() => getDefaultWeekNumbers(props.weekNumbers));
+
     return {
         defaultedTransitions,
         defaultedMultiCalendars,
@@ -83,6 +86,7 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
         defaultedInline,
         defaultedConfig,
         defaultedHighlight,
+        defaultedWeekNumbers,
         getDefaultPattern,
         getDefaultStartTime,
     };

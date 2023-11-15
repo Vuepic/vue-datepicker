@@ -28,6 +28,7 @@ import type {
     DisabledTimeArrProp,
     Config,
     HighlightProp,
+    WeekNumbersProp,
 } from '@/interfaces';
 
 export const AllProps = {
@@ -100,7 +101,7 @@ export const AllProps = {
     weekNumName: { type: String as PropType<string>, default: 'W' },
     weekStart: { type: [Number, String] as PropType<WeekStartNum | WeekStartStr>, default: 1 },
     weekNumbers: {
-        type: [String, Function] as PropType<'iso' | 'local' | ((date: Date) => string | number)>,
+        type: [String, Function, Object] as PropType<WeekNumbersProp>,
         default: null,
     },
     calendarClassName: { type: String as PropType<string>, default: null },

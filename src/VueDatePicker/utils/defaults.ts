@@ -15,6 +15,8 @@ import type {
     HighlightProp,
     Highlight,
     HighlightFn,
+    WeekNumbersProp,
+    WeekNumbersOpts,
 } from '@/interfaces';
 import { getDate } from '@/utils/date-utils';
 
@@ -171,4 +173,17 @@ export const getDefaultHighlight = (
 
     if (typeof highlight === 'function') return highlight;
     return { ...defaultOptions, ...(highlight ?? {}) };
+};
+
+export const getDefaultWeekNumbers = (weekNumbers: WeekNumbersProp): WeekNumbersOpts => {
+    if (typeof weekNumbers === 'object') {
+        return {
+            type: weekNumbers.type,
+            hideOnOffsetDates: weekNumbers.hideOnOffsetDates ?? false,
+        };
+    }
+    return {
+        type: weekNumbers,
+        hideOnOffsetDates: false,
+    };
 };
