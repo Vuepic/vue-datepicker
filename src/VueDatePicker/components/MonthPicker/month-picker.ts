@@ -13,7 +13,7 @@ import {
     setDateMonthOrYear,
 } from '@/utils/date-utils';
 import { useDefaults, useModel } from '@/composables';
-import { checkRangeAutoApply, handleMultiDatesSelect, setMonthOrYearRange } from '@/composables/shared';
+import { checkRangeAutoApply, handleMultiDatesSelect, setMonthOrYearRange, setPresetDate } from '@/composables/shared';
 
 import type { IDefaultSelect, OverlayGridItem, VueEmit } from '@/interfaces';
 import type { PickerBasePropsType } from '@/props';
@@ -157,6 +157,11 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         hoverDate.value = monthToDate(month, instance);
     };
 
+    const presetDate = (value: Date[] | string[] | Date | string, noTz?: boolean) => {
+        setPresetDate({ value, modelValue, range: props.range, timezone: noTz ? undefined : props.timezone });
+        emit('auto-apply');
+    };
+
     return {
         groupedMonths,
         groupedYears,
@@ -168,6 +173,7 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         defaultedConfig,
         showYearPicker,
         modelValue,
+        presetDate,
         setHoverDate,
         selectMonth,
         selectYear,

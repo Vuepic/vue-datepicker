@@ -1,4 +1,4 @@
-import { isDateBefore, isDateEqual } from '@/utils/date-utils';
+import { getDate, getZonedDate, isDateBefore, isDateEqual } from '@/utils/date-utils';
 
 import type { WritableComputedRef } from 'vue';
 import type { InternalModuleValue, VueEmit } from '@/interfaces';
@@ -52,5 +52,18 @@ export const checkRangeAutoApply = (range: Date[], emit: VueEmit, autoApply: boo
     }
     if (range[0] && !range[1] && modelAuto && autoApply) {
         emit('auto-apply');
+    }
+};
+
+export const setPresetDate = (opts: {
+    value: Date[] | string[] | Date | string;
+    range: boolean;
+    timezone?: string;
+    modelValue: WritableComputedRef<InternalModuleValue>;
+}) => {
+    if (Array.isArray(opts.value) && opts.value.length <= 2 && opts.range) {
+        opts.modelValue.value = opts.value.map((date) => getZonedDate(getDate(date), opts.timezone));
+    } else if (!Array.isArray(opts.value)) {
+        opts.modelValue.value = getZonedDate(getDate(opts.value), opts.timezone);
     }
 };

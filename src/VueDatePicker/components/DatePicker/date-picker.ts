@@ -30,7 +30,7 @@ import { useDefaults, useModel, useValidation } from '@/composables';
 import { isNumNullish } from '@/utils/util';
 import { isNumberArray } from '@/utils/type-guard';
 import { useTimePickerUtils } from '@/components/TimePicker/time-picker-utils';
-import { checkRangeAutoApply, handleMultiDatesSelect } from '@/composables/shared';
+import { checkRangeAutoApply, handleMultiDatesSelect, setPresetDate } from '@/composables/shared';
 import { FlowStep } from '@/constants';
 
 import type { ICalendarDate, ICalendarDay, WeekStartNum, IMarker, VueEmit, TimeType } from '@/interfaces';
@@ -572,11 +572,7 @@ export const useDatePicker = (
 
     // Called when the preset range is clicked
     const presetDate = (value: Date[] | string[] | Date | string, noTz?: boolean): void => {
-        if (Array.isArray(value) && value.length <= 2 && props.range) {
-            modelValue.value = value.map((date) => getZonedDate(getDate(date), noTz ? undefined : props.timezone));
-        } else if (!Array.isArray(value)) {
-            modelValue.value = getZonedDate(getDate(value), noTz ? undefined : props.timezone);
-        }
+        setPresetDate({ value, modelValue, range: props.range, timezone: noTz ? undefined : props.timezone });
 
         selectOnAutoApply();
         if (props.multiCalendars) {

@@ -15,6 +15,7 @@ import {
     setHours,
     startOfMonth,
     startOfQuarter,
+    startOfYear,
 } from 'date-fns';
 import utcToZonedTime from 'date-fns-tz/utcToZonedTime';
 
@@ -456,5 +457,18 @@ describe('It should validate various picker scenarios', () => {
         await dp.find(`[data-test="select-button"]`).trigger('click');
 
         expect(dp.emitted()['update:model-value']).toBeTruthy();
+    });
+
+    it('Should select preset date on month picker', async () => {
+        const yearStart = startOfYear(new Date());
+        const presetDates = [{ label: 'January', value: yearStart }];
+        const dp = await openMenu({ monthPicker: true, presetDates });
+
+        await dp.find('.dp--preset-range').trigger('click');
+        await dp.find(`[data-test="select-button"]`).trigger('click');
+
+        expect(dp.emitted()['update:model-value']).toEqual([
+            [{ month: getMonth(yearStart), year: getYear(yearStart) }],
+        ]);
     });
 });

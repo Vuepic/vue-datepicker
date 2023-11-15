@@ -91,6 +91,7 @@
         defaultedConfig,
         showYearPicker,
         modelValue,
+        presetDate,
         setHoverDate,
         selectMonth,
         selectYear,
@@ -111,5 +112,5 @@
         };
     };
 
-    defineExpose({ getSidebarProps });
+    defineExpose({ getSidebarProps, presetDate });
 </script>
