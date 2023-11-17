@@ -308,6 +308,8 @@
         if (!date) return true;
         if (!Array.isArray(date) && validateDate(date)) return true;
         if (Array.isArray(date)) {
+            if (props.multiDates) return true;
+
             if (date.length === 2 && validateDate(date[0]) && validateDate(date[1])) {
                 return true;
             }
