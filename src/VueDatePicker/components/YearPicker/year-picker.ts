@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { getYear, setYear } from 'date-fns';
 
 import { useDefaults, useModel } from '@/composables';
@@ -20,6 +20,13 @@ export const useYearPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     const { modelValue } = useModel(props, emit);
     const hoverDate = ref<Date | null>(null);
     const { defaultedHighlight } = useDefaults(props);
+    const focusYear = ref();
+
+    onMounted(() => {
+        if (props.startDate) {
+            focusYear.value = getYear(getDate(props.startDate));
+        }
+    });
 
     const isYearActive = (year: number) => {
         if (Array.isArray(modelValue.value)) {
@@ -81,6 +88,7 @@ export const useYearPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     return {
         groupedYears,
         modelValue,
+        focusYear,
         setHoverValue,
         selectYear,
     };

@@ -16,6 +16,7 @@
                 :height="defaultedConfig.modeHeight"
                 :config="config"
                 :no-overlay-focus="noOverlayFocus"
+                :focus-value="focusYear"
                 type="year"
                 use-relative
                 @selected="selectYear"
@@ -47,7 +48,7 @@
         },
     });
 
-    const { groupedYears, modelValue, selectYear, setHoverValue } = useYearPicker(props, emit);
+    const { groupedYears, modelValue, focusYear, selectYear, setHoverValue } = useYearPicker(props, emit);
     const { defaultedConfig } = useDefaults(props);
 
     const getSidebarProps = () => {

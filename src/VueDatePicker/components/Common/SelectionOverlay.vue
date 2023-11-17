@@ -91,6 +91,7 @@
         textInput?: TextInputProp;
         config?: Partial<Config>;
         noOverlayFocus?: boolean;
+        focusValue?: number;
     }
 
     const props = defineProps<Props>();
@@ -240,6 +241,8 @@
     const assignRef = (el: any, col: OverlayGridItem, rowInd: number, colInd: number): void => {
         if (el) {
             if (col.active) {
+                selectionActiveRef.value = el;
+            } else if (col.value === props.focusValue) {
                 selectionActiveRef.value = el;
             }
             if (props.arrowNavigation) {
