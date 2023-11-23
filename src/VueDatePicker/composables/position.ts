@@ -250,7 +250,6 @@ export const usePosition = ({
         const wrap = pickerWrapperRef.value?.clientWidth ? pickerWrapperRef.value : document.body;
         wrap.append(container);
 
-        const renderContainer = document.getElementById('dp--temp-container') as HTMLElement;
         const pos = getShadowPos(input);
 
         const el = h(
@@ -267,11 +266,11 @@ export const usePosition = ({
             ),
         );
 
-        render(el, renderContainer);
+        render(el, container);
         menuRect.value = el.el?.getBoundingClientRect();
 
-        render(null, renderContainer);
-        wrap.removeChild(renderContainer);
+        render(null, container);
+        wrap.removeChild(container);
     };
 
     return {
