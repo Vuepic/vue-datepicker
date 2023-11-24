@@ -71,11 +71,11 @@
     import { CalendarIcon, CancelIcon } from '@/components/Icons';
 
     import { assignDefaultTime, isValidDate, parseFreeInput } from '@/utils/date-utils';
-    import { useDefaults } from '@/composables';
+    import { useDefaults, useValidation } from '@/composables';
     import { AllProps } from '@/props';
 
     import type { PropType } from 'vue';
-    import type { DynamicClass } from '@/interfaces';
+    import type { DynamicClass, InternalModuleValue } from '@/interfaces';
     import { checkStopPropagation } from '@/utils/util';
 
     defineOptions({
@@ -113,6 +113,8 @@
         getDefaultPattern,
         getDefaultStartTime,
     } = useDefaults(props);
+
+    const { checkMinMaxRange } = useValidation(props);
 
     const parsedDate = ref();
     const inputRef = ref<HTMLInputElement | null>(null);
@@ -160,8 +162,11 @@
         if (dateOne) {
             const parsedDateOne = parser(dateOne.trim());
             const parsedDateTwo = dateTwo ? parser(dateTwo.trim()) : null;
+
             const parsedArr = parsedDateOne && parsedDateTwo ? [parsedDateOne, parsedDateTwo] : [parsedDateOne];
-            parsedDate.value = parsedDateOne ? parsedArr : null;
+            if (checkMinMaxRange(parsedDateTwo as Date, parsedArr as InternalModuleValue, 0)) {
+                parsedDate.value = parsedDateOne ? parsedArr : null;
+            }
         }
     };
 
