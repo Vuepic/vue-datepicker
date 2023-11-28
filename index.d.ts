@@ -277,7 +277,7 @@ export interface VueDatePickerProps {
         noSwipe?: boolean;
         keepActionRow?: boolean;
         onClickOutside?: (validate: () => boolean) => void;
-        tabOutClosesMenu: boolean;
+        tabOutClosesMenu?: boolean;
     };
     quarterPicker?: boolean;
     yearFirst?: boolean;
