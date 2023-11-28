@@ -48,9 +48,9 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
 
     onMounted(() => {
         if (props.startDate) {
-            const start = getYear(getDate(props.startDate));
-            if (modelValue.value && props.focusStartDate) return onYearSelect(start, 0);
-            if (!modelValue.value) return onYearSelect(start, 0);
+            if ((modelValue.value && props.focusStartDate) || !modelValue.value) {
+                onYearSelect(getYear(getDate(props.startDate)), 0);
+            }
         }
     });
 

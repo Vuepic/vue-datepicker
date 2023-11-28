@@ -240,9 +240,7 @@
 
     const assignRef = (el: any, col: OverlayGridItem, rowInd: number, colInd: number): void => {
         if (el) {
-            if (col.active) {
-                selectionActiveRef.value = el;
-            } else if (col.value === props.focusValue) {
+            if (col.active || col.value === props.focusValue) {
                 selectionActiveRef.value = el;
             }
             if (props.arrowNavigation) {
