@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { getMonth, getYear } from 'date-fns';
 
 import { checkMinMaxValue, getMonths, groupListAndMap } from '@/utils/util';
@@ -44,6 +44,14 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         month: instanceMonth,
         props,
         emit,
+    });
+
+    onMounted(() => {
+        if (props.startDate) {
+            const start = getYear(getDate(props.startDate));
+            if (modelValue.value && props.focusStartDate) return onYearSelect(start, 0);
+            if (!modelValue.value) return onYearSelect(start, 0);
+        }
     });
 
     const getMonthYear = (date?: Date) => {

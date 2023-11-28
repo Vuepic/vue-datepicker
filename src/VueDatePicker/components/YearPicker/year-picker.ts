@@ -24,7 +24,12 @@ export const useYearPicker = (props: PickerBasePropsType, emit: VueEmit) => {
 
     onMounted(() => {
         if (props.startDate) {
-            focusYear.value = getYear(getDate(props.startDate));
+            const year = getYear(getDate(props.startDate));
+            if (modelValue.value && props.focusStartDate) {
+                focusYear.value = year;
+            } else if (!modelValue.value) {
+                focusYear.value = year;
+            }
         }
     });
 
