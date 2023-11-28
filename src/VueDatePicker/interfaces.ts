@@ -293,6 +293,7 @@ export interface Config {
     noSwipe: boolean;
     keepActionRow: boolean;
     onClickOutside?: (validate: () => boolean) => void;
+    tabOutClosesMenu: boolean;
 }
 
 export interface Highlight {

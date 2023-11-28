@@ -152,6 +152,7 @@ export const getDefaultConfig = (config?: Partial<Config>): Config => {
         noSwipe: false,
         keepActionRow: false,
         onClickOutside: undefined,
+        tabOutClosesMenu: true,
     };
     return { ...defaultConfig, ...(config ?? {}) };
 };

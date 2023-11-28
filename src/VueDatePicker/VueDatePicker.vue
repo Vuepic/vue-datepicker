@@ -172,6 +172,10 @@
         if (defaultedInline.value.enabled) {
             isOpen.value = true;
         }
+
+        if (defaultedConfig.value.tabOutClosesMenu) {
+            document.addEventListener('keyup', onKeyDown);
+        }
     });
 
     const arrMapValues = computed(() => mapDatesArrToMap());
@@ -183,6 +187,9 @@
                 el.removeEventListener('scroll', onScroll);
             }
             window.removeEventListener('resize', onResize);
+        }
+        if (defaultedConfig.value.tabOutClosesMenu) {
+            document.removeEventListener('keyup', onKeyDown);
         }
     });
 
@@ -266,6 +273,14 @@
     const onResize = (): void => {
         if (isOpen.value) {
             setMenuPosition();
+        }
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+        if (event.key === 'Tab' && !defaultedInline.value.enabled && !props.teleport) {
+            if (!pickerWrapperRef.value!.contains(document.activeElement)) {
+                closeMenu();
+            }
         }
     };
 
