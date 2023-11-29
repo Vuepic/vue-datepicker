@@ -234,24 +234,8 @@ export const checkStopPropagation = (ev: Event | undefined, config: Config, imme
     }
 };
 
-const getNextElement = (el: HTMLElement) => {
-    if (el.nextElementSibling) {
-        return el.nextElementSibling;
-    }
-
-    while (el.parentElement && !el.parentElement.nextElementSibling) {
-        el = el.parentElement;
-    }
-
-    return el.parentElement ? el.parentElement.nextElementSibling : null;
-};
-
-const isFocusable = (el: HTMLElement | null) => {
-    if (!el) {
-        return false;
-    }
-
-    const focusableElements = [
+const getFocusableElementsSelector = () =>
+    [
         'a[href]',
         'area[href]',
         "input:not([disabled]):not([type='hidden'])",
@@ -259,22 +243,19 @@ const isFocusable = (el: HTMLElement | null) => {
         'textarea:not([disabled])',
         'button:not([disabled])',
         "[tabindex]:not([tabindex='-1'])",
-    ];
-    const isFocusableElement = el.matches(focusableElements.join(', '));
+        '[data-datepicker-instance]',
+    ].join(', ');
 
-    const isVisible = el.offsetWidth > 0 || el.offsetHeight > 0 || el.getClientRects().length > 0;
+export function findNextFocusableElement(startingElement: HTMLElement, reverse: boolean) {
+    let focusable = [...document.querySelectorAll(getFocusableElementsSelector())];
 
-    return isFocusableElement && isVisible;
-};
+    focusable = focusable.filter((elem) => {
+        return !startingElement.contains(elem) || elem.hasAttribute('data-datepicker-instance');
+    });
 
-export const findNextFocusableElement = (startElement: HTMLElement | null): HTMLElement | null => {
-    if (!startElement) return null;
-    let currentElement = startElement;
-    while (currentElement) {
-        currentElement = getNextElement(currentElement) as HTMLElement;
-        if (isFocusable(currentElement)) {
-            return currentElement;
-        }
+    const currentIndex = focusable.indexOf(startingElement);
+
+    if (currentIndex >= 0 && (reverse ? currentIndex - 1 >= 0 : currentIndex + 1 <= focusable.length)) {
+        return focusable[currentIndex + (reverse ? -1 : 1)] as HTMLElement;
     }
-    return null;
-};
+}

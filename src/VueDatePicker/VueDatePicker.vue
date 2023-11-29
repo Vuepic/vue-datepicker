@@ -1,5 +1,5 @@
 <template>
-    <div ref="pickerWrapperRef" :class="wrapperClass">
+    <div ref="pickerWrapperRef" :class="wrapperClass" data-datepicker-instance>
         <DatepickerInput
             ref="inputRef"
             v-model:input-value="inputValue"
@@ -151,6 +151,7 @@
     const isInputFocused = ref(false);
     const pickerWrapperRef = ref<HTMLElement | null>(null);
     const shouldFocusNext = ref(false);
+    const shiftKeyActive = ref(false);
 
     const { setMenuFocused, setShiftKey } = useState();
     const { clearArrowNav } = useArrowNavigation();
@@ -173,9 +174,8 @@
             isOpen.value = true;
         }
 
-        if (defaultedConfig.value.tabOutClosesMenu) {
-            document.addEventListener('keyup', onKeyDown);
-        }
+        window.addEventListener('keyup', onKeyUp);
+        window.addEventListener('keydown', onKeyDown);
     });
 
     const arrMapValues = computed(() => mapDatesArrToMap());
@@ -188,9 +188,8 @@
             }
             window.removeEventListener('resize', onResize);
         }
-        if (defaultedConfig.value.tabOutClosesMenu) {
-            document.removeEventListener('keyup', onKeyDown);
-        }
+        window.removeEventListener('keyup', onKeyUp);
+        window.removeEventListener('keydown', onKeyDown);
     });
 
     const slotList = mapSlots(slots, 'all', props.presetDates);
@@ -276,12 +275,23 @@
         }
     };
 
-    const onKeyDown = (event: KeyboardEvent) => {
-        if (event.key === 'Tab' && !defaultedInline.value.enabled && !props.teleport) {
+    const onKeyUp = (event: KeyboardEvent) => {
+        if (
+            event.key === 'Tab' &&
+            !defaultedInline.value.enabled &&
+            !props.teleport &&
+            defaultedConfig.value.tabOutClosesMenu
+        ) {
             if (!pickerWrapperRef.value!.contains(document.activeElement)) {
                 closeMenu();
             }
         }
+
+        shiftKeyActive.value = event.shiftKey;
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+        shiftKeyActive.value = event.shiftKey;
     };
 
     const openMenu = () => {
@@ -459,7 +469,7 @@
             isInputFocused.value = false;
             parseExternalModelValue(props.modelValue);
             if (shouldFocusNext.value) {
-                const el = findNextFocusableElement(pickerWrapperRef.value);
+                const el = findNextFocusableElement(pickerWrapperRef.value!, shiftKeyActive.value);
                 el?.focus();
             }
         }
