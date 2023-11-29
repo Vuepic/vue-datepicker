@@ -9,7 +9,6 @@ import {
     parse,
     getHours,
     getMinutes,
-    startOfYear,
     setMonth,
 } from 'date-fns';
 import { describe, it, expect } from 'vitest';
