@@ -33,7 +33,7 @@ export type EmitEvents =
     | 'range-end'
     | 'date-update'
     | 'invalid-date';
-
+export type WeekNumberType = 'iso' | 'local' | ((date: Date) => string | number);
 export type TimeObj = { hours: number; minutes: number; seconds: number };
 export type PartialTimeObj = { hours?: number | string; minutes?: number | string; seconds?: number | string };
 export type TimeModel = {
@@ -102,7 +102,7 @@ export interface VueDatePickerProps {
     position?: 'left' | 'center' | 'right';
     dark?: boolean;
     placeholder?: string;
-    weekNumbers?: 'iso' | 'local' | ((date: Date) => string | number);
+    weekNumbers?: WeekNumberType | { type: WeekNumberType; hideOnOffsetDates?: boolean };
     hoursIncrement?: number | string;
     hoursGridIncrement?: number | string;
     secondsGridIncrement?: number | string;
