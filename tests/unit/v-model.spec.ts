@@ -1,5 +1,17 @@
 import { shallowMount, VueWrapper } from '@vue/test-utils';
-import { getYear, addDays, getMonth, addMonths, addYears, format, parse, getHours, getMinutes } from 'date-fns';
+import {
+    getYear,
+    addDays,
+    getMonth,
+    addMonths,
+    addYears,
+    format,
+    parse,
+    getHours,
+    getMinutes,
+    startOfYear,
+    setMonth,
+} from 'date-fns';
 import { describe, it, expect } from 'vitest';
 
 import VueDatepicker from '@/VueDatePicker.vue';
@@ -257,7 +269,7 @@ describe('v-model mapping', () => {
     });
 
     it('Should properly map month-picker multi dates', async () => {
-        const setMonthItem = (toAdd: number) => addMonths(new Date(), toAdd);
+        const setMonthItem = (toAdd: number) => addMonths(setMonth(new Date(), 5), toAdd);
         const dates = [setMonthItem(1), setMonthItem(2), setMonthItem(3)];
         const modelValue = dates.map((date) => ({ month: getMonth(date), year: getYear(date) }));
         const wrapper = shallowMountDp({ multiDates: true, monthPicker: true, modelValue });
