@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { useSlots } from 'vue';
+    import { onMounted, useSlots } from 'vue';
     import SelectionOverlay from '@/components/Common/SelectionOverlay.vue';
     import InstanceWrap from '@/components/Common/InstanceWrap.vue';
     import YearModePicker from '@/components/shared/YearModePicker.vue';
@@ -67,6 +67,7 @@
         'range-end',
         'auto-apply',
         'update-month-year',
+        'mount',
     ]);
 
     const slots = useSlots();
@@ -74,6 +75,12 @@
 
     const props = defineProps({
         ...PickerBaseProps,
+    });
+
+    onMounted(() => {
+        if (!props.shadow) {
+            emit('mount', null);
+        }
     });
 
     defineOptions({
@@ -112,5 +119,5 @@
         };
     };
 
-    defineExpose({ getSidebarProps, presetDate });
+    defineExpose({ getSidebarProps, presetDate, toggleYearPicker: (flow: boolean) => toggleYearPicker(0, flow) });
 </script>

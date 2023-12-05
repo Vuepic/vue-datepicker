@@ -1,4 +1,4 @@
-import { ref, reactive } from 'vue';
+import { ref, reactive, computed } from 'vue';
 
 import { CMP, FlowStep } from '@/constants';
 
@@ -15,8 +15,11 @@ export const useFlow = (props: AllPropsType, emit: VueEmit, dynCmpRef: Ref<any>)
         [CMP.header]: false,
     });
 
-    const childMount = (...cmp: unknown[]): void => {
+    const specificMode = computed(() => props.monthPicker);
+
+    const childMount = (cmp: unknown): void => {
         if (props.flow?.length) {
+            if (!cmp && specificMode.value) return handleFlow();
             childrenMounted[cmp as unknown as CMP] = true;
 
             if (!Object.keys(childrenMounted).filter((key) => !childrenMounted[key as CMP]).length) {

@@ -81,8 +81,9 @@ describe('It should validate various picker scenarios', () => {
     });
 
     it('Should not switch calendars in 1 month range with multi-calendars enabled (#472)', async () => {
-        const dp = await openMenu({ multiCalendars: true, range: true });
-        const firstDate = resetDateTime(new Date());
+        const start = set(new Date(), { month: 5 });
+        const dp = await openMenu({ multiCalendars: true, range: true, startDate: start });
+        const firstDate = resetDateTime(start);
         const secondDate = resetDateTime(set(firstDate, { month: getMonth(addMonths(firstDate, 1)), date: 15 }));
 
         const firstDateEl = dp.find(`[data-test="${firstDate}"]`);
@@ -232,9 +233,9 @@ describe('It should validate various picker scenarios', () => {
     });
 
     it('Should correctly display months in multi-calendars based on the given range (#540)', async () => {
-        const today = new Date();
-        const sameViewRange = [today, addMonths(today, 1)];
-        const diffViewRange = [today, addMonths(today, 3)];
+        const start = set(new Date(), { month: 5 });
+        const sameViewRange = [start, addMonths(start, 1)];
+        const diffViewRange = [start, addMonths(start, 3)];
 
         const dp = await openMenu({ modelValue: sameViewRange, multiCalendars: true, range: true });
 
@@ -260,9 +261,10 @@ describe('It should validate various picker scenarios', () => {
     });
 
     it('Should not break flow on changing months and years when calendar is first step (#553)', async () => {
+        const start = startOfYear(new Date());
         const flow = [FlowStep.calendar, FlowStep.time];
-        const dp = await openMenu({ flow });
-        const today = resetDateTime(new Date());
+        const dp = await openMenu({ flow, startDate: start });
+        const today = resetDateTime(start);
         const nextMonth = addMonths(today, 1);
 
         await clickCalendarDate(dp, today);
