@@ -259,3 +259,15 @@ export function findNextFocusableElement(startingElement: HTMLElement, reverse: 
         return focusable[currentIndex + (reverse ? -1 : 1)] as HTMLElement;
     }
 }
+
+export const debounce = (mainFunction: (...arg: any[]) => void, delay: number) => {
+    let timer: any;
+
+    return function (...args: any[]) {
+        clearTimeout(timer);
+
+        timer = setTimeout(() => {
+            mainFunction(...args);
+        }, delay);
+    };
+};

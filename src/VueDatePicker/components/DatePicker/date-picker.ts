@@ -27,7 +27,7 @@ import {
     setDateTime,
 } from '@/utils/date-utils';
 import { useDefaults, useModel, useValidation } from '@/composables';
-import { isNumNullish } from '@/utils/util';
+import { debounce, isNumNullish } from '@/utils/util';
 import { isNumberArray } from '@/utils/type-guard';
 import { useTimePickerUtils } from '@/components/TimePicker/time-picker-utils';
 import { checkRangeAutoApply, handleMultiDatesSelect, setPresetDate } from '@/composables/shared';
@@ -260,11 +260,11 @@ export const useDatePicker = (
     };
 
     // Handle mouse scroll
-    const handleScroll = (event: WheelEvent, instance: number): void => {
+    const handleScroll = debounce((event: WheelEvent, instance: number): void => {
         if (props.monthChangeOnScroll) {
             autoChangeMonth(props.monthChangeOnScroll !== 'inverse' ? -event.deltaY : event.deltaY, instance);
         }
-    };
+    }, 50);
 
     // Handle arrow key
     const handleArrow = (arrow: 'left' | 'right', instance: number, vertical = false): void => {
