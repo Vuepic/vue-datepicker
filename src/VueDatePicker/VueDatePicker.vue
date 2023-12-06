@@ -164,9 +164,9 @@
         nextTick().then(() => {
             if (!defaultedInline.value.enabled) {
                 const el = getScrollableParent(pickerWrapperRef.value);
-                el.addEventListener('scroll', onScroll);
+                el?.addEventListener('scroll', onScroll);
 
-                window.addEventListener('resize', onResize);
+                window?.addEventListener('resize', onResize);
             }
         });
 
@@ -174,8 +174,8 @@
             isOpen.value = true;
         }
 
-        window.addEventListener('keyup', onKeyUp);
-        window.addEventListener('keydown', onKeyDown);
+        window?.addEventListener('keyup', onKeyUp);
+        window?.addEventListener('keydown', onKeyDown);
     });
 
     const arrMapValues = computed(() => mapDatesArrToMap());
@@ -183,13 +183,11 @@
     onUnmounted(() => {
         if (!defaultedInline.value.enabled) {
             const el = getScrollableParent(pickerWrapperRef.value);
-            if (el) {
-                el.removeEventListener('scroll', onScroll);
-            }
-            window.removeEventListener('resize', onResize);
+            el?.removeEventListener('scroll', onScroll);
+            window?.removeEventListener('resize', onResize);
         }
-        window.removeEventListener('keyup', onKeyUp);
-        window.removeEventListener('keydown', onKeyDown);
+        window?.removeEventListener('keyup', onKeyUp);
+        window?.removeEventListener('keydown', onKeyDown);
     });
 
     const slotList = mapSlots(slots, 'all', props.presetDates);
