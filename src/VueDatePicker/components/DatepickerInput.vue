@@ -14,6 +14,9 @@
                 :on-blur="handleBlur"
                 :on-keypress="handleKeyPress"
                 :on-paste="handlePaste"
+                :open-menu="() => $emit('open')"
+                :close-menu="() => $emit('close')"
+                :toggle-menu="() => $emit('toggle')"
             />
             <input
                 v-if="!$slots['dp-input']"
