@@ -123,10 +123,11 @@ export const getDefaultFilters = (filters: Partial<DateFilter>): DateFilter => (
 });
 
 export const getDefaultActionRowData = (actionRow: Partial<ActionRowData>): ActionRowData => ({
-    showSelect: true,
-    showCancel: true,
-    showNow: false,
-    showPreview: true,
+    showSelect: false,
+    showCancel: false,
+    showNow: true,
+    showClear: true,
+    showPreview: false,
     ...(actionRow ?? {}),
 });
 
@@ -150,7 +151,7 @@ export const getDefaultConfig = (config?: Partial<Config>): Config => {
         closeOnClearValue: true,
         closeOnAutoApply: true,
         noSwipe: false,
-        keepActionRow: false,
+        keepActionRow: true,
         onClickOutside: undefined,
         tabOutClosesMenu: true,
     };
