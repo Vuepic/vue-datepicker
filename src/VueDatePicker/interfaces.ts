@@ -202,6 +202,7 @@ export interface ActionRowData {
     showSelect: boolean;
     showCancel: boolean;
     showNow: boolean;
+    showClear: boolean;
     showPreview: true;
 }
 

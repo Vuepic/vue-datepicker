@@ -127,7 +127,7 @@ export const getDefaultActionRowData = (actionRow: Partial<ActionRowData>): Acti
     showCancel: false,
     showNow: true,
     showClear: true,
-    showPreview: false,
+    showPreview: true,
     ...(actionRow ?? {}),
 });
 
