@@ -70,6 +70,7 @@ export const AllProps = {
     disabledWeekDays: { type: Array as PropType<string[] | number[]>, default: () => [] },
     allowedDates: { type: Array as PropType<string[] | Date[]>, default: null },
     nowButtonLabel: { type: String as PropType<string>, default: 'Now' },
+    clearButtonLabel: { type: String as PropType<string>, default: 'Clear' },
     markers: { type: Array as PropType<IMarker[]>, default: () => [] },
     escClose: { type: Boolean as PropType<boolean>, default: true },
     spaceConfirm: { type: Boolean as PropType<boolean>, default: true },

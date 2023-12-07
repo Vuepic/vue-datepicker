@@ -1,5 +1,10 @@
 ## @vuepic/vue-datepicker
 
+This module is a fork from [@vuepic](https://github.com/Vuepic/vue-datepicker)
+
+### Changes
+
+- Add an option to display a "clear" button inside the calendar
 
 ### The most complete datepicker solution for Vue 3
 
@@ -40,11 +45,11 @@
 ## Install
 
 ```shell
-yarn add @vuepic/vue-datepicker
+yarn add @jonathanjeune/ppp-vue-datepicker
 
 # or
 
-npm install @vuepic/vue-datepicker
+npm install @jonathanjeune/ppp-vue-datepicker
 ```
 
 Import and register component
@@ -55,8 +60,8 @@ Import and register component
 import { createApp } from 'vue';
 import App from './App.vue';
 
-import VueDatePicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/dist/main.css';
+import VueDatePicker from '@jonathanjeune/ppp-vue-datepicker';
+import '@jonathanjeune/ppp-vue-datepicker/dist/main.css';
 
 const app = createApp(App);
 app.component('VueDatePicker', VueDatePicker);
@@ -66,8 +71,8 @@ app.component('VueDatePicker', VueDatePicker);
 
 ```vue
 <script>
-    import VueDatePicker from '@vuepic/vue-datepicker';
-    import '@vuepic/vue-datepicker/dist/main.css';
+    import VueDatePicker from '@jonathanjeune/ppp-vue-datepicker';
+    import '@jonathanjeune/ppp-vue-datepicker/dist/main.css';
     
     export default {
         components: { VueDatePicker }
