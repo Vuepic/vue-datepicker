@@ -51,7 +51,7 @@ export const useYearPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         return groupListAndMap(getYears(props.yearRange, props.reverseYears), (year: IDefaultSelect) => {
             const active = isYearActive(year.value);
             const disabled = checkMinMaxValue(year.value, getMinMaxYear(props.minDate), getMinMaxYear(props.maxDate));
-            const isBetween = isYearBetween(year.value);
+            const isBetween = isYearBetween(year.value) && !active;
             const highlighted = checkHighlightYear(defaultedHighlight.value, year.value);
             return { active, disabled, isBetween, highlighted };
         });
