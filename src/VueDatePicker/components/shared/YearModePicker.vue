@@ -40,6 +40,7 @@
                 :esc-close="escClose"
                 :config="config"
                 :is-last="autoApply && !defaultedConfig.keepActionRow"
+                :hide-navigation="hideNavigation"
                 type="year"
                 @toggle="toggleYearPicker"
                 @selected="handleYearSelect($event)"
