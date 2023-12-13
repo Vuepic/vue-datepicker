@@ -130,7 +130,7 @@ export const useDatePicker = (
         if (!defaultedMultiCalendars.value.count || !defaultedMultiCalendars.value.static || fromMount) {
             setCalendarMonthYear(0, getMonth(date), getYear(date));
         }
-        if (defaultedMultiCalendars.value.count && !defaultedMultiCalendars.value.solo) {
+        if (defaultedMultiCalendars.value.count && (!defaultedMultiCalendars.value.solo || !modelValue.value)) {
             for (let i = 1; i < defaultedMultiCalendars.value.count; i++) {
                 const prevDate = set(getDate(), { month: month.value(i - 1), year: year.value(i - 1) });
                 const nextMonth = add(prevDate, { months: 1 });
