@@ -132,7 +132,9 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
         if ((props as PickerBasePropsType).arrMapValues?.allowedDates)
             return !matchDate(date, (props as PickerBasePropsType).arrMapValues?.allowedDates);
         if (props.allowedDates?.length)
-            return !props.allowedDates?.some((dateVal) => isDateEqual(getTzDate(getDate(dateVal)), getTzDate(date)));
+            return !props.allowedDates?.some((dateVal) =>
+                isDateEqual(resetDateTime(dateVal), getTzDate(resetDateTime(date))),
+            );
         return false;
     };
 
