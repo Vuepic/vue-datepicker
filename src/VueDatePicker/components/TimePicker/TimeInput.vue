@@ -117,7 +117,7 @@
                 >
                     <template #button-icon>
                         <slot v-if="$slots['clock-icon']" name="clock-icon" />
-                        <ClockIcon v-if="!$slots['clock-icon']" />
+                        <component :is="timePickerInline ? CalendarIcon : ClockIcon" v-if="!$slots['clock-icon']" />
                     </template>
                     <template v-if="$slots[`${timeInput.type}-overlay-value`]" #item="{ item }">
                         <slot :name="`${timeInput.type}-overlay-value`" :text="item.text" :value="item.value" />
@@ -132,7 +132,7 @@
     import { computed, onMounted, reactive, ref } from 'vue';
     import { add, getHours, getMinutes, getSeconds, isAfter, isBefore, isEqual, set, sub } from 'date-fns';
 
-    import { ChevronUpIcon, ChevronDownIcon, ClockIcon } from '@/components/Icons';
+    import { ChevronUpIcon, ChevronDownIcon, ClockIcon, CalendarIcon } from '@/components/Icons';
     import SelectionOverlay from '@/components/Common/SelectionOverlay.vue';
 
     import { useTransitions, useArrowNavigation, useDefaults } from '@/composables';
