@@ -154,7 +154,7 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
 
     const emitMonthYearUpdate = (instance: number, year: number, monthVal: number | null) => {
         let month = monthVal;
-        if (!month) {
+        if (!month && month !== 0) {
             const value = getModelMonthYear();
             month = Array.isArray(value) ? value[instance].month : value.month;
         }
