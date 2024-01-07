@@ -21,7 +21,7 @@
                 :esc-close="escClose"
                 :height="defaultedConfig.modeHeight"
                 :config="config"
-                :no-overlay-focus="noOverlayFocus || textInput"
+                :no-overlay-focus="Boolean(noOverlayFocus || textInput)"
                 use-relative
                 type="month"
                 @selected="selectMonth($event, instance)"

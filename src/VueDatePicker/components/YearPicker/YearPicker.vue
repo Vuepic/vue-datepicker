@@ -15,7 +15,7 @@
                 :is-last="autoApply && !defaultedConfig.keepActionRow"
                 :height="defaultedConfig.modeHeight"
                 :config="config"
-                :no-overlay-focus="noOverlayFocus || textInput"
+                :no-overlay-focus="Boolean(noOverlayFocus || textInput)"
                 :focus-value="focusYear"
                 type="year"
                 use-relative
