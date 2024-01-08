@@ -20,50 +20,50 @@
                 <slot :name="slot" v-bind="args" />
             </template>
         </DatepickerInput>
-        <transition :name="menuTransition(openOnTop)" :css="showTransition && !defaultedInline.enabled">
-            <component
-                :is="teleport ? TeleportCmp : 'div'"
-                v-if="isOpen"
-                ref="dpWrapMenuRef"
-                v-bind="menuWrapProps"
-                :class="{ 'dp--menu-wrapper': !defaultedInline.enabled }"
-                :style="!defaultedInline.enabled ? menuStyle : undefined"
-            >
-                <DatepickerMenu
-                    ref="dpMenuRef"
-                    v-bind="$props"
-                    v-model:internal-model-value="internalModelValue"
-                    :class="{ [theme]: true, 'dp--menu-wrapper': teleport }"
-                    :style="teleport ? menuStyle : undefined"
-                    :open-on-top="openOnTop"
-                    :arr-map-values="arrMapValues"
-                    :no-overlay-focus="noOverlayFocus"
-                    @close-picker="closeMenu"
-                    @select-date="selectDate"
-                    @auto-apply="autoApplyValue"
-                    @time-update="timeUpdate"
-                    @flow-step="$emit('flow-step', $event)"
-                    @update-month-year="$emit('update-month-year', $event)"
-                    @invalid-select="$emit('invalid-select', internalModelValue)"
-                    @auto-apply-invalid="$emit('invalid-select', $event)"
-                    @invalid-fixed-range="$emit('invalid-fixed-range', $event)"
-                    @recalculate-position="setMenuPosition"
-                    @tooltip-open="$emit('tooltip-open', $event)"
-                    @tooltip-close="$emit('tooltip-close', $event)"
-                    @time-picker-open="$emit('time-picker-open', $event)"
-                    @time-picker-close="$emit('time-picker-close', $event)"
-                    @am-pm-change="$emit('am-pm-change', $event)"
-                    @range-start="$emit('range-start', $event)"
-                    @range-end="$emit('range-end', $event)"
-                    @date-update="$emit('date-update', $event)"
-                    @invalid-date="$emit('invalid-date', $event)"
+        <TeleportCmp v-bind="teleportProps">
+            <transition :name="menuTransition(openOnTop)" :css="showTransition && !defaultedInline.enabled">
+                <div
+                    v-if="isOpen"
+                    ref="dpWrapMenuRef"
+                    v-bind="menuWrapProps"
+                    :class="{ 'dp--menu-wrapper': !defaultedInline.enabled }"
+                    :style="!defaultedInline.enabled ? menuStyle : undefined"
                 >
-                    <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
-                        <slot :name="slot" v-bind="{ ...args }" />
-                    </template>
-                </DatepickerMenu>
-            </component>
-        </transition>
+                    <DatepickerMenu
+                        ref="dpMenuRef"
+                        v-bind="$props"
+                        v-model:internal-model-value="internalModelValue"
+                        :class="{ [theme]: true, 'dp--menu-wrapper': teleport }"
+                        :open-on-top="openOnTop"
+                        :arr-map-values="arrMapValues"
+                        :no-overlay-focus="noOverlayFocus"
+                        @close-picker="closeMenu"
+                        @select-date="selectDate"
+                        @auto-apply="autoApplyValue"
+                        @time-update="timeUpdate"
+                        @flow-step="$emit('flow-step', $event)"
+                        @update-month-year="$emit('update-month-year', $event)"
+                        @invalid-select="$emit('invalid-select', internalModelValue)"
+                        @auto-apply-invalid="$emit('invalid-select', $event)"
+                        @invalid-fixed-range="$emit('invalid-fixed-range', $event)"
+                        @recalculate-position="setMenuPosition"
+                        @tooltip-open="$emit('tooltip-open', $event)"
+                        @tooltip-close="$emit('tooltip-close', $event)"
+                        @time-picker-open="$emit('time-picker-open', $event)"
+                        @time-picker-close="$emit('time-picker-close', $event)"
+                        @am-pm-change="$emit('am-pm-change', $event)"
+                        @range-start="$emit('range-start', $event)"
+                        @range-end="$emit('range-end', $event)"
+                        @date-update="$emit('date-update', $event)"
+                        @invalid-date="$emit('invalid-date', $event)"
+                    >
+                        <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
+                            <slot :name="slot" v-bind="{ ...args }" />
+                        </template>
+                    </DatepickerMenu>
+                </div>
+            </transition>
+        </TeleportCmp>
     </div>
 </template>
 
@@ -232,13 +232,13 @@
     );
 
     const theme = computed(() => (props.dark ? 'dp__theme_dark' : 'dp__theme_light'));
+    const teleportProps = computed(() => {
+        return {
+            to: typeof props.teleport === 'boolean' ? 'body' : props.teleport,
+            disabled: !props.teleport || defaultedInline.value.enabled,
+        };
+    });
     const menuWrapProps = computed(() => {
-        if (props.teleport) {
-            return {
-                to: typeof props.teleport === 'boolean' ? 'body' : props.teleport,
-                disabled: defaultedInline.value.enabled,
-            };
-        }
         return { class: 'dp__outer_menu_wrap' };
     });
 
