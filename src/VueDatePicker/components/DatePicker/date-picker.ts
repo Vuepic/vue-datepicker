@@ -126,12 +126,22 @@ export const useDatePicker = (
             return assignMonthAndYear(getDate(), fromMount);
     };
 
+    const shouldAssignMultiSolo = () => {
+        if (Array.isArray(modelValue.value) && props.range) {
+            return getMonth(modelValue.value[0]) === getMonth(modelValue.value[1] ?? modelValue.value[0]);
+        }
+        return false;
+    };
+
     // Assign month and year values per date
     const assignMonthAndYear = (date: Date, fromMount = false): void => {
         if (!defaultedMultiCalendars.value.count || !defaultedMultiCalendars.value.static || fromMount) {
             setCalendarMonthYear(0, getMonth(date), getYear(date));
         }
-        if (defaultedMultiCalendars.value.count && (!defaultedMultiCalendars.value.solo || !modelValue.value)) {
+        if (
+            defaultedMultiCalendars.value.count &&
+            (!defaultedMultiCalendars.value.solo || !modelValue.value || shouldAssignMultiSolo())
+        ) {
             for (let i = 1; i < defaultedMultiCalendars.value.count; i++) {
                 const prevDate = set(getDate(), { month: month.value(i - 1), year: year.value(i - 1) });
                 const nextMonth = add(prevDate, { months: 1 });
