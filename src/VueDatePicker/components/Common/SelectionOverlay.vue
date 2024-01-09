@@ -190,11 +190,11 @@
 
     watch(
         () => props.items,
-        () => setContainerHeightAndScroll(),
+        () => setContainerHeightAndScroll(false),
         { deep: true },
     );
 
-    const setContainerHeightAndScroll = () => {
+    const setContainerHeightAndScroll = (setScroll = true) => {
         nextTick().then(() => {
             const el = unrefElement(selectionActiveRef);
             const parent = unrefElement(gridWrapRef);
@@ -208,7 +208,7 @@
                     containerHeight.value = parent.getBoundingClientRect().height - toggleBtnHeight;
                 }
             }
-            if (el && container) {
+            if (el && container && setScroll) {
                 container.scrollTop =
                     el.offsetTop -
                     container.offsetTop -
