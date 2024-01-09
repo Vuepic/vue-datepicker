@@ -175,6 +175,7 @@ export const PickerBaseProps = {
     internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
     arrMapValues: { type: Object as PropType<ArrMapValues>, default: () => ({}) },
     noOverlayFocus: { type: Boolean as PropType<boolean>, default: false },
+    collapse: { type: Boolean as PropType<boolean>, default: false },
 };
 
 export type AllPropsType = ExtractPropTypes<typeof AllProps>;

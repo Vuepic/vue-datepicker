@@ -1,5 +1,5 @@
 <template>
-    <InstanceWrap v-slot="{ instance }" :multi-calendars="defaultedMultiCalendars.count" stretch>
+    <InstanceWrap v-slot="{ instance }" :multi-calendars="defaultedMultiCalendars.count" :collapse="collapse" stretch>
         <div class="dp-quarter-picker-wrap" :style="{ minHeight: `${defaultedConfig.modeHeight}px` }">
             <div>
                 <YearModePicker

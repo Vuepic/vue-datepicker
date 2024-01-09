@@ -20,13 +20,18 @@
             ref="innerMenuRef"
             :class="{
                 dp__menu_content_wrapper: presetDates?.length || !!$slots['left-sidebar'] || !!$slots['right-sidebar'],
+                'dp--menu-content-wrapper-collapsed':
+                    (collapse && presetDates?.length) || !!$slots['left-sidebar'] || !!$slots['right-sidebar'],
             }"
             :style="{ '--dp-menu-width': `${calendarWidth}px` }"
         >
             <div v-if="$slots['left-sidebar']" class="dp__sidebar_left">
                 <slot name="left-sidebar" v-bind="getSidebarProps" />
             </div>
-            <div v-if="presetDates.length" class="dp--preset-dates">
+            <div
+                v-if="presetDates.length"
+                :class="{ 'dp--preset-dates-collapsed': collapse, 'dp--preset-dates': true }"
+            >
                 <template v-for="(preset, i) in presetDates" :key="i">
                     <template v-if="preset.slot">
                         <slot
@@ -41,6 +46,7 @@
                             type="button"
                             :style="preset.style || {}"
                             class="dp__btn dp--preset-range"
+                            :class="{ 'dp--preset-range-collapsed': collapse }"
                             @click.prevent="presetDate(preset.value, preset.noTz)"
                             @keydown.enter.prevent="presetDate(preset.value, preset.noTz)"
                             @keydown.space.prevent="presetDate(preset.value, preset.noTz)"
@@ -168,6 +174,7 @@
         internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
         arrMapValues: { type: Object as PropType<ArrMapValues>, default: () => ({}) },
         noOverlayFocus: { type: Boolean as PropType<boolean>, default: false },
+        collapse: { type: Boolean as PropType<boolean>, default: false },
     });
 
     const baseProps = computed(() => {
@@ -176,6 +183,7 @@
         return {
             ...initProps,
             flowStep: flowStep.value,
+            collapse: props.collapse,
             noOverlayFocus: props.noOverlayFocus,
         };
     });

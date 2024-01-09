@@ -37,6 +37,7 @@
                         :open-on-top="openOnTop"
                         :arr-map-values="arrMapValues"
                         :no-overlay-focus="noOverlayFocus"
+                        :collapse="collapse"
                         @close-picker="closeMenu"
                         @select-date="selectDate"
                         @auto-apply="autoApplyValue"
@@ -152,6 +153,7 @@
     const pickerWrapperRef = ref<HTMLElement | null>(null);
     const shouldFocusNext = ref(false);
     const shiftKeyActive = ref(false);
+    const collapse = ref(true);
 
     const { setMenuFocused, setShiftKey } = useState();
     const { clearArrowNav } = useArrowNavigation();
@@ -227,6 +229,7 @@
             dp__theme_dark: props.dark,
             dp__theme_light: !props.dark,
             dp__flex_display: defaultedInline.value.enabled,
+            'dp--flex-display-collapsed': collapse.value,
             dp__flex_display_with_input: defaultedInline.value.input,
         }),
     );
@@ -271,6 +274,8 @@
         if (isOpen.value) {
             setMenuPosition();
         }
+        const width = dpMenuRef.value?.$el.getBoundingClientRect().width;
+        collapse.value = document.body.offsetWidth <= width;
     };
 
     const onKeyUp = (event: KeyboardEvent) => {

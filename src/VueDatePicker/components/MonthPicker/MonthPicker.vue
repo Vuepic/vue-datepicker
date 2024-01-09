@@ -1,5 +1,5 @@
 <template>
-    <InstanceWrap v-slot="{ instance }" :multi-calendars="defaultedMultiCalendars.count" stretch>
+    <InstanceWrap v-slot="{ instance }" :multi-calendars="defaultedMultiCalendars.count" :collapse="collapse" stretch>
         <template v-if="$slots['month-year']">
             <slot
                 name="month-year"

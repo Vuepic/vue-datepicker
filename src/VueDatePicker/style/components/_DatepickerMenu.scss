@@ -101,6 +101,14 @@
   }
 }
 
+.dp--preset-dates-collapsed {
+  display: flex;
+  align-self: center;
+  border: none;
+  overflow-x: auto;
+  max-width: calc(var(--dp-menu-width) - var(--dp-action-row-padding) * 2);
+}
+
 .dp__sidebar_left {
   padding: 5px;
   border-inline-end: 1px solid var(--dp-border-color);
@@ -141,6 +149,19 @@
   }
 }
 
+.dp--preset-range-collapsed {
+  border: 1px solid var(--dp-border-color);
+  margin: 0 3px;
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
 .dp__menu_content_wrapper {
   display: flex;
 
@@ -149,3 +170,6 @@
   }
 }
 
+.dp--menu-content-wrapper-collapsed {
+  flex-direction: column-reverse;
+}
