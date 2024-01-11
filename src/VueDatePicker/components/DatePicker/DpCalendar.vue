@@ -6,126 +6,115 @@
             :class="calendarWrapClass"
             :aria-label="defaultedAriaLabels?.calendarWrap"
         >
-            <template v-if="true">
-                <div class="dp__calendar_header" role="row">
-                    <div v-if="weekNumbers" class="dp__calendar_header_item" role="gridcell">
-                        {{ weekNumName }}
-                    </div>
-                    <div
-                        v-for="(dayVal, i) in weekDays"
-                        :key="i"
-                        class="dp__calendar_header_item"
-                        role="gridcell"
-                        data-test="calendar-header"
-                    >
-                        <slot v-if="$slots['calendar-header']" name="calendar-header" :day="dayVal" :index="i" />
-                        <template v-if="!$slots['calendar-header']">
-                            {{ dayVal }}
-                        </template>
-                    </div>
+            <div class="dp__calendar_header" role="row">
+                <div v-if="weekNumbers" class="dp__calendar_header_item" role="gridcell">
+                    {{ weekNumName }}
                 </div>
-                <div class="dp__calendar_header_separator"></div>
-                <transition :name="transitionName" :css="!!transitions">
-                    <div
-                        v-if="showCalendar"
-                        class="dp__calendar"
-                        role="rowgroup"
-                        :aria-label="defaultedAriaLabels?.calendarDays || undefined"
-                    >
-                        <div
-                            v-for="(week, weekInd) in calendarWeeks"
-                            :key="weekInd"
-                            class="dp__calendar_row"
-                            role="row"
-                        >
-                            <div v-if="weekNumbers" role="gridcell" class="dp__calendar_item dp__week_num">
-                                <div class="dp__cell_inner">
-                                    {{ getWeekNum(week.days) }}
-                                </div>
+                <div
+                    v-for="(dayVal, i) in weekDays"
+                    :key="i"
+                    class="dp__calendar_header_item"
+                    role="gridcell"
+                    data-test="calendar-header"
+                >
+                    <slot v-if="$slots['calendar-header']" name="calendar-header" :day="dayVal" :index="i" />
+                    <template v-if="!$slots['calendar-header']">
+                        {{ dayVal }}
+                    </template>
+                </div>
+            </div>
+            <div class="dp__calendar_header_separator"></div>
+            <transition :name="transitionName" :css="!!transitions">
+                <div
+                    v-if="showCalendar"
+                    class="dp__calendar"
+                    role="rowgroup"
+                    :aria-label="defaultedAriaLabels?.calendarDays || undefined"
+                >
+                    <div v-for="(week, weekInd) in calendarWeeks" :key="weekInd" class="dp__calendar_row" role="row">
+                        <div v-if="weekNumbers" role="gridcell" class="dp__calendar_item dp__week_num">
+                            <div class="dp__cell_inner">
+                                {{ getWeekNum(week.days) }}
                             </div>
-                            <div
-                                v-for="(dayVal, dayInd) in week.days"
-                                :id="dayVal.value.toISOString().split('T')[0]"
-                                :ref="(el) => assignDayRef(el, weekInd, dayInd)"
-                                :key="dayInd + weekInd"
-                                role="gridcell"
-                                class="dp__calendar_item"
-                                :aria-selected="
-                                    dayVal.classData.dp__active_date ||
-                                    dayVal.classData.dp__range_start ||
-                                    dayVal.classData.dp__range_start
-                                "
-                                :aria-disabled="dayVal.classData.dp__cell_disabled || undefined"
-                                :aria-label="defaultedAriaLabels?.day?.(dayVal)"
-                                tabindex="0"
-                                :data-test="dayVal.value"
-                                @click.prevent="onDateSelect($event, dayVal)"
-                                @keydown.enter="$emit('select-date', dayVal)"
-                                @keydown.space="$emit('handle-space', dayVal)"
-                                @mouseenter="onMouseOver(dayVal, weekInd, dayInd)"
-                                @mouseleave="onMouseLeave(dayVal)"
-                            >
-                                <div class="dp__cell_inner" :class="dayVal.classData">
+                        </div>
+                        <div
+                            v-for="(dayVal, dayInd) in week.days"
+                            :id="dayVal.value.toISOString().split('T')[0]"
+                            :ref="(el) => assignDayRef(el, weekInd, dayInd)"
+                            :key="dayInd + weekInd"
+                            role="gridcell"
+                            class="dp__calendar_item"
+                            :aria-selected="
+                                dayVal.classData.dp__active_date ||
+                                dayVal.classData.dp__range_start ||
+                                dayVal.classData.dp__range_start
+                            "
+                            :aria-disabled="dayVal.classData.dp__cell_disabled || undefined"
+                            :aria-label="defaultedAriaLabels?.day?.(dayVal)"
+                            tabindex="0"
+                            :data-test="dayVal.value"
+                            @click.prevent="onDateSelect($event, dayVal)"
+                            @keydown.enter="$emit('select-date', dayVal)"
+                            @keydown.space="$emit('handle-space', dayVal)"
+                            @mouseenter="onMouseOver(dayVal, weekInd, dayInd)"
+                            @mouseleave="onMouseLeave(dayVal)"
+                        >
+                            <div class="dp__cell_inner" :class="dayVal.classData">
+                                <slot
+                                    v-if="$slots.day && showDay(dayVal)"
+                                    name="day"
+                                    :day="+dayVal.text"
+                                    :date="dayVal.value"
+                                ></slot>
+                                <template v-if="!$slots.day"> {{ dayVal.text }} </template>
+                                <template v-if="dayVal.marker && showDay(dayVal)">
                                     <slot
-                                        v-if="$slots.day && showDay(dayVal)"
-                                        name="day"
+                                        v-if="$slots.marker"
+                                        name="marker"
+                                        :marker="dayVal.marker"
                                         :day="+dayVal.text"
                                         :date="dayVal.value"
                                     ></slot>
-                                    <template v-if="!$slots.day"> {{ dayVal.text }} </template>
-                                    <template v-if="dayVal.marker && showDay(dayVal)">
-                                        <slot
-                                            v-if="$slots.marker"
-                                            name="marker"
-                                            :marker="dayVal.marker"
-                                            :day="+dayVal.text"
-                                            :date="dayVal.value"
-                                        ></slot>
-                                        <div
-                                            v-else
-                                            :class="markerClass(dayVal.marker)"
-                                            :style="dayVal.marker.color ? { backgroundColor: dayVal.marker.color } : {}"
-                                        ></div>
-                                    </template>
                                     <div
-                                        v-if="dateMatch(dayVal.value)"
-                                        ref="activeTooltip"
-                                        class="dp__marker_tooltip"
-                                        :style="markerTooltipStyle"
-                                    >
+                                        v-else
+                                        :class="markerClass(dayVal.marker)"
+                                        :style="dayVal.marker.color ? { backgroundColor: dayVal.marker.color } : {}"
+                                    ></div>
+                                </template>
+                                <div
+                                    v-if="dateMatch(dayVal.value)"
+                                    ref="activeTooltip"
+                                    class="dp__marker_tooltip"
+                                    :style="markerTooltipStyle"
+                                >
+                                    <div v-if="dayVal.marker?.tooltip" class="dp__tooltip_content" @click="onTpClick">
                                         <div
-                                            v-if="dayVal.marker?.tooltip"
-                                            class="dp__tooltip_content"
-                                            @click="onTpClick"
+                                            v-for="(tooltip, i) in dayVal.marker.tooltip"
+                                            :key="i"
+                                            class="dp__tooltip_text"
                                         >
-                                            <div
-                                                v-for="(tooltip, i) in dayVal.marker.tooltip"
-                                                :key="i"
-                                                class="dp__tooltip_text"
-                                            >
-                                                <slot
-                                                    v-if="$slots['marker-tooltip']"
-                                                    name="marker-tooltip"
-                                                    :tooltip="tooltip"
-                                                    :day="dayVal.value"
-                                                ></slot>
-                                                <template v-if="!$slots['marker-tooltip']">
-                                                    <div
-                                                        class="dp__tooltip_mark"
-                                                        :style="tooltip.color ? { backgroundColor: tooltip.color } : {}"
-                                                    ></div>
-                                                    <div>{{ tooltip.text }}</div>
-                                                </template>
-                                            </div>
-                                            <div class="dp__arrow_bottom_tp" :style="tpArrowStyle"></div>
+                                            <slot
+                                                v-if="$slots['marker-tooltip']"
+                                                name="marker-tooltip"
+                                                :tooltip="tooltip"
+                                                :day="dayVal.value"
+                                            ></slot>
+                                            <template v-if="!$slots['marker-tooltip']">
+                                                <div
+                                                    class="dp__tooltip_mark"
+                                                    :style="tooltip.color ? { backgroundColor: tooltip.color } : {}"
+                                                ></div>
+                                                <div>{{ tooltip.text }}</div>
+                                            </template>
                                         </div>
+                                        <div class="dp__arrow_bottom_tp" :style="tpArrowStyle"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </transition>
-            </template>
+                </div>
+            </transition>
         </div>
     </div>
 </template>
