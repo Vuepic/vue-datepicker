@@ -127,6 +127,7 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         const date = modelValue.value ? (modelValue.value as Date) : resetDate(new Date());
         modelValue.value = setDateMonthOrYear(date, month, year.value(instance));
         emit('auto-apply');
+        emit('update-flow-step');
     };
 
     const selectRangedMonth = (month: number, instance: number) => {

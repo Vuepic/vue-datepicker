@@ -43,7 +43,7 @@ export const useFlow = (props: AllPropsType, emit: VueEmit, dynCmpRef: Ref<any>)
     const handleFlowStep = (step: Flow, fn: string, ...args: Array<boolean | string>) => {
         if (props.flow[flowStep.value] === step) {
             if (dynCmpRef.value) {
-                dynCmpRef.value[fn](...args);
+                dynCmpRef.value[fn]?.(...args);
             }
         }
     };

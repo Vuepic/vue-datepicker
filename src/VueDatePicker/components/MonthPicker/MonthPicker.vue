@@ -67,6 +67,7 @@
         'range-end',
         'auto-apply',
         'update-month-year',
+        'update-flow-step',
         'mount',
     ]);
 
