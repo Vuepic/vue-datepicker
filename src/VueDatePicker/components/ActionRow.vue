@@ -34,7 +34,6 @@
                     </button>
                     <button
                         v-if="defaultedActionRow.showNow"
-                        ref="cancelButtonRef"
                         type="button"
                         class="dp__action_button dp__action_cancel"
                         @click="$emit('select-now')"
