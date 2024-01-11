@@ -50,6 +50,7 @@
                             :type="type.type"
                             :header-refs="[]"
                             :esc-close="escClose"
+                            :menu-wrap-ref="menuWrapRef"
                             :text-input="textInput"
                             @selected="type.updateModelValue"
                             @toggle="type.toggle"

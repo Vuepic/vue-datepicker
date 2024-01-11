@@ -18,7 +18,7 @@
                     {{ formatValue }}
                 </template>
             </div>
-            <div class="dp__action_buttons">
+            <div class="dp__action_buttons" data-dp-element="action-row">
                 <slot v-if="$slots['action-buttons']" name="action-buttons" :value="internalModelValue" />
                 <template v-if="!$slots['action-buttons']">
                     <button

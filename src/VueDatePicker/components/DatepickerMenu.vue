@@ -177,6 +177,8 @@
         collapse: { type: Boolean as PropType<boolean>, default: false },
     });
 
+    const dpMenuRef = ref(null);
+
     const baseProps = computed(() => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { openOnTop, ...initProps } = props;
@@ -185,6 +187,7 @@
             flowStep: flowStep.value,
             collapse: props.collapse,
             noOverlayFocus: props.noOverlayFocus,
+            menuWrapRef: dpMenuRef.value,
         };
     });
 
@@ -194,7 +197,6 @@
 
     const calendarWrapperRef = ref(null);
     const calendarWidth = ref(0);
-    const dpMenuRef = ref(null);
     const innerMenuRef = ref(null);
     const menuMount = ref(false);
     const dynCmpRef = ref<any>(null);

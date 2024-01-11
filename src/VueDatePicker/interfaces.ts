@@ -318,3 +318,5 @@ export interface WeekNumbersOpts {
 }
 
 export type WeekNumbersProp = 'iso' | 'local' | ((date: Date) => string | number) | WeekNumbersOpts;
+
+export type DPElements = 'action-row';

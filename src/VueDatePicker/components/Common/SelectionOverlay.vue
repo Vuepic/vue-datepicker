@@ -57,7 +57,7 @@
             tabindex="0"
             @click="toggle"
             @keydown.enter="toggle"
-            @keydown.tab="toggle"
+            @keydown.tab="onTab"
         >
             <slot name="button-icon" />
         </button>
@@ -67,7 +67,7 @@
 <script lang="ts" setup>
     import { computed, nextTick, onBeforeUpdate, onMounted, onUnmounted, ref, watch } from 'vue';
 
-    import { checkStopPropagation, convertType, unrefElement } from '@/utils/util';
+    import { checkStopPropagation, convertType, findFocusableEl, getElWithin, unrefElement } from '@/utils/util';
     import { useArrowNavigation, useCommon, useDefaults } from '@/composables';
 
     import type { Config, DynamicClass, Flow, OverlayGridItem, TextInputProp } from '@/interfaces';
@@ -92,6 +92,7 @@
         config?: Partial<Config>;
         noOverlayFocus?: boolean;
         focusValue?: number;
+        menuWrapRef?: HTMLElement;
     }
 
     const props = defineProps<Props>();
@@ -270,6 +271,17 @@
     const setHoverValue = (val: number) => {
         hoverValue.value = val;
         emit('hover-value', val);
+    };
+
+    const onTab = () => {
+        toggle();
+        if (!props.isLast) {
+            const actionRow = getElWithin(props.menuWrapRef ?? null, 'action-row');
+            if (actionRow) {
+                const focusable = findFocusableEl(actionRow);
+                focusable?.focus();
+            }
+        }
     };
 
     defineExpose({ focusGrid });

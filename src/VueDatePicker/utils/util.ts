@@ -1,7 +1,15 @@
 import { unref } from 'vue';
 import { format } from 'date-fns';
 
-import type { Config, IDefaultSelect, IMarker, MaybeElementRef, ModelValue, OverlayGridItem } from '@/interfaces';
+import type {
+    Config,
+    DPElements,
+    IDefaultSelect,
+    IMarker,
+    MaybeElementRef,
+    ModelValue,
+    OverlayGridItem,
+} from '@/interfaces';
 import type { ComponentPublicInstance } from 'vue';
 
 export const getArrayInArray = <T>(list: T[], increment = 3): T[][] => {
@@ -259,3 +267,7 @@ export function findNextFocusableElement(startingElement: HTMLElement, reverse: 
         return focusable[currentIndex + (reverse ? -1 : 1)] as HTMLElement;
     }
 }
+
+export const getElWithin = (wrapper: HTMLElement | null, attribute: DPElements): HTMLElement | undefined | null => {
+    return wrapper?.querySelector(`[data-dp-element="${attribute}"]`);
+};
