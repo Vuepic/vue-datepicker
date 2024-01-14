@@ -17,7 +17,6 @@ import {
     getDate,
     getDaysInBetween,
     getNextMonthYear,
-    getWeekFromDate,
     getZonedDate,
     isDateAfter,
     isDateBefore,
@@ -393,13 +392,6 @@ export const useDatePicker = (
         return handleSixWeeks(weeks, firstDate, lastDate, weekStartsOn);
     };
 
-    // Called on selectDate when the week-picker mode is used
-    const handleWeekPickerSelect = (day: ICalendarDay) => {
-        modelValue.value = getWeekFromDate(getDate(day.value), props.timezone, props.weekStart);
-        emit('date-update', day.value);
-        return autoApply();
-    };
-
     // Called on selectDate when the regular single picker is used
     const handleSingleDateSelect = (day: ICalendarDay) => {
         const date = setDateTime(getDate(day.value), time.hours as number, time.minutes as number, getSecondsValue());
@@ -563,8 +555,6 @@ export const useDatePicker = (
      */
     const selectDate = (day: ICalendarDay, isNext = false): void => {
         if (isDisabled(day.value) || (!day.current && props.hideOffsetDates)) return emit('invalid-date', day.value);
-
-        if (props.weekPicker) return handleWeekPickerSelect(day);
 
         if (!props.range) return handleSingleDateSelect(day);
 

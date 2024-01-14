@@ -33,3 +33,7 @@ export const getMonthName = (date: Date) => {
 export const clickCalendarDate = async (dp: VueWrapper<any>, date: Date) => {
     await dp.find(`[data-test="${resetDateTime(date)}"]`).trigger('click');
 };
+
+export const clickSelectBtn = async (dp: VueWrapper<any>) => {
+    await dp.find(`[data-test="select-button"]`).trigger('click');
+};

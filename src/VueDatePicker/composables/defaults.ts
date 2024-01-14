@@ -30,7 +30,7 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
         if (props.format) return props.format as string;
         if (props.monthPicker) return 'MM/yyyy';
         if (props.timePicker) return getTimeFormat();
-        if (props.weekPicker) return 'MM/dd/yyyy';
+        if (props.weekPicker) return defaultedWeekNumbers.value?.type === 'iso' ? 'RR' : 'ww';
         if (props.yearPicker) return 'yyyy';
         if (props.quarterPicker) return 'QQQ/yyyy';
         return props.enableTimePicker ? `MM/dd/yyyy, ${getTimeFormat()}` : 'MM/dd/yyyy';

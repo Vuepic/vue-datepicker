@@ -272,12 +272,42 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
         };
     };
 
-    // Get set of classes for the week picker
-    const weekPickerClasses = (day: ICalendarDay): Record<string, boolean> => {
+    // Get set of classes for the single week picker
+    const weekPickerSingleClasses = (day: ICalendarDay): Record<string, boolean> => {
+        if (modelValue.value && !Array.isArray(modelValue.value)) {
+            const week = getWeekFromDate(modelValue.value, props.timezone, props.weekStart);
+            return {
+                ...autoRangeClasses(day),
+                dp__range_start: isDateEqual(week[0], day.value),
+                dp__range_end: isDateEqual(week[1], day.value),
+                dp__range_between_week: isDateAfter(day.value, week[0]) && isDateBefore(day.value, week[1]),
+            };
+        }
         return {
-            ...rangeDateClasses(day),
             ...autoRangeClasses(day),
-            dp__range_between_week: isBetween(day) && props.weekPicker,
+        };
+    };
+
+    // Get set of classes for the range week picker
+    const weekPickerRangeClasses = (day: ICalendarDay) => {
+        if (modelValue.value && Array.isArray(modelValue.value)) {
+            const startWeek = getWeekFromDate(modelValue.value[0], props.timezone, props.weekStart);
+            const endWeek = modelValue.value[1]
+                ? getWeekFromDate(modelValue.value[1], props.timezone, props.weekStart)
+                : [];
+
+            return {
+                ...autoRangeClasses(day),
+                dp__range_start: isDateEqual(startWeek[0], day.value) || isDateEqual(endWeek[0], day.value),
+                dp__range_end: isDateEqual(startWeek[1], day.value) || isDateEqual(endWeek[1], day.value),
+                dp__range_between_week:
+                    (isDateAfter(day.value, startWeek[0]) && isDateBefore(day.value, startWeek[1])) ||
+                    (isDateAfter(day.value, endWeek[0]) && isDateBefore(day.value, endWeek[1])),
+                dp__range_between: isDateAfter(day.value, startWeek[1]) && isDateBefore(day.value, endWeek[0]),
+            };
+        }
+        return {
+            ...autoRangeClasses(day),
         };
     };
 
@@ -300,7 +330,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
         return {
             dp__range_start: isRangeStart,
             dp__range_end: isRangeEnd,
-            dp__range_between: isBetween(day) && !props.weekPicker,
+            dp__range_between: isBetween(day),
             dp__date_hover_start: isHoverDateStartEnd(dateHover(day), day, true),
             dp__date_hover_end: isHoverDateStartEnd(dateHover(day), day, false),
         };
@@ -321,10 +351,11 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
         if (props.range) {
             if (props.autoRange) return autoRangeClasses(day);
             if (props.modelAuto) return { ...singleDateClasses(day), ...rangeDateClasses(day) };
+            if (props.weekPicker) return weekPickerRangeClasses(day);
             return rangeDateClasses(day);
         }
         if (props.weekPicker) {
-            return weekPickerClasses(day);
+            return weekPickerSingleClasses(day);
         }
 
         return singleDateClasses(day);

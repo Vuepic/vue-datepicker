@@ -21,7 +21,7 @@ import utcToZonedTime from 'date-fns-tz/utcToZonedTime';
 
 import { resetDateTime } from '@/utils/date-utils';
 
-import { clickCalendarDate, getMonthName, openMenu, reOpenMenu } from '../utils';
+import { clickCalendarDate, clickSelectBtn, getMonthName, openMenu, reOpenMenu } from '../utils';
 import { FlowStep } from '@/constants';
 import type { TimeModel, TimeType } from '@/interfaces';
 import type { VueWrapper } from '@vue/test-utils';
@@ -127,7 +127,7 @@ describe('It should validate various picker scenarios', () => {
         const value = set(today, { seconds: 0, milliseconds: 0 });
 
         await clickCalendarDate(dp, today);
-        await dp.find(`[data-test="select-button"]`).trigger('click');
+        await clickSelectBtn(dp);
 
         const emitted = dp.emitted();
 
@@ -149,7 +149,7 @@ describe('It should validate various picker scenarios', () => {
 
         await dp.find(`[data-test="hours-time-inc-btn-0"]`).trigger('click');
         await dp.find(`[data-test="minutes-time-inc-btn-0"]`).trigger('click');
-        await dp.find(`[data-test="select-button"]`).trigger('click');
+        await clickSelectBtn(dp);
 
         const emitted = dp.emitted();
         expect(emitted).toHaveProperty('update:model-value', [

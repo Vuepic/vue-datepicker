@@ -8,6 +8,7 @@ import {
     formatDate,
     getDate,
     getUtcDate,
+    getWeekFromDate,
     getZonedDate,
     isValidDate,
     setDateMonthOrYear,
@@ -145,9 +146,14 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
     // Map external week picker format to internal model value
     const mapWeekExternalToInternal = (value: Date[]) => {
         if (Array.isArray(value)) {
-            return [getDate(value[0]), getDate(value[1])];
+            const startWeek = value[0];
+            const endWeek = value[1];
+            return [
+                getDate(Array.isArray(startWeek) ? startWeek[0] : null),
+                getDate(Array.isArray(endWeek) ? endWeek[0] : null),
+            ];
         }
-        throw new Error(errors.dateArr('week-picker'));
+        return getDate(value[0]);
     };
 
     // Map external format to internal model value for range and single picker
@@ -337,6 +343,17 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
         return mapper(convertType(internalModelValue.value));
     };
 
+    const mapInternalWeekPickerToExternal = () => {
+        if (Array.isArray(internalModelValue.value)) {
+            const startWeek = getWeekFromDate(internalModelValue.value[0], props.timezone, props.weekStart);
+            const endWeek = internalModelValue.value[1]
+                ? getWeekFromDate(internalModelValue.value[1], props.timezone, props.weekStart)
+                : [];
+            return [startWeek.map((date) => getDate(date)), endWeek.map((date) => getDate(date))];
+        }
+        return getWeekFromDate(internalModelValue.value, props.timezone, props.weekStart).map((date) => getDate(date));
+    };
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const modeEmitter = (mapper: any) => emitValue(convertType(mapInternalToSpecificExternal(mapper)));
 
@@ -350,11 +367,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
         if (props.monthPicker) return modeEmitter(getMonthVal);
         if (props.timePicker) return modeEmitter(getTimeVal);
         if (props.yearPicker) return modeEmitter(getYear);
-        if (props.weekPicker)
-            return emitValue(
-                internalModelValue.value.map((val: Date) => toModelType(val) as string),
-                true,
-            );
+        if (props.weekPicker) return emit('update:model-value', mapInternalWeekPickerToExternal());
         return emitValue(mapInternalDatesToExternal(), true);
     };
 

@@ -179,8 +179,8 @@ export const getDefaultHighlight = (
 export const getDefaultWeekNumbers = (weekNumbers: WeekNumbersProp): WeekNumbersOpts => {
     if (typeof weekNumbers === 'object') {
         return {
-            type: weekNumbers.type,
-            hideOnOffsetDates: weekNumbers.hideOnOffsetDates ?? false,
+            type: weekNumbers?.type ?? 'local',
+            hideOnOffsetDates: weekNumbers?.hideOnOffsetDates ?? false,
         };
     }
     return {

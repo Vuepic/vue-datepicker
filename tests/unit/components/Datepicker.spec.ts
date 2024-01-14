@@ -11,6 +11,7 @@ import {
     startOfYear,
     addDays,
     getHours,
+    startOfMonth,
 } from 'date-fns';
 import { ja } from 'date-fns/locale';
 
@@ -29,6 +30,7 @@ import { getWeekFromDate, resetDateTime } from '@/utils/date-utils';
 
 import type { TimeObj, ICalendarDate, SixWeekMode } from '@/interfaces';
 import MonthPicker from '@/components/MonthPicker/MonthPicker.vue';
+import { clickCalendarDate, clickSelectBtn, openMenu } from '../../utils';
 
 const format = (date: Date): string => {
     return `Selected year is ${date.getFullYear()}`;
@@ -283,16 +285,28 @@ describe('Logic connection', () => {
     });
 
     it('Should select week', async () => {
-        const today = new Date();
+        const start = startOfMonth(new Date());
 
-        const { dp, datePicker } = await mountDatepicker({ modelValue: null, weekPicker: true });
-        const weekRange = getWeekFromDate(today, '', 1);
+        const dp = await openMenu({ weekPicker: true });
 
-        const calendar = datePicker.findComponent(DpCalendar);
-        calendar.vm.$emit('select-date', { value: today, current: true });
+        await clickCalendarDate(dp, start);
+        await clickSelectBtn(dp);
 
-        expect(dp.vm.internalModelValue).toHaveLength(2);
-        expect(dp.vm.internalModelValue).toEqual(weekRange);
+        expect(dp.emitted()['update:model-value']).toEqual([[getWeekFromDate(start, '', 1)]]);
+    });
+
+    it('Should select week range', async () => {
+        const start = startOfMonth(new Date());
+        const end = addDays(start, 10);
+        const dp = await openMenu({ weekPicker: true, range: true });
+
+        await clickCalendarDate(dp, start);
+        await clickCalendarDate(dp, end);
+        await clickSelectBtn(dp);
+
+        expect(dp.emitted()['update:model-value']).toEqual([
+            [[getWeekFromDate(start, '', 1), getWeekFromDate(end, '', 1)]],
+        ]);
     });
 
     it('Should close month overlay on pressing keyboard Esc when escClose = true', async () => {

@@ -92,7 +92,7 @@
         config?: Partial<Config>;
         noOverlayFocus?: boolean;
         focusValue?: number;
-        menuWrapRef?: HTMLElement;
+        menuWrapRef?: HTMLElement | null;
     }
 
     const props = defineProps<Props>();
