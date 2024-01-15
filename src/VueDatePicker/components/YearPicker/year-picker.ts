@@ -64,6 +64,7 @@ export const useYearPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     };
 
     const selectYear = (year: number) => {
+        emit('update-month-year', { instance: 0, year });
         if (props.multiDates) {
             if (!modelValue.value) {
                 modelValue.value = [setYear(resetDateTime(getDate()), year)];
