@@ -3,11 +3,7 @@
         <slot v-if="$slots.trigger && !$slots['dp-input'] && !defaultedInline.enabled" name="trigger" />
         <div v-if="!$slots.trigger && (!defaultedInline.enabled || defaultedInline.input)" class="dp__input_wrap">
             <slot
-                v-if="
-                    $slots['dp-input'] &&
-                    !$slots.trigger &&
-                    (!defaultedInline.enabled || (defaultedInline.enabled && defaultedInline.input))
-                "
+                v-if="$slots['dp-input'] && !$slots.trigger && !defaultedInline.enabled"
                 name="dp-input"
                 :value="inputValue"
                 :is-menu-open="isMenuOpen"
