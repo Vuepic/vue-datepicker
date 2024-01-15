@@ -45,6 +45,8 @@ export type MenuView = 'month' | 'year' | 'calendar' | 'time';
 export type ModelValue =
     | Date
     | Date[]
+    | Array<Date[]>
+    | Array<string[]>
     | string
     | string[]
     | number
