@@ -47,6 +47,13 @@ export const useTimePickerUtils = (
         time[property] = value;
     };
 
+    const isRangeCheck = computed(() => {
+        if (props.modelAuto && props.range) {
+            return Array.isArray(modelValue.value) ? !modelValue.value.some((val) => !val) : false;
+        }
+        return props.range;
+    });
+
     const validateTime = (type: TimeType, value: number | number[]) => {
         const copies = Object.fromEntries(
             Object.keys(time).map((key) => {
@@ -55,7 +62,7 @@ export const useTimePickerUtils = (
             }),
         );
 
-        if (props.range && !props.disableTimeRangeValidation) {
+        if (isRangeCheck.value && !props.disableTimeRangeValidation) {
             const setTime = (index: number) =>
                 !modelValue.value
                     ? (null as unknown as Date)
