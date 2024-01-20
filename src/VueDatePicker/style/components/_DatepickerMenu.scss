@@ -59,6 +59,43 @@
   cursor: default;
 }
 
+.dp-menu-loading {
+  @extend %__dp_menu_readonly_disabled;
+
+  background: rgb(255 255 255 / 50%);
+  cursor: default;
+}
+
+.dp--menu-load-container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.dp--menu-loader {
+  width: 48px;
+  height: 48px;
+  border: var(--dp-loader);
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: dp-load-rotation 1s linear infinite;
+  position: absolute;
+}
+
+@keyframes dp-load-rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
 .dp__arrow_top {
   left: 50%;
   top: 0;

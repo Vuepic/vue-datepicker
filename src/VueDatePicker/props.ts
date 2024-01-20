@@ -166,6 +166,7 @@ export const AllProps = {
     config: { type: Object as PropType<Partial<Config>>, default: undefined },
     quarterPicker: { type: Boolean as PropType<boolean>, default: false },
     yearFirst: { type: Boolean as PropType<boolean>, default: false },
+    loading: { type: Boolean as PropType<boolean>, default: false },
 };
 
 export const PickerBaseProps = {

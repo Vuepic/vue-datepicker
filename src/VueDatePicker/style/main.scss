@@ -72,6 +72,7 @@
   --dp-range-between-dates-background-color: var(--dp-hover-color, #484848);
   --dp-range-between-dates-text-color: var(--dp-hover-text-color, #fff);
   --dp-range-between-border-color: var(--dp-hover-color, #fff);
+  --dp-loader: 5px solid #005cb2;
 }
 
 .dp__theme_light {
@@ -101,6 +102,7 @@
   --dp-range-between-dates-background-color: var(--dp-hover-color, #f3f3f3);
   --dp-range-between-dates-text-color: var(--dp-hover-text-color, #212121);
   --dp-range-between-border-color: var(--dp-hover-color, #f3f3f3);
+  --dp-loader: 5px solid #1976d2;
 }
 
 .dp__flex {

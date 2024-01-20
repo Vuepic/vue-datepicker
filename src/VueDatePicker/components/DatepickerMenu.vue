@@ -14,7 +14,11 @@
         @keydown.right.prevent="handleArrowKey('right')"
         @keydown="checkShiftKey"
     >
-        <div v-if="(disabled || readonly) && defaultedInline.enabled" :class="disabledReadonlyOverlay"></div>
+        <div v-if="((disabled || readonly) && defaultedInline.enabled) || loading" :class="disabledReadonlyOverlay">
+            <div v-if="loading" class="dp--menu-load-container">
+                <span class="dp--menu-loader"></span>
+            </div>
+        </div>
         <div v-if="!defaultedInline.enabled && !teleportCenter" :class="arrowClass"></div>
         <div
             ref="innerMenuRef"
@@ -275,6 +279,7 @@
     const disabledReadonlyOverlay = computed(() => ({
         dp__menu_disabled: props.disabled,
         dp__menu_readonly: props.readonly,
+        'dp-menu-loading': props.loading,
     }));
 
     const dpMenuClass = computed(

@@ -283,6 +283,7 @@ export interface VueDatePickerProps {
     };
     quarterPicker?: boolean;
     yearFirst?: boolean;
+    loading?: boolean;
 }
 
 export type DatePickerInstance = ComponentPublicInstance<PublicMethods> | null;
