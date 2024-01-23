@@ -157,19 +157,15 @@ export const getDefaultConfig = (config?: Partial<Config>): Config => {
     return { ...defaultConfig, ...(config ?? {}) };
 };
 
-export const getDefaultHighlight = (
-    highlight: HighlightProp,
-    highlightWeekDays: number[],
-    highlightDisabledDays: boolean,
-): Highlight | HighlightFn => {
+export const getDefaultHighlight = (highlight: HighlightProp): Highlight | HighlightFn => {
     const defaultOptions = {
         dates: Array.isArray(highlight) ? highlight.map((date) => getDate(date)) : [],
         years: [],
         months: [],
         quarters: [],
         weeks: [],
-        weekdays: highlightWeekDays,
-        options: { highlightDisabled: highlightDisabledDays },
+        weekdays: [],
+        options: { highlightDisabled: false },
     };
 
     if (typeof highlight === 'function') return highlight;

@@ -234,22 +234,11 @@ export interface VueDatePickerProps {
     modelType?: 'timestamp' | 'format' | string;
     modelAuto?: boolean;
     highlight?:
-        | Date[] // deprecated
-        | string[] // deprecated
-        | number[] // deprecated
         | ((date: Date[], disabled?: boolean) => boolean)
         | ((month: { month: number; year: number }) => boolean)
         | ((year: number) => boolean)
         | ((quarter: { quarter: number; year: number }) => boolean)
         | Partial<Highlight>;
-    /**
-     * @deprecated You should use highlight.weekdays instead
-     */
-    highlightWeekDays?: number[];
-    /**
-     * @deprecated You should use highlight.options.highlightDisabledDays
-     */
-    highlightDisabledDays?: boolean;
     offset?: string | number;
     teleportCenter?: boolean;
     teleport?: boolean | string | HTMLElement;

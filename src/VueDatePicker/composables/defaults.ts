@@ -68,9 +68,7 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
 
     const defaultedConfig = computed(() => getDefaultConfig(props.config));
 
-    const defaultedHighlight = computed(() =>
-        getDefaultHighlight(props.highlight, props.highlightWeekDays, props.highlightDisabledDays),
-    );
+    const defaultedHighlight = computed(() => getDefaultHighlight(props.highlight));
 
     const defaultedWeekNumbers = computed(() => getDefaultWeekNumbers(props.weekNumbers));
 

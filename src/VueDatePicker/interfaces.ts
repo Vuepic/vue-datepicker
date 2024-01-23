@@ -310,7 +310,7 @@ export type HighlightFn = (
     disabled?: boolean,
 ) => boolean;
 
-export type HighlightProp = Date[] | string[] | number[] | HighlightFn | Partial<Highlight>;
+export type HighlightProp = HighlightFn | Partial<Highlight>;
 
 export interface WeekNumbersOpts {
     type: 'iso' | 'local' | ((date: Date) => string | number);

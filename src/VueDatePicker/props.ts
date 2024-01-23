@@ -87,14 +87,9 @@ export const AllProps = {
     arrowNavigation: { type: Boolean as PropType<boolean>, default: false },
     disableTimeRangeValidation: { type: Boolean as PropType<boolean>, default: false },
     highlight: {
-        type: [Array, Function, Object] as PropType<HighlightProp>,
+        type: [Function, Object] as PropType<HighlightProp>,
         default: null,
     },
-    highlightWeekDays: {
-        type: Array as PropType<number[]>,
-        default: null,
-    },
-    highlightDisabledDays: { type: Boolean as PropType<boolean>, default: false },
     teleport: { type: [String, Boolean, Object] as PropType<string | boolean | HTMLElement>, default: null },
     teleportCenter: { type: Boolean as PropType<boolean>, default: false },
     locale: { type: String as PropType<string>, default: 'en-Us' },
