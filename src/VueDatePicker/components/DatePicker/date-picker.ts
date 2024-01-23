@@ -27,7 +27,6 @@ import {
     setDateTime,
 } from '@/utils/date-utils';
 import { useDefaults, useModel, useValidation } from '@/composables';
-import { debounce, isNumNullish } from '@/utils/util';
 import { isNumberArray } from '@/utils/type-guard';
 import { useTimePickerUtils } from '@/components/TimePicker/time-picker-utils';
 import { checkRangeAutoApply, handleMultiDatesSelect, setPresetDate } from '@/composables/shared';
@@ -260,11 +259,20 @@ export const useDatePicker = (
     };
 
     // Handle mouse scroll
-    const handleScroll = debounce((event: WheelEvent, instance: number): void => {
+    let lastScrollTime = new Date()
+    const handleScroll = (event: WheelEvent, instance: number): void => {
         if (props.monthChangeOnScroll) {
-            autoChangeMonth(props.monthChangeOnScroll !== 'inverse' ? -event.deltaY : event.deltaY, instance);
+            const timeDelta: number = new Date().getTime() - lastScrollTime.getTime();
+            const scrollDistance = Math.abs(event.deltaY)
+            let minPause: number = 500;
+            if (scrollDistance > 1) minPause = 100;
+            if (scrollDistance > 100) minPause = 0;
+            if (timeDelta > minPause) {
+                lastScrollTime = new Date()
+                autoChangeMonth(props.monthChangeOnScroll !== 'inverse' ? -event.deltaY : event.deltaY, instance);
+            }
         }
-    }, 50);
+    };
 
     // Handle arrow key
     const handleArrow = (arrow: 'left' | 'right', instance: number, vertical = false): void => {
