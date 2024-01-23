@@ -305,11 +305,20 @@
         });
     };
 
+    const sanitizeMinutesAndSeconds = (val: number) => (val >= 0 ? val : 59);
+
+    const sanitizeHours = (val: number) => (val >= 0 ? val : 23);
+
     const isDateInRange = (val: number, type: TimeType): boolean => {
         const minTime = props.minTime ? setTime(sanitizeTime(props.minTime as TimeModel)) : null;
         const maxTime = props.maxTime ? setTime(sanitizeTime(props.maxTime as TimeModel)) : null;
-        const selectedDate = setTime(sanitizeTime(timeValues.value, type, val));
-
+        const selectedDate = setTime(
+            sanitizeTime(
+                timeValues.value,
+                type,
+                type === 'minutes' || type === 'seconds' ? sanitizeMinutesAndSeconds(val) : sanitizeHours(val),
+            ),
+        );
         if (minTime && maxTime)
             return (
                 (isBefore(selectedDate, maxTime) || isEqual(selectedDate, maxTime)) &&
