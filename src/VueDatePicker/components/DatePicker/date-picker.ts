@@ -27,6 +27,7 @@ import {
     setDateTime,
 } from '@/utils/date-utils';
 import { useDefaults, useModel, useValidation } from '@/composables';
+import { isNumNullish } from '@/utils/util';
 import { isNumberArray } from '@/utils/type-guard';
 import { useTimePickerUtils } from '@/components/TimePicker/time-picker-utils';
 import { checkRangeAutoApply, handleMultiDatesSelect, setPresetDate } from '@/composables/shared';
@@ -43,6 +44,7 @@ export const useDatePicker = (
     updateFlow: () => void,
 ) => {
     const tempRange = ref<Date[]>([]);
+    const lastScrollTime = ref(new Date());
 
     const { modelValue, calendars, time } = useModel(props, emit);
     const { defaultedMultiCalendars, defaultedStartTime } = useDefaults(props);
@@ -259,16 +261,16 @@ export const useDatePicker = (
     };
 
     // Handle mouse scroll
-    let lastScrollTime = new Date()
+
     const handleScroll = (event: WheelEvent, instance: number): void => {
         if (props.monthChangeOnScroll) {
-            const timeDelta: number = new Date().getTime() - lastScrollTime.getTime();
-            const scrollDistance = Math.abs(event.deltaY)
+            const timeDelta: number = new Date().getTime() - lastScrollTime.value.getTime();
+            const scrollDistance = Math.abs(event.deltaY);
             let minPause: number = 500;
             if (scrollDistance > 1) minPause = 100;
             if (scrollDistance > 100) minPause = 0;
             if (timeDelta > minPause) {
-                lastScrollTime = new Date()
+                lastScrollTime.value = new Date();
                 autoChangeMonth(props.monthChangeOnScroll !== 'inverse' ? -event.deltaY : event.deltaY, instance);
             }
         }
