@@ -165,10 +165,13 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
         }
         if (Array.isArray(value)) {
             return checkRangeEnabled(
-                () => [
-                    parseModelType(value[0]),
-                    value[1] ? parseModelType(value[1]) : checkPartialRangeValue(props.partialRange),
-                ],
+                () =>
+                    value[1]
+                        ? [
+                              parseModelType(value[0]),
+                              value[1] ? parseModelType(value[1]) : checkPartialRangeValue(props.partialRange),
+                          ]
+                        : [parseModelType(value[0])],
                 props.range,
             );
         }
