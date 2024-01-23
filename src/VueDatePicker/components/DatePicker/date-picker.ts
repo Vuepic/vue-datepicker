@@ -79,11 +79,15 @@ export const useDatePicker = (
         }
     };
 
-    watch(modelValue, (newVal, oldVal) => {
-        if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
-            mapInternalModuleValues();
-        }
-    });
+    watch(
+        modelValue,
+        (newVal, oldVal) => {
+            if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+                mapInternalModuleValues();
+            }
+        },
+        { deep: true },
+    );
 
     onMounted(() => {
         if (!props.shadow) {

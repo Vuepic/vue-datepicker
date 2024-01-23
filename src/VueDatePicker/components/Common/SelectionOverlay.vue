@@ -30,7 +30,7 @@
                         :ref="(el) => assignRef(el, col, i, ind)"
                         role="gridcell"
                         :class="cellClassName"
-                        :aria-selected="col.active"
+                        :aria-selected="col.active || undefined"
                         :aria-disabled="col.disabled || undefined"
                         tabindex="0"
                         :data-test="col.text"

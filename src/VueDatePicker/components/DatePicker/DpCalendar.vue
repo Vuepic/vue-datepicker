@@ -45,9 +45,10 @@
                             role="gridcell"
                             class="dp__calendar_item"
                             :aria-selected="
-                                dayVal.classData.dp__active_date ||
-                                dayVal.classData.dp__range_start ||
-                                dayVal.classData.dp__range_start
+                                (dayVal.classData.dp__active_date ||
+                                    dayVal.classData.dp__range_start ||
+                                    dayVal.classData.dp__range_start) ??
+                                undefined
                             "
                             :aria-disabled="dayVal.classData.dp__cell_disabled || undefined"
                             :aria-label="defaultedAriaLabels?.day?.(dayVal)"

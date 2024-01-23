@@ -32,9 +32,13 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
     const inputValue = ref('');
     const formatRef = toRef(props, 'format');
 
-    watch(internalModelValue, () => {
-        emit('internal-model-change', internalModelValue.value);
-    });
+    watch(
+        internalModelValue,
+        () => {
+            emit('internal-model-change', internalModelValue.value);
+        },
+        { deep: true },
+    );
 
     watch(formatRef, () => {
         formatInputValue();
