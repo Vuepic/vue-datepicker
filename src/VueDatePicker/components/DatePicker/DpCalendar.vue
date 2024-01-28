@@ -39,7 +39,7 @@
                         </div>
                         <div
                             v-for="(dayVal, dayInd) in week.days"
-                            :id="dayVal.value.toISOString().split('T')[0]"
+                            :id="getId(dayVal.value)"
                             :ref="(el) => assignDayRef(el, weekInd, dayInd)"
                             :key="dayInd + weekInd"
                             role="gridcell"
@@ -122,7 +122,7 @@
 
 <script lang="ts" setup>
     import { computed, nextTick, onMounted, ref } from 'vue';
-    import { getISOWeek, getWeek } from 'date-fns';
+    import { format, getISOWeek, getWeek } from 'date-fns';
 
     import { checkStopPropagation, getDayNames, getDefaultMarker, unrefElement } from '@/utils/util';
     import { useArrowNavigation, useDefaults } from '@/composables';
@@ -247,6 +247,10 @@
     }));
 
     const showDay = computed(() => (day: ICalendarDay) => (props.hideOffsetDates ? day.current : true));
+
+    const getId = (date: Date) => {
+        return format(date, 'yyyy-MM-dd');
+    };
 
     const onMouseOver = async (day: UnwrapRef<ICalendarDay>, weekInd: number, dayInd: number): Promise<void> => {
         emit('set-hover-date', day);
