@@ -181,7 +181,8 @@
     });
 
     const { setTimePickerElements, setTimePickerBackRef } = useArrowNavigation();
-    const { defaultedAriaLabels, defaultedTransitions, defaultedFilters, defaultedConfig } = useDefaults(props);
+    const { defaultedAriaLabels, defaultedTransitions, defaultedFilters, defaultedConfig, defaultedRange } =
+        useDefaults(props);
 
     const { transitionName, showTransition } = useTransitions(defaultedTransitions);
 
@@ -214,14 +215,14 @@
     const timeValues = computed(() => ({ hours: props.hours, minutes: props.minutes, seconds: props.seconds }));
 
     const isOverlayValueDisabled = (type: TimeType, val: number) => {
-        if (props.range && !props.disableTimeRangeValidation) {
+        if (defaultedRange.value.enabled && !defaultedRange.value.disableTimeRangeValidation) {
             return !props.validateTime(type, val);
         }
         return false;
     };
 
     const disabledRangedArrows = (type: TimeType, inc: boolean) => {
-        if (props.range && !props.disableTimeRangeValidation) {
+        if (defaultedRange.value.enabled && !defaultedRange.value.disableTimeRangeValidation) {
             const inVal = inc ? +props[`${type}Increment`] : -+props[`${type}Increment`];
             const val = props[type] + inVal;
             return !props.validateTime(type, val);

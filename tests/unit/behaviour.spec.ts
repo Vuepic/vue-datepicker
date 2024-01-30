@@ -285,7 +285,7 @@ describe('It should validate various picker scenarios', () => {
     it('Should enable or disable auto range selecting with no-disabled-range prop (#555)', async () => {
         const today = set(new Date(), { seconds: 0, milliseconds: 0 });
         const disabledDates = [addDays(today, 1), addDays(today, 2)];
-        const dp = await openMenu({ disabledDates, noDisabledRange: true, range: true, autoRange: 5 });
+        const dp = await openMenu({ disabledDates, range: { noDisabledRange: true, autoRange: 5 } });
 
         const selectAutoRange = async () => {
             await clickCalendarDate(dp, today);
@@ -296,7 +296,7 @@ describe('It should validate various picker scenarios', () => {
 
         expect(dp.emitted()).toHaveProperty('invalid-select');
 
-        await reOpenMenu(dp, { noDisabledRange: false });
+        await reOpenMenu(dp, { range: { noDisabledRange: false, autoRange: 5 } });
 
         await selectAutoRange();
 
@@ -308,7 +308,7 @@ describe('It should validate various picker scenarios', () => {
         const today = resetDateTime(set(new Date(), { date: 1 }));
         const secondDate = addDays(today, 15);
 
-        const dp = await openMenu({ maxRange: 10, range: true, autoApply: true });
+        const dp = await openMenu({ range: { maxRange: 10 }, autoApply: true });
 
         const selectRange = async () => {
             await clickCalendarDate(dp, today);
@@ -379,7 +379,7 @@ describe('It should validate various picker scenarios', () => {
         const start = set(today, { month: getMonth(today), date: 1 });
         const range = [resetDateTime(start), addDays(start, 10)];
 
-        const dp = await openMenu({ range: true, maxRange: 5 });
+        const dp = await openMenu({ range: { maxRange: 5 } });
 
         for (const date of range) {
             await clickCalendarDate(dp, date);

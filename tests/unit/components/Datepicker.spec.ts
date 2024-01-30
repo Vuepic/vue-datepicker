@@ -147,7 +147,7 @@ describe('Logic connection', () => {
     it('Should select auto range', async () => {
         const start = setMilliseconds(setSeconds(new Date(), 0), 0);
         const end = setMilliseconds(setSeconds(addDays(start, 7), 0), 0);
-        const { dp, datePicker } = await mountDatepicker({ modelValue: null, range: true, autoRange: 7 });
+        const { dp, datePicker } = await mountDatepicker({ modelValue: null, range: { autoRange: 7 } });
 
         const calendar = datePicker.findComponent(DpCalendar);
 
@@ -364,7 +364,7 @@ describe('Logic connection', () => {
     it('Should check min/max-range', async () => {
         const start = setMilliseconds(setSeconds(addDays(new Date(), 1), 0), 0);
         const end = addDays(setMilliseconds(setSeconds(addDays(start, 7), 0), 0), 5);
-        const { dp, datePicker } = await mountDatepicker({ modelValue: null, range: true, maxRange: 3 });
+        const { dp, datePicker } = await mountDatepicker({ modelValue: null, range: { maxRange: 3 } });
 
         datePicker.vm.selectDate({ value: start, current: true });
         datePicker.vm.selectDate({ value: end, current: true });
@@ -376,7 +376,7 @@ describe('Logic connection', () => {
 
     it('Should get range with fixed date', async () => {
         const modelValue = [new Date(), addDays(new Date(), 3)];
-        const { datePicker } = await mountDatepicker({ fixedStart: true, modelValue, range: true });
+        const { datePicker } = await mountDatepicker({ modelValue, range: { fixedStart: true } });
 
         const calendar = datePicker.findComponent(DpCalendar);
         calendar.vm.$emit('select-date', { value: addDays(new Date(), 5), current: true });
@@ -432,7 +432,7 @@ describe('Logic connection', () => {
         const end = addDays(start, 7);
         const disabledDates = [addDays(start, 1), addDays(start, 2)];
 
-        const { datePicker } = await mountDatepicker({ noDisabledRange: true, range: true, disabledDates });
+        const { datePicker } = await mountDatepicker({ range: { noDisabledRange: true }, disabledDates });
 
         await selectRange(datePicker, start, end);
 

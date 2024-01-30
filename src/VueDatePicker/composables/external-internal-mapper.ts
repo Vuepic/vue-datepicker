@@ -27,7 +27,7 @@ import type { Ref } from 'vue';
 export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, isInputFocused: Ref<boolean>) => {
     const internalModelValue = ref();
 
-    const { defaultedTextInput, getDefaultPattern } = useDefaults(props);
+    const { defaultedTextInput, defaultedRange, getDefaultPattern } = useDefaults(props);
 
     const inputValue = ref('');
     const formatRef = toRef(props, 'format');
@@ -87,9 +87,9 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
             return checkRangeEnabled(
                 () => [
                     setYear(getDate(), value[0]),
-                    value[1] ? setYear(getDate(), value[1]) : checkPartialRangeValue(props.partialRange),
+                    value[1] ? setYear(getDate(), value[1]) : checkPartialRangeValue(defaultedRange.value.partialRange),
                 ],
-                props.range,
+                defaultedRange.value.enabled,
             );
         }
         return setYear(getDate(), +value);
@@ -130,10 +130,10 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
                         value[1],
                         value[1]
                             ? setDateMonthOrYear(null, +value[1].month, +value[1].year)
-                            : checkPartialRangeValue(props.partialRange),
+                            : checkPartialRangeValue(defaultedRange.value.partialRange),
                     ),
                 ],
-                props.range,
+                defaultedRange.value.enabled,
             );
         }
         return convertCustomModeType(value, setDateMonthOrYear(null, +value.month, +value.year));
@@ -173,10 +173,12 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
                     value[1]
                         ? [
                               parseModelType(value[0]),
-                              value[1] ? parseModelType(value[1]) : checkPartialRangeValue(props.partialRange),
+                              value[1]
+                                  ? parseModelType(value[1])
+                                  : checkPartialRangeValue(defaultedRange.value.partialRange),
                           ]
                         : [parseModelType(value[0])],
-                props.range,
+                defaultedRange.value.enabled,
             );
         }
         return parseModelType(value);
@@ -187,8 +189,12 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
      * auto add 'null' value as second value
      */
     const sanitizeModelValue = () => {
-        if (Array.isArray(internalModelValue.value) && props.range && internalModelValue.value.length === 1) {
-            internalModelValue.value.push(checkPartialRangeValue(props.partialRange));
+        if (
+            Array.isArray(internalModelValue.value) &&
+            defaultedRange.value.enabled &&
+            internalModelValue.value.length === 1
+        ) {
+            internalModelValue.value.push(checkPartialRangeValue(defaultedRange.value.partialRange));
         }
     };
 
@@ -197,7 +203,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
         const modelValue = internalModelValue.value as Date[];
         return [
             toModelType(modelValue[0]),
-            modelValue[1] ? toModelType(modelValue[1]) : checkPartialRangeValue(props.partialRange),
+            modelValue[1] ? toModelType(modelValue[1]) : checkPartialRangeValue(defaultedRange.value.partialRange),
         ] as Date[];
     };
 
@@ -217,7 +223,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
         if (props.modelAuto) return getModelAutoForExternal();
         if (props.multiDates) return getMultiDatesForExternal();
         if (Array.isArray(internalModelValue.value)) {
-            return checkRangeEnabled(() => getRangeEmitValue(), props.range);
+            return checkRangeEnabled(() => getRangeEmitValue(), defaultedRange.value.enabled);
         }
         return toModelType(convertType(internalModelValue.value));
     };
@@ -344,7 +350,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
                 mapper(internalModelValue.value[0]),
                 internalModelValue.value[1]
                     ? mapper(internalModelValue.value[1])
-                    : checkPartialRangeValue(props.partialRange),
+                    : checkPartialRangeValue(defaultedRange.value.partialRange),
             ];
         }
         return mapper(convertType(internalModelValue.value));
@@ -381,8 +387,8 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
     // Check if there is any selection before emitting value, to prevent null setting
     const checkBeforeEmit = (): boolean => {
         if (internalModelValue.value) {
-            if (props.range) {
-                if (props.partialRange) return internalModelValue.value.length >= 1;
+            if (defaultedRange.value.enabled) {
+                if (defaultedRange.value.partialRange) return internalModelValue.value.length >= 1;
                 return internalModelValue.value.length === 2;
             }
             return !!internalModelValue.value;

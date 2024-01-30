@@ -27,7 +27,7 @@ import type {
 import type { PickerBasePropsType, AllPropsType } from '@/props';
 
 export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
-    const { defaultedFilters, defaultedHighlight } = useDefaults(props);
+    const { defaultedFilters, defaultedHighlight, defaultedRange } = useDefaults(props);
     const getTimezone = () => {
         if (props.timezone) return props.timezone;
         if (props.utc) return 'UTC';
@@ -147,7 +147,7 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
 
     // Check if there are disabled dates for a given range
     const isDateRangeAllowed = (range: Date[]): boolean => {
-        if (props.noDisabledRange) {
+        if (defaultedRange.value.noDisabledRange) {
             const datesInBetween = eachDayOfInterval({ start: range[0], end: range[1] });
             return !datesInBetween.some((date) => isDisabled(date));
         }
@@ -156,15 +156,20 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
 
     // If min or max range is set, validate given range
     const checkMinMaxRange = (secondDate: Date, modelValue: InternalModuleValue, index = 0): boolean => {
-        if (Array.isArray(modelValue) && modelValue[index] && (props.maxRange || props.minRange)) {
+        if (
+            Array.isArray(modelValue) &&
+            modelValue[index] &&
+            (defaultedRange.value.maxRange || defaultedRange.value.minRange)
+        ) {
             const absoluteDiff = differenceInCalendarDays(secondDate, modelValue[index]);
             const daysInBetween = getDaysInBetween(modelValue[index], secondDate);
             const disabledDates =
                 daysInBetween.length === 1 ? 0 : daysInBetween.filter((date) => isDisabled(date)).length;
             const diff = Math.abs(absoluteDiff) - disabledDates;
-            if (props.minRange && props.maxRange) return diff >= +props.minRange && diff <= +props.maxRange;
-            if (props.minRange) return diff >= +props.minRange;
-            if (props.maxRange) return diff <= +props.maxRange;
+            if (defaultedRange.value.minRange && defaultedRange.value.maxRange)
+                return diff >= +defaultedRange.value.minRange && diff <= +defaultedRange.value.maxRange;
+            if (defaultedRange.value.minRange) return diff >= +defaultedRange.value.minRange;
+            if (defaultedRange.value.maxRange) return diff <= +defaultedRange.value.maxRange;
         }
         return true;
     };

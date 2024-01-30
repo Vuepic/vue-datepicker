@@ -18,7 +18,7 @@ import type { ICalendarDay, InternalModuleValue } from '@/interfaces';
 import type { PickerBasePropsType } from '@/props';
 
 export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleValue>, props: PickerBasePropsType) => {
-    const { defaultedMultiCalendars, defaultedHighlight } = useDefaults(props);
+    const { defaultedMultiCalendars, defaultedHighlight, defaultedRange } = useDefaults(props);
     const { isDisabled, matchDate } = useValidation(props);
     // Track hovered date
     const hoveredDate = ref<Date | null>(null);
@@ -41,7 +41,12 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
     };
 
     const checkRangeDirection = (isStart: boolean): boolean => {
-        if (Array.isArray(modelValue.value) && props.range && modelValue.value[0] && hoveredDate.value) {
+        if (
+            Array.isArray(modelValue.value) &&
+            defaultedRange.value.enabled &&
+            modelValue.value[0] &&
+            hoveredDate.value
+        ) {
             return isStart
                 ? isDateAfter(hoveredDate.value, modelValue.value[0])
                 : isDateBefore(hoveredDate.value, modelValue.value[0]);
@@ -67,12 +72,16 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
      * Check when to add a proper active start/end date class on range picker
      */
     const rangeActiveStartEnd = (day: UnwrapRef<ICalendarDay>, isStart = true): boolean => {
-        if ((props.range || props.weekPicker) && Array.isArray(modelValue.value) && modelValue.value.length === 2) {
+        if (
+            (defaultedRange.value.enabled || props.weekPicker) &&
+            Array.isArray(modelValue.value) &&
+            modelValue.value.length === 2
+        ) {
             if (props.hideOffsetDates && !day.current) return false;
             return isDateEqual(getDate(day.value), modelValue.value[isStart ? 0 : 1]);
         }
 
-        if (props.range) {
+        if (defaultedRange.value.enabled) {
             return (
                 (checkDateEqual(day, isStart) && checkDateBefore(isStart)) ||
                 (isDateEqual(day.value, Array.isArray(modelValue.value) ? modelValue.value[0] : null) &&
@@ -101,7 +110,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
     const isActiveDate = (calendarDay: ICalendarDay): boolean => {
         if (!modelValue.value) return false;
         if (props.hideOffsetDates && !calendarDay.current) return false;
-        if (!props.range) {
+        if (!defaultedRange.value.enabled) {
             if (props.multiDates && Array.isArray(modelValue.value)) {
                 return modelValue.value.some((dateVal) => isDateEqual(dateVal, calendarDay.value));
             }
@@ -117,10 +126,10 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
      * Check if range ends on the given day
      */
     const isHoverRangeEnd = (day: UnwrapRef<ICalendarDay>): boolean => {
-        if (props.autoRange || props.weekPicker) {
+        if (defaultedRange.value.autoRange || props.weekPicker) {
             if (hoveredDate.value) {
                 if (props.hideOffsetDates && !day.current) return false;
-                const rangeEnd = addDays(hoveredDate.value, +props.autoRange);
+                const rangeEnd = addDays(hoveredDate.value, +(defaultedRange.value.autoRange as number));
                 const range = getWeekFromDate(getDate(hoveredDate.value), props.timezone, props.weekStart);
                 return props.weekPicker
                     ? isDateEqual(range[1], getDate(day.value))
@@ -135,9 +144,9 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
      * Check if date in auto range preview is in between
      */
     const isAutoRangeInBetween = (day: UnwrapRef<ICalendarDay>): boolean => {
-        if (props.autoRange || props.weekPicker) {
+        if (defaultedRange.value.autoRange || props.weekPicker) {
             if (hoveredDate.value) {
-                const rangeEnd = addDays(hoveredDate.value, +props.autoRange);
+                const rangeEnd = addDays(hoveredDate.value, +(defaultedRange.value.autoRange as number));
                 if (props.hideOffsetDates && !day.current) return false;
                 const range = getWeekFromDate(getDate(hoveredDate.value), props.timezone, props.weekStart);
                 return props.weekPicker
@@ -150,7 +159,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
     };
 
     const isAutoRangeStart = (day: UnwrapRef<ICalendarDay>): boolean => {
-        if (props.autoRange || props.weekPicker) {
+        if (defaultedRange.value.autoRange || props.weekPicker) {
             if (hoveredDate.value) {
                 if (props.hideOffsetDates && !day.current) return false;
                 const range = getWeekFromDate(getDate(hoveredDate.value), props.timezone, props.weekStart);
@@ -183,14 +192,16 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
     // Check if date is hovered, for single picker mode
     const dateHover = (day: ICalendarDay) => {
         if ((Array.isArray(modelValue.value) && modelValue.value.length) || props.weekPicker) return false;
-        const isInRange = props.range ? !rangeActiveStartEnd(day) && !rangeActiveStartEnd(day, false) : true;
+        const isInRange = defaultedRange.value.enabled
+            ? !rangeActiveStartEnd(day) && !rangeActiveStartEnd(day, false)
+            : true;
 
         return !isDisabled(day.value) && !isActiveDate(day) && !(!day.current && props.hideOffsetDates) && isInRange;
     };
 
     // Check if the date is selected
     const isActive = (day: ICalendarDay) => {
-        if (props.range) {
+        if (defaultedRange.value.enabled) {
             return props.modelAuto ? isSingleInModelAuto() && isActiveDate(day) : false;
         }
         return isActiveDate(day);
@@ -229,7 +240,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
 
     const isBetween = (day: ICalendarDay) => {
         if (
-            (props.range || props.weekPicker) &&
+            (defaultedRange.value.enabled || props.weekPicker) &&
             (defaultedMultiCalendars.value.count > 0 ? day.current : true) &&
             isModelAutoActive() &&
             !(!day.current && props.hideOffsetDates) &&
@@ -243,7 +254,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
     // Common classes to be checked for any mode
     const sharedClasses = (day: ICalendarDay): Record<string, boolean> => {
         const { isRangeStart, isRangeEnd } = rangeStartEnd(day);
-        const isRangeStartEnd = props.range ? isRangeStart || isRangeEnd : false;
+        const isRangeStartEnd = defaultedRange.value.enabled ? isRangeStart || isRangeEnd : false;
         return {
             dp__cell_offset: !day.current,
             dp__pointer: !props.disabled && !(!day.current && props.hideOffsetDates) && !isDisabled(day.value),
@@ -348,8 +359,8 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
 
     // Return specific set of classes depending on the config, since we don't need to check for all
     const getModeClasses = (day: ICalendarDay) => {
-        if (props.range) {
-            if (props.autoRange) return autoRangeClasses(day);
+        if (defaultedRange.value.enabled) {
+            if (defaultedRange.value.autoRange) return autoRangeClasses(day);
             if (props.modelAuto) return { ...singleDateClasses(day), ...rangeDateClasses(day) };
             if (props.weekPicker) return weekPickerRangeClasses(day);
             return rangeDateClasses(day);

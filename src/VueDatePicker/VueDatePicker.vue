@@ -158,7 +158,8 @@
     const { setMenuFocused, setShiftKey } = useState();
     const { clearArrowNav } = useArrowNavigation();
     const { mapDatesArrToMap, validateDate, isValidTime } = useValidation(props);
-    const { defaultedTransitions, defaultedTextInput, defaultedInline, defaultedConfig } = useDefaults(props);
+    const { defaultedTransitions, defaultedTextInput, defaultedInline, defaultedConfig, defaultedRange } =
+        useDefaults(props);
     const { menuTransition, showTransition } = useTransitions(defaultedTransitions);
 
     onMounted(() => {
@@ -341,7 +342,7 @@
             if (date.length === 2 && validateDate(date[0]) && validateDate(date[1])) {
                 return true;
             }
-            if (props.partialRange && !props.timePicker) return validateDate(date[0]);
+            if (defaultedRange.value.partialRange && !props.timePicker) return validateDate(date[0]);
             return false;
         }
         return false;
@@ -383,8 +384,8 @@
             const isTimeValid = isValidTime(internalModelValue.value);
 
             if (isTimeValid && validateBeforeEmit()) {
-                if (props.range && Array.isArray(internalModelValue.value)) {
-                    if (props.partialRange || internalModelValue.value.length === 2) {
+                if (defaultedRange.value.enabled && Array.isArray(internalModelValue.value)) {
+                    if (defaultedRange.value.partialRange || internalModelValue.value.length === 2) {
                         emitOnAutoApply(ignoreClose);
                     }
                 } else {

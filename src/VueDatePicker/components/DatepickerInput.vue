@@ -117,6 +117,7 @@
         defaultedAriaLabels,
         defaultedInline,
         defaultedConfig,
+        defaultedRange,
         getDefaultPattern,
         getDefaultStartTime,
     } = useDefaults(props);
@@ -182,7 +183,7 @@
     };
 
     const parseInput = (value: string) => {
-        if (props.range) {
+        if (defaultedRange.value.enabled) {
             handleRangeTextInput(value);
         } else if (props.multiDates) {
             const dates = value.split(`;`);

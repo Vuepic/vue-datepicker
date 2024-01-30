@@ -92,12 +92,25 @@ export interface Highlight {
 
 export type DpOptionEnabled = boolean | number | string;
 
+export interface RangeConfig {
+    noDisabledRange?: boolean;
+    showLastInRange?: boolean;
+    minMaxRawRage?: boolean;
+    partialRange?: boolean;
+    disableTimeRangeValidation?: boolean;
+    fixedStart?: boolean;
+    fixedEnd?: boolean;
+    maxRange?: string | number;
+    minRange?: string | number;
+    autoRange?: string | number;
+}
+
 export interface VueDatePickerProps {
     uid?: string;
     name?: string;
     is24?: boolean;
     enableTimePicker?: boolean;
-    range?: boolean;
+    range?: boolean | RangeConfig;
     multiCalendars?: DpOptionEnabled | Partial<{ static: boolean; solo: boolean; count: number | string }>;
     modelValue?: ModelValue;
     locale?: string;
@@ -158,6 +171,9 @@ export interface VueDatePickerProps {
     startDate?: string | Date;
     startTime?: PartialTimeObj | PartialTimeObj[];
     hideOffsetDates?: boolean;
+    /**
+     * @deprecated
+     */
     autoRange?: number | string;
     noToday?: boolean;
     noHoursOverlay?: boolean;
@@ -167,6 +183,9 @@ export interface VueDatePickerProps {
     disabledWeekDays?: number[] | string[];
     allowedDates?: string[] | Date[];
     nowButtonLabel?: string;
+    /**
+     * @deprecated
+     */
     partialRange?: boolean;
     monthChangeOnScroll?: boolean | 'inverse';
     markers?: DatePickerMarker[];
@@ -198,9 +217,21 @@ export interface VueDatePickerProps {
     flow?: ('month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds')[];
     partialFlow?: boolean;
     preventMinMaxNavigation?: boolean;
+    /**
+     * @deprecated
+     */
     minRange?: number | string;
+    /**
+     * @deprecated
+     */
     maxRange?: number | string;
+    /**
+     * @deprecated
+     */
     fixedStart?: boolean;
+    /**
+     * @deprecated
+     */
     fixedEnd?: boolean;
     utc?: boolean | 'preserve';
     multiDatesLimit?: number | string;
@@ -229,6 +260,9 @@ export interface VueDatePickerProps {
     };
     arrowNavigation?: boolean;
     yearPicker?: boolean;
+    /**
+     * @deprecated
+     */
     disableTimeRangeValidation?: boolean;
     dayNames?: ((lang: string, weekStart: number) => string[]) | string[];
     modelType?: 'timestamp' | 'format' | string;
@@ -245,6 +279,9 @@ export interface VueDatePickerProps {
     ignoreTimeValidation?: boolean;
     dayClass?: (date: Date) => string;
     hideNavigation?: ('month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds')[];
+    /**
+     * @deprecated
+     */
     noDisabledRange?: boolean;
     sixWeeks?: boolean | 'append' | 'prepend' | 'center' | 'fair';
     timezone?: string;
@@ -255,6 +292,9 @@ export interface VueDatePickerProps {
         | ((time: TimeObj | TimeObj[] | (TimeObj | undefined)[]) => boolean)
         | DisabledTime[]
         | [DisabledTime[], DisabledTime[]];
+    /**
+     * @deprecated
+     */
     showLastInRange?: boolean;
     timePickerInline?: boolean;
     calendar?: (weeks: CalendarWeek[]) => CalendarWeek[];

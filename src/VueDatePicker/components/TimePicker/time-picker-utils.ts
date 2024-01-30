@@ -3,24 +3,19 @@ import { computed } from 'vue';
 import { isAfter, isBefore, setMilliseconds, setSeconds } from 'date-fns';
 
 import { getDate, isDateEqual, setDateTime } from '@/utils/date-utils';
+import { useDefaults } from '@/composables';
 
-import type {
-    InternalModuleValue,
-    Time,
-    TimeType,
-    TimePickerProps,
-    TimeModel,
-    TimeValuesInv,
-    DisabledTime,
-} from '@/interfaces';
+import type { InternalModuleValue, Time, TimeType, TimeModel, TimeValuesInv, DisabledTime } from '@/interfaces';
 import type { UnwrapNestedRefs, WritableComputedRef } from 'vue';
+import type { PickerBasePropsType } from '@/props';
 
 export const useTimePickerUtils = (
-    props: TimePickerProps,
+    props: PickerBasePropsType,
     time: UnwrapNestedRefs<Time>,
     modelValue: WritableComputedRef<InternalModuleValue>,
     updateFlow?: () => void,
 ) => {
+    const { defaultedRange } = useDefaults(props);
     const getTimeValue = (type: TimeType, i?: number): number => {
         if (Array.isArray(time[type])) return (time[type] as number[])[i as number];
         return time[type] as number;
@@ -48,10 +43,10 @@ export const useTimePickerUtils = (
     };
 
     const isRangeCheck = computed(() => {
-        if (props.modelAuto && props.range) {
+        if (props.modelAuto && defaultedRange.value.enabled) {
             return Array.isArray(modelValue.value) ? !modelValue.value.some((val) => !val) : false;
         }
-        return props.range;
+        return defaultedRange.value.enabled;
     });
 
     const validateTime = (type: TimeType, value: number | number[]) => {
@@ -146,7 +141,9 @@ export const useTimePickerUtils = (
 
         if (Array.isArray(props.disabledTimes)) {
             data.disabledArr = (
-                props.range && Array.isArray(props.disabledTimes[ind]) ? props.disabledTimes[ind] : props.disabledTimes
+                defaultedRange.value.enabled && Array.isArray(props.disabledTimes[ind])
+                    ? props.disabledTimes[ind]
+                    : props.disabledTimes
             ) as DisabledTime[];
         }
         return data;

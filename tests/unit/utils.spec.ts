@@ -429,7 +429,7 @@ describe('Utils and date utils formatting', () => {
     });
 
     it('Should set month and year on a date value', () => {
-        const today = new Date();
+        const today = new Date(2023, 0, 1);
         const month = 1;
         const year = 2023;
         const setDate = setDateMonthOrYear(today, month, year);

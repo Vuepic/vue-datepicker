@@ -320,3 +320,22 @@ export interface WeekNumbersOpts {
 export type WeekNumbersProp = 'iso' | 'local' | ((date: Date) => string | number) | WeekNumbersOpts;
 
 export type DPElements = 'action-row';
+
+export interface RangeOpts {
+    noDisabledRange: boolean;
+    showLastInRange: boolean;
+    minMaxRawRage: boolean;
+    partialRange: boolean;
+    disableTimeRangeValidation: boolean;
+    fixedStart: boolean;
+    fixedEnd: boolean;
+    maxRange?: string | number;
+    minRange?: string | number;
+    autoRange?: string | number;
+}
+
+export interface RangeConfig extends RangeOpts {
+    enabled: boolean;
+}
+
+export type RangeProp = boolean | Partial<RangeOpts>;

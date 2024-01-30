@@ -91,6 +91,7 @@
         defaultedMultiCalendars,
         defaultedTextInput,
         defaultedInline,
+        defaultedRange,
         getDefaultPattern,
     } = useDefaults(props);
     const { isValidTime } = useValidation(props);
@@ -106,7 +107,7 @@
     });
 
     const validDateRange = computed(() => {
-        return props.range && !props.partialRange && props.internalModelValue
+        return defaultedRange.value.enabled && !defaultedRange.value.partialRange && props.internalModelValue
             ? (props.internalModelValue as Date[]).length === 2
             : true;
     });
@@ -120,7 +121,7 @@
 
     const isMonthValid = computed((): boolean => {
         if (!props.monthPicker) return true;
-        if (props.range && Array.isArray(props.internalModelValue)) {
+        if (defaultedRange.value.enabled && Array.isArray(props.internalModelValue)) {
             const invalid = props.internalModelValue.filter((value) => !isMonthWithinRange(value));
             return !invalid.length;
         }

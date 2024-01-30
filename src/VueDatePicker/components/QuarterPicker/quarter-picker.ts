@@ -23,7 +23,7 @@ import { isDateBetween, isDateEqual } from '@/utils/date-utils';
 
 export const useQuarterPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     const hoverDate = ref();
-    const { defaultedMultiCalendars, defaultedConfig, defaultedHighlight } = useDefaults(props);
+    const { defaultedMultiCalendars, defaultedConfig, defaultedHighlight, defaultedRange } = useDefaults(props);
     const { modelValue, year, month, calendars } = useModel(props, emit);
     const { isDisabled: isDateDisabled } = useValidation(props);
     const { selectYear, groupedYears, showYearPicker, isDisabled, toggleYearPicker, handleYearSelect, handleYear } =
@@ -53,7 +53,7 @@ export const useQuarterPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     });
 
     const isQuarterBetween = (date: Date) => {
-        if (props.range) {
+        if (defaultedRange.value.enabled) {
             if (Array.isArray(modelValue.value)) {
                 const isModel = isDateEqual(date, modelValue.value[0]) || isDateEqual(date, modelValue.value[1]);
                 return isDateBetween(modelValue.value, hoverDate.value, date) && !isModel;
@@ -110,7 +110,7 @@ export const useQuarterPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         calendars.value[instance].month = getMonth(endOfQuarter(date));
 
         if (props.multiDates) return selectMultiQuarters(date);
-        if (props.range) return selectRangedQuarter(date);
+        if (defaultedRange.value.enabled) return selectRangedQuarter(date);
         return selectSingleQuarter(date);
     };
 

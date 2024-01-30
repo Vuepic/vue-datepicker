@@ -46,7 +46,7 @@ export const useDatePicker = (
     const lastScrollTime = ref(new Date());
 
     const { modelValue, calendars, time } = useModel(props, emit);
-    const { defaultedMultiCalendars, defaultedStartTime } = useDefaults(props);
+    const { defaultedMultiCalendars, defaultedStartTime, defaultedRange } = useDefaults(props);
     const { validateMonthYearInRange, isDisabled, isDateRangeAllowed, checkMinMaxRange } = useValidation(props);
     const { updateTimeValues, getSetDateTime, setTime, assignStartTime, validateTime, disabledTimesConfig } =
         useTimePickerUtils(props, time, modelValue, updateFlow);
@@ -130,7 +130,7 @@ export const useDatePicker = (
     };
 
     const shouldAssignMultiSolo = () => {
-        if (Array.isArray(modelValue.value) && props.range) {
+        if (Array.isArray(modelValue.value) && defaultedRange.value.enabled) {
             return getMonth(modelValue.value[0]) === getMonth(modelValue.value[1] ?? modelValue.value[0]);
         }
         return false;
@@ -181,7 +181,7 @@ export const useDatePicker = (
     };
     // Assign range values
     const assignRangeValue = (dates: Date[], fromMount: boolean) => {
-        if (dates[1] && props.showLastInRange) {
+        if (dates[1] && defaultedRange.value.showLastInRange) {
             assignMonthAndYear(dates[getRangeFocusIndex(dates)], fromMount);
         } else {
             assignMonthAndYear(dates[0], fromMount);
@@ -197,7 +197,7 @@ export const useDatePicker = (
 
     // Assign range values, or in case of multiDates, set
     const assignExistingMulti = (dates: Date[], fromMount: boolean) => {
-        if ((props.range || props.weekPicker) && !props.multiDates) {
+        if ((defaultedRange.value.enabled || props.weekPicker) && !props.multiDates) {
             return assignRangeValue(dates, fromMount);
         }
 
@@ -412,7 +412,7 @@ export const useDatePicker = (
     };
 
     const includesDisabled = (day: Date) => {
-        if (!props.noDisabledRange) return false;
+        if (!defaultedRange.value.noDisabledRange) return false;
         const daysBetween = getDaysInBetween(tempRange.value[0], day);
         return daysBetween.some((date) => isDisabled(date));
     };
@@ -420,14 +420,17 @@ export const useDatePicker = (
     // Before range selecting, ensure that modelValue is properly set
     const presetTempRange = () => {
         tempRange.value = modelValue.value ? (modelValue.value as Date[]).slice() : [];
-        if (tempRange.value.length === 2 && !(props.fixedStart || props.fixedEnd)) {
+        if (tempRange.value.length === 2 && !(defaultedRange.value.fixedStart || defaultedRange.value.fixedEnd)) {
             tempRange.value = [];
         }
     };
 
     // Handles auto range selecting
     const handleAutoRange = (day: ICalendarDay, isNext: boolean) => {
-        const autoRange = [getDate(day.value), addDays(getDate(day.value), +props.autoRange)];
+        const autoRange = [
+            getDate(day.value),
+            addDays(getDate(day.value), +(defaultedRange.value.autoRange as number)),
+        ];
         if (isDateRangeAllowed(autoRange)) {
             if (isNext) {
                 handleNextCalendarAutoRange(day.value);
@@ -459,12 +462,15 @@ export const useDatePicker = (
     const getRangeWithFixedDate = (date: Date): Date[] => {
         if (Array.isArray(modelValue.value) && modelValue.value.length === 2) {
             if (
-                props.fixedStart &&
+                defaultedRange.value.fixedStart &&
                 (isDateAfter(date, modelValue.value[0]) || isDateEqual(date, modelValue.value[0]))
             ) {
                 return [modelValue.value[0], date];
             }
-            if (props.fixedEnd && (isDateBefore(date, modelValue.value[1]) || isDateEqual(date, modelValue.value[1]))) {
+            if (
+                defaultedRange.value.fixedEnd &&
+                (isDateBefore(date, modelValue.value[1]) || isDateEqual(date, modelValue.value[1]))
+            ) {
                 return [date, modelValue.value[1]];
             }
             emit('invalid-fixed-range', date);
@@ -475,7 +481,10 @@ export const useDatePicker = (
 
     // Handle range with fixed start/end
     const setFixedDateRange = (day: ICalendarDay) => {
-        if (includesDisabled(day.value) || !checkMinMaxRange(day.value, modelValue.value, props.fixedStart ? 0 : 1)) {
+        if (
+            includesDisabled(day.value) ||
+            !checkMinMaxRange(day.value, modelValue.value, defaultedRange.value.fixedStart ? 0 : 1)
+        ) {
             return emit('invalid-date', day.value);
         }
         tempRange.value = getRangeWithFixedDate(getDate(day.value));
@@ -484,8 +493,8 @@ export const useDatePicker = (
     // Called on selectDate when range mode is used
     const handleRangeDatesSelect = (day: ICalendarDay, isNext: boolean) => {
         presetTempRange();
-        if (props.autoRange) return handleAutoRange(day, isNext);
-        if (props.fixedStart || props.fixedEnd) return setFixedDateRange(day);
+        if (defaultedRange.value.autoRange) return handleAutoRange(day, isNext);
+        if (defaultedRange.value.fixedStart || defaultedRange.value.fixedEnd) return setFixedDateRange(day);
         if (!tempRange.value[0]) {
             tempRange.value[0] = getDate(day.value);
             emit('range-start', tempRange.value[0]);
@@ -560,7 +569,7 @@ export const useDatePicker = (
     const selectDate = (day: ICalendarDay, isNext = false): void => {
         if (isDisabled(day.value) || (!day.current && props.hideOffsetDates)) return emit('invalid-date', day.value);
 
-        if (!props.range) return handleSingleDateSelect(day);
+        if (!defaultedRange.value.enabled) return handleSingleDateSelect(day);
 
         if (isNumberArray(time.hours) && isNumberArray(time.minutes) && !props.multiDates) {
             handleRangeDatesSelect(day, isNext);
@@ -586,7 +595,12 @@ export const useDatePicker = (
 
     // Called when the preset range is clicked
     const presetDate = (value: Date[] | string[] | Date | string, noTz?: boolean): void => {
-        setPresetDate({ value, modelValue, range: props.range, timezone: noTz ? undefined : props.timezone });
+        setPresetDate({
+            value,
+            modelValue,
+            range: defaultedRange.value.enabled,
+            timezone: noTz ? undefined : props.timezone,
+        });
 
         selectOnAutoApply();
         if (props.multiCalendars) {
@@ -596,7 +610,7 @@ export const useDatePicker = (
 
     // Select current date on now button
     const selectCurrentDate = (): void => {
-        if (!props.range) {
+        if (!defaultedRange.value.enabled) {
             modelValue.value = getDate();
         } else if (modelValue.value && Array.isArray(modelValue.value) && modelValue.value[0]) {
             modelValue.value = isDateBefore(getDate(), modelValue.value[0])

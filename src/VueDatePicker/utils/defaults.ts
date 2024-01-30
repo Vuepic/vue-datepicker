@@ -17,6 +17,9 @@ import type {
     HighlightFn,
     WeekNumbersProp,
     WeekNumbersOpts,
+    RangeProp,
+    RangeOpts,
+    RangeConfig,
 } from '@/interfaces';
 import { getDate } from '@/utils/date-utils';
 
@@ -182,5 +185,36 @@ export const getDefaultWeekNumbers = (weekNumbers: WeekNumbersProp): WeekNumbers
     return {
         type: weekNumbers,
         hideOnOffsetDates: false,
+    };
+};
+
+export const getDefaultRangeOptions = (config: RangeProp, deprecatedOpts: RangeOpts): RangeConfig => {
+    const defaultOptions = {
+        noDisabledRange: false,
+        showLastInRange: true,
+        minMaxRawRage: false,
+        partialRange: true,
+        disableTimeRangeValidation: false,
+        maxRange: undefined,
+        minRange: undefined,
+        autoRange: undefined,
+        fixedStart: false,
+        fixedEnd: false,
+    };
+    if (typeof config === 'object') {
+        return { enabled: true, ...defaultOptions, ...config };
+    }
+    return {
+        enabled: config,
+        noDisabledRange: deprecatedOpts.noDisabledRange,
+        showLastInRange: deprecatedOpts.showLastInRange,
+        minMaxRawRage: deprecatedOpts.minMaxRawRage,
+        partialRange: deprecatedOpts.partialRange,
+        disableTimeRangeValidation: deprecatedOpts.disableTimeRangeValidation,
+        maxRange: deprecatedOpts.maxRange,
+        minRange: deprecatedOpts.minRange,
+        autoRange: deprecatedOpts.autoRange,
+        fixedStart: deprecatedOpts.fixedStart,
+        fixedEnd: deprecatedOpts.fixedEnd,
     };
 };

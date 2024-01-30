@@ -20,8 +20,14 @@ import type { PickerBasePropsType } from '@/props';
 import { useMonthOrQuarterPicker } from '@/components/shared/month-quarter-picker';
 
 export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
-    const { defaultedMultiCalendars, defaultedAriaLabels, defaultedTransitions, defaultedConfig, defaultedHighlight } =
-        useDefaults(props);
+    const {
+        defaultedMultiCalendars,
+        defaultedAriaLabels,
+        defaultedTransitions,
+        defaultedConfig,
+        defaultedRange,
+        defaultedHighlight,
+    } = useDefaults(props);
 
     const { modelValue, year, month: instanceMonth, calendars } = useModel(props, emit);
     const months = computed(() => getMonths(props.formatLocale, props.locale, props.monthNameFormat));
@@ -92,7 +98,7 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     };
 
     const isMonthBetween = (month: number, instance: number) => {
-        if (props.range) {
+        if (defaultedRange.value.enabled) {
             const currentModel = getModelMonthYear();
             if (Array.isArray(modelValue.value) && Array.isArray(currentModel)) {
                 const isModel = isSameMonthYear(month, instance, 0) || isSameMonthYear(month, instance, 1);
@@ -144,7 +150,7 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         calendars.value[instance].month = month;
         emitMonthYearUpdate(instance, calendars.value[instance].year, month);
         if (props.multiDates) return selectMultiMonths(month, instance);
-        if (props.range) return selectRangedMonth(month, instance);
+        if (defaultedRange.value.enabled) return selectRangedMonth(month, instance);
         return selectSingleMonth(month, instance);
     };
 
@@ -167,7 +173,12 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     };
 
     const presetDate = (value: Date[] | string[] | Date | string, noTz?: boolean) => {
-        setPresetDate({ value, modelValue, range: props.range, timezone: noTz ? undefined : props.timezone });
+        setPresetDate({
+            value,
+            modelValue,
+            range: defaultedRange.value.enabled,
+            timezone: noTz ? undefined : props.timezone,
+        });
         emit('auto-apply');
     };
 

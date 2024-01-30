@@ -29,6 +29,7 @@ import type {
     Config,
     HighlightProp,
     WeekNumbersProp,
+    RangeProp,
 } from '@/interfaces';
 
 export const AllProps = {
@@ -144,7 +145,7 @@ export const AllProps = {
     hoursIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
     minutesIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
     secondsIncrement: { type: [Number, String] as PropType<number | string>, default: 1 },
-    range: { type: Boolean as PropType<boolean>, default: false },
+    range: { type: [Boolean, Object] as PropType<RangeProp>, default: false },
     uid: { type: String as PropType<string>, default: null },
     disabled: { type: Boolean as PropType<boolean>, default: false },
     readonly: { type: Boolean as PropType<boolean>, default: false },

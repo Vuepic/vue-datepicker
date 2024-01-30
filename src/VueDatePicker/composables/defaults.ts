@@ -10,6 +10,7 @@ import {
     getDefaultFilters,
     getDefaultHighlight,
     getDefaultInlineOptions,
+    getDefaultRangeOptions,
     getDefaultTextInputOptions,
     getDefaultWeekNumbers,
 } from '@/utils/defaults';
@@ -37,7 +38,7 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
     };
     const assignTime = (date: TimeModel) => assignDefaultTime(date, props.enableSeconds);
     const getDefaultStartTime = (): TimeModel | TimeModel[] | null => {
-        if (props.range) {
+        if (defaultedRange.value.enabled) {
             if (props.startTime && Array.isArray(props.startTime)) {
                 return [assignTime(props.startTime[0]), assignTime(props.startTime[1])];
             }
@@ -72,6 +73,21 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
 
     const defaultedWeekNumbers = computed(() => getDefaultWeekNumbers(props.weekNumbers));
 
+    const defaultedRange = computed(() =>
+        getDefaultRangeOptions(props.range, {
+            minMaxRawRage: false,
+            maxRange: props.maxRange,
+            minRange: props.minRange,
+            noDisabledRange: props.noDisabledRange,
+            showLastInRange: props.showLastInRange,
+            partialRange: props.partialRange,
+            disableTimeRangeValidation: props.disableTimeRangeValidation,
+            autoRange: props.autoRange,
+            fixedStart: props.fixedStart,
+            fixedEnd: props.fixedEnd,
+        }),
+    );
+
     return {
         defaultedTransitions,
         defaultedMultiCalendars,
@@ -85,6 +101,7 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
         defaultedConfig,
         defaultedHighlight,
         defaultedWeekNumbers,
+        defaultedRange,
         getDefaultPattern,
         getDefaultStartTime,
     };

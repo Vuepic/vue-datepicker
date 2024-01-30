@@ -19,7 +19,7 @@ import type { VueEmit, IDefaultSelect } from '@/interfaces';
 export const useYearPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     const { modelValue } = useModel(props, emit);
     const hoverDate = ref<Date | null>(null);
-    const { defaultedHighlight, defaultedFilters } = useDefaults(props);
+    const { defaultedHighlight, defaultedFilters, defaultedRange } = useDefaults(props);
     const focusYear = ref();
 
     onMounted(() => {
@@ -38,7 +38,7 @@ export const useYearPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     };
 
     const isYearBetween = (year: number) => {
-        if (props.range) {
+        if (defaultedRange.value.enabled) {
             if (Array.isArray(modelValue.value)) {
                 return isDateBetween(modelValue.value, hoverDate.value, yearToDate(year));
             }
@@ -78,7 +78,7 @@ export const useYearPicker = (props: PickerBasePropsType, emit: VueEmit) => {
             }
             return emit('auto-apply', true);
         }
-        if (props.range) {
+        if (defaultedRange.value.enabled) {
             const range = setMonthOrYearRange(modelValue, yearToDate(year), emit);
             return checkRangeAutoApply(range, emit, props.autoApply, props.modelAuto);
         }

@@ -145,7 +145,7 @@
     const { buildMatrix, setTimePicker } = useArrowNavigation();
     const slots = useSlots();
 
-    const { defaultedTransitions, defaultedAriaLabels, defaultedTextInput, defaultedConfig } = useDefaults(props);
+    const { defaultedTransitions, defaultedAriaLabels, defaultedTextInput, defaultedConfig, defaultedRange } = useDefaults(props);
     const { transitionName, showTransition } = useTransitions(defaultedTransitions);
     const { hideNavigationButtons } = useCommon();
 
@@ -164,7 +164,7 @@
     });
 
     const shouldShowRangedInput = computed(() => {
-        if (props.range && props.modelAuto) return isModelAuto(props.internalModelValue);
+        if (defaultedRange.value.enabled && props.modelAuto) return isModelAuto(props.internalModelValue);
         return true;
     });
 
@@ -180,7 +180,7 @@
 
     const timeInputs = computed((): { hours: number; minutes: number; seconds: number }[] => {
         const arr = [];
-        if (props.range) {
+        if (defaultedRange.value.enabled) {
             for (let i = 0; i < 2; i++) {
                 arr.push(getTimeInput(i));
             }
@@ -218,7 +218,7 @@
     const timeInputSlots = mapSlots(slots, 'timePicker');
 
     const getEvent = (event: number, index: number, property: 'hours' | 'minutes' | 'seconds') => {
-        if (!props.range) {
+        if (!defaultedRange.value.enabled) {
             return event;
         }
         if (index === 0) {
