@@ -324,7 +324,7 @@ export type DPElements = 'action-row';
 export interface RangeOpts {
     noDisabledRange: boolean;
     showLastInRange: boolean;
-    minMaxRawRage: boolean;
+    minMaxRawRange: boolean;
     partialRange: boolean;
     disableTimeRangeValidation: boolean;
     fixedStart: boolean;

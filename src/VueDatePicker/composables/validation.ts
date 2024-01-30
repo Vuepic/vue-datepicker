@@ -165,7 +165,7 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
             const daysInBetween = getDaysInBetween(modelValue[index], secondDate);
             const disabledDates =
                 daysInBetween.length === 1 ? 0 : daysInBetween.filter((date) => isDisabled(date)).length;
-            const diff = Math.abs(absoluteDiff) - disabledDates;
+            const diff = Math.abs(absoluteDiff) - (defaultedRange.value.minMaxRawRange ? 0 : disabledDates);
             if (defaultedRange.value.minRange && defaultedRange.value.maxRange)
                 return diff >= +defaultedRange.value.minRange && diff <= +defaultedRange.value.maxRange;
             if (defaultedRange.value.minRange) return diff >= +defaultedRange.value.minRange;

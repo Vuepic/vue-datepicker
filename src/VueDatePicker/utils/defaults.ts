@@ -192,7 +192,7 @@ export const getDefaultRangeOptions = (config: RangeProp, deprecatedOpts: RangeO
     const defaultOptions = {
         noDisabledRange: false,
         showLastInRange: true,
-        minMaxRawRage: false,
+        minMaxRawRange: false,
         partialRange: true,
         disableTimeRangeValidation: false,
         maxRange: undefined,
@@ -208,7 +208,7 @@ export const getDefaultRangeOptions = (config: RangeProp, deprecatedOpts: RangeO
         enabled: config,
         noDisabledRange: deprecatedOpts.noDisabledRange,
         showLastInRange: deprecatedOpts.showLastInRange,
-        minMaxRawRage: deprecatedOpts.minMaxRawRage,
+        minMaxRawRange: deprecatedOpts.minMaxRawRange,
         partialRange: deprecatedOpts.partialRange,
         disableTimeRangeValidation: deprecatedOpts.disableTimeRangeValidation,
         maxRange: deprecatedOpts.maxRange,

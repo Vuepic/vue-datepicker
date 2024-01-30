@@ -75,7 +75,7 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
 
     const defaultedRange = computed(() =>
         getDefaultRangeOptions(props.range, {
-            minMaxRawRage: false,
+            minMaxRawRange: false,
             maxRange: props.maxRange,
             minRange: props.minRange,
             noDisabledRange: props.noDisabledRange,

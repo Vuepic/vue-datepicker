@@ -95,7 +95,7 @@ export type DpOptionEnabled = boolean | number | string;
 export interface RangeConfig {
     noDisabledRange?: boolean;
     showLastInRange?: boolean;
-    minMaxRawRage?: boolean;
+    minMaxRawRange?: boolean;
     partialRange?: boolean;
     disableTimeRangeValidation?: boolean;
     fixedStart?: boolean;
