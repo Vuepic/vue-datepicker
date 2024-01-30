@@ -25,6 +25,7 @@
 .dp__action_buttons {
   display: flex;
   flex: 0;
+  white-space: nowrap;
   align-items: center;
   justify-content: flex-end;
   margin-inline-start: auto;
