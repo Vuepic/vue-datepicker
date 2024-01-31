@@ -1,5 +1,5 @@
 import { ref, toRef, watch } from 'vue';
-import { format, getHours, getMinutes, getMonth, getSeconds, getYear, parse, setYear } from 'date-fns';
+import { format, getHours, getMinutes, getMonth, getSeconds, getYear, parse, set, setYear } from 'date-fns';
 
 import {
     checkPartialRangeValue,
@@ -119,24 +119,25 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
     };
 
     const mapMonthExternalToInternal = (value: MonthModel | MonthModel[]): Date | Date[] => {
+        const today = set(getDate(), { date: 1 });
         if (Array.isArray(value)) {
             if (props.multiDates) {
-                return value.map((val) => convertCustomModeType(val, setDateMonthOrYear(null, +val.month, +val.year)));
+                return value.map((val) => convertCustomModeType(val, setDateMonthOrYear(today, +val.month, +val.year)));
             }
             return checkRangeEnabled(
                 () => [
-                    convertCustomModeType(value[0], setDateMonthOrYear(null, +value[0].month, +value[0].year)),
+                    convertCustomModeType(value[0], setDateMonthOrYear(today, +value[0].month, +value[0].year)),
                     convertCustomModeType(
                         value[1],
                         value[1]
-                            ? setDateMonthOrYear(null, +value[1].month, +value[1].year)
+                            ? setDateMonthOrYear(today, +value[1].month, +value[1].year)
                             : checkPartialRangeValue(defaultedRange.value.partialRange),
                     ),
                 ],
                 defaultedRange.value.enabled,
             );
         }
-        return convertCustomModeType(value, setDateMonthOrYear(null, +value.month, +value.year));
+        return convertCustomModeType(value, setDateMonthOrYear(today, +value.month, +value.year));
     };
 
     // Map external multi dates format to internal model value
