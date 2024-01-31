@@ -10,6 +10,7 @@ import {
     getHours,
     getMinutes,
     setMonth,
+    set,
 } from 'date-fns';
 import { describe, it, expect } from 'vitest';
 
@@ -268,7 +269,7 @@ describe('v-model mapping', () => {
     });
 
     it('Should properly map month-picker multi dates', async () => {
-        const setMonthItem = (toAdd: number) => addMonths(setMonth(new Date(), 5), toAdd);
+        const setMonthItem = (toAdd: number) => addMonths(setMonth(set(new Date(), { date: 1 }), 5), toAdd);
         const dates = [setMonthItem(1), setMonthItem(2), setMonthItem(3)];
         const modelValue = dates.map((date) => ({ month: getMonth(date), year: getYear(date) }));
         const wrapper = shallowMountDp({ multiDates: true, monthPicker: true, modelValue });
