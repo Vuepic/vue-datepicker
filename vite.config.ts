@@ -42,12 +42,11 @@ export default defineConfig({
             fileName: 'vue-datepicker',
         },
         rollupOptions: {
-            external: f === 'iife' ? ['vue'] : ['vue', 'date-fns', 'date-fns-tz'],
+            external: f === 'iife' ? ['vue'] : ['vue', 'date-fns'],
             output: {
                 globals: {
                     vue: 'Vue',
                     'date-fns': 'dateFns',
-                    'date-fns-tz': 'dateFnsTz',
                 },
             },
         },
