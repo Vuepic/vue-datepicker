@@ -150,7 +150,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
 
     // Map external week picker format to internal model value
     const mapWeekExternalToInternal = (value: Date[]) => {
-        if (Array.isArray(value)) {
+        if (Array.isArray(value) && defaultedRange.value.enabled) {
             const startWeek = value[0];
             const endWeek = value[1];
             return [
