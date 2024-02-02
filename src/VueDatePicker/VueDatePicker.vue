@@ -153,7 +153,7 @@
     const pickerWrapperRef = ref<HTMLElement | null>(null);
     const shouldFocusNext = ref(false);
     const shiftKeyActive = ref(false);
-    const collapse = ref(true);
+    const collapse = ref(false);
 
     const { setMenuFocused, setShiftKey } = useState();
     const { clearArrowNav } = useArrowNavigation();
