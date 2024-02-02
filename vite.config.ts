@@ -10,7 +10,7 @@ function removeDataTestAttrs(node: any) {
     if (node.type === 1) {
         node.props = node.props.filter((prop: any) => {
             if (prop.name === 'data-test') return false;
-            return !(prop.name === 'bind' && prop.arg && prop.arg.content && prop.arg.content === 'data-test');
+            return !(prop.name === 'bind' && prop.arg?.content === 'data-test');
         });
     }
 }
