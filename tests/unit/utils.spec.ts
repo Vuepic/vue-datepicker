@@ -98,7 +98,7 @@ describe('Utils and date utils formatting', () => {
 
     it('Should get day names by fallback to locale', () => {
         // Pass incorrect formatLocale
-        const days = getDayNames({}, 'de', 1);
+        const days = getDayNames(null, 'de', 1);
 
         expect(days).toHaveLength(7);
         expect(days[1]).toEqual('Di');
@@ -127,7 +127,7 @@ describe('Utils and date utils formatting', () => {
 
     it('Should get month values by fallback to locale', () => {
         // Pass incorrect formatLocale
-        const months = getMonths({}, 'de', 'long');
+        const months = getMonths(null, 'de', 'long');
 
         expect(months).toHaveLength(12);
         expect(months[0].text).toEqual('Januar');

@@ -10,6 +10,7 @@ import type {
     ModelValue,
     OverlayGridItem,
 } from '@/interfaces';
+import { type Locale } from 'date-fns';
 import type { ComponentPublicInstance } from 'vue';
 
 export const getArrayInArray = <T>(list: T[], increment = 3): T[][] => {

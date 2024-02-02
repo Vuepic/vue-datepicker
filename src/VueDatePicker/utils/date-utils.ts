@@ -42,7 +42,7 @@ import type {
     HighlightFn,
 } from '@/interfaces';
 
-import type { Duration } from 'date-fns';
+import type { Duration, Locale } from 'date-fns';
 
 const parseTextToDate = (
     value: string,
