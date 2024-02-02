@@ -57,7 +57,7 @@ export const useTimePickerUtils = (
             }),
         );
 
-        if (isRangeCheck.value && !props.disableTimeRangeValidation) {
+        if (isRangeCheck.value && !defaultedRange.value.disableTimeRangeValidation) {
             const setTime = (index: number) =>
                 !modelValue.value
                     ? (null as unknown as Date)
