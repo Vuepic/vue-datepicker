@@ -17,7 +17,7 @@ import {
     startOfQuarter,
     startOfYear,
 } from 'date-fns';
-import utcToZonedTime from 'date-fns-tz/utcToZonedTime';
+import { utcToZonedTime } from '@/utils/date-tns-tz';
 
 import { resetDateTime } from '@/utils/date-utils';
 

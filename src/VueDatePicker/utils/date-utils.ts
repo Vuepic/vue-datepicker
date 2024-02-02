@@ -25,7 +25,7 @@ import {
     subMonths,
     format,
 } from 'date-fns';
-import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz/esm';
+import { utcToZonedTime, zonedTimeToUtc } from '@/utils/date-tns-tz';
 import { errors } from '@/utils/util';
 
 import type {
