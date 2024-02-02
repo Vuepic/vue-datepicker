@@ -192,7 +192,8 @@ export interface VueDatePickerProps {
     transitions?:
         | boolean
         | {
-              menuAppear?: string;
+              menuAppearTop?: string;
+              menuAppearBottom?: string;
               open?: string;
               close?: string;
               next?: string;
