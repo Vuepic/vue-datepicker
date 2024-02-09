@@ -17,16 +17,14 @@ import {
     getDate,
     getDaysInBetween,
     getNextMonthYear,
-    getZonedDate,
     isDateAfter,
     isDateBefore,
     isDateEqual,
     resetDateTime,
-    sanitizeDate,
     setDateTime,
 } from '@/utils/date-utils';
 import { useDefaults, useModel, useValidation } from '@/composables';
-import { isNumNullish } from '@/utils/util';
+import { getMapDate, isNumNullish } from '@/utils/util';
 import { isNumberArray } from '@/utils/type-guard';
 import { useTimePickerUtils } from '@/components/TimePicker/time-picker-utils';
 import { checkRangeAutoApply, handleMultiDatesSelect, setPresetDate } from '@/composables/shared';
@@ -46,7 +44,7 @@ export const useDatePicker = (
     const lastScrollTime = ref(new Date());
 
     const { modelValue, calendars, time } = useModel(props, emit);
-    const { defaultedMultiCalendars, defaultedStartTime, defaultedRange } = useDefaults(props);
+    const { defaultedMultiCalendars, defaultedStartTime, defaultedRange, defaultedTz, propDates } = useDefaults(props);
     const { validateMonthYearInRange, isDisabled, isDateRangeAllowed, checkMinMaxRange } = useValidation(props);
     const { updateTimeValues, getSetDateTime, setTime, assignStartTime, validateTime, disabledTimesConfig } =
         useTimePickerUtils(props, time, modelValue, updateFlow);
@@ -302,10 +300,12 @@ export const useDatePicker = (
     };
 
     // Check if the calendar day has a marker
-    const getMarker = (date: UnwrapRef<ICalendarDay>): IMarker | undefined =>
-        props.markers.find((marker) =>
-            isDateEqual(sanitizeDate(date.value), getZonedDate(getDate(marker.date), props.timezone)),
-        );
+    const getMarker = (date: UnwrapRef<ICalendarDay>): IMarker | undefined => {
+        if (propDates.value.markers) {
+            return getMapDate(date.value, propDates.value.markers);
+        }
+        return undefined;
+    };
 
     const getSixWeeksMode = (firstWeekday: number, gapToEnd: number) => {
         switch (props.sixWeeks === true ? 'append' : props.sixWeeks) {
@@ -593,13 +593,13 @@ export const useDatePicker = (
         }
     };
 
-    // Called when the preset range is clicked
+    // Called when the preset date is clicked
     const presetDate = (value: Date[] | string[] | Date | string, noTz?: boolean): void => {
         setPresetDate({
             value,
             modelValue,
             range: defaultedRange.value.enabled,
-            timezone: noTz ? undefined : props.timezone,
+            timezone: noTz ? undefined : defaultedTz.value!.timezone,
         });
 
         selectOnAutoApply();

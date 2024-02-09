@@ -14,6 +14,7 @@ import type {
     VueEmit,
     Highlight,
     HighlightFn,
+    PropDates,
 } from '@/interfaces';
 import type { PickerBasePropsType } from '@/props';
 
@@ -25,6 +26,7 @@ interface Opts {
     year: ComputedRef<(instance: number) => number>;
     month: ComputedRef<(instance: number) => number>;
     highlight: ComputedRef<Highlight | HighlightFn>;
+    propDates: ComputedRef<PropDates>;
     emit: VueEmit;
 }
 
@@ -34,6 +36,7 @@ interface Opts {
 export const useMonthOrQuarterPicker = ({
     multiCalendars,
     highlight,
+    propDates,
     calendars,
     modelValue,
     props,
@@ -49,7 +52,13 @@ export const useMonthOrQuarterPicker = ({
             month: month.value(instance),
             year: year.value(instance),
         });
-        return validateMonthYear(currentDate, props.maxDate, props.minDate, props.preventMinMaxNavigation, next);
+        return validateMonthYear(
+            currentDate,
+            propDates.value.maxDate,
+            propDates.value.minDate,
+            props.preventMinMaxNavigation,
+            next,
+        );
     });
 
     const assignMultiCalendars = () => {
@@ -99,7 +108,11 @@ export const useMonthOrQuarterPicker = ({
     const groupedYears = computed(() => (instance: number): OverlayGridItem[][] => {
         return groupListAndMap(years.value, (y: IDefaultSelect) => {
             const active = year.value(instance) === y.value;
-            const disabled = checkMinMaxValue(y.value, getMinMaxYear(props.minDate), getMinMaxYear(props.maxDate));
+            const disabled = checkMinMaxValue(
+                y.value,
+                getMinMaxYear(propDates.value.minDate),
+                getMinMaxYear(propDates.value.maxDate),
+            );
             const highlighted = checkHighlightYear(highlight.value, y.value);
 
             return { active, disabled, highlighted };

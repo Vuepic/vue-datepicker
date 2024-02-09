@@ -154,6 +154,7 @@
         defaultedFilters,
         defaultedConfig,
         defaultedHighlight,
+        propDates,
     } = useDefaults(props);
     const { transitionName, showTransition } = useTransitions(defaultedTransitions);
     const { buildMatrix } = useArrowNavigation();
@@ -206,8 +207,8 @@
             const disabled =
                 checkMinMaxValue(
                     month.value,
-                    getMinMonth(props.year, props.minDate),
-                    getMaxMonth(props.year, props.maxDate),
+                    getMinMonth(props.year, propDates.value.minDate),
+                    getMaxMonth(props.year, propDates.value.maxDate),
                 ) || defaultedFilters.value.months.includes(month.value);
             const highlighted = checkHighlightMonth(defaultedHighlight.value, month.value, props.year);
             return { active, disabled, highlighted };
@@ -218,8 +219,11 @@
         return groupListAndMap(props.years, (year: IDefaultSelect) => {
             const active = props.year === year.value;
             const disabled =
-                checkMinMaxValue(year.value, getMinMaxYear(props.minDate), getMinMaxYear(props.maxDate)) ||
-                defaultedFilters.value.years.includes(year.value);
+                checkMinMaxValue(
+                    year.value,
+                    getMinMaxYear(propDates.value.minDate),
+                    getMinMaxYear(propDates.value.maxDate),
+                ) || defaultedFilters.value.years.includes(year.value);
             const highlighted = checkHighlightYear(defaultedHighlight.value, year.value);
             return { active, disabled, highlighted };
         });

@@ -292,7 +292,7 @@ describe('Logic connection', () => {
         await clickCalendarDate(dp, start);
         await clickSelectBtn(dp);
 
-        expect(dp.emitted()['update:model-value']).toEqual([[getWeekFromDate(start, '', 1)]]);
+        expect(dp.emitted()['update:model-value']).toEqual([[getWeekFromDate(start, 1)]]);
     });
 
     it('Should select week range', async () => {
@@ -304,9 +304,7 @@ describe('Logic connection', () => {
         await clickCalendarDate(dp, end);
         await clickSelectBtn(dp);
 
-        expect(dp.emitted()['update:model-value']).toEqual([
-            [[getWeekFromDate(start, '', 1), getWeekFromDate(end, '', 1)]],
-        ]);
+        expect(dp.emitted()['update:model-value']).toEqual([[[getWeekFromDate(start, 1), getWeekFromDate(end, 1)]]]);
     });
 
     it('Should close month overlay on pressing keyboard Esc when escClose = true', async () => {

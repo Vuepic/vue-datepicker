@@ -27,6 +27,8 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         defaultedConfig,
         defaultedRange,
         defaultedHighlight,
+        propDates,
+        defaultedTz,
     } = useDefaults(props);
 
     const { modelValue, year, month: instanceMonth, calendars } = useModel(props, emit);
@@ -47,6 +49,7 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         highlight: defaultedHighlight,
         calendars,
         year,
+        propDates,
         month: instanceMonth,
         props,
         emit,
@@ -116,9 +119,9 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
             const disabled =
                 checkMinMaxValue(
                     month.value,
-                    getMinMonth(year.value(instance), props.minDate),
-                    getMaxMonth(year.value(instance), props.maxDate),
-                ) || getDisabledMonths(props.disabledDates, year.value(instance)).includes(month.value);
+                    getMinMonth(year.value(instance), propDates.value.minDate),
+                    getMaxMonth(year.value(instance), propDates.value.maxDate),
+                ) || getDisabledMonths(propDates.value.disabledDates, year.value(instance)).includes(month.value);
             const isBetween = isMonthBetween(month.value, instance);
             const highlighted = checkHighlightMonth(defaultedHighlight.value, month.value, year.value(instance));
             return { active, disabled, isBetween, highlighted };
@@ -177,7 +180,7 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
             value,
             modelValue,
             range: defaultedRange.value.enabled,
-            timezone: noTz ? undefined : props.timezone,
+            timezone: noTz ? undefined : defaultedTz.value!.timezone,
         });
         emit('auto-apply');
     };

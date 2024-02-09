@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import {
-    addHours,
     getDate,
     getHours,
     getMinutes,
@@ -9,19 +8,18 @@ import {
     getYear,
     set,
     setMonth,
-    subHours,
     addDays,
     addMonths,
     subMonths,
     startOfWeek,
     endOfWeek,
 } from 'date-fns';
-import { getTimezoneOffset, zonedTimeToUtc } from '@/utils/date-tns-tz';
 import { reactive } from 'vue';
 
 import {
     getArrayInArray,
     getDayNames,
+    getMapKey,
     getMonths,
     getNumVal,
     getYears,
@@ -33,7 +31,6 @@ import {
     checkPartialRangeValue,
     checkRangeEnabled,
     checkTimeMinMax,
-    dateToUtc,
     formatDate,
     getDaysInBetween,
     getNextMonthYear,
@@ -57,8 +54,9 @@ import {
 import { useDefaults, useTransitions } from '@/composables';
 
 import type { AllPropsType } from '@/props';
-import { defaultMultiCalendars, defaultTransitions } from '@/utils/defaults';
+import { defaultMultiCalendars, defaultTransitions, mapPropDates } from '@/utils/defaults';
 import { de } from 'date-fns/locale';
+import { localToTz } from '@/utils/timezone';
 
 const getCurrentTime = () => {
     return {
@@ -179,35 +177,6 @@ describe('Utils and date utils formatting', () => {
         const parsed = parseFreeInput('2', parser, getCurrentTime());
 
         expect(getMonth(parsed as Date)).toEqual(2);
-    });
-
-    it('Should get UTC date', () => {
-        const date = new Date();
-        const utcDate = dateToUtc(date, false, false);
-
-        const utcString = set(zonedTimeToUtc(date, Intl.DateTimeFormat().resolvedOptions().timeZone), {
-            milliseconds: 0,
-        });
-
-        expect(utcString.toISOString()).toEqual(utcDate);
-    });
-
-    it('Should return UTC date with preserved value', () => {
-        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        const date = new Date();
-        const utcDate = dateToUtc(date, true, false);
-        const offset = getTimezoneOffset(timezone);
-        const mapHour = offset > 0 ? addHours : subHours;
-        const offsetHours = Math.floor((offset / (1000 * 60 * 60)) % 24);
-        const utcString = mapHour(
-            set(zonedTimeToUtc(date, Intl.DateTimeFormat().resolvedOptions().timeZone), {
-                milliseconds: 0,
-                seconds: 0,
-            }),
-            offsetHours,
-        );
-
-        expect(utcString.toISOString()).toEqual(utcDate);
     });
 
     it('Should parse text input date from the pattern array', () => {
@@ -443,7 +412,7 @@ describe('Utils and date utils formatting', () => {
     });
 
     it('Should get week from date', () => {
-        const week = getWeekFromDate(new Date(), '', 1);
+        const week = getWeekFromDate(new Date(), 1);
         const start = startOfWeek(new Date(), { weekStartsOn: 1 });
         const end = endOfWeek(new Date(), { weekStartsOn: 1 });
         expect(week[0]).toEqual(start);
@@ -460,5 +429,32 @@ describe('Utils and date utils formatting', () => {
     it('Should get days in between', () => {
         const inBetween = getDaysInBetween(new Date(), addDays(new Date(), 2));
         expect(inBetween).toHaveLength(3);
+    });
+
+    it('Should map propDates value with and without timezone', async () => {
+        const today = resetDateTime(new Date());
+        const highlightFn = (date: any) => !!date;
+        const mappedDates = mapPropDates(today, today, [today], [today], highlightFn, [], {
+            timezone: undefined,
+            exactMatch: false,
+        });
+
+        expect(mappedDates.maxDate).toEqual(today);
+        expect(mappedDates.minDate).toEqual(today);
+        expect((mappedDates.disabledDates as Map<string, any>).get(getMapKey(today))).toEqual(today);
+        expect((mappedDates.allowedDates as Map<string, any>).get(getMapKey(today))).toEqual(today);
+        expect(mappedDates.highlight).toEqual(highlightFn);
+
+        const todayInTz = localToTz(today, 'UTC');
+        const mappedDatesInTimezone = mapPropDates(today, today, [today], [today], highlightFn, [], {
+            timezone: 'UTC',
+            exactMatch: false,
+        });
+
+        expect(mappedDatesInTimezone.maxDate).toEqual(todayInTz);
+        expect(mappedDatesInTimezone.minDate).toEqual(todayInTz);
+        expect((mappedDatesInTimezone.disabledDates as Map<string, any>).get(getMapKey(todayInTz))).toEqual(todayInTz);
+        expect((mappedDatesInTimezone.allowedDates as Map<string, any>).get(getMapKey(todayInTz))).toEqual(todayInTz);
+        expect(mappedDatesInTimezone.highlight).toEqual(highlightFn);
     });
 });

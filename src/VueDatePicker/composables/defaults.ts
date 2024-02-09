@@ -12,7 +12,9 @@ import {
     getDefaultInlineOptions,
     getDefaultRangeOptions,
     getDefaultTextInputOptions,
+    getDefaultTimeZone,
     getDefaultWeekNumbers,
+    mapPropDates,
 } from '@/utils/defaults';
 import { assignDefaultTime } from '@/utils/date-utils';
 
@@ -73,6 +75,20 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
 
     const defaultedWeekNumbers = computed(() => getDefaultWeekNumbers(props.weekNumbers));
 
+    const defaultedTz = computed(() => getDefaultTimeZone(props.timezone));
+
+    const propDates = computed(() =>
+        mapPropDates(
+            props.minDate,
+            props.maxDate,
+            props.disabledDates,
+            props.allowedDates,
+            defaultedHighlight.value,
+            props.markers,
+            defaultedTz.value,
+        ),
+    );
+
     const defaultedRange = computed(() =>
         getDefaultRangeOptions(props.range, {
             minMaxRawRange: false,
@@ -102,6 +118,8 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
         defaultedHighlight,
         defaultedWeekNumbers,
         defaultedRange,
+        propDates,
+        defaultedTz,
         getDefaultPattern,
         getDefaultStartTime,
     };

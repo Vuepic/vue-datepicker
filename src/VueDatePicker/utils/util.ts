@@ -12,6 +12,7 @@ import type {
 } from '@/interfaces';
 import { type Locale } from 'date-fns';
 import type { ComponentPublicInstance } from 'vue';
+import { getDate } from '@/utils/date-utils';
 
 export const getArrayInArray = <T>(list: T[], increment = 3): T[][] => {
     const items = [];
@@ -271,4 +272,25 @@ export function findNextFocusableElement(startingElement: HTMLElement, reverse: 
 
 export const getElWithin = (wrapper: HTMLElement | null, attribute: DPElements): HTMLElement | undefined | null => {
     return wrapper?.querySelector(`[data-dp-element="${attribute}"]`);
+};
+
+export const getMapKey = (date: Date | string | number) => {
+    return format(date, 'dd-MM-yyyy');
+};
+
+export const shouldMap = (arr: any): arr is Date[] | string[] | boolean => {
+    return Array.isArray(arr);
+};
+
+export const getMapDate = <T>(date: Date, map: Map<string, T>): T | undefined => {
+    return map.get(getMapKey(date));
+};
+
+export const matchDate = (date: Date, mapOrFn: Map<string, any> | ((date: Date) => boolean) | null) => {
+    if (!date) return true;
+    if (!mapOrFn) return false;
+    if (mapOrFn instanceof Map) {
+        return !!getMapDate(date, mapOrFn);
+    }
+    return mapOrFn(getDate(date));
 };

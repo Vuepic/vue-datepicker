@@ -92,6 +92,7 @@
         defaultedTextInput,
         defaultedInline,
         defaultedRange,
+        propDates,
         getDefaultPattern,
     } = useDefaults(props);
     const { isValidTime } = useValidation(props);
@@ -114,11 +115,13 @@
 
     const disabled = computed(() => !isTimeValid.value || !isMonthValid.value || !validDateRange.value);
 
+    // todo - move into validation
     const isTimeValid = computed((): boolean => {
         if (!props.enableTimePicker || props.ignoreTimeValidation) return true;
         return isValidTime(props.internalModelValue);
     });
 
+    // todo - move into validation
     const isMonthValid = computed((): boolean => {
         if (!props.monthPicker) return true;
         if (defaultedRange.value.enabled && Array.isArray(props.internalModelValue)) {
@@ -183,26 +186,27 @@
         !Array.isArray(previewValue.value) ? previewValue.value : previewValue.value.join(dateSeparator()),
     );
 
+    // Todo - move into validation
     const isMonthWithinRange = (date: Date | string): boolean => {
         if (!props.monthPicker) return true;
         let valid = true;
         const dateToCompare = getDate(resetDate(date));
-        if (props.minDate && props.maxDate) {
-            const minDate = getDate(resetDate(props.minDate));
-            const maxDate = getDate(resetDate(props.maxDate));
+        if (propDates.value.minDate && propDates.value.maxDate) {
+            const minDate = getDate(resetDate(propDates.value.minDate));
+            const maxDate = getDate(resetDate(propDates.value.maxDate));
             return (
                 (isDateAfter(dateToCompare, minDate) && isDateBefore(dateToCompare, maxDate)) ||
                 isDateEqual(dateToCompare, minDate) ||
                 isDateEqual(dateToCompare, maxDate)
             );
         }
-        if (props.minDate) {
-            const minDate = getDate(resetDate(props.minDate));
+        if (propDates.value.minDate) {
+            const minDate = getDate(resetDate(propDates.value.minDate));
 
             valid = isDateAfter(dateToCompare, minDate) || isDateEqual(dateToCompare, minDate);
         }
-        if (props.maxDate) {
-            const maxDate = getDate(resetDate(props.maxDate));
+        if (propDates.value.maxDate) {
+            const maxDate = getDate(resetDate(propDates.value.maxDate));
             valid = isDateBefore(dateToCompare, maxDate) || isDateEqual(dateToCompare, maxDate);
         }
 

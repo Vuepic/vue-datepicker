@@ -1,7 +1,8 @@
-import { getDate, getZonedDate, isDateBefore, isDateEqual } from '@/utils/date-utils';
+import { getDate, isDateBefore, isDateEqual } from '@/utils/date-utils';
 
 import type { WritableComputedRef } from 'vue';
 import type { InternalModuleValue, VueEmit } from '@/interfaces';
+import { localToTz } from '@/utils/timezone';
 
 export const handleMultiDatesSelect = (
     date: Date,
@@ -62,8 +63,8 @@ export const setPresetDate = (opts: {
     modelValue: WritableComputedRef<InternalModuleValue>;
 }) => {
     if (Array.isArray(opts.value) && opts.value.length <= 2 && opts.range) {
-        opts.modelValue.value = opts.value.map((date) => getZonedDate(getDate(date), opts.timezone));
+        opts.modelValue.value = opts.value.map((date) => localToTz(getDate(date), opts.timezone));
     } else if (!Array.isArray(opts.value)) {
-        opts.modelValue.value = getZonedDate(getDate(opts.value), opts.timezone);
+        opts.modelValue.value = localToTz(getDate(opts.value), opts.timezone);
     }
 };

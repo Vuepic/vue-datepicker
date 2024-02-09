@@ -117,6 +117,8 @@ export interface Transition {
 export type IDisableDates = (date: Date) => boolean;
 export type TimeType = keyof Time;
 
+export type DisabledDatesProp = Date[] | string[] | IDisableDates;
+
 export type CustomAltPosition = (el: HTMLElement | null) => {
     top: number | string;
     left: number | string;
@@ -182,6 +184,8 @@ export type DateTimeSetter = number | string | null;
 export type DateValue = Date | string | null;
 
 export type ModelTypeConverted = string | number | Date;
+
+export type MaybeDate = Date | string | number | null | undefined;
 
 export interface MonthYearOpt {
     month?: number | string;
@@ -339,3 +343,20 @@ export interface RangeConfig extends RangeOpts {
 }
 
 export type RangeProp = boolean | Partial<RangeOpts>;
+
+export interface TimeZoneConfig {
+    timezone: string | undefined;
+    exactMatch: boolean;
+    dateInTz?: string;
+}
+
+export type TimeZoneProp = string | Partial<TimeZoneConfig>;
+
+export interface PropDates {
+    maxDate: Date | null;
+    minDate: Date | null;
+    disabledDates: Map<string, Date | null> | ((date: Date) => boolean) | null;
+    allowedDates: Map<string, Date | null> | null;
+    highlight: Map<string, Date | null> | ((date: Date) => boolean) | null;
+    markers: Map<string, IMarker> | null;
+}

@@ -25,7 +25,6 @@ import {
     subMonths,
     format,
 } from 'date-fns';
-import { utcToZonedTime, zonedTimeToUtc } from '@/utils/date-tns-tz';
 import { errors } from '@/utils/util';
 
 import type {
@@ -37,9 +36,9 @@ import type {
     PossibleDate,
     WeekStartNum,
     IFormat,
-    IDisableDates,
     Highlight,
     HighlightFn,
+    MaybeDate,
 } from '@/interfaces';
 
 import type { Duration, Locale } from 'date-fns';
@@ -234,22 +233,6 @@ export const getMinMaxYear = (minMaxDate: PossibleDate) => {
     return undefined;
 };
 
-// Converts utc date to a timezone date
-export const getZonedDate = (date: Date, timezone?: string): Date => {
-    return timezone ? utcToZonedTime(date, timezone) : date;
-};
-
-export const getUtcDate = (date: Date, timezone?: string): Date => {
-    return timezone ? zonedTimeToUtc(date, timezone) : date;
-};
-
-export const sanitizeDate = (date: Date | string): Date | string => {
-    if (date instanceof Date) {
-        return date;
-    }
-    return parseISO(date);
-};
-
 export const getDaysInBetween = (dateOne: Date, dateTwo: Date) => {
     // Check if selection is backwards
     const start = isDateAfter(dateOne, dateTwo) ? dateTwo : dateOne;
@@ -263,9 +246,9 @@ export const getNextMonthYear = (date: Date): { month: number; year: number } =>
     return { month: getMonth(newDate), year: getYear(newDate) };
 };
 
-export const getWeekFromDate = (date: Date, tz: string, weekStart: string | number): [Date, Date] => {
-    const start = startOfWeek(getZonedDate(date, tz), { weekStartsOn: +weekStart as WeekStartNum });
-    const end = endOfWeek(getZonedDate(date, tz), { weekStartsOn: +weekStart as WeekStartNum });
+export const getWeekFromDate = (date: Date, weekStart: string | number): [Date, Date] => {
+    const start = startOfWeek(date, { weekStartsOn: +weekStart as WeekStartNum });
+    const end = endOfWeek(date, { weekStartsOn: +weekStart as WeekStartNum });
     return [start, end];
 };
 
@@ -281,7 +264,7 @@ export const assignDefaultTime = (
     return Object.assign(defaultTime, obj);
 };
 
-export const getDateForCompare = (date: Date | string, month: number, year: number): [Date, Date] => {
+export const getDateForCompare = (date: MaybeDate, month: number, year: number): [Date, Date] => {
     return [set(getDate(date), { date: 1 }), set(getDate(), { month, year, date: 1 })];
 };
 
@@ -422,12 +405,14 @@ export const checkTimeMinMax = (
 // Returns a getDate object with a set of time from a provided date
 export const setTimeValue = (date: Date): Date => set(getDate(), getTimeObj(date));
 
-export const getDisabledMonths = (disabledDates: Date[] | string[] | IDisableDates, year: number) => {
-    if (Array.isArray(disabledDates)) {
-        return disabledDates
-            .map((date) => getDate(date))
+export const getDisabledMonths = (
+    disabledDates: Map<string, Date | null> | null | ((date: Date) => boolean),
+    year: number,
+) => {
+    if (disabledDates instanceof Map) {
+        return Array.from(disabledDates.values())
             .filter((date) => getYear(getDate(date)) === year)
-            .map((date) => getMonth(date));
+            .map((date) => getMonth(date as Date));
     }
     return [];
 };

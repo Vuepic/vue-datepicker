@@ -132,14 +132,7 @@
     import DatePicker from '@/components/DatePicker/DatePicker.vue';
     import QuarterPicker from '@/components/QuarterPicker/QuarterPicker.vue';
 
-    import type {
-        DynamicClass,
-        MenuView,
-        InternalModuleValue,
-        ArrMapValues,
-        MenuExposedFn,
-        MonthModel,
-    } from '@/interfaces';
+    import type { DynamicClass, MenuView, InternalModuleValue, MenuExposedFn, MonthModel } from '@/interfaces';
     import type { PropType } from 'vue';
 
     defineOptions({
@@ -176,7 +169,6 @@
         shadow: { type: Boolean as PropType<boolean>, default: false },
         openOnTop: { type: Boolean as PropType<boolean>, default: false },
         internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
-        arrMapValues: { type: Object as PropType<ArrMapValues>, default: () => ({}) },
         noOverlayFocus: { type: Boolean as PropType<boolean>, default: false },
         collapse: { type: Boolean as PropType<boolean>, default: false },
     });

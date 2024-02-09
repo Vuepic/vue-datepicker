@@ -7,9 +7,7 @@ import {
     dateToUtc,
     formatDate,
     getDate,
-    getUtcDate,
     getWeekFromDate,
-    getZonedDate,
     isValidDate,
     setDateMonthOrYear,
     setDateTime,
@@ -20,6 +18,7 @@ import { useDefaults } from '@/composables/defaults';
 import type { ModelValue, VueEmit, TimeModel, MonthModel, ModelTypeConverted } from '@/interfaces';
 import type { AllPropsType } from '@/props';
 import type { Ref } from 'vue';
+import { localToTz } from '@/utils/timezone';
 
 /**
  * Handles values from external to internal and vise versa
@@ -27,7 +26,7 @@ import type { Ref } from 'vue';
 export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, isInputFocused: Ref<boolean>) => {
     const internalModelValue = ref();
 
-    const { defaultedTextInput, defaultedRange, getDefaultPattern } = useDefaults(props);
+    const { defaultedTextInput, defaultedRange, defaultedTz, getDefaultPattern } = useDefaults(props);
 
     const inputValue = ref('');
     const formatRef = toRef(props, 'format');
@@ -43,14 +42,6 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
     watch(formatRef, () => {
         formatInputValue();
     });
-
-    const getZonedToUtc = (date: Date) => {
-        return getUtcDate(date, props.timezone);
-    };
-
-    const getUtcZonedDate = (date: Date) => {
-        return getZonedDate(date, props.timezone);
-    };
 
     const formatDateFn = (value: Date | Date[], customPattern?: string, parser = false) => {
         return formatDate(
@@ -301,15 +292,15 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
             return props.utc === 'preserve' ? new Date(toDate.getTime() + toDate.getTimezoneOffset() * 60000) : toDate;
         }
         if (props.modelType) {
-            if (props.modelType === 'date' || props.modelType === 'timestamp') return getUtcZonedDate(new Date(value));
+            if (props.modelType === 'date' || props.modelType === 'timestamp') return new Date(value);
 
             if (props.modelType === 'format' && (typeof props.format === 'string' || !props.format))
                 return parse(value as string, getDefaultPattern(), new Date());
 
-            return getUtcZonedDate(parse(value as string, props.modelType, new Date()));
+            return parse(value as string, props.modelType, new Date());
         }
 
-        return getUtcZonedDate(new Date(value));
+        return new Date(value);
     };
 
     const toModelType = (val: Date): string | number | Date => {
@@ -318,22 +309,22 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
             return dateToUtc(val, props.utc === 'preserve', props.enableSeconds);
         }
         if (props.modelType) {
-            if (props.modelType === 'timestamp') return +getZonedToUtc(val);
+            if (props.modelType === 'timestamp') return +val;
 
             if (props.modelType === 'format' && (typeof props.format === 'string' || !props.format))
-                return formatDateFn(getZonedToUtc(val));
+                return formatDateFn(val);
 
-            return formatDateFn(getZonedToUtc(val), props.modelType, true);
+            return formatDateFn(val, props.modelType, true);
         }
-        return getZonedToUtc(val);
+        return val;
     };
 
     const emitValue = (value: ModelValue, useTz = false): void => {
         emit('update:model-value', value);
         if (props.emitTimezone && useTz) {
             const zonedValue = Array.isArray(value)
-                ? value.map((date) => getZonedDate(convertType(date)), props.emitTimezone)
-                : getZonedDate(convertType(value), props.emitTimezone);
+                ? value.map((date) => localToTz(convertType(date), props.emitTimezone))
+                : localToTz(convertType(value), props.emitTimezone);
             emit('update:model-timezone-value', zonedValue);
         }
     };
@@ -359,13 +350,13 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
 
     const mapInternalWeekPickerToExternal = () => {
         if (Array.isArray(internalModelValue.value)) {
-            const startWeek = getWeekFromDate(internalModelValue.value[0], props.timezone, props.weekStart);
+            const startWeek = getWeekFromDate(internalModelValue.value[0], props.weekStart);
             const endWeek = internalModelValue.value[1]
-                ? getWeekFromDate(internalModelValue.value[1], props.timezone, props.weekStart)
+                ? getWeekFromDate(internalModelValue.value[1], props.weekStart)
                 : [];
             return [startWeek.map((date) => getDate(date)), endWeek.map((date) => getDate(date))];
         }
-        return getWeekFromDate(internalModelValue.value, props.timezone, props.weekStart).map((date) => getDate(date));
+        return getWeekFromDate(internalModelValue.value, props.weekStart).map((date) => getDate(date));
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

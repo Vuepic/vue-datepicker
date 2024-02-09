@@ -17,7 +17,6 @@ import {
     startOfQuarter,
     startOfYear,
 } from 'date-fns';
-import { utcToZonedTime } from '@/utils/date-tns-tz';
 
 import { resetDateTime } from '@/utils/date-utils';
 
@@ -25,6 +24,7 @@ import { clickCalendarDate, clickSelectBtn, getMonthName, openMenu, reOpenMenu }
 import { FlowStep } from '@/constants';
 import type { TimeModel, TimeType } from '@/interfaces';
 import type { VueWrapper } from '@vue/test-utils';
+import { localToTz } from '@/utils/timezone';
 
 describe('It should validate various picker scenarios', () => {
     it('Should dynamically disable times', async () => {
@@ -132,7 +132,7 @@ describe('It should validate various picker scenarios', () => {
         const emitted = dp.emitted();
 
         expect(emitted).toHaveProperty('update:model-value', [[value]]);
-        expect(emitted).toHaveProperty('update:model-timezone-value', [[utcToZonedTime(value, timezone)]]);
+        expect(emitted).toHaveProperty('update:model-timezone-value', [[localToTz(value, timezone)]]);
     });
 
     it('Should set predefined value in the time-picker and emit updated value', async () => {

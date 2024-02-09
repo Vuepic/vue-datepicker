@@ -35,7 +35,6 @@
                         v-model:internal-model-value="internalModelValue"
                         :class="{ [theme]: true, 'dp--menu-wrapper': teleport }"
                         :open-on-top="openOnTop"
-                        :arr-map-values="arrMapValues"
                         :no-overlay-focus="noOverlayFocus"
                         :collapse="collapse"
                         @close-picker="closeMenu"
@@ -157,7 +156,7 @@
 
     const { setMenuFocused, setShiftKey } = useState();
     const { clearArrowNav } = useArrowNavigation();
-    const { mapDatesArrToMap, validateDate, isValidTime } = useValidation(props);
+    const { validateDate, isValidTime } = useValidation(props);
     const { defaultedTransitions, defaultedTextInput, defaultedInline, defaultedConfig, defaultedRange } =
         useDefaults(props);
     const { menuTransition, showTransition } = useTransitions(defaultedTransitions);
@@ -180,8 +179,6 @@
         window?.addEventListener('keyup', onKeyUp);
         window?.addEventListener('keydown', onKeyDown);
     });
-
-    const arrMapValues = computed(() => mapDatesArrToMap());
 
     onUnmounted(() => {
         if (!defaultedInline.value.enabled) {

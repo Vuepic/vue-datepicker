@@ -5,50 +5,31 @@ import {
     getDateForCompare,
     getDaysInBetween,
     getTimeObj,
-    getUtcDate,
-    getZonedDate,
     isDateAfter,
     isDateBefore,
     isDateEqual,
-    resetDateTime,
     setTimeValue,
 } from '@/utils/date-utils';
 import { useDefaults } from '@/composables/defaults';
-import { convertType } from '@/utils/util';
+import { convertType, getMapDate } from '@/utils/util';
 
-import type {
-    InternalModuleValue,
-    ArrMapValues,
-    ArrMapValue,
-    DisabledTimesFn,
-    DisabledTime,
-    TimeModel,
-} from '@/interfaces';
+import type { InternalModuleValue, DisabledTimesFn, DisabledTime, TimeModel } from '@/interfaces';
 import type { PickerBasePropsType, AllPropsType } from '@/props';
 
 export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
-    const { defaultedFilters, defaultedHighlight, defaultedRange } = useDefaults(props);
-    const getTimezone = () => {
-        if (props.timezone) return props.timezone;
-        if (props.utc) return 'UTC';
-        return undefined;
+    const { defaultedFilters, defaultedRange, propDates } = useDefaults(props);
+
+    const isDateDisabled = (date: Date) => {
+        if (!propDates.value.disabledDates) return false;
+        if (typeof propDates.value.disabledDates === 'function') return propDates.value.disabledDates(getDate(date));
+        return !!getMapDate(date, propDates.value.disabledDates);
     };
-    const getMapKey = (date: Date | string | number) => {
-        const d = resetDateTime(getTzDate(getDate(date))).toISOString();
-        const [stringVal] = d.split('T');
-        return stringVal;
-    };
-    const getTzDate = (date: Date) =>
-        props.utc === 'preserve' ? getUtcDate(date, getTimezone()) : getZonedDate(date, getTimezone());
+
     const validateDate = (date: Date) => {
-        const aboveMax = props.maxDate ? isDateAfter(date, getTzDate(getDate(props.maxDate))) : false;
-        const bellowMin = props.minDate ? isDateBefore(date, getTzDate(getDate(props.minDate))) : false;
-        const inDisableArr = matchDate(
-            getTzDate(date),
-            (props as PickerBasePropsType).arrMapValues?.disabledDates
-                ? (props as PickerBasePropsType).arrMapValues.disabledDates
-                : props.disabledDates,
-        );
+        const aboveMax = propDates.value.maxDate ? isDateAfter(date, propDates.value.maxDate) : false;
+        const bellowMin = propDates.value.minDate ? isDateBefore(date, propDates.value.minDate) : false;
+        const isDisabled = isDateDisabled(date);
+
         const disabledMonths = defaultedFilters.value.months.map((month) => +month);
         const inDisabledMonths = disabledMonths.includes(getMonth(date));
         const weekDayDisabled = props.disabledWeekDays.length
@@ -64,7 +45,7 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
         return !(
             aboveMax ||
             bellowMin ||
-            inDisableArr ||
+            isDisabled ||
             inDisabledMonths ||
             outOfYearRange ||
             weekDayDisabled ||
@@ -74,51 +55,37 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
 
     const validateMinDate = (month: number, year: number): boolean => {
         return (
-            isDateBefore(...getDateForCompare(props.minDate, month, year)) ||
-            isDateEqual(...getDateForCompare(props.minDate, month, year))
+            isDateBefore(...getDateForCompare(propDates.value.minDate, month, year)) ||
+            isDateEqual(...getDateForCompare(propDates.value.minDate, month, year))
         );
     };
 
     const validateMaxDate = (month: number, year: number): boolean => {
         return (
-            isDateAfter(...getDateForCompare(props.maxDate, month, year)) ||
-            isDateEqual(...getDateForCompare(props.maxDate, month, year))
+            isDateAfter(...getDateForCompare(propDates.value.maxDate, month, year)) ||
+            isDateEqual(...getDateForCompare(propDates.value.maxDate, month, year))
         );
     };
 
     const validateBothMinAndMax = (month: number, year: number, isNext: boolean) => {
         let valid = false;
-        if (props.maxDate && isNext && validateMaxDate(month, year)) {
+        if (propDates.value.maxDate && isNext && validateMaxDate(month, year)) {
             valid = true;
         }
-        if (props.minDate && !isNext && validateMinDate(month, year)) {
+        if (propDates.value.minDate && !isNext && validateMinDate(month, year)) {
             valid = true;
         }
         return valid;
     };
 
-    const matchDate = (
-        date: Date,
-        pattern: Date[] | string[] | number[] | ((date: Date) => boolean) | ArrMapValue,
-    ): boolean => {
-        if (!date) return true;
-        if (pattern instanceof Map) {
-            return !!pattern.get(getMapKey(date));
-        }
-        if (Array.isArray(pattern)) {
-            return pattern.some((includedDate) => isDateEqual(getTzDate(getDate(includedDate)), date));
-        }
-        return pattern ? pattern(getDate(JSON.parse(JSON.stringify(date)))) : false;
-    };
-
     const validateMonthYearInRange = (month: number, year: number, isNext: boolean, preventNav: boolean): boolean => {
         let valid = false;
         if (preventNav) {
-            if (props.minDate && props.maxDate) {
+            if (propDates.value.minDate && propDates.value.maxDate) {
                 valid = validateBothMinAndMax(month, year, isNext);
-            } else if (props.minDate && validateMinDate(month, year)) {
+            } else if (propDates.value.minDate && validateMinDate(month, year)) {
                 valid = true;
-            } else if (props.maxDate && validateMaxDate(month, year)) {
+            } else if (propDates.value.maxDate && validateMaxDate(month, year)) {
                 valid = true;
             }
         } else {
@@ -128,13 +95,10 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
     };
 
     const checkAllowedDates = (date: Date) => {
-        if (Array.isArray(props.allowedDates) && !props.allowedDates?.length) return true;
-        if ((props as PickerBasePropsType).arrMapValues?.allowedDates)
-            return !matchDate(date, (props as PickerBasePropsType).arrMapValues?.allowedDates);
-        if (props.allowedDates?.length)
-            return !props.allowedDates?.some((dateVal) =>
-                isDateEqual(resetDateTime(dateVal), getTzDate(resetDateTime(date))),
-            );
+        if (Array.isArray(propDates.value.allowedDates) && !propDates.value.allowedDates.length) return true;
+        if (propDates.value.allowedDates) {
+            return !getMapDate(date, propDates.value.allowedDates);
+        }
         return false;
     };
 
@@ -172,32 +136,6 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
             if (defaultedRange.value.maxRange) return diff <= +defaultedRange.value.maxRange;
         }
         return true;
-    };
-
-    const datesArrToMap = (datesArr: (Date | string | number)[]): Map<string, boolean> => {
-        return new Map(datesArr.map((date) => [getMapKey(date), true]));
-    };
-
-    const shouldMap = (arr: any): arr is Date[] | boolean => {
-        return Array.isArray(arr) && arr.length > 0;
-    };
-
-    const mapDatesArrToMap = () => {
-        const arrMapValues: ArrMapValues = {
-            disabledDates: null,
-            allowedDates: null,
-            highlightedDates: null,
-        };
-        if (shouldMap(props.allowedDates)) {
-            arrMapValues.allowedDates = datesArrToMap(props.allowedDates);
-        }
-        if (typeof defaultedHighlight.value !== 'function' && shouldMap(defaultedHighlight.value.dates)) {
-            arrMapValues.highlightedDates = datesArrToMap(defaultedHighlight.value.dates);
-        }
-        if (shouldMap(props.disabledDates)) {
-            arrMapValues.disabledDates = datesArrToMap(props.disabledDates);
-        }
-        return arrMapValues;
     };
 
     // Check if we need to do a time validation
@@ -271,22 +209,22 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
         if (!date) return true;
         if (skipTimeValidation()) return true;
 
-        const selectedDateTime = !props.minDate && !props.maxDate ? getSetTimeValue(date) : date;
+        const selectedDateTime = !propDates.value.minDate && !propDates.value.maxDate ? getSetTimeValue(date) : date;
 
-        if (props.maxTime || props.maxDate) {
+        if (props.maxTime || propDates.value.maxDate) {
             isValid = checkTimeMinMax(
                 props.maxTime as TimeModel,
-                props.maxDate,
+                propDates.value.maxDate,
                 'max',
                 convertType(selectedDateTime),
                 isValid,
             );
         }
 
-        if (props.minTime || props.minDate) {
+        if (props.minTime || propDates.value.minDate) {
             isValid = checkTimeMinMax(
                 props.minTime as TimeModel,
-                props.minDate,
+                propDates.value.minDate,
                 'min',
                 convertType(selectedDateTime),
                 isValid,
@@ -301,8 +239,6 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
         validateMonthYearInRange,
         isDateRangeAllowed,
         checkMinMaxRange,
-        matchDate,
-        mapDatesArrToMap,
         isValidTime,
     };
 };

@@ -19,7 +19,7 @@ import type { VueEmit, IDefaultSelect } from '@/interfaces';
 export const useYearPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     const { modelValue } = useModel(props, emit);
     const hoverDate = ref<Date | null>(null);
-    const { defaultedHighlight, defaultedFilters, defaultedRange } = useDefaults(props);
+    const { defaultedHighlight, defaultedFilters, defaultedRange, propDates } = useDefaults(props);
     const focusYear = ref();
 
     onMounted(() => {
@@ -51,8 +51,11 @@ export const useYearPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         return groupListAndMap(getYears(props.yearRange, props.reverseYears), (year: IDefaultSelect) => {
             const active = isYearActive(year.value);
             const disabled =
-                checkMinMaxValue(year.value, getMinMaxYear(props.minDate), getMinMaxYear(props.maxDate)) ||
-                defaultedFilters.value.years.includes(year.value);
+                checkMinMaxValue(
+                    year.value,
+                    getMinMaxYear(propDates.value.minDate),
+                    getMinMaxYear(propDates.value.maxDate),
+                ) || defaultedFilters.value.years.includes(year.value);
             const isBetween = isYearBetween(year.value) && !active;
             const highlighted = checkHighlightYear(defaultedHighlight.value, year.value);
             return { active, disabled, isBetween, highlighted };

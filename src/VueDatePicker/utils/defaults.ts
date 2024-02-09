@@ -20,8 +20,16 @@ import type {
     RangeProp,
     RangeOpts,
     RangeConfig,
+    TimeZoneProp,
+    TimeZoneConfig,
+    MaybeDate,
+    DisabledDatesProp,
+    IMarker,
+    PropDates,
 } from '@/interfaces';
 import { getDate } from '@/utils/date-utils';
+import { dateToTimezoneSafe, sanitizeDateToLocal } from '@/utils/timezone';
+import { getMapKey, shouldMap } from '@/utils/util';
 
 export const mergeDefaultTransitions = (conf: Partial<Transition>): Transition => ({
     menuAppearTop: 'dp-menu-appear-top',
@@ -216,5 +224,67 @@ export const getDefaultRangeOptions = (config: RangeProp, deprecatedOpts: RangeO
         autoRange: deprecatedOpts.autoRange,
         fixedStart: deprecatedOpts.fixedStart,
         fixedEnd: deprecatedOpts.fixedEnd,
+    };
+};
+
+export const getDefaultTimeZone = (timeZone: TimeZoneProp) => {
+    if (!timeZone) return { timezone: undefined, exactMatch: false };
+    if (typeof timeZone === 'string') {
+        return { timezone: timeZone, exactMatch: false, dateInTz: undefined };
+    }
+    return {
+        timezone: timeZone.timezone,
+        exactMatch: timeZone.exactMatch ?? false,
+        dateInTz: timeZone.dateInTz ?? undefined,
+    };
+};
+
+const datesArrToMap = (
+    datesArr: (Date | string | number)[],
+    timezone: TimeZoneConfig | undefined,
+): Map<string, Date | null> => {
+    return new Map(
+        datesArr.map((date) => {
+            const d = dateToTimezoneSafe(date, timezone);
+            return [getMapKey(d), d];
+        }),
+    );
+};
+
+const mapMarkers = (markers: IMarker[], timezone: TimeZoneConfig | undefined) => {
+    if (markers.length) {
+        return new Map(
+            markers.map((marker) => {
+                const date = dateToTimezoneSafe(marker.date, timezone);
+                return [getMapKey(date), marker];
+            }),
+        );
+    }
+    return null;
+};
+
+/**
+ * Sync all props that rely on the date value to be in the same timezone
+ * All validation that is done from these props will now be in sync with provided timezone config
+ */
+export const mapPropDates = (
+    minDate: MaybeDate,
+    maxDate: MaybeDate,
+    disabledDates: DisabledDatesProp,
+    allowedDates: string[] | Date[],
+    highlight: HighlightFn | Highlight,
+    markers: IMarker[],
+    timezone: TimeZoneConfig | undefined,
+): PropDates => {
+    return {
+        minDate: sanitizeDateToLocal(minDate, timezone),
+        maxDate: sanitizeDateToLocal(maxDate, timezone),
+        disabledDates: shouldMap(disabledDates) ? datesArrToMap(disabledDates, timezone) : disabledDates,
+        allowedDates: shouldMap(allowedDates) ? datesArrToMap(allowedDates, timezone) : null,
+        highlight:
+            typeof highlight === 'object' && shouldMap(highlight?.dates)
+                ? datesArrToMap(highlight.dates, timezone)
+                : (highlight as HighlightFn),
+        markers: mapMarkers(markers, timezone),
     };
 };
