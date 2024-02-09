@@ -228,7 +228,7 @@ export const getDefaultRangeOptions = (config: RangeProp, deprecatedOpts: RangeO
 };
 
 export const getDefaultTimeZone = (timeZone: TimeZoneProp, emitTimezone?: string) => {
-    if (!timeZone) return { timezone: undefined, exactMatch: false };
+    if (!timeZone) return { timezone: undefined, exactMatch: false, emitTimezone };
     if (typeof timeZone === 'string') {
         return { timezone: timeZone, exactMatch: false, dateInTz: undefined, emitTimezone };
     }
