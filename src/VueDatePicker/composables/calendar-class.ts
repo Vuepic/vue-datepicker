@@ -16,7 +16,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
     // Track hovered date
     const hoveredDate = ref<Date | null>(null);
     // Today date
-    const today = ref<Date>(localToTz(new Date(), defaultedTz.value!.timezone));
+    const today = ref<Date>(localToTz(new Date(), defaultedTz.value.timezone));
 
     /**
      * When using range picker keep track of hovered value in the calendar

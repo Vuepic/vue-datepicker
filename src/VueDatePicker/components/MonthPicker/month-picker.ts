@@ -193,7 +193,7 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
             value,
             modelValue,
             range: defaultedRange.value.enabled,
-            timezone: noTz ? undefined : defaultedTz.value!.timezone,
+            timezone: noTz ? undefined : defaultedTz.value.timezone,
         });
         emit('auto-apply');
     };

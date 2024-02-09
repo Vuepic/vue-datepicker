@@ -15,14 +15,14 @@ export const dateToTimezoneSafe = (date: Date | string | number, tz?: TimeZoneCo
     return d;
 };
 
+const getDateInTz = (date: Date | number | string, tz: TimeZoneConfig) => {
+    return tz.dateInTz ? localToTz(new Date(date), tz.dateInTz) : getDate(date);
+};
+
 // Converts specific date to a Date object based on a provided timezone
 export const sanitizeDateToLocal = (date: MaybeDate, tz?: TimeZoneConfig) => {
     if (!date) return null;
     if (!tz) return getDate(date);
     const local = getDate(date);
-    return tz.exactMatch
-        ? tz.dateInTz
-            ? localToTz(new Date(date), tz.dateInTz)
-            : getDate(date)
-        : localToTz(local, tz.timezone);
+    return tz.exactMatch ? getDateInTz(date, tz) : localToTz(local, tz.timezone);
 };

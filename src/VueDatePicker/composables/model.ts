@@ -11,7 +11,7 @@ import { localToTz } from '@/utils/timezone';
 export const useModel = (props: PickerBasePropsType, emit: VueEmit) => {
     const { defaultedRange, defaultedTz } = useDefaults(props);
 
-    const today = getDate(localToTz(getDate(), defaultedTz.value!.timezone));
+    const today = getDate(localToTz(getDate(), defaultedTz.value.timezone));
     const calendars = ref<ICalendarData[]>([{ month: getMonth(today), year: getYear(today) }]);
 
     // Time values

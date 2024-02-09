@@ -582,7 +582,7 @@ export const useDatePicker = (
             value,
             modelValue,
             range: defaultedRange.value.enabled,
-            timezone: noTz ? undefined : defaultedTz.value!.timezone,
+            timezone: noTz ? undefined : defaultedTz.value.timezone,
         });
 
         selectOnAutoApply();

@@ -76,7 +76,7 @@
     import { convertType, unrefElement } from '@/utils/util';
     import { useArrowNavigation, useDefaults, useValidation } from '@/composables';
     import { PickerBaseProps } from '@/props';
-    import { formatDate, getDate, isDateAfter, isDateBefore, isDateEqual, resetDate } from '@/utils/date-utils';
+    import { formatDate } from '@/utils/date-utils';
 
     import type { PropType } from 'vue';
 
@@ -101,10 +101,9 @@
         defaultedTextInput,
         defaultedInline,
         defaultedRange,
-        propDates,
         getDefaultPattern,
     } = useDefaults(props);
-    const { isValidTime } = useValidation(props);
+    const { isTimeValid, isMonthValid } = useValidation(props);
     const { buildMatrix } = useArrowNavigation();
 
     const cancelButtonRef = ref(null);
@@ -142,23 +141,12 @@
             : true;
     });
 
-    const disabled = computed(() => !isTimeValid.value || !isMonthValid.value || !validDateRange.value);
-
-    // todo - move into validation
-    const isTimeValid = computed((): boolean => {
-        if (!props.enableTimePicker || props.ignoreTimeValidation) return true;
-        return isValidTime(props.internalModelValue);
-    });
-
-    // todo - move into validation
-    const isMonthValid = computed((): boolean => {
-        if (!props.monthPicker) return true;
-        if (defaultedRange.value.enabled && Array.isArray(props.internalModelValue)) {
-            const invalid = props.internalModelValue.filter((value) => !isMonthWithinRange(value));
-            return !invalid.length;
-        }
-        return isMonthWithinRange(props.internalModelValue as Date);
-    });
+    const disabled = computed(
+        () =>
+            !isTimeValid.value(props.internalModelValue) ||
+            !isMonthValid.value(props.internalModelValue) ||
+            !validDateRange.value,
+    );
 
     const handleCustomPreviewFormat = () => {
         const formatFn = defaultedPreviewFormat.value as (val: Date | Date[]) => string | string[];
@@ -215,35 +203,12 @@
         !Array.isArray(previewValue.value) ? previewValue.value : previewValue.value.join(dateSeparator()),
     );
 
-    // Todo - move into validation
-    const isMonthWithinRange = (date: Date | string): boolean => {
-        if (!props.monthPicker) return true;
-        let valid = true;
-        const dateToCompare = getDate(resetDate(date));
-        if (propDates.value.minDate && propDates.value.maxDate) {
-            const minDate = getDate(resetDate(propDates.value.minDate));
-            const maxDate = getDate(resetDate(propDates.value.maxDate));
-            return (
-                (isDateAfter(dateToCompare, minDate) && isDateBefore(dateToCompare, maxDate)) ||
-                isDateEqual(dateToCompare, minDate) ||
-                isDateEqual(dateToCompare, maxDate)
-            );
-        }
-        if (propDates.value.minDate) {
-            const minDate = getDate(resetDate(propDates.value.minDate));
-
-            valid = isDateAfter(dateToCompare, minDate) || isDateEqual(dateToCompare, minDate);
-        }
-        if (propDates.value.maxDate) {
-            const maxDate = getDate(resetDate(propDates.value.maxDate));
-            valid = isDateBefore(dateToCompare, maxDate) || isDateEqual(dateToCompare, maxDate);
-        }
-
-        return valid;
-    };
-
     const selectDate = (): void => {
-        if (isTimeValid.value && isMonthValid.value && validDateRange.value) {
+        if (
+            isTimeValid.value(props.internalModelValue) &&
+            isMonthValid.value(props.internalModelValue) &&
+            validDateRange.value
+        ) {
             emit('select-date');
         } else {
             emit('invalid-select');

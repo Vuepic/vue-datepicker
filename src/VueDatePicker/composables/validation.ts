@@ -8,6 +8,7 @@ import {
     isDateAfter,
     isDateBefore,
     isDateEqual,
+    resetDate,
     setTimeValue,
 } from '@/utils/date-utils';
 import { useDefaults } from '@/composables/defaults';
@@ -15,6 +16,7 @@ import { convertType, getMapDate } from '@/utils/util';
 
 import type { InternalModuleValue, DisabledTimesFn, DisabledTime, TimeModel, MaybeDate } from '@/interfaces';
 import type { PickerBasePropsType, AllPropsType } from '@/props';
+import { computed } from 'vue';
 
 export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
     const { defaultedFilters, defaultedRange, propDates } = useDefaults(props);
@@ -125,14 +127,16 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
         return true;
     };
 
-    // If min or max range is set, validate given range
-    const checkMinMaxRange = (secondDate: Date, modelValue: InternalModuleValue, index = 0): boolean => {
-        if (
-            Array.isArray(modelValue) &&
+    const shouldCheckMinMaxRange = (modelValue: InternalModuleValue, index: number): modelValue is Array<Date> => {
+        return (Array.isArray(modelValue) &&
             modelValue[index] &&
             (defaultedRange.value.maxRange || defaultedRange.value.minRange) &&
-            isValidYear(modelValue[index])
-        ) {
+            isValidYear(modelValue[index])) as boolean;
+    };
+
+    // If min or max range is set, validate given range
+    const checkMinMaxRange = (secondDate: Date, modelValue: InternalModuleValue, index = 0): boolean => {
+        if (shouldCheckMinMaxRange(modelValue, index)) {
             const absoluteDiff = differenceInCalendarDays(secondDate, modelValue[index]);
             const daysInBetween = getDaysInBetween(modelValue[index], secondDate);
             const disabledDates =
@@ -241,6 +245,46 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
         return checkDisabledTimes(date, isValid);
     };
 
+    const isMonthWithinRange = (date: Date | string): boolean => {
+        if (!props.monthPicker) return true;
+        let valid = true;
+        const dateToCompare = getDate(resetDate(date));
+        if (propDates.value.minDate && propDates.value.maxDate) {
+            const minDate = getDate(resetDate(propDates.value.minDate));
+            const maxDate = getDate(resetDate(propDates.value.maxDate));
+            return (
+                (isDateAfter(dateToCompare, minDate) && isDateBefore(dateToCompare, maxDate)) ||
+                isDateEqual(dateToCompare, minDate) ||
+                isDateEqual(dateToCompare, maxDate)
+            );
+        }
+        if (propDates.value.minDate) {
+            const minDate = getDate(resetDate(propDates.value.minDate));
+
+            valid = isDateAfter(dateToCompare, minDate) || isDateEqual(dateToCompare, minDate);
+        }
+        if (propDates.value.maxDate) {
+            const maxDate = getDate(resetDate(propDates.value.maxDate));
+            valid = isDateBefore(dateToCompare, maxDate) || isDateEqual(dateToCompare, maxDate);
+        }
+
+        return valid;
+    };
+
+    const isTimeValid = computed(() => (internalModelValue: InternalModuleValue): boolean => {
+        if (!props.enableTimePicker || props.ignoreTimeValidation) return true;
+        return isValidTime(internalModelValue);
+    });
+
+    const isMonthValid = computed(() => (internalModelValue: InternalModuleValue): boolean => {
+        if (!props.monthPicker) return true;
+        if (defaultedRange.value.enabled && Array.isArray(internalModelValue)) {
+            const invalid = internalModelValue.filter((value) => !isMonthWithinRange(value));
+            return !invalid.length;
+        }
+        return isMonthWithinRange(internalModelValue as Date);
+    });
+
     return {
         isDisabled,
         validateDate,
@@ -248,5 +292,7 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
         isDateRangeAllowed,
         checkMinMaxRange,
         isValidTime,
+        isTimeValid,
+        isMonthValid,
     };
 };
