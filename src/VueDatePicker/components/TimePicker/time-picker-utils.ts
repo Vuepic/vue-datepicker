@@ -44,7 +44,7 @@ export const useTimePickerUtils = (
 
     const isRangeCheck = computed(() => {
         if (props.modelAuto && defaultedRange.value.enabled) {
-            return Array.isArray(modelValue.value) ? !modelValue.value.some((val) => !val) : false;
+            return Array.isArray(modelValue.value) ? modelValue.value.length > 1 : false;
         }
         return defaultedRange.value.enabled;
     });
