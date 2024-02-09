@@ -12,7 +12,13 @@ import type { ComponentPublicInstance } from 'vue';
 
 const mountActionRow = (
     props: Partial<AllPropsType> & { internalModelValue?: InternalModuleValue },
-): VueWrapper<ComponentPublicInstance<{ isTimeValid: boolean; isMonthValid: boolean; previewValue: string }>> => {
+): VueWrapper<
+    ComponentPublicInstance<{
+        isTimeValid: (date: any) => boolean;
+        isMonthValid: (date: any) => boolean;
+        previewValue: string;
+    }>
+> => {
     return mount(ActionRow, { props }) as any;
 };
 
@@ -30,41 +36,45 @@ describe('ActionRow component', () => {
     it('Should not check time', () => {
         const wrapper = mountActionRow({ ...props, ignoreTimeValidation: true });
 
-        expect(wrapper.vm.isTimeValid).toBe(true);
+        expect(wrapper.vm.isTimeValid(new Date())).toBe(true);
     });
 
     it('Should check if month is within range on maxDate', () => {
+        const internalModelValue = new Date();
+
         const wrapper = mountActionRow({
             ...props,
             maxDate: addMonths(new Date(), 1),
             monthPicker: true,
-            internalModelValue: new Date(),
+            internalModelValue,
         });
 
-        expect(wrapper.vm.isMonthValid).toBe(true);
+        expect(wrapper.vm.isMonthValid(internalModelValue)).toBe(true);
     });
 
     it('Should check if month is within range on minDate', () => {
+        const internalModelValue = new Date();
         const wrapper = mountActionRow({
             ...props,
             minDate: subMonths(new Date(), 1),
             monthPicker: true,
-            internalModelValue: new Date(),
+            internalModelValue,
         });
 
-        expect(wrapper.vm.isMonthValid).toBe(true);
+        expect(wrapper.vm.isMonthValid(internalModelValue)).toBe(true);
     });
 
     it('Should check if month is within range on minDate and maxDate', () => {
+        const internalModelValue = subMonths(new Date(), 3);
         const wrapper = mountActionRow({
             ...props,
             minDate: subMonths(new Date(), 1),
             maxDate: addMonths(new Date(), 1),
             monthPicker: true,
-            internalModelValue: subMonths(new Date(), 3),
+            internalModelValue,
         });
 
-        expect(wrapper.vm.isMonthValid).toBe(false);
+        expect(wrapper.vm.isMonthValid(internalModelValue)).toBe(false);
     });
 
     it('Should format month picker with custom format fn', () => {
