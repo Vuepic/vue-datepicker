@@ -69,6 +69,7 @@
         'update-month-year',
         'update-flow-step',
         'mount',
+        'invalid-fixed-range',
     ]);
 
     const slots = useSlots();

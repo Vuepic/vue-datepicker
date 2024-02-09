@@ -1,8 +1,8 @@
-import { getDate, isDateBefore, isDateEqual } from '@/utils/date-utils';
+import { getDate, isDateAfter, isDateBefore, isDateEqual } from '@/utils/date-utils';
 
-import type { WritableComputedRef } from 'vue';
-import type { InternalModuleValue, VueEmit } from '@/interfaces';
 import { localToTz } from '@/utils/timezone';
+import type { ComputedRef, WritableComputedRef } from 'vue';
+import type { InternalModuleValue, RangeConfig, VueEmit } from '@/interfaces';
 
 export const handleMultiDatesSelect = (
     date: Date,
@@ -67,4 +67,29 @@ export const setPresetDate = (opts: {
     } else if (!Array.isArray(opts.value)) {
         opts.modelValue.value = localToTz(getDate(opts.value), opts.timezone);
     }
+};
+
+export const getRangeWithFixedDate = (
+    date: Date,
+    modelValue: WritableComputedRef<InternalModuleValue>,
+    emit: VueEmit,
+    defaultedRange: ComputedRef<RangeConfig>,
+): Date[] => {
+    if (Array.isArray(modelValue.value) && modelValue.value.length === 2) {
+        if (
+            defaultedRange.value.fixedStart &&
+            (isDateAfter(date, modelValue.value[0]) || isDateEqual(date, modelValue.value[0]))
+        ) {
+            return [modelValue.value[0], date];
+        }
+        if (
+            defaultedRange.value.fixedEnd &&
+            (isDateBefore(date, modelValue.value[1]) || isDateEqual(date, modelValue.value[1]))
+        ) {
+            return [date, modelValue.value[1]];
+        }
+        emit('invalid-fixed-range', date);
+        return modelValue.value;
+    }
+    return [];
 };

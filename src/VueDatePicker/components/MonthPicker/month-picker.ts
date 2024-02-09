@@ -13,7 +13,13 @@ import {
     setDateMonthOrYear,
 } from '@/utils/date-utils';
 import { useDefaults, useModel } from '@/composables';
-import { checkRangeAutoApply, handleMultiDatesSelect, setMonthOrYearRange, setPresetDate } from '@/composables/shared';
+import {
+    checkRangeAutoApply,
+    getRangeWithFixedDate,
+    handleMultiDatesSelect,
+    setMonthOrYearRange,
+    setPresetDate,
+} from '@/composables/shared';
 
 import type { IDefaultSelect, OverlayGridItem, VueEmit } from '@/interfaces';
 import type { PickerBasePropsType } from '@/props';
@@ -140,7 +146,14 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     };
 
     const selectRangedMonth = (month: number, instance: number) => {
-        const range = setMonthOrYearRange(modelValue, monthToDate(month, instance), emit);
+        let range = [];
+        if (defaultedRange.value.fixedEnd || defaultedRange.value.fixedStart) {
+            const date = monthToDate(month, instance);
+            modelValue.value = getRangeWithFixedDate(date, modelValue, emit, defaultedRange);
+            range = modelValue.value;
+        } else {
+            range = setMonthOrYearRange(modelValue, monthToDate(month, instance), emit);
+        }
         checkRangeAutoApply(range, emit, props.autoApply, props.modelAuto);
     };
 

@@ -17,7 +17,6 @@ import {
     getDate,
     getDaysInBetween,
     getNextMonthYear,
-    isDateAfter,
     isDateBefore,
     isDateEqual,
     resetDateTime,
@@ -27,7 +26,12 @@ import { useDefaults, useModel, useValidation } from '@/composables';
 import { getMapDate, isNumNullish } from '@/utils/util';
 import { isNumberArray } from '@/utils/type-guard';
 import { useTimePickerUtils } from '@/components/TimePicker/time-picker-utils';
-import { checkRangeAutoApply, handleMultiDatesSelect, setPresetDate } from '@/composables/shared';
+import {
+    checkRangeAutoApply,
+    getRangeWithFixedDate,
+    handleMultiDatesSelect,
+    setPresetDate,
+} from '@/composables/shared';
 import { FlowStep } from '@/constants';
 
 import type { ICalendarDate, ICalendarDay, WeekStartNum, IMarker, VueEmit, TimeType } from '@/interfaces';
@@ -458,27 +462,6 @@ export const useDatePicker = (
         }
     };
 
-    // If the range with fixed start/end is set, update range when the date is selected
-    const getRangeWithFixedDate = (date: Date): Date[] => {
-        if (Array.isArray(modelValue.value) && modelValue.value.length === 2) {
-            if (
-                defaultedRange.value.fixedStart &&
-                (isDateAfter(date, modelValue.value[0]) || isDateEqual(date, modelValue.value[0]))
-            ) {
-                return [modelValue.value[0], date];
-            }
-            if (
-                defaultedRange.value.fixedEnd &&
-                (isDateBefore(date, modelValue.value[1]) || isDateEqual(date, modelValue.value[1]))
-            ) {
-                return [date, modelValue.value[1]];
-            }
-            emit('invalid-fixed-range', date);
-            return modelValue.value;
-        }
-        return [];
-    };
-
     // Handle range with fixed start/end
     const setFixedDateRange = (day: ICalendarDay) => {
         if (
@@ -487,7 +470,7 @@ export const useDatePicker = (
         ) {
             return emit('invalid-date', day.value);
         }
-        tempRange.value = getRangeWithFixedDate(getDate(day.value));
+        tempRange.value = getRangeWithFixedDate(getDate(day.value), modelValue, emit, defaultedRange);
     };
 
     // Called on selectDate when range mode is used
