@@ -13,7 +13,7 @@ import {
 import { useDefaults } from '@/composables/defaults';
 import { convertType, getMapDate } from '@/utils/util';
 
-import type { InternalModuleValue, DisabledTimesFn, DisabledTime, TimeModel } from '@/interfaces';
+import type { InternalModuleValue, DisabledTimesFn, DisabledTime, TimeModel, MaybeDate } from '@/interfaces';
 import type { PickerBasePropsType, AllPropsType } from '@/props';
 
 export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
@@ -117,13 +117,21 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
         }
         return true;
     };
+    const isValidYear = (val: MaybeDate) => {
+        if (val) {
+            const activeYear = getYear(val);
+            return activeYear >= +props.yearRange[0] && activeYear <= props.yearRange[1];
+        }
+        return true;
+    };
 
     // If min or max range is set, validate given range
     const checkMinMaxRange = (secondDate: Date, modelValue: InternalModuleValue, index = 0): boolean => {
         if (
             Array.isArray(modelValue) &&
             modelValue[index] &&
-            (defaultedRange.value.maxRange || defaultedRange.value.minRange)
+            (defaultedRange.value.maxRange || defaultedRange.value.minRange) &&
+            isValidYear(modelValue[index])
         ) {
             const absoluteDiff = differenceInCalendarDays(secondDate, modelValue[index]);
             const daysInBetween = getDaysInBetween(modelValue[index], secondDate);
