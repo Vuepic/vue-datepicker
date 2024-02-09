@@ -1,5 +1,5 @@
 <template>
-    <div class="dp__action_row" :style="calendarWidth ? { width: `${calendarWidth}px` } : {}">
+    <div class="dp__action_row">
         <template v-if="$slots['action-row']">
             <slot
                 name="action-row"
@@ -12,13 +12,22 @@
             />
         </template>
         <template v-else>
-            <div v-if="defaultedActionRow.showPreview" class="dp__selection_preview" :title="formatValue">
-                <slot v-if="$slots['action-preview']" name="action-preview" :value="internalModelValue" />
-                <template v-if="!$slots['action-preview']">
+            <div
+                v-if="defaultedActionRow.showPreview"
+                class="dp__selection_preview"
+                :title="formatValue"
+                :style="previewStyle"
+            >
+                <slot
+                    v-if="$slots['action-preview'] && showPreview"
+                    name="action-preview"
+                    :value="internalModelValue"
+                />
+                <template v-if="!$slots['action-preview'] && showPreview">
                     {{ formatValue }}
                 </template>
             </div>
-            <div class="dp__action_buttons" data-dp-element="action-row">
+            <div ref="actionBtnContainer" class="dp__action_buttons" data-dp-element="action-row">
                 <slot v-if="$slots['action-buttons']" name="action-buttons" :value="internalModelValue" />
                 <template v-if="!$slots['action-buttons']">
                     <button
@@ -62,7 +71,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, onMounted, ref } from 'vue';
+    import { computed, onMounted, onUnmounted, ref } from 'vue';
 
     import { convertType, unrefElement } from '@/utils/util';
     import { useArrowNavigation, useDefaults, useValidation } from '@/composables';
@@ -100,12 +109,32 @@
 
     const cancelButtonRef = ref(null);
     const selectButtonRef = ref(null);
+    const showPreview = ref(false);
+    const previewStyle = ref<any>({});
+    const actionBtnContainer = ref<HTMLElement | null>(null);
 
     onMounted(() => {
         if (props.arrowNavigation) {
             buildMatrix([unrefElement(cancelButtonRef), unrefElement(selectButtonRef)] as HTMLElement[], 'actionRow');
         }
+        getPreviewAvailableSpace();
+        window.addEventListener('resize', getPreviewAvailableSpace);
     });
+
+    onUnmounted(() => {
+        window.removeEventListener('resize', getPreviewAvailableSpace);
+    });
+
+    const getPreviewAvailableSpace = () => {
+        showPreview.value = false;
+        setTimeout(() => {
+            const rect = actionBtnContainer.value?.getBoundingClientRect();
+            if (rect) {
+                previewStyle.value.maxWidth = `${rect.left - rect.width + 5}px`;
+            }
+            showPreview.value = true;
+        }, 0);
+    };
 
     const validDateRange = computed(() => {
         return defaultedRange.value.enabled && !defaultedRange.value.partialRange && props.internalModelValue
