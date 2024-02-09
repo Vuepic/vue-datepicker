@@ -321,10 +321,10 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
 
     const emitValue = (value: ModelValue, useTz = false): void => {
         emit('update:model-value', value);
-        if (props.emitTimezone && useTz) {
+        if (defaultedTz.value.emitTimezone && useTz) {
             const zonedValue = Array.isArray(value)
-                ? value.map((date) => localToTz(convertType(date), props.emitTimezone))
-                : localToTz(convertType(value), props.emitTimezone);
+                ? value.map((date) => localToTz(convertType(date), defaultedTz.value.emitTimezone))
+                : localToTz(convertType(value), defaultedTz.value.emitTimezone);
             emit('update:model-timezone-value', zonedValue);
         }
     };

@@ -285,7 +285,10 @@ export interface VueDatePickerProps {
      */
     noDisabledRange?: boolean;
     sixWeeks?: boolean | 'append' | 'prepend' | 'center' | 'fair';
-    timezone?: string;
+    timezone?: string | { timezone?: string; exactMatch?: boolean; dateInTz?: string; emitTimezone?: string };
+    /**
+     * @deprecated
+     */
     emitTimezone?: string;
     disableYearSelect?: boolean;
     focusStartDate?: boolean;

@@ -75,7 +75,7 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
 
     const defaultedWeekNumbers = computed(() => getDefaultWeekNumbers(props.weekNumbers));
 
-    const defaultedTz = computed(() => getDefaultTimeZone(props.timezone));
+    const defaultedTz = computed(() => getDefaultTimeZone(props.timezone, props.emitTimezone));
 
     const propDates = computed(() =>
         mapPropDates(

@@ -348,6 +348,7 @@ export interface TimeZoneConfig {
     timezone: string | undefined;
     exactMatch: boolean;
     dateInTz?: string;
+    emitTimezone?: string;
 }
 
 export type TimeZoneProp = string | Partial<TimeZoneConfig>;
