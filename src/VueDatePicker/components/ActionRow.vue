@@ -1,5 +1,5 @@
 <template>
-    <div class="dp__action_row">
+    <div ref="actionRowRef" class="dp__action_row">
         <template v-if="$slots['action-row']">
             <slot
                 name="action-row"
@@ -111,6 +111,7 @@
     const showPreview = ref(false);
     const previewStyle = ref<any>({});
     const actionBtnContainer = ref<HTMLElement | null>(null);
+    const actionRowRef = ref<HTMLElement | null>(null);
 
     onMounted(() => {
         if (props.arrowNavigation) {
@@ -128,8 +129,9 @@
         showPreview.value = false;
         setTimeout(() => {
             const rect = actionBtnContainer.value?.getBoundingClientRect();
-            if (rect) {
-                previewStyle.value.maxWidth = `${rect.left - rect.width + 5}px`;
+            const rowRect = actionRowRef.value?.getBoundingClientRect();
+            if (rect && rowRect) {
+                previewStyle.value.maxWidth = `${rowRect.width - rect.width - 20}px`;
             }
             showPreview.value = true;
         }, 0);
