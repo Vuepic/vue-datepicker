@@ -278,7 +278,7 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
 
     const isMonthValid = computed(() => (internalModelValue: InternalModuleValue): boolean => {
         if (!props.monthPicker) return true;
-        if (defaultedRange.value.enabled && Array.isArray(internalModelValue)) {
+        if (Array.isArray(internalModelValue) && (defaultedRange.value.enabled || props.multiDates)) {
             const invalid = internalModelValue.filter((value) => !isMonthWithinRange(value));
             return !invalid.length;
         }
