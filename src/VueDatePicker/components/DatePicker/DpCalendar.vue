@@ -16,6 +16,7 @@
                     class="dp__calendar_header_item"
                     role="gridcell"
                     data-test="calendar-header"
+                    :aria-label="defaultedAriaLabels?.weekDay?.(i)"
                 >
                     <slot v-if="$slots['calendar-header']" name="calendar-header" :day="dayVal" :index="i" />
                     <template v-if="!$slots['calendar-header']">

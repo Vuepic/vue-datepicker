@@ -62,7 +62,8 @@ export const defaultAriaLabels = (labels: Partial<AriaLabels>): AriaLabels => {
         prevMonth: 'Previous month',
         nextYear: 'Next year',
         prevYear: 'Previous year',
-        day: () => '',
+        day: undefined,
+        weekDay: undefined,
         ...(labels ?? {}),
     };
 };

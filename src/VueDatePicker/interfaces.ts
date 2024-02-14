@@ -152,7 +152,8 @@ export interface AriaLabels {
     prevMonth: string;
     nextYear: string;
     prevYear: string;
-    day: (dayVal: ICalendarDay) => string;
+    day?: (dayVal: ICalendarDay) => string;
+    weekDay?: (day: number) => string;
 }
 
 export interface Time {

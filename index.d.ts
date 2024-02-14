@@ -258,6 +258,7 @@ export interface VueDatePickerProps {
         nextYear?: string;
         prevYear?: string;
         day?: ({ value }: { value: Date }) => string;
+        weekDay?: (day: number) => string;
     };
     arrowNavigation?: boolean;
     yearPicker?: boolean;
