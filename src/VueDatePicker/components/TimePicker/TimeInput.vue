@@ -111,6 +111,7 @@
                     :text-input="textInput"
                     :config="config"
                     :arrow-navigation="arrowNavigation"
+                    :aria-labels="ariaLabels"
                     @selected="handleTimeFromOverlay(timeInput.type, $event)"
                     @toggle="toggleOverlay(timeInput.type)"
                     @reset-flow="$emit('reset-flow')"

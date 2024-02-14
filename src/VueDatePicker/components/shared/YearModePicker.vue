@@ -41,6 +41,7 @@
                 :config="config"
                 :is-last="autoApply && !defaultedConfig.keepActionRow"
                 :hide-navigation="hideNavigation"
+                :aria-labels="ariaLabels"
                 type="year"
                 @toggle="toggleYearPicker"
                 @selected="handleYearSelect($event)"

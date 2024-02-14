@@ -52,6 +52,7 @@
                             :esc-close="escClose"
                             :menu-wrap-ref="menuWrapRef"
                             :text-input="textInput"
+                            :aria-labels="ariaLabels"
                             @selected="type.updateModelValue"
                             @toggle="type.toggle"
                         >

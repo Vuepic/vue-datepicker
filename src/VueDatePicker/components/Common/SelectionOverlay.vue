@@ -70,7 +70,7 @@
     import { checkStopPropagation, convertType, findFocusableEl, getElWithin, unrefElement } from '@/utils/util';
     import { useArrowNavigation, useCommon, useDefaults } from '@/composables';
 
-    import type { Config, DynamicClass, Flow, OverlayGridItem, TextInputProp } from '@/interfaces';
+    import type { AriaLabels, Config, DynamicClass, Flow, OverlayGridItem, TextInputProp } from '@/interfaces';
     import type { PickerBasePropsType } from '@/props';
 
     const { setSelectionGrid, buildMultiLevelMatrix, setMonthPicker } = useArrowNavigation();
@@ -93,6 +93,7 @@
         noOverlayFocus?: boolean;
         focusValue?: number;
         menuWrapRef?: HTMLElement | null;
+        ariaLabels?: Partial<AriaLabels>;
     }
 
     const props = defineProps<Props>();
