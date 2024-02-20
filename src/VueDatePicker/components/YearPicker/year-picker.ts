@@ -82,8 +82,8 @@ export const useYearPicker = (props: PickerBasePropsType, emit: VueEmit) => {
             return emit('auto-apply', true);
         }
         if (defaultedRange.value.enabled) {
-            const range = setMonthOrYearRange(modelValue, yearToDate(year), emit);
-            return checkRangeAutoApply(range, emit, props.autoApply, props.modelAuto);
+            modelValue.value = setMonthOrYearRange(modelValue, yearToDate(year), emit);
+            return checkRangeAutoApply(modelValue.value, emit, props.autoApply, props.modelAuto);
         }
         modelValue.value = yearToDate(year);
         emit('auto-apply');

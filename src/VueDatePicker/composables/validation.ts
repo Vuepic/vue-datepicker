@@ -128,10 +128,12 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
     };
 
     const shouldCheckMinMaxRange = (modelValue: InternalModuleValue, index: number): modelValue is Array<Date> => {
-        return (Array.isArray(modelValue) &&
-            modelValue[index] &&
-            (defaultedRange.value.maxRange || defaultedRange.value.minRange) &&
-            isValidYear(modelValue[index])) as boolean;
+        return Boolean(
+            Array.isArray(modelValue) &&
+                modelValue[index] &&
+                (defaultedRange.value.maxRange || defaultedRange.value.minRange) &&
+                isValidYear(modelValue[index]),
+        );
     };
 
     // If min or max range is set, validate given range

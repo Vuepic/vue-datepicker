@@ -12,7 +12,7 @@ import {
     resetDate,
     setDateMonthOrYear,
 } from '@/utils/date-utils';
-import { useDefaults, useModel } from '@/composables';
+import { useDefaults, useModel, useValidation } from '@/composables';
 import {
     checkRangeAutoApply,
     getRangeWithFixedDate,
@@ -40,6 +40,7 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     const { modelValue, year, month: instanceMonth, calendars } = useModel(props, emit);
     const months = computed(() => getMonths(props.formatLocale, props.locale, props.monthNameFormat));
     const hoverDate = ref<Date | null>(null);
+    const { checkMinMaxRange } = useValidation(props);
 
     const {
         selectYear: onYearSelect,
@@ -146,15 +147,17 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     };
 
     const selectRangedMonth = (month: number, instance: number) => {
-        let range = [];
+        const date = monthToDate(month, instance);
         if (defaultedRange.value.fixedEnd || defaultedRange.value.fixedStart) {
-            const date = monthToDate(month, instance);
             modelValue.value = getRangeWithFixedDate(date, modelValue, emit, defaultedRange);
-            range = modelValue.value;
         } else {
-            range = setMonthOrYearRange(modelValue, monthToDate(month, instance), emit);
+            if (!modelValue.value) {
+                modelValue.value = [monthToDate(month, instance)];
+            } else if (checkMinMaxRange(date, modelValue.value)) {
+                modelValue.value = setMonthOrYearRange(modelValue, monthToDate(month, instance), emit);
+            }
         }
-        checkRangeAutoApply(range, emit, props.autoApply, props.modelAuto);
+        checkRangeAutoApply(modelValue.value as Date[], emit, props.autoApply, props.modelAuto);
     };
 
     const selectMultiMonths = (month: number, instance: number) => {

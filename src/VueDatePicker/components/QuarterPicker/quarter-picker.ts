@@ -98,8 +98,8 @@ export const useQuarterPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     };
 
     const selectRangedQuarter = (date: Date) => {
-        const range = setMonthOrYearRange(modelValue, date, emit);
-        checkRangeAutoApply(range, emit, props.autoApply, props.modelAuto);
+        modelValue.value = setMonthOrYearRange(modelValue, date, emit);
+        checkRangeAutoApply(modelValue.value, emit, props.autoApply, props.modelAuto);
     };
 
     const selectSingleQuarter = (date: Date) => {
