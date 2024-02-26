@@ -138,7 +138,7 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
 
     // If min or max range is set, validate given range
     const checkMinMaxRange = (secondDate: Date, modelValue: InternalModuleValue, index = 0): boolean => {
-        if (shouldCheckMinMaxRange(modelValue, index)) {
+        if (shouldCheckMinMaxRange(modelValue, index) && isValidYear(secondDate)) {
             const absoluteDiff = differenceInCalendarDays(secondDate, modelValue[index]);
             const daysInBetween = getDaysInBetween(modelValue[index], secondDate);
             const disabledDates =
