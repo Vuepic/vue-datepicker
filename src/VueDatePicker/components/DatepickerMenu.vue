@@ -4,6 +4,7 @@
         ref="dpMenuRef"
         tabindex="0"
         role="dialog"
+        :aria-label="ariaLabels?.menu"
         :class="dpMenuClass"
         @mouseleave="clearHoverDate"
         @click="handleDpMenuClick"
