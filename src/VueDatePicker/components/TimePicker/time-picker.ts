@@ -61,7 +61,7 @@ export const useTimePicker = (props: PickerBasePropsType, emit: VueEmit) => {
             return assignTime(
                 [first.hours, second.hours],
                 [first.minutes, second.minutes],
-                [first.seconds, second.minutes],
+                [first.seconds, second.seconds],
             );
         }
         return assignTime(first.hours, first.minutes, first.seconds);
