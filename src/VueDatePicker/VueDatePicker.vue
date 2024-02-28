@@ -20,7 +20,7 @@
                 <slot :name="slot" v-bind="args" />
             </template>
         </DatepickerInput>
-        <TeleportCmp v-bind="teleportProps">
+        <component :is="teleport ? TeleportCmp : 'div'" v-bind="teleportProps">
             <transition :name="menuTransition(openOnTop)" :css="showTransition && !defaultedInline.enabled">
                 <div
                     v-if="isOpen"
@@ -63,7 +63,7 @@
                     </DatepickerMenu>
                 </div>
             </transition>
-        </TeleportCmp>
+        </component>
     </div>
 </template>
 
