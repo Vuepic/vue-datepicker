@@ -9,7 +9,6 @@ import type {
     IMarker,
     TimeModel,
     Transition,
-    ModelType,
     ModelValue,
     OpenPosition,
     WeekStartNum,
@@ -35,7 +34,7 @@ import type {
 export const AllProps = {
     multiCalendars: { type: [Boolean, Number, String, Object] as PropType<MultiCalendarsProp>, default: undefined },
     modelValue: { type: [String, Date, Array, Object, Number] as PropType<ModelValue>, default: null },
-    modelType: { type: String as PropType<ModelType>, default: null },
+    modelType: { type: String as PropType<string>, default: null },
     position: { type: String as PropType<OpenPosition>, default: 'center' },
     dark: { type: Boolean as PropType<boolean>, default: false },
     format: {

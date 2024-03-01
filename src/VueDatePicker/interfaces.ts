@@ -175,8 +175,6 @@ export type ComponentRef = Ref<ComponentPublicInstance | HTMLElement | null>;
 
 export type TimeOverlayCheck = 'noHoursOverlay' | 'noMinutesOverlay' | 'noSecondsOverlay';
 
-export type ModelType = string;
-
 export type DateTimeSetter = number | string | null;
 
 export type DateValue = Date | string | null;
