@@ -150,12 +150,10 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         const date = monthToDate(month, instance);
         if (defaultedRange.value.fixedEnd || defaultedRange.value.fixedStart) {
             modelValue.value = getRangeWithFixedDate(date, modelValue, emit, defaultedRange);
-        } else {
-            if (!modelValue.value) {
-                modelValue.value = [monthToDate(month, instance)];
-            } else if (checkMinMaxRange(date, modelValue.value)) {
-                modelValue.value = setMonthOrYearRange(modelValue, monthToDate(month, instance), emit);
-            }
+        } else if (!modelValue.value) {
+            modelValue.value = [monthToDate(month, instance)];
+        } else if (checkMinMaxRange(date, modelValue.value)) {
+            modelValue.value = setMonthOrYearRange(modelValue, monthToDate(month, instance), emit);
         }
         checkRangeAutoApply(modelValue.value as Date[], emit, props.autoApply, props.modelAuto);
     };
