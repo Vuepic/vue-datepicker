@@ -145,7 +145,8 @@
     const { buildMatrix, setTimePicker } = useArrowNavigation();
     const slots = useSlots();
 
-    const { defaultedTransitions, defaultedAriaLabels, defaultedTextInput, defaultedConfig, defaultedRange } = useDefaults(props);
+    const { defaultedTransitions, defaultedAriaLabels, defaultedTextInput, defaultedConfig, defaultedRange } =
+        useDefaults(props);
     const { transitionName, showTransition } = useTransitions(defaultedTransitions);
     const { hideNavigationButtons } = useCommon();
 
