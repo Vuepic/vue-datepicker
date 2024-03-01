@@ -541,15 +541,20 @@ describe('Logic connection', () => {
     });
 
     it('Should display modified calendar', async () => {
+        const mapDays = (week: ICalendarDate) => {
+            return week.days.map((day) => {
+                day.classData['custom-class'] = true;
+                return day;
+            });
+        };
+
+        const hasFifteenth = (week: ICalendarDate) => week.days.some((day) => day.text === 15);
         const mapDates = (dates: ICalendarDate[]) => {
             return dates
-                .filter((week) => week.days.some((day) => day.text === 15))
+                .filter((week) => hasFifteenth(week))
                 .map((week) => ({
                     ...week,
-                    days: week.days.map((day) => {
-                        day.classData['custom-class'] = true;
-                        return day;
-                    }),
+                    days: mapDays(week),
                 }));
         };
         const { datePicker } = await mountDatepicker({ calendar: mapDates });

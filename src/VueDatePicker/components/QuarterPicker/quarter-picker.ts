@@ -65,6 +65,16 @@ export const useQuarterPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         return false;
     };
 
+    const matchQuarter = (value: { quarter: number; year: number }, date: Date) => {
+        return value.quarter === getQuarter(date) && value.year === getYear(date);
+    };
+
+    const isHighlighted = (start: Date) => {
+        return typeof defaultedHighlight.value === 'function'
+            ? defaultedHighlight.value({ quarter: getQuarter(start), year: getYear(start) })
+            : !!defaultedHighlight.value.quarters.find((value) => matchQuarter(value, start));
+    };
+
     const quarters = computed(() => (instance: number) => {
         const activeYear = set(new Date(), { year: year.value(instance) });
         return eachQuarterOfInterval({
@@ -75,12 +85,7 @@ export const useQuarterPicker = (props: PickerBasePropsType, emit: VueEmit) => {
             const end = endOfQuarter(quarter);
             const disabled = isDateDisabled(quarter);
             const isBetween = isQuarterBetween(start);
-            const highlighted =
-                typeof defaultedHighlight.value === 'function'
-                    ? defaultedHighlight.value({ quarter: getQuarter(start), year: getYear(start) })
-                    : !!defaultedHighlight.value.quarters.find(
-                          (value) => value.quarter === getQuarter(start) && value.year === getYear(start),
-                      );
+            const highlighted = isHighlighted(start);
             return {
                 text: formatQuarterText(start, end),
                 value: start,
