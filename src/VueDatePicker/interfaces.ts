@@ -1,5 +1,4 @@
 import type { ComponentPublicInstance, Ref } from 'vue';
-import type { PickerBasePropsType } from '@/props';
 import type { HeaderPicker } from '@/constants';
 
 export type DynamicClass = Record<string, boolean | undefined>;
@@ -175,9 +174,7 @@ export type ComponentRef = Ref<ComponentPublicInstance | HTMLElement | null>;
 
 export type TimeOverlayCheck = 'noHoursOverlay' | 'noMinutesOverlay' | 'noSecondsOverlay';
 
-export type ModelFormatType = 'timestamp' | 'format';
-
-export type ModelType = ModelFormatType | string;
+export type ModelType = string;
 
 export type DateTimeSetter = number | string | null;
 
@@ -215,13 +212,6 @@ export type DisabledTimesFn = (time: TimeObj | TimeObj[] | (TimeObj | undefined)
 
 export type MenuView = 'month' | 'year' | 'calendar' | 'time';
 
-export type ArrMapValue = Map<string, boolean> | null;
-export interface ArrMapValues {
-    disabledDates: ArrMapValue;
-    allowedDates: ArrMapValue;
-    highlightedDates: ArrMapValue;
-}
-
 export interface OverlayGridItem {
     value: number;
     text: string;
@@ -243,12 +233,6 @@ export interface HeaderSelectionBtn {
     items: OverlayGridItem[][];
     ariaLabel: string;
 }
-
-export type TimePickerProps = Partial<PickerBasePropsType> & {
-    enableSeconds: boolean;
-    disableTimeRangeValidation: boolean;
-    range: boolean;
-};
 
 export type MenuExposedFn = 'selectCurrentDate' | 'presetDate' | 'clearHoverDate' | 'handleArrow' | 'updateMonthYear';
 

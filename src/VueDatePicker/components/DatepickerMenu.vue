@@ -299,12 +299,10 @@
             if (arrow === 'down') return arrowDown();
             if (arrow === 'left') return arrowLeft();
             if (arrow === 'right') return arrowRight();
+        } else if (arrow === 'left' || arrow === 'up') {
+            callChildFn('handleArrow', 'left', 0, arrow === 'up');
         } else {
-            if (arrow === 'left' || arrow === 'up') {
-                callChildFn('handleArrow', 'left', 0, arrow === 'up');
-            } else {
-                callChildFn('handleArrow', 'right', 0, arrow === 'down');
-            }
+            callChildFn('handleArrow', 'right', 0, arrow === 'down');
         }
     };
 

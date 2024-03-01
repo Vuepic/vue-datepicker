@@ -129,7 +129,7 @@ export const unrefElement = (elRef: MaybeElementRef): HTMLElement | null => {
     return (plain as ComponentPublicInstance)?.$el;
 };
 
-export const getDefaultMarker = (marker: IMarker): IMarker => Object.assign({ type: 'dot' }, marker);
+export const getDefaultMarker = (marker: IMarker): IMarker => ({ type: 'dot', ...(marker ?? {}) });
 
 export const isModelAuto = (modelValue: ModelValue): boolean => {
     if (Array.isArray(modelValue)) {

@@ -59,14 +59,12 @@ export const useArrowNavigation = () => {
 
         if (!el) {
             activeRow.value = increment ? activeRow.value - 1 : activeRow.value + 1;
-        } else {
-            if (
-                matrix.value[activeRow.value] &&
-                !matrix.value[activeRow.value][selectedIndex.value] &&
-                selectedIndex.value !== 0
-            ) {
-                selectedIndex.value = matrix.value[activeRow.value].length - 1;
-            }
+        } else if (
+            matrix.value[activeRow.value] &&
+            !matrix.value[activeRow.value][selectedIndex.value] &&
+            selectedIndex.value !== 0
+        ) {
+            selectedIndex.value = matrix.value[activeRow.value].length - 1;
         }
     };
 
