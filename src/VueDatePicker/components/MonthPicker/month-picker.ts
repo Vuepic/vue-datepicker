@@ -35,6 +35,7 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         defaultedHighlight,
         propDates,
         defaultedTz,
+        defaultedFilters,
     } = useDefaults(props);
 
     const { modelValue, year, month: instanceMonth, calendars } = useModel(props, emit);
@@ -58,6 +59,7 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         year,
         propDates,
         month: instanceMonth,
+        filters: defaultedFilters,
         props,
         emit,
     });
@@ -128,7 +130,9 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
                     month.value,
                     getMinMonth(year.value(instance), propDates.value.minDate),
                     getMaxMonth(year.value(instance), propDates.value.maxDate),
-                ) || getDisabledMonths(propDates.value.disabledDates, year.value(instance)).includes(month.value);
+                ) ||
+                getDisabledMonths(propDates.value.disabledDates, year.value(instance)).includes(month.value) ||
+                defaultedFilters.value.months?.includes(month.value);
             const isBetween = isMonthBetween(month.value, instance);
             const highlighted = checkHighlightMonth(defaultedHighlight.value, month.value, year.value(instance));
             return { active, disabled, isBetween, highlighted };

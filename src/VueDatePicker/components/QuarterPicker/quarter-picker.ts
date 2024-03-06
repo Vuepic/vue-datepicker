@@ -23,8 +23,14 @@ import { isDateBetween, isDateEqual } from '@/utils/date-utils';
 
 export const useQuarterPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     const hoverDate = ref();
-    const { defaultedMultiCalendars, defaultedConfig, defaultedHighlight, defaultedRange, propDates } =
-        useDefaults(props);
+    const {
+        defaultedMultiCalendars,
+        defaultedConfig,
+        defaultedHighlight,
+        defaultedRange,
+        propDates,
+        defaultedFilters,
+    } = useDefaults(props);
     const { modelValue, year, month, calendars } = useModel(props, emit);
     const { isDisabled: isDateDisabled } = useValidation(props);
     const { selectYear, groupedYears, showYearPicker, isDisabled, toggleYearPicker, handleYearSelect, handleYear } =
@@ -36,6 +42,7 @@ export const useQuarterPicker = (props: PickerBasePropsType, emit: VueEmit) => {
             propDates,
             month,
             year,
+            filters: defaultedFilters,
             props,
             emit,
         });
