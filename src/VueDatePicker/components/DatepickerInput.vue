@@ -160,6 +160,7 @@
             defaultTime ?? assignDefaultTime({}, props.enableSeconds),
             props.inputValue,
             textPasted.value,
+            props.formatLocale,
         );
     };
 

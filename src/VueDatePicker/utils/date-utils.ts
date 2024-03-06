@@ -48,8 +48,9 @@ const parseTextToDate = (
     time: TimeModel,
     inputVal?: string,
     onPaste?: boolean,
+    locale?: Locale,
 ): Date | null => {
-    const parsedDate = parse(value, pattern.slice(0, value.length), new Date());
+    const parsedDate = parse(value, pattern.slice(0, value.length), new Date(), { locale });
     if (isValid(parsedDate) && isDate(parsedDate)) {
         if (inputVal || onPaste) return parsedDate;
         return set(parsedDate, {
@@ -68,16 +69,17 @@ export const parseFreeInput = (
     time: TimeModel | TimeModel[],
     inputVal?: string,
     onPaste?: boolean,
+    locale?: Locale,
 ): Date | null => {
     const defaultTime = Array.isArray(time) ? time[0] : time;
     if (typeof pattern === 'string') {
-        return parseTextToDate(value, pattern, defaultTime, inputVal, onPaste);
+        return parseTextToDate(value, pattern, defaultTime, inputVal, onPaste, locale);
     }
 
     if (Array.isArray(pattern)) {
         let parsedDate = null;
         for (const textVal of pattern) {
-            parsedDate = parseTextToDate(value, textVal, defaultTime, inputVal, onPaste);
+            parsedDate = parseTextToDate(value, textVal, defaultTime, inputVal, onPaste, locale);
             if (parsedDate) {
                 break;
             }
