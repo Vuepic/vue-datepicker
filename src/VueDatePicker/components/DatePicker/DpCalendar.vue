@@ -115,6 +115,12 @@
                             </div>
                         </div>
                     </div>
+
+                    <slot
+                        v-if="$slots['calendar-bottom-marker-description-area']"
+                        name="calendar-bottom-marker-description-area"
+                        :weeks="calendarWeeks"
+                    />
                 </div>
             </transition>
         </div>

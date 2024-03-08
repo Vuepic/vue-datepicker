@@ -25,6 +25,7 @@ export const slots = [
     { name: 'action-buttons', use: ['action'] },
     { name: 'action-preview', use: ['action'] },
     { name: 'calendar-header', use: ['calendar', 'shared'] },
+    { name: 'calendar-bottom-marker-description-area', use: ['calendar', 'shared'] },
     { name: 'marker-tooltip', use: ['calendar', 'shared'] },
     { name: 'action-extra', use: ['menu'] },
     { name: 'time-picker-overlay', use: ['calendar', 'time', 'shared'] },
