@@ -24,7 +24,7 @@ describe('Month and Year picker components', () => {
         year: getYear(new Date()),
         instance: 0,
         months: getMonths(null, 'en-Us', 'short'),
-        years: getYears([2020, 2030]),
+        years: getYears([2020, 2030], 'en-US'),
         filters: getDefaultFilters({}),
     };
 
@@ -144,7 +144,7 @@ describe('Month and Year picker components', () => {
     });
 
     it('Should get proper overlay slot props for year-overlay', async () => {
-        wrapper = mount(DpHeader, { props: { ...props, years: getYears([2000, 2100]) } });
+        wrapper = mount(DpHeader, { props: { ...props, years: getYears([2000, 2100], 'en-US') } });
 
         const spy = vi.spyOn(wrapper.vm.overlaySlotProps('year'), 'toggle');
 

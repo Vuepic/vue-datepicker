@@ -48,7 +48,7 @@ export const useYearPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     };
 
     const groupedYears = computed(() => {
-        return groupListAndMap(getYears(props.yearRange, props.reverseYears), (year: IDefaultSelect) => {
+        return groupListAndMap(getYears(props.yearRange, props.locale, props.reverseYears), (year: IDefaultSelect) => {
             const active = isYearActive(year.value);
             const disabled =
                 checkMinMaxValue(

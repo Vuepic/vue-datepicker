@@ -127,7 +127,7 @@
         getMinMaxYear,
         getMinMonth,
     } from '@/utils/date-utils';
-    import { checkMinMaxValue, groupListAndMap, unrefElement } from '@/utils/util';
+    import { checkMinMaxValue, formatNumber, groupListAndMap, unrefElement } from '@/utils/util';
     import { HeaderPicker } from '@/constants';
 
     import type { HeaderSelectionBtn, IDefaultSelect, MaybeElementRef, OverlayGridItem } from '@/interfaces';
@@ -283,7 +283,7 @@
             toggle: toggleYearPicker,
             modelValue: yearModelBind.value,
             updateModelValue: (val: number) => (yearModelBind.value = val),
-            text: props.year,
+            text: formatNumber(props.year, props.locale),
             showSelectionGrid: showYearPicker.value,
             items: groupedYears.value,
             ariaLabel: defaultedAriaLabels.value?.openYearsOverlay,

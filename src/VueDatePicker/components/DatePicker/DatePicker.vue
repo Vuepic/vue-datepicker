@@ -8,7 +8,7 @@
                 }
             "
             :months="getMonths(formatLocale, locale, monthNameFormat)"
-            :years="getYears(yearRange, reverseYears)"
+            :years="getYears(yearRange, locale, reverseYears)"
             :month="month(instance)"
             :year="year(instance)"
             :instance="instance"

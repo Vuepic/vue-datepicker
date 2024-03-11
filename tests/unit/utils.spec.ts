@@ -103,7 +103,7 @@ describe('Utils and date utils formatting', () => {
     });
 
     it('Should generate years', () => {
-        const years = getYears([2021, 2025]);
+        const years = getYears([2021, 2025], 'en-US');
 
         expect(years).toHaveLength(5);
         expect(years[1].value).toEqual(2022);

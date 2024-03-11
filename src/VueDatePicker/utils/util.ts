@@ -68,10 +68,10 @@ export const getDayNames = (formatLocale: Locale | null, locale: string, weekSta
 /**
  * Generate array of years for selection display
  */
-export const getYears = (yearRange: number[] | string[], reverse?: boolean): IDefaultSelect[] => {
+export const getYears = (yearRange: number[] | string[], locale: string, reverse?: boolean): IDefaultSelect[] => {
     const years: IDefaultSelect[] = [];
     for (let year = +yearRange[0]; year <= +yearRange[1]; year++) {
-        years.push({ value: +year, text: `${year}` });
+        years.push({ value: +year, text: formatNumber(year, locale) });
     }
     return reverse ? years.reverse() : years;
 };
@@ -272,6 +272,10 @@ export function findNextFocusableElement(startingElement: HTMLElement, reverse: 
 
 export const getElWithin = (wrapper: HTMLElement | null, attribute: DPElements): HTMLElement | undefined | null => {
     return wrapper?.querySelector(`[data-dp-element="${attribute}"]`);
+};
+
+export const formatNumber = (num: number, locale: string): string => {
+    return new Intl.NumberFormat(locale, { useGrouping: false, style: 'decimal' }).format(num);
 };
 
 export const getMapKey = (date: Date | string | number) => {

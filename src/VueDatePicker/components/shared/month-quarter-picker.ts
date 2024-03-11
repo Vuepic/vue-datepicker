@@ -47,7 +47,7 @@ export const useMonthOrQuarterPicker = ({
     month,
     emit,
 }: Opts) => {
-    const years = computed(() => getYears(props.yearRange, props.reverseYears));
+    const years = computed(() => getYears(props.yearRange, props.locale, props.reverseYears));
     const showYearPicker = ref([false]);
 
     const isDisabled = computed(() => (instance: number, next: boolean) => {
