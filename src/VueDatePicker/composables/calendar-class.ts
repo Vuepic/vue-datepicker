@@ -184,7 +184,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
 
     // Check if date is hovered, for single picker mode
     const dateHover = (day: ICalendarDay) => {
-        if ((Array.isArray(modelValue.value) && modelValue.value.length) || props.weekPicker) return false;
+        if (props.weekPicker) return false;
         const isInRange = defaultedRange.value.enabled
             ? !rangeActiveStartEnd(day) && !rangeActiveStartEnd(day, false)
             : true;
@@ -327,6 +327,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
             dp__range_start: isRangeStart,
             dp__range_end: isRangeEnd,
             dp__range_between: isBetween(day),
+            dp__date_hover: dateHover(day),
             dp__date_hover_start: isHoverDateStartEnd(dateHover(day), day, true),
             dp__date_hover_end: isHoverDateStartEnd(dateHover(day), day, false),
         };
