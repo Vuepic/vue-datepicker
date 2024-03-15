@@ -231,13 +231,14 @@ export const getDefaultRangeOptions = (config: RangeProp, deprecatedOpts: RangeO
 export const getDefaultTimeZone = (timeZone: TimeZoneProp, emitTimezone?: string) => {
     if (!timeZone) return { timezone: undefined, exactMatch: false, emitTimezone };
     if (typeof timeZone === 'string') {
-        return { timezone: timeZone, exactMatch: false, dateInTz: undefined, emitTimezone };
+        return { timezone: timeZone, exactMatch: false, dateInTz: undefined, emitTimezone, convertModel: true };
     }
     return {
         timezone: timeZone.timezone,
         exactMatch: timeZone.exactMatch ?? false,
         dateInTz: timeZone.dateInTz ?? undefined,
         emitTimezone: emitTimezone ?? timeZone.emitTimezone,
+        convertModel: timeZone.convertModel !== undefined ? timeZone.convertModel : true,
     };
 };
 

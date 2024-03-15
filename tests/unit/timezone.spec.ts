@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { localToTz, sanitizeDateToLocal } from '@/utils/timezone';
+import { getTimezoneOffset, localToTz, sanitizeDateToLocal } from '@/utils/timezone';
 import { differenceInHours, getYear } from 'date-fns';
 
 const getOffset = (date: Date) => {
@@ -31,5 +31,12 @@ describe('Timezone functionality', () => {
 
         const localToExact = sanitizeDateToLocal(today, { timezone: 'America/New_York', exactMatch: true });
         expect(localToExact).toEqual(today);
+    });
+
+    it('Should get timezone offset from provided timezone', () => {
+        const offset = getTimezoneOffset('Pacific/Midway');
+        const localOffset = new Date().getTimezoneOffset() / 60;
+
+        expect(offset).toEqual(11 - localOffset);
     });
 });

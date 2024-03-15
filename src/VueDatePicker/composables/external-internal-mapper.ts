@@ -1,5 +1,5 @@
 import { ref, toRef, watch } from 'vue';
-import { format, getHours, getMinutes, getMonth, getSeconds, getYear, parse, set, setYear } from 'date-fns';
+import { addHours, format, getHours, getMinutes, getMonth, getSeconds, getYear, parse, set, setYear } from 'date-fns';
 
 import {
     checkPartialRangeValue,
@@ -18,7 +18,7 @@ import { useDefaults } from '@/composables/defaults';
 import type { ModelValue, VueEmit, TimeModel, MonthModel, ModelTypeConverted } from '@/interfaces';
 import type { AllPropsType } from '@/props';
 import type { Ref } from 'vue';
-import { localToTz } from '@/utils/timezone';
+import { getTimezoneOffset, localToTz } from '@/utils/timezone';
 
 /**
  * Handles values from external to internal and vise versa
@@ -42,6 +42,21 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
     watch(formatRef, () => {
         formatInputValue();
     });
+
+    const convertModelToTz = (date: Date) => {
+        if (defaultedTz.value.timezone && defaultedTz.value.convertModel) {
+            return localToTz(date, defaultedTz.value.timezone);
+        }
+        return date;
+    };
+
+    const convertZonedModelToLocal = (date: Date) => {
+        if (defaultedTz.value.timezone && defaultedTz.value.convertModel) {
+            const offset = getTimezoneOffset(defaultedTz.value.timezone);
+            return addHours(date, offset);
+        }
+        return date;
+    };
 
     const formatDateFn = (value: Date | Date[], customPattern?: string, parser = false) => {
         return formatDate(
@@ -292,15 +307,15 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
             return props.utc === 'preserve' ? new Date(toDate.getTime() + toDate.getTimezoneOffset() * 60000) : toDate;
         }
         if (props.modelType) {
-            if (props.modelType === 'date' || props.modelType === 'timestamp') return new Date(value);
+            if (props.modelType === 'date' || props.modelType === 'timestamp') return convertModelToTz(new Date(value));
 
             if (props.modelType === 'format' && (typeof props.format === 'string' || !props.format))
-                return parse(value as string, getDefaultPattern(), new Date());
+                return convertModelToTz(parse(value as string, getDefaultPattern(), new Date()));
 
-            return parse(value as string, props.modelType, new Date());
+            return convertModelToTz(parse(value as string, props.modelType, new Date()));
         }
 
-        return new Date(value);
+        return convertModelToTz(new Date(value));
     };
 
     const toModelType = (val: Date): string | number | Date => {
@@ -309,14 +324,14 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
             return dateToUtc(val, props.utc === 'preserve', props.enableSeconds);
         }
         if (props.modelType) {
-            if (props.modelType === 'timestamp') return +val;
+            if (props.modelType === 'timestamp') return +convertZonedModelToLocal(val);
 
             if (props.modelType === 'format' && (typeof props.format === 'string' || !props.format))
-                return formatDateFn(val);
+                return formatDateFn(convertZonedModelToLocal(val));
 
-            return formatDateFn(val, props.modelType, true);
+            return formatDateFn(convertZonedModelToLocal(val), props.modelType, true);
         }
-        return val;
+        return convertZonedModelToLocal(val);
     };
 
     const emitValue = (value: ModelValue, useTz = false): void => {

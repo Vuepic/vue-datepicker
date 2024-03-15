@@ -26,3 +26,12 @@ export const sanitizeDateToLocal = (date: MaybeDate, tz?: TimeZoneConfig) => {
     const local = getDate(date);
     return tz.exactMatch ? getDateInTz(date, tz) : localToTz(local, tz.timezone);
 };
+
+export const getTimezoneOffset = (timezone?: string) => {
+    if (!timezone) return 0;
+    const date = new Date();
+    const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }));
+    const specificDate = new Date(date.toLocaleString('en-US', { timeZone: timezone }));
+    const dstOffset = specificDate.getTimezoneOffset() / 60;
+    return (+utcDate - +specificDate) / (1000 * 60 * 60) - dstOffset;
+};
