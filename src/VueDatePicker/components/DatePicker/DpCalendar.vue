@@ -258,43 +258,47 @@
         return format(date, 'yyyy-MM-dd');
     };
 
+    const handleTooltip = async (day: UnwrapRef<ICalendarDay>, weekInd: number, dayInd: number) => {
+        const el = unrefElement(dayRefs.value[weekInd][dayInd]);
+        if (el) {
+            const { width, height } = el.getBoundingClientRect();
+            showMakerTooltip.value = day.value;
+            let defaultPosition: { left?: string; right?: string } = { left: `${width / 2}px` };
+            let transform = -50;
+            await nextTick();
+
+            if (activeTooltip.value[0]) {
+                const { left, width: tpWidth } = activeTooltip.value[0].getBoundingClientRect();
+                if (left < 0) {
+                    defaultPosition = { left: `0` };
+                    transform = 0;
+                    tpArrowStyle.value.left = `${width / 2}px`;
+                }
+
+                if (window.innerWidth < left + tpWidth) {
+                    defaultPosition = { right: `0` };
+                    transform = 0;
+                    tpArrowStyle.value.left = `${tpWidth - width / 2}px`;
+                }
+            }
+
+            markerTooltipStyle.value = {
+                bottom: `${height}px`,
+                ...defaultPosition,
+                transform: `translateX(${transform}%)`,
+            };
+
+            emit('tooltip-open', day.marker);
+        }
+    };
+
     const onMouseOver = async (day: UnwrapRef<ICalendarDay>, weekInd: number, dayInd: number): Promise<void> => {
         if (isMouseDown.value && defaultedMultiDates.value.enabled && defaultedMultiDates.value.dragSelect) {
             return emit('select-date', day);
         }
         emit('set-hover-date', day);
         if (day.marker?.tooltip?.length) {
-            const el = unrefElement(dayRefs.value[weekInd][dayInd]);
-            if (el) {
-                const { width, height } = el.getBoundingClientRect();
-                showMakerTooltip.value = day.value;
-                let defaultPosition: { left?: string; right?: string } = { left: `${width / 2}px` };
-                let transform = -50;
-                await nextTick();
-
-                if (activeTooltip.value[0]) {
-                    const { left, width: tpWidth } = activeTooltip.value[0].getBoundingClientRect();
-                    if (left < 0) {
-                        defaultPosition = { left: `0` };
-                        transform = 0;
-                        tpArrowStyle.value.left = `${width / 2}px`;
-                    }
-
-                    if (window.innerWidth < left + tpWidth) {
-                        defaultPosition = { right: `0` };
-                        transform = 0;
-                        tpArrowStyle.value.left = `${tpWidth - width / 2}px`;
-                    }
-                }
-
-                markerTooltipStyle.value = {
-                    bottom: `${height}px`,
-                    ...defaultPosition,
-                    transform: `translateX(${transform}%)`,
-                };
-
-                emit('tooltip-open', day.marker);
-            }
+            await handleTooltip(day, weekInd, dayInd);
         }
     };
 
