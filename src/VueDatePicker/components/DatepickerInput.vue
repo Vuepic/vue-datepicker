@@ -73,7 +73,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, ref } from 'vue';
+    import { computed, nextTick, ref } from 'vue';
 
     import { CalendarIcon, CancelIcon } from '@/components/Icons';
 
@@ -243,9 +243,11 @@
     const handleFocus = (): void => {
         isFocused.value = true;
         emit('focus');
-        if (defaultedTextInput.value.enabled && defaultedTextInput.value.selectOnFocus) {
-            inputRef.value?.select();
-        }
+        nextTick().then(() => {
+            if (defaultedTextInput.value.enabled && defaultedTextInput.value.selectOnFocus) {
+                inputRef.value?.select();
+            }
+        });
     };
 
     const handleOpen = (ev: KeyboardEvent | MouseEvent) => {
