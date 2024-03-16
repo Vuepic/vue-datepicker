@@ -10,6 +10,7 @@ import {
     getDefaultFilters,
     getDefaultHighlight,
     getDefaultInlineOptions,
+    getDefaultMultiDates,
     getDefaultRangeOptions,
     getDefaultTextInputOptions,
     getDefaultTimeZone,
@@ -77,6 +78,8 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
 
     const defaultedTz = computed(() => getDefaultTimeZone(props.timezone, props.emitTimezone));
 
+    const defaultedMultiDates = computed(() => getDefaultMultiDates(props.multiDates, props.multiDatesLimit));
+
     const propDates = computed(() =>
         mapPropDates(
             props.minDate,
@@ -120,6 +123,7 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
         defaultedRange,
         propDates,
         defaultedTz,
+        defaultedMultiDates,
         getDefaultPattern,
         getDefaultStartTime,
     };

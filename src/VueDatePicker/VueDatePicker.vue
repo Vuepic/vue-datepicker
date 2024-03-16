@@ -157,8 +157,14 @@
     const { setMenuFocused, setShiftKey } = useState();
     const { clearArrowNav } = useArrowNavigation();
     const { validateDate, isValidTime } = useValidation(props);
-    const { defaultedTransitions, defaultedTextInput, defaultedInline, defaultedConfig, defaultedRange } =
-        useDefaults(props);
+    const {
+        defaultedTransitions,
+        defaultedTextInput,
+        defaultedInline,
+        defaultedConfig,
+        defaultedRange,
+        defaultedMultiDates,
+    } = useDefaults(props);
     const { menuTransition, showTransition } = useTransitions(defaultedTransitions);
 
     onMounted(() => {
@@ -334,7 +340,7 @@
         if (!date) return true;
         if (!Array.isArray(date) && validateDate(date)) return true;
         if (Array.isArray(date)) {
-            if (props.multiDates) return true;
+            if (defaultedMultiDates.value.enabled) return true;
 
             if (date.length === 2 && validateDate(date[0]) && validateDate(date[1])) {
                 return true;

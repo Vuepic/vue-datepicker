@@ -30,6 +30,7 @@ export const useQuarterPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         defaultedRange,
         propDates,
         defaultedFilters,
+        defaultedMultiDates,
     } = useDefaults(props);
     const { modelValue, year, month, calendars } = useModel(props, emit);
     const { isDisabled: isDateDisabled } = useValidation(props);
@@ -105,7 +106,7 @@ export const useQuarterPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     });
 
     const selectMultiQuarters = (date: Date) => {
-        handleMultiDatesSelect(date, modelValue, props.multiDatesLimit);
+        handleMultiDatesSelect(date, modelValue, defaultedMultiDates.value.limit);
         emit('auto-apply', true);
     };
 
@@ -123,7 +124,7 @@ export const useQuarterPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         if (disabled) return;
         calendars.value[instance].month = getMonth(endOfQuarter(date));
 
-        if (props.multiDates) return selectMultiQuarters(date);
+        if (defaultedMultiDates.value.enabled) return selectMultiQuarters(date);
         if (defaultedRange.value.enabled) return selectRangedQuarter(date);
         return selectSingleQuarter(date);
     };

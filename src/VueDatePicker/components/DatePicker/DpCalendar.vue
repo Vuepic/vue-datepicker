@@ -31,6 +31,7 @@
                     class="dp__calendar"
                     role="rowgroup"
                     :aria-label="defaultedAriaLabels?.calendarDays || undefined"
+                    @mouseleave="isMouseDown = false"
                 >
                     <div v-for="(week, weekInd) in calendarWeeks" :key="weekInd" class="dp__calendar_row" role="row">
                         <div v-if="weekNumbers" role="gridcell" class="dp__calendar_item dp__week_num">
@@ -60,6 +61,8 @@
                             @keydown.space="$emit('handle-space', dayVal)"
                             @mouseenter="onMouseOver(dayVal, weekInd, dayInd)"
                             @mouseleave="onMouseLeave(dayVal)"
+                            @mousedown="onMouseDown(dayVal)"
+                            @mouseup="isMouseDown = false"
                         >
                             <div class="dp__cell_inner" :class="dayVal.classData">
                                 <slot
@@ -165,6 +168,7 @@
         defaultedAriaLabels,
         defaultedMultiCalendars,
         defaultedWeekNumbers,
+        defaultedMultiDates,
     } = useDefaults(props);
 
     const showMakerTooltip = ref<Date | null>(null);
@@ -180,6 +184,7 @@
     const touch = ref({ startX: 0, endX: 0, startY: 0, endY: 0 });
     const activeTooltip = ref<HTMLElement[]>([]);
     const tpArrowStyle = ref<{ left?: string; right?: string }>({ left: '50%' });
+    const isMouseDown = ref(false);
 
     const calendarWeeks = computed(() => {
         if (props.calendar) return props.calendar(props.mappedDates);
@@ -254,6 +259,9 @@
     };
 
     const onMouseOver = async (day: UnwrapRef<ICalendarDay>, weekInd: number, dayInd: number): Promise<void> => {
+        if (isMouseDown.value && defaultedMultiDates.value.enabled && defaultedMultiDates.value.dragSelect) {
+            return emit('select-date', day);
+        }
         emit('set-hover-date', day);
         if (day.marker?.tooltip?.length) {
             const el = unrefElement(dayRefs.value[weekInd][dayInd]);
@@ -361,12 +369,23 @@
     };
 
     const onDateSelect = (ev: Event, dayVal: ICalendarDay) => {
-        checkStopPropagation(ev, defaultedConfig.value);
-        emit('select-date', dayVal);
+        if (!defaultedMultiDates.value.enabled) {
+            checkStopPropagation(ev, defaultedConfig.value);
+            emit('select-date', dayVal);
+        }
     };
 
     const onTpClick = (ev: Event) => {
         checkStopPropagation(ev, defaultedConfig.value);
+    };
+
+    const onMouseDown = (day: UnwrapRef<ICalendarDay>) => {
+        if (defaultedMultiDates.value.enabled && defaultedMultiDates.value.dragSelect) {
+            isMouseDown.value = true;
+            emit('select-date', day);
+        } else {
+            emit('select-date', day);
+        }
     };
 
     defineExpose({ triggerTransition });

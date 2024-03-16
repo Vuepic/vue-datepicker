@@ -26,7 +26,8 @@ import { getTimezoneOffset, localToTz } from '@/utils/timezone';
 export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, isInputFocused: Ref<boolean>) => {
     const internalModelValue = ref();
 
-    const { defaultedTextInput, defaultedRange, defaultedTz, getDefaultPattern } = useDefaults(props);
+    const { defaultedTextInput, defaultedRange, defaultedTz, defaultedMultiDates, getDefaultPattern } =
+        useDefaults(props);
 
     const inputValue = ref('');
     const formatRef = toRef(props, 'format');
@@ -87,7 +88,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
 
     const mapYearExternalToInternal = (value: number | number[]): Date | Date[] => {
         if (Array.isArray(value)) {
-            if (props.multiDates) {
+            if (defaultedMultiDates.value.enabled) {
                 return value.map((val) => convertCustomModeType(val, setYear(getDate(), val)));
             }
             return checkRangeEnabled(
@@ -127,7 +128,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
     const mapMonthExternalToInternal = (value: MonthModel | MonthModel[]): Date | Date[] => {
         const today = set(getDate(), { date: 1 });
         if (Array.isArray(value)) {
-            if (props.multiDates) {
+            if (defaultedMultiDates.value.enabled) {
                 return value.map((val) => convertCustomModeType(val, setDateMonthOrYear(today, +val.month, +val.year)));
             }
             return checkRangeEnabled(
@@ -228,7 +229,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
     const mapInternalDatesToExternal = () => {
         sanitizeModelValue();
         if (props.modelAuto) return getModelAutoForExternal();
-        if (props.multiDates) return getMultiDatesForExternal();
+        if (defaultedMultiDates.value.enabled) return getMultiDatesForExternal();
         if (Array.isArray(internalModelValue.value)) {
             return checkRangeEnabled(() => getRangeEmitValue(), defaultedRange.value.enabled);
         }
@@ -240,7 +241,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
         if (props.timePicker) return mapTimeExternalToInternal(convertType(value));
         if (props.monthPicker) return mapMonthExternalToInternal(convertType(value));
         if (props.yearPicker) return mapYearExternalToInternal(convertType(value));
-        if (props.multiDates) return mapMultiDateExternalToInternal(convertType(value));
+        if (defaultedMultiDates.value.enabled) return mapMultiDateExternalToInternal(convertType(value));
         if (props.weekPicker) return mapWeekExternalToInternal(convertType(value));
         return mapDateExternalToInternal(convertType(value));
     };
@@ -280,7 +281,8 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
     // Get proper input value depending on the mode
     const getInputValue = (): string => {
         if (!internalModelValue.value) return '';
-        if (props.multiDates) return (internalModelValue.value as Date[]).map((date) => formatDateFn(date)).join('; ');
+        if (defaultedMultiDates.value.enabled)
+            return (internalModelValue.value as Date[]).map((date) => formatDateFn(date)).join('; ');
         if (defaultedTextInput.value.enabled && typeof defaultedTextInput.value.format === 'string')
             return formatForTextInput();
         return formatDateFn(internalModelValue.value);
@@ -350,7 +352,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
      */
     const mapInternalToSpecificExternal = <T extends (val: Date) => ReturnType<T> | ReturnType<T>[]>(mapper: T) => {
         if (Array.isArray(internalModelValue.value)) {
-            if (props.multiDates) {
+            if (defaultedMultiDates.value.enabled) {
                 return internalModelValue.value.map((value) => mapper(value));
             }
             return [

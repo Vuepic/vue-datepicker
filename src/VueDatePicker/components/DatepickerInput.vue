@@ -118,6 +118,7 @@
         defaultedInline,
         defaultedConfig,
         defaultedRange,
+        defaultedMultiDates,
         getDefaultPattern,
         getDefaultStartTime,
     } = useDefaults(props);
@@ -186,7 +187,7 @@
     const parseInput = (value: string) => {
         if (defaultedRange.value.enabled) {
             handleRangeTextInput(value);
-        } else if (props.multiDates) {
+        } else if (defaultedMultiDates.value.enabled) {
             const dates = value.split(`;`);
             parsedDate.value = dates.map((val) => parser(val.trim())).filter((val) => val);
         } else {

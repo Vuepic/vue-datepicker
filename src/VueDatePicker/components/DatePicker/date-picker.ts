@@ -48,7 +48,8 @@ export const useDatePicker = (
     const lastScrollTime = ref(new Date());
 
     const { modelValue, calendars, time } = useModel(props, emit);
-    const { defaultedMultiCalendars, defaultedStartTime, defaultedRange, defaultedTz, propDates } = useDefaults(props);
+    const { defaultedMultiCalendars, defaultedStartTime, defaultedRange, defaultedTz, propDates, defaultedMultiDates } =
+        useDefaults(props);
     const { validateMonthYearInRange, isDisabled, isDateRangeAllowed, checkMinMaxRange } = useValidation(props);
     const { updateTimeValues, getSetDateTime, setTime, assignStartTime, validateTime, disabledTimesConfig } =
         useTimePickerUtils(props, time, modelValue, updateFlow);
@@ -199,11 +200,11 @@ export const useDatePicker = (
 
     // Assign range values, or in case of multiDates, set
     const assignExistingMulti = (dates: Date[], fromMount: boolean) => {
-        if ((defaultedRange.value.enabled || props.weekPicker) && !props.multiDates) {
+        if ((defaultedRange.value.enabled || props.weekPicker) && !defaultedMultiDates.value.enabled) {
             return assignRangeValue(dates, fromMount);
         }
 
-        if (props.multiDates && fromMount) {
+        if (defaultedMultiDates.value.enabled && fromMount) {
             const lastEntry = dates[dates.length - 1];
             return assignSingleValue(lastEntry, fromMount);
         }
@@ -404,8 +405,8 @@ export const useDatePicker = (
     const handleSingleDateSelect = (day: ICalendarDay) => {
         const date = setDateTime(getDate(day.value), time.hours as number, time.minutes as number, getSecondsValue());
         emit('date-update', date);
-        if (props.multiDates) {
-            handleMultiDatesSelect(date, modelValue, props.multiDatesLimit);
+        if (defaultedMultiDates.value.enabled) {
+            handleMultiDatesSelect(date, modelValue, defaultedMultiDates.value.limit);
         } else {
             modelValue.value = date;
         }
@@ -554,7 +555,7 @@ export const useDatePicker = (
 
         if (!defaultedRange.value.enabled) return handleSingleDateSelect(day);
 
-        if (isNumberArray(time.hours) && isNumberArray(time.minutes) && !props.multiDates) {
+        if (isNumberArray(time.hours) && isNumberArray(time.minutes) && !defaultedMultiDates.value.enabled) {
             handleRangeDatesSelect(day, isNext);
             postRangeSelect();
         }
@@ -608,7 +609,7 @@ export const useDatePicker = (
 
     const handleTimeUpdate = () => {
         if (Array.isArray(modelValue.value)) {
-            if (props.multiDates) {
+            if (defaultedMultiDates.value.enabled) {
                 const lastEntry = multiDatesLast();
                 modelValue.value[modelValue.value.length - 1] = getSetDateTime(lastEntry as Date);
             } else {

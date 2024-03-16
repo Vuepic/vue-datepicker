@@ -207,7 +207,7 @@ export interface VueDatePickerProps {
     monthChangeOnArrows?: boolean;
     formatLocale?: Locale;
     autocomplete?: string;
-    multiDates?: boolean;
+    multiDates?: boolean | { limit?: number | string; dragSelect?: boolean };
     presetDates?: {
         label: string;
         value: Date[] | string[] | string | Date;
@@ -235,6 +235,9 @@ export interface VueDatePickerProps {
      */
     fixedEnd?: boolean;
     utc?: boolean | 'preserve';
+    /**
+     * @deprecated
+     */
     multiDatesLimit?: number | string;
     reverseYears?: boolean;
     weekPicker?: boolean;
@@ -286,7 +289,9 @@ export interface VueDatePickerProps {
      */
     noDisabledRange?: boolean;
     sixWeeks?: boolean | 'append' | 'prepend' | 'center' | 'fair';
-    timezone?: string | { timezone?: string; exactMatch?: boolean; dateInTz?: string; emitTimezone?: string };
+    timezone?:
+        | string
+        | { timezone?: string; exactMatch?: boolean; dateInTz?: string; emitTimezone?: string; convertModel?: boolean };
     /**
      * @deprecated
      */

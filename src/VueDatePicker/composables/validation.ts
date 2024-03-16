@@ -19,7 +19,7 @@ import type { PickerBasePropsType, AllPropsType } from '@/props';
 import { computed } from 'vue';
 
 export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
-    const { defaultedFilters, defaultedRange, propDates } = useDefaults(props);
+    const { defaultedFilters, defaultedRange, propDates, defaultedMultiDates } = useDefaults(props);
 
     const isDateDisabled = (date: Date) => {
         if (!propDates.value.disabledDates) return false;
@@ -280,7 +280,7 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
 
     const isMonthValid = computed(() => (internalModelValue: InternalModuleValue): boolean => {
         if (!props.monthPicker) return true;
-        if (Array.isArray(internalModelValue) && (defaultedRange.value.enabled || props.multiDates)) {
+        if (Array.isArray(internalModelValue) && (defaultedRange.value.enabled || defaultedMultiDates.value.enabled)) {
             const invalid = internalModelValue.filter((value) => !isMonthWithinRange(value));
             return !invalid.length;
         }

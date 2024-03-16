@@ -11,7 +11,8 @@ import type { ICalendarDay, InternalModuleValue } from '@/interfaces';
 import type { PickerBasePropsType } from '@/props';
 
 export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleValue>, props: PickerBasePropsType) => {
-    const { defaultedMultiCalendars, defaultedHighlight, defaultedTz, propDates, defaultedRange } = useDefaults(props);
+    const { defaultedMultiCalendars, defaultedMultiDates, defaultedHighlight, defaultedTz, propDates, defaultedRange } =
+        useDefaults(props);
     const { isDisabled } = useValidation(props);
     // Track hovered date
     const hoveredDate = ref<Date | null>(null);
@@ -104,7 +105,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
         if (!modelValue.value) return false;
         if (props.hideOffsetDates && !calendarDay.current) return false;
         if (!defaultedRange.value.enabled) {
-            if (props.multiDates && Array.isArray(modelValue.value)) {
+            if (defaultedMultiDates.value.enabled && Array.isArray(modelValue.value)) {
                 return modelValue.value.some((dateVal) => isDateEqual(dateVal, calendarDay.value));
             }
             return isDateEqual(calendarDay.value, modelValue.value ? (modelValue.value as Date) : today.value);

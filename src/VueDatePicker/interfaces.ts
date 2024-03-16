@@ -345,3 +345,16 @@ export interface PropDates {
     highlight: Map<string, Date | null> | ((date: Date) => boolean) | null;
     markers: Map<string, IMarker> | null;
 }
+
+export interface MultiDatesConfig {
+    limit: number | string;
+    dragSelect: boolean;
+}
+
+export interface MultiDatesDefault {
+    limit: number | null;
+    dragSelect: boolean;
+    enabled: boolean;
+}
+
+export type MultiDatesProp = boolean | Partial<MultiDatesConfig>;

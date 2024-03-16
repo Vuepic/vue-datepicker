@@ -19,7 +19,7 @@ import type { VueEmit, IDefaultSelect } from '@/interfaces';
 export const useYearPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     const { modelValue } = useModel(props, emit);
     const hoverDate = ref<Date | null>(null);
-    const { defaultedHighlight, defaultedFilters, defaultedRange, propDates } = useDefaults(props);
+    const { defaultedHighlight, defaultedMultiDates, defaultedFilters, defaultedRange, propDates } = useDefaults(props);
     const focusYear = ref();
 
     onMounted(() => {
@@ -68,7 +68,7 @@ export const useYearPicker = (props: PickerBasePropsType, emit: VueEmit) => {
 
     const selectYear = (year: number) => {
         emit('update-month-year', { instance: 0, year });
-        if (props.multiDates) {
+        if (defaultedMultiDates.value.enabled) {
             if (!modelValue.value) {
                 modelValue.value = [setYear(resetDateTime(getDate()), year)];
             } else if (Array.isArray(modelValue.value)) {

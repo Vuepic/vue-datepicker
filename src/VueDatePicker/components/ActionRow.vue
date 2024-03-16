@@ -101,6 +101,7 @@
         defaultedTextInput,
         defaultedInline,
         defaultedRange,
+        defaultedMultiDates,
         getDefaultPattern,
     } = useDefaults(props);
     const { isTimeValid, isMonthValid } = useValidation(props);
@@ -186,7 +187,7 @@
                 if (props.internalModelValue.length === 2 && props.internalModelValue[1]) {
                     return formatRangeDate();
                 }
-                if (props.multiDates) {
+                if (defaultedMultiDates.value.enabled) {
                     return props.internalModelValue.map((date) => `${formatDatePreview(date)}`);
                 }
                 if (props.modelAuto) {
@@ -199,7 +200,7 @@
         return handleCustomPreviewFormat();
     });
 
-    const dateSeparator = () => (props.multiDates ? '; ' : ' - ');
+    const dateSeparator = () => (defaultedMultiDates.value.enabled ? '; ' : ' - ');
 
     const formatValue = computed(() =>
         !Array.isArray(previewValue.value) ? previewValue.value : previewValue.value.join(dateSeparator()),

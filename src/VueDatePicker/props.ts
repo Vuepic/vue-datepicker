@@ -29,6 +29,7 @@ import type {
     RangeProp,
     TimeZoneProp,
     DisabledDatesProp,
+    MultiDatesProp,
 } from '@/interfaces';
 
 export const AllProps = {
@@ -115,7 +116,7 @@ export const AllProps = {
         type: [String, Function] as PropType<IFormat>,
         default: () => '',
     },
-    multiDates: { type: Boolean as PropType<boolean>, default: false },
+    multiDates: { type: [Object, Boolean] as PropType<MultiDatesProp>, default: false },
     partialRange: { type: Boolean as PropType<boolean>, default: true },
     ignoreTimeValidation: { type: Boolean as PropType<boolean>, default: false },
     minDate: { type: [Date, String] as PropType<Date | string>, default: null },

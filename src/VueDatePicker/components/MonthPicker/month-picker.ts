@@ -36,6 +36,7 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         propDates,
         defaultedTz,
         defaultedFilters,
+        defaultedMultiDates,
     } = useDefaults(props);
 
     const { modelValue, year, month: instanceMonth, calendars } = useModel(props, emit);
@@ -163,14 +164,14 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     };
 
     const selectMultiMonths = (month: number, instance: number) => {
-        handleMultiDatesSelect(monthToDate(month, instance), modelValue, props.multiDatesLimit);
+        handleMultiDatesSelect(monthToDate(month, instance), modelValue, defaultedMultiDates.value.limit);
         emit('auto-apply', true);
     };
 
     const selectMonth = (month: number, instance: number) => {
         calendars.value[instance].month = month;
         emitMonthYearUpdate(instance, calendars.value[instance].year, month);
-        if (props.multiDates) return selectMultiMonths(month, instance);
+        if (defaultedMultiDates.value.enabled) return selectMultiMonths(month, instance);
         if (defaultedRange.value.enabled) return selectRangedMonth(month, instance);
         return selectSingleMonth(month, instance);
     };

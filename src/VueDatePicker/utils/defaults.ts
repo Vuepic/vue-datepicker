@@ -26,6 +26,9 @@ import type {
     DisabledDatesProp,
     IMarker,
     PropDates,
+    MultiDatesProp,
+    MultiDatesConfig,
+    MultiDatesDefault,
 } from '@/interfaces';
 import { getDate } from '@/utils/date-utils';
 import { dateToTimezoneSafe, sanitizeDateToLocal } from '@/utils/timezone';
@@ -289,5 +292,19 @@ export const mapPropDates = (
                 ? datesArrToMap(highlight.dates, timezone)
                 : (highlight as HighlightFn),
         markers: mapMarkers(markers, timezone),
+    };
+};
+
+export const getDefaultMultiDates = (
+    multiDates: MultiDatesProp,
+    multiDatesLimit: number | string,
+): MultiDatesDefault => {
+    if (typeof multiDates === 'boolean') {
+        return { enabled: multiDates, dragSelect: true, limit: +multiDatesLimit };
+    }
+    return {
+        enabled: !!multiDates,
+        limit: multiDates.limit ? +multiDates.limit : null,
+        dragSelect: multiDates.dragSelect ?? true,
     };
 };

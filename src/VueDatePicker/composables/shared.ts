@@ -7,7 +7,7 @@ import type { InternalModuleValue, RangeConfig, VueEmit } from '@/interfaces';
 export const handleMultiDatesSelect = (
     date: Date,
     modelValue: WritableComputedRef<InternalModuleValue>,
-    multiDatesLimit?: number | string,
+    multiDatesLimit?: number | string | null,
 ): void => {
     if (modelValue.value && Array.isArray(modelValue.value)) {
         if (modelValue.value.some((dateVal) => isDateEqual(date, dateVal))) {
