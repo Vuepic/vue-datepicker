@@ -75,7 +75,10 @@ export const getRangeWithFixedDate = (
     emit: VueEmit,
     defaultedRange: ComputedRef<RangeConfig>,
 ): Date[] => {
-    if (Array.isArray(modelValue.value) && modelValue.value.length === 2) {
+    if (
+        Array.isArray(modelValue.value) &&
+        (modelValue.value.length === 2 || (modelValue.value.length === 1 && defaultedRange.value.partialRange))
+    ) {
         if (
             defaultedRange.value.fixedStart &&
             (isDateAfter(date, modelValue.value[0]) || isDateEqual(date, modelValue.value[0]))
