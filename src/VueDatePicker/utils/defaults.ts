@@ -27,7 +27,6 @@ import type {
     IMarker,
     PropDates,
     MultiDatesProp,
-    MultiDatesConfig,
     MultiDatesDefault,
 } from '@/interfaces';
 import { getDate } from '@/utils/date-utils';
