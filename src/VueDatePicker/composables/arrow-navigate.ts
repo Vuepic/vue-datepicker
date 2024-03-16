@@ -49,7 +49,6 @@ export const useArrowNavigation = () => {
         if (!el && matrix.value[activeRow.value + (increment ? 1 : -1)]) {
             activeRow.value = activeRow.value + (increment ? 1 : -1);
             selectedIndex.value = increment ? 0 : matrix.value[activeRow.value].length - 1;
-            el = matrix.value[activeRow.value][selectedIndex.value];
         } else if (!el) {
             selectedIndex.value = increment ? selectedIndex.value - 1 : selectedIndex.value + 1;
         }

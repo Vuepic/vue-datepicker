@@ -238,7 +238,7 @@ export const getDefaultTimeZone = (timeZone: TimeZoneProp, emitTimezone?: string
         exactMatch: timeZone.exactMatch ?? false,
         dateInTz: timeZone.dateInTz ?? undefined,
         emitTimezone: emitTimezone ?? timeZone.emitTimezone,
-        convertModel: timeZone.convertModel !== undefined ? timeZone.convertModel : true,
+        convertModel: timeZone.convertModel ?? true,
     };
 };
 
