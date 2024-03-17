@@ -387,7 +387,7 @@
         if (defaultedMultiDates.value.enabled && defaultedMultiDates.value.dragSelect) {
             isMouseDown.value = true;
             emit('select-date', day);
-        } else {
+        } else if (defaultedMultiDates.value.enabled) {
             emit('select-date', day);
         }
     };
