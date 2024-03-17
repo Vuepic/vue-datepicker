@@ -16,7 +16,6 @@
   "sass": "src/VueDatePicker/style/main.scss",
   "files": [
     "dist/*",
-    "src/**/*",
     "index.d.ts",
     "LICENSE",
     "README.md"
@@ -91,7 +90,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Vuepic/vue-datepicker.git"
+    "url": "git+https://github.com/Vuepic/vue-datepicker.git"
   },
   "bugs": {
     "url": "https://github.com/Vuepic/vue-datepicker/issues"
