@@ -31,6 +31,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
 
     const inputValue = ref('');
     const formatRef = toRef(props, 'format');
+    const formatLocale = toRef(props, 'formatLocale');
 
     watch(
         internalModelValue,
@@ -312,9 +313,9 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
             if (props.modelType === 'date' || props.modelType === 'timestamp') return convertModelToTz(new Date(value));
 
             if (props.modelType === 'format' && (typeof props.format === 'string' || !props.format))
-                return convertModelToTz(parse(value as string, getDefaultPattern(), new Date()));
+                return convertModelToTz(parse(value as string, getDefaultPattern(), new Date(), { locale: formatLocale.value }));
 
-            return convertModelToTz(parse(value as string, props.modelType, new Date()));
+            return convertModelToTz(parse(value as string, props.modelType, new Date(), { locale: formatLocale.value }));
         }
 
         return convertModelToTz(new Date(value));
