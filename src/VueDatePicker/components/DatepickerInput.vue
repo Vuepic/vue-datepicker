@@ -147,9 +147,11 @@
 
     const handleOnEmptyInput = () => {
         emit('set-input-date', null);
-        if (props.autoApply) {
-            emit('set-empty-date');
-            parsedDate.value = null;
+        if (props.clearable) {
+            if (props.autoApply) {
+                emit('set-empty-date');
+                parsedDate.value = null;
+            }
         }
     };
 
