@@ -26,7 +26,7 @@
             :class="{
                 dp__menu_content_wrapper: presetDates?.length || !!$slots['left-sidebar'] || !!$slots['right-sidebar'],
                 'dp--menu-content-wrapper-collapsed':
-                    (collapse && presetDates?.length) || !!$slots['left-sidebar'] || !!$slots['right-sidebar'],
+                    collapse && (presetDates?.length || !!$slots['left-sidebar'] || !!$slots['right-sidebar']),
             }"
             :style="{ '--dp-menu-width': `${calendarWidth}px` }"
         >
