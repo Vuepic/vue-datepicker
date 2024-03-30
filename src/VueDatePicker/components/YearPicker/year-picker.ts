@@ -1,4 +1,4 @@
-import { computed, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import { getYear, setYear } from 'date-fns';
 
 import { useDefaults, useModel } from '@/composables';
@@ -83,10 +83,13 @@ export const useYearPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         }
         if (defaultedRange.value.enabled) {
             modelValue.value = setMonthOrYearRange(modelValue, yearToDate(year), emit);
-            return checkRangeAutoApply(modelValue.value, emit, props.autoApply, props.modelAuto);
+            nextTick().then(() => {
+                checkRangeAutoApply(modelValue.value as Date[], emit, props.autoApply, props.modelAuto);
+            });
+        } else {
+            modelValue.value = yearToDate(year);
+            emit('auto-apply');
         }
-        modelValue.value = yearToDate(year);
-        emit('auto-apply');
     };
 
     const setHoverValue = (value: number) => {

@@ -1,4 +1,4 @@
-import { computed, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import { getMonth, getYear } from 'date-fns';
 
 import { checkMinMaxValue, getMonths, groupListAndMap } from '@/utils/util';
@@ -160,7 +160,9 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         } else if (checkMinMaxRange(date, modelValue.value)) {
             modelValue.value = setMonthOrYearRange(modelValue, monthToDate(month, instance), emit);
         }
-        checkRangeAutoApply(modelValue.value as Date[], emit, props.autoApply, props.modelAuto);
+        nextTick().then(() => {
+            checkRangeAutoApply(modelValue.value as Date[], emit, props.autoApply, props.modelAuto);
+        });
     };
 
     const selectMultiMonths = (month: number, instance: number) => {
