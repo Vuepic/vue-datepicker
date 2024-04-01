@@ -91,7 +91,7 @@ export const AllProps = {
         type: [Function, Object] as PropType<HighlightProp>,
         default: null,
     },
-    teleport: { type: [String, Boolean, Object] as PropType<string | boolean | HTMLElement>, default: null },
+    teleport: { type: [Boolean, String, Object] as PropType<boolean | string | HTMLElement>, default: null },
     teleportCenter: { type: Boolean as PropType<boolean>, default: false },
     locale: { type: String as PropType<string>, default: 'en-Us' },
     weekNumName: { type: String as PropType<string>, default: 'W' },
