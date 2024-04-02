@@ -240,10 +240,12 @@
 
     const theme = computed(() => (props.dark ? 'dp__theme_dark' : 'dp__theme_light'));
     const teleportProps = computed(() => {
-        return {
-            to: typeof props.teleport === 'boolean' ? 'body' : props.teleport,
-            disabled: !props.teleport || defaultedInline.value.enabled,
-        };
+        return props.teleport
+            ? {
+                  to: typeof props.teleport === 'boolean' ? 'body' : props.teleport,
+                  disabled: !props.teleport || defaultedInline.value.enabled,
+              }
+            : {};
     });
     const menuWrapProps = computed(() => {
         return { class: 'dp__outer_menu_wrap' };
