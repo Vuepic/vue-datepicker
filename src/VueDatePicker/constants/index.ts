@@ -23,3 +23,5 @@ export enum FlowStep {
     hours = 'hours',
     seconds = 'seconds',
 }
+
+export const modelTypePredefined = ['timestamp', 'date', 'iso'];

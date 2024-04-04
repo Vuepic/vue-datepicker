@@ -249,6 +249,13 @@ describe('v-model mapping', () => {
         secondWrapper.vm.emitModelValue();
         expect(secondWrapper.emitted()).toHaveProperty('update:model-value');
         expect((secondWrapper.emitted()['update:model-value'][0] as any)[0]).toEqual(format(date, 'dd.mm.yyyy'));
+
+        const thirdWrapper = shallowMountDp({ modelType: 'iso' });
+        thirdWrapper.vm.internalModelValue = date;
+        thirdWrapper.vm.emitModelValue();
+
+        expect(thirdWrapper.emitted()).toHaveProperty('update:model-value');
+        expect(thirdWrapper.emitted()['update:model-value']).toEqual([[date.toISOString()]]);
     });
 
     it('Should emit single date on model-auto 1 selection', () => {

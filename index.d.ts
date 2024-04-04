@@ -270,7 +270,7 @@ export interface VueDatePickerProps {
      */
     disableTimeRangeValidation?: boolean;
     dayNames?: ((lang: string, weekStart: number) => string[]) | string[];
-    modelType?: 'timestamp' | 'format' | string;
+    modelType?: 'timestamp' | 'iso' | 'format' | string;
     modelAuto?: boolean;
     highlight?:
         | ((date: Date[], disabled?: boolean) => boolean)

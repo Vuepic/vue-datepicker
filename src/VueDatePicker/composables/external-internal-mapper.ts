@@ -19,6 +19,7 @@ import type { ModelValue, VueEmit, TimeModel, MonthModel, ModelTypeConverted } f
 import type { AllPropsType } from '@/props';
 import type { Ref } from 'vue';
 import { getTimezoneOffset, localToTz } from '@/utils/timezone';
+import { modelTypePredefined } from '@/constants';
 
 /**
  * Handles values from external to internal and vise versa
@@ -310,12 +311,16 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
             return props.utc === 'preserve' ? new Date(toDate.getTime() + toDate.getTimezoneOffset() * 60000) : toDate;
         }
         if (props.modelType) {
-            if (props.modelType === 'date' || props.modelType === 'timestamp') return convertModelToTz(new Date(value));
+            if (modelTypePredefined.includes(props.modelType)) return convertModelToTz(new Date(value));
 
             if (props.modelType === 'format' && (typeof props.format === 'string' || !props.format))
-                return convertModelToTz(parse(value as string, getDefaultPattern(), new Date(), { locale: formatLocale.value }));
+                return convertModelToTz(
+                    parse(value as string, getDefaultPattern(), new Date(), { locale: formatLocale.value }),
+                );
 
-            return convertModelToTz(parse(value as string, props.modelType, new Date(), { locale: formatLocale.value }));
+            return convertModelToTz(
+                parse(value as string, props.modelType, new Date(), { locale: formatLocale.value }),
+            );
         }
 
         return convertModelToTz(new Date(value));
@@ -328,6 +333,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
         }
         if (props.modelType) {
             if (props.modelType === 'timestamp') return +convertZonedModelToLocal(val);
+            if (props.modelType === 'iso') return convertZonedModelToLocal(val).toISOString();
 
             if (props.modelType === 'format' && (typeof props.format === 'string' || !props.format))
                 return formatDateFn(convertZonedModelToLocal(val));
