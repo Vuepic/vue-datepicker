@@ -173,6 +173,7 @@ export const PickerBaseProps = {
     noOverlayFocus: { type: Boolean as PropType<boolean>, default: false },
     collapse: { type: Boolean as PropType<boolean>, default: false },
     menuWrapRef: { type: Object as PropType<HTMLElement | null>, default: null },
+    inputWidth: { type: Number as PropType<number>, default: 0 },
 };
 
 export type AllPropsType = ExtractPropTypes<typeof AllProps>;

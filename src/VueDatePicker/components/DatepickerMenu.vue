@@ -6,6 +6,7 @@
         role="dialog"
         :aria-label="ariaLabels?.menu"
         :class="dpMenuClass"
+        :style="{ '--dp-arrow-left': arrowPos }"
         @mouseleave="clearHoverDate"
         @click="handleDpMenuClick"
         @keydown.esc="handleEsc"
@@ -172,6 +173,7 @@
         internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
         noOverlayFocus: { type: Boolean as PropType<boolean>, default: false },
         collapse: { type: Boolean as PropType<boolean>, default: false },
+        inputWidth: { type: Number as PropType<number>, default: 0 },
     });
 
     const dpMenuRef = ref(null);
@@ -242,6 +244,13 @@
         if (props.timePicker) return TimePickerSolo;
         if (props.quarterPicker) return QuarterPicker;
         return DatePicker;
+    });
+
+    const arrowPos = computed(() => {
+        if (props.inputWidth < calendarWidth.value) {
+            return `${props.inputWidth / 2}px`;
+        }
+        return '50%';
     });
 
     const focusMenu = (): void => {

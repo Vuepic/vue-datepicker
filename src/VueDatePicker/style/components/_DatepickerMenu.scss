@@ -98,7 +98,7 @@
 
 
 .dp__arrow_top {
-  left: 50%;
+  left: var(--dp-arrow-left);
   top: 0;
   height: 12px;
   width: 12px;
@@ -110,7 +110,7 @@
 }
 
 .dp__arrow_bottom {
-  left: 50%;
+  left: var(--dp-arrow-left);
   bottom: 0;
   height: 12px;
   width: 12px;

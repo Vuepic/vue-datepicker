@@ -37,6 +37,7 @@
                         :open-on-top="openOnTop"
                         :no-overlay-focus="noOverlayFocus"
                         :collapse="collapse"
+                        :input-width="inputWidth"
                         @close-picker="closeMenu"
                         @select-date="selectDate"
                         @auto-apply="autoApplyValue"
@@ -256,6 +257,10 @@
             defaultedInline.value.enabled &&
             (props.timePicker || props.monthPicker || props.yearPicker || props.quarterPicker)
         );
+    });
+
+    const inputWidth = computed(() => {
+        return inputRef.value?.$el?.getBoundingClientRect()?.width ?? 0;
     });
 
     /**
