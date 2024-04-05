@@ -1,5 +1,6 @@
 <template>
     <div>
+        <slot v-if="$slots['top-extra']" name="top-extra" :value="internalModelValue" />
         <template v-if="$slots['month-year']">
             <slot
                 name="month-year"

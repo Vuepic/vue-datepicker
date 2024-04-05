@@ -36,6 +36,7 @@ export const slots = [
     { name: 'action-row', use: ['action'] },
     { name: 'marker', use: ['calendar', 'shared'] },
     { name: 'quarter', use: ['shared'] },
+    { name: 'top-extra', use: ['shared', 'month-year'] },
 ];
 
 export const inputSlots = [{ name: 'trigger' }, { name: 'input-icon' }, { name: 'clear-icon' }, { name: 'dp-input' }];

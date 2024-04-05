@@ -78,9 +78,16 @@
 
 .dp__month_year_wrap {
   display: flex;
+  flex-direction: row;
   width: 100%;
 }
 
 .dp__year_disable_select {
   justify-content: space-around;
+}
+
+.dp--header-wrap {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
 }
