@@ -163,6 +163,7 @@ export const AllProps = {
     quarterPicker: { type: Boolean as PropType<boolean>, default: false },
     yearFirst: { type: Boolean as PropType<boolean>, default: false },
     loading: { type: Boolean as PropType<boolean>, default: false },
+    onInternalModelChange: { type: [Function, Object] as PropType<(...args: any[]) => void>, default: null },
 };
 
 export const PickerBaseProps = {

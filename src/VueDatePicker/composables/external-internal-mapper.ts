@@ -37,7 +37,9 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
     watch(
         internalModelValue,
         () => {
-            emit('internal-model-change', internalModelValue.value);
+            if (typeof props.onInternalModelChange === 'function') {
+                emit('internal-model-change', internalModelValue.value, emitModelValue(true));
+            }
         },
         { deep: true },
     );
@@ -228,8 +230,10 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
         ((internalModelValue.value as Date[]) || []).map((date) => toModelType(date) as string);
 
     // Parent internal to external function mapper that will return proper date format based on provided config
-    const mapInternalDatesToExternal = () => {
-        sanitizeModelValue();
+    const mapInternalDatesToExternal = (noSanitize: boolean = false) => {
+        if (!noSanitize) {
+            sanitizeModelValue();
+        }
         if (props.modelAuto) return getModelAutoForExternal();
         if (defaultedMultiDates.value.enabled) return getMultiDatesForExternal();
         if (Array.isArray(internalModelValue.value)) {
@@ -343,7 +347,8 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
         return convertZonedModelToLocal(val);
     };
 
-    const emitValue = (value: ModelValue, useTz = false): void => {
+    const emitValue = (value: ModelValue, useTz = false, returnOnly = false) => {
+        if (returnOnly) return value;
         emit('update:model-value', value);
         if (defaultedTz.value.emitTimezone && useTz) {
             const zonedValue = Array.isArray(value)
@@ -384,20 +389,27 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const modeEmitter = (mapper: any) => emitValue(convertType(mapInternalToSpecificExternal(mapper)));
+    const modeEmitter = (mapper: any, returnOnly: boolean) =>
+        emitValue(convertType(mapInternalToSpecificExternal(mapper)), false, returnOnly);
+
+    const emitWeekPicker = (returnOnly: boolean) => {
+        const value = mapInternalWeekPickerToExternal();
+        if (returnOnly) return value;
+        return emit('update:model-value', mapInternalWeekPickerToExternal());
+    };
 
     /**
      * When date is selected, emit event to update modelValue on external,
      * and format input value
      */
-    const emitModelValue = (): void => {
+    const emitModelValue = (returnOnly: boolean = false) => {
         formatInputValue();
 
-        if (props.monthPicker) return modeEmitter(getMonthVal);
-        if (props.timePicker) return modeEmitter(getTimeVal);
-        if (props.yearPicker) return modeEmitter(getYear);
-        if (props.weekPicker) return emit('update:model-value', mapInternalWeekPickerToExternal());
-        return emitValue(mapInternalDatesToExternal(), true);
+        if (props.monthPicker) return modeEmitter(getMonthVal, returnOnly);
+        if (props.timePicker) return modeEmitter(getTimeVal, returnOnly);
+        if (props.yearPicker) return modeEmitter(getYear, returnOnly);
+        if (props.weekPicker) return emitWeekPicker(returnOnly);
+        return emitValue(mapInternalDatesToExternal(returnOnly), true, returnOnly);
     };
 
     // Check if there is any selection before emitting value, to prevent null setting

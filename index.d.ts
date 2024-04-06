@@ -323,6 +323,7 @@ export interface VueDatePickerProps {
     quarterPicker?: boolean;
     yearFirst?: boolean;
     loading?: boolean;
+    onInternalModelChange?: (...args: any[]) => void;
 }
 
 export type DatePickerInstance = ComponentPublicInstance<PublicMethods> | null;
