@@ -86,14 +86,12 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
     };
 
     // If the range mode is used, checks for the end value of hovered date
-    const isHoverDateStartEnd = (dateIsHovered: boolean, calendarDay: ICalendarDay, start?: boolean): boolean => {
+    const isHoverDateStartEnd = (calendarDay: ICalendarDay, start?: boolean): boolean => {
         if (Array.isArray(modelValue.value) && modelValue.value[0] && modelValue.value.length === 1) {
-            if (dateIsHovered) {
-                return false;
-            }
+            const isHover = isDateEqual(calendarDay.value, hoveredDate.value);
             return start
-                ? isDateAfter(modelValue.value[0], calendarDay.value)
-                : isDateBefore(modelValue.value[0], calendarDay.value);
+                ? isDateAfter(modelValue.value[0], calendarDay.value) && isHover
+                : isDateBefore(modelValue.value[0], calendarDay.value) && isHover;
         }
         return false;
     };
@@ -328,9 +326,9 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
             dp__range_start: isRangeStart,
             dp__range_end: isRangeEnd,
             dp__range_between: isBetween(day),
-            dp__date_hover: dateHover(day),
-            dp__date_hover_start: isHoverDateStartEnd(dateHover(day), day, true),
-            dp__date_hover_end: isHoverDateStartEnd(dateHover(day), day, false),
+            dp__date_hover: isDateEqual(day.value, hoveredDate.value) && !isRangeStart && !isRangeEnd,
+            dp__date_hover_start: isHoverDateStartEnd(day, true),
+            dp__date_hover_end: isHoverDateStartEnd(day, false),
         };
     };
 
