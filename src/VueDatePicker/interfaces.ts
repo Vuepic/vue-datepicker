@@ -281,6 +281,7 @@ export interface Config {
     keepActionRow: boolean;
     onClickOutside?: (validate: () => boolean) => void;
     tabOutClosesMenu: boolean;
+    arrowLeft?: string;
 }
 
 export interface Highlight {

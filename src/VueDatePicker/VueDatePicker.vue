@@ -37,7 +37,7 @@
                         :open-on-top="openOnTop"
                         :no-overlay-focus="noOverlayFocus"
                         :collapse="collapse"
-                        :input-width="inputWidth"
+                        :get-input-rect="getInputRect"
                         @close-picker="closeMenu"
                         @select-date="selectDate"
                         @auto-apply="autoApplyValue"
@@ -259,9 +259,9 @@
         );
     });
 
-    const inputWidth = computed(() => {
-        return inputRef.value?.$el?.getBoundingClientRect()?.width ?? 0;
-    });
+    const getInputRect = () => {
+        return inputRef.value?.$el?.getBoundingClientRect();
+    };
 
     /**
      * Event listener for 'scroll'

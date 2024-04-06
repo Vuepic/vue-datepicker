@@ -173,10 +173,10 @@
         internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
         noOverlayFocus: { type: Boolean as PropType<boolean>, default: false },
         collapse: { type: Boolean as PropType<boolean>, default: false },
-        inputWidth: { type: Number as PropType<number>, default: 0 },
+        getInputRect: { type: Function as PropType<() => DOMRect>, default: () => ({}) },
     });
 
-    const dpMenuRef = ref(null);
+    const dpMenuRef = ref<HTMLElement | null>(null);
 
     const baseProps = computed(() => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -247,8 +247,11 @@
     });
 
     const arrowPos = computed(() => {
-        if (props.inputWidth < calendarWidth.value) {
-            return `${props.inputWidth / 2}px`;
+        if (defaultedConfig.value.arrowLeft) return defaultedConfig.value.arrowLeft;
+        const menuRect = dpMenuRef.value?.getBoundingClientRect();
+        const inputRect = props.getInputRect();
+        if (inputRect.width < calendarWidth.value && inputRect.left <= (menuRect?.left ?? 0)) {
+            return `${inputRect.width / 2}px`;
         }
         return '50%';
     });
