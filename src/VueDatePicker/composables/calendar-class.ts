@@ -326,7 +326,8 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
             dp__range_start: isRangeStart,
             dp__range_end: isRangeEnd,
             dp__range_between: isBetween(day),
-            dp__date_hover: isDateEqual(day.value, hoveredDate.value) && !isRangeStart && !isRangeEnd,
+            dp__date_hover:
+                isDateEqual(day.value, hoveredDate.value) && !isRangeStart && !isRangeEnd && !props.weekPicker,
             dp__date_hover_start: isHoverDateStartEnd(day, true),
             dp__date_hover_end: isHoverDateStartEnd(day, false),
         };
