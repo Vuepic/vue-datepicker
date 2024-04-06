@@ -261,7 +261,7 @@ export const usePosition = ({
             },
             Object.fromEntries(
                 Object.keys(slots)
-                    .filter((slot) => ['right-sidebar', 'left-sidebar'].includes(slot))
+                    .filter((slot) => ['right-sidebar', 'left-sidebar', 'top-extra', 'action-extra'].includes(slot))
                     .map((slot) => [slot, slots[slot]]),
             ),
         );
