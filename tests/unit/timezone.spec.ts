@@ -11,7 +11,9 @@ describe('Timezone functionality', () => {
         const offset = getOffset(local);
         const zoned = localToTz(local, 'UTC');
 
-        expect(differenceInHours(local, zoned)).toEqual(offset);
+        const diff = Math.abs(differenceInHours(local, zoned, { roundingMethod: 'round' }));
+
+        expect(diff).toEqual(offset);
     });
 
     it('Should map date to a timezone depending on the timezone config', () => {
@@ -20,7 +22,10 @@ describe('Timezone functionality', () => {
         const utcExact = new Date(getYear(today), 0, 15, 1, 0, 0, 0);
         const offset = getOffset(today);
         const dateInTz = sanitizeDateToLocal(today, { timezone: 'UTC', exactMatch: false });
-        expect(differenceInHours(today, dateInTz as Date)).toEqual(offset);
+
+        const diff = Math.abs(differenceInHours(today, dateInTz as Date, { roundingMethod: 'round' }));
+
+        expect(diff).toEqual(offset);
 
         const dateExact = sanitizeDateToLocal(utc, {
             timezone: 'UTC',

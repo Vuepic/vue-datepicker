@@ -25,15 +25,15 @@ export const getArrayInArray = <T>(list: T[], increment = 3): T[][] => {
 
 function dayNameIntlMapper(locale: string) {
     return (day: number) => {
-        return new Intl.DateTimeFormat(locale, { weekday: 'short', timeZone: 'UTC' })
-            .format(new Date(`2017-01-0${day}T00:00:00+00:00`))
+        return new Intl.DateTimeFormat(locale, { weekday: 'short' })
+            .format(new Date(`2017-01-0${day}T00:00:00`))
             .slice(0, 2);
     };
 }
 
 function dayNameDateFnsMapper(formatLocale: Locale) {
     return (day: number) => {
-        return format(new Date(`2017-01-0${day}T00:00:00+00:00`), 'EEEEEE', { locale: formatLocale });
+        return format(new Date(`2017-01-0${day}T00:00:00`), 'EEEEEE', { locale: formatLocale });
     };
 }
 
@@ -86,7 +86,7 @@ export const getMonths = (
 ): IDefaultSelect[] => {
     const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((month) => {
         const mm = month < 10 ? `0${month}` : month;
-        return new Date(`2017-${mm}-01T00:00:00+00:00`);
+        return new Date(`2017-${mm}-01T00:00:00`);
     });
 
     if (formatLocale !== null) {
@@ -104,7 +104,7 @@ export const getMonths = (
         }
     }
 
-    const formatter = new Intl.DateTimeFormat(locale, { month: monthFormat, timeZone: 'UTC' });
+    const formatter = new Intl.DateTimeFormat(locale, { month: monthFormat });
     return months.map((date, i) => {
         const month = formatter.format(date);
         return {
