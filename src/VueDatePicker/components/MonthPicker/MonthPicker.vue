@@ -45,6 +45,9 @@
                         </template>
                     </YearModePicker>
                 </template>
+                <template v-if="$slots['month-overlay-value']" #item="{ item }">
+                    <slot name="month-overlay-value" :text="item.text" :value="item.value" />
+                </template>
             </SelectionOverlay>
         </template>
     </InstanceWrap>
