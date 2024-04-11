@@ -13,6 +13,7 @@ import type {
 import { type Locale } from 'date-fns';
 import type { ComponentPublicInstance } from 'vue';
 import { getDate } from '@/utils/date-utils';
+import { localToTz } from '@/utils/timezone';
 
 export const getArrayInArray = <T>(list: T[], increment = 3): T[][] => {
     const items = [];
@@ -93,7 +94,7 @@ export const getMonths = (
         try {
             const monthDateFnsFormat = monthFormat === 'long' ? 'MMMM' : 'MMM';
             return months.map((date, i) => {
-                const month = format(date, monthDateFnsFormat, { locale: formatLocale });
+                const month = format(localToTz(date, 'UTC'), monthDateFnsFormat, { locale: formatLocale });
                 return {
                     text: month.charAt(0).toUpperCase() + month.substring(1),
                     value: i,
