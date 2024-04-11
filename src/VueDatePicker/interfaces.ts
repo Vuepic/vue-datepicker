@@ -282,6 +282,7 @@ export interface Config {
     onClickOutside?: (validate: () => boolean) => void;
     tabOutClosesMenu: boolean;
     arrowLeft?: string;
+    keepViewOnOffsetClick?: boolean;
 }
 
 export interface Highlight {

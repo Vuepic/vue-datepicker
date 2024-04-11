@@ -46,10 +46,18 @@ export const useDatePicker = (
 ) => {
     const tempRange = ref<Date[]>([]);
     const lastScrollTime = ref(new Date());
+    const clickedDate = ref<ICalendarDay | undefined>();
 
     const { modelValue, calendars, time } = useModel(props, emit);
-    const { defaultedMultiCalendars, defaultedStartTime, defaultedRange, defaultedTz, propDates, defaultedMultiDates } =
-        useDefaults(props);
+    const {
+        defaultedMultiCalendars,
+        defaultedStartTime,
+        defaultedRange,
+        defaultedConfig,
+        defaultedTz,
+        propDates,
+        defaultedMultiDates,
+    } = useDefaults(props);
     const { validateMonthYearInRange, isDisabled, isDateRangeAllowed, checkMinMaxRange } = useValidation(props);
     const { updateTimeValues, getSetDateTime, setTime, assignStartTime, validateTime, disabledTimesConfig } =
         useTimePickerUtils(props, time, modelValue, updateFlow);
@@ -67,13 +75,25 @@ export const useDatePicker = (
                 calendars.value[instance] ? calendars.value[instance].year : 0,
     );
 
+    const shouldUpdateMonthView = (isAction: boolean) => {
+        if (!defaultedConfig.value.keepViewOnOffsetClick || isAction) return true;
+        return !clickedDate.value;
+    };
+
     // Any update for month or year value will go through this function
-    const setCalendarMonthYear = (instance: number, month: number | null, year: number | null): void => {
-        if (!calendars.value[instance]) {
-            calendars.value[instance] = { month: 0, year: 0 };
+    const setCalendarMonthYear = (
+        instance: number,
+        month: number | null,
+        year: number | null,
+        isAction: boolean = false,
+    ): void => {
+        if (shouldUpdateMonthView(isAction)) {
+            if (!calendars.value[instance]) {
+                calendars.value[instance] = { month: 0, year: 0 };
+            }
+            calendars.value[instance].month = isNumNullish(month) ? calendars.value[instance]?.month : month;
+            calendars.value[instance].year = isNumNullish(year) ? calendars.value[instance]?.year : year;
         }
-        calendars.value[instance].month = isNumNullish(month) ? calendars.value[instance]?.month : month;
-        calendars.value[instance].year = isNumNullish(year) ? calendars.value[instance]?.year : year;
     };
 
     const selectOnAutoApply = () => {
@@ -552,6 +572,7 @@ export const useDatePicker = (
      */
     const selectDate = (day: ICalendarDay, isNext = false): void => {
         if (isDisabled(day.value) || (!day.current && props.hideOffsetDates)) return emit('invalid-date', day.value);
+        clickedDate.value = JSON.parse(JSON.stringify(day));
 
         if (!defaultedRange.value.enabled) return handleSingleDateSelect(day);
 
@@ -563,7 +584,7 @@ export const useDatePicker = (
 
     // Handles selection of month/year
     const updateMonthYear = (instance: number, val: { month: number; year: number; fromNav?: boolean }): void => {
-        setCalendarMonthYear(instance, val.month, val.year);
+        setCalendarMonthYear(instance, val.month, val.year, true);
 
         if (defaultedMultiCalendars.value.count && !defaultedMultiCalendars.value.solo) {
             autoChangeMultiCalendars(instance);
