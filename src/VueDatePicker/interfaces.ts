@@ -233,7 +233,15 @@ export interface HeaderSelectionBtn {
     ariaLabel: string;
 }
 
-export type MenuExposedFn = 'selectCurrentDate' | 'presetDate' | 'clearHoverDate' | 'handleArrow' | 'updateMonthYear';
+export type MenuExposedFn =
+    | 'selectCurrentDate'
+    | 'presetDate'
+    | 'clearHoverDate'
+    | 'handleArrow'
+    | 'updateMonthYear'
+    | 'selectWeekDate'
+    | 'changeYear'
+    | 'changeMonth';
 
 export type OptionEnabled = boolean | number | string;
 

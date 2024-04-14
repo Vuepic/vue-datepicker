@@ -51,5 +51,6 @@ export const useModel = (props: PickerBasePropsType, emit: VueEmit) => {
         modelValue,
         month,
         year,
+        today,
     };
 };

@@ -93,6 +93,7 @@
     import { CMP } from '@/constants';
 
     import type { ICalendarDay } from '@/interfaces';
+    import { endOfWeek, getMonth, startOfWeek } from 'date-fns';
 
     const emit = defineEmits([
         'tooltip-open',
@@ -128,6 +129,7 @@
         modelValue,
         time,
         disabledTimesConfig,
+        today,
         validateTime,
         getCalendarDays,
         getMarker,
@@ -218,6 +220,30 @@
         timePickerRef.value?.toggleTimePicker(flow, show, childOpen);
     };
 
+    const selectWeekDate = (selectStart: boolean) => {
+        if (!props.range) {
+            const date = modelValue.value ? modelValue.value : today;
+            const toSelect = selectStart
+                ? startOfWeek(date as Date, { weekStartsOn: 1 })
+                : endOfWeek(date as Date, { weekStartsOn: 1 });
+
+            selectDate({
+                value: toSelect,
+                current: getMonth(date as Date) === month.value(0),
+                text: '',
+                classData: {},
+            });
+        }
+    };
+
+    const changeMonth = (isNext: boolean) => {
+        headerRefs.value[0]?.handleMonthYearChange(isNext, true);
+    };
+
+    const changeYear = (isNext: boolean) => {
+        updateMonthYear(0, { month: month.value(0), year: year.value(0) + (isNext ? 1 : -1), fromNav: true });
+    };
+
     const getSidebarProps = () => {
         return {
             modelValue,
@@ -241,5 +267,8 @@
         handleArrow,
         updateMonthYear,
         getSidebarProps,
+        changeMonth,
+        changeYear,
+        selectWeekDate,
     });
 </script>

@@ -14,7 +14,7 @@
         @keydown.up.prevent="handleArrowKey('up')"
         @keydown.down.prevent="handleArrowKey('down')"
         @keydown.right.prevent="handleArrowKey('right')"
-        @keydown="checkShiftKey"
+        @keydown="onKeyDown"
     >
         <div v-if="((disabled || readonly) && defaultedInline.enabled) || loading" :class="disabledReadonlyOverlay">
             <div v-if="loading" class="dp--menu-load-container">
@@ -368,6 +368,19 @@
 
     const updateMonthYear = (instance: number, value: MonthModel) => {
         callChildFn('updateMonthYear', instance, value);
+    };
+
+    const onKeyDown = (ev: KeyboardEvent) => {
+        checkShiftKey(ev);
+        if (ev.key === 'Home' || ev.key === 'End') {
+            return callChildFn('selectWeekDate', ev.key === 'Home');
+        }
+        if (ev.key === 'PageUp' || ev.key === 'PageDown') {
+            if (ev.shiftKey) {
+                return callChildFn('changeYear', ev.key === 'PageUp');
+            }
+            return callChildFn('changeMonth', ev.key === 'PageUp');
+        }
     };
 
     defineExpose({

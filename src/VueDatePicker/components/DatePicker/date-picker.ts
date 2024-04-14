@@ -48,7 +48,7 @@ export const useDatePicker = (
     const lastScrollTime = ref(new Date());
     const clickedDate = ref<ICalendarDay | undefined>();
 
-    const { modelValue, calendars, time } = useModel(props, emit);
+    const { modelValue, calendars, time, today } = useModel(props, emit);
     const {
         defaultedMultiCalendars,
         defaultedStartTime,
@@ -664,6 +664,7 @@ export const useDatePicker = (
         year,
         time,
         disabledTimesConfig,
+        today,
         validateTime,
         getCalendarDays,
         getMarker,
