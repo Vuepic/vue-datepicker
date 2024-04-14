@@ -279,6 +279,11 @@
         return Boolean(disabledTimes[type]?.includes(value));
     };
 
+    const getAmPmDiff = (val: number, type: TimeType): number => {
+        if (type !== 'hours') return val;
+        return amPm.value === 'AM' ? val : val + 12;
+    };
+
     const getGridItems = (type: TimeType): OverlayGridItem[][] => {
         const timeRange = props.is24 ? 24 : 12;
         const max = type === 'hours' ? timeRange : 60;
@@ -288,7 +293,7 @@
         const generatedArray: IDefaultSelect[] = [];
 
         for (let i = min; i < max; i += increment) {
-            generatedArray.push({ value: i, text: i < 10 ? `0${i}` : `${i}` });
+            generatedArray.push({ value: props.is24 ? i : getAmPmDiff(i, type), text: i < 10 ? `0${i}` : `${i}` });
         }
 
         if (type === 'hours' && !props.is24) {
@@ -410,9 +415,6 @@
 
     const handleTimeFromOverlay = (type: TimeType, value: number): void => {
         toggleOverlay(type);
-        if (type === 'hours' && !props.is24) {
-            return emit(`update:${type}`, amPm.value === 'PM' ? value + 12 : value);
-        }
         return emit(`update:${type}`, value);
     };
 
