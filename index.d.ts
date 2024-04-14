@@ -4,6 +4,7 @@ import type {
     ComponentPropsOptions,
     ComponentPublicInstance,
     ComputedOptions,
+    ComputedRef,
     DefineComponent,
     MethodOptions,
 } from 'vue';
@@ -343,17 +344,139 @@ export interface PublicMethods extends MethodOptions {
     toggleMenu: () => void;
 }
 
-declare const _default: DefineComponent<
-    ComponentPropsOptions<VueDatePickerProps>,
-    {},
-    {},
-    ComputedOptions,
-    PublicMethods,
-    ComponentOptionsMixin,
-    ComponentOptionsMixin,
-    EmitEvents[],
-    EmitEvents,
-    VueDatePickerProps
+type InternalModelValue = Date | Date[] | null;
+interface InternalTime {
+    hours: number | number[];
+    minutes: number | number[];
+    seconds: number | number[];
+}
+
+interface MonthYearOverlay {
+    month: number;
+    year: number;
+    items: { text: string; value: number }[];
+    updateMonthYear: (month: number, year: number) => void;
+    instance: number;
+    toggle: () => void;
+}
+
+interface SidebarSlotProps {
+    modelValue: InternalModelValue;
+    month?: ComputedRef<(instance: number) => number>;
+    year?: ComputedRef<(instance: number) => number>;
+    time?: InternalTime;
+    updateTime?: (value: number | number[], isHours?: boolean, isSeconds?: boolean) => void;
+    updateMonthYear?: (instance: number, val: { month: number; year: number; fromNav?: boolean }) => void;
+    selectDate?: (day: { value: Date }, isNext: boolean = false) => {};
+    presetDate?: (value: Date[] | string[] | Date | string, noTz?: boolea) => void;
+    getModelMonthYear?: () => { month: number | null; year: number | null }[];
+    selectMonth?: (month: number, instance: number) => void;
+    selectYear?: (year: number, instance: number) => void;
+    handleYear?: (instance: number, increment?: boolean) => void;
+    selectQuarter?: (date: Date, instance: number, disabled: boolean) => void;
+    handleYearSelect?: (year: number, instance: number) => void;
+}
+
+interface Slots {
+    'clock-icon'(): any;
+    'arrow-left'(): any;
+    'arrow-right'(): any;
+    'arrow-up'(): any;
+    'arrow-down'(): any;
+    'calendar-icon'(): any;
+    day(props: { date: Date; day: number }): any;
+    'month-overlay-value'(props: { text: string; value: number }): any;
+    'year-overlay-value'(props: { text: string; value: number }): any;
+    'year-overlay'(props: MonthYearOverlay): any;
+    'month-overlay'(props: MonthYearOverlay): any;
+    'month-overlay-header'(props: { toggle: () => void }): any;
+    'year-overlay-header'(props: { toggle: () => void }): any;
+    'hours-overlay-value'(props: { text: string; value: number }): any;
+    'minutes-overlay-value'(props: { text: string; value: number }): any;
+    'seconds-overlay-value'(props: { text: string; value: number }): any;
+    hours(props: { text: string; value: number }): any;
+    minutes(props: { text: string; value: number }): any;
+    month(props: { text: string; value: number }): any;
+    year(props: { year: number }): any;
+    'action-buttons'(props: { value: InternalModelValue }): any;
+    'action-preview'(props: { value: InternalModelValue }): any;
+    'calendar-header'(props: { day: string; index: number }): any;
+    'marker-tooltip'(props: { day: Date; tooltip: { text?: string; html?: string; color?: string }[] }): any;
+    'action-extra'(props: { selectCurrentDate: () => void }): any;
+    'time-picker-overlay'(props: {
+        hours: number | number[];
+        minutes: number | number[];
+        seconds: number | number[];
+        setHours: (hours: number | number[]) => void;
+        setMinutes: (minutes: number | number[]) => void;
+        setSeconds: (seconds: number | number[]) => void;
+    }): any;
+    'am-pm-button'(props: { toggle: () => void; value: string }): any;
+    'left-sidebar'(props: SidebarSlotProps): any;
+    'right-sidebar'(props: SidebarSlotProps): any;
+    'month-year'(props: {
+        year: number;
+        month?: number;
+        months?: { value: number; text: string; className?: Record<string, boolean> }[];
+        years?: { value: number; text: string; className?: Record<string, boolean> }[];
+        updateMonthYear?: (month: number, year: number, fromNav: boolean) => void;
+        handleMonthYearChange?: (isNext: boolean, fromNav = false) => void;
+        instance?: number;
+        selectMonth?: (month: number, instance: number) => void;
+        selectYear?: (year: number, instance: number) => void;
+    }): any;
+    'time-picker'(props: {
+        time: InternalTime;
+        updateTime: (value: number | number[], isHours = true, isSeconds = false) => void;
+    }): any;
+    'action-row'(props: {
+        internalModelValue: InternalModelValue;
+        disabled: boolean;
+        selectDate: () => void;
+        closePicker: () => void;
+    }): any;
+    marker(props: { marker: DatePickerMarker; day: number; date: Date }): any;
+    quarter(props: { value: Date; text: string }): any;
+    'top-extra'(props: { value: InternalModelValue }): any;
+    trigger(): any;
+    'input-icon'(): any;
+    'clear-icon'(): any;
+    'dp-input'(props: {
+        value: string;
+        isMenuOpen: boolean;
+        onInput: (ev: string | Event) => void;
+        onEnter: (ev: KeyboardEvent) => void;
+        onTab: (ev: KeyboardEvent) => void;
+        onClear: (ev?: Event | undefined) => void;
+        onBlur: () => void;
+        onKeypress: (ev: KeyboardEvent) => void;
+        onPaste: () => void;
+        openMenu: () => void;
+        closeMenu: () => void;
+        toggleMenu: () => void;
+    }): any;
+}
+
+type __VLS_WithTemplateSlots<T, S> = T & {
+    new (): {
+        $slots: S;
+    };
+};
+
+declare const _default: __VLS_WithTemplateSlots<
+    DefineComponent<
+        ComponentPropsOptions<VueDatePickerProps>,
+        {},
+        {},
+        ComputedOptions,
+        PublicMethods,
+        ComponentOptionsMixin,
+        ComponentOptionsMixin,
+        EmitEvents[],
+        EmitEvents,
+        VueDatePickerProps
+    >,
+    Readonly<Slots> & Slots
 >;
 
 export default _default;
