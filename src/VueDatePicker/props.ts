@@ -164,6 +164,7 @@ export const AllProps = {
     yearFirst: { type: Boolean as PropType<boolean>, default: false },
     loading: { type: Boolean as PropType<boolean>, default: false },
     onInternalModelChange: { type: [Function, Object] as PropType<(...args: any[]) => void>, default: null },
+    enableMinutes: { type: Boolean as PropType<boolean>, default: true },
 };
 
 export const PickerBaseProps = {

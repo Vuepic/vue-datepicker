@@ -151,6 +151,7 @@
         OverlayGridItem,
         DisabledTimesArrProp,
         TimeModel,
+        TimeInput,
     } from '@/interfaces';
 
     defineOptions({
@@ -255,11 +256,19 @@
         }),
     );
 
-    const timeInputs = computed((): { type: TimeType; separator?: boolean }[] => {
-        const inputs = [{ type: 'hours' }, { type: '', separator: true }, { type: 'minutes' }];
-        return (props.enableSeconds ? inputs.concat([{ type: '', separator: true }, { type: 'seconds' }]) : inputs) as {
-            type: TimeType;
-        }[];
+    const timeInputs = computed((): TimeInput[] => {
+        const inputs = [{ type: 'hours' }];
+        if (props.enableMinutes) {
+            inputs.push({ type: '', separator: true } as unknown as TimeInput, {
+                type: 'minutes',
+            });
+        }
+        if (props.enableSeconds) {
+            inputs.push({ type: '', separator: true } as unknown as TimeInput, {
+                type: 'seconds',
+            });
+        }
+        return inputs as TimeInput[];
     });
 
     const timeInputOverlays = computed(() => timeInputs.value.filter((input) => !input.separator));

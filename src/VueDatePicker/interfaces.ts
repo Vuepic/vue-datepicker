@@ -368,3 +368,8 @@ export interface MultiDatesDefault {
 }
 
 export type MultiDatesProp = boolean | Partial<MultiDatesConfig>;
+
+export interface TimeInput {
+    type: TimeType;
+    separator?: boolean;
+}

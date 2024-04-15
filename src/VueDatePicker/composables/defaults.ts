@@ -26,7 +26,8 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
     // Shared method for time format
     const getTimeFormat = (): string => {
         const seconds = props.enableSeconds ? ':ss' : '';
-        return props.is24 ? `HH:mm${seconds}` : `hh:mm${seconds} aa`;
+        const minutes = props.enableMinutes ? ':mm' : '';
+        return props.is24 ? `HH${minutes}${seconds}` : `hh${minutes}${seconds} aa`;
     };
 
     // Get default format pattern, returns user specified if defined first
