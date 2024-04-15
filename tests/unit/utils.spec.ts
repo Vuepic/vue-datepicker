@@ -132,7 +132,7 @@ describe('Utils and date utils formatting', () => {
     });
 
     it('Should get default pattern', () => {
-        const props = reactive({ enableTimePicker: true, is24: true, monthPicker: false });
+        const props = reactive({ enableTimePicker: true, is24: true, monthPicker: false, enableMinutes: true });
         const { getDefaultPattern } = useDefaults(props as AllPropsType);
 
         const patternDef = getDefaultPattern();
