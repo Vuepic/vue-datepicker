@@ -84,6 +84,7 @@
     import type { PropType } from 'vue';
     import type { DynamicClass, InternalModuleValue } from '@/interfaces';
     import { checkStopPropagation } from '@/utils/util';
+    import { isAfter } from 'date-fns';
 
     defineOptions({
         compatConfig: {
@@ -174,6 +175,7 @@
         if (dateOne) {
             const parsedDateOne = parser(dateOne.trim());
             const parsedDateTwo = dateTwo ? parser(dateTwo.trim()) : null;
+            if (isAfter(parsedDateOne as Date, parsedDateTwo as Date)) return;
 
             const parsedArr = parsedDateOne && parsedDateTwo ? [parsedDateOne, parsedDateTwo] : [parsedDateOne];
             if (checkMinMaxRange(parsedDateTwo as Date, parsedArr as InternalModuleValue, 0)) {
