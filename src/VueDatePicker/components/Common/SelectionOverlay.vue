@@ -11,7 +11,12 @@
         @keydown.down.prevent="handleArrowKey($event)"
         @keydown.right.prevent="handleArrowKey($event)"
     >
-        <div ref="containerRef" :class="containerClass" role="grid" :style="{ height: `${containerHeight}px` }">
+        <div
+            ref="containerRef"
+            :class="containerClass"
+            role="grid"
+            :style="{ '--dp-overlay-height': `${containerHeight}px` }"
+        >
             <div class="dp__selection_grid_header"><slot name="header"></slot></div>
             <template v-if="$slots.overlay">
                 <slot name="overlay" />

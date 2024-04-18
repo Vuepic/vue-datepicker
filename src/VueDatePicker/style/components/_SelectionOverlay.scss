@@ -50,6 +50,7 @@
 .dp__overlay_container {
   flex-direction: column;
   overflow-y: auto;
+  height: var(--dp-overlay-height)
 }
 
 .dp__time_picker_overlay_container {
