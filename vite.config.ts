@@ -6,24 +6,8 @@ import minimist from 'minimist';
 
 const { f } = minimist(process.argv.slice(2));
 
-function removeDataTestAttrs(node: any) {
-    if (node.type === 1) {
-        node.props = node.props.filter((prop: any) => {
-            if (prop.name === 'data-test') return false;
-            return !(prop.name === 'bind' && prop.arg?.content === 'data-test');
-        });
-    }
-}
 export default defineConfig({
-    plugins: [
-        vue({
-            template: {
-                compilerOptions: {
-                    nodeTransforms: process.env.NODE_ENV === 'production' ? [removeDataTestAttrs] : [],
-                },
-            },
-        }),
-    ],
+    plugins: [vue()],
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src/VueDatePicker', import.meta.url)),

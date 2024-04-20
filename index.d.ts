@@ -215,6 +215,7 @@ export interface VueDatePickerProps {
         style?: Record<string, string>;
         slot?: string;
         noTz?: boolean;
+        testId?: string;
     }[];
     flow?: ('month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds')[];
     partialFlow?: boolean;

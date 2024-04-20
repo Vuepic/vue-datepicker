@@ -130,6 +130,7 @@ export type PresetDate = {
     style?: Record<string, string>;
     slot?: string;
     noTz?: boolean;
+    testId?: string;
 };
 
 export type Flow = 'month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds';

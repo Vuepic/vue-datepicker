@@ -26,6 +26,7 @@
                 v-if="!$slots['dp-input']"
                 :id="uid ? `dp-input-${uid}` : undefined"
                 ref="inputRef"
+                data-test="dp-input"
                 :name="name"
                 :class="inputClass"
                 :inputmode="defaultedTextInput.enabled ? 'text' : 'none'"
