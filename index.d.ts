@@ -442,7 +442,7 @@ interface Slots {
     'top-extra'(props: { value: InternalModelValue }): any;
     trigger(): any;
     'input-icon'(): any;
-    'clear-icon'(): any;
+    'clear-icon'(props: { clear: (ev?: Event) => void }): any;
     'dp-input'(props: {
         value: string;
         isMenuOpen: boolean;
