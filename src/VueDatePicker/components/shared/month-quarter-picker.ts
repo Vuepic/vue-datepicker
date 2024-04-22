@@ -103,6 +103,7 @@ export const useMonthOrQuarterPicker = ({
 
     const selectYear = (year: number, instance: number) => {
         calendars.value[instance].year = year;
+        emit('update-month-year', { instance, year, month: calendars.value[instance].month });
         if (multiCalendars.value.count && !multiCalendars.value.solo) {
             updateMultiCalendars(instance);
         }
