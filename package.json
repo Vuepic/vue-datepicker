@@ -18,7 +18,8 @@
     "dist/*",
     "index.d.ts",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "CHANGELOG.md"
   ],
   "exports": {
     ".": {
