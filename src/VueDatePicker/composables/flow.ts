@@ -15,7 +15,7 @@ export const useFlow = (props: AllPropsType, emit: VueEmit, dynCmpRef: Ref<any>)
         [CMP.header]: false,
     });
 
-    const specificMode = computed(() => props.monthPicker);
+    const specificMode = computed(() => props.monthPicker || props.timePicker);
 
     const childMount = (cmp: unknown): void => {
         if (props.flow?.length) {

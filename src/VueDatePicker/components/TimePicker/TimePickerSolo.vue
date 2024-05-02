@@ -1,6 +1,7 @@
 <template>
     <InstanceWrap :multi-calendars="0" stretch>
         <TimePicker
+            ref="tpRef"
             v-bind="$props"
             :hours="time.hours"
             :minutes="time.minutes"
@@ -12,6 +13,7 @@
             @update:minutes="updateTime($event, false)"
             @update:seconds="updateTime($event, false, true)"
             @am-pm-change="$emit('am-pm-change', $event)"
+            @reset-flow="$emit('reset-flow')"
         >
             <template v-for="(slot, i) in timePickerSlots" #[slot]="args" :key="i">
                 <slot :name="slot" v-bind="args" />
@@ -21,7 +23,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { useSlots } from 'vue';
+    import { onMounted, ref, useSlots } from 'vue';
 
     import TimePicker from '@/components/TimePicker/TimePicker.vue';
 
@@ -30,7 +32,14 @@
     import { useTimePicker } from '@/components/TimePicker/time-picker';
     import InstanceWrap from '@/components/Common/InstanceWrap.vue';
 
-    const emit = defineEmits(['update:internal-model-value', 'time-update', 'am-pm-change']);
+    const emit = defineEmits([
+        'update:internal-model-value',
+        'time-update',
+        'am-pm-change',
+        'mount',
+        'reset-flow',
+        'update-flow-step',
+    ]);
     const props = defineProps({
         ...PickerBaseProps,
     });
@@ -41,8 +50,15 @@
     });
     const slots = useSlots();
     const timePickerSlots = mapSlots(slots, 'timePicker');
+    const tpRef = ref<InstanceType<typeof TimePicker> | null>(null);
 
     const { time, modelValue, disabledTimesConfig, updateTime, validateTime } = useTimePicker(props, emit);
+
+    onMounted(() => {
+        if (!props.shadow) {
+            emit('mount', null);
+        }
+    });
 
     const getSidebarProps = () => {
         return {
@@ -52,5 +68,9 @@
         };
     };
 
-    defineExpose({ getSidebarProps });
+    const toggleTimePicker = (show: boolean, flow = false, childOpen = '') => {
+        tpRef.value?.toggleTimePicker(show, flow, childOpen);
+    };
+
+    defineExpose({ getSidebarProps, toggleTimePicker });
 </script>

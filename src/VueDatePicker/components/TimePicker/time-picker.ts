@@ -12,7 +12,11 @@ export const useTimePicker = (props: PickerBasePropsType, emit: VueEmit) => {
     const { modelValue, time } = useModel(props, emit);
     const { defaultedStartTime, defaultedRange } = useDefaults(props);
     const { updateTimeValues, getSetDateTime, setTime, assignStartTime, disabledTimesConfig, validateTime } =
-        useTimePickerUtils(props, time, modelValue);
+        useTimePickerUtils(props, time, modelValue, updateFlowStep);
+
+    function updateFlowStep() {
+        emit('update-flow-step');
+    }
 
     const parseStartTime = (startTime: TimeModel) => {
         const { hours, minutes, seconds } = startTime;
