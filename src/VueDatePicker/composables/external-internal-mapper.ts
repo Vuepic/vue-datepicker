@@ -403,7 +403,9 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
      * and format input value
      */
     const emitModelValue = (returnOnly: boolean = false) => {
-        formatInputValue();
+        if (!returnOnly) {
+            formatInputValue();
+        }
 
         if (props.monthPicker) return modeEmitter(getMonthVal, returnOnly);
         if (props.timePicker) return modeEmitter(getTimeVal, returnOnly);
