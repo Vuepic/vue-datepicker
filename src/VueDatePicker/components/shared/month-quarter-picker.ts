@@ -18,6 +18,7 @@ import type {
     DateFilter,
 } from '@/interfaces';
 import type { PickerBasePropsType } from '@/props';
+import { FlowStep } from '@/constants';
 
 interface Opts {
     multiCalendars: ComputedRef<MultiCalendarsOptions>;
@@ -147,8 +148,11 @@ export const useMonthOrQuarterPicker = ({
             showYearPicker.value[instance] = !showYearPicker.value[instance];
         }
 
-        if (!showYearPicker.value) {
+        if (!showYearPicker.value[instance]) {
             emit('overlay-closed');
+            emit('overlay-toggle', { open: false, overlay: FlowStep.year });
+        } else {
+            emit('overlay-toggle', { open: true, overlay: FlowStep.year });
         }
     };
 

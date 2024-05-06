@@ -74,6 +74,7 @@
         'update-flow-step',
         'mount',
         'invalid-fixed-range',
+        'overlay-toggle',
     ]);
 
     const slots = useSlots();

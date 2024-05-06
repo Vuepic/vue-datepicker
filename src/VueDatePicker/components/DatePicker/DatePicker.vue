@@ -16,7 +16,8 @@
             @mount="componentMounted(CMP.header)"
             @reset-flow="$emit('reset-flow')"
             @update-month-year="updateMonthYear(instance, $event)"
-            @overlay-closed="$emit('focus-menu')"
+            @overlay-closed="onHeaderOverlayClose"
+            @overlay-opened="$emit('overlay-toggle', { open: true, overlay: $event })"
         >
             <template v-for="(slot, j) in headerSlots" #[slot]="args" :key="j">
                 <slot :name="slot" v-bind="args" />
@@ -67,8 +68,8 @@
             @update:minutes="updateTime($event, false)"
             @update:seconds="updateTime($event, false, true)"
             @reset-flow="$emit('reset-flow')"
-            @overlay-closed="$emit('time-picker-close')"
-            @overlay-opened="$emit('time-picker-open', $event)"
+            @overlay-closed="timePickerOverlayToggle($event, false)"
+            @overlay-opened="timePickerOverlayToggle($event, true)"
             @am-pm-change="$emit('am-pm-change', $event)"
         >
             <template v-for="(slot, i) in timePickerSlots" #[slot]="args" :key="i">
@@ -90,7 +91,7 @@
     import { mapSlots, useCalendarClass, useDefaults } from '@/composables';
     import { useDatePicker } from '@/components/DatePicker/date-picker';
     import { getMonths, getYears } from '@/utils/util';
-    import { CMP } from '@/constants';
+    import { CMP, FlowStep } from '@/constants';
 
     import type { ICalendarDay } from '@/interfaces';
     import { endOfWeek, getMonth, startOfWeek } from 'date-fns';
@@ -117,6 +118,7 @@
         'auto-apply-invalid',
         'date-update',
         'invalid-date',
+        'overlay-toggle',
     ]);
     const props = defineProps({
         ...PickerBaseProps,
@@ -242,6 +244,18 @@
 
     const changeYear = (isNext: boolean) => {
         updateMonthYear(0, { month: month.value(0), year: year.value(0) + (isNext ? 1 : -1), fromNav: true });
+    };
+
+    const timePickerOverlayToggle = (type: FlowStep, open: boolean) => {
+        if (type === FlowStep.time) {
+            emit(`time-picker-${open ? 'open' : 'close'}`);
+        }
+        emit('overlay-toggle', { open, overlay: type });
+    };
+
+    const onHeaderOverlayClose = (type: FlowStep) => {
+        emit('overlay-toggle', { open: false, overlay: type });
+        emit('focus-menu');
     };
 
     const getSidebarProps = () => {

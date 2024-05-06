@@ -140,11 +140,11 @@
         getMinMonth,
     } from '@/utils/date-utils';
     import { checkMinMaxValue, formatNumber, groupListAndMap, unrefElement } from '@/utils/util';
-    import { HeaderPicker } from '@/constants';
+    import { FlowStep, HeaderPicker } from '@/constants';
 
     import type { HeaderSelectionBtn, IDefaultSelect, MaybeElementRef, OverlayGridItem } from '@/interfaces';
 
-    const emit = defineEmits(['update-month-year', 'mount', 'reset-flow', 'overlay-closed']);
+    const emit = defineEmits(['update-month-year', 'mount', 'reset-flow', 'overlay-closed', 'overlay-opened']);
     const props = defineProps({
         month: { type: Number as PropType<number>, default: 0 },
         year: { type: Number as PropType<number>, default: 0 },
@@ -242,7 +242,7 @@
         });
     });
 
-    const toggleWrap = (val: Ref<boolean>, show?: boolean) => {
+    const toggleWrap = (val: Ref<boolean>, type: FlowStep, show?: boolean) => {
         if (show !== undefined) {
             val.value = show;
         } else {
@@ -250,18 +250,20 @@
         }
 
         if (!val.value) {
-            emit('overlay-closed');
+            emit('overlay-closed', type);
+        } else {
+            emit('overlay-opened', type);
         }
     };
 
     const toggleMonthPicker = (flow = false, show?: boolean): void => {
         checkFlow(flow);
-        toggleWrap(showMonthPicker, show);
+        toggleWrap(showMonthPicker, FlowStep.month, show);
     };
 
     const toggleYearPicker = (flow = false, show?: boolean): void => {
         checkFlow(flow);
-        toggleWrap(showYearPicker, show);
+        toggleWrap(showYearPicker, FlowStep.year, show);
     };
 
     const checkFlow = (flow: boolean): void => {

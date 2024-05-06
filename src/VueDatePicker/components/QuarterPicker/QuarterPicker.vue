@@ -65,6 +65,8 @@
         'auto-apply',
         'range-start',
         'range-end',
+        'overlay-toggle',
+        'update-month-year',
     ]);
     const props = defineProps({
         ...PickerBaseProps,

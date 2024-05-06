@@ -14,6 +14,8 @@
             @update:seconds="updateTime($event, false, true)"
             @am-pm-change="$emit('am-pm-change', $event)"
             @reset-flow="$emit('reset-flow')"
+            @overlay-closed="$emit('overlay-toggle', { open: false, overlay: $event })"
+            @overlay-opened="$emit('overlay-toggle', { open: true, overlay: $event })"
         >
             <template v-for="(slot, i) in timePickerSlots" #[slot]="args" :key="i">
                 <slot :name="slot" v-bind="args" />
@@ -39,6 +41,7 @@
         'mount',
         'reset-flow',
         'update-flow-step',
+        'overlay-toggle',
     ]);
     const props = defineProps({
         ...PickerBaseProps,

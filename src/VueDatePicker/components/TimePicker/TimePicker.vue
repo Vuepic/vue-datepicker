@@ -70,7 +70,8 @@
                                 @update:minutes="updateMinutes(getEvent($event, index, 'minutes'))"
                                 @update:seconds="updateSeconds(getEvent($event, index, 'seconds'))"
                                 @mounted="focusOverlay"
-                                @overlay-closed="focusOverlay"
+                                @overlay-closed="timeInputOverlayClose"
+                                @overlay-opened="$emit('overlay-opened', $event)"
                                 @am-pm-change="$emit('am-pm-change', $event)"
                             >
                                 <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
@@ -112,6 +113,7 @@
 
     import type { PropType } from 'vue';
     import type { DisabledTimesArrProp, TimeInputRef, TimeType } from '@/interfaces';
+    import { FlowStep } from '@/constants';
 
     defineOptions({
         compatConfig: {
@@ -197,7 +199,7 @@
         }
         showTimePicker.value = show;
 
-        emit(show ? 'overlay-opened' : 'overlay-closed');
+        emit(show ? 'overlay-opened' : 'overlay-closed', FlowStep.time);
 
         if (props.arrowNavigation) {
             setTimePicker(show);
@@ -247,6 +249,10 @@
                 el.focus({ preventScroll: true });
             }
         }
+    };
+
+    const timeInputOverlayClose = (mode: TimeType) => {
+        emit('overlay-closed', mode);
     };
 
     defineExpose({ toggleTimePicker });

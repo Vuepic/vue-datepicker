@@ -89,6 +89,7 @@
                     @update-month-year="$emit('update-month-year', $event)"
                     @auto-apply-invalid="$emit('auto-apply-invalid', $event)"
                     @invalid-date="$emit('invalid-date', $event)"
+                    @overlay-toggle="$emit('overlay-toggle', $event)"
                     @update:internal-model-value="$emit('update:internal-model-value', $event)"
                 >
                     <template v-for="(slot, i) in sharedSlots" #[slot]="args" :key="i">
@@ -165,6 +166,7 @@
         'auto-apply-invalid',
         'date-update',
         'invalid-date',
+        'overlay-toggle',
     ]);
 
     const props = defineProps({

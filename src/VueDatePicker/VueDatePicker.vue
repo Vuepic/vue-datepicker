@@ -57,6 +57,7 @@
                         @range-end="$emit('range-end', $event)"
                         @date-update="$emit('date-update', $event)"
                         @invalid-date="$emit('invalid-date', $event)"
+                        @overlay-toggle="$emit('overlay-toggle', $event)"
                     >
                         <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
                             <slot :name="slot" v-bind="{ ...args }" />
@@ -131,6 +132,7 @@
         'range-end',
         'date-update',
         'invalid-date',
+        'overlay-toggle',
     ]);
 
     defineOptions({

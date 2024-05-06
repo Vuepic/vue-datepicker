@@ -33,7 +33,8 @@ export type EmitEvents =
     | 'range-start'
     | 'range-end'
     | 'date-update'
-    | 'invalid-date';
+    | 'invalid-date'
+    | 'overlay-toggle';
 export type WeekNumberType = 'iso' | 'local' | ((date: Date) => string | number);
 export type TimeObj = { hours: number; minutes: number; seconds: number };
 export type PartialTimeObj = { hours?: number | string; minutes?: number | string; seconds?: number | string };

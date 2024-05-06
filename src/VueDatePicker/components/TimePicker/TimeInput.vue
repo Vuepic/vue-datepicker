@@ -169,6 +169,7 @@
         'reset-flow',
         'mounted',
         'overlay-closed',
+        'overlay-opened',
         'am-pm-change',
     ]);
     const props = defineProps({
@@ -353,7 +354,9 @@
         if (!checkOverlayDisabled(type)) {
             overlays[type] = !overlays[type];
             if (!overlays[type]) {
-                emit('overlay-closed');
+                emit('overlay-closed', type);
+            } else {
+                emit('overlay-opened', type);
             }
         }
     };
