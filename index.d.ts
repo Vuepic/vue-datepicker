@@ -369,8 +369,8 @@ interface SidebarSlotProps {
     time?: InternalTime;
     updateTime?: (value: number | number[], isHours?: boolean, isSeconds?: boolean) => void;
     updateMonthYear?: (instance: number, val: { month: number; year: number; fromNav?: boolean }) => void;
-    selectDate?: (day: { value: Date }, isNext: boolean = false) => {};
-    presetDate?: (value: Date[] | string[] | Date | string, noTz?: boolea) => void;
+    selectDate?: (day: { value: Date }, isNext?: boolean) => {};
+    presetDate?: (value: Date[] | string[] | Date | string, noTz?: boolean) => void;
     getModelMonthYear?: () => { month: number | null; year: number | null }[];
     selectMonth?: (month: number, instance: number) => void;
     selectYear?: (year: number, instance: number) => void;
@@ -422,14 +422,14 @@ interface Slots {
         months?: { value: number; text: string; className?: Record<string, boolean> }[];
         years?: { value: number; text: string; className?: Record<string, boolean> }[];
         updateMonthYear?: (month: number, year: number, fromNav: boolean) => void;
-        handleMonthYearChange?: (isNext: boolean, fromNav = false) => void;
+        handleMonthYearChange?: (isNext: boolean, fromNav?: boolean) => void;
         instance?: number;
         selectMonth?: (month: number, instance: number) => void;
         selectYear?: (year: number, instance: number) => void;
     }): any;
     'time-picker'(props: {
         time: InternalTime;
-        updateTime: (value: number | number[], isHours = true, isSeconds = false) => void;
+        updateTime: (value: number | number[], isHours?: boolean, isSeconds?: boolean) => void;
     }): any;
     'action-row'(props: {
         internalModelValue: InternalModelValue;
