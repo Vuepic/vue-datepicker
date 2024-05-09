@@ -324,6 +324,7 @@ export interface VueDatePickerProps {
         tabOutClosesMenu?: boolean;
         arrowLeft?: string;
         keepViewOnOffsetClick?: boolean;
+        timeArrowHoldThreshold?: boolean;
     };
     quarterPicker?: boolean;
     yearFirst?: boolean;

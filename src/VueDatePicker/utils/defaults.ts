@@ -169,6 +169,7 @@ export const getDefaultConfig = (config?: Partial<Config>): Config => {
         tabOutClosesMenu: true,
         arrowLeft: undefined,
         keepViewOnOffsetClick: false,
+        timeArrowHoldThreshold: 200,
     };
     return { ...defaultConfig, ...(config ?? {}) };
 };

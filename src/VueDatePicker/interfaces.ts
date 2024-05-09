@@ -292,6 +292,7 @@ export interface Config {
     tabOutClosesMenu: boolean;
     arrowLeft?: string;
     keepViewOnOffsetClick?: boolean;
+    timeArrowHoldThreshold: number;
 }
 
 export interface Highlight {

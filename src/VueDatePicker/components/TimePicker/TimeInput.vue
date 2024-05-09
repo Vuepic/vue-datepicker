@@ -16,9 +16,10 @@
                     :data-test="`${timeInput.type}-time-inc-btn-${props.order}`"
                     :aria-label="defaultedAriaLabels?.incrementValue(timeInput.type)"
                     tabindex="0"
-                    @keydown.enter.prevent="handleTimeValue(timeInput.type)"
-                    @keydown.space.prevent="handleTimeValue(timeInput.type)"
-                    @click="handleTimeValue(timeInput.type)"
+                    @keydown.enter.prevent="handleTimeValue(timeInput.type, true, { keyboard: true })"
+                    @keydown.space.prevent="handleTimeValue(timeInput.type, true, { keyboard: true })"
+                    @mousedown="handleTimeValue(timeInput.type)"
+                    @mouseup="clearHold"
                 >
                     <template v-if="!props.timePickerInline">
                         <slot v-if="$slots['arrow-up']" name="arrow-up" />
@@ -68,9 +69,10 @@
                     :data-test="`${timeInput.type}-time-dec-btn-${props.order}`"
                     :aria-label="defaultedAriaLabels?.decrementValue(timeInput.type)"
                     tabindex="0"
-                    @keydown.enter.prevent="handleTimeValue(timeInput.type, false)"
-                    @keydown.space.prevent="handleTimeValue(timeInput.type, false)"
-                    @click="handleTimeValue(timeInput.type, false)"
+                    @keydown.enter.prevent="handleTimeValue(timeInput.type, false, { keyboard: true })"
+                    @keydown.space.prevent="handleTimeValue(timeInput.type, false, { keyboard: true })"
+                    @mousedown="handleTimeValue(timeInput.type, false)"
+                    @mouseup="clearHold"
                 >
                     <template v-if="!props.timePickerInline">
                         <slot v-if="$slots['arrow-down']" name="arrow-down" />
@@ -197,6 +199,8 @@
     const amPm = ref('AM');
     const amPmButton = ref<HTMLElement | null>(null);
     const elementRefs = ref<HTMLElement[][]>([]);
+    const isHolding = ref(false);
+    const holdTimeout = ref();
 
     onMounted(() => {
         emit('mounted');
@@ -367,7 +371,14 @@
         return getSeconds;
     };
 
-    const handleTimeValue = (type: TimeType, inc = true): void => {
+    const clearHold = () => {
+        if (holdTimeout.value) {
+            clearTimeout(holdTimeout.value);
+        }
+        isHolding.value = false;
+    };
+
+    const handleTimeValue = (type: TimeType, inc = true, opts?: { keyboard?: boolean }): void => {
         const addOrSub = inc ? addTime : subTime;
         const inVal = inc ? +props[`${type}Increment`] : -+props[`${type}Increment`];
         const isInRange = isDateInRange(+props[type] + inVal, type);
@@ -376,6 +387,12 @@
                 `update:${type}`,
                 getTimeGetter(type)(addOrSub({ [type]: +props[type] }, { [type]: +props[`${type}Increment`] })),
             );
+        }
+        if (!opts?.keyboard && defaultedConfig.value.timeArrowHoldThreshold) {
+            holdTimeout.value = setTimeout(() => {
+                isHolding.value = true;
+                handleTimeValue(type, inc);
+            }, defaultedConfig.value.timeArrowHoldThreshold);
         }
     };
 
