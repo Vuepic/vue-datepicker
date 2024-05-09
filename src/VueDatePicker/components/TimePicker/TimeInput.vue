@@ -18,7 +18,10 @@
                     tabindex="0"
                     @keydown.enter.prevent="handleTimeValue(timeInput.type, true, { keyboard: true })"
                     @keydown.space.prevent="handleTimeValue(timeInput.type, true, { keyboard: true })"
-                    @mousedown="handleTimeValue(timeInput.type)"
+                    @click="defaultedConfig.timeArrowHoldThreshold ? undefined : handleTimeValue(timeInput.type, false)"
+                    @mousedown="
+                        defaultedConfig.timeArrowHoldThreshold ? handleTimeValue(timeInput.type, true) : undefined
+                    "
                     @mouseup="clearHold"
                 >
                     <template v-if="!props.timePickerInline">
@@ -71,7 +74,10 @@
                     tabindex="0"
                     @keydown.enter.prevent="handleTimeValue(timeInput.type, false, { keyboard: true })"
                     @keydown.space.prevent="handleTimeValue(timeInput.type, false, { keyboard: true })"
-                    @mousedown="handleTimeValue(timeInput.type, false)"
+                    @click="defaultedConfig.timeArrowHoldThreshold ? undefined : handleTimeValue(timeInput.type, false)"
+                    @mousedown="
+                        defaultedConfig.timeArrowHoldThreshold ? handleTimeValue(timeInput.type, false) : undefined
+                    "
                     @mouseup="clearHold"
                 >
                     <template v-if="!props.timePickerInline">
@@ -199,7 +205,6 @@
     const amPm = ref('AM');
     const amPmButton = ref<HTMLElement | null>(null);
     const elementRefs = ref<HTMLElement[][]>([]);
-    const isHolding = ref(false);
     const holdTimeout = ref();
 
     onMounted(() => {
@@ -375,7 +380,6 @@
         if (holdTimeout.value) {
             clearTimeout(holdTimeout.value);
         }
-        isHolding.value = false;
     };
 
     const handleTimeValue = (type: TimeType, inc = true, opts?: { keyboard?: boolean }): void => {
@@ -390,7 +394,6 @@
         }
         if (!opts?.keyboard && defaultedConfig.value.timeArrowHoldThreshold) {
             holdTimeout.value = setTimeout(() => {
-                isHolding.value = true;
                 handleTimeValue(type, inc);
             }, defaultedConfig.value.timeArrowHoldThreshold);
         }
