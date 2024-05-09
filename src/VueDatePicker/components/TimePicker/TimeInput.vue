@@ -18,7 +18,7 @@
                     tabindex="0"
                     @keydown.enter.prevent="handleTimeValue(timeInput.type, true, { keyboard: true })"
                     @keydown.space.prevent="handleTimeValue(timeInput.type, true, { keyboard: true })"
-                    @click="defaultedConfig.timeArrowHoldThreshold ? undefined : handleTimeValue(timeInput.type, false)"
+                    @click="defaultedConfig.timeArrowHoldThreshold ? undefined : handleTimeValue(timeInput.type, true)"
                     @mousedown="
                         defaultedConfig.timeArrowHoldThreshold ? handleTimeValue(timeInput.type, true) : undefined
                     "
