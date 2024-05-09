@@ -131,6 +131,12 @@
                     <template v-if="$slots[`${timeInput.type}-overlay-value`]" #item="{ item }">
                         <slot :name="`${timeInput.type}-overlay-value`" :text="item.text" :value="item.value" />
                     </template>
+                    <template v-if="$slots[`${timeInput.type}-overlay-header`]" #header>
+                        <slot
+                            :name="`${timeInput.type}-overlay-header`"
+                            :toggle="() => toggleOverlay(timeInput.type)"
+                        />
+                    </template>
                 </SelectionOverlay>
             </transition>
         </template>

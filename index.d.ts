@@ -459,6 +459,9 @@ interface Slots {
         closeMenu: () => void;
         toggleMenu: () => void;
     }): any;
+    'hours-overlay-header'(props: { toggle: () => void }): any;
+    'minutes-overlay-header'(props: { toggle: () => void }): any;
+    'seconds-overlay-header'(props: { toggle: () => void }): any;
 }
 
 type __VLS_WithTemplateSlots<T, S> = T & {
