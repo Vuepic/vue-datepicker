@@ -308,5 +308,4 @@ export const checkKeyDown = (ev: KeyboardEvent, fn: () => any, prevent = false) 
         }
         return fn();
     }
-    return;
 };
