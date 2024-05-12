@@ -44,6 +44,12 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
         { deep: true },
     );
 
+    watch(defaultedRange, (newVal, oldVal) => {
+        if (newVal.enabled !== oldVal.enabled) {
+            internalModelValue.value = null;
+        }
+    });
+
     watch(formatRef, () => {
         formatInputValue();
     });

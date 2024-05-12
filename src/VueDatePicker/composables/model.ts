@@ -1,9 +1,9 @@
-import { computed, ref, reactive } from 'vue';
+import { computed, ref, reactive, watch } from 'vue';
 import { getHours, getMinutes, getMonth, getYear } from 'date-fns';
 
 import { getDate } from '@/utils/date-utils';
 
-import type { ICalendarData, InternalModuleValue, VueEmit } from '@/interfaces';
+import type { ICalendarData, InternalModuleValue, TimeType, VueEmit } from '@/interfaces';
 import type { PickerBasePropsType } from '@/props';
 import { useDefaults } from '@/composables/defaults';
 import { localToTz } from '@/utils/timezone';
@@ -14,12 +14,33 @@ export const useModel = (props: PickerBasePropsType, emit: VueEmit) => {
     const today = getDate(localToTz(getDate(), defaultedTz.value.timezone));
     const calendars = ref<ICalendarData[]>([{ month: getMonth(today), year: getYear(today) }]);
 
+    const timeGetter = (type: TimeType) => {
+        const fn = {
+            hours: getHours(today),
+            minutes: getMinutes(today),
+            seconds: 0,
+        };
+
+        return defaultedRange.value.enabled ? [fn[type], fn[type]] : fn[type];
+    };
     // Time values
     const time = reactive({
-        hours: defaultedRange.value.enabled ? [getHours(today), getHours(today)] : getHours(today),
-        minutes: defaultedRange.value.enabled ? [getMinutes(today), getMinutes(today)] : getMinutes(today),
-        seconds: defaultedRange.value.enabled ? [0, 0] : 0,
+        hours: timeGetter('hours'),
+        minutes: timeGetter('minutes'),
+        seconds: timeGetter('seconds'),
     });
+
+    watch(
+        defaultedRange,
+        (newVal, oldVal) => {
+            if (newVal.enabled !== oldVal.enabled) {
+                time.hours = timeGetter('hours');
+                time.minutes = timeGetter('minutes');
+                time.seconds = timeGetter('seconds');
+            }
+        },
+        { deep: true },
+    );
 
     const modelValue = computed({
         get: (): InternalModuleValue => {
