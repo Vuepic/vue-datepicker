@@ -322,7 +322,7 @@
         }
 
         if (type === 'hours' && !props.is24) {
-            generatedArray.push({ value: 0, text: '12' });
+            generatedArray.unshift({ value: amPm.value === 'PM' ? 12 : 0, text: '12' });
         }
 
         return groupListAndMap(generatedArray, (value: IDefaultSelect) => {
