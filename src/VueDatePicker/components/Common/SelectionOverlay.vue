@@ -5,11 +5,7 @@
         :style="dpOverlayStyle"
         role="dialog"
         tabindex="0"
-        @keydown.esc.prevent="handleEsc"
-        @keydown.left.prevent="handleArrowKey($event)"
-        @keydown.up.prevent="handleArrowKey($event)"
-        @keydown.down.prevent="handleArrowKey($event)"
-        @keydown.right.prevent="handleArrowKey($event)"
+        @keydown="onKeyDown"
     >
         <div
             ref="containerRef"
@@ -40,8 +36,7 @@
                         tabindex="0"
                         :data-test="col.text"
                         @click="onClick(col)"
-                        @keydown.enter.prevent="onClick(col)"
-                        @keydown.space.prevent="onClick(col)"
+                        @keydown="checkKeyDown($event, () => onClick(col), true)"
                         @mouseover="setHoverValue(col.value)"
                     >
                         <div :class="col.className">
@@ -61,8 +56,7 @@
             :class="actionButtonClass"
             tabindex="0"
             @click="toggle"
-            @keydown.enter="toggle"
-            @keydown.tab="onTab"
+            @keydown="onBtnKeyDown"
         >
             <slot name="button-icon" />
         </button>
@@ -72,11 +66,19 @@
 <script lang="ts" setup>
     import { computed, nextTick, onBeforeUpdate, onMounted, onUnmounted, ref, watch } from 'vue';
 
-    import { checkStopPropagation, convertType, findFocusableEl, getElWithin, unrefElement } from '@/utils/util';
+    import {
+        checkKeyDown,
+        checkStopPropagation,
+        convertType,
+        findFocusableEl,
+        getElWithin,
+        unrefElement,
+    } from '@/utils/util';
     import { useArrowNavigation, useCommon, useDefaults } from '@/composables';
 
     import type { AriaLabels, Config, DynamicClass, Flow, OverlayGridItem, TextInputProp } from '@/interfaces';
     import type { PickerBasePropsType } from '@/props';
+    import { EventKey } from '@/constants';
 
     const { setSelectionGrid, buildMultiLevelMatrix, setMonthPicker } = useArrowNavigation();
 
@@ -288,6 +290,28 @@
                 focusable?.focus();
             }
         }
+    };
+
+    const onKeyDown = (ev: KeyboardEvent) => {
+        switch (ev.key) {
+            case EventKey.esc:
+                return handleEsc();
+            case EventKey.arrowLeft:
+                return handleArrowKey(ev);
+            case EventKey.arrowRight:
+                return handleArrowKey(ev);
+            case EventKey.arrowUp:
+                return handleArrowKey(ev);
+            case EventKey.arrowDown:
+                return handleArrowKey(ev);
+            default:
+                return;
+        }
+    };
+
+    const onBtnKeyDown = (ev: KeyboardEvent) => {
+        if (ev.key === EventKey.enter) return toggle();
+        if (ev.key === EventKey.tab) return onTab();
     };
 
     defineExpose({ focusGrid });

@@ -36,8 +36,7 @@
                         type="button"
                         class="dp__action_button dp__action_cancel"
                         @click="$emit('close-picker')"
-                        @keydown.enter="$emit('close-picker')"
-                        @keydown.space="$emit('close-picker')"
+                        @keydown="checkKeyDown($event, () => $emit('close-picker'))"
                     >
                         {{ cancelText }}
                     </button>
@@ -46,8 +45,7 @@
                         type="button"
                         class="dp__action_button dp__action_cancel"
                         @click="$emit('select-now')"
-                        @keydown.enter="$emit('select-now')"
-                        @keydown.space="$emit('select-now')"
+                        @keydown="checkKeyDown($event, () => $emit('select-now'))"
                     >
                         {{ nowButtonLabel }}
                     </button>
@@ -58,8 +56,7 @@
                         class="dp__action_button dp__action_select"
                         :disabled="disabled"
                         data-test="select-button"
-                        @keydown.enter="selectDate"
-                        @keydown.space="selectDate"
+                        @keydown="checkKeyDown($event, () => selectDate())"
                         @click="selectDate"
                     >
                         {{ selectText }}
@@ -73,7 +70,7 @@
 <script lang="ts" setup>
     import { computed, onMounted, onUnmounted, ref } from 'vue';
 
-    import { convertType, unrefElement } from '@/utils/util';
+    import { checkKeyDown, convertType, unrefElement } from '@/utils/util';
     import { useArrowNavigation, useDefaults, useValidation } from '@/composables';
     import { PickerBaseProps } from '@/props';
     import { formatDate } from '@/utils/date-utils';

@@ -312,7 +312,7 @@ describe('Logic connection', () => {
 
         // trigger keypress Esc
         const overlayBefore = await openAndGetMonthOverlay(datePicker);
-        await overlayBefore.trigger('keydown.esc');
+        await overlayBefore.trigger('keydown', { key: 'Escape' });
         await datePicker.vm.$nextTick();
 
         const overlayAfter = datePicker.findAll('.dp__overlay');

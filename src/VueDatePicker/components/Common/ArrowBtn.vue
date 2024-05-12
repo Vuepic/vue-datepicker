@@ -7,8 +7,7 @@
         :aria-label="ariaLabel"
         :aria-disabled="disabled || undefined"
         @click="$emit('activate')"
-        @keydown.enter.prevent="$emit('activate')"
-        @keydown.space.prevent="$emit('activate')"
+        @keydown="checkKeyDown($event, () => $emit('activate'), true)"
     >
         <span class="dp__inner_nav" :class="{ dp__inner_nav_disabled: disabled }">
             <slot />
@@ -18,6 +17,7 @@
 
 <script lang="ts" setup>
     import { onMounted, ref } from 'vue';
+    import { checkKeyDown } from '@/utils/util';
 
     defineOptions({
         compatConfig: {

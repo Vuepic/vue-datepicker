@@ -25,3 +25,25 @@ export enum FlowStep {
 }
 
 export const modelTypePredefined = ['timestamp', 'date', 'iso'];
+
+export enum ArrowDirection {
+    up = 'up',
+    down = 'down',
+    left = 'left',
+    right = 'right',
+}
+
+export enum EventKey {
+    arrowUp = 'ArrowUp',
+    arrowDown = 'ArrowDown',
+    arrowLeft = 'ArrowLeft',
+    arrowRight = 'ArrowRight',
+    enter = 'Enter',
+    space = ' ',
+    esc = 'Escape',
+    tab = 'Tab',
+    home = 'Home',
+    end = 'End',
+    pageUp = 'PageUp',
+    pageDown = 'PageDown',
+}

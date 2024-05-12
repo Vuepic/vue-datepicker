@@ -9,11 +9,6 @@
         :style="{ '--dp-arrow-left': arrowPos }"
         @mouseleave="clearHoverDate"
         @click="handleDpMenuClick"
-        @keydown.esc="handleEsc"
-        @keydown.left.prevent="handleArrowKey('left')"
-        @keydown.up.prevent="handleArrowKey('up')"
-        @keydown.down.prevent="handleArrowKey('down')"
-        @keydown.right.prevent="handleArrowKey('right')"
         @keydown="onKeyDown"
     >
         <div v-if="((disabled || readonly) && defaultedInline.enabled) || loading" :class="disabledReadonlyOverlay">
@@ -55,8 +50,7 @@
                             :class="{ 'dp--preset-range-collapsed': collapse }"
                             :data-test="preset.testId ?? undefined"
                             @click.prevent="presetDate(preset.value, preset.noTz)"
-                            @keydown.enter.prevent="presetDate(preset.value, preset.noTz)"
-                            @keydown.space.prevent="presetDate(preset.value, preset.noTz)"
+                            @keydown="checkKeyDown($event, () => presetDate(preset.value, preset.noTz), true)"
                         >
                             {{ preset.label }}
                         </button>
@@ -127,7 +121,7 @@
     import ActionRow from '@/components/ActionRow.vue';
 
     import { mapSlots, useArrowNavigation, useState, useFlow, useDefaults } from '@/composables';
-    import { checkStopPropagation, unrefElement } from '@/utils/util';
+    import { checkKeyDown, checkStopPropagation, unrefElement } from '@/utils/util';
     import { AllProps } from '@/props';
 
     import MonthPicker from '@/components/MonthPicker/MonthPicker.vue';
@@ -138,6 +132,7 @@
 
     import type { DynamicClass, MenuView, InternalModuleValue, MenuExposedFn, MonthModel } from '@/interfaces';
     import type { PropType } from 'vue';
+    import { ArrowDirection, EventKey } from '@/constants';
 
     defineOptions({
         compatConfig: {
@@ -309,22 +304,22 @@
         }
     };
 
-    const handleArrowKey = (arrow: 'up' | 'down' | 'left' | 'right'): void => {
+    const handleArrowKey = (arrow: ArrowDirection): void => {
         if (props.arrowNavigation) {
-            if (arrow === 'up') return arrowUp();
-            if (arrow === 'down') return arrowDown();
-            if (arrow === 'left') return arrowLeft();
-            if (arrow === 'right') return arrowRight();
-        } else if (arrow === 'left' || arrow === 'up') {
-            callChildFn('handleArrow', 'left', 0, arrow === 'up');
+            if (arrow === ArrowDirection.up) return arrowUp();
+            if (arrow === ArrowDirection.down) return arrowDown();
+            if (arrow === ArrowDirection.left) return arrowLeft();
+            if (arrow === ArrowDirection.right) return arrowRight();
+        } else if (arrow === ArrowDirection.right || arrow === ArrowDirection.up) {
+            callChildFn('handleArrow', ArrowDirection.left, 0, arrow === ArrowDirection.up);
         } else {
-            callChildFn('handleArrow', 'right', 0, arrow === 'down');
+            callChildFn('handleArrow', ArrowDirection.right, 0, arrow === ArrowDirection.down);
         }
     };
 
     const checkShiftKey = (ev: KeyboardEvent) => {
         setShiftKey(ev.shiftKey);
-        if (!props.disableMonthYearSelect && ev.code === 'Tab') {
+        if (!props.disableMonthYearSelect && ev.code === EventKey.tab) {
             if ((ev.target as HTMLElement).classList.contains('dp__menu') && control.value.shiftKeyInMenu) {
                 ev.preventDefault();
                 checkStopPropagation(ev, defaultedConfig.value, true);
@@ -373,16 +368,38 @@
         callChildFn('updateMonthYear', instance, value);
     };
 
+    const onArrowKey = (ev: KeyboardEvent, arrow: ArrowDirection) => {
+        ev.preventDefault();
+        handleArrowKey(arrow);
+    };
+
     const onKeyDown = (ev: KeyboardEvent) => {
         checkShiftKey(ev);
-        if (ev.key === 'Home' || ev.key === 'End') {
-            return callChildFn('selectWeekDate', ev.key === 'Home');
+
+        if (ev.key === EventKey.home || ev.key === EventKey.end) {
+            return callChildFn('selectWeekDate', ev.key === EventKey.home);
         }
-        if (ev.key === 'PageUp' || ev.key === 'PageDown') {
+        if (ev.key === EventKey.pageUp || ev.key === EventKey.pageDown) {
             if (ev.shiftKey) {
-                return callChildFn('changeYear', ev.key === 'PageUp');
+                return callChildFn('changeYear', ev.key === EventKey.pageUp);
             }
-            return callChildFn('changeMonth', ev.key === 'PageUp');
+            return callChildFn('changeMonth', ev.key === EventKey.pageUp);
+        }
+
+        // ev.preventDefault();
+        switch (ev.key) {
+            case EventKey.esc:
+                return handleEsc();
+            case EventKey.arrowLeft:
+                return onArrowKey(ev, ArrowDirection.left);
+            case EventKey.arrowRight:
+                return onArrowKey(ev, ArrowDirection.right);
+            case EventKey.arrowUp:
+                return onArrowKey(ev, ArrowDirection.up);
+            case EventKey.arrowDown:
+                return onArrowKey(ev, ArrowDirection.down);
+            default:
+                return;
         }
     };
 

@@ -38,8 +38,7 @@
                             :aria-label="type.ariaLabel"
                             :data-test="`${type.type}-toggle-overlay-${instance}`"
                             @click="type.toggle"
-                            @keydown.enter.prevent="type.toggle"
-                            @keydown.space.prevent="type.toggle"
+                            @keydown="checkKeyDown($event, () => type.toggle(), true)"
                         >
                             <slot
                                 v-if="$slots[type.type]"
@@ -139,7 +138,7 @@
         getMinMaxYear,
         getMinMonth,
     } from '@/utils/date-utils';
-    import { checkMinMaxValue, formatNumber, groupListAndMap, unrefElement } from '@/utils/util';
+    import { checkKeyDown, checkMinMaxValue, formatNumber, groupListAndMap, unrefElement } from '@/utils/util';
     import { FlowStep, HeaderPicker } from '@/constants';
 
     import type { HeaderSelectionBtn, IDefaultSelect, MaybeElementRef, OverlayGridItem } from '@/interfaces';

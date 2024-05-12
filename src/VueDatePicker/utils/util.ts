@@ -14,6 +14,7 @@ import { type Locale } from 'date-fns';
 import type { ComponentPublicInstance } from 'vue';
 import { getDate } from '@/utils/date-utils';
 import { localToTz } from '@/utils/timezone';
+import { EventKey } from '@/constants';
 
 export const getArrayInArray = <T>(list: T[], increment = 3): T[][] => {
     const items = [];
@@ -298,4 +299,23 @@ export const matchDate = (date: Date, mapOrFn: Map<string, any> | ((date: Date) 
         return !!getMapDate(date, mapOrFn);
     }
     return mapOrFn(getDate(date));
+};
+
+const checkPrevent = (ev: KeyboardEvent, prevent: boolean) => {
+    if (prevent) {
+        ev.preventDefault();
+    }
+};
+
+export const checkKeyDown = (ev: KeyboardEvent, fn: () => any, prevent = false) => {
+    switch (ev.key) {
+        case EventKey.enter:
+            checkPrevent(ev, prevent);
+            return fn();
+        case EventKey.space:
+            checkPrevent(ev, prevent);
+            return fn();
+        default:
+            return;
+    }
 };

@@ -113,7 +113,7 @@ describe('It should validate various picker scenarios', () => {
 
         expect(input.element.value).toBe(singleTime);
 
-        await input.trigger('keydown.enter');
+        await input.trigger('keydown', { key: 'Enter' });
 
         expect(dp.emitted()).toHaveProperty('invalid-select', [
             [[set(new Date(), { hours, minutes, seconds: 0, milliseconds: 0 })]],

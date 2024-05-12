@@ -16,8 +16,9 @@
                     :data-test="`${timeInput.type}-time-inc-btn-${props.order}`"
                     :aria-label="defaultedAriaLabels?.incrementValue(timeInput.type)"
                     tabindex="0"
-                    @keydown.enter.prevent="handleTimeValue(timeInput.type, true, { keyboard: true })"
-                    @keydown.space.prevent="handleTimeValue(timeInput.type, true, { keyboard: true })"
+                    @keydown="
+                        checkKeyDown($event, () => handleTimeValue(timeInput.type, true, { keyboard: true }), true)
+                    "
                     @click="defaultedConfig.timeArrowHoldThreshold ? undefined : handleTimeValue(timeInput.type, true)"
                     @mousedown="
                         defaultedConfig.timeArrowHoldThreshold ? handleTimeValue(timeInput.type, true) : undefined
@@ -47,8 +48,7 @@
                     :disabled="checkOverlayDisabled(timeInput.type)"
                     tabindex="0"
                     :data-test="`${timeInput.type}-toggle-overlay-btn-${props.order}`"
-                    @keydown.enter.prevent="toggleOverlay(timeInput.type)"
-                    @keydown.space.prevent="toggleOverlay(timeInput.type)"
+                    @keydown="checkKeyDown($event, () => toggleOverlay(timeInput.type), true)"
                     @click="toggleOverlay(timeInput.type)"
                 >
                     <slot
@@ -72,8 +72,9 @@
                     :data-test="`${timeInput.type}-time-dec-btn-${props.order}`"
                     :aria-label="defaultedAriaLabels?.decrementValue(timeInput.type)"
                     tabindex="0"
-                    @keydown.enter.prevent="handleTimeValue(timeInput.type, false, { keyboard: true })"
-                    @keydown.space.prevent="handleTimeValue(timeInput.type, false, { keyboard: true })"
+                    @keydown="
+                        checkKeyDown($event, () => handleTimeValue(timeInput.type, false, { keyboard: true }), true)
+                    "
                     @click="defaultedConfig.timeArrowHoldThreshold ? undefined : handleTimeValue(timeInput.type, false)"
                     @mousedown="
                         defaultedConfig.timeArrowHoldThreshold ? handleTimeValue(timeInput.type, false) : undefined
@@ -102,8 +103,7 @@
                 :aria-label="defaultedAriaLabels?.amPmButton"
                 tabindex="0"
                 @click="setAmPm"
-                @keydown.enter.prevent="setAmPm"
-                @keydown.space.prevent="setAmPm"
+                @keydown="checkKeyDown($event, () => setAmPm(), true)"
             >
                 {{ amPm }}
             </button>
@@ -152,7 +152,7 @@
 
     import { useTransitions, useArrowNavigation, useDefaults } from '@/composables';
     import { PickerBaseProps } from '@/props';
-    import { groupListAndMap, hoursToAmPmHours } from '@/utils/util';
+    import { checkKeyDown, groupListAndMap, hoursToAmPmHours } from '@/utils/util';
     import { getDate, sanitizeTime } from '@/utils/date-utils';
 
     import type { PropType } from 'vue';

@@ -40,8 +40,6 @@
                 :aria-disabled="disabled || undefined"
                 :aria-invalid="state === false ? true : undefined"
                 @input="handleInput"
-                @keydown.enter="handleEnter"
-                @keydown.tab="handleTab"
                 @blur="handleBlur"
                 @focus="handleFocus"
                 @keypress="handleKeyPress"
@@ -290,6 +288,12 @@
     };
 
     const handleKeyPress = (ev: KeyboardEvent): void => {
+        if (ev.key === 'Tab') {
+            handleTab(ev);
+        }
+        if (ev.key === 'Enter') {
+            handleEnter(ev);
+        }
         if (!defaultedTextInput.value.enabled) {
             if (ev.code === 'Tab') return;
             ev.preventDefault();

@@ -9,8 +9,7 @@
             :aria-label="defaultedAriaLabels?.openTimePicker"
             :tabindex="noOverlayFocus ? undefined : 0"
             data-test="open-time-picker-btn"
-            @keydown.enter="toggleTimePicker(true)"
-            @keydown.space="toggleTimePicker(true)"
+            @keydown="checkKeyDown($event, () => toggleTimePicker(true))"
             @click="toggleTimePicker(true)"
         >
             <slot v-if="$slots['clock-icon']" name="clock-icon" />
@@ -88,8 +87,7 @@
                         :class="toggleButtonClass"
                         :aria-label="defaultedAriaLabels?.closeTimePicker"
                         tabindex="0"
-                        @keydown.enter="toggleTimePicker(false)"
-                        @keydown.space="toggleTimePicker(false)"
+                        @keydown="checkKeyDown($event, () => toggleTimePicker(false))"
                         @click="toggleTimePicker(false)"
                     >
                         <slot v-if="$slots['calendar-icon']" name="calendar-icon" />
@@ -107,7 +105,7 @@
     import { ClockIcon, CalendarIcon } from '@/components/Icons';
     import TimeInput from '@/components/TimePicker/TimeInput.vue';
 
-    import { findFocusableEl, isModelAuto, unrefElement } from '@/utils/util';
+    import { checkKeyDown, findFocusableEl, isModelAuto, unrefElement } from '@/utils/util';
     import { mapSlots, useTransitions, useArrowNavigation, useDefaults, useCommon } from '@/composables';
     import { PickerBaseProps } from '@/props';
 
