@@ -386,7 +386,6 @@
             return callChildFn('changeMonth', ev.key === EventKey.pageUp);
         }
 
-        // ev.preventDefault();
         switch (ev.key) {
             case EventKey.esc:
                 return handleEsc();
