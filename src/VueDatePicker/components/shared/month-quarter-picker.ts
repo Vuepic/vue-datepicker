@@ -1,5 +1,5 @@
 import { computed, onMounted, ref } from 'vue';
-import { addYears, getMonth, getYear, set, subYears } from 'date-fns';
+import { addYears, endOfYear, getMonth, getYear, set, startOfYear, subYears } from 'date-fns';
 
 import { checkHighlightYear, getDate, getMinMaxYear, resetDate, validateMonthYear } from '@/utils/date-utils';
 import { checkMinMaxValue, getYears, groupListAndMap } from '@/utils/util';
@@ -56,8 +56,9 @@ export const useMonthOrQuarterPicker = ({
             month: month.value(instance),
             year: year.value(instance),
         });
+        const date = next ? endOfYear(currentDate) : startOfYear(currentDate);
         return validateMonthYear(
-            currentDate,
+            date,
             propDates.value.maxDate,
             propDates.value.minDate,
             props.preventMinMaxNavigation,
