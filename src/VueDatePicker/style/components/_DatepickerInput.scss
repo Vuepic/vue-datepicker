@@ -27,7 +27,7 @@
     opacity: 0.7;
   }
 
-  &:hover {
+  &:hover:not(.dp__input_focus) {
     border-color: var(--dp-border-color-hover);
   }
 }
@@ -37,7 +37,7 @@
 }
 
 .dp__input_focus {
-  border-color: var(--dp-border-color-hover);
+  border-color: var(--dp-border-color-focus);
 }
 
 .dp__disabled {
