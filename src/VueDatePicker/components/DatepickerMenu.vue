@@ -310,7 +310,7 @@
             if (arrow === ArrowDirection.down) return arrowDown();
             if (arrow === ArrowDirection.left) return arrowLeft();
             if (arrow === ArrowDirection.right) return arrowRight();
-        } else if (arrow === ArrowDirection.right || arrow === ArrowDirection.up) {
+        } else if (arrow === ArrowDirection.left || arrow === ArrowDirection.up) {
             callChildFn('handleArrow', ArrowDirection.left, 0, arrow === ArrowDirection.up);
         } else {
             callChildFn('handleArrow', ArrowDirection.right, 0, arrow === ArrowDirection.down);
