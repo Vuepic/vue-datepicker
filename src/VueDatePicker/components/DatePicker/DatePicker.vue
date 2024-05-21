@@ -95,6 +95,7 @@
 
     import type { ICalendarDay } from '@/interfaces';
     import { endOfWeek, getMonth, startOfWeek } from 'date-fns';
+    import { getCellId } from '@/utils/date-utils';
 
     const emit = defineEmits([
         'tooltip-open',
@@ -222,9 +223,10 @@
         timePickerRef.value?.toggleTimePicker(flow, show, childOpen);
     };
 
-    const selectWeekDate = (selectStart: boolean) => {
+    const selectWeekDate = (selectStart: boolean, id: string | null) => {
         if (!props.range) {
-            const date = modelValue.value ? modelValue.value : today;
+            const activeDate = modelValue.value ? modelValue.value : today;
+            const date = id ? new Date(id) : activeDate;
             const toSelect = selectStart
                 ? startOfWeek(date as Date, { weekStartsOn: 1 })
                 : endOfWeek(date as Date, { weekStartsOn: 1 });
@@ -235,6 +237,7 @@
                 text: '',
                 classData: {},
             });
+            document.getElementById(getCellId(toSelect))?.focus();
         }
     };
 

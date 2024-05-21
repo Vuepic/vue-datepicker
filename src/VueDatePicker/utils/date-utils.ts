@@ -429,3 +429,7 @@ export const checkHighlightYear = (defaultedHighlight: Highlight | HighlightFn, 
         ? defaultedHighlight(year)
         : defaultedHighlight.years.includes(year);
 };
+
+export const getCellId = (date: Date) => {
+    return format(date, 'yyyy-MM-dd');
+};

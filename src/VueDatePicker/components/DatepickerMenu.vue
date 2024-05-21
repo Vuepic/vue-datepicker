@@ -377,13 +377,21 @@
         checkShiftKey(ev);
 
         if (ev.key === EventKey.home || ev.key === EventKey.end) {
-            return callChildFn('selectWeekDate', ev.key === EventKey.home);
+            return callChildFn(
+                'selectWeekDate',
+                ev.key === EventKey.home,
+                (ev.target as HTMLElement).getAttribute('id'),
+            );
         }
         if (ev.key === EventKey.pageUp || ev.key === EventKey.pageDown) {
             if (ev.shiftKey) {
-                return callChildFn('changeYear', ev.key === EventKey.pageUp);
+                callChildFn('changeYear', ev.key === EventKey.pageUp);
+            } else {
+                callChildFn('changeMonth', ev.key === EventKey.pageUp);
             }
-            return callChildFn('changeMonth', ev.key === EventKey.pageUp);
+            if ((ev.target as HTMLElement).getAttribute('id')) {
+                dpMenuRef.value?.focus({ preventScroll: true });
+            }
         }
 
         switch (ev.key) {
