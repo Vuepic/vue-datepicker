@@ -6,6 +6,7 @@
         role="dialog"
         tabindex="0"
         @keydown="onKeyDown"
+        @click.prevent
     >
         <div
             ref="containerRef"
@@ -35,7 +36,7 @@
                         :aria-disabled="col.disabled || undefined"
                         tabindex="0"
                         :data-test="col.text"
-                        @click="onClick(col)"
+                        @click.prevent="onClick(col)"
                         @keydown="checkKeyDown($event, () => onClick(col), true)"
                         @mouseover="setHoverValue(col.value)"
                     >
