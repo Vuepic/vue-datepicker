@@ -285,7 +285,7 @@ export interface VueDatePickerProps {
     teleportCenter?: boolean;
     teleport?: boolean | string | HTMLElement;
     ignoreTimeValidation?: boolean;
-    dayClass?: (date: Date) => string;
+    dayClass?: (date: Date, internalModelValue: InternalTime) => string;
     hideNavigation?: ('month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds')[];
     /**
      * @deprecated

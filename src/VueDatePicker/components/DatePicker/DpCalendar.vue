@@ -125,7 +125,7 @@
 
 <script lang="ts" setup>
     import { computed, nextTick, onMounted, ref } from 'vue';
-    import { format, getISOWeek, getWeek } from 'date-fns';
+    import { getISOWeek, getWeek } from 'date-fns';
 
     import { checkKeyDown, checkStopPropagation, getDayNames, getDefaultMarker, unrefElement } from '@/utils/util';
     import { useArrowNavigation, useDefaults } from '@/composables';
