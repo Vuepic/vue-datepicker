@@ -1,5 +1,7 @@
 import type { ComponentPublicInstance, Ref } from 'vue';
 import type { HeaderPicker } from '@/constants';
+import DatepickerMenu from '@/components/DatepickerMenu.vue';
+import type DatepickerInput from '@/components/DatepickerInput.vue';
 
 export type DynamicClass = Record<string, boolean | undefined>;
 
@@ -85,7 +87,9 @@ export interface ConfigurableWindow {
     window?: Window;
 }
 
-export type MaybeElementRef = MaybeRef<HTMLElement | SVGElement | ComponentPublicInstance | undefined | null | Element>;
+export type MaybeElementRef = MaybeRef<
+    HTMLElement | SVGElement | ComponentPublicInstance | undefined | null | Element | any
+>;
 export type OnClickOutsideEvents = Pick<
     WindowEventMap,
     'click' | 'mousedown' | 'mouseup' | 'touchstart' | 'touchend' | 'pointerdown' | 'pointerup'
@@ -172,8 +176,6 @@ export interface ICalendarData {
     year: number;
 }
 
-export type ComponentRef = Ref<ComponentPublicInstance | HTMLElement | null>;
-
 export type TimeOverlayCheck = 'noHoursOverlay' | 'noMinutesOverlay' | 'noSecondsOverlay';
 
 export type DateTimeSetter = number | string | null;
@@ -189,15 +191,9 @@ export interface MonthYearOpt {
     year?: number | string;
 }
 
-export type DatepickerMenuRef = ComponentPublicInstance<{
-    updateMonthYear: (ins: number, val: { month: number | null; year: number | null }) => void;
-    switchView: (view: MenuView, instance?: number) => void;
-}>;
+export type DatepickerMenuRef = InstanceType<typeof DatepickerMenu>;
 
-export type DatepickerInputRef = ComponentPublicInstance<{
-    setParsedDate: (date: Date | Date[] | null) => void;
-    focusInput: () => void;
-}>;
+export type DatepickerInputRef = InstanceType<typeof DatepickerInput>;
 
 export interface ActionRowData {
     showSelect: boolean;

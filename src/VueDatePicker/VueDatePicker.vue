@@ -495,8 +495,8 @@
     const setMonthYear = (value: MonthYearOpt) => {
         if (dpMenuRef.value) {
             dpMenuRef.value.updateMonthYear(0, {
-                month: getNumVal(value.month),
-                year: getNumVal(value.year),
+                month: getNumVal(value.month) as number,
+                year: getNumVal(value.year) as number,
             });
         }
     };
@@ -514,6 +514,10 @@
         return closeMenu();
     };
 
+    const handleFlow = (skipStep = 0) => {
+        dpMenuRef.value?.handleFlow(skipStep);
+    };
+
     onClickOutside(dpWrapMenuRef, inputRef, () => clickOutside(validateBeforeEmit));
 
     defineExpose({
@@ -528,5 +532,6 @@
         parseModel,
         switchView,
         toggleMenu,
+        handleFlow,
     });
 </script>

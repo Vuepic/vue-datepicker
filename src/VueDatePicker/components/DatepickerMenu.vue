@@ -234,7 +234,7 @@
     };
 
     const { arrowRight, arrowLeft, arrowDown, arrowUp } = useArrowNavigation();
-    const { flowStep, updateFlowStep, childMount, resetFlow } = useFlow(props, emit, dynCmpRef);
+    const { flowStep, updateFlowStep, childMount, resetFlow, handleFlow } = useFlow(props, emit, dynCmpRef);
 
     const displayComponent = computed(() => {
         if (props.monthPicker) return MonthPicker;
@@ -413,5 +413,6 @@
     defineExpose({
         updateMonthYear,
         switchView,
+        handleFlow,
     });
 </script>

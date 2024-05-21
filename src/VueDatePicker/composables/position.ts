@@ -1,11 +1,11 @@
 import { h, ref, render, toRef, watch } from 'vue';
-import { OpenPosition } from '@/interfaces';
+import { type DatepickerInputRef, type DatepickerMenuRef, OpenPosition } from '@/interfaces';
 
 import { unrefElement } from '@/utils/util';
 import { MenuPlacement } from '@/constants';
 
-import type { Component, ComponentPublicInstance, ComputedRef, Ref, Slots } from 'vue';
-import type { ComponentRef, InlineOptions, VueEmit } from '@/interfaces';
+import type { Component, ComputedRef, Ref, Slots } from 'vue';
+import type { InlineOptions, VueEmit } from '@/interfaces';
 import type { AllPropsType } from '@/props';
 
 /**
@@ -13,8 +13,8 @@ import type { AllPropsType } from '@/props';
  */
 interface Params {
     menuRef: Ref<HTMLElement | null>;
-    menuRefInner: Ref<ComponentPublicInstance | null>;
-    inputRef: ComponentRef;
+    menuRefInner: Ref<DatepickerMenuRef | null>;
+    inputRef: Ref<DatepickerInputRef | null>;
     pickerWrapperRef: Ref<HTMLElement | null>;
     inline: ComputedRef<InlineOptions>;
     emit: VueEmit;
