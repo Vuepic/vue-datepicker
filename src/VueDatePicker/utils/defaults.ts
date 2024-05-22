@@ -28,6 +28,7 @@ import type {
     PropDates,
     MultiDatesProp,
     MultiDatesDefault,
+    MapPropDatesOpts,
 } from '@/interfaces';
 import { getDate } from '@/utils/date-utils';
 import { dateToTimezoneSafe, sanitizeDateToLocal } from '@/utils/timezone';
@@ -276,26 +277,21 @@ const mapMarkers = (markers: IMarker[], timezone: TimeZoneConfig | undefined) =>
  * Sync all props that rely on the date value to be in the same timezone
  * All validation that is done from these props will now be in sync with provided timezone config
  */
-export const mapPropDates = (
-    minDate: MaybeDate,
-    maxDate: MaybeDate,
-    disabledDates: DisabledDatesProp,
-    allowedDates: string[] | Date[],
-    highlight: HighlightFn | Highlight,
-    markers: IMarker[],
-    timezone: TimeZoneConfig | undefined,
-    isSpecific: boolean,
-): PropDates => {
+export const mapPropDates = (opts: MapPropDatesOpts): PropDates => {
     return {
-        minDate: sanitizeDateToLocal(minDate, timezone, isSpecific),
-        maxDate: sanitizeDateToLocal(maxDate, timezone, isSpecific),
-        disabledDates: shouldMap(disabledDates) ? datesArrToMap(disabledDates, timezone, isSpecific) : disabledDates,
-        allowedDates: shouldMap(allowedDates) ? datesArrToMap(allowedDates, timezone, isSpecific) : null,
+        minDate: sanitizeDateToLocal(opts.minDate, opts.timezone, opts.isSpecific),
+        maxDate: sanitizeDateToLocal(opts.maxDate, opts.timezone, opts.isSpecific),
+        disabledDates: shouldMap(opts.disabledDates)
+            ? datesArrToMap(opts.disabledDates, opts.timezone, opts.isSpecific)
+            : opts.disabledDates,
+        allowedDates: shouldMap(opts.allowedDates)
+            ? datesArrToMap(opts.allowedDates, opts.timezone, opts.isSpecific)
+            : null,
         highlight:
-            typeof highlight === 'object' && shouldMap(highlight?.dates)
-                ? datesArrToMap(highlight.dates, timezone)
-                : (highlight as HighlightFn),
-        markers: mapMarkers(markers, timezone),
+            typeof opts.highlight === 'object' && shouldMap(opts.highlight?.dates)
+                ? datesArrToMap(opts.highlight.dates, opts.timezone)
+                : (opts.highlight as HighlightFn),
+        markers: mapMarkers(opts.markers, opts.timezone),
     };
 };
 

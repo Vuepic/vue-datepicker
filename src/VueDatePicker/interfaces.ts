@@ -87,9 +87,7 @@ export interface ConfigurableWindow {
     window?: Window;
 }
 
-export type MaybeElementRef = MaybeRef<
-    HTMLElement | SVGElement | ComponentPublicInstance | undefined | null | Element | any
->;
+export type MaybeElementRef = MaybeRef<HTMLElement | SVGElement | ComponentPublicInstance | undefined | null | Element>;
 export type OnClickOutsideEvents = Pick<
     WindowEventMap,
     'click' | 'mousedown' | 'mouseup' | 'touchstart' | 'touchend' | 'pointerdown' | 'pointerup'
@@ -370,4 +368,15 @@ export type MultiDatesProp = boolean | Partial<MultiDatesConfig>;
 export interface TimeInput {
     type: TimeType;
     separator?: boolean;
+}
+
+export interface MapPropDatesOpts {
+    minDate: MaybeDate;
+    maxDate: MaybeDate;
+    disabledDates: DisabledDatesProp;
+    allowedDates: string[] | Date[];
+    highlight: HighlightFn | Highlight;
+    markers: IMarker[];
+    timezone: TimeZoneConfig | undefined;
+    isSpecific?: boolean;
 }

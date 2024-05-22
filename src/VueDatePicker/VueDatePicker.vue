@@ -105,6 +105,7 @@
         DatepickerInputRef,
         ModelValue,
         MenuView,
+        MaybeElementRef,
     } from '@/interfaces';
     import { useDefaults } from '@/composables/defaults';
 
@@ -518,7 +519,7 @@
         dpMenuRef.value?.handleFlow(skipStep);
     };
 
-    onClickOutside(dpWrapMenuRef, inputRef, () => clickOutside(validateBeforeEmit));
+    onClickOutside(dpWrapMenuRef, inputRef as unknown as MaybeElementRef, () => clickOutside(validateBeforeEmit));
 
     defineExpose({
         closeMenu,

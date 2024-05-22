@@ -123,12 +123,7 @@ export const dateToUtc = (date: Date, preserve: boolean, enableSeconds: boolean)
 export const resetDateTime = (value: Date | string, beginning?: boolean): Date => {
     const dateParse = getDate(JSON.parse(JSON.stringify(value)));
     const timeReset = set(dateParse, { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 });
-    if (beginning) {
-        return startOfMonth(timeReset);
-    }
-    return timeReset;
-
-    // return set(dateParse, { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 });
+    return beginning ? startOfMonth(timeReset) : timeReset;
 };
 
 export const setDateTime = (

@@ -57,6 +57,7 @@ import type { AllPropsType } from '@/props';
 import { defaultMultiCalendars, defaultTransitions, mapPropDates } from '@/utils/defaults';
 import { de } from 'date-fns/locale';
 import { localToTz } from '@/utils/timezone';
+import type { TimeZoneConfig } from '@/interfaces';
 
 const getCurrentTime = () => {
     return {
@@ -70,6 +71,19 @@ const getMinMax = () => {
     const minDate = set(new Date(), { hours: 10, minutes: 30, seconds: 0, milliseconds: 0 });
     const maxDate = set(new Date(), { hours: 22, minutes: 15, seconds: 0, milliseconds: 0 });
     return { minDate, maxDate };
+};
+
+const getMapDatesOpts = (date: Date, timezone: TimeZoneConfig) => {
+    const highlightFn = (date: any) => !!date;
+    return {
+        minDate: date,
+        maxDate: date,
+        disabledDates: [date],
+        allowedDates: [date],
+        markers: [],
+        highlight: highlightFn,
+        timezone,
+    };
 };
 
 describe('Utils and date utils formatting', () => {
@@ -434,10 +448,7 @@ describe('Utils and date utils formatting', () => {
     it('Should map propDates value with and without timezone', async () => {
         const today = resetDateTime(new Date());
         const highlightFn = (date: any) => !!date;
-        const mappedDates = mapPropDates(today, today, [today], [today], highlightFn, [], {
-            timezone: undefined,
-            exactMatch: false,
-        });
+        const mappedDates = mapPropDates(getMapDatesOpts(today, { timezone: undefined, exactMatch: false }));
 
         expect(mappedDates.maxDate).toEqual(today);
         expect(mappedDates.minDate).toEqual(today);
@@ -446,10 +457,7 @@ describe('Utils and date utils formatting', () => {
         expect(mappedDates.highlight).toEqual(highlightFn);
 
         const todayInTz = localToTz(today, 'UTC');
-        const mappedDatesInTimezone = mapPropDates(today, today, [today], [today], highlightFn, [], {
-            timezone: 'UTC',
-            exactMatch: false,
-        });
+        const mappedDatesInTimezone = mapPropDates(getMapDatesOpts(today, { timezone: 'UTC', exactMatch: false }));
 
         expect(mappedDatesInTimezone.maxDate).toEqual(todayInTz);
         expect(mappedDatesInTimezone.minDate).toEqual(todayInTz);

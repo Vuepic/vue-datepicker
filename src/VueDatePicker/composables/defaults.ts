@@ -82,16 +82,16 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
     const defaultedMultiDates = computed(() => getDefaultMultiDates(props.multiDates, props.multiDatesLimit));
 
     const propDates = computed(() =>
-        mapPropDates(
-            props.minDate,
-            props.maxDate,
-            props.disabledDates,
-            props.allowedDates,
-            defaultedHighlight.value,
-            props.markers,
-            defaultedTz.value,
-            props.monthPicker || props.yearPicker || props.quarterPicker,
-        ),
+        mapPropDates({
+            minDate: props.minDate,
+            maxDate: props.maxDate,
+            disabledDates: props.disabledDates,
+            allowedDates: props.allowedDates,
+            highlight: defaultedHighlight.value,
+            markers: props.markers,
+            timezone: defaultedTz.value,
+            isSpecific: props.monthPicker || props.yearPicker || props.quarterPicker,
+        }),
     );
 
     const defaultedRange = computed(() =>
