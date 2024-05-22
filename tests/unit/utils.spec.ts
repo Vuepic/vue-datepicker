@@ -73,8 +73,7 @@ const getMinMax = () => {
     return { minDate, maxDate };
 };
 
-const getMapDatesOpts = (date: Date, timezone: TimeZoneConfig) => {
-    const highlightFn = (date: any) => !!date;
+const getMapDatesOpts = (date: Date, timezone: TimeZoneConfig, highlightFn: (date: any) => boolean) => {
     return {
         minDate: date,
         maxDate: date,
@@ -448,7 +447,9 @@ describe('Utils and date utils formatting', () => {
     it('Should map propDates value with and without timezone', async () => {
         const today = resetDateTime(new Date());
         const highlightFn = (date: any) => !!date;
-        const mappedDates = mapPropDates(getMapDatesOpts(today, { timezone: undefined, exactMatch: false }));
+        const mappedDates = mapPropDates(
+            getMapDatesOpts(today, { timezone: undefined, exactMatch: false }, highlightFn),
+        );
 
         expect(mappedDates.maxDate).toEqual(today);
         expect(mappedDates.minDate).toEqual(today);
@@ -457,7 +458,9 @@ describe('Utils and date utils formatting', () => {
         expect(mappedDates.highlight).toEqual(highlightFn);
 
         const todayInTz = localToTz(today, 'UTC');
-        const mappedDatesInTimezone = mapPropDates(getMapDatesOpts(today, { timezone: 'UTC', exactMatch: false }));
+        const mappedDatesInTimezone = mapPropDates(
+            getMapDatesOpts(today, { timezone: 'UTC', exactMatch: false }, highlightFn),
+        );
 
         expect(mappedDatesInTimezone.maxDate).toEqual(todayInTz);
         expect(mappedDatesInTimezone.minDate).toEqual(todayInTz);
