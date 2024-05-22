@@ -90,6 +90,7 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
             defaultedHighlight.value,
             props.markers,
             defaultedTz.value,
+            props.monthPicker || props.yearPicker || props.quarterPicker,
         ),
     );
 

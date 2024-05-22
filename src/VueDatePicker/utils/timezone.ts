@@ -1,4 +1,4 @@
-import { getDate } from '@/utils/date-utils';
+import { getDate, resetDateTime } from '@/utils/date-utils';
 import type { MaybeDate, TimeZoneConfig } from '@/interfaces';
 
 /**
@@ -9,22 +9,23 @@ export const localToTz = (date: Date, timeZone?: string) => {
     return new Date(date.toLocaleString('en-US', { timeZone }));
 };
 
-export const dateToTimezoneSafe = (date: Date | string | number, tz?: TimeZoneConfig) => {
-    const d = sanitizeDateToLocal(date, tz);
+export const dateToTimezoneSafe = (date: Date | string | number, tz?: TimeZoneConfig, reset?: boolean) => {
+    const d = sanitizeDateToLocal(date, tz, reset);
     if (!d) return getDate();
     return d;
 };
 
-const getDateInTz = (date: Date | number | string, tz: TimeZoneConfig) => {
-    return tz.dateInTz ? localToTz(new Date(date), tz.dateInTz) : getDate(date);
+const getDateInTz = (date: Date | number | string, tz: TimeZoneConfig, reset?: boolean) => {
+    const newDate = tz.dateInTz ? localToTz(new Date(date), tz.dateInTz) : getDate(date);
+    return reset ? resetDateTime(newDate, true) : newDate;
 };
 
 // Converts specific date to a Date object based on a provided timezone
-export const sanitizeDateToLocal = (date: MaybeDate, tz?: TimeZoneConfig) => {
+export const sanitizeDateToLocal = (date: MaybeDate, tz?: TimeZoneConfig, reset?: boolean) => {
     if (!date) return null;
-    if (!tz) return getDate(date);
-    const local = getDate(date);
-    return tz.exactMatch ? getDateInTz(date, tz) : localToTz(local, tz.timezone);
+    const newDate = reset ? resetDateTime(getDate(date), true) : getDate(date);
+    if (!tz) return newDate;
+    return tz.exactMatch ? getDateInTz(date, tz, reset) : localToTz(newDate, tz.timezone);
 };
 
 export const getTimezoneOffset = (timezone?: string) => {

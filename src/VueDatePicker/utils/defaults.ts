@@ -250,10 +250,11 @@ export const getDefaultTimeZone = (timeZone: TimeZoneProp, emitTimezone?: string
 const datesArrToMap = (
     datesArr: (Date | string | number)[],
     timezone: TimeZoneConfig | undefined,
+    reset?: boolean,
 ): Map<string, Date | null> => {
     return new Map(
         datesArr.map((date) => {
-            const d = dateToTimezoneSafe(date, timezone);
+            const d = dateToTimezoneSafe(date, timezone, reset);
             return [getMapKey(d), d];
         }),
     );
@@ -283,12 +284,13 @@ export const mapPropDates = (
     highlight: HighlightFn | Highlight,
     markers: IMarker[],
     timezone: TimeZoneConfig | undefined,
+    isSpecific: boolean,
 ): PropDates => {
     return {
-        minDate: sanitizeDateToLocal(minDate, timezone),
-        maxDate: sanitizeDateToLocal(maxDate, timezone),
-        disabledDates: shouldMap(disabledDates) ? datesArrToMap(disabledDates, timezone) : disabledDates,
-        allowedDates: shouldMap(allowedDates) ? datesArrToMap(allowedDates, timezone) : null,
+        minDate: sanitizeDateToLocal(minDate, timezone, isSpecific),
+        maxDate: sanitizeDateToLocal(maxDate, timezone, isSpecific),
+        disabledDates: shouldMap(disabledDates) ? datesArrToMap(disabledDates, timezone, isSpecific) : disabledDates,
+        allowedDates: shouldMap(allowedDates) ? datesArrToMap(allowedDates, timezone, isSpecific) : null,
         highlight:
             typeof highlight === 'object' && shouldMap(highlight?.dates)
                 ? datesArrToMap(highlight.dates, timezone)
