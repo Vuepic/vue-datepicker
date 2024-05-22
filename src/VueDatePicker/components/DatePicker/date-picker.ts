@@ -37,6 +37,7 @@ import { FlowStep } from '@/constants';
 import type { ICalendarDate, ICalendarDay, WeekStartNum, IMarker, VueEmit, TimeType } from '@/interfaces';
 import type { UnwrapRef } from 'vue';
 import type { PickerBasePropsType } from '@/props';
+import { dateToTimezoneSafe } from '@/utils/timezone';
 
 export const useDatePicker = (
     props: PickerBasePropsType,
@@ -615,14 +616,15 @@ export const useDatePicker = (
 
     // Select current date on now button
     const selectCurrentDate = (): void => {
+        const dateInTz = dateToTimezoneSafe(getDate(), defaultedTz.value);
         if (!defaultedRange.value.enabled) {
-            modelValue.value = getDate();
+            modelValue.value = dateInTz;
         } else if (modelValue.value && Array.isArray(modelValue.value) && modelValue.value[0]) {
-            modelValue.value = isDateBefore(getDate(), modelValue.value[0])
-                ? [getDate(), modelValue.value[0]]
-                : [modelValue.value[0], getDate()];
+            modelValue.value = isDateBefore(dateInTz, modelValue.value[0])
+                ? [dateInTz, modelValue.value[0]]
+                : [modelValue.value[0], dateInTz];
         } else {
-            modelValue.value = [getDate()];
+            modelValue.value = [dateInTz];
         }
 
         selectOnAutoApply();
