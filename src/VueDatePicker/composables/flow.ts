@@ -1,4 +1,4 @@
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed, nextTick } from 'vue';
 
 import { CMP, FlowStep } from '@/constants';
 
@@ -35,7 +35,7 @@ export const useFlow = (props: AllPropsType, emit: VueEmit, dynCmpRef: Ref<any>)
             handleFlow();
         }
         if (props.flow?.length === flowStep.value) {
-            resetFlow();
+            nextTick().then(() => resetFlow());
         }
     };
 
