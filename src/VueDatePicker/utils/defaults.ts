@@ -22,8 +22,6 @@ import type {
     RangeConfig,
     TimeZoneProp,
     TimeZoneConfig,
-    MaybeDate,
-    DisabledDatesProp,
     IMarker,
     PropDates,
     MultiDatesProp,
