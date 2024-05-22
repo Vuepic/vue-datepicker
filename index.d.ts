@@ -346,6 +346,7 @@ export interface PublicMethods extends MethodOptions {
     parseModel: (value?: ModelValue) => void;
     switchView: (view: MenuView, instance?: number) => void;
     toggleMenu: () => void;
+    handleFlow: (step?: number) => void;
 }
 
 type InternalModelValue = Date | Date[] | null;
