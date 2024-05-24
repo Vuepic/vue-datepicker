@@ -38,6 +38,7 @@ export const useQuarterPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         useMonthOrQuarterPicker({
             modelValue,
             multiCalendars: defaultedMultiCalendars,
+            range: defaultedRange,
             highlight: defaultedHighlight,
             calendars,
             propDates,

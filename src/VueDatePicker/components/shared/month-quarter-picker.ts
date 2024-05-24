@@ -1,5 +1,5 @@
 import { computed, onMounted, ref } from 'vue';
-import { addYears, endOfYear, getMonth, getYear, set, startOfYear, subYears } from 'date-fns';
+import { addYears, differenceInYears, endOfYear, getMonth, getYear, set, startOfYear, subYears } from 'date-fns';
 
 import { checkHighlightYear, getDate, getMinMaxYear, resetDate, validateMonthYear } from '@/utils/date-utils';
 import { checkMinMaxValue, getYears, groupListAndMap } from '@/utils/util';
@@ -16,6 +16,7 @@ import type {
     HighlightFn,
     PropDates,
     DateFilter,
+    RangeConfig,
 } from '@/interfaces';
 import type { PickerBasePropsType } from '@/props';
 import { FlowStep } from '@/constants';
@@ -30,6 +31,7 @@ interface Opts {
     highlight: ComputedRef<Highlight | HighlightFn>;
     propDates: ComputedRef<PropDates>;
     filters: ComputedRef<DateFilter>;
+    range: ComputedRef<RangeConfig>;
     emit: VueEmit;
 }
 
@@ -38,6 +40,7 @@ interface Opts {
  */
 export const useMonthOrQuarterPicker = ({
     multiCalendars,
+    range,
     highlight,
     propDates,
     calendars,
@@ -66,10 +69,19 @@ export const useMonthOrQuarterPicker = ({
         );
     });
 
+    const isSoloMultiInRange = () => {
+        return Array.isArray(modelValue.value) && multiCalendars.value.solo && modelValue.value[1];
+    };
+
     const assignMultiCalendars = () => {
         for (let i = 0; i < multiCalendars.value.count; i++) {
             if (i === 0) {
                 calendars.value[i] = calendars.value[0];
+            } else if (i === multiCalendars.value.count - 1 && isSoloMultiInRange()) {
+                calendars.value[i] = {
+                    month: getMonth((modelValue.value as Date[])[1]),
+                    year: getYear((modelValue.value as Date[])[1]),
+                };
             } else {
                 const prevDate = set(getDate(), calendars.value[i - 1]);
                 calendars.value[i] = { month: getMonth(prevDate), year: getYear(addYears(prevDate, 1)) };
@@ -84,9 +96,15 @@ export const useMonthOrQuarterPicker = ({
         return assignMultiCalendars();
     };
 
+    const getDateToFocus = (dateOne: Date, dateTwo: Date) => {
+        const diff = differenceInYears(dateTwo, dateOne);
+        return range.value.showLastInRange && diff > 1 ? dateTwo : dateOne;
+    };
+
     const getRangedValueDate = (dates: Date[]) => {
         if (props.focusStartDate) return dates[0];
-        return dates[1] ? dates[1] : dates[0];
+        if (multiCalendars.value.solo) return dates[0];
+        return dates[1] ? getDateToFocus(dates[0], dates[1]) : dates[0];
     };
 
     const checkModelValue = () => {
