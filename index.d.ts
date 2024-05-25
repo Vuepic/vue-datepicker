@@ -454,6 +454,7 @@ interface Slots {
         onTab: (ev: KeyboardEvent) => void;
         onClear: (ev?: Event | undefined) => void;
         onBlur: () => void;
+        onFocus: () => void;
         onKeypress: (ev: KeyboardEvent) => void;
         onPaste: () => void;
         openMenu: () => void;
