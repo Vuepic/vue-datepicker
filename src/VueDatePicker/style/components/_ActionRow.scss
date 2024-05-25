@@ -46,6 +46,16 @@
   font-family: var(--dp-font-family);
 }
 
+.dp__action_cancel {
+  color: var(--dp-text-color);
+  border: 1px solid var(--dp-border-color);
+
+  &:hover {
+    border-color: var(--dp-primary-color);
+    transition: var(--dp-action-row-transtion);
+  }
+}
+
 .dp__action_buttons .dp__action_select {
   background: var(--dp-primary-color);
   color: var(--dp-primary-text-color);
@@ -61,12 +71,3 @@
   }
 }
 
-.dp__action_cancel {
-  color: var(--dp-text-color);
-  border: 1px solid var(--dp-border-color);
-
-  &:hover {
-    border-color: var(--dp-primary-color);
-    transition: var(--dp-action-row-transtion);
-  }
-}

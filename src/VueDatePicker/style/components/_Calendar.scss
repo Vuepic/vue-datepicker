@@ -158,6 +158,7 @@
 
 .dp__cell_auto_range_start {
   @extend %__dp_range_border_radius_start;
+
   border-start-start-radius: var(--dp-cell-border-radius);
   border-end-start-radius: var(--dp-cell-border-radius);
   border-inline-start: 1px dashed var(--dp-primary-color);
@@ -167,6 +168,7 @@
 
 .dp__cell_auto_range_end {
   @extend %__dp_range_border_radius_end;
+
   border-start-end-radius: var(--dp-cell-border-radius);
   border-end-end-radius: var(--dp-cell-border-radius);
   border-top: 1px dashed var(--dp-primary-color);

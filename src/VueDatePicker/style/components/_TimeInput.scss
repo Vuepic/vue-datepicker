@@ -46,19 +46,15 @@
   font-size: var(--dp-time-font-size);
 }
 
-.dp__time_display {
-  cursor: pointer;
-  color: var(--dp-text-color);
-  border-radius: var(--dp-border-radius);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.dp__inc_dec_button_disabled {
+  @extend %__dp_time_arrow_disabled;
 
-  &:hover:enabled {
-    background: var(--dp-hover-color);
-    color: var(--dp-hover-text-color);
+  &:hover {
+    @extend %__dp_time_arrow_disabled;
   }
 }
+
+
 
 .dp__time_display_block {
   padding: 0 3px;
@@ -98,6 +94,20 @@
   }
 }
 
+.dp__time_display {
+  cursor: pointer;
+  color: var(--dp-text-color);
+  border-radius: var(--dp-border-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover:enabled {
+    background: var(--dp-hover-color);
+    color: var(--dp-hover-text-color);
+  }
+}
+
 
 .dp__inc_dec_button_inline {
   width: 100%;
@@ -114,13 +124,7 @@
   cursor: not-allowed;
 }
 
-.dp__inc_dec_button_disabled {
-  @extend %__dp_time_arrow_disabled;
 
-  &:hover {
-    @extend %__dp_time_arrow_disabled;
-  }
-}
 
 .dp__pm_am_button {
   background: var(--dp-primary-color);

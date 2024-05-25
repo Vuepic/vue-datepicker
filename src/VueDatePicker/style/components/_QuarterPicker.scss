@@ -5,6 +5,15 @@
   min-width: var(--dp-menu-min-width);
 }
 
+.dp--qr-btn-disabled {
+  cursor: not-allowed;
+  background: var(--dp-disabled-color);
+
+  &:hover {
+    background: var(--dp-disabled-color);
+  }
+}
+
 .dp--qr-btn {
   @extend %dp--btn-placeholder;
 
@@ -42,11 +51,3 @@
   color: var(--dp-hover-text-color);
 }
 
-.dp--qr-btn-disabled {
-  cursor: not-allowed;
-  background: var(--dp-disabled-color);
-
-  &:hover {
-    background: var(--dp-disabled-color);
-  }
-}
