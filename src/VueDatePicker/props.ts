@@ -56,7 +56,10 @@ export const AllProps = {
     disableMonthYearSelect: { type: Boolean as PropType<boolean>, default: false },
     disableYearSelect: { type: Boolean as PropType<boolean>, default: false },
     menuClassName: { type: String as PropType<string>, default: null },
-    dayClass: { type: Function as PropType<(date: Date) => string>, default: null },
+    dayClass: {
+        type: Function as PropType<(date: Date, internalModelValue: InternalModuleValue) => string>,
+        default: null,
+    },
     yearRange: { type: Array as PropType<number[]>, default: () => [1900, 2100] },
     calendarCellClassName: { type: String as PropType<string>, default: null },
     enableTimePicker: { type: Boolean as PropType<boolean>, default: true },

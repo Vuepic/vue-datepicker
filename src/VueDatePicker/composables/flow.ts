@@ -1,4 +1,4 @@
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed, nextTick } from 'vue';
 
 import { CMP, FlowStep } from '@/constants';
 
@@ -34,6 +34,9 @@ export const useFlow = (props: AllPropsType, emit: VueEmit, dynCmpRef: Ref<any>)
             emit('flow-step', flowStep.value);
             handleFlow();
         }
+        if (props.flow?.length === flowStep.value) {
+            nextTick().then(() => resetFlow());
+        }
     };
 
     const resetFlow = (): void => {
@@ -48,7 +51,10 @@ export const useFlow = (props: AllPropsType, emit: VueEmit, dynCmpRef: Ref<any>)
         }
     };
 
-    const handleFlow = (): void => {
+    const handleFlow = (skipStep = 0): void => {
+        if (skipStep) {
+            flowStep.value += skipStep;
+        }
         handleFlowStep(FlowStep.month, 'toggleMonthPicker', true);
         handleFlowStep(FlowStep.year, 'toggleYearPicker', true);
         handleFlowStep(FlowStep.calendar, 'toggleTimePicker', false, true);
@@ -60,5 +66,5 @@ export const useFlow = (props: AllPropsType, emit: VueEmit, dynCmpRef: Ref<any>)
         }
     };
 
-    return { childMount, updateFlowStep, resetFlow, flowStep };
+    return { childMount, updateFlowStep, resetFlow, handleFlow, flowStep };
 };

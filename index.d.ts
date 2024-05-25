@@ -285,7 +285,7 @@ export interface VueDatePickerProps {
     teleportCenter?: boolean;
     teleport?: boolean | string | HTMLElement;
     ignoreTimeValidation?: boolean;
-    dayClass?: (date: Date) => string;
+    dayClass?: (date: Date, internalModelValue: InternalTime) => string;
     hideNavigation?: ('month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds')[];
     /**
      * @deprecated
@@ -346,6 +346,7 @@ export interface PublicMethods extends MethodOptions {
     parseModel: (value?: ModelValue) => void;
     switchView: (view: MenuView, instance?: number) => void;
     toggleMenu: () => void;
+    handleFlow: (step?: number) => void;
 }
 
 type InternalModelValue = Date | Date[] | null;
@@ -401,7 +402,7 @@ interface Slots {
     hours(props: { text: string; value: number }): any;
     minutes(props: { text: string; value: number }): any;
     month(props: { text: string; value: number }): any;
-    year(props: { year: number }): any;
+    year(props: { text: string; value: number }): any;
     'action-buttons'(props: { value: InternalModelValue }): any;
     'action-preview'(props: { value: InternalModelValue }): any;
     'calendar-header'(props: { day: string; index: number }): any;
@@ -453,6 +454,7 @@ interface Slots {
         onTab: (ev: KeyboardEvent) => void;
         onClear: (ev?: Event | undefined) => void;
         onBlur: () => void;
+        onFocus: () => void;
         onKeypress: (ev: KeyboardEvent) => void;
         onPaste: () => void;
         openMenu: () => void;

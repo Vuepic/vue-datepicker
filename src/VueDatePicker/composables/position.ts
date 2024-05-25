@@ -1,11 +1,17 @@
 import { h, ref, render, toRef, watch } from 'vue';
-import { OpenPosition } from '@/interfaces';
+import {
+    type DatepickerInputRef,
+    type DatepickerMenuRef,
+    type InlineOptions,
+    type VueEmit,
+    OpenPosition,
+    type MaybeElementRef,
+} from '@/interfaces';
 
 import { unrefElement } from '@/utils/util';
 import { MenuPlacement } from '@/constants';
 
-import type { Component, ComponentPublicInstance, ComputedRef, Ref, Slots } from 'vue';
-import type { ComponentRef, InlineOptions, VueEmit } from '@/interfaces';
+import type { Component, ComputedRef, Ref, Slots } from 'vue';
 import type { AllPropsType } from '@/props';
 
 /**
@@ -13,8 +19,8 @@ import type { AllPropsType } from '@/props';
  */
 interface Params {
     menuRef: Ref<HTMLElement | null>;
-    menuRefInner: Ref<ComponentPublicInstance | null>;
-    inputRef: ComponentRef;
+    menuRefInner: Ref<DatepickerMenuRef | null>;
+    inputRef: Ref<DatepickerInputRef | null>;
     pickerWrapperRef: Ref<HTMLElement | null>;
     inline: ComputedRef<InlineOptions>;
     emit: VueEmit;
@@ -34,7 +40,7 @@ export const usePosition = ({
     const menuRect = ref<DOMRect>({} as DOMRect);
     const xCorrect = ref(false);
 
-    const menuStyle = ref<Partial<CSSStyleDeclaration>>({
+    const menuStyle = ref<Record<string, string>>({
         top: '0',
         left: '0',
     });
@@ -95,7 +101,7 @@ export const usePosition = ({
     };
 
     const customAltPosition = () => {
-        const el = unrefElement(inputRef);
+        const el = unrefElement(inputRef as MaybeElementRef);
         const { top, left, transform } = props.altPosition(el);
         menuStyle.value = { top: `${top}px`, left: `${left}px`, transform: transform ?? '' };
     };
@@ -172,7 +178,7 @@ export const usePosition = ({
     };
 
     const getMenuPlacement = (): MenuPlacement => {
-        const inputEl = unrefElement(inputRef);
+        const inputEl = unrefElement(inputRef as MaybeElementRef);
         if (inputEl) {
             const { height: menuHeight } = menuRect.value;
             const { top: inputTop, height: inputHeight } = inputEl.getBoundingClientRect();
@@ -201,7 +207,7 @@ export const usePosition = ({
 
     // Parent function that will perform check on which calculation function to invoke
     const calculateMenuPosition = () => {
-        const inputEl = unrefElement(inputRef);
+        const inputEl = unrefElement(inputRef as MaybeElementRef);
         if (inputEl) {
             if (props.autoPosition) {
                 return setAutoPosition(inputEl);
@@ -245,7 +251,7 @@ export const usePosition = ({
     // Renders invisible menu on open to determine the menu dimensions
     const shadowRender = (DPMenu: Component, props: AllPropsType) => {
         const container = document.createElement('div');
-        const input = unrefElement(inputRef)?.getBoundingClientRect();
+        const input = unrefElement(inputRef as MaybeElementRef)?.getBoundingClientRect();
         container.setAttribute('id', 'dp--temp-container');
         const wrap = pickerWrapperRef.value?.clientWidth ? pickerWrapperRef.value : document.body;
         wrap.append(container);

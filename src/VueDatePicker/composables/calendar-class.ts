@@ -364,7 +364,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
         return {
             ...sharedClasses(day),
             ...getModeClasses(day),
-            [props.dayClass ? props.dayClass(day.value) : '']: true,
+            [props.dayClass ? props.dayClass(day.value, props.internalModelValue) : '']: true,
             [props.calendarCellClassName]: !!props.calendarCellClassName,
         };
     };

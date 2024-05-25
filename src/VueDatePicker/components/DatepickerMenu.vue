@@ -234,7 +234,7 @@
     };
 
     const { arrowRight, arrowLeft, arrowDown, arrowUp } = useArrowNavigation();
-    const { flowStep, updateFlowStep, childMount, resetFlow } = useFlow(props, emit, dynCmpRef);
+    const { flowStep, updateFlowStep, childMount, resetFlow, handleFlow } = useFlow(props, emit, dynCmpRef);
 
     const displayComponent = computed(() => {
         if (props.monthPicker) return MonthPicker;
@@ -310,7 +310,7 @@
             if (arrow === ArrowDirection.down) return arrowDown();
             if (arrow === ArrowDirection.left) return arrowLeft();
             if (arrow === ArrowDirection.right) return arrowRight();
-        } else if (arrow === ArrowDirection.right || arrow === ArrowDirection.up) {
+        } else if (arrow === ArrowDirection.left || arrow === ArrowDirection.up) {
             callChildFn('handleArrow', ArrowDirection.left, 0, arrow === ArrowDirection.up);
         } else {
             callChildFn('handleArrow', ArrowDirection.right, 0, arrow === ArrowDirection.down);
@@ -377,13 +377,21 @@
         checkShiftKey(ev);
 
         if (ev.key === EventKey.home || ev.key === EventKey.end) {
-            return callChildFn('selectWeekDate', ev.key === EventKey.home);
+            return callChildFn(
+                'selectWeekDate',
+                ev.key === EventKey.home,
+                (ev.target as HTMLElement).getAttribute('id'),
+            );
         }
         if (ev.key === EventKey.pageUp || ev.key === EventKey.pageDown) {
             if (ev.shiftKey) {
-                return callChildFn('changeYear', ev.key === EventKey.pageUp);
+                callChildFn('changeYear', ev.key === EventKey.pageUp);
+            } else {
+                callChildFn('changeMonth', ev.key === EventKey.pageUp);
             }
-            return callChildFn('changeMonth', ev.key === EventKey.pageUp);
+            if ((ev.target as HTMLElement).getAttribute('id')) {
+                dpMenuRef.value?.focus({ preventScroll: true });
+            }
         }
 
         switch (ev.key) {
@@ -405,5 +413,6 @@
     defineExpose({
         updateMonthYear,
         switchView,
+        handleFlow,
     });
 </script>

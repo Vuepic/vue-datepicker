@@ -40,14 +40,20 @@
 ## Install
 
 ```shell
+# npm
+npm install @vuepic/vue-datepicker
+
+# yarn
 yarn add @vuepic/vue-datepicker
 
-# or
+# pnpm
+pnpm add @vuepic/vue-datepicker
 
-npm install @vuepic/vue-datepicker
+# bun
+bun add @vuepic/vue-datepicker
 ```
 
-Import and register component
+### Import and register component
 
 **Global**
 
@@ -65,13 +71,16 @@ app.component('VueDatePicker', VueDatePicker);
 **Local**
 
 ```vue
-<script>
-    import VueDatePicker from '@vuepic/vue-datepicker';
-    import '@vuepic/vue-datepicker/dist/main.css';
-    
-    export default {
-        components: { VueDatePicker }
-    }
+<template>
+  <VueDatePicker v-model="date" />
+</template>
+
+<script setup>
+  import { ref } from 'vue';
+  import VueDatePicker from '@vuepic/vue-datepicker';
+  import '@vuepic/vue-datepicker/dist/main.css';
+
+  const date = ref(null);
 </script>
 ```
 

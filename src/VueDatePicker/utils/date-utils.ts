@@ -23,6 +23,7 @@ import {
     setYear,
     subMonths,
     format,
+    startOfMonth,
 } from 'date-fns';
 import { errors } from '@/utils/util';
 
@@ -119,14 +120,10 @@ export const dateToUtc = (date: Date, preserve: boolean, enableSeconds: boolean)
 };
 
 // Reset date time
-export const resetDateTime = (value: Date | string): Date => {
-    let dateParse = getDate(JSON.parse(JSON.stringify(value)));
-    dateParse = setHours(dateParse, 0);
-    dateParse = setMinutes(dateParse, 0);
-    dateParse = setSeconds(dateParse, 0);
-    dateParse = setMilliseconds(dateParse, 0);
-
-    return dateParse;
+export const resetDateTime = (value: Date | string, beginning?: boolean): Date => {
+    const dateParse = getDate(JSON.parse(JSON.stringify(value)));
+    const timeReset = set(dateParse, { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 });
+    return beginning ? startOfMonth(timeReset) : timeReset;
 };
 
 export const setDateTime = (
@@ -428,4 +425,8 @@ export const checkHighlightYear = (defaultedHighlight: Highlight | HighlightFn, 
     return typeof defaultedHighlight === 'function'
         ? defaultedHighlight(year)
         : defaultedHighlight.years.includes(year);
+};
+
+export const getCellId = (date: Date) => {
+    return format(date, 'yyyy-MM-dd');
 };

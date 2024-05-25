@@ -41,7 +41,7 @@
                         </div>
                         <div
                             v-for="(dayVal, dayInd) in week.days"
-                            :id="getId(dayVal.value)"
+                            :id="getCellId(dayVal.value)"
                             :ref="(el) => assignDayRef(el, weekInd, dayInd)"
                             :key="dayInd + weekInd"
                             role="gridcell"
@@ -125,12 +125,19 @@
 
 <script lang="ts" setup>
     import { computed, nextTick, onMounted, ref } from 'vue';
-    import { format, getISOWeek, getWeek } from 'date-fns';
+    import { getISOWeek, getWeek } from 'date-fns';
 
     import { checkKeyDown, checkStopPropagation, getDayNames, getDefaultMarker, unrefElement } from '@/utils/util';
     import { useArrowNavigation, useDefaults } from '@/composables';
     import { PickerBaseProps } from '@/props';
-    import { getDate, isDateAfter, isDateEqual, resetDateTime, setDateMonthOrYear } from '@/utils/date-utils';
+    import {
+        getCellId,
+        getDate,
+        isDateAfter,
+        isDateEqual,
+        resetDateTime,
+        setDateMonthOrYear,
+    } from '@/utils/date-utils';
 
     import type { PropType, UnwrapRef } from 'vue';
     import type { DynamicClass, ICalendarDate, ICalendarDay, IMarker, WeekStartNum } from '@/interfaces';
@@ -252,10 +259,6 @@
     }));
 
     const showDay = computed(() => (day: ICalendarDay) => (props.hideOffsetDates ? day.current : true));
-
-    const getId = (date: Date) => {
-        return format(date, 'yyyy-MM-dd');
-    };
 
     const handleTooltip = async (day: UnwrapRef<ICalendarDay>, weekInd: number, dayInd: number) => {
         const el = unrefElement(dayRefs.value[weekInd][dayInd]);

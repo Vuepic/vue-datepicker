@@ -105,6 +105,7 @@
         DatepickerInputRef,
         ModelValue,
         MenuView,
+        MaybeElementRef,
     } from '@/interfaces';
     import { useDefaults } from '@/composables/defaults';
 
@@ -495,8 +496,8 @@
     const setMonthYear = (value: MonthYearOpt) => {
         if (dpMenuRef.value) {
             dpMenuRef.value.updateMonthYear(0, {
-                month: getNumVal(value.month),
-                year: getNumVal(value.year),
+                month: getNumVal(value.month) as number,
+                year: getNumVal(value.year) as number,
             });
         }
     };
@@ -514,7 +515,11 @@
         return closeMenu();
     };
 
-    onClickOutside(dpWrapMenuRef, inputRef, () => clickOutside(validateBeforeEmit));
+    const handleFlow = (skipStep = 0) => {
+        dpMenuRef.value?.handleFlow(skipStep);
+    };
+
+    onClickOutside(dpWrapMenuRef, inputRef as unknown as MaybeElementRef, () => clickOutside(validateBeforeEmit));
 
     defineExpose({
         closeMenu,
@@ -528,5 +533,6 @@
         parseModel,
         switchView,
         toggleMenu,
+        handleFlow,
     });
 </script>

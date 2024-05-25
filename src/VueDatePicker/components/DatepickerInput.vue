@@ -18,6 +18,7 @@
                 :on-blur="handleBlur"
                 :on-keypress="handleKeyPress"
                 :on-paste="handlePaste"
+                :on-focus="handleFocus"
                 :open-menu="() => $emit('open')"
                 :close-menu="() => $emit('close')"
                 :toggle-menu="() => $emit('toggle')"
