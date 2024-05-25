@@ -40,7 +40,7 @@ export const usePosition = ({
     const menuRect = ref<DOMRect>({} as DOMRect);
     const xCorrect = ref(false);
 
-    const menuStyle = ref<Partial<CSSStyleDeclaration>>({
+    const menuStyle = ref<Record<string, string>>({
         top: '0',
         left: '0',
     });
