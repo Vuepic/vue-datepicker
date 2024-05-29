@@ -93,7 +93,7 @@ export const getMonths = (
 
     if (formatLocale !== null) {
         try {
-            const monthDateFnsFormat = monthFormat === 'long' ? 'MMMM' : 'MMM';
+            const monthDateFnsFormat = monthFormat === 'long' ? 'LLLL' : 'LLL';
             return months.map((date, i) => {
                 const month = format(localToTz(date, 'UTC'), monthDateFnsFormat, { locale: formatLocale });
                 return {
