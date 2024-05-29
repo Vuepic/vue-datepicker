@@ -161,7 +161,7 @@ export const useDatePicker = (
     };
 
     // Assign month and year values per date
-    const assignMonthAndYear = (date: Date, fromMount = false): void => {
+    const assignMonthAndYear = (date = new Date(), fromMount = false): void => {
         if (!defaultedMultiCalendars.value.count || !defaultedMultiCalendars.value.static || fromMount) {
             setCalendarMonthYear(0, getMonth(date), getYear(date));
         }
@@ -678,5 +678,6 @@ export const useDatePicker = (
         presetDate,
         selectCurrentDate,
         updateTime,
+        assignMonthAndYear,
     };
 };
