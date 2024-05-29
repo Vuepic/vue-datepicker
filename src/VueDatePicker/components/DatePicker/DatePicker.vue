@@ -144,6 +144,7 @@
         presetDate,
         selectCurrentDate,
         updateTime,
+        assignMonthAndYear,
     } = useDatePicker(props, emit, triggerCalendarTransition, updateFlowStep);
     const slots = useSlots();
     const { setHoverDate, getDayClassData, clearHoverDate } = useCalendarClass(modelValue, props);
@@ -173,6 +174,16 @@
             }
         },
         { deep: true },
+    );
+
+    watch(
+      defaultedMultiCalendars,
+      (newVal, oldVal) => {
+        if (newVal.count - oldVal.count > 0) {
+          assignMonthAndYear();
+        }
+      },
+      { deep: true },
     );
 
     /**
