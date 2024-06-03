@@ -27,9 +27,21 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
         return !!getMapDate(date, propDates.value.disabledDates);
     };
 
+    const validateAboveMax = (date: Date) => {
+        if (!propDates.value.maxDate) return false;
+        if (props.yearPicker) return getYear(date) > getYear(propDates.value.maxDate);
+        return isDateAfter(date, propDates.value.maxDate);
+    };
+
+    const validateBellowMin = (date: Date) => {
+        if (!propDates.value.minDate) return false;
+        if (props.yearPicker) return getYear(date) < getYear(propDates.value.minDate);
+        return isDateBefore(date, propDates.value.minDate);
+    };
+
     const validateDate = (date: Date) => {
-        const aboveMax = propDates.value.maxDate ? isDateAfter(date, propDates.value.maxDate) : false;
-        const bellowMin = propDates.value.minDate ? isDateBefore(date, propDates.value.minDate) : false;
+        const aboveMax = validateAboveMax(date);
+        const bellowMin = validateBellowMin(date);
         const isDisabled = isDateDisabled(date);
 
         const disabledMonths = defaultedFilters.value.months.map((month) => +month);

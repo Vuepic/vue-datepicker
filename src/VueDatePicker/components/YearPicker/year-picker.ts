@@ -1,5 +1,5 @@
 import { computed, nextTick, onMounted, ref } from 'vue';
-import { getYear, setYear } from 'date-fns';
+import { getYear, setYear, startOfYear } from 'date-fns';
 
 import { useDefaults, useModel } from '@/composables';
 import { checkMinMaxValue, getYears, groupListAndMap } from '@/utils/util';
@@ -63,14 +63,14 @@ export const useYearPicker = (props: PickerBasePropsType, emit: VueEmit) => {
     });
 
     const yearToDate = (year: number): Date => {
-        return setYear(resetDate(new Date()), year);
+        return setYear(resetDate(startOfYear(new Date())), year);
     };
 
     const selectYear = (year: number) => {
         emit('update-month-year', { instance: 0, year });
         if (defaultedMultiDates.value.enabled) {
             if (!modelValue.value) {
-                modelValue.value = [setYear(resetDateTime(getDate()), year)];
+                modelValue.value = [setYear(resetDateTime(startOfYear(getDate())), year)];
             } else if (Array.isArray(modelValue.value)) {
                 const years = modelValue.value?.map((date) => getYear(date));
                 if (years.includes(year)) {
