@@ -392,8 +392,6 @@ export interface UIOpts {
     input: CustomClass;
 }
 
-export type UIKey = keyof UIOpts;
-
 export type UIParsed = {
     [K in keyof UIOpts]: Record<string, boolean>;
 };

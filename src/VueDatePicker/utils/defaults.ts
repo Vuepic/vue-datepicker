@@ -28,7 +28,6 @@ import type {
     MultiDatesDefault,
     MapPropDatesOpts,
     UIOpts,
-    UIKey,
     UIParsed,
 } from '@/interfaces';
 import { getDate } from '@/utils/date-utils';
