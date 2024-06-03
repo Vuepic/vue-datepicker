@@ -40,6 +40,8 @@ export const slots = [
     { name: 'marker', use: ['calendar', 'shared'] },
     { name: 'quarter', use: ['shared'] },
     { name: 'top-extra', use: ['shared', 'month-year'] },
+    { name: 'tp-inline-arrow-up', use: ['shared', 'time'] },
+    { name: 'tp-inline-arrow-down', use: ['shared', 'time'] },
 ];
 
 export const inputSlots = [{ name: 'trigger' }, { name: 'input-icon' }, { name: 'clear-icon' }, { name: 'dp-input' }];

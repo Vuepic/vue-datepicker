@@ -30,8 +30,13 @@
                         <ChevronUpIcon v-if="!$slots['arrow-up']" />
                     </template>
                     <template v-else>
-                        <span class="dp__tp_inline_btn_bar dp__tp_btn_in_l"></span>
-                        <span class="dp__tp_inline_btn_bar dp__tp_btn_in_r"></span>
+                        <template v-if="$slots['tp-inline-arrow-up']">
+                            <slot name="tp-inline-arrow-up" />
+                        </template>
+                        <template v-else>
+                            <span class="dp__tp_inline_btn_bar dp__tp_btn_in_l"></span>
+                            <span class="dp__tp_inline_btn_bar dp__tp_btn_in_r"></span>
+                        </template>
                     </template>
                 </button>
                 <button
@@ -86,8 +91,13 @@
                         <ChevronDownIcon v-if="!$slots['arrow-down']" />
                     </template>
                     <template v-else>
-                        <span class="dp__tp_inline_btn_bar dp__tp_btn_in_l"></span>
-                        <span class="dp__tp_inline_btn_bar dp__tp_btn_in_r"></span>
+                        <template v-if="$slots['tp-inline-arrow-down']">
+                            <slot name="tp-inline-arrow-down" />
+                        </template>
+                        <template v-else>
+                            <span class="dp__tp_inline_btn_bar dp__tp_btn_in_l"></span>
+                            <span class="dp__tp_inline_btn_bar dp__tp_btn_in_r"></span>
+                        </template>
                     </template>
                 </button>
             </template>
