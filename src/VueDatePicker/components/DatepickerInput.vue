@@ -120,6 +120,7 @@
         defaultedConfig,
         defaultedRange,
         defaultedMultiDates,
+        defaultedUI,
         getDefaultPattern,
         getDefaultStartTime,
     } = useDefaults(props);
@@ -143,6 +144,7 @@
             dp__input_focus: isFocused.value || props.isMenuOpen,
             dp__input_reg: !defaultedTextInput.value.enabled,
             [props.inputClassName]: !!props.inputClassName,
+            ...(defaultedUI.value.input ?? {}),
         }),
     );
 

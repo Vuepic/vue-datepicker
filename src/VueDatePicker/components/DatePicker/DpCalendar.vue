@@ -175,6 +175,7 @@
         defaultedMultiCalendars,
         defaultedWeekNumbers,
         defaultedMultiDates,
+        defaultedUI,
     } = useDefaults(props);
 
     const showMakerTooltip = ref<Date | null>(null);
@@ -240,6 +241,7 @@
     const calendarWrapClass = computed(
         (): DynamicClass => ({
             [props.calendarClassName]: !!props.calendarClassName,
+            ...(defaultedUI.value.calendar ?? {}),
         }),
     );
 

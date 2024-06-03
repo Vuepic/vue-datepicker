@@ -190,7 +190,7 @@
 
     const { setMenuFocused, setShiftKey, control } = useState();
     const slots = useSlots();
-    const { defaultedTextInput, defaultedInline, defaultedConfig } = useDefaults(props);
+    const { defaultedTextInput, defaultedInline, defaultedConfig, defaultedUI } = useDefaults(props);
 
     const calendarWrapperRef = ref(null);
     const calendarWidth = ref(0);
@@ -291,6 +291,7 @@
             dp__menu_index: !defaultedInline.value.enabled,
             dp__relative: defaultedInline.value.enabled,
             [props.menuClassName]: !!props.menuClassName,
+            ...(defaultedUI.value.menu ?? {}),
         }),
     );
 

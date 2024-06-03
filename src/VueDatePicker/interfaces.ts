@@ -380,3 +380,20 @@ export interface MapPropDatesOpts {
     timezone: TimeZoneConfig | undefined;
     isSpecific?: boolean;
 }
+
+export type CustomClass = string | string[];
+
+export interface UIOpts {
+    navBtnNext: CustomClass;
+    navBtnPrev: CustomClass;
+    calendar: CustomClass;
+    calendarCell: CustomClass;
+    menu: CustomClass;
+    input: CustomClass;
+}
+
+export type UIKey = keyof UIOpts;
+
+export type UIParsed = {
+    [K in keyof UIOpts]: Record<string, boolean>;
+};

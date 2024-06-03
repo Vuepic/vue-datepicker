@@ -30,6 +30,7 @@ import type {
     TimeZoneProp,
     DisabledDatesProp,
     MultiDatesProp,
+    UIOpts,
 } from '@/interfaces';
 
 export const AllProps = {
@@ -168,6 +169,7 @@ export const AllProps = {
     loading: { type: Boolean as PropType<boolean>, default: false },
     onInternalModelChange: { type: [Function, Object] as PropType<(...args: any[]) => void>, default: null },
     enableMinutes: { type: Boolean as PropType<boolean>, default: true },
+    ui: { type: Object as PropType<Partial<UIOpts>>, default: () => ({}) },
 };
 
 export const PickerBaseProps = {

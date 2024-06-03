@@ -11,8 +11,15 @@ import type { ICalendarDay, InternalModuleValue } from '@/interfaces';
 import type { PickerBasePropsType } from '@/props';
 
 export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleValue>, props: PickerBasePropsType) => {
-    const { defaultedMultiCalendars, defaultedMultiDates, defaultedHighlight, defaultedTz, propDates, defaultedRange } =
-        useDefaults(props);
+    const {
+        defaultedMultiCalendars,
+        defaultedMultiDates,
+        defaultedUI,
+        defaultedHighlight,
+        defaultedTz,
+        propDates,
+        defaultedRange,
+    } = useDefaults(props);
     const { isDisabled } = useValidation(props);
     // Track hovered date
     const hoveredDate = ref<Date | null>(null);
@@ -366,6 +373,7 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
             ...getModeClasses(day),
             [props.dayClass ? props.dayClass(day.value, props.internalModelValue) : '']: true,
             [props.calendarCellClassName]: !!props.calendarCellClassName,
+            ...(defaultedUI.value.calendarCell ?? {}),
         };
     };
 

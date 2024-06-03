@@ -17,6 +17,7 @@
                     v-if="showLeftIcon(defaultedMultiCalendars, instance) && !vertical"
                     :aria-label="defaultedAriaLabels?.prevMonth"
                     :disabled="isDisabled(false)"
+                    :class="defaultedUI?.navBtnPrev"
                     @activate="handleMonthYearChange(false, true)"
                     @set-ref="setElRefs($event, 0)"
                 >
@@ -87,6 +88,7 @@
                     v-if="showLeftIcon(defaultedMultiCalendars, instance) && vertical"
                     :aria-label="defaultedAriaLabels?.prevMonth"
                     :disabled="isDisabled(false)"
+                    :class="defaultedUI?.navBtnPrev"
                     @activate="handleMonthYearChange(false, true)"
                 >
                     <slot v-if="$slots['arrow-up']" name="arrow-up" />
@@ -97,6 +99,7 @@
                     ref="rightIcon"
                     :disabled="isDisabled(true)"
                     :aria-label="defaultedAriaLabels?.nextMonth"
+                    :class="defaultedUI?.navBtnNext"
                     @activate="handleMonthYearChange(true, true)"
                     @set-ref="setElRefs($event, disableYearSelect ? 2 : 3)"
                 >
@@ -167,6 +170,7 @@
         defaultedConfig,
         defaultedHighlight,
         propDates,
+        defaultedUI,
     } = useDefaults(props);
     const { transitionName, showTransition } = useTransitions(defaultedTransitions);
     const { buildMatrix } = useArrowNavigation();

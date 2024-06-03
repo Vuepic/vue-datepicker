@@ -14,6 +14,7 @@ import {
     getDefaultRangeOptions,
     getDefaultTextInputOptions,
     getDefaultTimeZone,
+    getDefaultUI,
     getDefaultWeekNumbers,
     mapPropDates,
 } from '@/utils/defaults';
@@ -109,6 +110,8 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
         }),
     );
 
+    const defaultedUI = computed(() => getDefaultUI(props.ui));
+
     return {
         defaultedTransitions,
         defaultedMultiCalendars,
@@ -126,6 +129,7 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
         propDates,
         defaultedTz,
         defaultedMultiDates,
+        defaultedUI,
         getDefaultPattern,
         getDefaultStartTime,
     };

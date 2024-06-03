@@ -27,6 +27,9 @@ import type {
     MultiDatesProp,
     MultiDatesDefault,
     MapPropDatesOpts,
+    UIOpts,
+    UIKey,
+    UIParsed,
 } from '@/interfaces';
 import { getDate } from '@/utils/date-utils';
 import { dateToTimezoneSafe, sanitizeDateToLocal } from '@/utils/timezone';
@@ -305,4 +308,23 @@ export const getDefaultMultiDates = (
         limit: multiDates.limit ? +multiDates.limit : null,
         dragSelect: multiDates.dragSelect ?? true,
     };
+};
+
+export const getDefaultUI = (ui: Partial<UIOpts>): UIParsed => {
+    const defaulted = {
+        ...Object.fromEntries(
+            Object.keys(ui).map((item) => {
+                const key = item as keyof UIOpts;
+                const value = ui[key];
+                const val = (
+                    typeof ui[key] === 'string'
+                        ? { [value as string]: true }
+                        : Object.fromEntries((value as string[]).map((k) => [k, true]))
+                ) as Record<string, boolean>;
+                return [item, val];
+            }),
+        ),
+    };
+
+    return defaulted as UIParsed;
 };

@@ -5,6 +5,7 @@
             ref="mpPrevIconRef"
             :aria-label="defaultedAriaLabels?.prevYear"
             :disabled="isDisabled(false)"
+            :class="defaultedUI?.navBtnPrev"
             @activate="handleYear(false)"
         >
             <slot v-if="$slots['arrow-left']" name="arrow-left" />
@@ -27,6 +28,7 @@
             ref="mpNextIconRef"
             :aria-label="defaultedAriaLabels?.nextYear"
             :disabled="isDisabled(true)"
+            :class="defaultedUI?.navBtnNext"
             @activate="handleYear(true)"
         >
             <slot v-if="$slots['arrow-right']" name="arrow-right" />
@@ -80,7 +82,8 @@
     });
 
     const { showRightIcon, showLeftIcon } = useCommon();
-    const { defaultedConfig, defaultedMultiCalendars, defaultedAriaLabels, defaultedTransitions } = useDefaults(props);
+    const { defaultedConfig, defaultedMultiCalendars, defaultedAriaLabels, defaultedTransitions, defaultedUI } =
+        useDefaults(props);
     const { showTransition, transitionName } = useTransitions(defaultedTransitions);
 
     const toggleYearPicker = (flow = false, show?: boolean) => {

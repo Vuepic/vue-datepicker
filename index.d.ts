@@ -107,6 +107,17 @@ export interface RangeConfig {
     autoRange?: string | number;
 }
 
+export type CustomClass = string | string[];
+
+export interface UIOptions {
+    navBtnNext: CustomClass;
+    navBtnPrev: CustomClass;
+    calendar: CustomClass;
+    calendarCell: CustomClass;
+    menu: CustomClass;
+    input: CustomClass;
+}
+
 export interface VueDatePickerProps {
     uid?: string;
     name?: string;
@@ -136,9 +147,21 @@ export interface VueDatePickerProps {
     required?: boolean;
     format?: string | ((date: Date) => string) | ((dates: Date[]) => string);
     previewFormat?: string | ((date: Date) => string) | ((dates: Date[]) => string);
+    /**
+     * @deprecated
+     */
     inputClassName?: string;
+    /**
+     * @deprecated
+     */
     menuClassName?: string;
+    /**
+     * @deprecated
+     */
     calendarClassName?: string;
+    /**
+     * @deprecated
+     */
     calendarCellClassName?: string;
     hideInputIcon?: boolean;
     state?: boolean;
@@ -331,6 +354,7 @@ export interface VueDatePickerProps {
     loading?: boolean;
     onInternalModelChange?: (...args: any[]) => void;
     enableMinutes?: boolean;
+    ui?: Partial<UIOptions>;
 }
 
 export type DatePickerInstance = ComponentPublicInstance<PublicMethods> | null;
