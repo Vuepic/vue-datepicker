@@ -103,6 +103,14 @@ Special thanks to our sponsors 🙏
 ">
 </a>
 
+## Contributors
+
+Thanks to all people who contributed to the project 🙏
+
+<a href="https://github.com/Vuepic/vue-datepicker/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Vuepic/vue-datepicker" alt="contributors" />
+</a>
+
 ## Versioning
 
 This project follows [SemVer](https://semver.org) specification
