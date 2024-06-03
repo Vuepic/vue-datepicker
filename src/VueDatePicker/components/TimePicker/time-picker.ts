@@ -7,10 +7,11 @@ import { getDate, getTimeObj } from '@/utils/date-utils';
 
 import type { PickerBasePropsType } from '@/props';
 import type { TimeModel, VueEmit } from '@/interfaces';
+import { localToTz } from '@/utils/timezone';
 
 export const useTimePicker = (props: PickerBasePropsType, emit: VueEmit) => {
     const { modelValue, time } = useModel(props, emit);
-    const { defaultedStartTime, defaultedRange } = useDefaults(props);
+    const { defaultedStartTime, defaultedRange, defaultedTz } = useDefaults(props);
     const { updateTimeValues, getSetDateTime, setTime, assignStartTime, disabledTimesConfig, validateTime } =
         useTimePickerUtils(props, time, modelValue, updateFlowStep);
 
@@ -39,9 +40,12 @@ export const useTimePicker = (props: PickerBasePropsType, emit: VueEmit) => {
     const assignEmptyModel = () => {
         if (defaultedRange.value.enabled) {
             const [firstStartTime, secondStartTime] = getDateFromStartTime() as Date[];
-            modelValue.value = [getSetDateTime(firstStartTime, 0), getSetDateTime(secondStartTime, 1)];
+            modelValue.value = [
+                localToTz(getSetDateTime(firstStartTime, 0), defaultedTz.value.timezone),
+                localToTz(getSetDateTime(secondStartTime, 1), defaultedTz.value.timezone),
+            ];
         } else {
-            modelValue.value = getSetDateTime(getDateFromStartTime() as Date);
+            modelValue.value = localToTz(getSetDateTime(getDateFromStartTime() as Date), defaultedTz.value.timezone);
         }
     };
 
