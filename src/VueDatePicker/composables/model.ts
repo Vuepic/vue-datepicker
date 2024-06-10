@@ -8,7 +8,7 @@ import type { PickerBasePropsType } from '@/props';
 import { useDefaults } from '@/composables/defaults';
 import { localToTz } from '@/utils/timezone';
 
-export const useModel = (props: PickerBasePropsType, emit: VueEmit) => {
+export const useModel = (props: PickerBasePropsType, emit: VueEmit, reMap?: () => void) => {
     const { defaultedRange, defaultedTz } = useDefaults(props);
 
     const today = getDate(localToTz(getDate(), defaultedTz.value.timezone));
@@ -64,6 +64,18 @@ export const useModel = (props: PickerBasePropsType, emit: VueEmit) => {
         () =>
             (instance: number): number =>
                 calendars.value[instance] ? calendars.value[instance].year : 0,
+    );
+
+    watch(
+        modelValue,
+        (newVal, oldVal) => {
+            if (reMap) {
+                if (JSON.stringify(newVal ?? {}) !== JSON.stringify(oldVal ?? {})) {
+                    reMap();
+                }
+            }
+        },
+        { deep: true },
     );
 
     return {

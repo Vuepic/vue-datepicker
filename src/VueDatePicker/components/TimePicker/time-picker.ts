@@ -10,7 +10,10 @@ import type { TimeModel, VueEmit } from '@/interfaces';
 import { localToTz } from '@/utils/timezone';
 
 export const useTimePicker = (props: PickerBasePropsType, emit: VueEmit) => {
-    const { modelValue, time } = useModel(props, emit);
+    const reMap = () => {
+        if (props.isTextInputDate) setTimeFromModel();
+    };
+    const { modelValue, time } = useModel(props, emit, reMap);
     const { defaultedStartTime, defaultedRange, defaultedTz } = useDefaults(props);
     const { updateTimeValues, getSetDateTime, setTime, assignStartTime, disabledTimesConfig, validateTime } =
         useTimePickerUtils(props, time, modelValue, updateFlowStep);

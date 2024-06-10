@@ -17,7 +17,10 @@ import type { PickerBasePropsType } from '@/props';
 import type { VueEmit, IDefaultSelect } from '@/interfaces';
 
 export const useYearPicker = (props: PickerBasePropsType, emit: VueEmit) => {
-    const { modelValue } = useModel(props, emit);
+    const reMap = () => {
+        if (props.isTextInputDate) focusYear.value = getYear(getDate(props.startDate));
+    };
+    const { modelValue } = useModel(props, emit, reMap);
     const hoverDate = ref<Date | null>(null);
     const { defaultedHighlight, defaultedMultiDates, defaultedFilters, defaultedRange, propDates } = useDefaults(props);
     const focusYear = ref();

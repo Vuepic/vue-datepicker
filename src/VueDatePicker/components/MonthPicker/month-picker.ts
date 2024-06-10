@@ -38,8 +38,10 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         defaultedFilters,
         defaultedMultiDates,
     } = useDefaults(props);
-
-    const { modelValue, year, month: instanceMonth, calendars } = useModel(props, emit);
+    const reMap = () => {
+        if (props.isTextInputDate) onYearSelect(getYear(getDate(props.startDate)), 0);
+    };
+    const { modelValue, year, month: instanceMonth, calendars } = useModel(props, emit, reMap);
     const months = computed(() => getMonths(props.formatLocale, props.locale, props.monthNameFormat));
     const hoverDate = ref<Date | null>(null);
     const { checkMinMaxRange } = useValidation(props);

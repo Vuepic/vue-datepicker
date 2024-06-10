@@ -1,4 +1,4 @@
-import { computed, onMounted, ref, nextTick, watch } from 'vue';
+import { computed, onMounted, ref, nextTick } from 'vue';
 import {
     add,
     addDays,
@@ -48,8 +48,9 @@ export const useDatePicker = (
     const tempRange = ref<Date[]>([]);
     const lastScrollTime = ref(new Date());
     const clickedDate = ref<ICalendarDay | undefined>();
+    const reMap = () => mapInternalModuleValues(props.isTextInputDate);
 
-    const { modelValue, calendars, time, today } = useModel(props, emit);
+    const { modelValue, calendars, time, today } = useModel(props, emit, reMap);
     const {
         defaultedMultiCalendars,
         defaultedStartTime,
@@ -102,16 +103,6 @@ export const useDatePicker = (
             emit('select-date');
         }
     };
-
-    watch(
-        modelValue,
-        (newVal, oldVal) => {
-            if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
-                mapInternalModuleValues(props.isTextInputDate);
-            }
-        },
-        { deep: true },
-    );
 
     onMounted(() => {
         if (!props.shadow) {

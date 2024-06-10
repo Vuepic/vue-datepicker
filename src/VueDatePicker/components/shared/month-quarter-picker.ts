@@ -1,4 +1,4 @@
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { addYears, differenceInYears, endOfYear, getMonth, getYear, set, startOfYear, subYears } from 'date-fns';
 
 import { checkHighlightYear, getDate, getMinMaxYear, resetDate, validateMonthYear } from '@/utils/date-utils';
@@ -114,11 +114,23 @@ export const useMonthOrQuarterPicker = ({
         }
     };
 
-    onMounted(() => {
+    const assign = () => {
         checkModelValue();
         if (multiCalendars.value.count) {
             assignMultiCalendars();
         }
+    };
+
+    watch(modelValue, (newVal, oldVal) => {
+        if (props.isTextInputDate) {
+            if (JSON.stringify(newVal ?? {}) !== JSON.stringify(oldVal ?? {})) {
+                assign();
+            }
+        }
+    });
+
+    onMounted(() => {
+        assign();
     });
 
     const selectYear = (year: number, instance: number) => {
