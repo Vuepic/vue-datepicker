@@ -488,6 +488,8 @@ interface Slots {
     'hours-overlay-header'(props: { toggle: () => void }): any;
     'minutes-overlay-header'(props: { toggle: () => void }): any;
     'seconds-overlay-header'(props: { toggle: () => void }): any;
+    'tp-inline-arrow-up'(): any;
+    'tp-inline-arrow-down'(): any;
 }
 
 type __VLS_WithTemplateSlots<T, S> = T & {
