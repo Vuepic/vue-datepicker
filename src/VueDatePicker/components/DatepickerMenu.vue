@@ -172,6 +172,7 @@
         noOverlayFocus: { type: Boolean as PropType<boolean>, default: false },
         collapse: { type: Boolean as PropType<boolean>, default: false },
         getInputRect: { type: Function as PropType<() => DOMRect>, default: () => ({}) },
+        isTextInputDate: { type: Boolean as PropType<boolean>, default: false },
     });
 
     const dpMenuRef = ref<HTMLElement | null>(null);

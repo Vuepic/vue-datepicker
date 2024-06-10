@@ -38,6 +38,7 @@
                         :no-overlay-focus="noOverlayFocus"
                         :collapse="collapse"
                         :get-input-rect="getInputRect"
+                        :is-text-input-date="isTextInputDate"
                         @close-picker="closeMenu"
                         @select-date="selectDate"
                         @auto-apply="autoApplyValue"
@@ -157,6 +158,7 @@
     const shouldFocusNext = ref(false);
     const shiftKeyActive = ref(false);
     const collapse = ref(false);
+    const isTextInputDate = ref(false);
 
     const { setMenuFocused, setShiftKey } = useState();
     const { clearArrowNav } = useArrowNavigation();
@@ -447,12 +449,16 @@
         const validDate = Array.isArray(date) ? !date.some((d) => !validateDate(d)) : validateDate(date);
         const validTime = isValidTime(date);
         if (validDate && validTime) {
+            isTextInputDate.value = true;
             internalModelValue.value = date;
             if (submit) {
                 shouldFocusNext.value = tabbed;
                 selectDate();
                 emit('text-submit');
             }
+            nextTick().then(() => {
+                isTextInputDate.value = false;
+            });
         }
     };
 

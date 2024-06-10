@@ -181,6 +181,7 @@ export const PickerBaseProps = {
     collapse: { type: Boolean as PropType<boolean>, default: false },
     menuWrapRef: { type: Object as PropType<HTMLElement | null>, default: null },
     getInputRect: { type: Function as PropType<() => DOMRect>, default: () => ({}) },
+    isTextInputDate: { type: Boolean as PropType<boolean>, default: false },
 };
 
 export type AllPropsType = ExtractPropTypes<typeof AllProps>;

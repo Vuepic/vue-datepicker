@@ -177,13 +177,13 @@
     );
 
     watch(
-      defaultedMultiCalendars,
-      (newVal, oldVal) => {
-        if (newVal.count - oldVal.count > 0) {
-          assignMonthAndYear();
-        }
-      },
-      { deep: true },
+        defaultedMultiCalendars,
+        (newVal, oldVal) => {
+            if (newVal.count - oldVal.count > 0) {
+                assignMonthAndYear();
+            }
+        },
+        { deep: true },
     );
 
     /**

@@ -107,7 +107,7 @@ export const useDatePicker = (
         modelValue,
         (newVal, oldVal) => {
             if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
-                mapInternalModuleValues();
+                mapInternalModuleValues(props.isTextInputDate);
             }
         },
         { deep: true },
