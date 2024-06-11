@@ -249,8 +249,8 @@
         if (defaultedConfig.value.arrowLeft) return defaultedConfig.value.arrowLeft;
         const menuRect = dpMenuRef.value?.getBoundingClientRect();
         const inputRect = props.getInputRect();
-        if (inputRect.width < calendarWidth.value && inputRect.left <= (menuRect?.left ?? 0)) {
-            return `${inputRect.width / 2}px`;
+        if (inputRect?.width < calendarWidth?.value && inputRect?.left <= (menuRect?.left ?? 0)) {
+            return `${inputRect?.width / 2}px`;
         }
         return '50%';
     });
