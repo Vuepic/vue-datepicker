@@ -169,7 +169,7 @@ describe('Utils and date utils formatting', () => {
     });
 
     it('Should get short month values by fallback to locale', () => {
-        // Pass incorrect formatLocale
+        // @ts-expect-error Pass incorrect formatLocale
         const months = getMonths({}, 'de', 'short');
 
         expect(months).toHaveLength(12);
