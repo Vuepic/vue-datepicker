@@ -35,7 +35,7 @@ function dayNameIntlMapper(locale: string) {
 
 function dayNameDateFnsMapper(formatLocale: Locale) {
     return (day: number) => {
-        return format(new Date(`2017-01-0${day}T00:00:00+00:00`), 'EEEEEE', { locale: formatLocale });
+        return format(localToTz(new Date(`2017-01-0${day}T00:00:00+00:00`), 'UTC'), 'EEEEEE', { locale: formatLocale });
     };
 }
 

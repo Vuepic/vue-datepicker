@@ -122,26 +122,60 @@ describe('Utils and date utils formatting', () => {
         expect(years[1].value).toEqual(2022);
     });
 
-    it('Should get month values according to locale', () => {
+    it('Should get long month values according to locale', () => {
         const months = getMonths(null, 'en', 'long');
 
         expect(months).toHaveLength(12);
         expect(months[0].text).toEqual('January');
+        expect(months[1].text).toEqual('February');
+        expect(months[2].text).toEqual('March');
     });
 
-    it('Should get month values according to formatLocale', () => {
+    it('Should get short month values according to locale', () => {
+        const months = getMonths(null, 'en', 'short');
+
+        expect(months).toHaveLength(12);
+        expect(months[0].text).toEqual('Jan');
+        expect(months[1].text).toEqual('Feb');
+        expect(months[2].text).toEqual('Mar');
+    });
+
+    it('Should get long month values according to formatLocale', () => {
         const months = getMonths(de, 'en', 'long');
 
         expect(months).toHaveLength(12);
         expect(months[0].text).toEqual('Januar');
+        expect(months[1].text).toEqual('Februar');
+        expect(months[2].text).toEqual('März');
     });
 
-    it('Should get month values by fallback to locale', () => {
+    it('Should get long month values by fallback to locale', () => {
         // Pass incorrect formatLocale
         const months = getMonths(null, 'de', 'long');
 
         expect(months).toHaveLength(12);
         expect(months[0].text).toEqual('Januar');
+        expect(months[1].text).toEqual('Februar');
+        expect(months[2].text).toEqual('März');
+    });
+
+    it('Should get short month values according to formatLocale', () => {
+        const months = getMonths(de, 'en', 'short');
+
+        expect(months).toHaveLength(12);
+        expect(months[0].text).toEqual('Jan');
+        expect(months[1].text).toEqual('Feb');
+        expect(months[2].text).toEqual('Mär');
+    });
+
+    it('Should get short month values by fallback to locale', () => {
+        // @ts-expect-error Pass incorrect formatLocale
+        const months = getMonths({}, 'de', 'short');
+
+        expect(months).toHaveLength(12);
+        expect(months[0].text).toEqual('Jan');
+        expect(months[1].text).toEqual('Feb');
+        expect(months[2].text).toEqual('Mär');
     });
 
     it('Should get default pattern', () => {
