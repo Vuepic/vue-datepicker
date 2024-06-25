@@ -251,6 +251,8 @@
         const inputRect = props.getInputRect();
         if (inputRect?.width < calendarWidth?.value && inputRect?.left <= (menuRect?.left ?? 0)) {
             return `${inputRect?.width / 2}px`;
+        } else if (inputRect?.right >= (menuRect?.right ?? 0) && inputRect?.width < calendarWidth?.value) {
+            return `${calendarWidth?.value - inputRect?.width / 2}px`;
         }
         return '50%';
     });
