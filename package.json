@@ -29,7 +29,8 @@
     },
     "./dist/main.css": {
       "import": "./dist/main.css",
-      "require": "./dist/main.css"
+      "require": "./dist/main.css",
+      "default": "./dist/main.css"
     }
   },
   "scripts": {
