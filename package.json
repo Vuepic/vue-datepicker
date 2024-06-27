@@ -1,6 +1,6 @@
 {
   "name": "@vuepic/vue-datepicker",
-  "version": "8.8.0",
+  "version": "8.8.1",
   "description": "Datepicker component for Vue 3",
   "author": "Vuepic",
   "private": false,
@@ -54,14 +54,14 @@
     "@tsconfig/node20": "^20.1.4",
     "@types/jsdom": "^21.1.7",
     "@types/minimist": "^1.2.5",
-    "@types/node": "^20.14.2",
+    "@types/node": "^20.14.9",
     "@vitejs/plugin-vue": "^5.0.5",
     "@vitest/coverage-v8": "^1.6.0",
     "@vue/eslint-config-prettier": "^9.0.0",
     "@vue/eslint-config-typescript": "^13.0.0",
     "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.5.1",
-    "c8": "^9.1.0",
+    "c8": "^10.1.2",
     "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
     "eslint-plugin-vue": "^9.26.0",
@@ -69,26 +69,23 @@
     "minimist": "^1.2.8",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.4.38",
-    "prettier": "^3.3.1",
+    "prettier": "^3.3.2",
     "rimraf": "^5.0.7",
-    "sass": "^1.77.4",
+    "sass": "^1.77.6",
     "sass-loader": "^14.2.1",
     "stylelint": "^16.6.1",
     "stylelint-config-standard-scss": "^13.1.0",
-    "typescript": "^5.4.5",
-    "vite": "^5.2.13",
+    "typescript": "^5.5.2",
+    "vite": "^5.3.2",
     "vitest": "^1.6.0",
-    "vue": "^3.4.27",
-    "vue-tsc": "^2.0.21"
+    "vue": "^3.4.30",
+    "vue-tsc": "^2.0.22"
   },
   "dependencies": {
     "date-fns": "^3.6.0"
   },
   "peerDependencies": {
     "vue": ">=3.2.0"
-  },
-  "engines": {
-    "node": ">=18.12.0"
   },
   "repository": {
     "type": "git",
