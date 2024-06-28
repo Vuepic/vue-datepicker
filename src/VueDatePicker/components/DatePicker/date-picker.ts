@@ -468,7 +468,7 @@ export const useDatePicker = (
         if (defaultedMultiCalendars.value.count > 0) {
             for (let i = 1; i < defaultedMultiCalendars.value.count; i++) {
                 const next = getNextMonthYear(
-                    set(getDate(date), { year: month.value(i - 1), month: year.value(i - 1) }),
+                    set(getDate(date), { year: year.value(i - 1), month: month.value(i - 1) }),
                 );
                 setCalendarMonthYear(i, next.month, next.year);
             }
