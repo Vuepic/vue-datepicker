@@ -78,9 +78,9 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
 
     const defaultedWeekNumbers = computed(() => getDefaultWeekNumbers(props.weekNumbers));
 
-    const defaultedTz = computed(() => getDefaultTimeZone(props.timezone, props.emitTimezone));
+    const defaultedTz = computed(() => getDefaultTimeZone(props.timezone));
 
-    const defaultedMultiDates = computed(() => getDefaultMultiDates(props.multiDates, props.multiDatesLimit));
+    const defaultedMultiDates = computed(() => getDefaultMultiDates(props.multiDates));
 
     const propDates = computed(() =>
         mapPropDates({
@@ -95,20 +95,7 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
         }),
     );
 
-    const defaultedRange = computed(() =>
-        getDefaultRangeOptions(props.range, {
-            minMaxRawRange: false,
-            maxRange: props.maxRange,
-            minRange: props.minRange,
-            noDisabledRange: props.noDisabledRange,
-            showLastInRange: props.showLastInRange,
-            partialRange: props.partialRange,
-            disableTimeRangeValidation: props.disableTimeRangeValidation,
-            autoRange: props.autoRange,
-            fixedStart: props.fixedStart,
-            fixedEnd: props.fixedEnd,
-        }),
-    );
+    const defaultedRange = computed(() => getDefaultRangeOptions(props.range));
 
     const defaultedUI = computed(() => getDefaultUI(props.ui));
 

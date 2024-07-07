@@ -18,7 +18,6 @@ import type {
     WeekNumbersProp,
     WeekNumbersOpts,
     RangeProp,
-    RangeOpts,
     RangeConfig,
     TimeZoneProp,
     TimeZoneConfig,
@@ -207,7 +206,7 @@ export const getDefaultWeekNumbers = (weekNumbers: WeekNumbersProp): WeekNumbers
     };
 };
 
-export const getDefaultRangeOptions = (config: RangeProp, deprecatedOpts: RangeOpts): RangeConfig => {
+export const getDefaultRangeOptions = (config: RangeProp): RangeConfig => {
     const defaultOptions = {
         noDisabledRange: false,
         showLastInRange: true,
@@ -225,29 +224,26 @@ export const getDefaultRangeOptions = (config: RangeProp, deprecatedOpts: RangeO
     }
     return {
         enabled: config,
-        noDisabledRange: deprecatedOpts.noDisabledRange,
-        showLastInRange: deprecatedOpts.showLastInRange,
-        minMaxRawRange: deprecatedOpts.minMaxRawRange,
-        partialRange: deprecatedOpts.partialRange,
-        disableTimeRangeValidation: deprecatedOpts.disableTimeRangeValidation,
-        maxRange: deprecatedOpts.maxRange,
-        minRange: deprecatedOpts.minRange,
-        autoRange: deprecatedOpts.autoRange,
-        fixedStart: deprecatedOpts.fixedStart,
-        fixedEnd: deprecatedOpts.fixedEnd,
+        ...defaultOptions,
     };
 };
 
-export const getDefaultTimeZone = (timeZone: TimeZoneProp, emitTimezone?: string) => {
-    if (!timeZone) return { timezone: undefined, exactMatch: false, emitTimezone };
+export const getDefaultTimeZone = (timeZone: TimeZoneProp) => {
+    if (!timeZone) return { timezone: undefined, exactMatch: false, emitTimezone: undefined };
     if (typeof timeZone === 'string') {
-        return { timezone: timeZone, exactMatch: false, dateInTz: undefined, emitTimezone, convertModel: true };
+        return {
+            timezone: timeZone,
+            exactMatch: false,
+            dateInTz: undefined,
+            emitTimezone: undefined,
+            convertModel: true,
+        };
     }
     return {
         timezone: timeZone.timezone,
         exactMatch: timeZone.exactMatch ?? false,
         dateInTz: timeZone.dateInTz ?? undefined,
-        emitTimezone: emitTimezone ?? timeZone.emitTimezone,
+        emitTimezone: timeZone.emitTimezone ?? undefined,
         convertModel: timeZone.convertModel ?? true,
     };
 };
@@ -299,12 +295,9 @@ export const mapPropDates = (opts: MapPropDatesOpts): PropDates => {
     };
 };
 
-export const getDefaultMultiDates = (
-    multiDates: MultiDatesProp,
-    multiDatesLimit: number | string,
-): MultiDatesDefault => {
+export const getDefaultMultiDates = (multiDates: MultiDatesProp): MultiDatesDefault => {
     if (typeof multiDates === 'boolean') {
-        return { enabled: multiDates, dragSelect: true, limit: +multiDatesLimit };
+        return { enabled: multiDates, dragSelect: true, limit: null };
     }
     return {
         enabled: !!multiDates,

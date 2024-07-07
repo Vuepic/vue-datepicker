@@ -61,7 +61,7 @@
                                     seconds: tInput.seconds,
                                     closeTimePickerBtn,
                                     disabledTimesConfig,
-                                    disabled: index === 0 ? fixedStart : fixedEnd,
+                                    disabled: index === 0 ? defaultedRange.fixedStart : defaultedRange.fixedEnd,
                                 }"
                                 ref="timeInputRefs"
                                 :validate-time="

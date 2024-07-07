@@ -151,7 +151,6 @@
             dp__input_invalid: props.state === false,
             dp__input_focus: isFocused.value || props.isMenuOpen,
             dp__input_reg: !defaultedTextInput.value.enabled,
-            [props.inputClassName]: !!props.inputClassName,
             ...(defaultedUI.value.input ?? {}),
         }),
     );

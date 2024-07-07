@@ -122,7 +122,7 @@ describe('It should validate various picker scenarios', () => {
 
     it('Should emit regular and zoned date value', async () => {
         const timezone = 'UTC';
-        const dp = await openMenu({ emitTimezone: timezone });
+        const dp = await openMenu({ timezone: { emitTimezone: timezone } });
         const today = new Date();
         const value = set(today, { seconds: 0, milliseconds: 0 });
 

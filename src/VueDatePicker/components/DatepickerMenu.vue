@@ -293,7 +293,6 @@
             dp__menu: true,
             dp__menu_index: !defaultedInline.value.enabled,
             dp__relative: defaultedInline.value.enabled,
-            [props.menuClassName]: !!props.menuClassName,
             ...(defaultedUI.value.menu ?? {}),
         }),
     );

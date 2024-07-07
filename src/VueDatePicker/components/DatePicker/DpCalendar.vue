@@ -229,7 +229,6 @@
     // Class object for calendar wrapper
     const calendarWrapClass = computed(
         (): DynamicClass => ({
-            [props.calendarClassName]: !!props.calendarClassName,
             ...(defaultedUI.value.calendar ?? {}),
         }),
     );
