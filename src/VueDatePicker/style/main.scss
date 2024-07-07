@@ -124,6 +124,7 @@
   box-sizing: border-box;
   position: relative;
   width: 100%;
+  direction: ltr !important;
 }
 
 .dp__pointer {
