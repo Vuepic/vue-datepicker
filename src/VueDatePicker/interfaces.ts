@@ -45,7 +45,7 @@ export interface ICalendarDate {
 export interface TextInputOptions {
     enterSubmit: boolean;
     tabSubmit: boolean;
-    openMenu: boolean;
+    openMenu: string | boolean;
     rangeSeparator: string;
     selectOnFocus: boolean;
     format?: string | string[] | ((value: string) => Date | null);

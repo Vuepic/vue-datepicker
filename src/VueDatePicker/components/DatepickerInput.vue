@@ -272,13 +272,9 @@
     const handleOpen = (ev: KeyboardEvent | MouseEvent) => {
         ev.preventDefault();
         checkStopPropagation(ev, defaultedConfig.value, true);
-        if (
-            defaultedTextInput.value.enabled &&
-            defaultedTextInput.value.openMenu &&
-            !defaultedInline.value.input &&
-            !props.isMenuOpen
-        ) {
-            emit('open');
+        if (defaultedTextInput.value.enabled && defaultedTextInput.value.openMenu && !defaultedInline.value.input) {
+            if (defaultedTextInput.value.openMenu === 'open' && !props.isMenuOpen) return emit('open');
+            if (defaultedTextInput.value.openMenu === 'toggle') return emit('toggle');
         } else if (!defaultedTextInput.value.enabled) {
             emit('toggle');
         }
@@ -304,7 +300,7 @@
 
     const handleKeyPress = (ev: KeyboardEvent, fromInput?: boolean): void => {
         if (ev.key === 'Tab') {
-            handleTab(ev, false);
+            handleTab(ev, fromInput);
         }
         if (ev.key === 'Enter') {
             handleEnter(ev);
