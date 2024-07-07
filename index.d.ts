@@ -34,7 +34,8 @@ export type EmitEvents =
     | 'range-end'
     | 'date-update'
     | 'invalid-date'
-    | 'overlay-toggle';
+    | 'overlay-toggle'
+    | 'text-input';
 export type WeekNumberType = 'iso' | 'local' | ((date: Date) => string | number);
 export type TimeObj = { hours: number; minutes: number; seconds: number };
 export type PartialTimeObj = { hours?: number | string; minutes?: number | string; seconds?: number | string };
@@ -44,6 +45,7 @@ export type TimeModel = {
     seconds?: number | string;
 };
 export type MenuView = 'month' | 'year' | 'calendar' | 'time';
+export type TimeType = 'hours' | 'minutes' | 'seconds';
 export type ModelValue =
     | Date
     | Date[]
@@ -171,7 +173,7 @@ export interface VueDatePickerProps {
         | {
               enterSubmit?: boolean;
               tabSubmit?: boolean;
-              openMenu?: boolean;
+              openMenu?: 'open' | 'toggle' | boolean;
               rangeSeparator?: string;
               selectOnFocus?: boolean;
               format?: string | string[] | ((value: string) => Date | null);
@@ -232,9 +234,9 @@ export interface VueDatePickerProps {
         calendarDays?: string;
         openTimePicker?: string;
         closeTimePicker?: string;
-        incrementValue?: (type: 'hours' | 'minutes' | 'seconds') => string;
-        decrementValue?: (type: 'hours' | 'minutes' | 'seconds') => string;
-        openTpOverlay?: (type: 'hours' | 'minutes' | 'seconds') => string;
+        incrementValue?: (type: TimeType) => string;
+        decrementValue?: (type: TimeType) => string;
+        openTpOverlay?: (type: TimeType) => string;
         amPmButton?: string;
         openYearsOverlay?: string;
         openMonthsOverlay?: string;
@@ -244,6 +246,12 @@ export interface VueDatePickerProps {
         prevYear?: string;
         day?: ({ value }: { value: Date }) => string;
         weekDay?: (day: number) => string;
+        clearInput?: string;
+        calendarIcon?: string;
+        timePicker?: string;
+        monthPicker: (overlay: boolean) => string;
+        yearPicker: (overlay: boolean) => string;
+        timeOverlay: (type: TimeType) => string;
     };
     arrowNavigation?: boolean;
     yearPicker?: boolean;

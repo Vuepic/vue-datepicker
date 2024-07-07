@@ -15,6 +15,7 @@
             @focus="handleInputFocus"
             @blur="handleBlur"
             @real-blur="isInputFocused = false"
+            @text-input="$emit('text-input', $event)"
         >
             <template v-for="(slot, i) in inputSlots" #[slot]="args" :key="i">
                 <slot :name="slot" v-bind="args" />
@@ -135,6 +136,7 @@
         'date-update',
         'invalid-date',
         'overlay-toggle',
+        'text-input',
     ]);
 
     defineOptions({

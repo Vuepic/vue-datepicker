@@ -111,6 +111,7 @@
         'focus',
         'blur',
         'real-blur',
+        'text-input',
     ]);
 
     const props = defineProps({
@@ -223,6 +224,7 @@
         }
         textPasted.value = false;
         emit('update:input-value', value);
+        emit('text-input', event, parsedDate.value);
     };
 
     const handleEnter = (ev: KeyboardEvent): void => {
