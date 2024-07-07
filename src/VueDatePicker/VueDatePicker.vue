@@ -542,5 +542,6 @@
         switchView,
         toggleMenu,
         handleFlow,
+        dpWrapMenuRef,
     });
 </script>
