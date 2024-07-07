@@ -13,7 +13,7 @@
             ref="containerRef"
             :class="containerClass"
             :style="{ '--dp-overlay-height': `${containerHeight}px` }"
-            role="table"
+            role="grid"
         >
             <div class="dp__selection_grid_header"><slot name="header"></slot></div>
             <template v-if="$slots.overlay">

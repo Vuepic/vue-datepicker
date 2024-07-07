@@ -1,6 +1,6 @@
 <template>
     <div :class="calendarParentClass">
-        <div ref="calendarWrapRef" :class="calendarWrapClass" role="table">
+        <div ref="calendarWrapRef" :class="calendarWrapClass" role="grid">
             <div class="dp__calendar_header" role="row">
                 <div v-if="weekNumbers" class="dp__calendar_header_item" role="columnheader">
                     {{ weekNumName }}
