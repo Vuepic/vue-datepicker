@@ -51,8 +51,6 @@ export const defaultAriaLabels = (labels: Partial<AriaLabels>): AriaLabels => {
         toggleOverlay: 'Toggle overlay',
         menu: 'Datepicker menu',
         input: 'Datepicker input',
-        calendarWrap: 'Calendar wrapper',
-        calendarDays: 'Calendar days',
         openTimePicker: 'Open time picker',
         closeTimePicker: 'Close time Picker',
         incrementValue: (type: string) => `Increment ${type}`,
@@ -67,6 +65,12 @@ export const defaultAriaLabels = (labels: Partial<AriaLabels>): AriaLabels => {
         prevYear: 'Previous year',
         day: undefined,
         weekDay: undefined,
+        clearInput: 'Clear value',
+        calendarIcon: 'Calendar icon',
+        timePicker: 'Time picker',
+        monthPicker: (overlay: boolean) => `Month picker${overlay ? ' overlay' : ''}`,
+        yearPicker: (overlay: boolean) => `Year picker${overlay ? ' overlay' : ''}`,
+        timeOverlay: (type: string) => `${type} overlay`,
         ...(labels ?? {}),
     };
 };

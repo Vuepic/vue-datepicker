@@ -1,7 +1,7 @@
 <template>
     <div v-if="!disabled" class="dp__time_input">
         <div v-for="(timeInput, i) in timeInputs" :key="i" :class="timeColClass">
-            <template v-if="timeInput.separator"> : </template>
+            <template v-if="timeInput.separator"> <template v-if="!timeOverlayOpen">:</template> </template>
             <template v-else>
                 <button
                     :ref="(el) => assignRefs(el, i, 0)"
@@ -12,6 +12,7 @@
                         dp__inc_dec_button_inline: timePickerInline,
                         dp__tp_inline_btn_top: timePickerInline,
                         dp__inc_dec_button_disabled: disabledArrowUpBtn(timeInput.type),
+                        'dp--hidden-el': timeOverlayOpen,
                     }"
                     :data-test="`${timeInput.type}-time-inc-btn-${props.order}`"
                     :aria-label="defaultedAriaLabels?.incrementValue(timeInput.type)"
@@ -42,13 +43,14 @@
                 <button
                     :ref="(el) => assignRefs(el, i, 1)"
                     type="button"
-                    :aria-label="defaultedAriaLabels?.openTpOverlay(timeInput.type)"
+                    :aria-label="`${timeValueDisplay(timeInput.type).text}-${defaultedAriaLabels?.openTpOverlay(timeInput.type)}`"
                     :class="{
                         dp__time_display: true,
                         dp__time_display_block: !timePickerInline,
                         dp__time_display_inline: timePickerInline,
                         'dp--time-invalid': disabledBox(timeInput.type),
                         'dp--time-overlay-btn': !disabledBox(timeInput.type),
+                        'dp--hidden-el': timeOverlayOpen,
                     }"
                     :disabled="checkOverlayDisabled(timeInput.type)"
                     tabindex="0"
@@ -73,6 +75,7 @@
                         dp__inc_dec_button_inline: timePickerInline,
                         dp__tp_inline_btn_bottom: timePickerInline,
                         dp__inc_dec_button_disabled: disabledArrowDownBtn(timeInput.type),
+                        'dp--hidden-el': timeOverlayOpen,
                     }"
                     :data-test="`${timeInput.type}-time-dec-btn-${props.order}`"
                     :aria-label="defaultedAriaLabels?.decrementValue(timeInput.type)"
@@ -130,6 +133,7 @@
                     :config="config"
                     :arrow-navigation="arrowNavigation"
                     :aria-labels="ariaLabels"
+                    :overlay-label="defaultedAriaLabels.timeOverlay?.(timeInput.type)"
                     @selected="handleTimeFromOverlay(timeInput.type, $event)"
                     @toggle="toggleOverlay(timeInput.type)"
                     @reset-flow="$emit('reset-flow')"
@@ -222,6 +226,7 @@
     const amPmButton = ref<HTMLElement | null>(null);
     const elementRefs = ref<HTMLElement[][]>([]);
     const holdTimeout = ref();
+    const timeOverlayOpen = ref(false);
 
     onMounted(() => {
         emit('mounted');
@@ -379,8 +384,10 @@
         if (!checkOverlayDisabled(type)) {
             overlays[type] = !overlays[type];
             if (!overlays[type]) {
+                timeOverlayOpen.value = false;
                 emit('overlay-closed', type);
             } else {
+                timeOverlayOpen.value = true;
                 emit('overlay-opened', type);
             }
         }

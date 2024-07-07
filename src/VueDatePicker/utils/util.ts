@@ -301,11 +301,12 @@ export const matchDate = (date: Date, mapOrFn: Map<string, any> | ((date: Date) 
     return mapOrFn(getDate(date));
 };
 
-export const checkKeyDown = (ev: KeyboardEvent, fn: () => any, prevent = false) => {
+export const checkKeyDown = (ev: KeyboardEvent, fn: () => any, prevent = false, cb?: (ev: KeyboardEvent) => void) => {
     if (ev.key === EventKey.enter || ev.key === EventKey.space) {
         if (prevent) {
             ev.preventDefault();
         }
         return fn();
     }
+    if (cb) return cb(ev);
 };

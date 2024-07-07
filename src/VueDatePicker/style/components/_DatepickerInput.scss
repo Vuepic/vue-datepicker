@@ -87,13 +87,19 @@
   color: var(--dp-icon-color);
 }
 
-.dp__clear_icon {
+.dp--clear-btn {
   position: absolute;
   top: 50%;
   inset-inline-end: 0;
   transform: translateY(-50%);
   cursor: pointer;
   color: var(--dp-icon-color);
+  background: transparent;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  margin: 0;
 }
 
 .dp__input_icon_pad {

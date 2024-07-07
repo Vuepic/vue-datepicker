@@ -18,6 +18,7 @@
                     :aria-label="defaultedAriaLabels?.prevMonth"
                     :disabled="isDisabled(false)"
                     :class="defaultedUI?.navBtnPrev"
+                    el-name="action-prev"
                     @activate="handleMonthYearChange(false, true)"
                     @set-ref="setElRefs($event, 0)"
                 >
@@ -34,9 +35,10 @@
                         <button
                             :ref="(el) => setElRefs(el, i + 1)"
                             type="button"
+                            :data-dp-element="`overlay-${type.type}`"
                             class="dp__btn dp__month_year_select"
-                            tabindex="0"
-                            :aria-label="type.ariaLabel"
+                            :class="{ 'dp--hidden-el': overlayOpen }"
+                            :aria-label="`${type.text}-${type.ariaLabel}`"
                             :data-test="`${type.type}-toggle-overlay-${instance}`"
                             @click="type.toggle"
                             @keydown="checkKeyDown($event, () => type.toggle(), true)"
@@ -64,6 +66,7 @@
                                 :menu-wrap-ref="menuWrapRef"
                                 :text-input="textInput"
                                 :aria-labels="ariaLabels"
+                                :overlay-label="type.overlayLabel"
                                 @selected="type.updateModelValue"
                                 @toggle="type.toggle"
                             >
@@ -87,6 +90,7 @@
                 <ArrowBtn
                     v-if="showLeftIcon(defaultedMultiCalendars, instance) && vertical"
                     :aria-label="defaultedAriaLabels?.prevMonth"
+                    el-name="action-prev"
                     :disabled="isDisabled(false)"
                     :class="defaultedUI?.navBtnPrev"
                     @activate="handleMonthYearChange(false, true)"
@@ -97,6 +101,7 @@
                 <ArrowBtn
                     v-if="showRightIcon(defaultedMultiCalendars, instance)"
                     ref="rightIcon"
+                    el-name="action-next"
                     :disabled="isDisabled(true)"
                     :aria-label="defaultedAriaLabels?.nextMonth"
                     :class="defaultedUI?.navBtnNext"
@@ -179,6 +184,7 @@
 
     const showMonthPicker = ref(false);
     const showYearPicker = ref(false);
+    const overlayOpen = ref(false);
     const elementRefs = ref<Array<HTMLElement | null>>([null, null, null, null]);
 
     onMounted(() => {
@@ -253,8 +259,10 @@
         }
 
         if (!val.value) {
+            overlayOpen.value = false;
             emit('overlay-closed', type);
         } else {
+            overlayOpen.value = true;
             emit('overlay-opened', type);
         }
     };
@@ -293,6 +301,7 @@
             showSelectionGrid: showMonthPicker.value,
             items: groupedMonths.value,
             ariaLabel: defaultedAriaLabels.value?.openMonthsOverlay,
+            overlayLabel: defaultedAriaLabels.value.monthPicker?.(true) ?? undefined,
         },
         {
             type: HeaderPicker.year,
@@ -304,6 +313,7 @@
             showSelectionGrid: showYearPicker.value,
             items: groupedYears.value,
             ariaLabel: defaultedAriaLabels.value?.openYearsOverlay,
+            overlayLabel: defaultedAriaLabels.value.yearPicker?.(true) ?? undefined,
         },
     ]);
 

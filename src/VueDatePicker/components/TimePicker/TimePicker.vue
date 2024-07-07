@@ -5,7 +5,7 @@
             v-show="!hideNavigationButtons(hideNavigation, 'time')"
             ref="openTimePickerBtn"
             type="button"
-            :class="toggleButtonClass"
+            :class="{ ...toggleButtonClass, 'dp--hidden-el': showTimePicker }"
             :aria-label="defaultedAriaLabels?.openTimePicker"
             :tabindex="noOverlayFocus ? undefined : 0"
             data-test="open-time-picker-btn"
@@ -19,12 +19,14 @@
             <div
                 v-if="showTimePicker || timePicker || timePickerInline"
                 ref="overlayRef"
+                :role="timePickerInline ? undefined : 'dialog'"
                 :class="{
                     dp__overlay: !timePickerInline,
                     'dp--overlay-absolute': !props.timePicker && !timePickerInline,
                     'dp--overlay-relative': props.timePicker,
                 }"
                 :style="timePicker ? { height: `${defaultedConfig.modeHeight}px` } : undefined"
+                :aria-label="defaultedAriaLabels?.timePicker"
                 :tabindex="timePickerInline ? undefined : 0"
             >
                 <div
@@ -70,7 +72,7 @@
                                 @update:seconds="updateSeconds(getEvent($event, index, 'seconds'))"
                                 @mounted="focusOverlay"
                                 @overlay-closed="timeInputOverlayClose"
-                                @overlay-opened="$emit('overlay-opened', $event)"
+                                @overlay-opened="timeInputOverlayOpen"
                                 @am-pm-change="$emit('am-pm-change', $event)"
                             >
                                 <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
@@ -84,7 +86,7 @@
                         v-show="!hideNavigationButtons(hideNavigation, 'time')"
                         ref="closeTimePickerBtn"
                         type="button"
-                        :class="toggleButtonClass"
+                        :class="{ ...toggleButtonClass, 'dp--hidden-el': timePickerOverlayOpen }"
                         :aria-label="defaultedAriaLabels?.closeTimePicker"
                         tabindex="0"
                         @keydown="checkKeyDown($event, () => toggleTimePicker(false))"
@@ -154,6 +156,7 @@
     const closeTimePickerBtn = ref(null);
     const timeInputRefs = ref<TimeInputRef[]>([]);
     const overlayRef = ref<HTMLElement | null>(null);
+    const timePickerOverlayOpen = ref(false);
 
     onMounted(() => {
         emit('mount');
@@ -250,7 +253,12 @@
     };
 
     const timeInputOverlayClose = (mode: TimeType) => {
+        timePickerOverlayOpen.value = false;
         emit('overlay-closed', mode);
+    };
+    const timeInputOverlayOpen = (mode: TimeType) => {
+        timePickerOverlayOpen.value = true;
+        emit('overlay-opened', mode);
     };
 
     defineExpose({ toggleTimePicker });

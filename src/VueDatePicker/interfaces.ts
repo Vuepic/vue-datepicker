@@ -141,8 +141,6 @@ export interface AriaLabels {
     toggleOverlay: string;
     menu: string;
     input: string;
-    calendarWrap: string;
-    calendarDays: string;
     openTimePicker: string;
     closeTimePicker: string;
     incrementValue: (type: TimeType) => string;
@@ -157,6 +155,12 @@ export interface AriaLabels {
     prevYear: string;
     day?: (dayVal: ICalendarDay) => string;
     weekDay?: (day: number) => string;
+    clearInput: string;
+    calendarIcon: string;
+    timePicker: string;
+    monthPicker?: (isOverlay: boolean) => string;
+    yearPicker?: (isOverlay: boolean) => string;
+    timeOverlay?: (type: TimeType) => string;
 }
 
 export interface Time {
@@ -226,6 +230,7 @@ export interface HeaderSelectionBtn {
     showSelectionGrid: boolean;
     items: OverlayGridItem[][];
     ariaLabel: string;
+    overlayLabel?: string;
 }
 
 export type MenuExposedFn =
@@ -312,7 +317,7 @@ export interface WeekNumbersOpts {
 
 export type WeekNumbersProp = 'iso' | 'local' | ((date: Date) => string | number) | WeekNumbersOpts;
 
-export type DPElements = 'action-row';
+export type DPElements = 'action-row' | 'action-prev' | 'action-next' | 'overlay-month' | 'overlay-year';
 
 export interface RangeOpts {
     noDisabledRange: boolean;

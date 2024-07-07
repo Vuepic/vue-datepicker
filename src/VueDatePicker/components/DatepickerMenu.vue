@@ -2,8 +2,8 @@
     <div
         :id="uid ? `dp-menu-${uid}` : undefined"
         ref="dpMenuRef"
-        tabindex="0"
-        role="dialog"
+        :tabindex="defaultedInline.enabled ? undefined : '0'"
+        :role="defaultedInline.enabled ? undefined : 'dialog'"
         :aria-label="ariaLabels?.menu"
         :class="dpMenuClass"
         :style="{ '--dp-arrow-left': arrowPos }"
@@ -121,7 +121,7 @@
     import ActionRow from '@/components/ActionRow.vue';
 
     import { mapSlots, useArrowNavigation, useState, useFlow, useDefaults } from '@/composables';
-    import { checkKeyDown, checkStopPropagation, unrefElement } from '@/utils/util';
+    import { checkKeyDown, checkStopPropagation, getElWithin, unrefElement } from '@/utils/util';
     import { AllProps } from '@/props';
 
     import MonthPicker from '@/components/MonthPicker/MonthPicker.vue';
@@ -390,8 +390,10 @@
         if (ev.key === EventKey.pageUp || ev.key === EventKey.pageDown) {
             if (ev.shiftKey) {
                 callChildFn('changeYear', ev.key === EventKey.pageUp);
+                getElWithin(dpMenuRef.value, 'overlay-year')?.focus();
             } else {
                 callChildFn('changeMonth', ev.key === EventKey.pageUp);
+                getElWithin(dpMenuRef.value, ev.key === EventKey.pageUp ? 'action-prev' : 'action-next')?.focus();
             }
             if ((ev.target as HTMLElement).getAttribute('id')) {
                 dpMenuRef.value?.focus({ preventScroll: true });

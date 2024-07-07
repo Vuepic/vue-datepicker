@@ -2,6 +2,7 @@
     <button
         ref="elRef"
         type="button"
+        :data-dp-element="elName"
         class="dp__btn dp--arrow-btn-nav"
         tabindex="0"
         :aria-label="ariaLabel"
@@ -29,6 +30,7 @@
 
     interface Props {
         ariaLabel?: string;
+        elName?: string;
         disabled: boolean;
     }
 

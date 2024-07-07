@@ -84,7 +84,7 @@
   --dp-hover-icon-color: #959595;
   --dp-primary-color: #1976d2;
   --dp-primary-disabled-color: #6bacea;
-  --dp-primary-text-color: #f8f5f5;
+  --dp-primary-text-color: #fff;
   --dp-secondary-color: #c0c4cc;
   --dp-border-color: #ddd;
   --dp-menu-border-color: #ddd;
@@ -243,4 +243,8 @@
 
 .dp--highlighted {
   background-color: var(--dp-highlight-color);
+}
+
+.dp--hidden-el {
+  visibility: hidden;
 }

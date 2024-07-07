@@ -37,22 +37,22 @@
                 :required="required"
                 :value="inputValue"
                 :autocomplete="autocomplete"
-                :aria-label="defaultedAriaLabels?.input"
                 :aria-disabled="disabled || undefined"
                 :aria-invalid="state === false ? true : undefined"
                 @input="handleInput"
                 @blur="handleBlur"
                 @focus="handleFocus"
                 @keypress="handleKeyPress"
-                @keydown="handleKeyPress"
+                @keydown="handleKeyPress($event, true)"
                 @paste="handlePaste"
             />
-            <div @click="emit('toggle')">
+            <div :aria-label="defaultedAriaLabels?.clearInput" @click="emit('toggle')">
                 <span v-if="$slots['input-icon'] && !hideInputIcon" class="dp__input_icon" @click="emit('toggle')"
                     ><slot name="input-icon"
                 /></span>
                 <CalendarIcon
                     v-if="!$slots['input-icon'] && !hideInputIcon && !$slots['dp-input']"
+                    :aria-label="defaultedAriaLabels?.calendarIcon"
                     class="dp__input_icon dp__input_icons"
                     @click="emit('toggle')"
                 />
@@ -62,12 +62,17 @@
                 class="dp__clear_icon"
                 ><slot name="clear-icon" :clear="onClear"
             /></span>
-            <CancelIcon
+            <button
                 v-if="clearable && !$slots['clear-icon'] && inputValue && !disabled && !readonly"
-                class="dp__clear_icon dp__input_icons"
-                data-test="clear-icon"
+                ref="clearBtnRef"
+                class="dp--clear-btn"
+                type="button"
+                @blur="clearBtnFocused = false"
+                @keydown="checkKeyDown($event, () => onClear($event), true, onClearKeydown)"
                 @click.prevent="onClear($event)"
-            />
+            >
+                <CancelIcon class="dp__input_icons" data-test="clear-icon" />
+            </button>
         </div>
     </div>
 </template>
@@ -83,8 +88,9 @@
 
     import type { PropType } from 'vue';
     import type { DynamicClass, InternalModuleValue } from '@/interfaces';
-    import { checkStopPropagation } from '@/utils/util';
+    import { checkKeyDown, checkStopPropagation } from '@/utils/util';
     import { isAfter } from 'date-fns';
+    import { EventKey } from '@/constants';
 
     defineOptions({
         compatConfig: {
@@ -130,7 +136,9 @@
     const parsedDate = ref();
     const inputRef = ref<HTMLInputElement | null>(null);
     const isFocused = ref(false);
+    const clearBtnFocused = ref(false);
     const textPasted = ref(false);
+    const clearBtnRef = ref<HTMLElement | null>(null);
 
     const inputClass = computed(
         (): DynamicClass => ({
@@ -233,7 +241,12 @@
         }
     };
 
-    const handleTab = (ev: KeyboardEvent): void => {
+    const handleTab = (ev: KeyboardEvent, fromInput?: boolean): void => {
+        if (clearBtnRef.value && fromInput && !clearBtnFocused.value) {
+            ev.preventDefault();
+            clearBtnFocused.value = true;
+            return clearBtnRef.value?.focus();
+        }
         if (defaultedTextInput.value.enabled && defaultedTextInput.value.tabSubmit) {
             parseInput((ev.target as HTMLInputElement).value);
         }
@@ -290,9 +303,9 @@
         emit('clear');
     };
 
-    const handleKeyPress = (ev: KeyboardEvent): void => {
+    const handleKeyPress = (ev: KeyboardEvent, fromInput?: boolean): void => {
         if (ev.key === 'Tab') {
-            handleTab(ev);
+            handleTab(ev, false);
         }
         if (ev.key === 'Enter') {
             handleEnter(ev);
@@ -309,6 +322,13 @@
 
     const setParsedDate = (date: Date | null) => {
         parsedDate.value = date;
+    };
+
+    const onClearKeydown = (event: KeyboardEvent) => {
+        if (event.key === EventKey.tab) {
+            clearBtnFocused.value = false;
+            handleTab(event);
+        }
     };
 
     defineExpose({

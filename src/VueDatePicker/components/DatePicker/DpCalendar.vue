@@ -1,20 +1,15 @@
 <template>
     <div :class="calendarParentClass">
-        <div
-            ref="calendarWrapRef"
-            role="grid"
-            :class="calendarWrapClass"
-            :aria-label="defaultedAriaLabels?.calendarWrap"
-        >
+        <div ref="calendarWrapRef" :class="calendarWrapClass" role="table">
             <div class="dp__calendar_header" role="row">
-                <div v-if="weekNumbers" class="dp__calendar_header_item" role="gridcell">
+                <div v-if="weekNumbers" class="dp__calendar_header_item" role="columnheader">
                     {{ weekNumName }}
                 </div>
                 <div
                     v-for="(dayVal, i) in weekDays"
                     :key="i"
                     class="dp__calendar_header_item"
-                    role="gridcell"
+                    role="columnheader"
                     data-test="calendar-header"
                     :aria-label="defaultedAriaLabels?.weekDay?.(i)"
                 >
@@ -26,15 +21,9 @@
             </div>
             <div class="dp__calendar_header_separator"></div>
             <transition :name="transitionName" :css="!!transitions">
-                <div
-                    v-if="showCalendar"
-                    class="dp__calendar"
-                    role="rowgroup"
-                    :aria-label="defaultedAriaLabels?.calendarDays || undefined"
-                    @mouseleave="isMouseDown = false"
-                >
+                <div v-if="showCalendar" class="dp__calendar" role="rowgroup" @mouseleave="isMouseDown = false">
                     <div v-for="(week, weekInd) in calendarWeeks" :key="weekInd" class="dp__calendar_row" role="row">
-                        <div v-if="weekNumbers" role="gridcell" class="dp__calendar_item dp__week_num">
+                        <div v-if="weekNumbers" class="dp__calendar_item dp__week_num" role="cell">
                             <div class="dp__cell_inner">
                                 {{ getWeekNum(week.days) }}
                             </div>
@@ -46,7 +35,7 @@
                             :key="dayInd + weekInd"
                             role="gridcell"
                             class="dp__calendar_item"
-                            :aria-selected="
+                            :aria-pressed="
                                 (dayVal.classData.dp__active_date ||
                                     dayVal.classData.dp__range_start ||
                                     dayVal.classData.dp__range_start) ??

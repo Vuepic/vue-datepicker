@@ -3,16 +3,17 @@
         ref="gridWrapRef"
         :class="dpOverlayClass"
         :style="dpOverlayStyle"
-        role="dialog"
-        tabindex="0"
+        :role="useRelative ? undefined : 'dialog'"
+        :aria-label="overlayLabel"
+        :tabindex="useRelative ? undefined : '0'"
         @keydown="onKeyDown"
         @click.prevent
     >
         <div
             ref="containerRef"
             :class="containerClass"
-            role="grid"
             :style="{ '--dp-overlay-height': `${containerHeight}px` }"
+            role="table"
         >
             <div class="dp__selection_grid_header"><slot name="header"></slot></div>
             <template v-if="$slots.overlay">
@@ -23,8 +24,8 @@
                     v-for="(row, i) in items"
                     :key="i"
                     class="dp__overlay_row"
-                    :class="{ dp__flex_row: items.length >= 3 }"
                     role="row"
+                    :class="{ dp__flex_row: items.length >= 3 }"
                 >
                     <div
                         v-for="(col, ind) in row"
@@ -102,6 +103,7 @@
         focusValue?: number;
         menuWrapRef?: HTMLElement | null;
         ariaLabels?: Partial<AriaLabels>;
+        overlayLabel?: string;
     }
 
     const props = defineProps<Props>();

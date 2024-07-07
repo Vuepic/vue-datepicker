@@ -1,6 +1,7 @@
-import { createElementBlock, createElementVNode, openBlock } from 'vue';
+import { createElementBlock, createElementVNode, openBlock, useAttrs } from 'vue';
 
 function render() {
+    const attrs = useAttrs();
     return (
         openBlock(),
         createElementBlock(
@@ -11,6 +12,8 @@ function render() {
                 fill: 'currentColor',
                 'aria-hidden': 'true',
                 class: 'dp__icon',
+                role: 'img',
+                ...attrs,
             },
             [
                 createElementVNode('path', {

@@ -11,6 +11,7 @@ function render() {
                 fill: 'currentColor',
                 'aria-hidden': 'true',
                 class: 'dp__icon',
+                role: 'img',
             },
             [
                 createElementVNode('path', {
