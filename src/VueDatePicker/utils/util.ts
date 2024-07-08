@@ -310,3 +310,12 @@ export const checkKeyDown = (ev: KeyboardEvent, fn: () => any, prevent = false, 
     }
     if (cb) return cb(ev);
 };
+
+export const isIOS = () => {
+    return (
+        ['iPad Simulator', 'iPhone Simulator', 'iPod Simulator', 'iPad', 'iPhone', 'iPod'].some((platform) =>
+            navigator.userAgent.includes(platform),
+        ) ||
+        (navigator.userAgent.includes('Mac') && 'ontouchend' in document)
+    );
+};

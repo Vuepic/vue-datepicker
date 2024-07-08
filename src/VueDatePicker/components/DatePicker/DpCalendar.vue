@@ -46,6 +46,7 @@
                             tabindex="0"
                             :data-test="dayVal.value"
                             @click.prevent="onDateSelect($event, dayVal)"
+                            @touchend="onDateSelect($event, dayVal, false)"
                             @keydown="checkKeyDown($event, () => $emit('select-date', dayVal))"
                             @mouseenter="onMouseOver(dayVal, weekInd, dayInd)"
                             @mouseleave="onMouseLeave(dayVal)"
@@ -116,7 +117,14 @@
     import { computed, nextTick, onMounted, ref } from 'vue';
     import { getISOWeek, getWeek } from 'date-fns';
 
-    import { checkKeyDown, checkStopPropagation, getDayNames, getDefaultMarker, unrefElement } from '@/utils/util';
+    import {
+        checkKeyDown,
+        checkStopPropagation,
+        getDayNames,
+        getDefaultMarker,
+        isIOS,
+        unrefElement,
+    } from '@/utils/util';
     import { useArrowNavigation, useDefaults } from '@/composables';
     import { PickerBaseProps } from '@/props';
     import {
@@ -364,7 +372,8 @@
         return getWeekNumber(firstCurrentDate);
     };
 
-    const onDateSelect = (ev: Event, dayVal: ICalendarDay) => {
+    const onDateSelect = (ev: Event, dayVal: ICalendarDay, isClick = true) => {
+        if (isClick && isIOS()) return;
         if (!defaultedMultiDates.value.enabled) {
             checkStopPropagation(ev, defaultedConfig.value);
             emit('select-date', dayVal);
