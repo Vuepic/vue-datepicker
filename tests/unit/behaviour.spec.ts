@@ -348,7 +348,14 @@ describe('It should validate various picker scenarios', () => {
     });
 
     it('Should display disabled values for time range validation', async () => {
-        const dp = await openMenu({ timePicker: true, range: true });
+        const dp = await openMenu({
+            timePicker: true,
+            range: true,
+            startTime: [
+                { hours: 15, minutes: 0, seconds: 0 },
+                { hours: 15, minutes: 0, seconds: 0 },
+            ],
+        });
 
         const verifyArrow = async (type: TimeType, order: number, btn: string) => {
             const arrowBtn = dp.find(`[data-test="${type}-time-${btn}-btn-${order}"]`);
