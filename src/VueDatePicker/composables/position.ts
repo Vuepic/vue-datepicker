@@ -233,8 +233,11 @@ export const usePosition = ({
     const getScrollableParent = function (el: HTMLElement | null): Window | HTMLElement {
         if (!el || el === document.body || el.nodeType === Node.DOCUMENT_FRAGMENT_NODE) return window;
         if (isScrollable(el)) return el;
-        const parent = defaultedConfig.value.shadowDom ? 'parentNode' : 'parentElement';
-        return getScrollableParent((el.assignedSlot ? el.assignedSlot[parent] : el[parent]) as HTMLElement);
+        return getScrollableParent(
+            (el.assignedSlot && defaultedConfig.value.shadowDom
+                ? el.assignedSlot.parentNode
+                : el.parentNode) as HTMLElement,
+        );
     };
 
     const getShadowPos = (rect?: DOMRect) => {
