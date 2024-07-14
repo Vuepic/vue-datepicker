@@ -42,6 +42,7 @@ export const slots = [
     { name: 'top-extra', use: ['shared', 'month-year'] },
     { name: 'tp-inline-arrow-up', use: ['shared', 'time'] },
     { name: 'tp-inline-arrow-down', use: ['shared', 'time'] },
+    { name: 'menu-header', use: ['menu'] },
 ];
 
 export const inputSlots = [{ name: 'trigger' }, { name: 'input-icon' }, { name: 'clear-icon' }, { name: 'dp-input' }];

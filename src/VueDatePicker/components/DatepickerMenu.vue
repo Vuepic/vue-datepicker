@@ -16,6 +16,7 @@
                 <span class="dp--menu-loader"></span>
             </div>
         </div>
+        <div v-if="$slots['menu-header']" class="dp--menu-header"><slot name="menu-header" /></div>
         <div v-if="!defaultedInline.enabled && !teleportCenter" :class="arrowClass"></div>
         <div
             ref="innerMenuRef"
