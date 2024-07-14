@@ -444,6 +444,7 @@ interface Slots {
     'seconds-overlay-header'(props: { toggle: () => void }): any;
     'tp-inline-arrow-up'(): any;
     'tp-inline-arrow-down'(): any;
+    'menu-header'(): any;
 }
 
 type __VLS_WithTemplateSlots<T, S> = T & {
