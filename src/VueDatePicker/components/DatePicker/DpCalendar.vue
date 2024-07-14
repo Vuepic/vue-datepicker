@@ -176,7 +176,7 @@
     } = useDefaults(props);
 
     const showMakerTooltip = ref<Date | null>(null);
-    const markerTooltipStyle = ref<{ bottom: string; left?: string; right?: string; transform: string }>({
+    const markerTooltipStyle = ref<Record<string, string>>({
         bottom: '',
         left: '',
         transform: '',
@@ -261,32 +261,36 @@
     const handleTooltip = async (day: UnwrapRef<ICalendarDay>, weekInd: number, dayInd: number) => {
         const el = unrefElement(dayRefs.value[weekInd][dayInd]);
         if (el) {
-            const { width, height } = el.getBoundingClientRect();
-            showMakerTooltip.value = day.value;
-            let defaultPosition: { left?: string; right?: string } = { left: `${width / 2}px` };
-            let transform = -50;
-            await nextTick();
+            if (day.marker?.customPosition) {
+                markerTooltipStyle.value = day.marker.customPosition(el);
+            } else {
+                const { width, height } = el.getBoundingClientRect();
+                showMakerTooltip.value = day.value;
+                let defaultPosition: { left?: string; right?: string } = { left: `${width / 2}px` };
+                let transform = -50;
+                await nextTick();
 
-            if (activeTooltip.value[0]) {
-                const { left, width: tpWidth } = activeTooltip.value[0].getBoundingClientRect();
-                if (left < 0) {
-                    defaultPosition = { left: `0` };
-                    transform = 0;
-                    tpArrowStyle.value.left = `${width / 2}px`;
+                if (activeTooltip.value[0]) {
+                    const { left, width: tpWidth } = activeTooltip.value[0].getBoundingClientRect();
+                    if (left < 0) {
+                        defaultPosition = { left: `0` };
+                        transform = 0;
+                        tpArrowStyle.value.left = `${width / 2}px`;
+                    }
+
+                    if (window.innerWidth < left + tpWidth) {
+                        defaultPosition = { right: `0` };
+                        transform = 0;
+                        tpArrowStyle.value.left = `${tpWidth - width / 2}px`;
+                    }
                 }
 
-                if (window.innerWidth < left + tpWidth) {
-                    defaultPosition = { right: `0` };
-                    transform = 0;
-                    tpArrowStyle.value.left = `${tpWidth - width / 2}px`;
-                }
+                markerTooltipStyle.value = {
+                    bottom: `${height}px`,
+                    ...defaultPosition,
+                    transform: `translateX(${transform}%)`,
+                };
             }
-
-            markerTooltipStyle.value = {
-                bottom: `${height}px`,
-                ...defaultPosition,
-                transform: `translateX(${transform}%)`,
-            };
 
             emit('tooltip-open', day.marker);
         }

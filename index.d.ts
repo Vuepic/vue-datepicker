@@ -67,6 +67,7 @@ export interface DatePickerMarker {
     type?: 'dot' | 'line';
     tooltip?: { text?: string; html?: string; color?: string }[];
     color?: string;
+    customPosition?: (el: HTMLElement) => Record<string, string | number>;
 }
 
 export interface DisabledTime {

@@ -102,6 +102,7 @@ export interface IMarker {
     type?: 'dot' | 'line';
     tooltip?: { text?: string; slot?: string; color?: string }[];
     color?: string;
+    customPosition?: (el: HTMLElement) => Record<string, string>;
 }
 
 export interface Transition {
