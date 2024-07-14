@@ -261,7 +261,7 @@
     const handleTooltip = async (day: UnwrapRef<ICalendarDay>, weekInd: number, dayInd: number) => {
         const el = unrefElement(dayRefs.value[weekInd][dayInd]);
         if (el) {
-            if (day.marker?.customPosition) {
+            if (day.marker?.customPosition && day.marker?.tooltip?.length) {
                 markerTooltipStyle.value = day.marker.customPosition(el);
             } else {
                 const { width, height } = el.getBoundingClientRect();
