@@ -128,7 +128,7 @@ export const useDatePicker = (
 
     const autoApply = (): void => {
         if (props.autoApply && isFlowLastStep.value) {
-            emit('auto-apply');
+            emit('auto-apply', props.partialFlow ? props.flowStep !== props.flow.length : false);
         }
     };
 
