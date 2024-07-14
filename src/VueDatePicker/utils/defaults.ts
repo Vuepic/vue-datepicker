@@ -174,6 +174,7 @@ export const getDefaultConfig = (config?: Partial<Config>): Config => {
         arrowLeft: undefined,
         keepViewOnOffsetClick: false,
         timeArrowHoldThreshold: 0,
+        shadowDom: false,
     };
     return { ...defaultConfig, ...(config ?? {}) };
 };

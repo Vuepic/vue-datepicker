@@ -13,6 +13,7 @@ import { MenuPlacement } from '@/constants';
 
 import type { Component, ComputedRef, Ref, Slots } from 'vue';
 import type { AllPropsType } from '@/props';
+import { useDefaults } from '@/composables/defaults';
 
 /**
  * Extracted code from the main component, used for calculating the position of the menu
@@ -37,6 +38,7 @@ export const usePosition = ({
     props,
     slots,
 }: Params) => {
+    const { defaultedConfig } = useDefaults(props);
     const menuRect = ref<DOMRect>({} as DOMRect);
     const xCorrect = ref(false);
 
@@ -257,6 +259,11 @@ export const usePosition = ({
         wrap.append(container);
 
         const pos = getShadowPos(input);
+        const mappedSlots = defaultedConfig.value.shadowDom
+            ? Object.keys(slots).filter((slot) =>
+                  ['right-sidebar', 'left-sidebar', 'top-extra', 'action-extra'].includes(slot),
+              )
+            : Object.keys(slots);
 
         const el = h(
             DPMenu,
@@ -265,11 +272,7 @@ export const usePosition = ({
                 shadow: true,
                 style: { opacity: 0, position: 'absolute', ...pos },
             },
-            Object.fromEntries(
-                Object.keys(slots)
-                    .filter((slot) => ['right-sidebar', 'left-sidebar', 'top-extra', 'action-extra'].includes(slot))
-                    .map((slot) => [slot, slots[slot]]),
-            ),
+            Object.fromEntries(mappedSlots.map((slot) => [slot, slots[slot]])),
         );
 
         render(el, container);

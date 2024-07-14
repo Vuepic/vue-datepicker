@@ -121,6 +121,23 @@ export interface UIOptions {
     input: CustomClass;
 }
 
+export interface GeneralConfig {
+    allowStopPropagation?: boolean;
+    closeOnScroll?: boolean;
+    modeHeight?: number;
+    allowPreventDefault?: boolean;
+    closeOnClearValue?: boolean;
+    closeOnAutoApply?: boolean;
+    noSwipe?: boolean;
+    keepActionRow?: boolean;
+    onClickOutside?: (validate: () => boolean) => void;
+    tabOutClosesMenu?: boolean;
+    arrowLeft?: string;
+    keepViewOnOffsetClick?: boolean;
+    timeArrowHoldThreshold?: boolean;
+    shadowDom?: boolean;
+}
+
 export interface VueDatePickerProps {
     uid?: string;
     name?: string;
@@ -283,21 +300,7 @@ export interface VueDatePickerProps {
         | [DisabledTime[], DisabledTime[]];
     timePickerInline?: boolean;
     calendar?: (weeks: CalendarWeek[]) => CalendarWeek[];
-    config?: {
-        allowStopPropagation?: boolean;
-        closeOnScroll?: boolean;
-        modeHeight?: number;
-        allowPreventDefault?: boolean;
-        closeOnClearValue?: boolean;
-        closeOnAutoApply?: boolean;
-        noSwipe?: boolean;
-        keepActionRow?: boolean;
-        onClickOutside?: (validate: () => boolean) => void;
-        tabOutClosesMenu?: boolean;
-        arrowLeft?: string;
-        keepViewOnOffsetClick?: boolean;
-        timeArrowHoldThreshold?: boolean;
-    };
+    config?: GeneralConfig;
     quarterPicker?: boolean;
     yearFirst?: boolean;
     loading?: boolean;

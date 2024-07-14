@@ -292,6 +292,7 @@ export interface Config {
     arrowLeft?: string;
     keepViewOnOffsetClick?: boolean;
     timeArrowHoldThreshold: number;
+    shadowDom?: boolean;
 }
 
 export interface Highlight {
