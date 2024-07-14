@@ -34,6 +34,10 @@ export const clickCalendarDate = async (dp: VueWrapper<any>, date: Date) => {
     await dp.find(`[data-test="${resetDateTime(date)}"]`).trigger('click');
 };
 
+export const hoverCalendarDate = async (dp: VueWrapper<any>, date: Date) => {
+    await dp.find(`[data-test="${resetDateTime(date)}"]`).trigger('mouseenter');
+};
+
 export const clickSelectBtn = async (dp: VueWrapper<any>) => {
     await dp.find(`[data-test="select-button"]`).trigger('click');
 };

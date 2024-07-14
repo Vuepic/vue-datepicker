@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
     add,
     addDays,
@@ -20,10 +20,10 @@ import {
 
 import { resetDateTime } from '@/utils/date-utils';
 
-import { clickCalendarDate, clickSelectBtn, getMonthName, openMenu, reOpenMenu } from '../utils';
+import { clickCalendarDate, clickSelectBtn, getMonthName, hoverCalendarDate, openMenu, reOpenMenu } from '../utils';
 import { FlowStep } from '@/constants';
-import type { TimeModel, TimeType } from '@/interfaces';
-import type { VueWrapper } from '@vue/test-utils';
+import type { IMarker, TimeModel, TimeType } from '@/interfaces';
+import { type VueWrapper } from '@vue/test-utils';
 import { localToTz } from '@/utils/timezone';
 
 describe('It should validate various picker scenarios', () => {
@@ -78,6 +78,7 @@ describe('It should validate various picker scenarios', () => {
         await clickCalendarDate(dp, date);
         const emitted = dp.emitted();
         expect(emitted).toHaveProperty('update:model-value', [[set(date, { seconds: 0, milliseconds: 0 })]]);
+        dp.unmount();
     });
 
     it('Should not switch calendars in 1 month range with multi-calendars enabled (#472)', async () => {
@@ -98,6 +99,7 @@ describe('It should validate various picker scenarios', () => {
 
         expect(innerStartCell.classes()).toContain('dp__range_start');
         expect(innerEndCell.classes()).toContain('dp__range_end');
+        dp.unmount();
     });
 
     it('Should not enable partial range with text-input on time-picker (#505)', async () => {
@@ -106,7 +108,7 @@ describe('It should validate various picker scenarios', () => {
         const hours = getHours(today);
         const minutes = getMinutes(today);
 
-        const singleTime = `${hours}:${minutes}`;
+        const singleTime = `${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes}`;
 
         const input = dp.find('input');
         await input.setValue(singleTime);
@@ -118,6 +120,7 @@ describe('It should validate various picker scenarios', () => {
         expect(dp.emitted()).toHaveProperty('invalid-select', [
             [[set(new Date(), { hours, minutes, seconds: 0, milliseconds: 0 })]],
         ]);
+        dp.unmount();
     });
 
     it('Should emit regular and zoned date value', async () => {
@@ -133,6 +136,7 @@ describe('It should validate various picker scenarios', () => {
 
         expect(emitted).toHaveProperty('update:model-value', [[value]]);
         expect(emitted).toHaveProperty('update:model-timezone-value', [[localToTz(value, timezone)]]);
+        dp.unmount();
     });
 
     it('Should set predefined value in the time-picker and emit updated value', async () => {
@@ -466,6 +470,7 @@ describe('It should validate various picker scenarios', () => {
         await dp.find(`[data-test="select-button"]`).trigger('click');
 
         expect(dp.emitted()['update:model-value']).toBeTruthy();
+        dp.unmount();
     });
 
     it('Should select preset date on month picker', async () => {
@@ -479,5 +484,72 @@ describe('It should validate various picker scenarios', () => {
         expect(dp.emitted()['update:model-value']).toEqual([
             [{ month: getMonth(yearStart), year: getYear(yearStart) }],
         ]);
+        dp.unmount();
+    });
+
+    it('Should trigger customPosition function on the marker #933', async () => {
+        const customPosition = vi.fn();
+        const start = resetDateTime(startOfMonth(new Date()));
+        const valid = start;
+        const invalid = addDays(start, 1);
+        const notCustom = addDays(start, 2);
+
+        const markers: IMarker[] = [
+            { date: valid, type: 'dot', tooltip: [{ text: 'my tooltip' }], customPosition },
+            { date: invalid, type: 'dot', customPosition },
+            { date: notCustom, type: 'dot', tooltip: [{ text: 'my tooltip' }] },
+        ];
+
+        const dp = await openMenu({ markers });
+
+        await hoverCalendarDate(dp, valid);
+        expect(customPosition.mock.calls.length).toEqual(1);
+        await hoverCalendarDate(dp, invalid);
+        expect(customPosition.mock.calls.length).toEqual(1);
+        await hoverCalendarDate(dp, notCustom);
+        expect(customPosition.mock.calls.length).toEqual(1);
+        dp.unmount();
+    });
+
+    it('Should not close menu on auto-apply and partial flow #936', async () => {
+        const flow = [FlowStep.calendar, FlowStep.time];
+        const today = new Date();
+        const dp = await openMenu({ flow, partialFlow: true, autoApply: true });
+        await clickCalendarDate(dp, today);
+        const overlay = dp.find('[aria-label="Time picker"]');
+        expect(dp.emitted()).toHaveProperty('update:model-value');
+        expect(overlay.exists()).toBeTruthy();
+        dp.unmount();
+    });
+
+    it('Should keep proper years when selecting auto-range on multi-calendars #909', async () => {
+        const start = startOfMonth(new Date());
+        const nextYear = getYear(addMonths(start, 1));
+        const dp = await openMenu({ range: { autoRange: 5 }, multiCalendars: true });
+        await clickCalendarDate(dp, start);
+        const nextYearText = dp.find('[data-test="year-toggle-overlay-1"]').text();
+        expect(nextYear).toEqual(+nextYearText);
+        dp.unmount();
+    });
+
+    it('Should toggle menu on text-input click if set #905', async () => {
+        const dp = await openMenu({ textInput: { openMenu: 'toggle' } });
+        await dp.find('[data-test="dp-input"]').trigger('click');
+        const menu = dp.find('[role="dialog"]');
+        expect(menu.exists()).toBeFalsy();
+        await reOpenMenu(dp, { textInput: { openMenu: 'open' } });
+        await dp.find('[data-test="dp-input"]').trigger('click');
+        const menuShown = dp.find('[role="dialog"]');
+        expect(menuShown.exists()).toBeTruthy();
+    });
+
+    it('Should trigger @text-input event when typing date #909', async () => {
+        const dp = await openMenu({ textInput: { openMenu: 'toggle' } });
+        await dp.find('[data-test="dp-input"]').setValue('1');
+        expect(dp.emitted()).toHaveProperty('text-input');
+        expect(dp.emitted()['text-input']).toHaveLength(1);
+        await dp.find('[data-test="dp-input"]').setValue('02');
+        expect(dp.emitted()).toHaveProperty('text-input');
+        expect(dp.emitted()['text-input']).toHaveLength(2);
     });
 });
