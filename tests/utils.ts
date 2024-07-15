@@ -41,3 +41,5 @@ export const hoverCalendarDate = async (dp: VueWrapper<any>, date: Date) => {
 export const clickSelectBtn = async (dp: VueWrapper<any>) => {
     await dp.find(`[data-test="select-button"]`).trigger('click');
 };
+
+export const padZero = (val: number) => (val < 10 ? `0${val}` : val);

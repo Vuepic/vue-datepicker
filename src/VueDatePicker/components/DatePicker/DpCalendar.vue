@@ -2,14 +2,14 @@
     <div :class="calendarParentClass">
         <div ref="calendarWrapRef" :class="calendarWrapClass" role="grid">
             <div class="dp__calendar_header" role="row">
-                <div v-if="weekNumbers" class="dp__calendar_header_item" role="columnheader">
+                <div v-if="weekNumbers" class="dp__calendar_header_item" role="gridcell">
                     {{ weekNumName }}
                 </div>
                 <div
                     v-for="(dayVal, i) in weekDays"
                     :key="i"
                     class="dp__calendar_header_item"
-                    role="columnheader"
+                    role="gridcell"
                     data-test="calendar-header"
                     :aria-label="defaultedAriaLabels?.weekDay?.(i)"
                 >
@@ -23,7 +23,7 @@
             <transition :name="transitionName" :css="!!transitions">
                 <div v-if="showCalendar" class="dp__calendar" role="rowgroup" @mouseleave="isMouseDown = false">
                     <div v-for="(week, weekInd) in calendarWeeks" :key="weekInd" class="dp__calendar_row" role="row">
-                        <div v-if="weekNumbers" class="dp__calendar_item dp__week_num" role="cell">
+                        <div v-if="weekNumbers" class="dp__calendar_item dp__week_num" role="gridcell">
                             <div class="dp__cell_inner">
                                 {{ getWeekNum(week.days) }}
                             </div>
@@ -258,38 +258,42 @@
 
     const showDay = computed(() => (day: ICalendarDay) => (props.hideOffsetDates ? day.current : true));
 
+    const positionTooltip = async (el: HTMLElement, day: ICalendarDay) => {
+        const { width, height } = el.getBoundingClientRect();
+        showMakerTooltip.value = day.value;
+        let defaultPosition: { left?: string; right?: string } = { left: `${width / 2}px` };
+        let transform = -50;
+        await nextTick();
+
+        if (activeTooltip.value[0]) {
+            const { left, width: tpWidth } = activeTooltip.value[0].getBoundingClientRect();
+            if (left < 0) {
+                defaultPosition = { left: `0` };
+                transform = 0;
+                tpArrowStyle.value.left = `${width / 2}px`;
+            }
+
+            if (window.innerWidth < left + tpWidth) {
+                defaultPosition = { right: `0` };
+                transform = 0;
+                tpArrowStyle.value.left = `${tpWidth - width / 2}px`;
+            }
+        }
+
+        markerTooltipStyle.value = {
+            bottom: `${height}px`,
+            ...defaultPosition,
+            transform: `translateX(${transform}%)`,
+        };
+    };
+
     const handleTooltip = async (day: UnwrapRef<ICalendarDay>, weekInd: number, dayInd: number) => {
         const el = unrefElement(dayRefs.value[weekInd][dayInd]);
         if (el) {
             if (day.marker?.customPosition && day.marker?.tooltip?.length) {
                 markerTooltipStyle.value = day.marker.customPosition(el);
             } else {
-                const { width, height } = el.getBoundingClientRect();
-                showMakerTooltip.value = day.value;
-                let defaultPosition: { left?: string; right?: string } = { left: `${width / 2}px` };
-                let transform = -50;
-                await nextTick();
-
-                if (activeTooltip.value[0]) {
-                    const { left, width: tpWidth } = activeTooltip.value[0].getBoundingClientRect();
-                    if (left < 0) {
-                        defaultPosition = { left: `0` };
-                        transform = 0;
-                        tpArrowStyle.value.left = `${width / 2}px`;
-                    }
-
-                    if (window.innerWidth < left + tpWidth) {
-                        defaultPosition = { right: `0` };
-                        transform = 0;
-                        tpArrowStyle.value.left = `${tpWidth - width / 2}px`;
-                    }
-                }
-
-                markerTooltipStyle.value = {
-                    bottom: `${height}px`,
-                    ...defaultPosition,
-                    transform: `translateX(${transform}%)`,
-                };
+                await positionTooltip(el, day);
             }
 
             emit('tooltip-open', day.marker);

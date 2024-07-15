@@ -20,7 +20,15 @@ import {
 
 import { resetDateTime } from '@/utils/date-utils';
 
-import { clickCalendarDate, clickSelectBtn, getMonthName, hoverCalendarDate, openMenu, reOpenMenu } from '../utils';
+import {
+    clickCalendarDate,
+    clickSelectBtn,
+    getMonthName,
+    hoverCalendarDate,
+    openMenu,
+    padZero,
+    reOpenMenu,
+} from '../utils';
 import { FlowStep } from '@/constants';
 import type { IMarker, TimeModel, TimeType } from '@/interfaces';
 import { type VueWrapper } from '@vue/test-utils';
@@ -108,7 +116,7 @@ describe('It should validate various picker scenarios', () => {
         const hours = getHours(today);
         const minutes = getMinutes(today);
 
-        const singleTime = `${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes}`;
+        const singleTime = `${padZero(hours)}:${padZero(minutes)}`;
 
         const input = dp.find('input');
         await input.setValue(singleTime);
@@ -146,7 +154,6 @@ describe('It should validate various picker scenarios', () => {
 
         const hours = dp.find(`[data-test="hours-toggle-overlay-btn-0"]`);
         const minutes = dp.find(`[data-test="minutes-toggle-overlay-btn-0"]`);
-        const padZero = (val: number) => (val < 10 ? `0${val}` : val);
 
         expect(hours.text()).toEqual(`${padZero(modelValue.hours)}`);
         expect(minutes.text()).toEqual(`${padZero(modelValue.minutes)}`);
