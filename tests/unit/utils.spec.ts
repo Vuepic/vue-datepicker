@@ -57,7 +57,7 @@ import type { AllPropsType } from '@/props';
 import { defaultMultiCalendars, defaultTransitions, mapPropDates } from '@/utils/defaults';
 import { de } from 'date-fns/locale';
 import { localToTz } from '@/utils/timezone';
-import type { TimeZoneConfig } from '@/interfaces';
+import type { IDefaultSelect, TimeZoneConfig } from '@/interfaces';
 
 const getCurrentTime = () => {
     return {
@@ -83,6 +83,13 @@ const getMapDatesOpts = (date: Date, timezone: TimeZoneConfig, highlightFn: (dat
         highlight: highlightFn,
         timezone,
     };
+};
+
+const validateMonthNames = (months: IDefaultSelect[], values: string[]) => {
+    expect(months).toHaveLength(12);
+    expect(months[0].text).toEqual(values[0]);
+    expect(months[1].text).toEqual(values[1]);
+    expect(months[2].text).toEqual(values[2]);
 };
 
 describe('Utils and date utils formatting', () => {
@@ -124,58 +131,31 @@ describe('Utils and date utils formatting', () => {
 
     it('Should get long month values according to locale', () => {
         const months = getMonths(null, 'en', 'long');
-
-        expect(months).toHaveLength(12);
-        expect(months[0].text).toEqual('January');
-        expect(months[1].text).toEqual('February');
-        expect(months[2].text).toEqual('March');
+        validateMonthNames(months, ['January', 'February', 'March']);
     });
 
     it('Should get short month values according to locale', () => {
         const months = getMonths(null, 'en', 'short');
-
-        expect(months).toHaveLength(12);
-        expect(months[0].text).toEqual('Jan');
-        expect(months[1].text).toEqual('Feb');
-        expect(months[2].text).toEqual('Mar');
+        validateMonthNames(months, ['Jan', 'Feb', 'Mar']);
     });
 
-    it('Should get long month values according to formatLocale', () => {
+    it('Should get long month values according to formatLocale and fallback locale', () => {
         const months = getMonths(de, 'en', 'long');
-
-        expect(months).toHaveLength(12);
-        expect(months[0].text).toEqual('Januar');
-        expect(months[1].text).toEqual('Februar');
-        expect(months[2].text).toEqual('März');
-    });
-
-    it('Should get long month values by fallback to locale', () => {
-        // Pass incorrect formatLocale
-        const months = getMonths(null, 'de', 'long');
-
-        expect(months).toHaveLength(12);
-        expect(months[0].text).toEqual('Januar');
-        expect(months[1].text).toEqual('Februar');
-        expect(months[2].text).toEqual('März');
+        const namesArr = ['Januar', 'Februar', 'März'];
+        validateMonthNames(months, namesArr);
+        const monthsWithFallback = getMonths(null, 'de', 'long');
+        validateMonthNames(monthsWithFallback, namesArr);
     });
 
     it('Should get short month values according to formatLocale', () => {
         const months = getMonths(de, 'en', 'short');
-
-        expect(months).toHaveLength(12);
-        expect(months[0].text).toEqual('Jan');
-        expect(months[1].text).toEqual('Feb');
-        expect(months[2].text).toEqual('Mär');
+        validateMonthNames(months, ['Jan', 'Feb', 'Mär']);
     });
 
     it('Should get short month values by fallback to locale', () => {
         // @ts-expect-error Pass incorrect formatLocale
         const months = getMonths({}, 'de', 'short');
-
-        expect(months).toHaveLength(12);
-        expect(months[0].text).toEqual('Jan');
-        expect(months[1].text).toEqual('Feb');
-        expect(months[2].text).toEqual('Mär');
+        validateMonthNames(months, ['Jan', 'Feb', 'Mär']);
     });
 
     it('Should get default pattern', () => {
