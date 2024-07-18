@@ -46,7 +46,7 @@
                 @keydown="handleKeyPress($event, true)"
                 @paste="handlePaste"
             />
-            <div :aria-label="defaultedAriaLabels?.clearInput" @click="emit('toggle')">
+            <div @click="emit('toggle')">
                 <span v-if="$slots['input-icon'] && !hideInputIcon" class="dp__input_icon" @click="emit('toggle')"
                     ><slot name="input-icon"
                 /></span>
@@ -57,14 +57,13 @@
                     @click="emit('toggle')"
                 />
             </div>
-            <span
-                v-if="$slots['clear-icon'] && inputValue && clearable && !disabled && !readonly"
-                class="dp--clear-btn"
+            <span v-if="$slots['clear-icon'] && inputValue && clearable && !disabled && !readonly" class="dp--clear-btn"
                 ><slot name="clear-icon" :clear="onClear"
             /></span>
             <button
                 v-if="clearable && !$slots['clear-icon'] && inputValue && !disabled && !readonly"
                 ref="clearBtnRef"
+                :aria-label="defaultedAriaLabels?.clearInput"
                 class="dp--clear-btn"
                 type="button"
                 @blur="clearBtnFocused = false"
