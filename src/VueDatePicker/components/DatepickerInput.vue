@@ -59,7 +59,7 @@
             </div>
             <span
                 v-if="$slots['clear-icon'] && inputValue && clearable && !disabled && !readonly"
-                class="dp__clear_icon"
+                class="dp--clear-btn"
                 ><slot name="clear-icon" :clear="onClear"
             /></span>
             <button
