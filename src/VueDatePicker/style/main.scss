@@ -43,6 +43,7 @@
   --dp-time-font-size: 2rem;
   --dp-action-button-height: 22px;
   --dp-action-row-padding: 8px;
+  --dp-direction: ltr;
 }
 
 .dp__theme_dark {
@@ -127,7 +128,7 @@
 }
 
 .dp__main * {
-  direction: ltr !important;
+  direction: var(--dp-direction, ltr);
 }
 
 .dp__pointer {
