@@ -384,7 +384,7 @@ interface Slots {
     'action-buttons'(props: { value: InternalModelValue }): any;
     'action-preview'(props: { value: InternalModelValue }): any;
     'calendar-header'(props: { day: string; index: number }): any;
-    'marker-tooltip'(props: { day: Date; tooltip: { text?: string; html?: string; color?: string }[] }): any;
+    'marker-tooltip'(props: { day: Date; tooltip: { text?: string; html?: string; color?: string } }): any;
     'action-extra'(props: { selectCurrentDate: () => void }): any;
     'time-picker-overlay'(props: {
         hours: number | number[];
