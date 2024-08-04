@@ -174,7 +174,7 @@
     );
 
     const dpOverlayStyle = computed(() =>
-        props.useRelative ? { height: `${props.height}px`, width: `${260}px` } : undefined,
+        props.useRelative ? { height: `${props.height}px`, width: `var(--dp-menu-min-width)` } : undefined,
     );
 
     const cellClassName = computed(() => ({
