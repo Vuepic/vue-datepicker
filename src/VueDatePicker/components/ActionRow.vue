@@ -99,7 +99,6 @@
         defaultedInline,
         defaultedRange,
         defaultedMultiDates,
-        getDefaultPattern,
     } = useDefaults(props);
     const { isTimeValid, isMonthValid } = useValidation(props);
     const { buildMatrix } = useArrowNavigation();
@@ -173,7 +172,7 @@
             props.formatLocale,
             defaultedTextInput.value.rangeSeparator,
             props.modelAuto,
-            getDefaultPattern(),
+            defaultedPreviewFormat.value as string,
         );
     };
 
