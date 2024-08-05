@@ -245,10 +245,10 @@
         if (clearBtnRef.value && fromInput && !clearBtnFocused.value) {
             ev.preventDefault();
             clearBtnFocused.value = true;
-            return clearBtnRef.value?.focus();
+            clearBtnRef.value?.focus();
         }
         if (defaultedTextInput.value.enabled && defaultedTextInput.value.tabSubmit) {
-            parseInput((ev.target as HTMLInputElement).value);
+            parseInput((inputRef.value as HTMLInputElement).value);
         }
 
         if (defaultedTextInput.value.tabSubmit && isValidDate(parsedDate.value) && props.inputValue !== '') {
