@@ -1,5 +1,5 @@
 <template>
-    <div @click="handleOpen">
+    <div @click="(e) => !$slots['dp-input'] && handleOpen(e)">
         <slot v-if="$slots.trigger && !$slots['dp-input'] && !defaultedInline.enabled" name="trigger" />
         <div v-if="!$slots.trigger && (!defaultedInline.enabled || defaultedInline.input)" class="dp__input_wrap">
             <slot
