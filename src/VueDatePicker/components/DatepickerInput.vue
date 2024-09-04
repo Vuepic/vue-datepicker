@@ -43,7 +43,7 @@
                 @blur="handleBlur"
                 @focus="handleFocus"
                 @keypress="handleKeyPress"
-                @keydown="handleKeyPress($event, true)"
+                @keydown="handleKeyPress($event)"
                 @paste="handlePaste"
             />
             <div @click="emit('toggle')">
@@ -62,11 +62,9 @@
             /></span>
             <button
                 v-if="clearable && !$slots['clear-icon'] && inputValue && !disabled && !readonly"
-                ref="clearBtnRef"
                 :aria-label="defaultedAriaLabels?.clearInput"
                 class="dp--clear-btn"
                 type="button"
-                @blur="clearBtnFocused = false"
                 @keydown="checkKeyDown($event, () => onClear($event), true, onClearKeydown)"
                 @click.prevent="onClear($event)"
             >
@@ -136,9 +134,7 @@
     const parsedDate = ref();
     const inputRef = ref<HTMLInputElement | null>(null);
     const isFocused = ref(false);
-    const clearBtnFocused = ref(false);
     const textPasted = ref(false);
-    const clearBtnRef = ref<HTMLElement | null>(null);
 
     const inputClass = computed(
         (): DynamicClass => ({
@@ -241,13 +237,8 @@
         }
     };
 
-    const handleTab = (ev: KeyboardEvent, fromInput?: boolean): void => {
-        if (clearBtnRef.value && fromInput && !clearBtnFocused.value) {
-            ev.preventDefault();
-            clearBtnFocused.value = true;
-            clearBtnRef.value?.focus();
-        }
-        if (defaultedTextInput.value.enabled && defaultedTextInput.value.tabSubmit) {
+    const handleTab = (ev: KeyboardEvent, noParse?: boolean): void => {
+        if (defaultedTextInput.value.enabled && defaultedTextInput.value.tabSubmit && !noParse) {
             parseInput((ev.target as HTMLInputElement).value);
         }
 
@@ -299,9 +290,9 @@
         emit('clear');
     };
 
-    const handleKeyPress = (ev: KeyboardEvent, fromInput?: boolean): void => {
+    const handleKeyPress = (ev: KeyboardEvent): void => {
         if (ev.key === 'Tab') {
-            handleTab(ev, fromInput);
+            handleTab(ev);
         }
         if (ev.key === 'Enter') {
             handleEnter(ev);
@@ -322,8 +313,7 @@
 
     const onClearKeydown = (event: KeyboardEvent) => {
         if (event.key === EventKey.tab) {
-            clearBtnFocused.value = false;
-            handleTab(event);
+            handleTab(event, true);
         }
     };
 
