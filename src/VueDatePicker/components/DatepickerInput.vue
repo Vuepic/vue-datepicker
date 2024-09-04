@@ -37,6 +37,7 @@
                 :required="required"
                 :value="inputValue"
                 :autocomplete="autocomplete"
+                :aria-label="defaultedAriaLabels?.input"
                 :aria-disabled="disabled || undefined"
                 :aria-invalid="state === false ? true : undefined"
                 @input="handleInput"
