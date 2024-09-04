@@ -172,7 +172,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
             const endWeek = value[1];
             return [
                 getDate(Array.isArray(startWeek) ? startWeek[0] : null),
-                getDate(Array.isArray(endWeek) ? endWeek[0] : null),
+                Array.isArray(endWeek) && endWeek.length ? getDate(endWeek[0]) : null,
             ];
         }
         return getDate(value[0]);
