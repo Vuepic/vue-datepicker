@@ -461,6 +461,8 @@
             nextTick().then(() => {
                 isTextInputDate.value = false;
             });
+        } else {
+            emit('invalid-date', date);
         }
     };
 
