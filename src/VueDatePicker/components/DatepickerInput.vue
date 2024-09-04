@@ -1,5 +1,5 @@
 <template>
-    <div @click="(e) => !$slots['dp-input'] && handleOpen(e)">
+    <div @click="handleOpen">
         <slot v-if="$slots.trigger && !$slots['dp-input'] && !defaultedInline.enabled" name="trigger" />
         <div v-if="!$slots.trigger && (!defaultedInline.enabled || defaultedInline.input)" class="dp__input_wrap">
             <slot
@@ -263,7 +263,6 @@
     };
 
     const handleOpen = (ev: KeyboardEvent | MouseEvent) => {
-        ev.preventDefault();
         checkStopPropagation(ev, defaultedConfig.value, true);
         if (defaultedTextInput.value.enabled && defaultedTextInput.value.openMenu && !defaultedInline.value.input) {
             if (defaultedTextInput.value.openMenu === 'open' && !props.isMenuOpen) return emit('open');
