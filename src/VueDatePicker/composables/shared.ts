@@ -30,16 +30,12 @@ export const setMonthOrYearRange = (
     if (rangeDate.length === 2 && rangeDate[1] !== null) {
         rangeDate = [];
     }
-
     if (!rangeDate.length) {
         rangeDate = [date];
         emit('range-start', date);
-    } else if (isDateBefore(date, rangeDate[0])) {
-        rangeDate.unshift(date);
-        emit('range-start', rangeDate[0]);
-        emit('range-start', rangeDate[1]);
     } else {
-        rangeDate[1] = date;
+        if (isDateBefore(date, rangeDate[0])) rangeDate.unshift(date);
+        else rangeDate[1] = date;
         emit('range-end', date);
     }
 
