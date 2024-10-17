@@ -1,6 +1,12 @@
 <template>
     <div v-if="!disabled" class="dp__time_input">
-        <div v-for="(timeInput, i) in timeInputs" :key="i" :class="timeColClass">
+        <div
+            v-for="(timeInput, i) in timeInputs"
+            :key="i"
+            :class="timeColClass"
+            :data-compact="isCompact && !enableSeconds"
+            :data-collapsed="isCompact && enableSeconds"
+        >
             <template v-if="timeInput.separator"> <template v-if="!timeOverlayOpen">:</template> </template>
             <template v-else>
                 <button
@@ -115,6 +121,7 @@
                 role="button"
                 :aria-label="defaultedAriaLabels?.amPmButton"
                 tabindex="0"
+                :data-compact="isCompact"
                 @click="setAmPm"
                 @keydown="checkKeyDown($event, () => setAmPm(), true)"
             >
@@ -212,8 +219,14 @@
     });
 
     const { setTimePickerElements, setTimePickerBackRef } = useArrowNavigation();
-    const { defaultedAriaLabels, defaultedTransitions, defaultedFilters, defaultedConfig, defaultedRange } =
-        useDefaults(props);
+    const {
+        defaultedAriaLabels,
+        defaultedTransitions,
+        defaultedFilters,
+        defaultedConfig,
+        defaultedRange,
+        defaultedMultiCalendars,
+    } = useDefaults(props);
 
     const { transitionName, showTransition } = useTransitions(defaultedTransitions);
 
@@ -285,6 +298,10 @@
             dp__time_col_sec: props.enableSeconds && props.is24,
             dp__time_col_sec_with_button: props.enableSeconds && !props.is24,
         }),
+    );
+
+    const isCompact = computed(
+        () => props.timePickerInline && defaultedRange.value.enabled && !defaultedMultiCalendars.value.count,
     );
 
     const timeInputs = computed((): TimeInput[] => {

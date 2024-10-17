@@ -24,6 +24,10 @@
 
 .dp__time_col_reg_with_button {
   padding: 0 15px;
+
+  &[data-compact~="true"] {
+    padding: 0 5px;
+  }
 }
 
 .dp__time_col_sec {
@@ -32,6 +36,10 @@
 
 .dp__time_col_sec_with_button {
   padding: 0 5px;
+
+  &[data-collapsed~="true"] {
+    padding: 0;
+  }
 }
 
 .dp__time_col {
@@ -133,6 +141,10 @@
   padding: var(--dp-common-padding);
   border-radius: var(--dp-border-radius);
   cursor: pointer;
+
+  &[data-compact~="true"] {
+    padding: 7px;
+  }
 }
 
 .dp__tp_inline_btn_bar {
