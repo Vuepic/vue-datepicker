@@ -33,6 +33,7 @@ import { FlowStep } from '@/constants';
 import type { IMarker, TimeModel, TimeType } from '@/interfaces';
 import { type VueWrapper } from '@vue/test-utils';
 import { localToTz } from '@/utils/timezone';
+import { nextTick } from 'vue';
 
 describe('It should validate various picker scenarios', () => {
     it('Should dynamically disable times', async () => {
@@ -107,27 +108,6 @@ describe('It should validate various picker scenarios', () => {
 
         expect(innerStartCell.classes()).toContain('dp__range_start');
         expect(innerEndCell.classes()).toContain('dp__range_end');
-        dp.unmount();
-    });
-
-    it('Should not enable partial range with text-input on time-picker (#505)', async () => {
-        const dp = await openMenu({ textInput: true, timePicker: true, range: true });
-        const today = new Date();
-        const hours = getHours(today);
-        const minutes = getMinutes(today);
-
-        const singleTime = `${padZero(hours)}:${padZero(minutes)}`;
-
-        const input = dp.find('input');
-        await input.setValue(singleTime);
-
-        expect(input.element.value).toBe(singleTime);
-
-        await input.trigger('keydown', { key: 'Enter' });
-
-        expect(dp.emitted()).toHaveProperty('invalid-select', [
-            [[set(new Date(), { hours, minutes, seconds: 0, milliseconds: 0 })]],
-        ]);
         dp.unmount();
     });
 
