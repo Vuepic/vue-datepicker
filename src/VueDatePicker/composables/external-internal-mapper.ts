@@ -394,7 +394,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
         return getWeekFromDate(internalModelValue.value, props.weekStart).map((date) => getDate(date));
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     const modeEmitter = (mapper: any, returnOnly: boolean) =>
         emitValue(convertType(mapInternalToSpecificExternal(mapper)), false, returnOnly);
 

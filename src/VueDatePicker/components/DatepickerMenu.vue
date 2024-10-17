@@ -179,13 +179,10 @@
     const dpMenuRef = ref<HTMLElement | null>(null);
 
     const baseProps = computed(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { openOnTop, ...initProps } = props;
+        const { openOnTop: _, ...initProps } = props;
         return {
             ...initProps,
             flowStep: flowStep.value,
-            collapse: props.collapse,
-            noOverlayFocus: props.noOverlayFocus,
             menuWrapRef: dpMenuRef.value,
         };
     });

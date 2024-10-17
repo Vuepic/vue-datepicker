@@ -11,7 +11,7 @@ export interface IDefaultSelect<T = number> {
     className?: DynamicClass;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 export type VueEmit = (event: any, ...args: any[]) => void;
 
 export enum OpenPosition {
