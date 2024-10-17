@@ -306,6 +306,7 @@
         }
         emit('set-hover-date', day);
         if (day.marker?.tooltip?.length) {
+            if (props.hideOffsetDates && !day.current) return;
             await handleTooltip(day, weekInd, dayInd);
         }
     };
