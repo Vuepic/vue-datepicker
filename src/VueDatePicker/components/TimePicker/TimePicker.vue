@@ -8,7 +8,7 @@
             :class="{ ...toggleButtonClass, 'dp--hidden-el': showTimePicker }"
             :aria-label="defaultedAriaLabels?.openTimePicker"
             :tabindex="noOverlayFocus ? undefined : 0"
-            data-test="open-time-picker-btn"
+            data-test-id="open-time-picker-btn"
             @keydown="checkKeyDown($event, () => toggleTimePicker(true))"
             @click="toggleTimePicker(true)"
         >

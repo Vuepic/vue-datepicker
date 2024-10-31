@@ -20,7 +20,7 @@
                         dp__inc_dec_button_disabled: disabledArrowUpBtn(timeInput.type),
                         'dp--hidden-el': timeOverlayOpen,
                     }"
-                    :data-test="`${timeInput.type}-time-inc-btn-${props.order}`"
+                    :data-test-id="`${timeInput.type}-time-inc-btn-${props.order}`"
                     :aria-label="defaultedAriaLabels?.incrementValue(timeInput.type)"
                     tabindex="0"
                     @keydown="
@@ -60,7 +60,7 @@
                     }"
                     :disabled="checkOverlayDisabled(timeInput.type)"
                     tabindex="0"
-                    :data-test="`${timeInput.type}-toggle-overlay-btn-${props.order}`"
+                    :data-test-id="`${timeInput.type}-toggle-overlay-btn-${props.order}`"
                     @keydown="checkKeyDown($event, () => toggleOverlay(timeInput.type), true)"
                     @click="toggleOverlay(timeInput.type)"
                 >
@@ -83,7 +83,7 @@
                         dp__inc_dec_button_disabled: disabledArrowDownBtn(timeInput.type),
                         'dp--hidden-el': timeOverlayOpen,
                     }"
-                    :data-test="`${timeInput.type}-time-dec-btn-${props.order}`"
+                    :data-test-id="`${timeInput.type}-time-dec-btn-${props.order}`"
                     :aria-label="defaultedAriaLabels?.decrementValue(timeInput.type)"
                     tabindex="0"
                     @keydown="

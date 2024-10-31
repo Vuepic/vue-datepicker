@@ -7,7 +7,7 @@ import type { VueWrapper } from '@vue/test-utils';
 
 const validateActiveQuarters = async (dp: VueWrapper<any>, quarters: Date[], click = true) => {
     for (const quarter of quarters) {
-        const btn = dp.find(`[data-test="${quarter}"]`);
+        const btn = dp.find(`[data-test-id="${quarter}"]`);
         if (click) {
             await btn.trigger('click');
         }
@@ -20,8 +20,8 @@ describe('Quarter picker component', () => {
         const quarter = startOfQuarter(new Date());
         const dp = await openMenu({ quarterPicker: true });
 
-        await dp.find(`[data-test="${quarter}"]`).trigger('click');
-        await dp.find(`[data-test="select-button"]`).trigger('click');
+        await dp.find(`[data-test-id="${quarter}"]`).trigger('click');
+        await dp.find(`[data-test-id="select-button"]`).trigger('click');
 
         expect(dp.emitted()).toHaveProperty('update:model-value', [[quarter]]);
         dp.unmount();
@@ -32,9 +32,9 @@ describe('Quarter picker component', () => {
         const end = addQuarters(start, 1);
         const dp = await openMenu({ quarterPicker: true, range: true });
 
-        await dp.find(`[data-test="${start}"]`).trigger('click');
-        await dp.find(`[data-test="${end}"]`).trigger('click');
-        await dp.find(`[data-test="select-button"]`).trigger('click');
+        await dp.find(`[data-test-id="${start}"]`).trigger('click');
+        await dp.find(`[data-test-id="${end}"]`).trigger('click');
+        await dp.find(`[data-test-id="select-button"]`).trigger('click');
 
         expect(dp.emitted()).toHaveProperty('update:model-value', [[[start, end]]]);
         dp.unmount();
@@ -44,8 +44,8 @@ describe('Quarter picker component', () => {
         const year = getYear(new Date());
         const dp = await openMenu({ quarterPicker: true, multiCalendars: true });
 
-        const firstYearBtn = dp.find(`[data-test="year-mode-btn-0"]`);
-        const secondYearBtn = dp.find(`[data-test="year-mode-btn-1"]`);
+        const firstYearBtn = dp.find(`[data-test-id="year-mode-btn-0"]`);
+        const secondYearBtn = dp.find(`[data-test-id="year-mode-btn-1"]`);
 
         expect(firstYearBtn.text()).toEqual(`${year}`);
         expect(secondYearBtn.text()).toEqual(`${year + 1}`);
@@ -56,7 +56,7 @@ describe('Quarter picker component', () => {
         const quarter = startOfQuarter(new Date());
         const dp = await openMenu({ quarterPicker: true, disabledDates: [quarter] });
 
-        const btn = dp.find(`[data-test="${quarter}"]`);
+        const btn = dp.find(`[data-test-id="${quarter}"]`);
 
         expect(btn.classes()).toContain('dp--qr-btn-disabled');
         dp.unmount();
@@ -71,7 +71,7 @@ describe('Quarter picker component', () => {
 
         await validateActiveQuarters(dp, quarters);
 
-        await dp.find(`[data-test="select-button"]`).trigger('click');
+        await dp.find(`[data-test-id="select-button"]`).trigger('click');
 
         expect(dp.emitted()).toHaveProperty('update:model-value', [[quarters]]);
 

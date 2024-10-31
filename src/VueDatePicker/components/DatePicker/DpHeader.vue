@@ -39,7 +39,7 @@
                             class="dp__btn dp__month_year_select"
                             :class="{ 'dp--hidden-el': overlayOpen }"
                             :aria-label="`${type.text}-${type.ariaLabel}`"
-                            :data-test="`${type.type}-toggle-overlay-${instance}`"
+                            :data-test-id="`${type.type}-toggle-overlay-${instance}`"
                             @click="type.toggle"
                             @keydown="checkKeyDown($event, () => type.toggle(), true)"
                         >

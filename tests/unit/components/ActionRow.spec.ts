@@ -117,7 +117,7 @@ describe('ActionRow component', () => {
     it('Should select date', async () => {
         const wrapper = mountActionRow(props);
 
-        await wrapper.find('[data-test="select-button"]').trigger('click');
+        await wrapper.find('[data-test-id="select-button"]').trigger('click');
         expect(wrapper.emitted()).toHaveProperty('select-date');
     });
 });

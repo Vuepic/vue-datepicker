@@ -180,7 +180,7 @@ describe('Month and Year picker components', () => {
 
         const currentYear = getYear(new Date());
 
-        const el = dp.find(`[data-test="${currentYear}"]`);
+        const el = dp.find(`[data-test-id="${currentYear}"]`);
         expect(el).toBeDefined();
     });
 
@@ -189,9 +189,9 @@ describe('Month and Year picker components', () => {
 
         const currentYear = getYear(new Date());
 
-        await dp.find(`[data-test="${currentYear}"]`).trigger('click');
+        await dp.find(`[data-test-id="${currentYear}"]`).trigger('click');
 
-        await dp.find(`[data-test="select-button"]`).trigger('click');
+        await dp.find(`[data-test-id="select-button"]`).trigger('click');
 
         expect(dp.emitted()).toHaveProperty('update:model-value', [[currentYear]]);
     });
@@ -202,10 +202,10 @@ describe('Month and Year picker components', () => {
         const rangeStart = getYear(addYears(today, 1));
         const rangeEnd = rangeStart + 5;
 
-        await dp.find(`[data-test="${rangeStart}"]`).trigger('click');
-        await dp.find(`[data-test="${rangeEnd}"]`).trigger('click');
+        await dp.find(`[data-test-id="${rangeStart}"]`).trigger('click');
+        await dp.find(`[data-test-id="${rangeEnd}"]`).trigger('click');
 
-        await dp.find(`[data-test="select-button"]`).trigger('click');
+        await dp.find(`[data-test-id="select-button"]`).trigger('click');
 
         expect(dp.emitted()).toHaveProperty('update:model-value', [[[rangeStart, rangeEnd]]]);
     });

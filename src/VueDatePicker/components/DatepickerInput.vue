@@ -27,7 +27,7 @@
                 v-if="!$slots['dp-input']"
                 :id="uid ? `dp-input-${uid}` : undefined"
                 ref="inputRef"
-                data-test="dp-input"
+                data-test-id="dp-input"
                 :name="name"
                 :class="inputClass"
                 :inputmode="defaultedTextInput.enabled ? 'text' : 'none'"
@@ -69,7 +69,7 @@
                 @keydown="checkKeyDown($event, () => onClear($event), true, onClearKeydown)"
                 @click.prevent="onClear($event)"
             >
-                <CancelIcon class="dp__input_icons" data-test="clear-icon" />
+                <CancelIcon class="dp__input_icons" data-test-id="clear-icon" />
             </button>
         </div>
     </div>

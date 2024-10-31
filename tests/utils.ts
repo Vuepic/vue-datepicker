@@ -31,15 +31,15 @@ export const getMonthName = (date: Date) => {
 };
 
 export const clickCalendarDate = async (dp: VueWrapper<any>, date: Date) => {
-    await dp.find(`[data-test="${resetDateTime(date)}"]`).trigger('click');
+    await dp.find(`[data-test-id="${resetDateTime(date)}"]`).trigger('click');
 };
 
 export const hoverCalendarDate = async (dp: VueWrapper<any>, date: Date) => {
-    await dp.find(`[data-test="${resetDateTime(date)}"]`).trigger('mouseenter');
+    await dp.find(`[data-test-id="${resetDateTime(date)}"]`).trigger('mouseenter');
 };
 
 export const clickSelectBtn = async (dp: VueWrapper<any>) => {
-    await dp.find(`[data-test="select-button"]`).trigger('click');
+    await dp.find(`[data-test-id="select-button"]`).trigger('click');
 };
 
 export const padZero = (val: number) => (val < 10 ? `0${val}` : val);

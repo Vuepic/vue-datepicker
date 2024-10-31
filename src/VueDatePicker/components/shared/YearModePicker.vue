@@ -16,7 +16,7 @@
             class="dp__btn dp--year-select"
             type="button"
             :aria-label="`${year}-${defaultedAriaLabels?.openYearsOverlay}`"
-            :data-test="`year-mode-btn-${instance}`"
+            :data-test-id="`year-mode-btn-${instance}`"
             @click="() => toggleYearPicker(false)"
             @keydown.enter="() => toggleYearPicker(false)"
         >

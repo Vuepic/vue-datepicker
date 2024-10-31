@@ -397,11 +397,11 @@ describe('Logic connection', () => {
         await menu.vm.$nextTick();
         const monthPickerGrid = menu.findComponent(SelectionOverlay);
 
-        await monthPickerGrid.find(`[data-test="Jan"]`).trigger('click');
+        await monthPickerGrid.find(`[data-test-id="Jan"]`).trigger('click');
         await nextTick();
         const yearPickerGrid = menu.findComponent(SelectionOverlay);
 
-        await yearPickerGrid.find(`[data-test="${getYear(new Date())}"]`).trigger('click');
+        await yearPickerGrid.find(`[data-test-id="${getYear(new Date())}"]`).trigger('click');
         await nextTick();
 
         expect(datePicker.vm.month(0)).toEqual(0);
@@ -475,11 +475,11 @@ describe('Logic connection', () => {
     it('Should disable times that are out of max time validation', async () => {
         const date = set(new Date(), { hours: 21 });
         const { menu } = await mountDatepicker({ maxTime: { hours: 21 }, modelValue: date });
-        await menu.find(`[data-test="open-time-picker-btn"]`).trigger('click');
+        await menu.find(`[data-test-id="open-time-picker-btn"]`).trigger('click');
         await menu.vm.$nextTick();
         const timeInput = menu.findComponent(TimeInput);
 
-        const incBtn = timeInput.find(`[data-test="hours-time-inc-btn-0"]`);
+        const incBtn = timeInput.find(`[data-test-id="hours-time-inc-btn-0"]`);
 
         expect(incBtn.classes()).toContain('dp__inc_dec_button_disabled');
     });
@@ -487,11 +487,11 @@ describe('Logic connection', () => {
     it('Should disable times that are out of min time validation', async () => {
         const date = set(new Date(), { hours: 7 });
         const { menu } = await mountDatepicker({ minTime: { hours: 7 }, modelValue: date });
-        await menu.find(`[data-test="open-time-picker-btn"]`).trigger('click');
+        await menu.find(`[data-test-id="open-time-picker-btn"]`).trigger('click');
         await menu.vm.$nextTick();
         const timeInput = menu.findComponent(TimeInput);
 
-        const incBtn = timeInput.find(`[data-test="hours-time-dec-btn-0"]`);
+        const incBtn = timeInput.find(`[data-test-id="hours-time-dec-btn-0"]`);
 
         expect(incBtn.classes()).toContain('dp__inc_dec_button_disabled');
     });
@@ -527,13 +527,13 @@ describe('Logic connection', () => {
             return time.hours === hours && time.minutes === minutes;
         };
         const { datePicker, menu, dp } = await mountDatepicker({ modelValue: new Date(), disabledTimes });
-        await datePicker.find(`[data-test="open-time-picker-btn"]`).trigger('click');
+        await datePicker.find(`[data-test-id="open-time-picker-btn"]`).trigger('click');
         await datePicker.vm.$nextTick();
 
         await validateSelectedTime(datePicker, hours, minutes);
 
         const actionRow = menu.findComponent(ActionRow);
-        const button = actionRow.find('[data-test="select-button"]');
+        const button = actionRow.find('[data-test-id="select-button"]');
 
         expect(button.attributes().disabled).toBeDefined();
 

@@ -49,7 +49,7 @@
                             :style="preset.style || {}"
                             class="dp__btn dp--preset-range"
                             :class="{ 'dp--preset-range-collapsed': collapse }"
-                            :data-test="preset.testId ?? undefined"
+                            :data-test-id="preset.testId ?? undefined"
                             @click.prevent="presetDate(preset.value, preset.noTz)"
                             @keydown="checkKeyDown($event, () => presetDate(preset.value, preset.noTz), true)"
                         >

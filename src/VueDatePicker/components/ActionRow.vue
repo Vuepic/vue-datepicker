@@ -55,7 +55,7 @@
                         type="button"
                         class="dp__action_button dp__action_select"
                         :disabled="disabled"
-                        data-test="select-button"
+                        data-test-id="select-button"
                         @keydown="checkKeyDown($event, () => selectDate())"
                         @click="selectDate"
                     >

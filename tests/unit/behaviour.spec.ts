@@ -33,7 +33,6 @@ import { FlowStep } from '@/constants';
 import type { IMarker, TimeModel, TimeType } from '@/interfaces';
 import { type VueWrapper } from '@vue/test-utils';
 import { localToTz } from '@/utils/timezone';
-import { nextTick } from 'vue';
 
 describe('It should validate various picker scenarios', () => {
     it('Should dynamically disable times', async () => {
@@ -46,30 +45,30 @@ describe('It should validate various picker scenarios', () => {
         const dp = await openMenu({ modelValue, disabledTimes });
 
         const setHours = async (val: number) => {
-            await dp.find(`[data-test="open-time-picker-btn"]`).trigger('click');
+            await dp.find(`[data-test-id="open-time-picker-btn"]`).trigger('click');
 
-            await dp.find(`[data-test="hours-toggle-overlay-btn-0"]`).trigger('click');
-            await dp.find(`[data-test="${val}"]`).trigger('click');
+            await dp.find(`[data-test-id="hours-toggle-overlay-btn-0"]`).trigger('click');
+            await dp.find(`[data-test-id="${val}"]`).trigger('click');
         };
 
         await setHours(14);
 
-        await dp.find(`[data-test="minutes-toggle-overlay-btn-0"]`).trigger('click');
+        await dp.find(`[data-test-id="minutes-toggle-overlay-btn-0"]`).trigger('click');
 
         await dp.vm.$nextTick();
-        const el = dp.find(`[data-test="15"]`);
+        const el = dp.find(`[data-test-id="15"]`);
 
         expect(el.attributes()['aria-disabled']).toEqual('true');
 
         for (let i = 0; i < 20; i++) {
-            await dp.find(`[data-test="minutes-time-inc-btn-0"]`).trigger('click');
+            await dp.find(`[data-test-id="minutes-time-inc-btn-0"]`).trigger('click');
         }
 
-        const minutesOverlayBtn = dp.find(`[data-test="minutes-toggle-overlay-btn-0"]`);
+        const minutesOverlayBtn = dp.find(`[data-test-id="minutes-toggle-overlay-btn-0"]`);
         expect(minutesOverlayBtn.classes()).toContain('dp--time-invalid');
 
         await setHours(15);
-        const hoursOverlayBtn = dp.find(`[data-test="hours-toggle-overlay-btn-0"]`);
+        const hoursOverlayBtn = dp.find(`[data-test-id="hours-toggle-overlay-btn-0"]`);
         expect(hoursOverlayBtn.text()).toEqual('14');
         dp.unmount();
     });
@@ -82,8 +81,8 @@ describe('It should validate various picker scenarios', () => {
 
         const monthName = getMonthName(date);
 
-        await dp.find(`[data-test="${monthName}"]`).trigger('click');
-        await dp.find(`[data-test="${year}"]`).trigger('click');
+        await dp.find(`[data-test-id="${monthName}"]`).trigger('click');
+        await dp.find(`[data-test-id="${year}"]`).trigger('click');
         await clickCalendarDate(dp, date);
         const emitted = dp.emitted();
         expect(emitted).toHaveProperty('update:model-value', [[set(date, { seconds: 0, milliseconds: 0 })]]);
@@ -96,8 +95,8 @@ describe('It should validate various picker scenarios', () => {
         const firstDate = resetDateTime(start);
         const secondDate = resetDateTime(set(firstDate, { month: getMonth(addMonths(firstDate, 1)), date: 15 }));
 
-        const firstDateEl = dp.find(`[data-test="${firstDate}"]`);
-        const secondDateEl = dp.find(`[data-test="${secondDate}"]`);
+        const firstDateEl = dp.find(`[data-test-id="${firstDate}"]`);
+        const secondDateEl = dp.find(`[data-test-id="${secondDate}"]`);
 
         await firstDateEl.trigger('click');
         await secondDateEl.trigger('click');
@@ -132,14 +131,14 @@ describe('It should validate various picker scenarios', () => {
         const modelValue = { hours: getHours(today), minutes: getMinutes(today), seconds: 0 };
         const dp = await openMenu({ timePicker: true, modelValue });
 
-        const hours = dp.find(`[data-test="hours-toggle-overlay-btn-0"]`);
-        const minutes = dp.find(`[data-test="minutes-toggle-overlay-btn-0"]`);
+        const hours = dp.find(`[data-test-id="hours-toggle-overlay-btn-0"]`);
+        const minutes = dp.find(`[data-test-id="minutes-toggle-overlay-btn-0"]`);
 
         expect(hours.text()).toEqual(`${padZero(modelValue.hours)}`);
         expect(minutes.text()).toEqual(`${padZero(modelValue.minutes)}`);
 
-        await dp.find(`[data-test="hours-time-inc-btn-0"]`).trigger('click');
-        await dp.find(`[data-test="minutes-time-inc-btn-0"]`).trigger('click');
+        await dp.find(`[data-test-id="hours-time-inc-btn-0"]`).trigger('click');
+        await dp.find(`[data-test-id="minutes-time-inc-btn-0"]`).trigger('click');
         await clickSelectBtn(dp);
 
         const emitted = dp.emitted();
@@ -155,7 +154,7 @@ describe('It should validate various picker scenarios', () => {
         const dp = await openMenu({ disabledDates });
 
         const getCellClasses = (date: Date) => {
-            const el = dp.find(`[data-test="${date}"]`);
+            const el = dp.find(`[data-test-id="${date}"]`);
             const innerCell = el.find('.dp__cell_inner');
 
             return innerCell.classes();
@@ -175,7 +174,7 @@ describe('It should validate various picker scenarios', () => {
 
         const year = getYear(new Date());
 
-        await dp.find(`[data-test="${year}"]`).trigger('click');
+        await dp.find(`[data-test-id="${year}"]`).trigger('click');
 
         expect(dp.emitted()).toHaveProperty('update:model-value', [[year]]);
 
@@ -187,19 +186,19 @@ describe('It should validate various picker scenarios', () => {
         const modelValue = [set(new Date(), { hours: 11 }), set(new Date(), { hours: 15, minutes: 19 })];
         const dp = await openMenu({ disabledTimes, range: true, modelValue });
 
-        await dp.find(`[data-test="open-time-picker-btn"]`).trigger('click');
-        await dp.find(`[data-test="hours-time-inc-btn-0"]`).trigger('click');
+        await dp.find(`[data-test-id="open-time-picker-btn"]`).trigger('click');
+        await dp.find(`[data-test-id="hours-time-inc-btn-0"]`).trigger('click');
 
-        const selectBtn = dp.find(`[data-test="select-button"]`);
+        const selectBtn = dp.find(`[data-test-id="select-button"]`);
         expect(selectBtn.attributes()).toHaveProperty('disabled');
 
-        await dp.find(`[data-test="hours-time-inc-btn-0"]`).trigger('click');
+        await dp.find(`[data-test-id="hours-time-inc-btn-0"]`).trigger('click');
         expect(selectBtn.attributes().disabled).toBeFalsy();
 
-        await dp.find(`[data-test="minutes-time-inc-btn-1"]`).trigger('click');
+        await dp.find(`[data-test-id="minutes-time-inc-btn-1"]`).trigger('click');
         expect(selectBtn.attributes()).toHaveProperty('disabled');
 
-        await dp.find(`[data-test="minutes-time-inc-btn-1"]`).trigger('click');
+        await dp.find(`[data-test-id="minutes-time-inc-btn-1"]`).trigger('click');
         expect(selectBtn.attributes().disabled).toBeFalsy();
         dp.unmount();
     });
@@ -209,7 +208,7 @@ describe('It should validate various picker scenarios', () => {
         const dp = await openMenu({ timePicker: true, startTime });
 
         const validate = async (time: TimeModel | TimeModel[], instance: VueWrapper) => {
-            await instance.find(`[data-test="select-button"]`).trigger('click');
+            await instance.find(`[data-test-id="select-button"]`).trigger('click');
             expect(instance.emitted()).toHaveProperty('update:model-value', [[time]]);
             instance.unmount();
         };
@@ -231,8 +230,8 @@ describe('It should validate various picker scenarios', () => {
         const dp = await openMenu({ modelValue: sameViewRange, multiCalendars: true, range: true });
 
         const validateMonthAndYearValues = (index: number, date: Date) => {
-            const month = dp.find(`[data-test="month-toggle-overlay-${index}"]`);
-            const year = dp.find(`[data-test="year-toggle-overlay-${index}"]`);
+            const month = dp.find(`[data-test-id="month-toggle-overlay-${index}"]`);
+            const year = dp.find(`[data-test-id="year-toggle-overlay-${index}"]`);
             expect(month.text()).toEqual(getMonthName(date));
             expect(+year.text()).toEqual(getYear(date));
         };
@@ -264,10 +263,10 @@ describe('It should validate various picker scenarios', () => {
 
         await reOpenMenu(dp);
 
-        await dp.find(`[data-test="month-toggle-overlay-0"]`).trigger('click');
-        await dp.find(`[data-test="${getMonthName(nextMonth)}"]`).trigger('click');
+        await dp.find(`[data-test-id="month-toggle-overlay-0"]`).trigger('click');
+        await dp.find(`[data-test-id="${getMonthName(nextMonth)}"]`).trigger('click');
 
-        const cell = dp.find(`[data-test="${nextMonth}"]`);
+        const cell = dp.find(`[data-test-id="${nextMonth}"]`);
 
         expect(cell.html()).toBeTruthy();
         dp.unmount();
@@ -280,7 +279,7 @@ describe('It should validate various picker scenarios', () => {
 
         const selectAutoRange = async () => {
             await clickCalendarDate(dp, today);
-            await dp.find(`[data-test="select-button"]`).trigger('click');
+            await dp.find(`[data-test-id="select-button"]`).trigger('click');
         };
 
         await selectAutoRange();
@@ -303,7 +302,7 @@ describe('It should validate various picker scenarios', () => {
 
         const selectRange = async () => {
             await clickCalendarDate(dp, today);
-            await dp.find(`[data-test="${secondDate}"]`).trigger('click');
+            await dp.find(`[data-test-id="${secondDate}"]`).trigger('click');
         };
 
         await selectRange();
@@ -316,7 +315,7 @@ describe('It should validate various picker scenarios', () => {
         const today = new Date();
         const dp = await openMenu({ monthPicker: true });
 
-        await dp.find(`[data-test="${getMonthName(today)}"]`).trigger('click');
+        await dp.find(`[data-test-id="${getMonthName(today)}"]`).trigger('click');
 
         expect(dp.emitted()).toHaveProperty('update-month-year', [
             [{ instance: 0, year: getYear(today), month: getMonth(today) }],
@@ -332,7 +331,7 @@ describe('It should validate various picker scenarios', () => {
 
         const dp = await openMenu({ modelType: 'dd-MM-yyyy', format: formatFn });
         await clickCalendarDate(dp, today);
-        await dp.find(`[data-test="select-button"]`).trigger('click');
+        await dp.find(`[data-test-id="select-button"]`).trigger('click');
 
         expect(dp.emitted()).toHaveProperty('update:model-value', [[format(today, 'dd-MM-yyyy')]]);
         dp.unmount();
@@ -349,7 +348,7 @@ describe('It should validate various picker scenarios', () => {
         });
 
         const verifyArrow = async (type: TimeType, order: number, btn: string) => {
-            const arrowBtn = dp.find(`[data-test="${type}-time-${btn}-btn-${order}"]`);
+            const arrowBtn = dp.find(`[data-test-id="${type}-time-${btn}-btn-${order}"]`);
             await arrowBtn.trigger('mouseover');
             expect(arrowBtn.classes()).toContain('dp__inc_dec_button_disabled');
         };
@@ -407,26 +406,26 @@ describe('It should validate various picker scenarios', () => {
 
         const dp = await openMenu({ highlight });
 
-        const calendarCell = dp.find(`[data-test="${resetDateTime(start)}"]`).find('.dp__cell_inner');
+        const calendarCell = dp.find(`[data-test-id="${resetDateTime(start)}"]`).find('.dp__cell_inner');
 
         expect(calendarCell.classes()).toContain('dp__cell_highlight');
 
         await reOpenMenu(dp, { monthPicker: true });
 
-        const monthCell = dp.find(`[data-test="${getMonthName(today)}"]`).find('.dp__overlay_cell');
+        const monthCell = dp.find(`[data-test-id="${getMonthName(today)}"]`).find('.dp__overlay_cell');
 
         expect(monthCell.classes()).toContain('dp--highlighted');
 
         await reOpenMenu(dp, { monthPicker: false, yearPicker: true });
 
-        const yearCell = dp.find(`[data-test="${highlight.years[0]}"]`).find('.dp__overlay_cell');
+        const yearCell = dp.find(`[data-test-id="${highlight.years[0]}"]`).find('.dp__overlay_cell');
 
         expect(yearCell.classes()).toContain('dp--highlighted');
 
         await reOpenMenu(dp, { yearPicker: false, quarterPicker: true });
 
         const quarterCell = dp.find(
-            `[data-test="${startOfQuarter(set(new Date(), { month: 5, year: getYear(start) }))}"]`,
+            `[data-test-id="${startOfQuarter(set(new Date(), { month: 5, year: getYear(start) }))}"]`,
         );
 
         expect(quarterCell.classes()).toContain('dp--highlighted');
@@ -440,21 +439,21 @@ describe('It should validate various picker scenarios', () => {
 
         const dp = await openMenu({ minDate, maxTime: maxTime as TimeModel, timePickerInline: true, modelValue });
 
-        await dp.find('[data-test="hours-toggle-overlay-btn-0"]').trigger('click');
-        const cell = dp.find('[data-test="15"]');
+        await dp.find('[data-test-id="hours-toggle-overlay-btn-0"]').trigger('click');
+        const cell = dp.find('[data-test-id="15"]');
 
         expect(cell.html().includes('dp__overlay_cell_disabled')).toBeTruthy();
 
         await dp.find('[aria-label="Toggle overlay"]').trigger('click');
 
-        await dp.find(`[data-test="select-button"]`).trigger('click');
+        await dp.find(`[data-test-id="select-button"]`).trigger('click');
 
         expect(dp.emitted()['update:model-value']).toBeFalsy();
 
         await clickCalendarDate(dp, addDays(minDate, 1));
-        await dp.find('[data-test="hours-toggle-overlay-btn-0"]').trigger('click');
-        await dp.find('[data-test="11"]').trigger('click');
-        await dp.find(`[data-test="select-button"]`).trigger('click');
+        await dp.find('[data-test-id="hours-toggle-overlay-btn-0"]').trigger('click');
+        await dp.find('[data-test-id="11"]').trigger('click');
+        await dp.find(`[data-test-id="select-button"]`).trigger('click');
 
         expect(dp.emitted()['update:model-value']).toBeTruthy();
         dp.unmount();
@@ -466,7 +465,7 @@ describe('It should validate various picker scenarios', () => {
         const dp = await openMenu({ monthPicker: true, presetDates });
 
         await dp.find('.dp--preset-range').trigger('click');
-        await dp.find(`[data-test="select-button"]`).trigger('click');
+        await dp.find(`[data-test-id="select-button"]`).trigger('click');
 
         expect(dp.emitted()['update:model-value']).toEqual([
             [{ month: getMonth(yearStart), year: getYear(yearStart) }],
@@ -514,28 +513,28 @@ describe('It should validate various picker scenarios', () => {
         const nextYear = getYear(addMonths(start, 1));
         const dp = await openMenu({ range: { autoRange: 5 }, multiCalendars: true });
         await clickCalendarDate(dp, start);
-        const nextYearText = dp.find('[data-test="year-toggle-overlay-1"]').text();
+        const nextYearText = dp.find('[data-test-id="year-toggle-overlay-1"]').text();
         expect(nextYear).toEqual(+nextYearText);
         dp.unmount();
     });
 
     it('Should toggle menu on text-input click if set #905', async () => {
         const dp = await openMenu({ textInput: { openMenu: 'toggle' } });
-        await dp.find('[data-test="dp-input"]').trigger('click');
+        await dp.find('[data-test-id="dp-input"]').trigger('click');
         const menu = dp.find('[role="dialog"]');
         expect(menu.exists()).toBeFalsy();
         await reOpenMenu(dp, { textInput: { openMenu: 'open' } });
-        await dp.find('[data-test="dp-input"]').trigger('click');
+        await dp.find('[data-test-id="dp-input"]').trigger('click');
         const menuShown = dp.find('[role="dialog"]');
         expect(menuShown.exists()).toBeTruthy();
     });
 
     it('Should trigger @text-input event when typing date #909', async () => {
         const dp = await openMenu({ textInput: { openMenu: 'toggle' } });
-        await dp.find('[data-test="dp-input"]').setValue('1');
+        await dp.find('[data-test-id="dp-input"]').setValue('1');
         expect(dp.emitted()).toHaveProperty('text-input');
         expect(dp.emitted()['text-input']).toHaveLength(1);
-        await dp.find('[data-test="dp-input"]').setValue('02');
+        await dp.find('[data-test-id="dp-input"]').setValue('02');
         expect(dp.emitted()).toHaveProperty('text-input');
         expect(dp.emitted()['text-input']).toHaveLength(2);
     });

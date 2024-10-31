@@ -36,7 +36,7 @@
                         :aria-selected="col.active || undefined"
                         :aria-disabled="col.disabled || undefined"
                         tabindex="0"
-                        :data-test="col.text"
+                        :data-test-id="col.text"
                         @click.prevent="onClick(col)"
                         @keydown="checkKeyDown($event, () => onClick(col), true)"
                         @mouseover="setHoverValue(col.value)"

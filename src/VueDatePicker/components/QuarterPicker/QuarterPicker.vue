@@ -30,7 +30,7 @@
                             'dp--qr-btn-disabled': quarter.disabled,
                             'dp--highlighted': quarter.highlighted,
                         }"
-                        :data-test="quarter.value"
+                        :data-test-id="quarter.value"
                         :disabled="quarter.disabled"
                         @click="selectQuarter(quarter.value, instance, quarter.disabled)"
                         @mouseover="setHoverDate(quarter.value)"
