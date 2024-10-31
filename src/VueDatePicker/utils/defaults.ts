@@ -88,7 +88,7 @@ export const defaultMultiCalendars = (multiCalendars?: MultiCalendarsProp): Mult
     };
     if (!multiCalendars) return { ...defaultOptions, count: getMultiCalendarsCount(false) };
     const addOptions = isConfig ? multiCalendars : ({} as MultiCalendarsOptions);
-    const option = isConfig ? addOptions.count ?? true : multiCalendars;
+    const option = isConfig ? (addOptions.count ?? true) : multiCalendars;
     const count = getMultiCalendarsCount(option);
 
     return Object.assign(defaultOptions, addOptions, { count });

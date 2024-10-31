@@ -63,7 +63,7 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
 
     const convertZonedModelToLocal = (date: Date) => {
         if (defaultedTz.value.timezone && defaultedTz.value.convertModel) {
-            const offset = getTimezoneOffset(defaultedTz.value.timezone);
+            const offset = getTimezoneOffset(defaultedTz.value.timezone, date);
             return addHours(date, offset);
         }
         return date;
@@ -394,7 +394,6 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
         return getWeekFromDate(internalModelValue.value, props.weekStart).map((date) => getDate(date));
     };
 
-     
     const modeEmitter = (mapper: any, returnOnly: boolean) =>
         emitValue(convertType(mapInternalToSpecificExternal(mapper)), false, returnOnly);
 
