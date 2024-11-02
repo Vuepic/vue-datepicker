@@ -415,6 +415,20 @@ export const getDisabledMonths = (
     return [];
 };
 
+export const isMonthAllowed = (
+    disabledDates: Map<string, Date | null> | null | ((date: Date) => boolean),
+    year: number,
+    month: number,
+) => {
+    if (disabledDates instanceof Map) {
+        const months = Array.from(disabledDates.values())
+            .filter((date) => getYear(getDate(date)) === year)
+            .map((date) => getMonth(date as Date));
+        return months.length ? months.includes(month) : true;
+    }
+    return true;
+};
+
 export const checkHighlightMonth = (defaultedHighlight: Highlight | HighlightFn, month: number, year: number) => {
     return typeof defaultedHighlight === 'function'
         ? defaultedHighlight({ month: month, year })

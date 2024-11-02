@@ -9,6 +9,7 @@ import {
     getMaxMonth,
     getMinMonth,
     isDateBetween,
+    isMonthAllowed,
     resetDate,
     setDateMonthOrYear,
 } from '@/utils/date-utils';
@@ -136,7 +137,8 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
                     getMaxMonth(year.value(instance), propDates.value.maxDate),
                 ) ||
                 getDisabledMonths(propDates.value.disabledDates, year.value(instance)).includes(month.value) ||
-                defaultedFilters.value.months?.includes(month.value);
+                defaultedFilters.value.months?.includes(month.value) ||
+                !isMonthAllowed(propDates.value.allowedDates, year.value(instance), month.value);
             const isBetween = isMonthBetween(month.value, instance);
             const highlighted = checkHighlightMonth(defaultedHighlight.value, month.value, year.value(instance));
             return { active, disabled, isBetween, highlighted };
