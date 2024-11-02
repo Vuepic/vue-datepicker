@@ -180,8 +180,8 @@ export const usePosition = ({
     const getMenuPlacement = (): MenuPlacement => {
         const inputEl = unrefElement(inputRef as MaybeElementRef);
         if (inputEl) {
-            if (props.autoPosition === 'top') return MenuPlacement.top;
-            if (props.autoPosition === 'bottom') return MenuPlacement.bottom;
+            if (props.autoPosition === MenuPlacement.top) return MenuPlacement.top;
+            if (props.autoPosition === MenuPlacement.bottom) return MenuPlacement.bottom;
             const { height: menuHeight } = menuRect.value;
             const { top: inputTop, height: inputHeight } = inputEl.getBoundingClientRect();
 
