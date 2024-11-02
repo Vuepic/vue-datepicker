@@ -60,6 +60,7 @@
                         @date-update="$emit('date-update', $event)"
                         @invalid-date="$emit('invalid-date', $event)"
                         @overlay-toggle="$emit('overlay-toggle', $event)"
+                        @menu-blur="$emit('blur')"
                     >
                         <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
                             <slot :name="slot" v-bind="{ ...args }" />

@@ -167,6 +167,7 @@
         'date-update',
         'invalid-date',
         'overlay-toggle',
+        'menu-blur',
     ]);
 
     const props = defineProps({
@@ -202,6 +203,7 @@
     const innerMenuRef = ref(null);
     const menuMount = ref(false);
     const dynCmpRef = ref<any>(null);
+    const isMenuActive = ref(false);
 
     onMounted(() => {
         if (!props.shadow) {
@@ -216,6 +218,7 @@
             }
             if (menu) {
                 const stopDefault = (event: Event) => {
+                    isMenuActive.value = true;
                     if (defaultedConfig.value.allowPreventDefault) {
                         event.preventDefault();
                     }
@@ -225,10 +228,12 @@
                 menu.addEventListener('mousedown', stopDefault);
             }
         }
+        document.addEventListener('mousedown', handleClickOutside);
     });
 
     onUnmounted(() => {
         window.removeEventListener('resize', getCalendarWidth);
+        document.addEventListener('mousedown', handleClickOutside);
     });
 
     const getCalendarWidth = (): void => {
@@ -416,6 +421,16 @@
                 return onArrowKey(ev, ArrowDirection.down);
             default:
                 return;
+        }
+    };
+
+    const handleClickOutside = (event: MouseEvent) => {
+        if (defaultedInline.value.enabled && !defaultedInline.value.input) {
+            const activeClick = dpMenuRef.value?.contains(event.target as HTMLElement);
+            if (!activeClick && isMenuActive.value) {
+                isMenuActive.value = false;
+                emit('menu-blur');
+            }
         }
     };
 
