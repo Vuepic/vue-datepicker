@@ -608,12 +608,16 @@ export const useDatePicker = (
     // Select current date on now button
     const selectCurrentDate = (): void => {
         const dateInTz = dateToTimezoneSafe(getDate(), defaultedTz.value);
-        if (!defaultedRange.value.enabled) {
+        if (!defaultedRange.value.enabled && !defaultedMultiDates.value.enabled) {
             modelValue.value = dateInTz;
         } else if (modelValue.value && Array.isArray(modelValue.value) && modelValue.value[0]) {
-            modelValue.value = isDateBefore(dateInTz, modelValue.value[0])
-                ? [dateInTz, modelValue.value[0]]
-                : [modelValue.value[0], dateInTz];
+            if (!defaultedMultiDates.value.enabled) {
+                modelValue.value = isDateBefore(dateInTz, modelValue.value[0])
+                    ? [dateInTz, modelValue.value[0]]
+                    : [modelValue.value[0], dateInTz];
+            } else {
+                modelValue.value = [...modelValue.value, dateInTz];
+            }
         } else {
             modelValue.value = [dateInTz];
         }
