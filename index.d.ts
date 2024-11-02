@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
 import type {
     ComponentOptionsMixin,
     ComponentPropsOptions,
@@ -185,7 +184,7 @@ export interface VueDatePickerProps {
     selectText?: string;
     cancelText?: string;
     weekNumName?: string;
-    autoPosition?: boolean;
+    autoPosition?: boolean | 'top' | 'bottom';
     monthPicker?: boolean;
     timePicker?: boolean;
     textInput?:

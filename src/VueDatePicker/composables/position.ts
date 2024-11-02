@@ -1,17 +1,16 @@
+import type { Component, ComputedRef, Ref, Slots } from 'vue';
 import { h, ref, render, toRef, watch } from 'vue';
 import {
     type DatepickerInputRef,
     type DatepickerMenuRef,
     type InlineOptions,
-    type VueEmit,
-    OpenPosition,
     type MaybeElementRef,
+    OpenPosition,
+    type VueEmit,
 } from '@/interfaces';
 
 import { unrefElement } from '@/utils/util';
 import { MenuPlacement } from '@/constants';
-
-import type { Component, ComputedRef, Ref, Slots } from 'vue';
 import type { AllPropsType } from '@/props';
 import { useDefaults } from '@/composables/defaults';
 
@@ -181,6 +180,8 @@ export const usePosition = ({
     const getMenuPlacement = (): MenuPlacement => {
         const inputEl = unrefElement(inputRef as MaybeElementRef);
         if (inputEl) {
+            if (props.autoPosition === 'top') return MenuPlacement.top;
+            if (props.autoPosition === 'bottom') return MenuPlacement.bottom;
             const { height: menuHeight } = menuRect.value;
             const { top: inputTop, height: inputHeight } = inputEl.getBoundingClientRect();
 

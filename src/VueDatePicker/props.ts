@@ -42,7 +42,7 @@ export const AllProps = {
         type: [String, Function] as PropType<IFormat>,
         default: () => null,
     },
-    autoPosition: { type: Boolean as PropType<boolean>, default: true },
+    autoPosition: { type: [Boolean, String] as PropType<boolean | 'top' | 'bottom'>, default: true },
     altPosition: { type: Function as PropType<(el: HTMLElement | null) => any>, default: null },
     transitions: { type: [Boolean, Object] as PropType<boolean | Partial<Transition>>, default: true },
     formatLocale: { type: Object as PropType<Locale>, default: null },
