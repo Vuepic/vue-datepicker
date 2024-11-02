@@ -206,7 +206,7 @@ export interface VueDatePickerProps {
     noHoursOverlay?: boolean;
     noMinutesOverlay?: boolean;
     noSecondsOverlay?: boolean;
-    altPosition?: (el: HTMLElement | undefined) => { top: number | string; left: number | string; transform?: string };
+    altPosition?: (el: HTMLElement | undefined) => Record<string, string | number>;
     disabledWeekDays?: number[] | string[];
     allowedDates?: string[] | Date[];
     nowButtonLabel?: string;

@@ -90,7 +90,7 @@ export const usePosition = ({
 
     const getInputPositions = (inputEl: HTMLElement) => {
         const { width, height } = inputEl.getBoundingClientRect();
-        const { top, left } = props.altPosition ? props.altPosition(inputEl) : getOffset(inputEl);
+        const { top, left } = getOffset(inputEl);
         return { top: +top, left: +left, width, height };
     };
 
@@ -104,8 +104,7 @@ export const usePosition = ({
 
     const customAltPosition = () => {
         const el = unrefElement(inputRef as MaybeElementRef);
-        const { top, left, transform } = props.altPosition(el);
-        menuStyle.value = { top: `${top}px`, left: `${left}px`, transform: transform ?? '' };
+        menuStyle.value = props.altPosition(el);
     };
 
     /**

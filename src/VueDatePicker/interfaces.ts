@@ -120,12 +120,6 @@ export type TimeType = keyof Time;
 
 export type DisabledDatesProp = Date[] | string[] | IDisableDates;
 
-export type CustomAltPosition = (el: HTMLElement | null) => {
-    top: number | string;
-    left: number | string;
-    transform?: string;
-};
-
 export type PresetDate = {
     label: string;
     value: Date[] | string[] | Date | string;
