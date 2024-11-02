@@ -1,5 +1,10 @@
 <template>
-    <InstanceWrap v-slot="{ instance, index }" :multi-calendars="defaultedMultiCalendars.count" :collapse="collapse">
+    <InstanceWrap
+        v-slot="{ instance, index }"
+        :multi-calendars="defaultedMultiCalendars.count"
+        :collapse="collapse"
+        :is-mobile="isMobile"
+    >
         <DpHeader
             v-if="!disableMonthYearSelect"
             :ref="

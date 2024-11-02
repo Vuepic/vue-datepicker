@@ -1,5 +1,11 @@
 <template>
-    <InstanceWrap v-slot="{ instance }" :multi-calendars="defaultedMultiCalendars.count" :collapse="collapse" stretch>
+    <InstanceWrap
+        v-slot="{ instance }"
+        :multi-calendars="defaultedMultiCalendars.count"
+        :collapse="collapse"
+        stretch
+        :is-mobile="isMobile"
+    >
         <slot v-if="$slots['top-extra']" name="top-extra" :value="internalModelValue" />
         <template v-if="$slots['month-year']">
             <slot

@@ -1,12 +1,12 @@
-@import "components/DatepickerInput";
-@import "components/DatepickerMenu";
-@import "components/Calendar";
-@import "components/MonthYearInput";
-@import "components/SelectionOverlay";
-@import "components/TimeInput";
-@import "components/ActionRow";
-@import "components/QuarterPicker";
-@import "components/shared";
+@use "components/DatepickerInput";
+@use "components/DatepickerMenu";
+@use "components/Calendar";
+@use "components/MonthYearInput";
+@use "components/SelectionOverlay";
+@use "components/TimeInput";
+@use "components/ActionRow";
+@use "components/QuarterPicker";
+@use "components/shared";
 
 :root {
   --dp-common-transition: all 0.1s ease-in;

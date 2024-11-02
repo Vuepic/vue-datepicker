@@ -25,6 +25,7 @@
                 'dp--menu-content-wrapper-collapsed':
                     collapse && (presetDates?.length || !!$slots['left-sidebar'] || !!$slots['right-sidebar']),
             }"
+            :data-dp-mobile="isMobile"
             :style="{ '--dp-menu-width': `${calendarWidth}px` }"
         >
             <div v-if="$slots['left-sidebar']" class="dp__sidebar_left">
@@ -33,6 +34,7 @@
             <div
                 v-if="presetDates.length"
                 :class="{ 'dp--preset-dates-collapsed': collapse, 'dp--preset-dates': true }"
+                :data-dp-mobile="isMobile"
             >
                 <template v-for="(preset, i) in presetDates" :key="i">
                     <template v-if="preset.slot">
@@ -50,6 +52,7 @@
                             class="dp__btn dp--preset-range"
                             :class="{ 'dp--preset-range-collapsed': collapse }"
                             :data-test-id="preset.testId ?? undefined"
+                            :data-dp-mobile="isMobile"
                             @click.prevent="presetDate(preset.value, preset.noTz)"
                             @keydown="checkKeyDown($event, () => presetDate(preset.value, preset.noTz), true)"
                         >
@@ -134,6 +137,7 @@
     import type { DynamicClass, MenuView, InternalModuleValue, MenuExposedFn, MonthModel } from '@/interfaces';
     import type { PropType } from 'vue';
     import { ArrowDirection, EventKey } from '@/constants';
+    import { useResponsive } from '@/composables/responsive';
 
     defineOptions({
         compatConfig: {
@@ -182,6 +186,7 @@
         const { openOnTop: _, ...initProps } = props;
         return {
             ...initProps,
+            isMobile: isMobile.value,
             flowStep: flowStep.value,
             menuWrapRef: dpMenuRef.value,
         };
@@ -190,6 +195,7 @@
     const { setMenuFocused, setShiftKey, control } = useState();
     const slots = useSlots();
     const { defaultedTextInput, defaultedInline, defaultedConfig, defaultedUI } = useDefaults(props);
+    const { isMobile } = useResponsive(defaultedConfig);
 
     const calendarWrapperRef = ref(null);
     const calendarWidth = ref(0);

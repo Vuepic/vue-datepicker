@@ -1,7 +1,11 @@
-@import "shared";
+@use "shared";
 
 .dp--tp-wrap {
   max-width: var(--dp-menu-min-width);
+
+  &[data-dp-mobile] {
+   max-width: 100%;
+  }
 }
 
 .dp__time_input {

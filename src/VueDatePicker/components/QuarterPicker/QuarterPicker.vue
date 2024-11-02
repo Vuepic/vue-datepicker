@@ -1,5 +1,11 @@
 <template>
-    <InstanceWrap v-slot="{ instance }" :multi-calendars="defaultedMultiCalendars.count" :collapse="collapse" stretch>
+    <InstanceWrap
+        v-slot="{ instance }"
+        :multi-calendars="defaultedMultiCalendars.count"
+        :collapse="collapse"
+        stretch
+        :is-mobile="isMobile"
+    >
         <div class="dp-quarter-picker-wrap" :style="{ minHeight: `${defaultedConfig.modeHeight}px` }">
             <slot v-if="$slots['top-extra']" name="top-extra" :value="internalModelValue" />
             <div>

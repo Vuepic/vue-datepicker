@@ -6,6 +6,7 @@
             dp__flex_display: multiCalendars > 0,
             'dp--flex-display-collapsed': collapse,
         }"
+        :data-dp-mobile="isMobile"
     >
         <div v-for="(instance, i) in instances" :key="instance" :class="calendarInstanceClassWrapper">
             <slot :instance="instance" :index="i"></slot>
@@ -16,7 +17,7 @@
 <script lang="ts" setup>
     import { computed } from 'vue';
 
-    const props = defineProps<{ multiCalendars: number; stretch?: boolean; collapse?: boolean }>();
+    const props = defineProps<{ multiCalendars: number; stretch?: boolean; collapse?: boolean; isMobile?: boolean }>();
 
     const instances = computed((): number[] =>
         props.multiCalendars > 0 ? [...Array(props.multiCalendars).keys()] : [0],

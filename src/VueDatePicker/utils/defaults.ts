@@ -175,6 +175,7 @@ export const getDefaultConfig = (config?: Partial<Config>): Config => {
         keepViewOnOffsetClick: false,
         timeArrowHoldThreshold: 0,
         shadowDom: false,
+        mobileBreakpoint: 600,
     };
     return { ...defaultConfig, ...(config ?? {}) };
 };

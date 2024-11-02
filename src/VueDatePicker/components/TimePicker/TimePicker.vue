@@ -1,5 +1,5 @@
 <template>
-    <div class="dp--tp-wrap">
+    <div class="dp--tp-wrap" :data-dp-mobile="isMobile">
         <button
             v-if="!timePicker && !timePickerInline"
             v-show="!hideNavigationButtons(hideNavigation, 'time')"

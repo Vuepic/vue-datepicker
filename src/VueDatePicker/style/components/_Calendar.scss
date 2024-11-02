@@ -256,10 +256,10 @@
   width: 100%;
 }
 
-@media only screen and (width <= 600px) {
-  .dp__flex_display {
-    flex-direction: column;
-  }
+.dp__flex_display {
+    &[data-dp-mobile] {
+      flex-direction: column;
+    }
 }
 
 .dp--flex-display-collapsed {

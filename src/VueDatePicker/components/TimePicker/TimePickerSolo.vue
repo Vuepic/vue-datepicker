@@ -1,5 +1,5 @@
 <template>
-    <InstanceWrap :multi-calendars="0" stretch>
+    <InstanceWrap :multi-calendars="0" stretch :is-mobile="isMobile">
         <TimePicker
             ref="tpRef"
             v-bind="$props"

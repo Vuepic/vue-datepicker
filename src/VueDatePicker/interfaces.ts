@@ -11,7 +11,6 @@ export interface IDefaultSelect<T = number> {
     className?: DynamicClass;
 }
 
- 
 export type VueEmit = (event: any, ...args: any[]) => void;
 
 export enum OpenPosition {
@@ -294,6 +293,7 @@ export interface Config {
     keepViewOnOffsetClick?: boolean;
     timeArrowHoldThreshold: number;
     shadowDom?: boolean;
+    mobileBreakpoint: number;
 }
 
 export interface Highlight {

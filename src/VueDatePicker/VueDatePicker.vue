@@ -1,5 +1,5 @@
 <template>
-    <div ref="pickerWrapperRef" :class="wrapperClass" data-datepicker-instance>
+    <div ref="pickerWrapperRef" :class="wrapperClass" data-datepicker-instance :data-dp-mobile="isMobile">
         <DatepickerInput
             ref="inputRef"
             v-model:input-value="inputValue"
@@ -110,6 +110,7 @@
         MaybeElementRef,
     } from '@/interfaces';
     import { useDefaults } from '@/composables/defaults';
+    import { useResponsive } from '@/composables/responsive';
 
     const emit = defineEmits([
         'update:model-value',
@@ -174,6 +175,7 @@
         defaultedMultiDates,
     } = useDefaults(props);
     const { menuTransition, showTransition } = useTransitions(defaultedTransitions);
+    const { isMobile } = useResponsive(defaultedConfig);
 
     onMounted(() => {
         parseExternalModelValue(props.modelValue);

@@ -12,7 +12,7 @@
 </script>
 
 <style lang="scss">
-    @import 'src/VueDatePicker/style/main';
+    @use 'src/VueDatePicker/style/main';
     .wrapper {
         padding: 200px;
     }
