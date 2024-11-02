@@ -361,7 +361,7 @@ interface SidebarSlotProps {
     handleYearSelect?: (year: number, instance: number) => void;
 }
 
-interface Slots {
+export interface Slots {
     'clock-icon'(): any;
     'arrow-left'(): any;
     'arrow-right'(): any;
