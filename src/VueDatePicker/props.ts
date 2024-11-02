@@ -167,7 +167,7 @@ export const PickerBaseProps = {
     menuWrapRef: { type: Object as PropType<HTMLElement | null>, default: null },
     getInputRect: { type: Function as PropType<() => DOMRect>, default: () => ({}) },
     isTextInputDate: { type: Boolean as PropType<boolean>, default: false },
-    isMobile: { type: Boolean as PropType<boolean>, default: false },
+    isMobile: { type: Boolean as PropType<boolean>, default: undefined },
 };
 
 export type AllPropsType = ExtractPropTypes<typeof AllProps>;
