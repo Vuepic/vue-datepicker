@@ -109,6 +109,7 @@ export interface RangeConfig {
     maxRange?: string | number;
     minRange?: string | number;
     autoRange?: string | number;
+    mobileBreakpoint?: number;
 }
 
 export type CustomClass = string | string[];
@@ -350,7 +351,7 @@ interface SidebarSlotProps {
     time?: InternalTime;
     updateTime?: (value: number | number[], isHours?: boolean, isSeconds?: boolean) => void;
     updateMonthYear?: (instance: number, val: { month: number; year: number; fromNav?: boolean }) => void;
-    selectDate?: (day: { value: Date }, isNext?: boolean) => {};
+    selectDate?: (day: { value: Date }, isNext?: boolean) => void;
     presetDate?: (value: Date[] | string[] | Date | string, noTz?: boolean) => void;
     getModelMonthYear?: () => { month: number | null; year: number | null }[];
     selectMonth?: (month: number, instance: number) => void;
