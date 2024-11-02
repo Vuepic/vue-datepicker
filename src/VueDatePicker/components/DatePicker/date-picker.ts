@@ -158,7 +158,8 @@ export const useDatePicker = (
         }
         if (
             defaultedMultiCalendars.value.count &&
-            (!defaultedMultiCalendars.value.solo || !modelValue.value || shouldAssignMultiSolo())
+            (!modelValue.value || shouldAssignMultiSolo()) &&
+            (fromMount ? true : !defaultedMultiCalendars.value.solo)
         ) {
             for (let i = 1; i < defaultedMultiCalendars.value.count; i++) {
                 const prevDate = set(getDate(), { month: month.value(i - 1), year: year.value(i - 1) });
