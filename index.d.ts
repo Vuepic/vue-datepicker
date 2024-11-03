@@ -108,7 +108,6 @@ export interface RangeConfig {
     maxRange?: string | number;
     minRange?: string | number;
     autoRange?: string | number;
-    mobileBreakpoint?: number;
 }
 
 export type CustomClass = string | string[];
@@ -137,6 +136,8 @@ export interface GeneralConfig {
     keepViewOnOffsetClick?: boolean;
     timeArrowHoldThreshold?: boolean;
     shadowDom?: boolean;
+    mobileBreakpoint?: number;
+    setDateOnMenuClose?: boolean;
 }
 
 export interface VueDatePickerProps {

@@ -428,7 +428,10 @@
     /**
      * Closes the menu and clears the internal data
      */
-    const closeMenu = (): void => {
+    const closeMenu = (fromClickAway = false): void => {
+        if (fromClickAway && internalModelValue.value && defaultedConfig.value.setDateOnMenuClose) {
+            selectDate();
+        }
         if (!defaultedInline.value.enabled) {
             if (isOpen.value) {
                 isOpen.value = false;
@@ -525,7 +528,7 @@
 
     const clickOutside = (validateBeforeEmit: () => boolean) => {
         if (defaultedConfig.value.onClickOutside) return defaultedConfig.value.onClickOutside(validateBeforeEmit);
-        return closeMenu();
+        return closeMenu(true);
     };
 
     const handleFlow = (skipStep = 0) => {

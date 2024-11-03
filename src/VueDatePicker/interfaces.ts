@@ -288,6 +288,7 @@ export interface Config {
     timeArrowHoldThreshold: number;
     shadowDom?: boolean;
     mobileBreakpoint: number;
+    setDateOnMenuClose?: boolean;
 }
 
 export interface Highlight {

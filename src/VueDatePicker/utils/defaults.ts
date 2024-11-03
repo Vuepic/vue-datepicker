@@ -176,6 +176,7 @@ export const getDefaultConfig = (config?: Partial<Config>): Config => {
         timeArrowHoldThreshold: 0,
         shadowDom: false,
         mobileBreakpoint: 600,
+        setDateOnMenuClose: false,
     };
     return { ...defaultConfig, ...(config ?? {}) };
 };
