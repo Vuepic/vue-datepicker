@@ -1,7 +1,7 @@
 import { computed, type ComputedRef, onMounted, onUnmounted, ref } from 'vue';
 import type { Config } from '@/interfaces';
 
-export const useResponsive = (config: ComputedRef<Config>) => {
+export const useResponsive = (config: ComputedRef<Config>, isShadow?: boolean) => {
     const windowWidth = ref(0);
 
     onMounted(() => {
@@ -17,7 +17,9 @@ export const useResponsive = (config: ComputedRef<Config>) => {
         windowWidth.value = window.document.documentElement.clientWidth;
     };
 
-    const isMobile = computed(() => (windowWidth.value <= config.value.mobileBreakpoint ? true : undefined));
+    const isMobile = computed(() =>
+        windowWidth.value <= config.value.mobileBreakpoint && !isShadow ? true : undefined,
+    );
 
     return {
         isMobile,

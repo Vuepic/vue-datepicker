@@ -196,7 +196,7 @@
     const { setMenuFocused, setShiftKey, control } = useState();
     const slots = useSlots();
     const { defaultedTextInput, defaultedInline, defaultedConfig, defaultedUI } = useDefaults(props);
-    const { isMobile } = useResponsive(defaultedConfig);
+    const { isMobile } = useResponsive(defaultedConfig, props.shadow);
 
     const calendarWrapperRef = ref(null);
     const calendarWidth = ref(0);
