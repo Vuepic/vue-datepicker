@@ -17,8 +17,8 @@ export const useTimePickerUtils = (
 ) => {
     const { defaultedRange } = useDefaults(props);
     const getTimeValue = (type: TimeType, i?: number): number => {
-        if (Array.isArray(time[type])) return (time[type] as number[])[i as number];
-        return time[type] as number;
+        if (Array.isArray(time[type])) return time[type][i as number];
+        return time[type];
     };
     // Check if seconds are enabled, and return proper value
     const getSecondsValue = (i?: number): number => {

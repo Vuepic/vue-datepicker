@@ -270,7 +270,7 @@
     });
 
     const getInputRect = () => {
-        return inputRef.value?.$el?.getBoundingClientRect();
+        return inputRef.value?.$el?.getBoundingClientRect() ?? ({ width: 0, left: 0, right: 0 } as DOMRect);
     };
 
     /**
@@ -295,7 +295,7 @@
         if (isOpen.value) {
             setMenuPosition();
         }
-        const width = dpMenuRef.value?.$el.getBoundingClientRect().width;
+        const width = dpMenuRef.value?.$el.getBoundingClientRect().width ?? 0;
         collapse.value = document.body.offsetWidth <= width;
     };
 

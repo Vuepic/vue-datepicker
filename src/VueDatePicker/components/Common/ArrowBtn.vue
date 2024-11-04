@@ -28,15 +28,13 @@
 
     const emit = defineEmits(['activate', 'set-ref']);
 
-    interface Props {
+    defineProps<{
         ariaLabel?: string;
         elName?: string;
         disabled: boolean;
-    }
+    }>();
 
-    defineProps<Props>();
-
-    const elRef = ref(null);
+    const elRef = ref<HTMLElement | null>(null);
 
     onMounted(() => emit('set-ref', elRef));
 </script>
