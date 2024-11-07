@@ -1,5 +1,5 @@
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
-import { describe, it, expect, afterEach } from 'vitest';
+import { describe, it, expect, afterEach, vi } from 'vitest';
 import { nextTick } from 'vue';
 import {
     addMonths,
@@ -12,6 +12,8 @@ import {
     addDays,
     getHours,
     startOfMonth,
+    startOfDay,
+    endOfDay,
 } from 'date-fns';
 import { ja } from 'date-fns/locale';
 
@@ -274,14 +276,53 @@ describe('Logic connection', () => {
         const { dp, menu } = await mountDatepicker({
             modeValue: null,
             range: true,
-            presetDates: [{ label: 'Today', range }],
+            presetDates: [{ label: 'Today', value: range, testId: 'TodayPresetBtn' }],
         });
 
-        menu.vm.presetDate(range);
+        await menu.find('[data-test-id="TodayPresetBtn"]').trigger('click');
 
         expect(dp.vm.internalModelValue).toHaveLength(2);
         expect(dp.vm.internalModelValue).toEqual(range);
         dp.unmount();
+    });
+
+    it('Should preset range from preset-dates when range its a function', async () => {
+        const range = [new Date('2000-01-01T00:00:00'), new Date('2000-12-31T23:59:59')];
+        const { dp, menu } = await mountDatepicker({
+            modeValue: null,
+            range: true,
+            presetDates: [{ label: 'This Year', value: () => range, testId: 'ThisYearPresetBtn' }],
+        });
+
+        await menu.find('[data-test-id="ThisYearPresetBtn"]').trigger('click');
+
+        expect(dp.vm.internalModelValue).toHaveLength(2);
+        expect(dp.vm.internalModelValue).toEqual(range);
+        dp.unmount();
+    });
+
+    it('Should correctly set today when preset-dates its a function and selected 2 days later', async () => {
+        vi.useFakeTimers()
+        vi.setSystemTime(new Date('2000-01-01T00:00:00.000Z'))
+
+        const { dp, menu } = await mountDatepicker({
+            modeValue: null,
+            range: true,
+            presetDates: [{ label: 'Today', value: () => [startOfDay(new Date()), endOfDay(new Date())], testId: 'TodayPresetBtn' }],
+        });
+
+        await menu.find('[data-test-id="TodayPresetBtn"]').trigger('click');
+
+        expect(dp.vm.internalModelValue).toEqual([startOfDay(new Date('2000-01-01T00:00:00.000Z')), endOfDay(new Date('2000-01-01T00:00:00.000Z'))]);
+
+        setTimeout(async () => await menu.find('[data-test-id="TodayPresetBtn"]').trigger('click'), 1000 * 60 * 60 * 48) //
+
+        vi.runAllTimers()
+
+        expect(dp.vm.internalModelValue).toEqual([startOfDay(new Date('2000-01-03T00:00:00.000Z')), endOfDay(new Date('2000-01-03T00:00:00.000Z'))]);
+
+        dp.unmount();
+        vi.useRealTimers()
     });
 
     it('Should select week', async () => {

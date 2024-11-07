@@ -1,4 +1,4 @@
-import type { ComponentPublicInstance, Ref } from 'vue';
+import type { ComponentPublicInstance, Ref, MaybeRefOrGetter } from 'vue';
 import type { HeaderPicker } from '@/constants';
 import DatepickerMenu from '@/components/DatepickerMenu.vue';
 import type DatepickerInput from '@/components/DatepickerInput.vue';
@@ -122,7 +122,7 @@ export type DisabledDatesProp = Date[] | string[] | IDisableDates;
 
 export type PresetDate = {
     label: string;
-    value: Date[] | string[] | Date | string;
+    value: MaybeRefOrGetter<Date[] | string[] | Date | string>;
     style?: Record<string, string>;
     slot?: string;
     noTz?: boolean;
