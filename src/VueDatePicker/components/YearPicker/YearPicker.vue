@@ -37,7 +37,7 @@
     import { useYearPicker } from '@/components/YearPicker/year-picker';
     import { useDefaults } from '@/composables';
 
-    const emit = defineEmits(['update:internal-model-value', 'reset-flow', 'range-start', 'range-end', 'auto-apply']);
+    const emit = defineEmits(['update:internal-model-value', 'reset-flow', 'range-start', 'range-end', 'auto-apply', 'toggle-action-row',]);
     const props = defineProps({
         ...PickerBaseProps,
     });

@@ -64,6 +64,7 @@
         'auto-apply',
         'range-start',
         'range-end',
+        'toggle-action-row',
     ]);
     const props = defineProps({
         ...PickerBaseProps,
