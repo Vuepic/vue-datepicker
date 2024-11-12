@@ -99,6 +99,7 @@
             @select-date="$emit('select-date')"
             @invalid-select="$emit('invalid-select')"
             @select-now="selectCurrentDate"
+            @clear="$emit('clear')"
         >
             <template v-for="(slot, i) in actionSlots" #[slot]="args" :key="i">
                 <slot :name="slot" v-bind="{ ...args }" />
@@ -159,6 +160,7 @@
         'auto-apply-invalid',
         'date-update',
         'invalid-date',
+        'clear',
     ]);
 
     const props = defineProps({

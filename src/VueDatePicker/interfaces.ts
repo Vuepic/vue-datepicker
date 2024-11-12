@@ -202,7 +202,8 @@ export interface ActionRowData {
     showSelect: boolean;
     showCancel: boolean;
     showNow: boolean;
-    showPreview: true;
+    showPreview: boolean;
+    showClear: boolean;
 }
 
 export type TimeObj = { hours: number; minutes: number; seconds: number };

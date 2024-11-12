@@ -33,6 +33,17 @@
                         {{ cancelText }}
                     </button>
                     <button
+                        v-if="defaultedActionRow.showClear"
+                        ref="cancelButtonRef"
+                        type="button"
+                        class="dp__action_button dp__action_cancel"
+                        @click="$emit('clear')"
+                        @keydown.enter="$emit('clear')"
+                        @keydown.space="$emit('clear')"
+                    >
+                        {{ clearButtonLabel }}
+                    </button>
+                    <button
                         v-if="defaultedActionRow.showNow"
                         ref="cancelButtonRef"
                         type="button"
@@ -78,7 +89,7 @@
         },
     });
 
-    const emit = defineEmits(['close-picker', 'select-date', 'select-now', 'invalid-select']);
+    const emit = defineEmits(['close-picker', 'select-date', 'select-now', 'invalid-select', 'clear']);
 
     const props = defineProps({
         menuMount: { type: Boolean as PropType<boolean>, default: false },
