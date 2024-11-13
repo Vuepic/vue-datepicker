@@ -193,7 +193,7 @@
     const innerMenuRef = ref(null);
     const menuMount = ref(false);
     const dynCmpRef = ref<any>(null);
-    const isDisplayedActionRow = ref(true)
+    const isDisplayedActionRow = ref<boolean>(true)
 
     onMounted(() => {
         if (!props.shadow) {
@@ -356,7 +356,7 @@
         callChildFn('updateMonthYear', instance, value);
     };
 
-    const toggleActionRow = (value: Boolean) => {
+    const toggleActionRow = (value: any) => {
         isDisplayedActionRow.value = value
     }
 
