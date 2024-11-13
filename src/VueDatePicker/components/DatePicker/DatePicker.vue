@@ -17,6 +17,7 @@
             @reset-flow="$emit('reset-flow')"
             @update-month-year="updateMonthYear(instance, $event)"
             @overlay-closed="$emit('focus-menu')"
+            @toggle-action-row="(v) => $emit('toggle-action-row', v)"
         >
             <template v-for="(slot, j) in headerSlots" #[slot]="args" :key="j">
                 <slot :name="slot" v-bind="args" />
@@ -116,6 +117,7 @@
         'auto-apply-invalid',
         'date-update',
         'invalid-date',
+        'toggle-action-row',
     ]);
     const props = defineProps({
         ...PickerBaseProps,

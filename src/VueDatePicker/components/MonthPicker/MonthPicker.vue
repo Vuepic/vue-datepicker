@@ -67,6 +67,7 @@
         'range-end',
         'auto-apply',
         'update-month-year',
+        'toggle-action-row',
     ]);
 
     const slots = useSlots();

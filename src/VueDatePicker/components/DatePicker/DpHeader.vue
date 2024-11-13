@@ -130,7 +130,7 @@
 
     import type { HeaderSelectionBtn, IDefaultSelect, MaybeElementRef, OverlayGridItem } from '@/interfaces';
 
-    const emit = defineEmits(['update-month-year', 'mount', 'reset-flow', 'overlay-closed']);
+    const emit = defineEmits(['update-month-year', 'mount', 'reset-flow', 'overlay-closed', 'toggle-action-row']);
     const props = defineProps({
         month: { type: Number as PropType<number>, default: 0 },
         year: { type: Number as PropType<number>, default: 0 },
@@ -230,6 +230,7 @@
         } else {
             val.value = !val.value;
         }
+        emit('toggle-action-row', !val.value);
 
         if (!val.value) {
             emit('overlay-closed');

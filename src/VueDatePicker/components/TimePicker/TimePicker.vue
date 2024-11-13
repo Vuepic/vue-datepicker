@@ -128,6 +128,7 @@
         'overlay-opened',
         'overlay-closed',
         'am-pm-change',
+        'toggle-action-row',
     ]);
 
     const props = defineProps({

@@ -77,6 +77,7 @@
                     @auto-apply-invalid="$emit('auto-apply-invalid', $event)"
                     @invalid-date="$emit('invalid-date', $event)"
                     @update:internal-model-value="$emit('update:internal-model-value', $event)"
+                    @toggle-action-row="toggleActionRow"
                 >
                     <template v-for="(slot, i) in sharedSlots" #[slot]="args" :key="i">
                         <slot :name="slot" v-bind="{ ...args }" />
@@ -91,7 +92,7 @@
             </div>
         </div>
         <ActionRow
-            v-if="!autoApply || defaultedConfig.keepActionRow"
+            v-if="(!autoApply || defaultedConfig.keepActionRow) && isDisplayedActionRow"
             :menu-mount="menuMount"
             v-bind="baseProps"
             :calendar-width="calendarWidth"
@@ -192,6 +193,7 @@
     const innerMenuRef = ref(null);
     const menuMount = ref(false);
     const dynCmpRef = ref<any>(null);
+    const isDisplayedActionRow = ref(true)
 
     onMounted(() => {
         if (!props.shadow) {
@@ -353,6 +355,10 @@
     const updateMonthYear = (instance: number, value: MonthModel) => {
         callChildFn('updateMonthYear', instance, value);
     };
+
+    const toggleActionRow = (value: Boolean) => {
+        isDisplayedActionRow.value = value
+    }
 
     defineExpose({
         updateMonthYear,
