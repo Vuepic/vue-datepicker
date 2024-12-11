@@ -4,7 +4,16 @@
             <div class="dp__month_year_wrap">
                 <slot
                     name="month-year"
-                    v-bind="{ month, year, months, years, updateMonthYear, handleMonthYearChange, instance }"
+                    v-bind="{
+                        month,
+                        year,
+                        months,
+                        years,
+                        updateMonthYear,
+                        handleMonthYearChange,
+                        instance,
+                        isDisabled,
+                    }"
                 />
             </div>
         </template>
