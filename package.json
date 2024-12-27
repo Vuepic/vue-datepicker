@@ -16,6 +16,7 @@
   "sass": "src/VueDatePicker/style/main.scss",
   "files": [
     "dist/*",
+    "index.d.ts",
     "LICENSE",
     "README.md",
     "CHANGELOG.md"
@@ -80,8 +81,7 @@
     "vue-tsc": "^2.2.0"
   },
   "dependencies": {
-    "date-fns": "^4.1.0",
-    "vite-plugin-dts": "^4.4.0"
+    "date-fns": "^4.1.0"
   },
   "peerDependencies": {
     "vue": ">=3.3.0"
