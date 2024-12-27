@@ -5,7 +5,9 @@ import VueDatePicker from '@/VueDatePicker.vue';
 import type { AllPropsType } from '@/props';
 import { resetDateTime } from '@/utils/date-utils';
 
-export const openMenu = async (props: Partial<AllPropsType>) => {
+export const openMenu = async (
+    props: Partial<AllPropsType>,
+): Promise<VueWrapper<InstanceType<typeof VueDatePicker>>> => {
     const dp = mount(VueDatePicker, { props });
 
     dp.vm.openMenu();

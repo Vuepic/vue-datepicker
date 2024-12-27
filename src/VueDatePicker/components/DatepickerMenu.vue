@@ -283,7 +283,7 @@
 
     const actionSlots = mapSlots(slots, 'action');
 
-    const sharedSlots = computed(() => {
+    const sharedSlots = computed((): string[] => {
         if (props.monthPicker || props.yearPicker) return mapSlots(slots, 'monthYear');
         if (props.timePicker) return mapSlots(slots, 'timePicker');
         return mapSlots(slots, 'shared');
