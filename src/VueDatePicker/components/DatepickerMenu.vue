@@ -120,7 +120,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, onMounted, onUnmounted, ref, useSlots } from 'vue';
+    import { computed, onMounted, onUnmounted, ref, toValue, useSlots } from 'vue';
 
     import ActionRow from '@/components/ActionRow.vue';
 
@@ -135,7 +135,7 @@
     import QuarterPicker from '@/components/QuarterPicker/QuarterPicker.vue';
 
     import type { DynamicClass, MenuView, InternalModuleValue, MenuExposedFn, MonthModel } from '@/interfaces';
-    import type { PropType } from 'vue';
+    import type { MaybeRefOrGetter, PropType } from 'vue';
     import { ArrowDirection, EventKey } from '@/constants';
     import { useResponsive } from '@/composables/responsive';
 
@@ -368,8 +368,8 @@
         callChildFn('selectCurrentDate');
     };
 
-    const presetDate = (value: Date[] | string[] | string | Date, noTz?: boolean) => {
-        callChildFn('presetDate', value, noTz);
+    const presetDate = (value: MaybeRefOrGetter<Date[] | string[] | string | Date>, noTz?: boolean) => {
+        callChildFn('presetDate', toValue(value), noTz);
     };
 
     const clearHoverDate = () => {
