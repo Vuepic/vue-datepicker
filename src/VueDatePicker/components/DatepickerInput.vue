@@ -58,11 +58,11 @@
                     @click="emit('toggle')"
                 />
             </div>
-            <span v-if="$slots['clear-icon'] && inputValue && clearable && !disabled && !readonly" class="dp--clear-btn"
+            <span v-if="$slots['clear-icon'] && (alwaysClearable || inputValue && clearable && !disabled && !readonly)" class="dp--clear-btn"
                 ><slot name="clear-icon" :clear="onClear"
             /></span>
             <button
-                v-if="clearable && !$slots['clear-icon'] && inputValue && !disabled && !readonly"
+                v-if="!$slots['clear-icon'] && (alwaysClearable || clearable && inputValue && !disabled && !readonly)"
                 :aria-label="defaultedAriaLabels?.clearInput"
                 class="dp--clear-btn"
                 type="button"

@@ -120,6 +120,7 @@ export const AllProps = {
     placeholder: { type: String as PropType<string>, default: '' },
     hideInputIcon: { type: Boolean as PropType<boolean>, default: false },
     clearable: { type: Boolean as PropType<boolean>, default: true },
+    alwaysClearable: { type: Boolean as PropType<boolean>, default: false },
     state: { type: Boolean as PropType<boolean | null>, default: null },
     required: { type: Boolean as PropType<boolean>, default: false },
     autocomplete: { type: String as PropType<string>, default: 'off' },
