@@ -199,6 +199,7 @@ export interface VueDatePickerProps {
               rangeSeparator?: string;
               selectOnFocus?: boolean;
               format?: string | string[] | ((value: string) => Date | null);
+              escClose?: boolean;
           };
     monthNameFormat?: 'long' | 'short';
     startDate?: string | Date;

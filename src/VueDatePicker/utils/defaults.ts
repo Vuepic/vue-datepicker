@@ -123,6 +123,7 @@ export const getDefaultTextInputOptions = (textInput: TextInputProp): TextInputO
         openMenu: 'open',
         selectOnFocus: false,
         rangeSeparator: ' - ',
+        escClose: true,
     };
 
     if (typeof textInput === 'object') {

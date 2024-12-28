@@ -58,11 +58,13 @@
                     @click="emit('toggle')"
                 />
             </div>
-            <span v-if="$slots['clear-icon'] && (alwaysClearable || inputValue && clearable && !disabled && !readonly)" class="dp--clear-btn"
+            <span
+                v-if="$slots['clear-icon'] && (alwaysClearable || (inputValue && clearable && !disabled && !readonly))"
+                class="dp--clear-btn"
                 ><slot name="clear-icon" :clear="onClear"
             /></span>
             <button
-                v-if="!$slots['clear-icon'] && (alwaysClearable || clearable && inputValue && !disabled && !readonly)"
+                v-if="!$slots['clear-icon'] && (alwaysClearable || (clearable && inputValue && !disabled && !readonly))"
                 :aria-label="defaultedAriaLabels?.clearInput"
                 class="dp--clear-btn"
                 type="button"
@@ -290,12 +292,19 @@
         emit('clear');
     };
 
+    const handleEsc = () => {
+        emit('close');
+    };
+
     const handleKeyPress = (ev: KeyboardEvent): void => {
         if (ev.key === 'Tab') {
             handleTab(ev);
         }
         if (ev.key === 'Enter') {
             handleEnter(ev);
+        }
+        if (ev.key === 'Escape' && defaultedTextInput.value.escClose) {
+            handleEsc();
         }
         if (!defaultedTextInput.value.enabled) {
             if (ev.code === 'Tab') return;

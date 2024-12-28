@@ -47,6 +47,7 @@ export interface TextInputOptions {
     openMenu: string | boolean;
     rangeSeparator: string;
     selectOnFocus: boolean;
+    escClose: boolean;
     format?: string | string[] | ((value: string) => Date | null);
 }
 
