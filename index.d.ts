@@ -5,6 +5,7 @@ import type {
     ComputedOptions,
     ComputedRef,
     DefineComponent,
+    MaybeRefOrGetter,
     MethodOptions,
     Ref,
 } from 'vue';
@@ -172,6 +173,7 @@ export interface VueDatePickerProps {
     hideInputIcon?: boolean;
     state?: boolean;
     clearable?: boolean;
+    alwaysClearable?: boolean;
     autoApply?: boolean;
     filters?: {
         months?: number[];
@@ -233,7 +235,7 @@ export interface VueDatePickerProps {
     multiDates?: boolean | { limit?: number | string; dragSelect?: boolean };
     presetDates?: {
         label: string;
-        value: Date[] | string[] | string | Date;
+        value: MaybeRefOrGetter<Date[] | string[] | string | Date>;
         style?: Record<string, string>;
         slot?: string;
         noTz?: boolean;
@@ -408,6 +410,7 @@ export interface Slots {
         instance?: number;
         selectMonth?: (month: number, instance: number) => void;
         selectYear?: (year: number, instance: number) => void;
+        isDisabled?: (next: boolean) => boolean;
     }): any;
     'time-picker'(props: {
         time: InternalTime;
