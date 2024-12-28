@@ -526,8 +526,8 @@
         dpMenuRef.value?.switchView(view, instance);
     };
 
-    const clickOutside = (validateBeforeEmit: () => boolean) => {
-        if (defaultedConfig.value.onClickOutside) return defaultedConfig.value.onClickOutside(validateBeforeEmit);
+    const clickOutside = (validateBeforeEmit: () => boolean, evt: PointerEvent) => {
+        if (defaultedConfig.value.onClickOutside) return defaultedConfig.value.onClickOutside(validateBeforeEmit, evt);
         return closeMenu(true);
     };
 
@@ -535,7 +535,9 @@
         dpMenuRef.value?.handleFlow(skipStep);
     };
 
-    onClickOutside(dpWrapMenuRef, inputRef as unknown as MaybeElementRef, () => clickOutside(validateBeforeEmit));
+    onClickOutside(dpWrapMenuRef, inputRef as unknown as MaybeElementRef, (evt: PointerEvent) =>
+        clickOutside(validateBeforeEmit, evt),
+    );
 
     defineExpose({
         closeMenu,
