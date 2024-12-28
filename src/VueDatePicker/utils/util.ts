@@ -1,5 +1,6 @@
+import type { ComponentPublicInstance } from 'vue';
 import { unref } from 'vue';
-import { format } from 'date-fns';
+import { format, type Locale } from 'date-fns';
 
 import type {
     Config,
@@ -10,11 +11,9 @@ import type {
     ModelValue,
     OverlayGridItem,
 } from '@/interfaces';
-import { type Locale } from 'date-fns';
-import type { ComponentPublicInstance } from 'vue';
 import { getDate } from '@/utils/date-utils';
 import { localToTz } from '@/utils/timezone';
-import { EventKey } from '@/constants';
+import { EventKey, MAP_KEY_FORMAT } from '@/constants';
 
 export const getArrayInArray = <T>(list: T[], increment = 3): T[][] => {
     const items = [];
@@ -280,16 +279,16 @@ export const formatNumber = (num: number, locale: string): string => {
     return new Intl.NumberFormat(locale, { useGrouping: false, style: 'decimal' }).format(num);
 };
 
-export const getMapKey = (date: Date | string | number) => {
-    return format(date, 'dd-MM-yyyy');
+export const getMapKey = (date: Date | string | number, mapKeyFormat?: MAP_KEY_FORMAT) => {
+    return format(date, mapKeyFormat ?? MAP_KEY_FORMAT.DATE);
 };
 
 export const shouldMap = (arr: any): arr is Date[] | string[] | boolean => {
     return Array.isArray(arr);
 };
 
-export const getMapDate = <T>(date: Date, map: Map<string, T>): T | undefined => {
-    return map.get(getMapKey(date));
+export const getMapDate = <T>(date: Date, map: Map<string, T>, format?: MAP_KEY_FORMAT): T | undefined => {
+    return map.get(getMapKey(date, format));
 };
 
 export const matchDate = (date: Date, mapOrFn: Map<string, any> | ((date: Date) => boolean) | null) => {
@@ -318,4 +317,10 @@ export const isIOS = () => {
         ) ||
         (navigator.userAgent.includes('Mac') && 'ontouchend' in document)
     );
+};
+
+export const getMapKeyType = (monthPicker: boolean, yearPicker: boolean): MAP_KEY_FORMAT => {
+    if (monthPicker) return MAP_KEY_FORMAT.MONTH_AND_YEAR;
+    if (yearPicker) return MAP_KEY_FORMAT.YEAR;
+    return MAP_KEY_FORMAT.DATE;
 };

@@ -47,3 +47,9 @@ export enum EventKey {
     pageUp = 'PageUp',
     pageDown = 'PageDown',
 }
+
+export enum MAP_KEY_FORMAT {
+    MONTH_AND_YEAR = 'MM-yyyy',
+    YEAR = 'yyyy',
+    DATE = 'dd-MM-yyyy',
+}

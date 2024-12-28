@@ -381,6 +381,8 @@ export interface MapPropDatesOpts {
     markers: IMarker[];
     timezone: TimeZoneConfig | undefined;
     isSpecific?: boolean;
+    isMonthPicker: boolean;
+    isYearPicker: boolean;
 }
 
 export type CustomClass = string | string[];

@@ -157,7 +157,7 @@ describe('Month and Year picker components', () => {
     it('Should disable months based on disabled dates', async () => {
         const currentMonth = getMonth(new Date());
         const wrapper = mount(MonthPicker, {
-            props: { ...props, disabledDates: [new Date()] },
+            props: { ...props, disabledDates: [new Date()], monthPicker: true },
         }) as unknown as MonthPickerCmp<{ groupedMonths: (i: number) => OverlayGridItem[][] }>;
 
         const monthValues = wrapper.vm.groupedMonths(0);

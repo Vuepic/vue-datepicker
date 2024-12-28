@@ -1,37 +1,38 @@
 import type {
-    AriaLabels,
-    IFormat,
-    Transition,
-    TextInputOptions,
-    DateFilter,
     ActionRowData,
-    MultiCalendarsProp,
-    MultiCalendarsOptions,
-    OptionEnabled,
-    TextInputProp,
-    InlineProp,
-    InlineOptions,
+    AriaLabels,
     Config,
-    HighlightProp,
+    DateFilter,
     Highlight,
     HighlightFn,
-    WeekNumbersProp,
-    WeekNumbersOpts,
-    RangeProp,
-    RangeConfig,
-    TimeZoneProp,
-    TimeZoneConfig,
+    HighlightProp,
+    IFormat,
     IMarker,
-    PropDates,
-    MultiDatesProp,
-    MultiDatesDefault,
+    InlineOptions,
+    InlineProp,
     MapPropDatesOpts,
+    MultiCalendarsOptions,
+    MultiCalendarsProp,
+    MultiDatesDefault,
+    MultiDatesProp,
+    OptionEnabled,
+    PropDates,
+    RangeConfig,
+    RangeProp,
+    TextInputOptions,
+    TextInputProp,
+    TimeZoneConfig,
+    TimeZoneProp,
+    Transition,
     UIOpts,
     UIParsed,
+    WeekNumbersOpts,
+    WeekNumbersProp,
 } from '@/interfaces';
 import { getDate } from '@/utils/date-utils';
 import { dateToTimezoneSafe, sanitizeDateToLocal } from '@/utils/timezone';
-import { getMapKey, shouldMap } from '@/utils/util';
+import { getMapKey, getMapKeyType, shouldMap } from '@/utils/util';
+import { MAP_KEY_FORMAT } from '@/constants';
 
 export const mergeDefaultTransitions = (conf: Partial<Transition>): Transition => ({
     menuAppearTop: 'dp-menu-appear-top',
@@ -254,12 +255,13 @@ export const getDefaultTimeZone = (timeZone: TimeZoneProp) => {
 const datesArrToMap = (
     datesArr: (Date | string | number)[],
     timezone: TimeZoneConfig | undefined,
+    format: MAP_KEY_FORMAT,
     reset?: boolean,
 ): Map<string, Date | null> => {
     return new Map(
         datesArr.map((date) => {
             const d = dateToTimezoneSafe(date, timezone, reset);
-            return [getMapKey(d), d];
+            return [getMapKey(d, format), d];
         }),
     );
 };
@@ -269,7 +271,7 @@ const mapMarkers = (markers: IMarker[], timezone: TimeZoneConfig | undefined) =>
         return new Map(
             markers.map((marker) => {
                 const date = dateToTimezoneSafe(marker.date, timezone);
-                return [getMapKey(date), marker];
+                return [getMapKey(date, MAP_KEY_FORMAT.DATE), marker];
             }),
         );
     }
@@ -281,18 +283,19 @@ const mapMarkers = (markers: IMarker[], timezone: TimeZoneConfig | undefined) =>
  * All validation that is done from these props will now be in sync with provided timezone config
  */
 export const mapPropDates = (opts: MapPropDatesOpts): PropDates => {
+    const format = getMapKeyType(opts.isMonthPicker, opts.isYearPicker);
     return {
         minDate: sanitizeDateToLocal(opts.minDate, opts.timezone, opts.isSpecific),
         maxDate: sanitizeDateToLocal(opts.maxDate, opts.timezone, opts.isSpecific),
         disabledDates: shouldMap(opts.disabledDates)
-            ? datesArrToMap(opts.disabledDates, opts.timezone, opts.isSpecific)
+            ? datesArrToMap(opts.disabledDates, opts.timezone, format, opts.isSpecific)
             : opts.disabledDates,
         allowedDates: shouldMap(opts.allowedDates)
-            ? datesArrToMap(opts.allowedDates, opts.timezone, opts.isSpecific)
+            ? datesArrToMap(opts.allowedDates, opts.timezone, format, opts.isSpecific)
             : null,
         highlight:
             typeof opts.highlight === 'object' && shouldMap(opts.highlight?.dates)
-                ? datesArrToMap(opts.highlight.dates, opts.timezone)
+                ? datesArrToMap(opts.highlight.dates, opts.timezone, format)
                 : (opts.highlight as HighlightFn),
         markers: mapMarkers(opts.markers, opts.timezone),
     };

@@ -5,11 +5,11 @@ import { checkMinMaxValue, getMonths, groupListAndMap } from '@/utils/util';
 import {
     checkHighlightMonth,
     getDate,
-    getDisabledMonths,
     getMaxMonth,
     getMinMonth,
     isDateBetween,
     isMonthAllowed,
+    isMonthDisabled,
     resetDate,
     setDateMonthOrYear,
 } from '@/utils/date-utils';
@@ -136,7 +136,7 @@ export const useMonthPicker = (props: PickerBasePropsType, emit: VueEmit) => {
                     getMinMonth(year.value(instance), propDates.value.minDate),
                     getMaxMonth(year.value(instance), propDates.value.maxDate),
                 ) ||
-                getDisabledMonths(propDates.value.disabledDates, year.value(instance)).includes(month.value) ||
+                isMonthDisabled(propDates.value.disabledDates, year.value(instance), month.value) ||
                 defaultedFilters.value.months?.includes(month.value) ||
                 !isMonthAllowed(propDates.value.allowedDates, year.value(instance), month.value);
             const isBetween = isMonthBetween(month.value, instance);

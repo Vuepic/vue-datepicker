@@ -42,6 +42,7 @@ import type {
 } from '@/interfaces';
 
 import type { Duration, Locale } from 'date-fns';
+import { padZero } from '../../../tests/utils.ts';
 
 const parseTextToDate = (
     value: string,
@@ -403,28 +404,26 @@ export const checkTimeMinMax = (
 // Returns a getDate object with a set of time from a provided date
 export const setTimeValue = (date: Date): Date => set(getDate(), getTimeObj(date));
 
-export const getDisabledMonths = (
-    disabledDates: Map<string, Date | null> | null | ((date: Date) => boolean),
-    year: number,
-) => {
-    if (disabledDates instanceof Map) {
-        return Array.from(disabledDates.values())
-            .filter((date) => getYear(getDate(date)) === year)
-            .map((date) => getMonth(date as Date));
-    }
-    return [];
-};
-
-export const isMonthAllowed = (
+export const isMonthDisabled = (
     disabledDates: Map<string, Date | null> | null | ((date: Date) => boolean),
     year: number,
     month: number,
 ) => {
     if (disabledDates instanceof Map) {
-        const months = Array.from(disabledDates.values())
-            .filter((date) => getYear(getDate(date)) === year)
-            .map((date) => getMonth(date as Date));
-        return months.length ? months.includes(month) : true;
+        const key = `${padZero(month + 1)}-${year}`;
+        return disabledDates.size ? disabledDates.has(key) : false;
+    }
+    return false;
+};
+
+export const isMonthAllowed = (
+    allowedDates: Map<string, Date | null> | null | ((date: Date) => boolean),
+    year: number,
+    month: number,
+) => {
+    if (allowedDates instanceof Map) {
+        const key = `${padZero(month + 1)}-${year}`;
+        return allowedDates.size ? allowedDates.has(key) : true;
     }
     return true;
 };

@@ -100,7 +100,7 @@ export const useQuarterPicker = (props: PickerBasePropsType, emit: VueEmit) => {
                 value: start,
                 active: isQuarterActive.value(start),
                 highlighted,
-                disabled: disabled,
+                disabled,
                 isBetween,
             };
         });

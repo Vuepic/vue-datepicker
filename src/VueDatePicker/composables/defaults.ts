@@ -92,6 +92,8 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
             markers: props.markers,
             timezone: defaultedTz.value,
             isSpecific: props.monthPicker || props.yearPicker || props.quarterPicker,
+            isMonthPicker: props.monthPicker,
+            isYearPicker: props.yearPicker,
         }),
     );
 

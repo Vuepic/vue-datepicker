@@ -82,6 +82,8 @@ const getMapDatesOpts = (date: Date, timezone: TimeZoneConfig, highlightFn: (dat
         markers: [],
         highlight: highlightFn,
         timezone,
+        isMonthPicker: false,
+        isYearPicker: false,
     };
 };
 

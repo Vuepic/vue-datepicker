@@ -50,6 +50,20 @@ export const useYearPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         return false;
     };
 
+    const isYearAllowed = (year: number) => {
+        if (propDates.value.allowedDates instanceof Map) {
+            return propDates.value.allowedDates.size ? propDates.value.allowedDates.has(`${year}`) : false;
+        }
+        return true;
+    };
+
+    const isYearDisabled = (year: number) => {
+        if (propDates.value.disabledDates instanceof Map) {
+            return propDates.value.disabledDates.size ? propDates.value.disabledDates.has(`${year}`) : false;
+        }
+        return true;
+    };
+
     const groupedYears = computed(() => {
         return groupListAndMap(getYears(props.yearRange, props.locale, props.reverseYears), (year: IDefaultSelect) => {
             const active = isYearActive(year.value);
@@ -58,7 +72,10 @@ export const useYearPicker = (props: PickerBasePropsType, emit: VueEmit) => {
                     year.value,
                     getMinMaxYear(propDates.value.minDate),
                     getMinMaxYear(propDates.value.maxDate),
-                ) || defaultedFilters.value.years.includes(year.value);
+                ) ||
+                defaultedFilters.value.years.includes(year.value) ||
+                !isYearAllowed(year.value) ||
+                isYearDisabled(year.value);
             const isBetween = isYearBetween(year.value) && !active;
             const highlighted = checkHighlightYear(defaultedHighlight.value, year.value);
             return { active, disabled, isBetween, highlighted };
