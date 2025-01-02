@@ -329,7 +329,7 @@ export interface PublicMethods extends MethodOptions {
 }
 
 type InternalModelValue = Date | Date[] | null;
-interface InternalTime {
+export interface InternalTime {
     hours: number | number[];
     minutes: number | number[];
     seconds: number | number[];
