@@ -1,9 +1,17 @@
 import { ref } from 'vue';
-import { addDays } from 'date-fns';
+import { addDays, isAfter, isBefore } from 'date-fns';
 
 import { useDefaults, useValidation } from '@/composables/index';
 import { isModelAuto, matchDate } from '@/utils/util';
-import { isDateAfter, isDateBefore, isDateBetween, isDateEqual, getDate, getWeekFromDate } from '@/utils/date-utils';
+import {
+    isDateAfter,
+    isDateBefore,
+    isDateBetween,
+    isDateEqual,
+    getDate,
+    getWeekFromDate,
+    getBeforeAndAfterInRange,
+} from '@/utils/date-utils';
 import { localToTz } from '@/utils/timezone';
 
 import type { UnwrapRef, WritableComputedRef } from 'vue';
@@ -244,14 +252,44 @@ export const useCalendarClass = (modelValue: WritableComputedRef<InternalModuleV
         return false;
     };
 
+    const isDateAfterMaxRange = (day: ICalendarDay) => {
+        if (Array.isArray(modelValue.value) && modelValue.value.length === 1) {
+            const { before, after } = getBeforeAndAfterInRange(+defaultedRange.value.maxRange!, modelValue.value[0]);
+            return isBefore(day.value, before) || isAfter(day.value, after);
+        }
+        return false;
+    };
+
+    const isDateBeforeMinRange = (day: ICalendarDay) => {
+        if (Array.isArray(modelValue.value) && modelValue.value.length === 1) {
+            const { before, after } = getBeforeAndAfterInRange(+defaultedRange.value.minRange!, modelValue.value[0]);
+            return isDateBetween([before, after], modelValue.value[0], day.value);
+        }
+        return false;
+    };
+
+    const minMaxRangeDate = (day: ICalendarDay) => {
+        if (defaultedRange.value.enabled && (defaultedRange.value.maxRange || defaultedRange.value.minRange)) {
+            if (defaultedRange.value.maxRange && defaultedRange.value.minRange) {
+                return isDateAfterMaxRange(day) || isDateBeforeMinRange(day);
+            }
+            return defaultedRange.value.maxRange ? isDateAfterMaxRange(day) : isDateBeforeMinRange(day);
+        }
+        return false;
+    };
+
     // Common classes to be checked for any mode
     const sharedClasses = (day: ICalendarDay): Record<string, boolean> => {
         const { isRangeStart, isRangeEnd } = rangeStartEnd(day);
         const isRangeStartEnd = defaultedRange.value.enabled ? isRangeStart || isRangeEnd : false;
         return {
             dp__cell_offset: !day.current,
-            dp__pointer: !props.disabled && !(!day.current && props.hideOffsetDates) && !isDisabled(day.value),
-            dp__cell_disabled: isDisabled(day.value),
+            dp__pointer:
+                !props.disabled &&
+                !(!day.current && props.hideOffsetDates) &&
+                !isDisabled(day.value) &&
+                !minMaxRangeDate(day),
+            dp__cell_disabled: isDisabled(day.value) || minMaxRangeDate(day),
             dp__cell_highlight:
                 !disableHighlight(day) &&
                 (highlighted(day) || highlightedWeekDay(day)) &&

@@ -33,11 +33,11 @@ export const getMonthName = (date: Date) => {
 };
 
 export const clickCalendarDate = async (dp: VueWrapper<any>, date: Date) => {
-    await dp.find(`[data-test-id="${resetDateTime(date)}"]`).trigger('click');
+    await getCalendarCell(dp, date).trigger('click');
 };
 
 export const hoverCalendarDate = async (dp: VueWrapper<any>, date: Date) => {
-    await dp.find(`[data-test-id="${resetDateTime(date)}"]`).trigger('mouseenter');
+    await getCalendarCell(dp, date).trigger('mouseenter');
 };
 
 export const clickSelectBtn = async (dp: VueWrapper<any>) => {
@@ -45,3 +45,14 @@ export const clickSelectBtn = async (dp: VueWrapper<any>) => {
 };
 
 export const padZero = (val: number) => (val < 10 ? `0${val}` : val);
+
+export const getCalendarCell = (dp: VueWrapper<any>, date: Date) => {
+    return dp.find(`[data-test-id="${resetDateTime(date)}"]`);
+};
+
+export const getCellClasses = (dp: VueWrapper<any>, date: Date) => {
+    const el = getCalendarCell(dp, date);
+    const innerCell = el.find('.dp__cell_inner');
+
+    return innerCell.classes();
+};

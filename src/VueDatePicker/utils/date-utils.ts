@@ -24,6 +24,8 @@ import {
     subMonths,
     format,
     startOfMonth,
+    subDays,
+    addDays,
 } from 'date-fns';
 import { errors } from '@/utils/util';
 
@@ -442,4 +444,10 @@ export const checkHighlightYear = (defaultedHighlight: Highlight | HighlightFn, 
 
 export const getCellId = (date: Date) => {
     return format(date, 'yyyy-MM-dd');
+};
+
+export const getBeforeAndAfterInRange = (range: number, date: Date) => {
+    const before = subDays(resetDateTime(date), range);
+    const after = addDays(resetDateTime(date), range);
+    return { before, after };
 };

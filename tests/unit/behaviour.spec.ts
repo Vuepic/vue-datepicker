@@ -16,6 +16,7 @@ import {
     startOfMonth,
     startOfQuarter,
     startOfYear,
+    setDate,
 } from 'date-fns';
 
 import { resetDateTime } from '@/utils/date-utils';
@@ -23,6 +24,7 @@ import { resetDateTime } from '@/utils/date-utils';
 import {
     clickCalendarDate,
     clickSelectBtn,
+    getCellClasses,
     getMonthName,
     hoverCalendarDate,
     openMenu,
@@ -153,19 +155,12 @@ describe('It should validate various picker scenarios', () => {
         const disabledDates = [addDays(today, 1)];
         const dp = await openMenu({ disabledDates });
 
-        const getCellClasses = (date: Date) => {
-            const el = dp.find(`[data-test-id="${date}"]`);
-            const innerCell = el.find('.dp__cell_inner');
-
-            return innerCell.classes();
-        };
-
-        expect(getCellClasses(resetDateTime(disabledDates[0]))).toContain('dp__cell_disabled');
+        expect(getCellClasses(dp, disabledDates[0])).toContain('dp__cell_disabled');
 
         const updatedDisabledDates = [...disabledDates, addDays(today, 2)];
 
         await dp.setProps({ disabledDates: updatedDisabledDates });
-        expect(getCellClasses(resetDateTime(updatedDisabledDates[1]))).toContain('dp__cell_disabled');
+        expect(getCellClasses(dp, updatedDisabledDates[1])).toContain('dp__cell_disabled');
         dp.unmount();
     });
 
@@ -527,6 +522,7 @@ describe('It should validate various picker scenarios', () => {
         await dp.find('[data-test-id="dp-input"]').trigger('click');
         const menuShown = dp.find('[role="dialog"]');
         expect(menuShown.exists()).toBeTruthy();
+        dp.unmount();
     });
 
     it('Should trigger @text-input event when typing date #909', async () => {
@@ -537,5 +533,22 @@ describe('It should validate various picker scenarios', () => {
         await dp.find('[data-test-id="dp-input"]').setValue('02');
         expect(dp.emitted()).toHaveProperty('text-input');
         expect(dp.emitted()['text-input']).toHaveLength(2);
+        dp.unmount();
+    });
+
+    it('Should disable invalid dates when min and max range options are provided', async () => {
+        const disabledClass = 'dp__cell_disabled';
+        const dp = await openMenu({ range: { minRange: 3, maxRange: 10 } });
+        const start = setDate(new Date(), 15);
+        await clickCalendarDate(dp, start);
+        const disabledBeforeMin = addDays(start, 2);
+        const disabledAfterMax = addDays(start, 11);
+        const inRange = addDays(start, 7);
+
+        expect(getCellClasses(dp, disabledBeforeMin)).toContain(disabledClass);
+        expect(getCellClasses(dp, disabledAfterMax)).toContain(disabledClass);
+        const empty = getCellClasses(dp, inRange).find((className) => className === disabledClass);
+        expect(empty).toBeFalsy();
+        dp.unmount();
     });
 });

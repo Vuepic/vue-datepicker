@@ -131,7 +131,7 @@ export interface GeneralConfig {
     closeOnAutoApply?: boolean;
     noSwipe?: boolean;
     keepActionRow?: boolean;
-    onClickOutside?: (validate: () => boolean) => void;
+    onClickOutside?: (validate: () => boolean, evt: PointerEvent) => void;
     tabOutClosesMenu?: boolean;
     arrowLeft?: string;
     keepViewOnOffsetClick?: boolean;
@@ -300,7 +300,7 @@ export interface VueDatePickerProps {
     disableYearSelect?: boolean;
     focusStartDate?: boolean;
     disabledTimes?:
-        | ((time: TimeObj | TimeObj[] | (TimeObj | undefined)[]) => boolean)
+        | ((time: TimeObj | (TimeObj | undefined)[]) => boolean)
         | DisabledTime[]
         | [DisabledTime[], DisabledTime[]];
     timePickerInline?: boolean;
