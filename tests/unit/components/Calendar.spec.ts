@@ -6,6 +6,7 @@ import DatepickerMenu from '@/components/DatepickerMenu.vue';
 import DatePicker from '@/components/DatePicker/DatePicker.vue';
 
 import { resetDateTime } from '@/utils/date-utils';
+import { getCalendarCell } from '../../utils.ts';
 import type { ComponentPublicInstance } from 'vue';
 
 const mountCalendar = async () => {
@@ -46,7 +47,7 @@ describe('Calendar component', () => {
         await menu.vm.$nextTick();
         const calendar = menu.findComponent(DpCalendar);
 
-        await calendar.find(`[data-test-id="${resetDateTime(new Date())}"]`).trigger('mouseenter');
+        await getCalendarCell(calendar, new Date()).trigger('mouseenter');
         await calendar.vm.$nextTick();
 
         expect(calendar.html()).toContain('dp__marker_tooltip');
@@ -55,7 +56,7 @@ describe('Calendar component', () => {
     it('Should emit hover date on mouse over', async () => {
         const { calendar, date } = await mountCalendar();
 
-        await calendar.find(`[data-test-id="${resetDateTime(date)}"]`).trigger('mouseenter');
+        await getCalendarCell(calendar, date).trigger('mouseenter');
         await calendar.vm.$nextTick();
 
         expect(calendar.emitted()).toHaveProperty('set-hover-date');
@@ -65,7 +66,7 @@ describe('Calendar component', () => {
     it('Should emit date when calendar day is clicked', async () => {
         const { calendar, date } = await mountCalendar();
 
-        await calendar.find(`[data-test-id="${resetDateTime(date)}"]`).trigger('click');
+        await getCalendarCell(calendar, date).trigger('click');
         await calendar.vm.$nextTick();
 
         expect(calendar.emitted()).toHaveProperty('select-date');

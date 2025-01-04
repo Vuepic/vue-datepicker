@@ -24,6 +24,7 @@ import { resetDateTime } from '@/utils/date-utils';
 import {
     clickCalendarDate,
     clickSelectBtn,
+    getCalendarCell,
     getCellClasses,
     getMonthName,
     hoverCalendarDate,
@@ -94,11 +95,11 @@ describe('It should validate various picker scenarios', () => {
     it('Should not switch calendars in 1 month range with multi-calendars enabled (#472)', async () => {
         const start = set(new Date(), { month: 5 });
         const dp = await openMenu({ multiCalendars: true, range: true, startDate: start });
-        const firstDate = resetDateTime(start);
-        const secondDate = resetDateTime(set(firstDate, { month: getMonth(addMonths(firstDate, 1)), date: 15 }));
+        // const firstDate = resetDateTime(start);
+        const end = set(start, { month: getMonth(addMonths(start, 1)), date: 15 });
 
-        const firstDateEl = dp.find(`[data-test-id="${firstDate}"]`);
-        const secondDateEl = dp.find(`[data-test-id="${secondDate}"]`);
+        const firstDateEl = getCalendarCell(dp, start);
+        const secondDateEl = getCalendarCell(dp, end);
 
         await firstDateEl.trigger('click');
         await secondDateEl.trigger('click');
@@ -246,13 +247,12 @@ describe('It should validate various picker scenarios', () => {
     });
 
     it('Should not break flow on changing months and years when calendar is first step (#553)', async () => {
-        const start = startOfYear(new Date());
+        const start = addDays(startOfYear(new Date()), 1);
         const flow = [FlowStep.calendar, FlowStep.time];
         const dp = await openMenu({ flow, startDate: start });
-        const today = resetDateTime(start);
-        const nextMonth = addMonths(today, 1);
+        const nextMonth = addMonths(start, 1);
 
-        await clickCalendarDate(dp, today);
+        await clickCalendarDate(dp, start);
 
         expect(dp.html()).toContain('dp__overlay');
 
@@ -260,9 +260,7 @@ describe('It should validate various picker scenarios', () => {
 
         await dp.find(`[data-test-id="month-toggle-overlay-0"]`).trigger('click');
         await dp.find(`[data-test-id="${getMonthName(nextMonth)}"]`).trigger('click');
-
-        const cell = dp.find(`[data-test-id="${nextMonth}"]`);
-
+        const cell = getCalendarCell(dp, nextMonth);
         expect(cell.html()).toBeTruthy();
         dp.unmount();
     });
@@ -297,7 +295,7 @@ describe('It should validate various picker scenarios', () => {
 
         const selectRange = async () => {
             await clickCalendarDate(dp, today);
-            await dp.find(`[data-test-id="${secondDate}"]`).trigger('click');
+            await getCalendarCell(dp, secondDate).trigger('click');
         };
 
         await selectRange();
@@ -401,7 +399,7 @@ describe('It should validate various picker scenarios', () => {
 
         const dp = await openMenu({ highlight });
 
-        const calendarCell = dp.find(`[data-test-id="${resetDateTime(start)}"]`).find('.dp__cell_inner');
+        const calendarCell = getCalendarCell(dp, start).find('.dp__cell_inner');
 
         expect(calendarCell.classes()).toContain('dp__cell_highlight');
 

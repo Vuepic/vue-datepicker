@@ -44,7 +44,7 @@
                             :aria-disabled="dayVal.classData.dp__cell_disabled || undefined"
                             :aria-label="defaultedAriaLabels?.day?.(dayVal)"
                             :tabindex="!dayVal.current && hideOffsetDates ? undefined : 0"
-                            :data-test-id="dayVal.value"
+                            :data-test-id="getCellId(dayVal.value)"
                             @click.prevent="onDateSelect($event, dayVal)"
                             @touchend="onDateSelect($event, dayVal, false)"
                             @keydown="checkKeyDown($event, () => $emit('select-date', dayVal))"

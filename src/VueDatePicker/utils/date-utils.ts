@@ -443,7 +443,7 @@ export const checkHighlightYear = (defaultedHighlight: Highlight | HighlightFn, 
 };
 
 export const getCellId = (date: Date) => {
-    return format(date, 'yyyy-MM-dd');
+    return `dp-${format(date, 'yyyy-MM-dd')}`;
 };
 
 export const getBeforeAndAfterInRange = (range: number, date: Date) => {

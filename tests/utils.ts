@@ -1,9 +1,9 @@
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
+import { format } from 'date-fns';
 
 import VueDatePicker from '@/VueDatePicker.vue';
 
 import type { AllPropsType } from '@/props';
-import { resetDateTime } from '@/utils/date-utils';
 
 export const openMenu = async (
     props: Partial<AllPropsType>,
@@ -45,9 +45,9 @@ export const clickSelectBtn = async (dp: VueWrapper<any>) => {
 };
 
 export const padZero = (val: number) => (val < 10 ? `0${val}` : val);
-
+// `dp-${format(date, 'yyyy-MM-dd')}`
 export const getCalendarCell = (dp: VueWrapper<any>, date: Date) => {
-    return dp.find(`[data-test-id="${resetDateTime(date)}"]`);
+    return dp.find(`[data-test-id="dp-${format(date, 'yyyy-MM-dd')}"]`);
 };
 
 export const getCellClasses = (dp: VueWrapper<any>, date: Date) => {
