@@ -328,7 +328,7 @@ export interface PublicMethods extends MethodOptions {
     switchView: (view: MenuView, instance?: number) => void;
     toggleMenu: () => void;
     handleFlow: (step?: number) => void;
-    dpWrapMenuRef: Ref<HTMLElement | null>;
+    getDpWrapMenuRef: () => Ref<HTMLElement | null>;
 }
 
 type InternalModelValue = Date | Date[] | null;

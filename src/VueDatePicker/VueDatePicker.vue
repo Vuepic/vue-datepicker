@@ -535,6 +535,8 @@
         dpMenuRef.value?.handleFlow(skipStep);
     };
 
+    const getDpWrapMenuRef = () => dpWrapMenuRef;
+
     onClickOutside(dpWrapMenuRef, inputRef as unknown as MaybeElementRef, (evt: PointerEvent) =>
         clickOutside(validateBeforeEmit, evt),
     );
@@ -552,6 +554,6 @@
         switchView,
         toggleMenu,
         handleFlow,
-        dpWrapMenuRef,
+        getDpWrapMenuRef,
     });
 </script>
