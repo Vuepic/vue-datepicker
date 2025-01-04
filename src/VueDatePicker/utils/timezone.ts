@@ -42,7 +42,7 @@ export const getTimezoneOffset = (timezone?: string, localDate?: Date) => {
     const date = new Date();
     const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }));
     const specificDate = new Date(date.toLocaleString('en-US', { timeZone: timezone }));
-    const dateToOffset = isDST(localDate ?? date) ? specificDate : localDate;
+    const dateToOffset = isDST(localDate ?? specificDate) ? specificDate : (localDate ?? specificDate);
     const dstOffset = dateToOffset!.getTimezoneOffset() / 60;
     return (+utcDate - +specificDate) / (1000 * 60 * 60) - dstOffset;
 };
