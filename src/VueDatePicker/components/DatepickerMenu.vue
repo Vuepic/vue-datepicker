@@ -434,9 +434,14 @@
         }
     };
 
+    const onValueCleared = () => {
+        dynCmpRef.value?.setStartTime?.();
+    };
+
     defineExpose({
         updateMonthYear,
         switchView,
         handleFlow,
+        onValueCleared,
     });
 </script>

@@ -343,6 +343,7 @@
     const clearValue = (): void => {
         inputValue.value = '';
         clearInternalValues();
+        dpMenuRef.value?.onValueCleared();
         inputRef.value?.setParsedDate(null);
         emit('update:model-value', null);
         emit('update:model-timezone-value', null);

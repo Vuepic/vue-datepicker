@@ -63,6 +63,7 @@ export const useDatePicker = (
     const { validateMonthYearInRange, isDisabled, isDateRangeAllowed, checkMinMaxRange } = useValidation(props);
     const { updateTimeValues, getSetDateTime, setTime, assignStartTime, validateTime, disabledTimesConfig } =
         useTimePickerUtils(props, time, modelValue, updateFlow);
+
     // Get month based on the calendar instance
     const month = computed(
         () =>
@@ -104,13 +105,17 @@ export const useDatePicker = (
         }
     };
 
+    const setStartTime = () => {
+        if (defaultedStartTime.value) {
+            assignStartTime(defaultedStartTime.value);
+        }
+    };
+
     onMounted(() => {
         if (!props.shadow) {
             if (!modelValue.value) {
                 setStartDate();
-                if (defaultedStartTime.value) {
-                    assignStartTime(defaultedStartTime.value);
-                }
+                setStartTime();
             }
             mapInternalModuleValues(true);
             if (props.focusStartDate && props.startDate) {
@@ -675,5 +680,6 @@ export const useDatePicker = (
         selectCurrentDate,
         updateTime,
         assignMonthAndYear,
+        setStartTime,
     };
 };

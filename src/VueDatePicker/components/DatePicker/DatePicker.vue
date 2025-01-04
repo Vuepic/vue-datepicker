@@ -150,6 +150,7 @@
         selectCurrentDate,
         updateTime,
         assignMonthAndYear,
+        setStartTime,
     } = useDatePicker(props, emit, triggerCalendarTransition, updateFlowStep);
     const slots = useSlots();
     const { setHoverDate, getDayClassData, clearHoverDate } = useCalendarClass(modelValue, props);
@@ -303,5 +304,6 @@
         changeMonth,
         changeYear,
         selectWeekDate,
+        setStartTime,
     });
 </script>
