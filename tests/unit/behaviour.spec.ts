@@ -95,7 +95,6 @@ describe('It should validate various picker scenarios', () => {
     it('Should not switch calendars in 1 month range with multi-calendars enabled (#472)', async () => {
         const start = set(new Date(), { month: 5 });
         const dp = await openMenu({ multiCalendars: true, range: true, startDate: start });
-        // const firstDate = resetDateTime(start);
         const end = set(start, { month: getMonth(addMonths(start, 1)), date: 15 });
 
         const firstDateEl = getCalendarCell(dp, start);
