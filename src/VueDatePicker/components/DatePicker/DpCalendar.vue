@@ -382,7 +382,7 @@
     };
 
     const onDateSelect = (ev: Event, dayVal: ICalendarDay, isClick = true) => {
-        if ((isClick && isIOS()) || (!isClick && !isIOS())) return;
+        if (!isClick && isIOS()) return;
         if (!defaultedMultiDates.value.enabled || defaultedConfig.value.allowPreventDefault) {
             checkStopPropagation(ev, defaultedConfig.value);
             emit('select-date', dayVal);
