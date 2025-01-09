@@ -122,7 +122,7 @@
         checkStopPropagation,
         getDayNames,
         getDefaultMarker,
-        isIOS,
+        isTouchDevice,
         unrefElement,
     } from '@/utils/util';
     import { useArrowNavigation, useDefaults } from '@/composables';
@@ -382,7 +382,7 @@
     };
 
     const onDateSelect = (ev: Event, dayVal: ICalendarDay, isClick = true) => {
-        if (!isClick && isIOS()) return;
+        if (!isClick && isTouchDevice()) return;
         if (!defaultedMultiDates.value.enabled || defaultedConfig.value.allowPreventDefault) {
             checkStopPropagation(ev, defaultedConfig.value);
             emit('select-date', dayVal);

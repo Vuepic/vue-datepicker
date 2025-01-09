@@ -319,6 +319,10 @@ export const isIOS = () => {
     );
 };
 
+export const isTouchDevice = () => {
+    return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+};
+
 export const getMapKeyType = (monthPicker: boolean, yearPicker: boolean): MAP_KEY_FORMAT => {
     if (monthPicker) return MAP_KEY_FORMAT.MONTH_AND_YEAR;
     if (yearPicker) return MAP_KEY_FORMAT.YEAR;
