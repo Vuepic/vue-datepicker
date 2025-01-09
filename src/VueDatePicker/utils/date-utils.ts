@@ -44,7 +44,8 @@ import type {
 } from '@/interfaces';
 
 import type { Duration, Locale } from 'date-fns';
-import { padZero } from '../../../tests/utils.ts';
+
+export const padZero = (val: number) => (val < 10 ? `0${val}` : val);
 
 const parseTextToDate = (
     value: string,
