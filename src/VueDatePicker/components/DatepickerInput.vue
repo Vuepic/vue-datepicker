@@ -182,7 +182,7 @@
 
         if (dateOne) {
             const parsedDateOne = parser(dateOne.trim());
-            const parsedDateTwo = dateTwo ? parser(dateTwo.trim()) : null;
+            const parsedDateTwo = dateTwo ? parser(dateTwo.trim()) : undefined;
             if (isAfter(parsedDateOne as Date, parsedDateTwo as Date)) return;
 
             const parsedArr = parsedDateOne && parsedDateTwo ? [parsedDateOne, parsedDateTwo] : [parsedDateOne];
