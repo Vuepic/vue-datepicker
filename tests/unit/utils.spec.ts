@@ -109,6 +109,14 @@ describe('Utils and date utils formatting', () => {
         expect(days[1]).toEqual('Di');
     });
 
+    it('Should get specific day names on arabic', () => {
+        // Pass arabic locale
+        const days = getDayNames(null, 'ar', 1);
+
+        expect(days).toHaveLength(7);
+        expect(days[1]).toEqual('ثلا');
+    });
+
     it('Should get day names according to formatLocale', () => {
         const days = getDayNames(de, 'en', 1);
 
