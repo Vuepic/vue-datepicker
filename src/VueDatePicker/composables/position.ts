@@ -1,4 +1,4 @@
-import type { Component, ComputedRef, Ref, Slots } from 'vue';
+import type { Component, ComponentInternalInstance, ComputedRef, Ref, Slots } from 'vue';
 import { h, ref, render, toRef, watch } from 'vue';
 import {
     type DatepickerInputRef,
@@ -255,7 +255,7 @@ export const usePosition = ({
     };
 
     // Renders invisible menu on open to determine the menu dimensions
-    const shadowRender = (DPMenu: Component, props: AllPropsType) => {
+    const shadowRender = (instance: ComponentInternalInstance | null, DPMenu: Component, props: AllPropsType) => {
         const container = document.createElement('div');
         const input = unrefElement(inputRef as MaybeElementRef)?.getBoundingClientRect();
         container.setAttribute('id', 'dp--temp-container');
@@ -278,6 +278,9 @@ export const usePosition = ({
             },
             Object.fromEntries(mappedSlots.map((slot) => [slot, slots[slot]])),
         );
+        if (instance != null) {
+            el.appContext = instance.appContext;
+        }
 
         render(el, container);
         menuRect.value = el.el?.getBoundingClientRect();

@@ -83,6 +83,7 @@
         watch,
         Teleport as TeleportCmp,
         nextTick,
+        getCurrentInstance,
     } from 'vue';
 
     import DatepickerInput from '@/components/DatepickerInput.vue';
@@ -177,6 +178,8 @@
     } = useDefaults(props);
     const { menuTransition, showTransition } = useTransitions(defaultedTransitions);
     const { isMobile } = useResponsive(defaultedConfig);
+
+    const currentInstance = getCurrentInstance();
 
     onMounted(() => {
         parseExternalModelValue(props.modelValue);
@@ -320,7 +323,7 @@
 
     const openMenu = () => {
         if (!props.disabled && !props.readonly) {
-            shadowRender(DatepickerMenu, props);
+            shadowRender(currentInstance, DatepickerMenu, props);
             setMenuPosition(false);
             isOpen.value = true;
 
