@@ -450,6 +450,7 @@
             }
             clearInternalValues();
             emit('blur');
+            dpMenuRef.value?.$el?.remove();
         }
     };
 

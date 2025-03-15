@@ -33,7 +33,7 @@ const useEventListener = (
         (el) => {
             cleanup();
             if (!el) return;
-
+            el.removeEventListener(event, listener);
             el.addEventListener(event, listener, options);
 
             cleanup = () => {

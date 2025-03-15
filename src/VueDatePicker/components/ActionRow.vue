@@ -68,7 +68,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, onMounted, onUnmounted, ref } from 'vue';
+    import { computed, onUnmounted, onMounted, ref } from 'vue';
 
     import { checkKeyDown, convertType, unrefElement } from '@/utils/util';
     import { useArrowNavigation, useDefaults, useValidation } from '@/composables';

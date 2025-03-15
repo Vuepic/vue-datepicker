@@ -205,6 +205,14 @@
     const dynCmpRef = ref<any>(null);
     const isMenuActive = ref(false);
 
+    const stopDefault = (event: Event) => {
+        isMenuActive.value = true;
+        if (defaultedConfig.value.allowPreventDefault) {
+            event.preventDefault();
+        }
+        checkStopPropagation(event, defaultedConfig.value, true);
+    };
+
     onMounted(() => {
         if (!props.shadow) {
             menuMount.value = true;
@@ -229,7 +237,7 @@
         document.removeEventListener('mousedown', handleClickOutside);
 
         const menu = unrefElement(dpMenuRef);
-    
+
         if (menu) {
             menu.removeEventListener('pointerdown', stopDefault);
             menu.removeEventListener('mousedown', stopDefault);
@@ -306,14 +314,6 @@
         }),
     );
 
-    const stopDefault = (event: Event) => {
-        isMenuActive.value = true;
-        if (defaultedConfig.value.allowPreventDefault) {
-            event.preventDefault();
-        }
-        checkStopPropagation(event, defaultedConfig.value, true);
-    };
-    
     const handleDpMenuClick = (ev: Event) => {
         checkStopPropagation(ev, defaultedConfig.value, true);
     };
