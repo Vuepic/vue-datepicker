@@ -226,10 +226,14 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
     };
 
     // Get value for model-auto, single or array, internally it is always handled as an array
-    const getModelAutoForExternal = () =>
-        (internalModelValue.value as Date[])[1]
-            ? getRangeEmitValue()
-            : toModelType(convertType(internalModelValue.value[0]));
+    const getModelAutoForExternal = () => {
+        if (Array.isArray(internalModelValue.value)) {
+            return internalModelValue.value[1]
+                ? getRangeEmitValue()
+                : toModelType(convertType(internalModelValue.value[0]));
+        }
+        return [];
+    };
 
     // Map internal value for external
     const getMultiDatesForExternal = () =>
