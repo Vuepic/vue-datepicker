@@ -26,11 +26,15 @@ export const getArrayInArray = <T>(list: T[], increment = 3): T[][] => {
 
 function dayNameIntlMapper(locale: string) {
     return (day: number) => {
-        return new Intl.DateTimeFormat(locale, { weekday: 'short', timeZone: 'UTC' })
-            .format(new Date(`2017-01-0${day}T00:00:00+00:00`))
-            .slice(0, 2);
-    };
-}
+        const formattedDate = new Intl.DateTimeFormat(locale, {
+            weekday: 'short',
+            timeZone: 'UTC'
+        }).format(new Date(`2017-01-0${day}T00:00:00+00:00`));
+
+        // Arabic locale requires different slice indexes to get correct abbreviation
+        return locale === 'ar' ? formattedDate.slice(2, 5) : formattedDate.slice(0, 2);
+    }
+};
 
 function dayNameDateFnsMapper(formatLocale: Locale) {
     return (day: number) => {
