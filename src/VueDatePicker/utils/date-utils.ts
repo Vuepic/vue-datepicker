@@ -416,6 +416,9 @@ export const isMonthDisabled = (
         const key = `${padZero(month + 1)}-${year}`;
         return disabledDates.size ? disabledDates.has(key) : false;
     }
+    if (typeof disabledDates === 'function') {
+        return disabledDates(resetDateTime(set(getDate(), { month, year }), true));
+    }
     return false;
 };
 
