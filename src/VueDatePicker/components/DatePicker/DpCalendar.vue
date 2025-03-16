@@ -114,7 +114,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, nextTick, onMounted, ref } from 'vue';
+    import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
     import { getISOWeek, getWeek } from 'date-fns';
 
     import {
@@ -213,6 +213,19 @@
         }
         if (props.monthChangeOnScroll && calendarWrapRef.value) {
             calendarWrapRef.value.addEventListener('wheel', onScroll, { passive: false });
+        }
+    });
+
+    onUnmounted(() => {
+        if (!defaultedConfig.value.noSwipe) {
+            if (calendarWrapRef.value) {
+                calendarWrapRef.value.removeEventListener('touchstart', onTouchStart);
+                calendarWrapRef.value.removeEventListener('touchend', onTouchEnd);
+                calendarWrapRef.value.removeEventListener('touchmove', onTouchMove);
+            }
+        }
+        if (props.monthChangeOnScroll && calendarWrapRef.value) {
+            calendarWrapRef.value.removeEventListener('wheel', onScroll);
         }
     });
 
