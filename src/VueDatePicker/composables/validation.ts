@@ -12,7 +12,7 @@ import {
     setTimeValue,
 } from '@/utils/date-utils';
 import { useDefaults } from '@/composables/defaults';
-import { convertType, getMapDate } from '@/utils/util';
+import { convertType, getMapDate, getMapKeyType } from '@/utils/util';
 
 import type { InternalModuleValue, DisabledTimesFn, DisabledTime, TimeModel, MaybeDate } from '@/interfaces';
 import type { PickerBasePropsType, AllPropsType } from '@/props';
@@ -111,7 +111,7 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
     const checkAllowedDates = (date: Date) => {
         if (Array.isArray(propDates.value.allowedDates) && !propDates.value.allowedDates.length) return true;
         if (propDates.value.allowedDates) {
-            return !getMapDate(date, propDates.value.allowedDates);
+            return !getMapDate(date, propDates.value.allowedDates, getMapKeyType(props.monthPicker, props.yearPicker));
         }
         return false;
     };
