@@ -108,7 +108,7 @@
 
     const props = defineProps<Props>();
 
-    const { defaultedAriaLabels, defaultedTextInput, defaultedConfig } = useDefaults(
+    const { defaultedAriaLabels, defaultedTextInput, defaultedConfig, handleEventPropagation } = useDefaults(
         props as unknown as PickerBasePropsType,
     );
     const { hideNavigationButtons } = useCommon();
@@ -244,9 +244,10 @@
         emit('reset-flow');
     };
 
-    const handleEsc = () => {
+    const handleEsc = (ev: KeyboardEvent) => {
         if (props.escClose) {
             toggle();
+            handleEventPropagation(ev);
         }
     };
 
@@ -298,7 +299,7 @@
     const onKeyDown = (ev: KeyboardEvent) => {
         switch (ev.key) {
             case EventKey.esc:
-                return handleEsc();
+                return handleEsc(ev);
             case EventKey.arrowLeft:
                 return handleArrowKey(ev);
             case EventKey.arrowRight:

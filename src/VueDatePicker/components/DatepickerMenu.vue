@@ -195,7 +195,8 @@
 
     const { setMenuFocused, setShiftKey, control } = useState();
     const slots = useSlots();
-    const { defaultedTextInput, defaultedInline, defaultedConfig, defaultedUI } = useDefaults(props);
+    const { defaultedTextInput, defaultedInline, defaultedConfig, defaultedUI, handleEventPropagation } =
+        useDefaults(props);
     const { isMobile } = useResponsive(defaultedConfig, props.shadow);
 
     const calendarWrapperRef = ref(null);
@@ -318,9 +319,10 @@
         checkStopPropagation(ev, defaultedConfig.value, true);
     };
 
-    const handleEsc = (): void => {
+    const handleEsc = (ev: KeyboardEvent): void => {
         if (props.escClose) {
             emit('close-picker');
+            handleEventPropagation(ev);
         }
     };
 
@@ -418,7 +420,7 @@
 
         switch (ev.key) {
             case EventKey.esc:
-                return handleEsc();
+                return handleEsc(ev);
             case EventKey.arrowLeft:
                 return onArrowKey(ev, ArrowDirection.left);
             case EventKey.arrowRight:

@@ -101,6 +101,15 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
 
     const defaultedUI = computed(() => getDefaultUI(props.ui));
 
+    const handleEventPropagation = (ev: KeyboardEvent) => {
+        if (defaultedConfig.value.allowStopPropagation) {
+            ev.stopPropagation();
+        }
+        if (defaultedConfig.value.allowPreventDefault) {
+            ev.preventDefault();
+        }
+    };
+
     return {
         defaultedTransitions,
         defaultedMultiCalendars,
@@ -121,5 +130,6 @@ export const useDefaults = (props: AllPropsType | PickerBasePropsType) => {
         defaultedUI,
         getDefaultPattern,
         getDefaultStartTime,
+        handleEventPropagation,
     };
 };
