@@ -217,13 +217,6 @@
                 focusMenu();
             }
             if (menu) {
-                const stopDefault = (event: Event) => {
-                    isMenuActive.value = true;
-                    if (defaultedConfig.value.allowPreventDefault) {
-                        event.preventDefault();
-                    }
-                    checkStopPropagation(event, defaultedConfig.value, true);
-                };
                 menu.addEventListener('pointerdown', stopDefault);
                 menu.addEventListener('mousedown', stopDefault);
             }
@@ -233,7 +226,14 @@
 
     onUnmounted(() => {
         window.removeEventListener('resize', getCalendarWidth);
-        document.addEventListener('mousedown', handleClickOutside);
+        document.removeEventListener('mousedown', handleClickOutside);
+
+        const menu = unrefElement(dpMenuRef);
+    
+        if (menu) {
+            menu.removeEventListener('pointerdown', stopDefault);
+            menu.removeEventListener('mousedown', stopDefault);
+        }
     });
 
     const getCalendarWidth = (): void => {
@@ -306,6 +306,14 @@
         }),
     );
 
+    const stopDefault = (event: Event) => {
+        isMenuActive.value = true;
+        if (defaultedConfig.value.allowPreventDefault) {
+            event.preventDefault();
+        }
+        checkStopPropagation(event, defaultedConfig.value, true);
+    };
+    
     const handleDpMenuClick = (ev: Event) => {
         checkStopPropagation(ev, defaultedConfig.value, true);
     };
