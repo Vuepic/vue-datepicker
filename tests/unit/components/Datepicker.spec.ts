@@ -302,27 +302,42 @@ describe('Logic connection', () => {
     });
 
     it('Should correctly set today when preset-dates its a function and selected 2 days later', async () => {
-        vi.useFakeTimers()
-        vi.setSystemTime(new Date('2000-01-01T00:00:00.000Z'))
+        vi.useFakeTimers();
+        vi.setSystemTime(new Date('2000-01-01T00:00:00.000Z'));
 
         const { dp, menu } = await mountDatepicker({
             modeValue: null,
             range: true,
-            presetDates: [{ label: 'Today', value: () => [startOfDay(new Date()), endOfDay(new Date())], testId: 'TodayPresetBtn' }],
+            presetDates: [
+                {
+                    label: 'Today',
+                    value: () => [startOfDay(new Date()), endOfDay(new Date())],
+                    testId: 'TodayPresetBtn',
+                },
+            ],
         });
 
         await menu.find('[data-test-id="TodayPresetBtn"]').trigger('click');
 
-        expect(dp.vm.internalModelValue).toEqual([startOfDay(new Date('2000-01-01T00:00:00.000Z')), endOfDay(new Date('2000-01-01T00:00:00.000Z'))]);
+        expect(dp.vm.internalModelValue).toEqual([
+            startOfDay(new Date('2000-01-01T00:00:00.000Z')),
+            endOfDay(new Date('2000-01-01T00:00:00.000Z')),
+        ]);
 
-        setTimeout(async () => await menu.find('[data-test-id="TodayPresetBtn"]').trigger('click'), 1000 * 60 * 60 * 48) //
+        setTimeout(
+            async () => await menu.find('[data-test-id="TodayPresetBtn"]').trigger('click'),
+            1000 * 60 * 60 * 48,
+        ); //
 
-        vi.runAllTimers()
+        vi.runAllTimers();
 
-        expect(dp.vm.internalModelValue).toEqual([startOfDay(new Date('2000-01-03T00:00:00.000Z')), endOfDay(new Date('2000-01-03T00:00:00.000Z'))]);
+        expect(dp.vm.internalModelValue).toEqual([
+            startOfDay(new Date('2000-01-03T00:00:00.000Z')),
+            endOfDay(new Date('2000-01-03T00:00:00.000Z')),
+        ]);
 
         dp.unmount();
-        vi.useRealTimers()
+        vi.useRealTimers();
     });
 
     it('Should select week', async () => {
@@ -607,7 +622,6 @@ describe('Logic connection', () => {
     });
 
     it('Should get calendar days', async () => {
-        // const { getCalendarDays } = useUtils({ weekStart: 1, hideOffsetDates: false } as AllPropsType);
         const { datePicker } = await mountDatepicker({
             weekStart: 1,
         });
