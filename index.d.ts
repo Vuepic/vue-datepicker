@@ -272,9 +272,9 @@ export interface VueDatePickerProps {
         clearInput?: string;
         calendarIcon?: string;
         timePicker?: string;
-        monthPicker: (overlay: boolean) => string;
-        yearPicker: (overlay: boolean) => string;
-        timeOverlay: (type: TimeType) => string;
+        monthPicker?: (overlay: boolean) => string;
+        yearPicker?: (overlay: boolean) => string;
+        timeOverlay?: (type: TimeType) => string;
     };
     arrowNavigation?: boolean;
     yearPicker?: boolean;
