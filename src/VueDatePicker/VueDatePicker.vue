@@ -468,6 +468,8 @@
                 shouldFocusNext.value = tabbed;
                 selectDate();
                 emit('text-submit');
+            } else if (props.autoApply) {
+                autoApplyValue();
             }
             nextTick().then(() => {
                 isTextInputDate.value = false;
