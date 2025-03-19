@@ -61,6 +61,9 @@ export const useYearPicker = (props: PickerBasePropsType, emit: VueEmit) => {
         if (propDates.value.disabledDates instanceof Map) {
             return propDates.value.disabledDates.size ? propDates.value.disabledDates.has(`${year}`) : false;
         }
+        if (typeof propDates.value.disabledDates === 'function') {
+            return propDates.value.disabledDates(setYear(resetDateTime(startOfYear(getDate())), year));
+        }
         return true;
     };
 
