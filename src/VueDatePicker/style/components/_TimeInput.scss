@@ -4,7 +4,7 @@
   max-width: var(--dp-menu-min-width);
 
   &[data-dp-mobile] {
-   max-width: 100%;
+    max-width: 100%;
   }
 }
 
@@ -102,7 +102,7 @@
 
   &:hover {
     background: var(--dp-hover-color);
-    color: var(--dp-primary-color);
+    color: var(--dp-hover-icon-color);
   }
 }
 
