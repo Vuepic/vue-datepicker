@@ -36,5 +36,5 @@
 
     const elRef = ref<HTMLElement | null>(null);
 
-    onMounted(() => emit('set-ref', elRef));
+    onMounted(() => emit('set-ref', elRef.value));
 </script>
