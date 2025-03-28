@@ -3,14 +3,16 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { resolve } from 'path';
 import minimist from 'minimist';
+import tailwindcss from '@tailwindcss/vite';
 
 const { f } = minimist(process.argv.slice(2));
 
 export default defineConfig({
-    plugins: [vue()],
+    plugins: [vue(), tailwindcss()],
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src/VueDatePicker', import.meta.url)),
+            '@packages': fileURLToPath(new URL('./src/packages', import.meta.url)),
         },
     },
     server: {
