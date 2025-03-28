@@ -35,7 +35,7 @@
                             :key="dayInd + weekInd"
                             role="gridcell"
                             class="dp__calendar_item"
-                            :aria-pressed="
+                            :aria-selected="
                                 (dayVal.classData.dp__active_date ||
                                     dayVal.classData.dp__range_start ||
                                     dayVal.classData.dp__range_start) ??
