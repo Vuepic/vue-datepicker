@@ -1,11 +1,11 @@
 {
   "extends": "./tsconfig.app.json",
+  "include": ["src/packages/**/__tests__/*", "tests/**/*", "env.d.ts"],
   "exclude": [],
   "compilerOptions": {
-    "composite": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.vitest.tsbuildinfo",
 
     "lib": [],
-    "types": ["node", "jsdom", "vitest/globals"]
+    "types": ["node", "jsdom"]
   }
 }
