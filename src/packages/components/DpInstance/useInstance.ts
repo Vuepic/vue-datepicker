@@ -15,7 +15,7 @@ export interface InstanceState {
 
 export const DpInstanceKey = Symbol('DpInstance') as InjectionKey<InstanceState>;
 
-export const useInstance = () => {
+export const useInstance = (shouldProvide = true) => {
     const calendars = ref([{ month: getMonth(new Date()), year: getYear(new Date()) }]);
 
     const month = computed(
@@ -34,5 +34,9 @@ export const useInstance = () => {
         }
     };
 
-    provide(DpInstanceKey, { month, year, updateCalendar });
+    if (shouldProvide) {
+        provide(DpInstanceKey, { month, year, updateCalendar });
+    }
+
+    return { updateCalendar, month, year };
 };
