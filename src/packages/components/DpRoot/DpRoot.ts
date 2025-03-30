@@ -44,6 +44,7 @@ export const DpRoot = {
     setup(props: DpRootProps, { slots, attrs, emit }: SetupContext) {
         useRoot(props, emit);
 
+        // todo - expose global functions
         return () => h(props.as, { ...attrs }, slots.default?.());
     },
 };

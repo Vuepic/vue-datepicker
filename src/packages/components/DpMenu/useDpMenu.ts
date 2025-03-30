@@ -1,8 +1,8 @@
 import { onMounted, ref } from 'vue';
 import { offset, useFloating } from '@floating-ui/vue';
+import { onClickOutside } from '@vueuse/core';
 import { useContext } from '@packages/composables/useContext';
 import { DpRootKey } from '@packages/components/DpRoot';
-import { onClickOutside } from '@packages/directives/clickOutside';
 import type { DpMenuProps } from '@packages/components/DpMenu';
 
 export const useDpMenu = (props: DpMenuProps) => {
@@ -38,7 +38,7 @@ export const useDpMenu = (props: DpMenuProps) => {
         closeMenu();
     };
 
-    onClickOutside(menuRef, triggerRef, handleClickOutside);
+    onClickOutside(menuRef, handleClickOutside, { ignore: [triggerRef] });
 
     return { menuRef, floatingStyles, menuDisplay };
 };
