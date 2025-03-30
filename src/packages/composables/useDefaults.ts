@@ -53,7 +53,7 @@ export const useDefaults = () => {
         const defaultOptions = {
             is24: true,
             enableMinutes: true,
-            enableSeconds: true,
+            enableSeconds: false,
             startTime: undefined,
         };
         if (typeof opts === 'object') {

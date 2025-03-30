@@ -7,7 +7,7 @@ export const assignTime = (time: Partial<Time>) => {
     const defaultTime = {
         hours: getHours(getDate()),
         minutes: getMinutes(getDate()),
-        seconds: getSeconds(getDate()) ?? 0,
+        seconds: getSeconds(getDate()),
     };
     return Object.assign(defaultTime, time);
 };
