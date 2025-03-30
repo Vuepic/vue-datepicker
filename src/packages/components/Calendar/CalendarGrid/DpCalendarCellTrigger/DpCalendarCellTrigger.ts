@@ -9,6 +9,7 @@ export type DPCalendarCellTriggerProps = ExtractPropTypes<typeof props>;
 export const DPCalendarCellTrigger = defineComponent({
     props,
     setup(props: DPCalendarCellTriggerProps, { attrs, slots }) {
-        return () => h('button', { type: 'button', ...attrs }, [slots.default?.()]);
+        return () =>
+            h(props.as, { ...(props.as === 'button' ? { type: 'button' } : {}), ...attrs }, [slots.default?.()]);
     },
 });
