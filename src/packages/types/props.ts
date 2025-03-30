@@ -40,7 +40,7 @@ export interface TimeOptions {
     enableSeconds: boolean;
     enableMinutes: boolean;
     is24: boolean;
-    startTime?: Partial<Time>;
+    startTime?: Partial<Time> | Partial<Time>[];
 }
 
 export type TimeProp = boolean | Partial<TimeOptions>;

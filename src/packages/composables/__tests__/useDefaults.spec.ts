@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
+import { getHours } from 'date-fns';
 import { useDefaults } from '@packages/composables/useDefaults';
 import { PICKER_MODE } from '@packages/constants';
-import { getHours } from 'date-fns';
+import type { Time } from '@packages/types';
 
 describe('useDefaults', () => {
     it('Should get default text input option', () => {
@@ -42,6 +43,9 @@ describe('useDefaults', () => {
         const weekPickerFormat = getDefaultPattern(PICKER_MODE.WEEK_PICKER, undefined, true, undefined);
         expect(weekPickerFormat).toEqual('ww-RR');
 
+        const weekPickerFormatIso = getDefaultPattern(PICKER_MODE.WEEK_PICKER, undefined, true, { type: 'iso' });
+        expect(weekPickerFormatIso).toEqual('II-RR');
+
         const quarterPickerFormat = getDefaultPattern(PICKER_MODE.QUARTER_PICKER, undefined, true, undefined);
         expect(quarterPickerFormat).toEqual('QQQ/yyyy');
 
@@ -55,6 +59,18 @@ describe('useDefaults', () => {
             undefined,
         );
         expect(timePickerSeconds).toEqual('HH:mm:ss');
+
+        const timePickerAmPm = getDefaultPattern(PICKER_MODE.TIME_PICKER, undefined, { is24: false }, undefined);
+        expect(timePickerAmPm).toEqual('hh:mm aa');
+
+        const timePickerNoMin = getDefaultPattern(
+            PICKER_MODE.TIME_PICKER,
+            undefined,
+            { enableMinutes: false },
+            undefined,
+        );
+
+        expect(timePickerNoMin).toEqual('HH');
     });
 
     it('Should get default start time', () => {
@@ -71,6 +87,11 @@ describe('useDefaults', () => {
 
         expect(minutesOnly).toHaveProperty('hours', currentHours);
         expect(minutesOnly).toHaveProperty('minutes', 15);
+
+        const rangedStartTime = getDefaultStartTime(true, { startTime: [{ hours: 1 }, { hours: 2 }] });
+        expect(rangedStartTime).toHaveLength(2);
+        expect((rangedStartTime as Array<Time>)[0]).toHaveProperty('hours', 1);
+        expect((rangedStartTime as Array<Time>)[1]).toHaveProperty('hours', 2);
     });
 
     it('Should get default filters', () => {

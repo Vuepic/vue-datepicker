@@ -7,6 +7,7 @@ import type {
     WeekNumbersOpts,
     FilterProp,
     TextInputOptionsProp,
+    Time,
 } from '@packages/types';
 
 export const useDefaults = () => {
@@ -80,7 +81,7 @@ export const useDefaults = () => {
         if (isRange && startTime && Array.isArray(startTime)) {
             return startTime.map((time) => assignTime(time));
         }
-        return startTime ? assignTime(startTime) : assignTime({});
+        return startTime ? assignTime(startTime as Partial<Time>) : assignTime({});
     };
 
     const getDefaultFilters = (filters: Partial<FilterProp> | undefined): FilterProp => ({
