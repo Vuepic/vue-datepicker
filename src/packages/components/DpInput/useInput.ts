@@ -3,23 +3,20 @@ import { isAfter, isDate, isValid, parse, set } from 'date-fns';
 import { useContext } from '@packages/composables/useContext.ts';
 import { useDefaults } from '@packages/composables/useDefaults.ts';
 import { isValidDate } from '@packages/utils/date.ts';
-import { DpTriggerKey } from '@packages/components/DpTrigger';
 import type { MaybeValue } from '@packages/types';
 import type { DpInputProps, DpInputEmits } from '@packages/components/DpInput';
+import { DpRootKey } from '@packages/components/DpRoot';
 
 export const useInput = (props: DpInputProps, emit: DpInputEmits) => {
     const {
-        inputRef,
         inputValue,
         isMenuOpen,
         rangeEnabled,
         multiDatesEnabled,
         openMenu,
         closeMenu,
-        // setEmptyDate,
-        // mode,
         props: injectedProps,
-    } = useContext(DpTriggerKey, 'DatePickerTrigger');
+    } = useContext(DpRootKey);
 
     const { getDefaultTextInputOptions, getDefaultPattern, getDefaultStartTime } = useDefaults();
 
@@ -27,6 +24,7 @@ export const useInput = (props: DpInputProps, emit: DpInputEmits) => {
 
     const parsedDate = ref<MaybeValue<Date> | MaybeValue<Date>[]>(null);
     const textPasted = ref(false);
+    const inputRef = ref<HTMLElement | null>(null);
 
     const propagateEvent = (emitFn: () => void) => {
         if (props.propagateEvents) {
