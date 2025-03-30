@@ -84,6 +84,7 @@
   },
   "dependencies": {
     "@floating-ui/vue": "^1.1.6",
+    "@vueuse/core": "^13.0.0",
     "date-fns": "^4.1.0"
   },
   "peerDependencies": {
