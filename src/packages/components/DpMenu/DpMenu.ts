@@ -7,7 +7,9 @@ interface FloatingOptions {
     offset: number;
 }
 
+// todo - provide full floating config?
 const props = {
+    as: { type: String as PropType<string>, default: 'div' },
     floating: { type: Object as PropType<FloatingOptions>, default: () => ({ placement: 'bottom', offset: 10 }) },
 };
 
@@ -19,7 +21,7 @@ export const DpMenu = defineComponent({
         const { menuRef, floatingStyles, menuDisplay } = useDpMenu(props);
 
         return () =>
-            h('div', { ref: menuRef, style: { display: menuDisplay.value, ...floatingStyles.value } }, [
+            h(props.as, { ref: menuRef, style: { display: menuDisplay.value, ...floatingStyles.value } }, [
                 slots.default?.(),
             ]);
     },
