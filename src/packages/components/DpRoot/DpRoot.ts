@@ -13,6 +13,7 @@ import type {
 } from '@packages/types';
 
 const props = {
+    as: { type: String as PropType<string>, default: 'div' },
     modelValue: { type: [String, Date, Array, Object, Number] as PropType<ModelValueProp>, default: undefined },
     range: { type: [Boolean, Object] as PropType<RangeProp>, default: false },
     multiDates: { type: [Object, Boolean] as PropType<MultiDatesProp>, default: false },
@@ -43,6 +44,6 @@ export const DpRoot = {
     setup(props: DpRootProps, { slots, attrs, emit }: SetupContext) {
         useRoot(props, emit);
 
-        return () => h('div', { ...attrs }, slots.default?.());
+        return () => h(props.as, { ...attrs }, slots.default?.());
     },
 };
