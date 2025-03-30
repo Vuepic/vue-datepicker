@@ -35,6 +35,7 @@ export const useDpMenu = (props: DpMenuProps) => {
     });
 
     const handleClickOutside = () => {
+        if (props.onClickOutside) return props.onClickOutside();
         closeMenu();
     };
 
