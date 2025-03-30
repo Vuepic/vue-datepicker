@@ -11,6 +11,7 @@ interface FloatingOptions {
 const props = {
     as: { type: String as PropType<string>, default: 'div' },
     floating: { type: Object as PropType<FloatingOptions>, default: () => ({ placement: 'bottom', offset: 10 }) },
+    onClickOutside: { type: Function as PropType<() => void>, default: undefined },
 };
 
 export type DpMenuProps = ExtractPropTypes<typeof props>;
