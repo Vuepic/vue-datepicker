@@ -7,8 +7,8 @@
         tabindex="0"
         :aria-label="ariaLabel"
         :aria-disabled="disabled || undefined"
-        @click="$emit('activate')"
-        @keydown="checkKeyDown($event, () => $emit('activate'), true)"
+        @click="emit('activate')"
+        @keydown="checkKeyDown($event, () => emit('activate'), true)"
     >
         <span class="dp__inner_nav" :class="{ dp__inner_nav_disabled: disabled }">
             <slot />
@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { onMounted, ref } from 'vue';
+    import { onMounted, ref, type Ref } from 'vue';
     import { checkKeyDown } from '@/utils/util';
 
     defineOptions({
@@ -26,7 +26,10 @@
         },
     });
 
-    const emit = defineEmits(['activate', 'set-ref']);
+    const emit = defineEmits<{
+        'activate': []
+        'set-ref': [i: Ref<HTMLElement | null>]
+    }>();
 
     defineProps<{
         ariaLabel?: string;
@@ -36,5 +39,5 @@
 
     const elRef = ref<HTMLElement | null>(null);
 
-    onMounted(() => emit('set-ref', elRef.value));
+    onMounted(() => emit('set-ref', elRef)); // eslint-disable-line vue/no-ref-as-operand
 </script>
