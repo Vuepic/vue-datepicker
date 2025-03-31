@@ -23,9 +23,9 @@
   ],
   "exports": {
     ".": {
+      "types": "./index.d.ts",
       "import": "./dist/vue-datepicker.js",
-      "require": "./dist/vue-datepicker.umd.cjs",
-      "types": "./index.d.ts"
+      "require": "./dist/vue-datepicker.umd.cjs"
     },
     "./dist/main.css": {
       "import": "./dist/main.css",
