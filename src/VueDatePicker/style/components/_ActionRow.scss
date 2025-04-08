@@ -52,7 +52,7 @@
 
   &:hover {
     border-color: var(--dp-primary-color);
-    transition: var(--dp-action-row-transtion);
+    transition: var(--dp-action-row-transition);
   }
 }
 
@@ -62,7 +62,7 @@
 
   &:hover {
     background: var(--dp-primary-color);
-    transition: var(--dp-action-row-transtion);
+    transition: var(--dp-action-row-transition);
   }
 
   &:disabled {
