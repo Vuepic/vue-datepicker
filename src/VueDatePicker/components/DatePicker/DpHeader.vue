@@ -1,39 +1,40 @@
 <template>
     <div class="dp--header-wrap">
-        <template v-if="$slots['month-year']">
-            <div class="dp__month_year_wrap">
-                <slot
-                    name="month-year"
-                    v-bind="{
-                        month,
-                        year,
-                        months,
-                        years,
-                        updateMonthYear,
-                        handleMonthYearChange,
-                        instance,
-                        isDisabled,
-                    }"
-                />
-            </div>
-        </template>
-        <template v-else>
-            <div v-if="$slots['top-extra']">
-                <slot name="top-extra" :value="internalModelValue" />
-            </div>
-            <div class="dp__month_year_wrap">
-                <ArrowBtn
-                    v-if="showLeftIcon(defaultedMultiCalendars, instance) && !vertical"
-                    :aria-label="defaultedAriaLabels?.prevMonth"
-                    :disabled="isDisabled(false)"
-                    :class="defaultedUI?.navBtnPrev"
-                    el-name="action-prev"
-                    @activate="handleMonthYearChange(false, true)"
-                    @set-ref="setElRefs($event, 0)"
-                >
-                    <slot v-if="$slots['arrow-left']" name="arrow-left" />
-                    <ChevronLeftIcon v-if="!$slots['arrow-left']" />
-                </ArrowBtn>
+        <div v-if="$slots['top-extra'] && !$slots['month-year']">
+            <slot name="top-extra" :value="internalModelValue" />
+        </div>
+        <div class="dp__month_year_wrap">
+            <ArrowBtn
+                v-if="showLeftIcon(defaultedMultiCalendars, instance) && !vertical"
+                :aria-label="defaultedAriaLabels?.prevMonth"
+                :disabled="isDisabled(false)"
+                :class="defaultedUI?.navBtnPrev"
+                el-name="action-prev"
+                @activate="handleMonthYearChange(false, true)"
+                @set-ref="setElRefs($event, 0)"
+            >
+                <slot v-if="$slots['arrow-left']" name="arrow-left" />
+                <ChevronLeftIcon v-if="!$slots['arrow-left']" />
+            </ArrowBtn>
+
+            <template v-if="$slots['month-year']">
+                <div class="dp__month_year_wrap">
+                    <slot
+                        name="month-year"
+                        v-bind="{
+                            month,
+                            year,
+                            months,
+                            years,
+                            updateMonthYear,
+                            handleMonthYearChange,
+                            instance,
+                            isDisabled,
+                        }"
+                    />
+                </div>
+            </template>
+            <template v-else>
                 <div
                     class="dp__month_year_wrap"
                     :class="{
@@ -96,38 +97,39 @@
                         </transition>
                     </template>
                 </div>
-                <ArrowBtn
-                    v-if="showLeftIcon(defaultedMultiCalendars, instance) && vertical"
-                    :aria-label="defaultedAriaLabels?.prevMonth"
-                    el-name="action-prev"
-                    :disabled="isDisabled(false)"
-                    :class="defaultedUI?.navBtnPrev"
-                    @activate="handleMonthYearChange(false, true)"
-                >
-                    <slot v-if="$slots['arrow-up']" name="arrow-up" />
-                    <ChevronUpIcon v-if="!$slots['arrow-up']" />
-                </ArrowBtn>
-                <ArrowBtn
-                    v-if="showRightIcon(defaultedMultiCalendars, instance)"
-                    ref="rightIcon"
-                    el-name="action-next"
-                    :disabled="isDisabled(true)"
-                    :aria-label="defaultedAriaLabels?.nextMonth"
-                    :class="defaultedUI?.navBtnNext"
-                    @activate="handleMonthYearChange(true, true)"
-                    @set-ref="setElRefs($event, disableYearSelect ? 2 : 3)"
-                >
-                    <slot
-                        v-if="$slots[vertical ? 'arrow-down' : 'arrow-right']"
-                        :name="vertical ? 'arrow-down' : 'arrow-right'"
-                    />
-                    <component
-                        :is="vertical ? ChevronDownIcon : ChevronRightIcon"
-                        v-if="!$slots[vertical ? 'arrow-down' : 'arrow-right']"
-                    />
-                </ArrowBtn>
-            </div>
-        </template>
+            </template>
+
+            <ArrowBtn
+                v-if="showLeftIcon(defaultedMultiCalendars, instance) && vertical"
+                :aria-label="defaultedAriaLabels?.prevMonth"
+                el-name="action-prev"
+                :disabled="isDisabled(false)"
+                :class="defaultedUI?.navBtnPrev"
+                @activate="handleMonthYearChange(false, true)"
+            >
+                <slot v-if="$slots['arrow-up']" name="arrow-up" />
+                <ChevronUpIcon v-if="!$slots['arrow-up']" />
+            </ArrowBtn>
+            <ArrowBtn
+                v-if="showRightIcon(defaultedMultiCalendars, instance)"
+                ref="rightIcon"
+                el-name="action-next"
+                :disabled="isDisabled(true)"
+                :aria-label="defaultedAriaLabels?.nextMonth"
+                :class="defaultedUI?.navBtnNext"
+                @activate="handleMonthYearChange(true, true)"
+                @set-ref="setElRefs($event, disableYearSelect ? 2 : 3)"
+            >
+                <slot
+                    v-if="$slots[vertical ? 'arrow-down' : 'arrow-right']"
+                    :name="vertical ? 'arrow-down' : 'arrow-right'"
+                />
+                <component
+                    :is="vertical ? ChevronDownIcon : ChevronRightIcon"
+                    v-if="!$slots[vertical ? 'arrow-down' : 'arrow-right']"
+                />
+            </ArrowBtn>
+        </div>
     </div>
 </template>
 
