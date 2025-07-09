@@ -455,3 +455,7 @@ export const getBeforeAndAfterInRange = (range: number, date: Date) => {
     const after = addDays(resetDateTime(date), range);
     return { before, after };
 };
+
+export const isOutOfYearRange = (yearRange: number[], year: number) => {
+    return year < +yearRange[0] || year > +yearRange[1];
+};

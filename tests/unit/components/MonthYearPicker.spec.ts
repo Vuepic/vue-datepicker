@@ -166,6 +166,34 @@ describe('Month and Year picker components', () => {
         expect(disabledValue).toHaveProperty('disabled', true);
     });
 
+    it('Should disable months based on the year range', async () => {
+        const currentYear = getYear(new Date());
+        const previousYear = currentYear - 1;
+        const wrapper = mount(MonthPicker, {
+            props: { ...props, year: currentYear, yearRange: [currentYear, currentYear], monthPicker: true },
+        }) as unknown as MonthPickerCmp<{
+            handleYearSelect: (selectedYear: number, i: number) => void;
+            groupedMonths: (i: number) => OverlayGridItem[][];
+        }>;
+
+        const monthValues = wrapper.vm.groupedMonths(0);
+        monthValues.forEach((row) => {
+            row.forEach((month) => {
+                expect(month.disabled).toBeFalsy();
+            });
+        });
+
+        wrapper.vm.handleYearSelect(previousYear, 0);
+        await nextTick();
+
+        const updatedMonthValues = wrapper.vm.groupedMonths(0);
+        updatedMonthValues.forEach((row) => {
+            row.forEach((month) => {
+                expect(month.disabled).toBeTruthy();
+            });
+        });
+    });
+
     it('Should render multi-calendars in month picker mode', async () => {
         const wrapper = mount(MonthPicker, { props: { ...props, multiCalendars: true } }) as unknown as MonthPickerCmp<{
             year: (inst: number) => number;
