@@ -1,6 +1,6 @@
 <template>
     <div class="wrapper">
-        <Datepicker v-model="selectedDate" placeholder="Select Date" />
+        <Datepicker  v-model="selectedDate" placeholder="Select Date" />
     </div>
 </template>
 

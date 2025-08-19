@@ -50,6 +50,10 @@
   }
 }
 
+.dp__input_not_clearable {
+  padding-inline-end: var(--dp-input-not-clearable-padding) !important;
+}
+
 .dp__input_reg {
   caret-color: transparent;
 }
