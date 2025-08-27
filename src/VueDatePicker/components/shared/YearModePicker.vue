@@ -21,7 +21,7 @@
             @keydown.enter="() => toggleYearPicker(false)"
         >
             <slot v-if="$slots.year" name="year" :year="year" :text="yearDisplayVal" :value="year" />
-            <template v-if="!$slots.year">{{ year }}</template>
+            <template v-if="!$slots.year">{{ yearDisplayVal }}</template>
         </button>
         <ArrowBtn
             v-if="showRightIcon(defaultedMultiCalendars, instance)"
