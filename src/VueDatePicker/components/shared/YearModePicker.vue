@@ -20,7 +20,7 @@
             @click="() => toggleYearPicker(false)"
             @keydown.enter="() => toggleYearPicker(false)"
         >
-            <slot v-if="$slots.year" name="year" :year="year" />
+            <slot v-if="$slots.year" name="year" :year="year" :text="yearDisplayVal" :value="year" />
             <template v-if="!$slots.year">{{ year }}</template>
         </button>
         <ArrowBtn
@@ -69,7 +69,8 @@
     import { useCommon, useDefaults, useTransitions } from '@/composables';
     import { PickerBaseProps } from '@/props';
 
-    import { type PropType, ref } from 'vue';
+    import { type PropType, ref, computed } from 'vue';
+    import { formatNumber } from '@/utils/util';
     import type { OverlayGridItem } from '@/interfaces';
 
     const emit = defineEmits(['toggle-year-picker', 'year-select', 'handle-year']);
@@ -88,6 +89,8 @@
     const { showTransition, transitionName } = useTransitions(defaultedTransitions);
 
     const overlayOpen = ref(false);
+
+    const yearDisplayVal = computed((): string => formatNumber(props.year, props.locale));
 
     const toggleYearPicker = (flow = false, show?: boolean) => {
         overlayOpen.value = !overlayOpen.value;
