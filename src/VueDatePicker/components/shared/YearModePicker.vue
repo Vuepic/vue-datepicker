@@ -1,11 +1,11 @@
 <template>
     <div class="dp--year-mode-picker" :class="{ 'dp--hidden-el': overlayOpen }">
         <ArrowBtn
-            v-if="showLeftIcon(defaultedMultiCalendars, instance)"
+            v-if="showLeftIcon(instance)"
             ref="mpPrevIconRef"
-            :aria-label="defaultedAriaLabels?.prevYear"
+            :aria-label="ariaLabels?.prevYear"
             :disabled="isDisabled(false)"
-            :class="defaultedUI?.navBtnPrev"
+            :class="ui?.navBtnPrev"
             @activate="handleYear(false)"
         >
             <slot v-if="$slots['arrow-left']" name="arrow-left" />
@@ -15,7 +15,7 @@
             ref="mpYearButtonRef"
             class="dp__btn dp--year-select"
             type="button"
-            :aria-label="`${year}-${defaultedAriaLabels?.openYearsOverlay}`"
+            :aria-label="`${year}-${ariaLabels?.openYearsOverlay}`"
             :data-test-id="`year-mode-btn-${instance}`"
             @click="() => toggleYearPicker(false)"
             @keydown.enter="() => toggleYearPicker(false)"
@@ -24,11 +24,11 @@
             <template v-if="!$slots.year">{{ year }}</template>
         </button>
         <ArrowBtn
-            v-if="showRightIcon(defaultedMultiCalendars, instance)"
+            v-if="showRightIcon(instance)"
             ref="mpNextIconRef"
-            :aria-label="defaultedAriaLabels?.nextYear"
+            :aria-label="ariaLabels?.nextYear"
             :disabled="isDisabled(true)"
-            :class="defaultedUI?.navBtnNext"
+            :class="ui?.navBtnNext"
             @activate="handleYear(true)"
         >
             <slot v-if="$slots['arrow-right']" name="arrow-right" />
@@ -39,13 +39,9 @@
         <SelectionOverlay
             v-if="showYearPicker"
             :items="items"
-            :text-input="textInput"
-            :esc-close="escClose"
             :config="config"
-            :is-last="autoApply && !defaultedConfig.keepActionRow"
-            :hide-navigation="hideNavigation"
-            :aria-labels="ariaLabels"
-            :overlay-label="defaultedAriaLabels?.yearPicker?.(true)"
+            :is-last="rootProps.autoApply && !config.keepActionRow"
+            :overlay-label="ariaLabels?.yearPicker?.(true)"
             type="year"
             @toggle="toggleYearPicker"
             @selected="handleYearSelect($event)"
@@ -62,30 +58,41 @@
 </template>
 
 <script setup lang="ts">
+    import { ref } from 'vue';
+
     import SelectionOverlay from '@/components/Common/SelectionOverlay.vue';
     import ArrowBtn from '@/components/Common/ArrowBtn.vue';
     import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from '@/components/Icons';
 
-    import { useCommon, useDefaults, useTransitions } from '@/composables';
-    import { PickerBaseProps } from '@/props';
+    import { useContext, useTransitions } from '@/composables';
+    import { useNavigationDisplay } from '@/components/shared/useNavigationDisplay.ts';
 
-    import { type PropType, ref } from 'vue';
-    import type { OverlayGridItem } from '@/interfaces';
+    import type { OverlayGridItem } from '@/types';
 
-    const emit = defineEmits(['toggle-year-picker', 'year-select', 'handle-year']);
-    const props = defineProps({
-        ...PickerBaseProps,
-        showYearPicker: { type: Boolean as PropType<boolean>, default: false },
-        items: { type: Array as PropType<OverlayGridItem[][]>, default: () => [] },
-        instance: { type: Number as PropType<number>, default: 0 },
-        year: { type: Number as PropType<number>, default: 0 },
-        isDisabled: { type: Function as PropType<(isNext: boolean) => boolean>, default: () => false },
-    });
+    interface YearModePickerEmits {
+        'handle-year': [increment: boolean];
+        'year-select': [year: number];
+        'toggle-year-picker': [arg: { flow: boolean; show: boolean | undefined }];
+    }
 
-    const { showRightIcon, showLeftIcon } = useCommon();
-    const { defaultedConfig, defaultedMultiCalendars, defaultedAriaLabels, defaultedTransitions, defaultedUI } =
-        useDefaults(props);
-    const { showTransition, transitionName } = useTransitions(defaultedTransitions);
+    interface YearModePickerProps {
+        items: OverlayGridItem[][];
+        instance: number;
+        year: number;
+        showYearPicker?: boolean;
+        isDisabled: (isNext: boolean) => boolean;
+    }
+
+    const emit = defineEmits<YearModePickerEmits>();
+
+    withDefaults(defineProps<YearModePickerProps>(), { showYearPicker: false });
+
+    const { showRightIcon, showLeftIcon } = useNavigationDisplay();
+    const {
+        rootProps,
+        defaults: { config, ariaLabels, ui },
+    } = useContext();
+    const { showTransition, transitionName } = useTransitions();
 
     const overlayOpen = ref(false);
 

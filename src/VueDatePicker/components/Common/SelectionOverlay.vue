@@ -1,6 +1,6 @@
 <template>
     <div
-        ref="gridWrapRef"
+        ref="grid-wrap"
         :class="dpOverlayClass"
         :style="dpOverlayStyle"
         :role="useRelative ? undefined : 'dialog'"
@@ -10,7 +10,7 @@
         @click.prevent
     >
         <div
-            ref="containerRef"
+            ref="overlay-container"
             :class="containerClass"
             :style="{ '--dp-overlay-height': `${containerHeight}px` }"
             role="grid"
@@ -51,10 +51,10 @@
         </div>
         <button
             v-if="$slots['button-icon']"
-            v-show="!hideNavigationButtons(hideNavigation, type)"
-            ref="toggleButton"
+            v-show="!hideNavigationButtons(type)"
+            ref="toggle-button"
             type="button"
-            :aria-label="defaultedAriaLabels?.toggleOverlay"
+            :aria-label="ariaLabels?.toggleOverlay"
             :class="actionButtonClass"
             tabindex="0"
             @click="toggle"
@@ -66,61 +66,55 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, nextTick, onBeforeUpdate, onMounted, onUnmounted, ref, watch } from 'vue';
+    import { computed, nextTick, onBeforeUpdate, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
+    import { unrefElement } from '@vueuse/core';
 
-    import {
-        checkKeyDown,
-        checkStopPropagation,
-        convertType,
-        findFocusableEl,
-        getElWithin,
-        unrefElement,
-    } from '@/utils/util';
-    import { useArrowNavigation, useCommon, useDefaults } from '@/composables';
+    import { useArrowNavigation, useContext, useUtils } from '@/composables';
+    import { useNavigationDisplay } from '@/components/shared/useNavigationDisplay.ts';
 
-    import type { AriaLabels, Config, DynamicClass, Flow, OverlayGridItem, TextInputProp } from '@/interfaces';
-    import type { PickerBasePropsType } from '@/props';
     import { EventKey } from '@/constants';
+    import type { DynamicClass, OverlayGridItem, PickerSection } from '@/types';
 
     const { setSelectionGrid, buildMultiLevelMatrix, setMonthPicker } = useArrowNavigation();
 
-    const emit = defineEmits(['selected', 'toggle', 'reset-flow', 'hover-value']);
+    const emit = defineEmits<{
+        selected: [value: number];
+        toggle: [];
+        'reset-flow': [];
+        'hover-value': [value: number];
+    }>();
 
-    interface Props {
+    const props = defineProps<{
         items: OverlayGridItem[][];
-        type: Flow;
+        type: PickerSection;
         isLast: boolean;
-        arrowNavigation?: boolean;
         skipButtonRef?: boolean;
         headerRefs?: (HTMLElement | null)[];
-        hideNavigation?: Flow[];
-        escClose?: boolean;
         useRelative?: boolean;
         height?: number | string;
-        textInput?: TextInputProp;
-        config?: Partial<Config>;
         noOverlayFocus?: boolean;
         focusValue?: number;
         menuWrapRef?: HTMLElement | null;
-        ariaLabels?: Partial<AriaLabels>;
         overlayLabel?: string;
-    }
+    }>();
 
-    const props = defineProps<Props>();
+    const {
+        rootProps,
+        defaults: { ariaLabels, textInput, config },
+    } = useContext();
+    const { hideNavigationButtons } = useNavigationDisplay();
+    const { handleEventPropagation, convertType, checkKeyDown, checkStopPropagation, getElWithin, findFocusableEl } =
+        useUtils();
 
-    const { defaultedAriaLabels, defaultedTextInput, defaultedConfig, handleEventPropagation } = useDefaults(
-        props as unknown as PickerBasePropsType,
-    );
-    const { hideNavigationButtons } = useCommon();
+    const toggleButton = useTemplateRef('toggle-button');
+    const containerRef = useTemplateRef('overlay-container');
+    const gridWrapRef = useTemplateRef('grid-wrap');
 
     const scrollable = ref(false);
     const selectionActiveRef = ref<HTMLElement | null>(null);
-    const gridWrapRef = ref(null);
     const elementRefs = ref<Array<HTMLElement | null>[]>([]);
     const hoverValue = ref();
-    const toggleButton = ref<HTMLElement | null>(null);
     const containerHeight = ref(0);
-    const containerRef = ref<HTMLElement | null>(null);
 
     onBeforeUpdate(() => {
         selectionActiveRef.value = null;
@@ -140,7 +134,7 @@
     onUnmounted(() => handleArrowNav(false));
 
     const handleArrowNav = (value: boolean): void => {
-        if (props.arrowNavigation) {
+        if (rootProps.arrowNavigation) {
             if (props.headerRefs?.length) {
                 setMonthPicker(value);
             } else {
@@ -152,7 +146,7 @@
     const focusGrid = (): void => {
         const elm = unrefElement(gridWrapRef);
         if (elm) {
-            if (!defaultedTextInput.value.enabled) {
+            if (!textInput.value.enabled) {
                 if (selectionActiveRef.value) {
                     selectionActiveRef.value?.focus({ preventScroll: true });
                 } else {
@@ -215,7 +209,7 @@
             const toggleBtnHeight = btn ? btn.getBoundingClientRect().height : 0;
             if (parent) {
                 if (!parent.getBoundingClientRect().height) {
-                    containerHeight.value = defaultedConfig.value.modeHeight - toggleBtnHeight;
+                    containerHeight.value = config.value.modeHeight - toggleBtnHeight;
                 } else {
                     containerHeight.value = parent.getBoundingClientRect().height - toggleBtnHeight;
                 }
@@ -245,9 +239,9 @@
     };
 
     const handleEsc = (ev: KeyboardEvent) => {
-        if (props.escClose) {
+        if (config.value.escClose) {
             toggle();
-            handleEventPropagation(ev);
+            handleEventPropagation(ev, config.value);
         }
     };
 
@@ -256,7 +250,7 @@
             if (col.active || col.value === props.focusValue) {
                 selectionActiveRef.value = el;
             }
-            if (props.arrowNavigation) {
+            if (rootProps.arrowNavigation) {
                 if (Array.isArray(elementRefs.value[rowInd])) {
                     elementRefs.value[rowInd][colInd] = el;
                 } else {
@@ -276,8 +270,8 @@
     };
 
     const handleArrowKey = (ev: KeyboardEvent) => {
-        if (props.arrowNavigation) return;
-        checkStopPropagation(ev, defaultedConfig.value, true);
+        if (rootProps.arrowNavigation) return;
+        checkStopPropagation(ev, config.value, true);
     };
 
     const setHoverValue = (val: number) => {

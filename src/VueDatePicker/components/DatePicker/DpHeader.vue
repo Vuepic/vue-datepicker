@@ -19,14 +19,14 @@
         </template>
         <template v-else>
             <div v-if="$slots['top-extra']">
-                <slot name="top-extra" :value="internalModelValue" />
+                <slot name="top-extra" :value="modelValue" />
             </div>
             <div class="dp__month_year_wrap">
                 <ArrowBtn
-                    v-if="showLeftIcon(defaultedMultiCalendars, instance) && !vertical"
-                    :aria-label="defaultedAriaLabels?.prevMonth"
+                    v-if="showLeftIcon(instance) && !rootProps.vertical"
+                    :aria-label="ariaLabels?.prevMonth"
                     :disabled="isDisabled(false)"
-                    :class="defaultedUI?.navBtnPrev"
+                    :class="ui?.navBtnPrev"
                     el-name="action-prev"
                     @activate="handleMonthYearChange(false, true)"
                     @set-ref="setElRefs($event, 0)"
@@ -37,19 +37,19 @@
                 <div
                     class="dp__month_year_wrap"
                     :class="{
-                        dp__year_disable_select: disableYearSelect,
+                        dp__year_disable_select: rootProps.disableYearSelect,
                     }"
                 >
                     <template v-for="(type, i) in selectionButtonsDisplay" :key="type.type">
                         <button
-                            :ref="(el) => setElRefs(el, i + 1)"
+                            :ref="(el) => setElRefs(el as HTMLElement, i + 1)"
                             type="button"
                             :data-dp-element="`overlay-${type.type}`"
                             class="dp__btn dp__month_year_select"
                             :class="{ 'dp--hidden-el': overlayOpen }"
                             :aria-label="`${type.text}-${type.ariaLabel}`"
                             :data-test-id="`${type.type}-toggle-overlay-${instance}`"
-                            @click="type.toggle"
+                            @click="type.toggle(false)"
                             @keydown="checkKeyDown($event, () => type.toggle(), true)"
                         >
                             <slot
@@ -64,17 +64,11 @@
                             <SelectionOverlay
                                 v-if="type.showSelectionGrid"
                                 :items="type.items"
-                                :arrow-navigation="arrowNavigation"
-                                :hide-navigation="hideNavigation"
-                                :is-last="autoApply && !defaultedConfig.keepActionRow"
+                                :is-last="rootProps.autoApply && !config.keepActionRow"
                                 :skip-button-ref="false"
-                                :config="config"
                                 :type="type.type"
                                 :header-refs="[]"
-                                :esc-close="escClose"
                                 :menu-wrap-ref="menuWrapRef"
-                                :text-input="textInput"
-                                :aria-labels="ariaLabels"
                                 :overlay-label="type.overlayLabel"
                                 @selected="type.updateModelValue"
                                 @toggle="type.toggle"
@@ -97,33 +91,33 @@
                     </template>
                 </div>
                 <ArrowBtn
-                    v-if="showLeftIcon(defaultedMultiCalendars, instance) && vertical"
-                    :aria-label="defaultedAriaLabels?.prevMonth"
+                    v-if="showLeftIcon(instance) && rootProps.vertical"
+                    :aria-label="ariaLabels?.prevMonth"
                     el-name="action-prev"
                     :disabled="isDisabled(false)"
-                    :class="defaultedUI?.navBtnPrev"
+                    :class="ui?.navBtnPrev"
                     @activate="handleMonthYearChange(false, true)"
                 >
                     <slot v-if="$slots['arrow-up']" name="arrow-up" />
                     <ChevronUpIcon v-if="!$slots['arrow-up']" />
                 </ArrowBtn>
                 <ArrowBtn
-                    v-if="showRightIcon(defaultedMultiCalendars, instance)"
+                    v-if="showRightIcon(instance)"
                     ref="rightIcon"
                     el-name="action-next"
                     :disabled="isDisabled(true)"
-                    :aria-label="defaultedAriaLabels?.nextMonth"
-                    :class="defaultedUI?.navBtnNext"
+                    :aria-label="ariaLabels?.nextMonth"
+                    :class="ui?.navBtnNext"
                     @activate="handleMonthYearChange(true, true)"
-                    @set-ref="setElRefs($event, disableYearSelect ? 2 : 3)"
+                    @set-ref="setElRefs($event, rootProps.disableYearSelect ? 2 : 3)"
                 >
                     <slot
-                        v-if="$slots[vertical ? 'arrow-down' : 'arrow-right']"
-                        :name="vertical ? 'arrow-down' : 'arrow-right'"
+                        v-if="$slots[rootProps.vertical ? 'arrow-down' : 'arrow-right']"
+                        :name="rootProps.vertical ? 'arrow-down' : 'arrow-right'"
                     />
                     <component
-                        :is="vertical ? ChevronDownIcon : ChevronRightIcon"
-                        v-if="!$slots[vertical ? 'arrow-down' : 'arrow-right']"
+                        :is="rootProps.vertical ? ChevronDownIcon : ChevronRightIcon"
+                        v-if="!$slots[rootProps.vertical ? 'arrow-down' : 'arrow-right']"
                     />
                 </ArrowBtn>
             </div>
@@ -132,8 +126,8 @@
 </template>
 
 <script lang="ts" setup>
-    import type { PropType, Ref } from 'vue';
-    import { computed, onMounted, ref } from 'vue';
+    import { computed, onMounted, ref, type Ref } from 'vue';
+    import { type MaybeElementRef, unrefElement } from '@vueuse/core';
 
     import {
         CalendarIcon,
@@ -145,56 +139,58 @@
     import ArrowBtn from '@/components/Common/ArrowBtn.vue';
     import SelectionOverlay from '@/components/Common/SelectionOverlay.vue';
 
-    import { PickerBaseProps } from '@/props';
-
-    import { useArrowNavigation, useMonthYearPick, useTransitions, useDefaults, useCommon } from '@/composables';
     import {
-        checkHighlightMonth,
-        checkHighlightYear,
-        getMaxMonth,
-        getMinMaxYear,
-        getMinMonth,
-    } from '@/utils/date-utils';
-    import { checkKeyDown, checkMinMaxValue, formatNumber, groupListAndMap, unrefElement } from '@/utils/util';
+        useArrowNavigation,
+        useTransitions,
+        useDateUtils,
+        useUtils,
+        useContext,
+        useFormatter,
+    } from '@/composables';
+    import { useMonthYearPick } from '@/components/shared/useMonthYearPick.ts';
+    import { useNavigationDisplay } from '@/components/shared/useNavigationDisplay.ts';
     import { FlowStep, HeaderPicker } from '@/constants';
+    import type { OverlayGridItem, SelectItem } from '@/types';
 
-    import type { HeaderSelectionBtn, IDefaultSelect, MaybeElementRef, OverlayGridItem } from '@/interfaces';
+    interface DpHeaderEmits {
+        mount: [];
+        'reset-flow': [];
+        'update-month-year': [value: { fromNav?: boolean; month: number; year: number }];
+        'overlay-opened': [type: FlowStep];
+    }
 
-    const emit = defineEmits(['update-month-year', 'mount', 'reset-flow', 'overlay-closed', 'overlay-opened']);
-    const props = defineProps({
-        month: { type: Number as PropType<number>, default: 0 },
-        year: { type: Number as PropType<number>, default: 0 },
-        instance: { type: Number as PropType<number>, default: 0 },
-        years: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
-        months: { type: Array as PropType<IDefaultSelect[]>, default: () => [] },
-        ...PickerBaseProps,
-    });
+    interface DpHeaderProps {
+        month: number;
+        year: number;
+        instance: number;
+        years: SelectItem[];
+        months: SelectItem[];
+        menuWrapRef: HTMLElement | null;
+    }
 
-    defineOptions({
-        compatConfig: {
-            MODE: 3,
-        },
-    });
+    const emit = defineEmits<DpHeaderEmits>();
+
+    const props = defineProps<DpHeaderProps>();
 
     const {
-        defaultedTransitions,
-        defaultedAriaLabels,
-        defaultedMultiCalendars,
-        defaultedFilters,
-        defaultedConfig,
-        defaultedHighlight,
-        propDates,
-        defaultedUI,
-    } = useDefaults(props);
-    const { transitionName, showTransition } = useTransitions(defaultedTransitions);
+        rootEmit,
+        rootProps,
+        modelValue,
+        defaults: { ariaLabels, filters, config, highlight, safeDates, ui },
+    } = useContext();
+    const { transitionName, showTransition } = useTransitions();
+    const { showLeftIcon, showRightIcon } = useNavigationDisplay();
     const { buildMatrix } = useArrowNavigation();
     const { handleMonthYearChange, isDisabled, updateMonthYear } = useMonthYearPick(props, emit);
-    const { showLeftIcon, showRightIcon } = useCommon();
+    const { checkHighlightYear, checkHighlightMonth } = useUtils();
+    const { getMaxMonth, getMinMonth, getYearFromDate } = useDateUtils();
+    const { checkKeyDown, groupListAndMap, checkMinMaxValue } = useUtils();
+    const { formatYear } = useFormatter();
 
     const showMonthPicker = ref(false);
     const showYearPicker = ref(false);
     const overlayOpen = ref(false);
-    const elementRefs = ref<Array<HTMLElement | null>>([null, null, null, null]);
+    const elementRefs = ref<Array<HTMLElement | null | undefined>>([null, null, null, null]);
 
     onMounted(() => {
         emit('mount');
@@ -204,7 +200,7 @@
         get: () => props[type],
         set: (value: number) => {
             const otherType = type === HeaderPicker.month ? HeaderPicker.year : HeaderPicker.month;
-            emit('update-month-year', { [type]: value, [otherType]: props[otherType] });
+            emit('update-month-year', { [type]: value, [otherType]: props[otherType] } as never);
 
             if (type === HeaderPicker.month) {
                 toggleMonthPicker(true);
@@ -226,36 +222,36 @@
         toggle: type === HeaderPicker.month ? toggleMonthPicker : toggleYearPicker,
     }));
 
-    const getMonthDisplayVal = computed((): IDefaultSelect => {
+    const getMonthDisplayVal = computed((): SelectItem => {
         const month = props.months.find((month) => month.value === props.month);
         if (month) return month;
         return { text: '', value: 0 };
     });
 
     const groupedMonths = computed((): OverlayGridItem[][] => {
-        return groupListAndMap(props.months, (month: IDefaultSelect) => {
+        return groupListAndMap(props.months, (month: SelectItem) => {
             const active = props.month === month.value;
             const disabled =
                 checkMinMaxValue(
                     month.value,
-                    getMinMonth(props.year, propDates.value.minDate),
-                    getMaxMonth(props.year, propDates.value.maxDate),
-                ) || defaultedFilters.value.months.includes(month.value);
-            const highlighted = checkHighlightMonth(defaultedHighlight.value, month.value, props.year);
+                    getMinMonth(props.year, safeDates.value.minDate),
+                    getMaxMonth(props.year, safeDates.value.maxDate),
+                ) || filters.value.months.includes(month.value);
+            const highlighted = checkHighlightMonth(highlight.value, month.value, props.year);
             return { active, disabled, highlighted };
         });
     });
 
     const groupedYears = computed((): OverlayGridItem[][] => {
-        return groupListAndMap(props.years, (year: IDefaultSelect) => {
+        return groupListAndMap(props.years, (year: SelectItem) => {
             const active = props.year === year.value;
             const disabled =
                 checkMinMaxValue(
                     year.value,
-                    getMinMaxYear(propDates.value.minDate),
-                    getMinMaxYear(propDates.value.maxDate),
-                ) || defaultedFilters.value.years.includes(year.value);
-            const highlighted = checkHighlightYear(defaultedHighlight.value, year.value);
+                    getYearFromDate(safeDates.value.minDate),
+                    getYearFromDate(safeDates.value.maxDate),
+                ) || filters.value.years.includes(year.value);
+            const highlighted = checkHighlightYear(highlight.value, year.value);
             return { active, disabled, highlighted };
         });
     });
@@ -269,7 +265,7 @@
 
         if (!val.value) {
             overlayOpen.value = false;
-            emit('overlay-closed', type);
+            rootEmit('overlay-toggle', { open: false, overlay: type });
         } else {
             overlayOpen.value = true;
             emit('overlay-opened', type);
@@ -292,14 +288,14 @@
         }
     };
 
-    const setElRefs = (el: MaybeElementRef, i: number): void => {
-        if (props.arrowNavigation) {
+    const setElRefs = (el: MaybeElementRef<HTMLElement | null>, i: number): void => {
+        if (rootProps.arrowNavigation) {
             elementRefs.value[i] = unrefElement(el);
             buildMatrix(elementRefs.value, 'monthYear');
         }
     };
 
-    const selectionButtons = computed((): HeaderSelectionBtn[] => [
+    const selectionButtons = computed(() => [
         {
             type: HeaderPicker.month,
             index: 1,
@@ -309,8 +305,8 @@
             text: getMonthDisplayVal.value.text,
             showSelectionGrid: showMonthPicker.value,
             items: groupedMonths.value,
-            ariaLabel: defaultedAriaLabels.value?.openMonthsOverlay,
-            overlayLabel: defaultedAriaLabels.value.monthPicker?.(true) ?? undefined,
+            ariaLabel: ariaLabels.value?.openMonthsOverlay,
+            overlayLabel: ariaLabels.value.monthPicker?.(true) ?? undefined,
         },
         {
             type: HeaderPicker.year,
@@ -318,19 +314,19 @@
             toggle: toggleYearPicker,
             modelValue: yearModelBind.value,
             updateModelValue: (val: number) => (yearModelBind.value = val),
-            text: formatNumber(props.year, props.locale),
+            text: formatYear(props.year),
             showSelectionGrid: showYearPicker.value,
             items: groupedYears.value,
-            ariaLabel: defaultedAriaLabels.value?.openYearsOverlay,
-            overlayLabel: defaultedAriaLabels.value.yearPicker?.(true) ?? undefined,
+            ariaLabel: ariaLabels.value?.openYearsOverlay,
+            overlayLabel: ariaLabels.value.yearPicker?.(true) ?? undefined,
         },
     ]);
 
     const selectionButtonsDisplay = computed(() => {
-        if (props.disableYearSelect) {
-            return [selectionButtons.value[0]];
+        if (rootProps.disableYearSelect) {
+            return [selectionButtons.value[0]!];
         } else {
-            return props.yearFirst ? [...selectionButtons.value].reverse() : selectionButtons.value;
+            return rootProps.yearFirst ? [...selectionButtons.value].reverse() : selectionButtons.value;
         }
     });
 

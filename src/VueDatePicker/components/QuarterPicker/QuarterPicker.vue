@@ -1,53 +1,49 @@
 <template>
-    <InstanceWrap
-        v-slot="{ instance }"
-        :multi-calendars="defaultedMultiCalendars.count"
-        :collapse="collapse"
-        stretch
-        :is-mobile="isMobile"
-    >
-        <div class="dp-quarter-picker-wrap" :style="{ minHeight: `${defaultedConfig.modeHeight}px` }">
-            <slot v-if="$slots['top-extra']" name="top-extra" :value="internalModelValue" />
-            <div>
-                <YearModePicker
-                    v-bind="$props"
-                    :items="groupedYears(instance)"
-                    :instance="instance"
-                    :show-year-picker="showYearPicker[instance]"
-                    :year="year(instance)"
-                    :is-disabled="(next: boolean) => isDisabled(instance, next)"
-                    @handle-year="handleYear(instance, $event)"
-                    @year-select="handleYearSelect($event, instance)"
-                    @toggle-year-picker="toggleYearPicker(instance, $event?.flow, $event?.show)"
-                >
-                    <template v-for="(slot, i) in yearModeSlots" #[slot]="args" :key="i">
-                        <slot :name="slot" v-bind="args" />
-                    </template>
-                </YearModePicker>
-            </div>
-            <div class="dp--quarter-items">
-                <div v-for="(quarter, i) in quarters(instance)" :key="i">
-                    <button
-                        type="button"
-                        class="dp--qr-btn"
-                        :class="{
-                            'dp--qr-btn-active': quarter.active,
-                            'dp--qr-btn-between': quarter.isBetween,
-                            'dp--qr-btn-disabled': quarter.disabled,
-                            'dp--highlighted': quarter.highlighted,
-                        }"
-                        :data-test-id="quarter.value"
-                        :disabled="quarter.disabled"
-                        @click="selectQuarter(quarter.value, instance, quarter.disabled)"
-                        @mouseover="setHoverDate(quarter.value)"
+    <InstanceWrap v-slot="{ instances, wrapClass }" :collapse="collapse" stretch>
+        <div v-for="instance in instances" :key="instance" :class="wrapClass">
+            <div class="dp-quarter-picker-wrap" :style="{ minHeight: `${config.modeHeight}px` }">
+                <slot v-if="$slots['top-extra']" name="top-extra" :value="modelValue" />
+                <div>
+                    <YearModePicker
+                        v-bind="$props"
+                        :items="groupedYears(instance)"
+                        :instance="instance"
+                        :show-year-picker="showYearPicker[instance]"
+                        :year="year(instance)"
+                        :is-disabled="(next: boolean) => isDisabled(instance, next)"
+                        @handle-year="handleYear(instance, $event)"
+                        @year-select="handleYearSelect($event, instance)"
+                        @toggle-year-picker="toggleYearPicker(instance, $event?.flow, $event?.show)"
                     >
-                        <template v-if="$slots['quarter']"
-                            ><slot name="quarter" :value="quarter.value" :text="quarter.text"
-                        /></template>
-                        <template v-else>
-                            {{ quarter.text }}
+                        <template v-for="(slot, i) in yearModeSlots" #[slot]="args" :key="i">
+                            <slot :name="slot" v-bind="args" />
                         </template>
-                    </button>
+                    </YearModePicker>
+                </div>
+                <div class="dp--quarter-items">
+                    <div v-for="(quarter, i) in quarters(instance)" :key="i">
+                        <button
+                            type="button"
+                            class="dp--qr-btn"
+                            :class="{
+                                'dp--qr-btn-active': quarter.active,
+                                'dp--qr-btn-between': quarter.isBetween,
+                                'dp--qr-btn-disabled': quarter.disabled,
+                                'dp--highlighted': quarter.highlighted,
+                            }"
+                            :data-test-id="quarter.value"
+                            :disabled="quarter.disabled"
+                            @click="selectQuarter(quarter.value, instance, quarter.disabled)"
+                            @mouseover="setHoverDate(quarter.value)"
+                        >
+                            <template v-if="$slots['quarter']"
+                                ><slot name="quarter" :value="quarter.value" :text="quarter.text"
+                            /></template>
+                            <template v-else>
+                                {{ quarter.text }}
+                            </template>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -60,36 +56,22 @@
     import InstanceWrap from '@/components/Common/InstanceWrap.vue';
     import YearModePicker from '@/components/shared/YearModePicker.vue';
 
-    import { useQuarterPicker } from '@/components/QuarterPicker/quarter-picker';
-    import { mapSlots } from '@/composables';
-    import { PickerBaseProps } from '@/props';
+    import { type QuarterPickerEmits, useQuarterPicker } from '@/components/QuarterPicker/useQuarterPicker.ts';
+    import { useContext, useSlotsMapper } from '@/composables';
+    import type { BaseProps } from '@/types';
 
-    const emit = defineEmits([
-        'update:internal-model-value',
-        'reset-flow',
-        'overlay-closed',
-        'auto-apply',
-        'range-start',
-        'range-end',
-        'overlay-toggle',
-        'update-month-year',
-    ]);
-    const props = defineProps({
-        ...PickerBaseProps,
-    });
-
-    const slots = useSlots();
-    const yearModeSlots = mapSlots(slots, 'yearMode');
-
-    defineOptions({
-        compatConfig: {
-            MODE: 3,
-        },
-    });
+    const emit = defineEmits<QuarterPickerEmits>();
+    const props = defineProps<BaseProps>();
 
     const {
-        defaultedMultiCalendars,
-        defaultedConfig,
+        defaults: { config },
+    } = useContext();
+    const slots = useSlots();
+    const { mapSlots } = useSlotsMapper();
+
+    const yearModeSlots = mapSlots(slots, 'yearMode');
+
+    const {
         groupedYears,
         year,
         isDisabled,

@@ -24,8 +24,7 @@
   "exports": {
     ".": {
       "types": "./index.d.ts",
-      "import": "./dist/vue-datepicker.js",
-      "require": "./dist/vue-datepicker.umd.cjs"
+      "import": "./dist/vue-datepicker.js"
     },
     "./dist/main.css": {
       "import": "./dist/main.css",
@@ -35,12 +34,10 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "run-s clean typecheck build:lib build:css",
     "clean": "rimraf ./dist",
-    "build:lib": "run-s build:es build:browser",
-    "typecheck": "vue-tsc --build",
+    "build": "run-s clean type-check build:lib build:css",
+    "type-check": "vue-tsc --build",
     "build:es": "cross-env NODE_ENV=production vite build --mode production",
-    "build:browser": "cross-env NODE_ENV=production vite -f iife build --mode production",
     "build:css": "cross-env NODE_ENV=production node_modules/.bin/sass src/VueDatePicker/style/main.scss dist/main.css --style compressed",
     "test": "cross-env NODE_ENV=test vitest",
     "test:coverage": "cross-env NODE_ENV=test vitest --environment jsdom run --coverage",
@@ -56,36 +53,39 @@
     "@types/node": "^22.17.0",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/eslint-plugin": "^1.3.12",
     "@vue/eslint-config-prettier": "^10.2.0",
     "@vue/eslint-config-typescript": "^14.6.0",
     "@vue/test-utils": "^2.4.6",
-    "@vue/tsconfig": "^0.7.0",
+    "@vue/tsconfig": "^0.8.1",
     "c8": "^10.1.3",
     "cross-env": "^10.0.0",
-    "eslint": "^9.32.0",
-    "eslint-plugin-vue": "^10.4.0",
-    "jsdom": "^26.1.0",
-    "minimist": "^1.2.8",
+    "eslint": "^9.36.0",
+    "eslint-plugin-vue": "^10.5.0",
+    "jiti": "^2.6.0",
+    "jsdom": "^27.0.0",
     "npm-run-all2": "^8.0.4",
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",
     "rimraf": "^6.0.1",
-    "sass": "^1.89.2",
+    "sass": "^1.93.2",
     "sass-loader": "^16.0.5",
-    "stylelint": "^16.23.0",
-    "stylelint-config-standard-scss": "^15.0.1",
+    "stylelint": "^16.24.0",
+    "stylelint-config-standard-scss": "^16.0.0",
     "typescript": "^5.9.2",
-    "vite": "^7.0.6",
+    "vite": "^7.1.7",
     "vitest": "^3.2.4",
-    "vue": "^3.5.18",
-    "vue-tsc": "^3.0.5"
+    "vue": "^3.5.22",
+    "vue-tsc": "^3.0.8"
   },
   "dependencies": {
-    "@date-fns/tz": "^1.3.1",
+    "@date-fns/tz": "^1.4.1",
+    "@floating-ui/vue": "^1.1.9",
+    "@vueuse/core": "^13.9.0",
     "date-fns": "^4.1.0"
   },
   "peerDependencies": {
-    "vue": ">=3.3.0"
+    "vue": ">=3.5.0"
   },
   "engines": {
     "node": ">=18.12.0"

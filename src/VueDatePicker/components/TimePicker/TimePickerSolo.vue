@@ -1,66 +1,57 @@
 <template>
-    <InstanceWrap :multi-calendars="0" stretch :is-mobile="isMobile">
-        <TimePicker
-            ref="tpRef"
-            v-bind="$props"
-            :hours="time.hours"
-            :minutes="time.minutes"
-            :seconds="time.seconds"
-            :internal-model-value="internalModelValue"
-            :disabled-times-config="disabledTimesConfig"
-            :validate-time="validateTime"
-            @update:hours="updateTime($event)"
-            @update:minutes="updateTime($event, false)"
-            @update:seconds="updateTime($event, false, true)"
-            @am-pm-change="$emit('am-pm-change', $event)"
-            @reset-flow="$emit('reset-flow')"
-            @overlay-closed="$emit('overlay-toggle', { open: false, overlay: $event })"
-            @overlay-opened="$emit('overlay-toggle', { open: true, overlay: $event })"
-        >
-            <template v-for="(slot, i) in timePickerSlots" #[slot]="args" :key="i">
-                <slot :name="slot" v-bind="args" />
-            </template>
-        </TimePicker>
+    <InstanceWrap v-slot="{ wrapClass }" :multi-calendars="0" stretch>
+        <div :class="wrapClass">
+            <TimePicker
+                ref="time-input"
+                v-bind="$props"
+                :hours="time.hours"
+                :minutes="time.minutes"
+                :seconds="time.seconds"
+                :disabled-times-config="disabledTimesConfig"
+                :validate-time="validateTime"
+                @update:hours="updateTime($event)"
+                @update:minutes="updateTime($event, false)"
+                @update:seconds="updateTime($event, false, true)"
+                @reset-flow="$emit('reset-flow')"
+            >
+                <template v-for="(slot, i) in timePickerSlots" #[slot]="args" :key="i">
+                    <slot :name="slot" v-bind="args" />
+                </template>
+            </TimePicker>
+        </div>
     </InstanceWrap>
 </template>
 
 <script lang="ts" setup>
-    import { onMounted, ref, useSlots } from 'vue';
+    import { onMounted, useSlots, useTemplateRef } from 'vue';
 
     import TimePicker from '@/components/TimePicker/TimePicker.vue';
-
-    import { PickerBaseProps } from '@/props';
-    import { mapSlots } from '@/composables';
-    import { useTimePicker } from '@/components/TimePicker/time-picker';
     import InstanceWrap from '@/components/Common/InstanceWrap.vue';
 
-    const emit = defineEmits([
-        'update:internal-model-value',
-        'time-update',
-        'am-pm-change',
-        'mount',
-        'reset-flow',
-        'update-flow-step',
-        'overlay-toggle',
-    ]);
-    const props = defineProps({
-        ...PickerBaseProps,
-    });
-    defineOptions({
-        compatConfig: {
-            MODE: 3,
-        },
-    });
-    const slots = useSlots();
-    const timePickerSlots = mapSlots(slots, 'timePicker');
-    const tpRef = ref<InstanceType<typeof TimePicker> | null>(null);
+    import { useSlotsMapper } from '@/composables';
+    import { useTimePicker } from '@/components/TimePicker/useTimePicker.ts';
+    import type { BaseProps, TimeKey } from '@/types';
 
-    const { time, modelValue, disabledTimesConfig, updateTime, validateTime } = useTimePicker(props, emit);
+    interface TimePickerEmits {
+        'time-update': [];
+        mount: [];
+        'reset-flow': [];
+        'update-flow-step': [];
+    }
+
+    const emit = defineEmits<TimePickerEmits>();
+
+    defineProps<BaseProps>();
+
+    const slots = useSlots();
+    const { mapSlots } = useSlotsMapper();
+    const timePickerSlots = mapSlots(slots, 'timePicker');
+
+    const tpRef = useTemplateRef('time-input');
+    const { time, modelValue, disabledTimesConfig, updateTime, validateTime } = useTimePicker(emit);
 
     onMounted(() => {
-        if (!props.shadow) {
-            emit('mount', null);
-        }
+        emit('mount');
     });
 
     const getSidebarProps = () => {
@@ -71,7 +62,7 @@
         };
     };
 
-    const toggleTimePicker = (show: boolean, flow = false, childOpen = '') => {
+    const toggleTimePicker = (show: boolean, flow = false, childOpen: TimeKey | '' = '') => {
         tpRef.value?.toggleTimePicker(show, flow, childOpen);
     };
 

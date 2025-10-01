@@ -1,10 +1,8 @@
 <template>
-    <div ref="pickerWrapperRef" :class="wrapperClass" data-datepicker-instance :data-dp-mobile="isMobile">
+    <div ref="picker-wrapper" :class="wrapperClass" data-datepicker-instance :data-dp-mobile="isMobile">
         <DatepickerInput
-            ref="inputRef"
-            v-model:input-value="inputValue"
+            ref="input-cmp"
             :is-menu-open="isOpen"
-            v-bind="$props"
             @clear="clearValue"
             @open="openMenu"
             @set-input-date="setInputDate"
@@ -15,60 +13,46 @@
             @focus="handleInputFocus"
             @blur="handleBlur"
             @real-blur="isInputFocused = false"
-            @text-input="$emit('text-input', $event)"
         >
             <template v-for="(slot, i) in inputSlots" #[slot]="args" :key="i">
                 <slot :name="slot" v-bind="args" />
             </template>
         </DatepickerInput>
-        <component :is="teleport ? TeleportCmp : 'div'" v-bind="teleportProps">
-            <transition :name="menuTransition(openOnTop)" :css="showTransition && !defaultedInline.enabled">
-                <div
+        <div
+            ref="dp-menu-wrap"
+            :class="{ 'dp--menu-wrapper': !inline.enabled, dp__outer_menu_wrap: true }"
+            :style="!inline.enabled ? floatingStyles : undefined"
+        >
+            <transition :name="menuTransition(placement === 'top')" :css="showTransition && !inline.enabled">
+                <DatepickerMenu
                     v-if="isOpen"
-                    ref="dpWrapMenuRef"
-                    v-bind="menuWrapProps"
-                    :class="{ 'dp--menu-wrapper': !defaultedInline.enabled }"
-                    :style="!defaultedInline.enabled ? menuStyle : undefined"
+                    ref="dp-menu"
+                    :class="{ [theme]: true, 'dp--menu-wrapper': rootProps.teleport }"
+                    :no-overlay-focus="noOverlayFocus"
+                    :collapse="collapse"
+                    :get-input-rect="getInputRect"
+                    @close-picker="closeMenu"
+                    @select-date="selectDate"
+                    @auto-apply="autoApplyValue"
+                    @time-update="timeUpdate"
+                    @menu-blur="rootEmit('blur')"
                 >
-                    <DatepickerMenu
-                        ref="dpMenuRef"
-                        v-bind="$props"
-                        v-model:internal-model-value="internalModelValue"
-                        :class="{ [theme]: true, 'dp--menu-wrapper': teleport }"
-                        :open-on-top="openOnTop"
-                        :no-overlay-focus="noOverlayFocus"
-                        :collapse="collapse"
-                        :get-input-rect="getInputRect"
-                        :is-text-input-date="isTextInputDate"
-                        @close-picker="closeMenu"
-                        @select-date="selectDate"
-                        @auto-apply="autoApplyValue"
-                        @time-update="timeUpdate"
-                        @flow-step="$emit('flow-step', $event)"
-                        @update-month-year="$emit('update-month-year', $event)"
-                        @invalid-select="$emit('invalid-select', internalModelValue)"
-                        @auto-apply-invalid="$emit('invalid-select', $event)"
-                        @invalid-fixed-range="$emit('invalid-fixed-range', $event)"
-                        @recalculate-position="setMenuPosition"
-                        @tooltip-open="$emit('tooltip-open', $event)"
-                        @tooltip-close="$emit('tooltip-close', $event)"
-                        @time-picker-open="$emit('time-picker-open', $event)"
-                        @time-picker-close="$emit('time-picker-close', $event)"
-                        @am-pm-change="$emit('am-pm-change', $event)"
-                        @range-start="$emit('range-start', $event)"
-                        @range-end="$emit('range-end', $event)"
-                        @date-update="$emit('date-update', $event)"
-                        @invalid-date="$emit('invalid-date', $event)"
-                        @overlay-toggle="$emit('overlay-toggle', $event)"
-                        @menu-blur="$emit('blur')"
-                    >
-                        <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
-                            <slot :name="slot" v-bind="{ ...args }" />
-                        </template>
-                    </DatepickerMenu>
-                </div>
+                    <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
+                        <slot :name="slot" v-bind="{ ...args }" />
+                    </template>
+                    <template v-if="!inline.enabled && !teleport.center" #arrow>
+                        <div
+                            ref="menu-arrow"
+                            :class="{ dp__arrow_top: placement === 'bottom', dp__arrow_bottom: placement === 'top' }"
+                            :style="{
+                                left: middlewareData.arrow?.x != null ? `${middlewareData.arrow.x}px` : '',
+                                top: middlewareData.arrow?.y != null ? `${middlewareData.arrow.y}px` : '',
+                            }"
+                        ></div>
+                    </template>
+                </DatepickerMenu>
             </transition>
-        </component>
+        </div>
     </div>
 </template>
 
@@ -81,118 +65,81 @@
         toRef,
         useSlots,
         watch,
-        Teleport as TeleportCmp,
         nextTick,
-        getCurrentInstance,
+        useTemplateRef,
+        type Ref,
+        type ComponentPublicInstance,
     } from 'vue';
+    import { onClickOutside } from '@vueuse/core';
+    import { arrow, autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/vue';
 
-    import DatepickerInput from '@/components/DatepickerInput.vue';
+    import DatepickerInput from '@/components/DatePickerInput/DatepickerInput.vue';
     import DatepickerMenu from '@/components/DatepickerMenu.vue';
 
     import {
         useExternalInternalMapper,
-        usePosition,
-        mapSlots,
+        useSlotsMapper,
         useArrowNavigation,
-        useState,
         useTransitions,
         useValidation,
+        useResponsive,
+        useUtils,
+        useContext,
     } from '@/composables';
-    import { onClickOutside } from '@/directives/clickOutside';
-    import { AllProps } from '@/props';
-    import { findNextFocusableElement, getNumVal } from '@/utils/util';
+    import type { DynamicClass, InputParsedDate, MenuView, ModelValue, MonthModel } from '@/types';
 
-    import type {
-        DynamicClass,
-        MonthYearOpt,
-        DatepickerMenuRef,
-        DatepickerInputRef,
-        ModelValue,
-        MenuView,
-        MaybeElementRef,
-    } from '@/interfaces';
-    import { useDefaults } from '@/composables/defaults';
-    import { useResponsive } from '@/composables/responsive';
+    const {
+        rootEmit,
+        setState,
+        isTextInputDate,
+        inputValue,
+        modelValue,
+        rootProps,
+        defaults: { inline, config, textInput, range, multiDates, teleport },
+    } = useContext();
+    const { clearArrowNav } = useArrowNavigation();
+    const { validateDate, isValidTime } = useValidation();
+    const { menuTransition, showTransition } = useTransitions();
+    const { isMobile } = useResponsive(config);
+    const { mapSlots } = useSlotsMapper();
+    const { findNextFocusableElement, getNumVal } = useUtils();
 
-    const emit = defineEmits([
-        'update:model-value',
-        'update:model-timezone-value',
-        'text-submit',
-        'closed',
-        'cleared',
-        'open',
-        'focus',
-        'blur',
-        'internal-model-change',
-        'recalculate-position',
-        'flow-step',
-        'update-month-year',
-        'invalid-select',
-        'invalid-fixed-range',
-        'tooltip-open',
-        'tooltip-close',
-        'time-picker-open',
-        'time-picker-close',
-        'am-pm-change',
-        'range-start',
-        'range-end',
-        'date-update',
-        'invalid-date',
-        'overlay-toggle',
-        'text-input',
-    ]);
-
-    defineOptions({
-        compatConfig: {
-            MODE: 3,
-        },
-    });
-
-    const props = defineProps({
-        ...AllProps,
-    });
     const slots = useSlots();
     const isOpen = ref(false);
-    const modelValueRef = toRef(props, 'modelValue');
-    const timezoneRef = toRef(props, 'timezone');
-    const dpWrapMenuRef = ref<HTMLElement | null>(null);
-    const dpMenuRef = ref<DatepickerMenuRef | null>(null);
-    const inputRef = ref<DatepickerInputRef | null>(null);
+    const modelValueRef = toRef(rootProps, 'modelValue');
+    const timezoneRef = toRef(rootProps, 'timezone');
+
+    const dpWrapMenuRef = useTemplateRef('dp-menu-wrap');
+    const dpMenuRef = useTemplateRef('dp-menu');
+    const inputRef = useTemplateRef('input-cmp');
+    const pickerWrapperRef = useTemplateRef('picker-wrapper');
+    const menuArrowRef = useTemplateRef('menu-arrow');
+
     const isInputFocused = ref(false);
-    const pickerWrapperRef = ref<HTMLElement | null>(null);
     const shouldFocusNext = ref(false);
     const shiftKeyActive = ref(false);
     const collapse = ref(false);
-    const isTextInputDate = ref(false);
 
-    const { setMenuFocused, setShiftKey } = useState();
-    const { clearArrowNav } = useArrowNavigation();
-    const { validateDate, isValidTime } = useValidation(props);
-    const {
-        defaultedTransitions,
-        defaultedTextInput,
-        defaultedInline,
-        defaultedConfig,
-        defaultedRange,
-        defaultedMultiDates,
-    } = useDefaults(props);
-    const { menuTransition, showTransition } = useTransitions(defaultedTransitions);
-    const { isMobile } = useResponsive(defaultedConfig);
-
-    const currentInstance = getCurrentInstance();
+    const { floatingStyles, middlewareData, placement } = useFloating(
+        inputRef as Ref<ComponentPublicInstance>,
+        dpWrapMenuRef,
+        {
+            middleware: [offset(10), flip(), shift(), arrow({ element: menuArrowRef })],
+            whileElementsMounted(...args) {
+                return autoUpdate(...args, { animationFrame: true });
+            },
+        },
+    );
 
     onMounted(() => {
-        parseExternalModelValue(props.modelValue);
+        parseExternalModelValue(rootProps.modelValue);
         nextTick().then(() => {
-            if (!defaultedInline.value.enabled) {
-                const el = getScrollableParent(pickerWrapperRef.value);
-                el?.addEventListener('scroll', onScroll);
-
+            if (!inline.value.enabled) {
                 window?.addEventListener('resize', onResize);
             }
         });
 
-        if (defaultedInline.value.enabled) {
+        if (inline.value.enabled) {
             isOpen.value = true;
         }
 
@@ -201,16 +148,14 @@
     });
 
     onUnmounted(() => {
-        if (!defaultedInline.value.enabled) {
-            const el = getScrollableParent(pickerWrapperRef.value);
-            el?.removeEventListener('scroll', onScroll);
+        if (!inline.value.enabled) {
             window?.removeEventListener('resize', onResize);
         }
         window?.removeEventListener('keyup', onKeyUp);
         window?.removeEventListener('keydown', onKeyDown);
     });
 
-    const slotList = mapSlots(slots, 'all', props.presetDates);
+    const slotList = mapSlots(slots, 'all', rootProps.presetDates);
     const inputSlots = mapSlots(slots, 'input');
 
     watch(
@@ -221,54 +166,25 @@
         { deep: true },
     );
 
-    const { openOnTop, menuStyle, xCorrect, setMenuPosition, getScrollableParent, shadowRender } = usePosition({
-        menuRef: dpWrapMenuRef,
-        menuRefInner: dpMenuRef,
-        inputRef,
-        pickerWrapperRef,
-        inline: defaultedInline,
-        emit,
-        props,
-        slots,
-    });
-
-    const {
-        inputValue,
-        internalModelValue,
-        parseExternalModelValue,
-        emitModelValue,
-        formatInputValue,
-        checkBeforeEmit,
-    } = useExternalInternalMapper(emit, props, { isInputFocused, isTextInputDate });
+    const { parseExternalModelValue, emitModelValue, formatInputValue, checkBeforeEmit } = useExternalInternalMapper();
 
     const wrapperClass = computed(
         (): DynamicClass => ({
             dp__main: true,
-            dp__theme_dark: props.dark,
-            dp__theme_light: !props.dark,
-            dp__flex_display: defaultedInline.value.enabled,
+            dp__theme_dark: rootProps.dark,
+            dp__theme_light: !rootProps.dark,
+            dp__flex_display: inline.value.enabled,
             'dp--flex-display-collapsed': collapse.value,
-            dp__flex_display_with_input: defaultedInline.value.input,
+            dp__flex_display_with_input: inline.value.input,
         }),
     );
 
-    const theme = computed(() => (props.dark ? 'dp__theme_dark' : 'dp__theme_light'));
-    const teleportProps = computed(() => {
-        return props.teleport
-            ? {
-                  to: typeof props.teleport === 'boolean' ? 'body' : props.teleport,
-                  disabled: !props.teleport || defaultedInline.value.enabled,
-              }
-            : {};
-    });
-    const menuWrapProps = computed(() => {
-        return { class: 'dp__outer_menu_wrap' };
-    });
+    const theme = computed(() => (rootProps.dark ? 'dp__theme_dark' : 'dp__theme_light'));
 
     const noOverlayFocus = computed(() => {
         return (
-            defaultedInline.value.enabled &&
-            (props.timePicker || props.monthPicker || props.yearPicker || props.quarterPicker)
+            inline.value.enabled &&
+            (rootProps.timePicker || rootProps.monthPicker || rootProps.yearPicker || rootProps.quarterPicker)
         );
     });
 
@@ -276,39 +192,21 @@
         return inputRef.value?.$el?.getBoundingClientRect() ?? ({ width: 0, left: 0, right: 0 } as DOMRect);
     };
 
-    /**
-     * Event listener for 'scroll'
-     * Depending on the props, it can close the menu or set correct position
-     */
     const onScroll = (): void => {
         if (isOpen.value) {
-            if (defaultedConfig.value.closeOnScroll) {
+            if (config.value.closeOnScroll) {
                 closeMenu();
-            } else {
-                setMenuPosition();
             }
         }
     };
 
-    /**
-     * Event listener for 'resize'
-     * Since the menu is absolutely positioned, on window resize, correct positioning
-     */
     const onResize = (): void => {
-        if (isOpen.value) {
-            setMenuPosition();
-        }
         const width = dpMenuRef.value?.$el.getBoundingClientRect().width ?? 0;
         collapse.value = document.body.offsetWidth <= width;
     };
 
     const onKeyUp = (event: KeyboardEvent) => {
-        if (
-            event.key === 'Tab' &&
-            !defaultedInline.value.enabled &&
-            !props.teleport &&
-            defaultedConfig.value.tabOutClosesMenu
-        ) {
+        if (event.key === 'Tab' && !inline.value.enabled && !rootProps.teleport && config.value.tabOutClosesMenu) {
             if (!pickerWrapperRef.value!.contains(document.activeElement)) {
                 closeMenu();
             }
@@ -322,94 +220,79 @@
     };
 
     const openMenu = () => {
-        if (!props.disabled && !props.readonly) {
-            shadowRender(currentInstance, DatepickerMenu, props);
-            setMenuPosition(false);
+        if (!rootProps.disabled && !rootProps.readonly) {
             isOpen.value = true;
 
             if (isOpen.value) {
-                emit('open');
+                rootEmit('open');
             }
 
             if (!isOpen.value) {
                 clearInternalValues();
             }
 
-            parseExternalModelValue(props.modelValue);
+            parseExternalModelValue(rootProps.modelValue);
         }
     };
 
-    /**
-     * When x button is pressed on input, it will call this function that will emit null
-     * for the modelValue and clear internally stored data
-     */
     const clearValue = (): void => {
         inputValue.value = '';
         clearInternalValues();
         dpMenuRef.value?.onValueCleared();
         inputRef.value?.setParsedDate(null);
-        emit('update:model-value', null);
-        emit('update:model-timezone-value', null);
-        emit('cleared');
-        if (defaultedConfig.value.closeOnClearValue) {
+        rootEmit('update:model-value', null);
+        rootEmit('cleared');
+        if (config.value.closeOnClearValue) {
             closeMenu();
         }
     };
 
     const validateBeforeEmit = () => {
-        const date = internalModelValue.value;
+        const date = modelValue.value;
         if (!date) return true;
         if (!Array.isArray(date) && validateDate(date)) return true;
         if (Array.isArray(date)) {
-            if (defaultedMultiDates.value.enabled) return true;
+            if (multiDates.value.enabled) return true;
 
             if (date.length === 2 && validateDate(date[0]) && validateDate(date[1])) {
                 return true;
             }
-            if (defaultedRange.value.partialRange && !props.timePicker) return validateDate(date[0]);
+            if (range.value.partialRange && !rootProps.timePicker) return validateDate(date[0]);
             return false;
         }
         return false;
     };
 
-    /**
-     * Called when select button is clicked, emit update for the modelValue
-     */
     const selectDate = (): void => {
         if (checkBeforeEmit() && validateBeforeEmit()) {
             emitModelValue();
             closeMenu();
         } else {
-            emit('invalid-select', internalModelValue.value);
+            rootEmit('invalid-select');
         }
     };
 
     const emitOnAutoApply = (ignoreClose: boolean): void => {
         updateTextInputWithDateTimeValue();
         emitModelValue();
-        if (defaultedConfig.value.closeOnAutoApply && !ignoreClose) {
+        if (config.value.closeOnAutoApply && !ignoreClose) {
             closeMenu();
         }
     };
 
     const updateTextInputWithDateTimeValue = () => {
-        if (inputRef.value && defaultedTextInput.value.enabled) {
-            inputRef.value.setParsedDate(internalModelValue.value);
+        if (inputRef.value && textInput.value.enabled) {
+            inputRef.value.setParsedDate(modelValue.value as Date);
         }
     };
 
-    /**
-     * When value is selected it will emit an event that will call this function
-     * ignoreClose is passed when time is picked or month and year, since they update the value and for
-     * the user experience it should not close the menu
-     */
     const autoApplyValue = (ignoreClose = false): void => {
-        if (props.autoApply) {
-            const isTimeValid = isValidTime(internalModelValue.value);
+        if (rootProps.autoApply) {
+            const isTimeValid = isValidTime(modelValue.value);
 
             if (isTimeValid && validateBeforeEmit()) {
-                if (defaultedRange.value.enabled && Array.isArray(internalModelValue.value)) {
-                    if (defaultedRange.value.partialRange || internalModelValue.value.length === 2) {
+                if (range.value.enabled && Array.isArray(modelValue.value)) {
+                    if (range.value.partialRange || modelValue.value.length === 2) {
                         emitOnAutoApply(ignoreClose);
                     }
                 } else {
@@ -419,68 +302,60 @@
         }
     };
 
-    /**
-     * Clears the internally stored values. This is different from clearValue since it does not emit v-model
-     * update, just clears internal data
-     */
     const clearInternalValues = (): void => {
-        if (!defaultedTextInput.value.enabled) {
-            internalModelValue.value = null;
+        if (!textInput.value.enabled) {
+            modelValue.value = null;
         }
     };
 
-    /**
-     * Closes the menu and clears the internal data
-     */
     const closeMenu = (fromClickAway = false): void => {
-        if (fromClickAway && internalModelValue.value && defaultedConfig.value.setDateOnMenuClose) {
+        if (fromClickAway && modelValue.value && config.value.setDateOnMenuClose) {
             selectDate();
         }
-        if (!defaultedInline.value.enabled) {
+        if (!inline.value.enabled) {
             if (isOpen.value) {
                 isOpen.value = false;
-                xCorrect.value = false;
-                setMenuFocused(false);
-                setShiftKey(false);
+                setState('menuFocused', false);
+                setState('shiftKeyInMenu', false);
                 clearArrowNav();
-                emit('closed');
+                rootEmit('closed');
                 if (inputValue.value) {
                     parseExternalModelValue(modelValueRef.value);
                 }
             }
             clearInternalValues();
-            emit('blur');
-            dpMenuRef.value?.$el?.remove();
+            rootEmit('blur');
         }
     };
 
-    const setInputDate = (date: Date | Date[] | null, submit?: boolean, tabbed = false): void => {
+    const setInputDate = (date: InputParsedDate, submit?: boolean, tabbed = false): void => {
         if (!date) {
-            internalModelValue.value = null;
+            modelValue.value = null;
             return;
         }
         const validDate = Array.isArray(date) ? !date.some((d) => !validateDate(d)) : validateDate(date);
-        const validTime = isValidTime(date);
+        const validTime = isValidTime(date as Date[]);
         if (validDate && validTime) {
             isTextInputDate.value = true;
-            internalModelValue.value = date;
+            modelValue.value = date as Date[];
             if (submit) {
                 shouldFocusNext.value = tabbed;
                 selectDate();
-                emit('text-submit');
-            } else if (props.autoApply) {
-                autoApplyValue(true);
+                rootEmit('text-submit');
+            } else if (rootProps.autoApply) {
+                autoApplyValue();
             }
             nextTick().then(() => {
                 isTextInputDate.value = false;
             });
         } else {
-            emit('invalid-date', date);
+            rootEmit('invalid-date', date as Date);
         }
     };
 
+    // todo move
     const timeUpdate = (): void => {
-        if (props.autoApply && isValidTime(internalModelValue.value)) {
+        if (rootProps.autoApply && isValidTime(modelValue.value)) {
             emitModelValue();
         }
         updateTextInputWithDateTimeValue();
@@ -492,31 +367,31 @@
     };
 
     const updateInternalModelValue = (value: Date | Date[]): void => {
-        internalModelValue.value = value;
+        modelValue.value = value;
     };
 
     const handleInputFocus = () => {
-        if (defaultedTextInput.value.enabled) {
+        if (textInput.value.enabled) {
             isInputFocused.value = true;
             formatInputValue();
         }
 
-        emit('focus');
+        rootEmit('focus');
     };
 
     const handleBlur = () => {
-        if (defaultedTextInput.value.enabled) {
+        if (textInput.value.enabled) {
             isInputFocused.value = false;
-            parseExternalModelValue(props.modelValue);
+            parseExternalModelValue(rootProps.modelValue);
             if (shouldFocusNext.value) {
                 const el = findNextFocusableElement(pickerWrapperRef.value!, shiftKeyActive.value);
                 el?.focus();
             }
         }
-        emit('blur');
+        rootEmit('blur');
     };
 
-    const setMonthYear = (value: MonthYearOpt) => {
+    const setMonthYear = (value: Partial<MonthModel>) => {
         if (dpMenuRef.value) {
             dpMenuRef.value.updateMonthYear(0, {
                 month: getNumVal(value.month) as number,
@@ -526,7 +401,7 @@
     };
 
     const parseModel = (value?: ModelValue) => {
-        parseExternalModelValue(value ?? props.modelValue);
+        parseExternalModelValue(value ?? rootProps.modelValue);
     };
 
     const switchView = (view: MenuView, instance?: number) => {
@@ -534,7 +409,7 @@
     };
 
     const clickOutside = (validateBeforeEmit: () => boolean, evt: PointerEvent) => {
-        if (defaultedConfig.value.onClickOutside) return defaultedConfig.value.onClickOutside(validateBeforeEmit, evt);
+        if (config.value.onClickOutside) return config.value.onClickOutside(validateBeforeEmit, evt);
         return closeMenu(true);
     };
 
@@ -544,9 +419,9 @@
 
     const getDpWrapMenuRef = () => dpWrapMenuRef;
 
-    onClickOutside(dpWrapMenuRef, inputRef as unknown as MaybeElementRef, (evt: PointerEvent) =>
-        clickOutside(validateBeforeEmit, evt),
-    );
+    onClickOutside(dpWrapMenuRef, (evt: PointerEvent) => clickOutside(validateBeforeEmit, evt), {
+        ignore: [inputRef as any],
+    });
 
     defineExpose({
         closeMenu,

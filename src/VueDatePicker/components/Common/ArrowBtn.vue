@@ -1,6 +1,6 @@
 <template>
     <button
-        ref="elRef"
+        ref="arrow-btn"
         type="button"
         :data-dp-element="elName"
         class="dp__btn dp--arrow-btn-nav"
@@ -17,18 +17,12 @@
 </template>
 
 <script lang="ts" setup>
-    import { onMounted, ref, type Ref } from 'vue';
-    import { checkKeyDown } from '@/utils/util';
-
-    defineOptions({
-        compatConfig: {
-            MODE: 3,
-        },
-    });
+    import { onMounted, type Ref, useTemplateRef } from 'vue';
+    import { useUtils } from '@/composables';
 
     const emit = defineEmits<{
-        'activate': []
-        'set-ref': [i: Ref<HTMLElement | null>]
+        activate: [];
+        'set-ref': [i: Ref<HTMLElement | null>];
     }>();
 
     defineProps<{
@@ -37,7 +31,8 @@
         disabled: boolean;
     }>();
 
-    const elRef = ref<HTMLElement | null>(null);
+    const elRef = useTemplateRef('arrow-btn');
+    const { checkKeyDown } = useUtils();
 
-    onMounted(() => emit('set-ref', elRef)); // eslint-disable-line vue/no-ref-as-operand
+    onMounted(() => emit('set-ref', elRef));
 </script>

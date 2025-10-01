@@ -1,9 +1,9 @@
 <template>
     <div
-        :id="uid ? `dp-menu-${uid}` : undefined"
-        ref="dpMenuRef"
-        :tabindex="defaultedInline.enabled ? undefined : '0'"
-        :role="defaultedInline.enabled ? undefined : 'dialog'"
+        :id="rootProps.uid ? `dp-menu-${rootProps.uid}` : undefined"
+        ref="dp-menu"
+        :tabindex="inline.enabled ? undefined : '0'"
+        :role="inline.enabled ? undefined : 'dialog'"
         :aria-label="ariaLabels?.menu"
         :class="dpMenuClass"
         :style="{ '--dp-arrow-left': arrowPos }"
@@ -11,19 +11,24 @@
         @click="handleDpMenuClick"
         @keydown="onKeyDown"
     >
-        <div v-if="((disabled || readonly) && defaultedInline.enabled) || loading" :class="disabledReadonlyOverlay">
-            <div v-if="loading" class="dp--menu-load-container">
+        <div
+            v-if="((rootProps.disabled || rootProps.readonly) && inline.enabled) || rootProps.loading"
+            :class="disabledReadonlyOverlay"
+        >
+            <div v-if="rootProps.loading" class="dp--menu-load-container">
                 <span class="dp--menu-loader"></span>
             </div>
         </div>
         <div v-if="$slots['menu-header']" class="dp--menu-header"><slot name="menu-header" /></div>
-        <div v-if="!defaultedInline.enabled && !teleportCenter" :class="arrowClass"></div>
+        <slot name="arrow" />
         <div
-            ref="innerMenuRef"
+            ref="inner-menu"
             :class="{
-                dp__menu_content_wrapper: presetDates?.length || !!$slots['left-sidebar'] || !!$slots['right-sidebar'],
+                dp__menu_content_wrapper:
+                    rootProps.presetDates?.length || !!$slots['left-sidebar'] || !!$slots['right-sidebar'],
                 'dp--menu-content-wrapper-collapsed':
-                    collapse && (presetDates?.length || !!$slots['left-sidebar'] || !!$slots['right-sidebar']),
+                    collapse &&
+                    (rootProps.presetDates?.length || !!$slots['left-sidebar'] || !!$slots['right-sidebar']),
             }"
             :data-dp-mobile="isMobile"
             :style="{ '--dp-menu-width': `${calendarWidth}px` }"
@@ -32,11 +37,11 @@
                 <slot name="left-sidebar" v-bind="getSidebarProps" />
             </div>
             <div
-                v-if="presetDates.length"
+                v-if="rootProps.presetDates.length"
                 :class="{ 'dp--preset-dates-collapsed': collapse, 'dp--preset-dates': true }"
                 :data-dp-mobile="isMobile"
             >
-                <template v-for="(preset, i) in presetDates" :key="i">
+                <template v-for="(preset, i) in rootProps.presetDates" :key="i">
                     <template v-if="preset.slot">
                         <slot
                             :name="preset.slot"
@@ -61,34 +66,21 @@
                     </template>
                 </template>
             </div>
-            <div ref="calendarWrapperRef" class="dp__instance_calendar" role="document">
+            <div class="dp__instance_calendar" role="document">
                 <component
                     :is="displayComponent"
-                    ref="dynCmpRef"
-                    v-bind="baseProps"
+                    ref="dyn-cmp"
                     :flow-step="flowStep"
+                    :collapse="collapse"
+                    :no-overlay-focus="noOverlayFocus"
+                    :menu-wrap-ref="dpMenuRef"
                     @mount="childMount"
                     @update-flow-step="updateFlowStep"
                     @reset-flow="resetFlow"
                     @focus-menu="focusMenu"
                     @select-date="$emit('select-date')"
-                    @date-update="$emit('date-update', $event)"
-                    @tooltip-open="$emit('tooltip-open', $event)"
-                    @tooltip-close="$emit('tooltip-close', $event)"
                     @auto-apply="$emit('auto-apply', $event)"
-                    @range-start="$emit('range-start', $event)"
-                    @range-end="$emit('range-end', $event)"
-                    @invalid-fixed-range="$emit('invalid-fixed-range', $event)"
                     @time-update="$emit('time-update')"
-                    @am-pm-change="$emit('am-pm-change', $event)"
-                    @time-picker-open="$emit('time-picker-open', $event)"
-                    @time-picker-close="onTimePickerClose"
-                    @recalculate-position="recalculatePosition"
-                    @update-month-year="$emit('update-month-year', $event)"
-                    @auto-apply-invalid="$emit('auto-apply-invalid', $event)"
-                    @invalid-date="$emit('invalid-date', $event)"
-                    @overlay-toggle="$emit('overlay-toggle', $event)"
-                    @update:internal-model-value="$emit('update:internal-model-value', $event)"
                 >
                     <template v-for="(slot, i) in sharedSlots" #[slot]="args" :key="i">
                         <slot :name="slot" v-bind="{ ...args }" />
@@ -103,13 +95,11 @@
             </div>
         </div>
         <ActionRow
-            v-if="!autoApply || defaultedConfig.keepActionRow"
+            v-if="!rootProps.autoApply || config.keepActionRow"
             :menu-mount="menuMount"
-            v-bind="baseProps"
             :calendar-width="calendarWidth"
             @close-picker="$emit('close-picker')"
             @select-date="$emit('select-date')"
-            @invalid-select="$emit('invalid-select')"
             @select-now="selectCurrentDate"
         >
             <template v-for="(slot, i) in actionSlots" #[slot]="args" :key="i">
@@ -120,49 +110,40 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, onMounted, onUnmounted, ref, toValue, useSlots } from 'vue';
+    import { computed, onMounted, onUnmounted, ref, toValue, useSlots, useTemplateRef } from 'vue';
+    import { unrefElement } from '@vueuse/core';
 
     import ActionRow from '@/components/ActionRow.vue';
-
-    import { mapSlots, useArrowNavigation, useState, useFlow, useDefaults } from '@/composables';
-    import { checkKeyDown, checkStopPropagation, getElWithin, unrefElement } from '@/utils/util';
-    import { AllProps } from '@/props';
-
     import MonthPicker from '@/components/MonthPicker/MonthPicker.vue';
     import YearPicker from '@/components/YearPicker/YearPicker.vue';
     import TimePickerSolo from '@/components/TimePicker/TimePickerSolo.vue';
     import DatePicker from '@/components/DatePicker/DatePicker.vue';
     import QuarterPicker from '@/components/QuarterPicker/QuarterPicker.vue';
 
-    import type { DynamicClass, MenuView, InternalModuleValue, MenuExposedFn, MonthModel } from '@/interfaces';
-    import type { MaybeRefOrGetter, PropType } from 'vue';
+    import { useSlotsMapper, useArrowNavigation, useFlow, useResponsive, useContext, useUtils } from '@/composables';
     import { ArrowDirection, EventKey } from '@/constants';
-    import { useResponsive } from '@/composables/responsive';
 
-    defineOptions({
-        compatConfig: {
-            MODE: 3,
-        },
-    });
+    import type { MaybeRefOrGetter } from 'vue';
+    import type { DynamicClass, MenuExposedFn, MenuView, MonthModel } from '@/types';
 
     const emit = defineEmits([
         'close-picker',
         'select-date',
         'auto-apply',
-        'time-update',
+        // 'time-update',
         'flow-step',
         'update-month-year',
-        'invalid-select',
-        'update:internal-model-value',
-        'recalculate-position',
-        'invalid-fixed-range',
-        'tooltip-open',
-        'tooltip-close',
-        'time-picker-open',
-        'time-picker-close',
-        'am-pm-change',
-        'range-start',
-        'range-end',
+        // 'invalid-select',
+        // 'update:internal-model-value',
+        // 'invalid-fixed-range',
+        // 'tooltip-open',
+        // 'tooltip-close',
+        // 'time-picker-open',
+        // 'time-picker-close',
+        // 'am-pm-change',
+        // 'range-start',
+        // 'range-end',
+        'time-update', // todo
         'auto-apply-invalid',
         'date-update',
         'invalid-date',
@@ -170,66 +151,59 @@
         'menu-blur',
     ]);
 
-    const props = defineProps({
-        ...AllProps,
-        shadow: { type: Boolean as PropType<boolean>, default: false },
-        openOnTop: { type: Boolean as PropType<boolean>, default: false },
-        internalModelValue: { type: [Date, Array] as PropType<InternalModuleValue>, default: null },
-        noOverlayFocus: { type: Boolean as PropType<boolean>, default: false },
-        collapse: { type: Boolean as PropType<boolean>, default: false },
-        getInputRect: { type: Function as PropType<() => DOMRect>, default: () => ({}) },
-        isTextInputDate: { type: Boolean as PropType<boolean>, default: false },
-    });
+    const props = defineProps<{
+        collapse: boolean;
+        noOverlayFocus: boolean;
+        getInputRect: () => DOMRect;
+    }>();
 
-    const dpMenuRef = ref<HTMLElement | null>(null);
-
-    const baseProps = computed(() => {
-        const { openOnTop: _, ...initProps } = props;
-        return {
-            ...initProps,
-            isMobile: isMobile.value,
-            flowStep: flowStep.value,
-            menuWrapRef: dpMenuRef.value,
-        };
-    });
-
-    const { setMenuFocused, setShiftKey, control } = useState();
+    // const { setMenuFocused, setShiftKey, control } = useState();
     const slots = useSlots();
-    const { defaultedTextInput, defaultedInline, defaultedConfig, defaultedUI, handleEventPropagation } =
-        useDefaults(props);
-    const { isMobile } = useResponsive(defaultedConfig, props.shadow);
+    const {
+        state,
+        rootProps,
+        defaults: { textInput, inline, config, ui, ariaLabels },
+        setState,
+    } = useContext();
+    const { isMobile } = useResponsive(config);
+    const { mapSlots } = useSlotsMapper();
+    const { handleEventPropagation, getElWithin, checkStopPropagation, checkKeyDown } = useUtils();
+    const { arrowRight, arrowLeft, arrowDown, arrowUp } = useArrowNavigation();
 
-    const calendarWrapperRef = ref(null);
+    const innerMenuRef = useTemplateRef('inner-menu');
+    const dpMenuRef = useTemplateRef('dp-menu');
+    const dynCmpRef = useTemplateRef<any>('dyn-cmp');
+
     const calendarWidth = ref(0);
-    const innerMenuRef = ref(null);
     const menuMount = ref(false);
-    const dynCmpRef = ref<any>(null);
     const isMenuActive = ref(false);
+
+    const { flowStep, updateFlowStep, childMount, resetFlow, handleFlow } = useFlow(dynCmpRef);
 
     const stopDefault = (event: Event) => {
         isMenuActive.value = true;
-        if (defaultedConfig.value.allowPreventDefault) {
+        if (config.value.allowPreventDefault) {
             event.preventDefault();
         }
-        checkStopPropagation(event, defaultedConfig.value, true);
+        checkStopPropagation(event, config.value, true);
     };
 
     onMounted(() => {
-        if (!props.shadow) {
-            menuMount.value = true;
-            getCalendarWidth();
-            window.addEventListener('resize', getCalendarWidth);
+        menuMount.value = true;
+        getCalendarWidth();
+        window.addEventListener('resize', getCalendarWidth);
 
-            const menu = unrefElement(dpMenuRef);
-            if (menu && !defaultedTextInput.value.enabled && !defaultedInline.value.enabled) {
-                setMenuFocused(true);
-                focusMenu();
-            }
-            if (menu) {
-                menu.addEventListener('pointerdown', stopDefault);
-                menu.addEventListener('mousedown', stopDefault);
-            }
+        const menu = unrefElement(dpMenuRef);
+        if (menu && !textInput.value.enabled && !inline.value.enabled) {
+            setState('menuFocused', true);
+            focusMenu();
         }
+
+        if (menu) {
+            menu.addEventListener('pointerdown', stopDefault);
+            menu.addEventListener('mousedown', stopDefault);
+        }
+
         document.addEventListener('mousedown', handleClickOutside);
     });
 
@@ -252,19 +226,17 @@
         }
     };
 
-    const { arrowRight, arrowLeft, arrowDown, arrowUp } = useArrowNavigation();
-    const { flowStep, updateFlowStep, childMount, resetFlow, handleFlow } = useFlow(props, emit, dynCmpRef);
-
     const displayComponent = computed(() => {
-        if (props.monthPicker) return MonthPicker;
-        if (props.yearPicker) return YearPicker;
-        if (props.timePicker) return TimePickerSolo;
-        if (props.quarterPicker) return QuarterPicker;
+        if (rootProps.monthPicker) return MonthPicker;
+        if (rootProps.yearPicker) return YearPicker;
+        if (rootProps.timePicker) return TimePickerSolo;
+        if (rootProps.quarterPicker) return QuarterPicker;
         return DatePicker;
     });
 
+    // todo
     const arrowPos = computed(() => {
-        if (defaultedConfig.value.arrowLeft) return defaultedConfig.value.arrowLeft;
+        if (config.value.arrowLeft) return config.value.arrowLeft;
         const menuRect = dpMenuRef.value?.getBoundingClientRect();
         const inputRect = props.getInputRect();
         if (inputRect?.width < calendarWidth?.value && inputRect?.left <= (menuRect?.left ?? 0)) {
@@ -284,50 +256,44 @@
 
     const getSidebarProps = computed(() => dynCmpRef.value?.getSidebarProps() || {});
 
-    const recalculatePosition = () => {
-        if (props.openOnTop) {
-            emit('recalculate-position');
-        }
-    };
-
     const actionSlots = mapSlots(slots, 'action');
 
     const sharedSlots = computed((): string[] => {
-        if (props.monthPicker || props.yearPicker) return mapSlots(slots, 'monthYear');
-        if (props.timePicker) return mapSlots(slots, 'timePicker');
+        if (rootProps.monthPicker || rootProps.yearPicker) return mapSlots(slots, 'monthYear');
+        if (rootProps.timePicker) return mapSlots(slots, 'timePicker');
         return mapSlots(slots, 'shared');
     });
 
-    const arrowClass = computed(() => (!props.openOnTop ? 'dp__arrow_top' : 'dp__arrow_bottom'));
+    // const arrowClass = computed(() => (!props.openOnTop ? 'dp__arrow_top' : 'dp__arrow_bottom'));
 
     const disabledReadonlyOverlay = computed(() => ({
-        dp__menu_disabled: props.disabled,
-        dp__menu_readonly: props.readonly,
-        'dp-menu-loading': props.loading,
+        dp__menu_disabled: rootProps.disabled,
+        dp__menu_readonly: rootProps.readonly,
+        'dp-menu-loading': rootProps.loading,
     }));
 
     const dpMenuClass = computed(
         (): DynamicClass => ({
             dp__menu: true,
-            dp__menu_index: !defaultedInline.value.enabled,
-            dp__relative: defaultedInline.value.enabled,
-            ...(defaultedUI.value.menu ?? {}),
+            dp__menu_index: !inline.value.enabled,
+            dp__relative: inline.value.enabled,
+            ...(ui.value.menu ?? {}),
         }),
     );
 
     const handleDpMenuClick = (ev: Event) => {
-        checkStopPropagation(ev, defaultedConfig.value, true);
+        checkStopPropagation(ev, config.value, true);
     };
 
     const handleEsc = (ev: KeyboardEvent): void => {
-        if (props.escClose) {
+        if (config.value.escClose) {
             emit('close-picker');
-            handleEventPropagation(ev);
+            handleEventPropagation(ev, config.value);
         }
     };
 
     const handleArrowKey = (arrow: ArrowDirection): void => {
-        if (props.arrowNavigation) {
+        if (rootProps.arrowNavigation) {
             if (arrow === ArrowDirection.up) return arrowUp();
             if (arrow === ArrowDirection.down) return arrowDown();
             if (arrow === ArrowDirection.left) return arrowLeft();
@@ -340,19 +306,19 @@
     };
 
     const checkShiftKey = (ev: KeyboardEvent) => {
-        setShiftKey(ev.shiftKey);
-        if (!props.disableMonthYearSelect && ev.code === EventKey.tab) {
-            if ((ev.target as HTMLElement).classList.contains('dp__menu') && control.value.shiftKeyInMenu) {
+        setState('shiftKeyInMenu', ev.shiftKey);
+        if (!rootProps.hideMonthYearSelect && ev.code === EventKey.tab) {
+            if ((ev.target as HTMLElement).classList.contains('dp__menu') && state.shiftKeyInMenu) {
                 ev.preventDefault();
-                checkStopPropagation(ev, defaultedConfig.value, true);
+                checkStopPropagation(ev, config.value, true);
                 emit('close-picker');
             }
         }
     };
 
+    // todo
     const onTimePickerClose = () => {
         focusMenu();
-        emit('time-picker-close');
     };
 
     const closeOverlays = (instance: number) => {
@@ -435,7 +401,7 @@
     };
 
     const handleClickOutside = (event: MouseEvent) => {
-        if (defaultedInline.value.enabled && !defaultedInline.value.input) {
+        if (inline.value.enabled && !inline.value.input) {
             const activeClick = dpMenuRef.value?.contains(event.target as HTMLElement);
             if (!activeClick && isMenuActive.value) {
                 isMenuActive.value = false;
@@ -451,7 +417,7 @@
     defineExpose({
         updateMonthYear,
         switchView,
-        handleFlow,
         onValueCleared,
+        handleFlow,
     });
 </script>

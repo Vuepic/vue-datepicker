@@ -30,7 +30,7 @@ import TimePickerSolo from '@/components/TimePicker/TimePickerSolo.vue';
 
 import { getWeekFromDate, resetDateTime } from '@/utils/date-utils';
 
-import type { TimeObj, ICalendarDate, SixWeekMode } from '@/interfaces';
+import type { TimeObj, CalendarDate, SixWeekMode } from '@/interfaces';
 import MonthPicker from '@/components/MonthPicker/MonthPicker.vue';
 import { clickCalendarDate, clickSelectBtn, openMenu } from '../../utils';
 
@@ -597,15 +597,15 @@ describe('Logic connection', () => {
     });
 
     it('Should display modified calendar', async () => {
-        const mapDays = (week: ICalendarDate) => {
+        const mapDays = (week: CalendarDate) => {
             return week.days.map((day) => {
                 day.classData['custom-class'] = true;
                 return day;
             });
         };
 
-        const hasFifteenth = (week: ICalendarDate) => week.days.some((day) => day.text === 15);
-        const mapDates = (dates: ICalendarDate[]) => {
+        const hasFifteenth = (week: CalendarDate) => week.days.some((day) => day.text === 15);
+        const mapDates = (dates: CalendarDate[]) => {
             return dates
                 .filter((week) => hasFifteenth(week))
                 .map((week) => ({
@@ -675,7 +675,7 @@ describe('Logic connection', () => {
             return { jan, feb, mar, apr, may, jun };
         };
 
-        const ValidateAprToJun = (apr: ICalendarDate[], may: ICalendarDate[], jun: ICalendarDate[]) => {
+        const ValidateAprToJun = (apr: CalendarDate[], may: CalendarDate[], jun: CalendarDate[]) => {
             expect(apr[0].days[0].text).toEqual(29);
             expect(apr[5].days[6].text).toEqual(9);
             expect(may).toHaveLength(6);
@@ -684,7 +684,7 @@ describe('Logic connection', () => {
             expect(jun).toHaveLength(6);
         };
 
-        const validateFairAndCenter = (months: { [key: string]: ICalendarDate[] }) => {
+        const validateFairAndCenter = (months: { [key: string]: CalendarDate[] }) => {
             const { jan, feb, mar, apr, may, jun } = months;
             expect(jan).toHaveLength(6);
             expect(jan[0].days[0].text).toEqual(28);

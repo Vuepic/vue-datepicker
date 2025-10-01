@@ -1,6 +1,6 @@
 <template>
     <div>
-        <slot v-if="$slots['top-extra']" name="top-extra" :value="internalModelValue" />
+        <slot v-if="$slots['top-extra']" name="top-extra" :value="modelValue" />
         <template v-if="$slots['month-year']">
             <slot
                 name="month-year"
@@ -13,10 +13,9 @@
         <template v-else>
             <selection-overlay
                 :items="groupedYears"
-                :is-last="autoApply && !defaultedConfig.keepActionRow"
-                :height="defaultedConfig.modeHeight"
-                :config="config"
-                :no-overlay-focus="Boolean(noOverlayFocus || textInput)"
+                :is-last="rootProps.autoApply && !config.keepActionRow"
+                :height="config.modeHeight"
+                :no-overlay-focus="Boolean(noOverlayFocus || rootProps.textInput)"
                 :focus-value="focusYear"
                 type="year"
                 use-relative
@@ -34,30 +33,22 @@
 <script lang="ts" setup>
     import SelectionOverlay from '@/components/Common/SelectionOverlay.vue';
 
-    import { PickerBaseProps } from '@/props';
-    import { useYearPicker } from '@/components/YearPicker/year-picker';
-    import { useDefaults } from '@/composables';
+    import { useYearPicker, type YearPickerEmits } from '@/components/YearPicker/useYearPicker.ts';
 
-    const emit = defineEmits([
-        'update:internal-model-value',
-        'reset-flow',
-        'range-start',
-        'range-end',
-        'auto-apply',
-        'update-month-year',
-    ]);
-    const props = defineProps({
-        ...PickerBaseProps,
-    });
+    import { useContext } from '@/composables';
+    import type { BaseProps } from '@/types';
 
-    defineOptions({
-        compatConfig: {
-            MODE: 3,
-        },
-    });
+    const emit = defineEmits<YearPickerEmits>();
 
-    const { groupedYears, modelValue, focusYear, selectYear, setHoverValue } = useYearPicker(props, emit);
-    const { defaultedConfig } = useDefaults(props);
+    const props = defineProps<BaseProps>();
+
+    const {
+        modelValue,
+        defaults: { config },
+        rootProps,
+    } = useContext();
+
+    const { groupedYears, focusYear, selectYear, setHoverValue } = useYearPicker(props, emit);
 
     const getSidebarProps = () => {
         return {
