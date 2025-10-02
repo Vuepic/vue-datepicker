@@ -35,7 +35,7 @@
   "scripts": {
     "dev": "vite",
     "clean": "rimraf ./dist",
-    "build": "run-s clean type-check build:lib build:css",
+    "build": "run-s clean type-check build:es build:css",
     "type-check": "vue-tsc --build",
     "build:es": "cross-env NODE_ENV=production vite build --mode production",
     "build:css": "cross-env NODE_ENV=production node_modules/.bin/sass src/VueDatePicker/style/main.scss dist/main.css --style compressed",
