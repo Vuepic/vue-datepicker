@@ -154,7 +154,7 @@ export const useDateUtils = () => {
             return Object.fromEntries(
                 (['hours', 'minutes', 'seconds'] as TimeKey[]).map((timeType) => {
                     if (timeType === type) return [timeType, value];
-                    return [timeType, !Number.isNaN(+time[timeType]) ? +time[timeType] : undefined];
+                    return [timeType, Number.isNaN(+time[timeType]) ? undefined : +time[timeType]];
                 }),
             );
         }

@@ -274,7 +274,7 @@
             dp__menu: true,
             dp__menu_index: !inline.value.enabled,
             dp__relative: inline.value.enabled,
-            ...(ui.value.menu ?? {}),
+            ...ui.value.menu,
         }),
     );
 

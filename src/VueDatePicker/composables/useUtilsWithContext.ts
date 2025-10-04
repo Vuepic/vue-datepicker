@@ -16,7 +16,7 @@ export const useUtilsWithContext = () => {
 
     const getYears = (): SelectItem[] => {
         const years: SelectItem[] = [];
-        for (let year = +rootProps.yearRange![0]; year <= +rootProps.yearRange![1]; year++) {
+        for (let year = +rootProps.yearRange[0]; year <= +rootProps.yearRange[1]; year++) {
             years.push({ value: +year, text: formatYear(year) });
         }
         return rootProps.reverseYears ? years.reverse() : years;

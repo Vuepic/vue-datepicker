@@ -63,7 +63,7 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
     const getMultiCalendarsCount = (option?: boolean | number | string) => {
         if (!option) return 0;
         if (typeof option === 'boolean') return option ? 2 : 0;
-        return +option >= 2 ? +option : 2;
+        return Math.max(+option, 2);
     };
 
     const datesArrToMap = (datesArr: (Date | string | number)[]): Map<string, Date | null> => {
@@ -97,22 +97,22 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
     const startTime = computed(() => getDefaultStartTime());
 
     const ariaLabels = computed(() => {
-        return { ...defaultAriaLabels, ...(props.ariaLabels ?? {}) };
+        return { ...defaultAriaLabels, ...props.ariaLabels };
     });
 
     const filters = computed(() => {
-        return { ...defaultFilters, ...(props.filters ?? {}) };
+        return { ...defaultFilters, ...props.filters };
     });
 
     const transitions = computed(() => {
         if (typeof props.transitions === 'boolean') {
             return props.transitions ? defaultTransitions : (false as unknown as TransitionsConfig);
         }
-        return { ...defaultTransitions, ...(props.transitions ?? {}) };
+        return { ...defaultTransitions, ...props.transitions };
     });
 
     const actionRow = computed(() => {
-        return { ...defaultActionRow, ...(props.actionRow ?? {}) };
+        return { ...defaultActionRow, ...props.actionRow };
     });
 
     const textInput = computed(() => {
@@ -121,7 +121,7 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
                 ...defaultTextInputOptions,
                 format: getDefaultPattern(),
                 pattern: getDefaultPattern(),
-                ...(props.textInput ?? {}),
+                ...props.textInput,
                 enabled: true,
             };
         }
@@ -136,23 +136,23 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
     const inline = computed(() => {
         const defaultOptions = { input: false };
         if (typeof props.inline === 'object') {
-            return { ...defaultOptions, ...(props.inline ?? {}), enabled: true };
+            return { ...defaultOptions, ...props.inline, enabled: true };
         }
         return {
-            enabled: !!props.inline,
+            enabled: props.inline,
             ...defaultOptions,
         };
     });
 
     const config = computed((): Config => {
-        return { ...defaultConfig, ...(props.config ?? {}) };
+        return { ...defaultConfig, ...props.config };
     });
 
     const highlight = computed(() => {
         if (typeof props.highlight === 'function') return props.highlight;
         return {
             ...defaultHighlightOptions,
-            ...(props.highlight ?? {}),
+            ...props.highlight,
         };
     });
 
@@ -239,7 +239,7 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
                     const value = props.ui[key];
                     if (key === 'dayClass') return [key, props.ui[key]];
                     const val = (
-                        typeof props.ui![key] === 'string'
+                        typeof props.ui[key] === 'string'
                             ? { [value as string]: true }
                             : Object.fromEntries((value as string[]).map((k) => [k, true]))
                     ) as Record<string, boolean>;
@@ -254,7 +254,7 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
     const formats = computed(() => {
         return {
             ...defaultFormats,
-            ...(props.formats ?? {}),
+            ...props.formats,
             input: props.formats?.input ?? getDefaultPattern(),
             preview: props.formats?.preview ?? getDefaultPattern(),
         };
@@ -268,7 +268,7 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
     });
 
     const timeConfig = computed(() => {
-        return { ...defaultTime, ...(props.timeConfig ?? {}) };
+        return { ...defaultTime, ...props.timeConfig };
     });
 
     const flow = computed(() => {

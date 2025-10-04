@@ -16,6 +16,8 @@ export type DateValue = Date | string | number;
 
 export type MaybeDate = DateValue | null | undefined;
 
+export type OptionalDate = Date | string | null;
+
 export type ModelValue =
     | Date
     | Date[]

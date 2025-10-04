@@ -402,7 +402,7 @@ export const useCalendarClass = () => {
             ...sharedClasses(day),
             ...getModeClasses(day),
             [ui.value.dayClass ? ui.value.dayClass(day.value, modelValue.value) : '']: true,
-            ...(ui.value.calendarCell ?? {}),
+            ...ui.value.calendarCell,
         };
     };
 

@@ -17,7 +17,7 @@ import {
 } from 'date-fns';
 
 import { useContext, useDateUtils, useUtils } from '@/composables';
-import type { DisabledTimesFn, InternalModelValue, MaybeDate, TimeModel } from '@/types';
+import type { DisabledTimesFn, InternalModelValue, MaybeDate, OptionalDate, TimeModel } from '@/types';
 
 export const useValidation = () => {
     const {
@@ -72,8 +72,8 @@ export const useValidation = () => {
         const dateYear = getYear(date);
 
         const outOfYearRange =
-            dateYear < +(rootProps.yearRange![0] as string | number) ||
-            dateYear > +(rootProps.yearRange![1] as string | number);
+            dateYear < +(rootProps.yearRange[0] as string | number) ||
+            dateYear > +(rootProps.yearRange[1] as string | number);
 
         return !(
             aboveMax ||
@@ -157,7 +157,7 @@ export const useValidation = () => {
     const isValidYear = (val: MaybeDate) => {
         if (val) {
             const activeYear = getYear(val);
-            return activeYear >= +rootProps.yearRange![0] && activeYear <= rootProps.yearRange![1];
+            return activeYear >= +rootProps.yearRange[0] && activeYear <= rootProps.yearRange[1];
         }
         return true;
     };
@@ -288,7 +288,7 @@ export const useValidation = () => {
         return checkDisabledTimes(date, isValid);
     };
 
-    const isMonthWithinRange = (date: Date | string | null): boolean => {
+    const isMonthWithinRange = (date: OptionalDate): boolean => {
         if (!rootProps.monthPicker) return true;
         let valid = true;
         const dateToCompare = getDate(resetDate(date));
@@ -355,7 +355,7 @@ export const useValidation = () => {
 
     const checkTimeMinMax = (
         minOrMax: TimeModel | undefined,
-        dateCompare: Date | string | null,
+        dateCompare: OptionalDate,
         map: 'min' | 'max',
         selectedDateTime: Date | Date[],
         isValid: boolean,
@@ -376,7 +376,7 @@ export const useValidation = () => {
     const getDateForCompareValidation = (
         minOrMax: TimeModel | undefined,
         selected: Date,
-        minOrMaxDate: Date | string | null,
+        minOrMaxDate: OptionalDate,
     ) => {
         return minOrMax ? setDateTimeFromObj(minOrMax, selected) : getDate(minOrMaxDate ?? selected);
     };

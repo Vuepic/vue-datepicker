@@ -592,12 +592,12 @@ export const useDatePicker = (
         if (!range.value.enabled && !multiDates.value.enabled) {
             modelValue.value = dateInTz;
         } else if (modelValue.value && Array.isArray(modelValue.value) && modelValue.value[0]) {
-            if (!multiDates.value.enabled) {
+            if (multiDates.value.enabled) {
+                modelValue.value = [...modelValue.value, dateInTz];
+            } else {
                 modelValue.value = isDateBefore(dateInTz, modelValue.value[0])
                     ? [dateInTz, modelValue.value[0]]
                     : [modelValue.value[0], dateInTz];
-            } else {
-                modelValue.value = [...modelValue.value, dateInTz];
             }
         } else {
             modelValue.value = [dateInTz];

@@ -21,7 +21,7 @@ export const useUtils = () => {
     const checkHighlightMonth = (defaultedHighlight: HighlightConfig | HighlightFn, month: number, year: number) => {
         return typeof defaultedHighlight === 'function'
             ? defaultedHighlight({ month: month, year })
-            : !!defaultedHighlight.months.find((value) => value.month === month && value.year === year);
+            : defaultedHighlight.months.some((value) => value.month === month && value.year === year);
     };
 
     const checkHighlightYear = (defaultedHighlight: HighlightConfig | HighlightFn, year: number) => {
@@ -145,7 +145,7 @@ export const useUtils = () => {
     const getGroupedList = (items: SelectItem[]): SelectItem[][] => {
         const list = [];
         const setList = (listItems: SelectItem[]) => {
-            return listItems.filter((item) => item);
+            return listItems.filter((item) => Boolean(item));
         };
         for (let i = 0; i < items.length; i += 3) {
             const listItems = [items[i]!, items[i + 1]!, items[i + 2]!];
@@ -206,7 +206,7 @@ export const useUtils = () => {
     };
 
     const isTouchDevice = () => {
-        return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        return 'ontouchstart' in globalThis || navigator.maxTouchPoints > 0;
     };
 
     const hoursToAmPmHours = (index: number): number => {

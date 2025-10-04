@@ -139,7 +139,7 @@
             dp__input_invalid: typeof inputAttrs.value.state === 'boolean' ? !inputAttrs.value.state : false,
             dp__input_focus: isFocused.value || props.isMenuOpen,
             dp__input_reg: !textInput.value.enabled,
-            ...(ui.value.input ?? {}),
+            ...ui.value.input,
         }),
     );
 
