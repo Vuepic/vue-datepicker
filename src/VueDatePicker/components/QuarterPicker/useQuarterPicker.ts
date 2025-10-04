@@ -55,7 +55,7 @@ export const useQuarterPicker = (props: BaseProps, emit: EmitFn<QuarterPickerEmi
     const isQuarterBetween = (date: Date) => {
         if (range.value.enabled) {
             if (Array.isArray(modelValue.value)) {
-                const isModel = isDateEqual(date, modelValue.value[0]!) || isDateEqual(date, modelValue.value[1]!);
+                const isModel = isDateEqual(date, modelValue.value[0]) || isDateEqual(date, modelValue.value[1]);
                 return isDateBetween(modelValue.value, hoverDate.value, date) && !isModel;
             }
             return false;

@@ -107,11 +107,11 @@
             buildMatrix([unrefElement(cancelButtonRef), unrefElement(selectButtonRef)] as HTMLElement[], 'actionRow');
         }
         getPreviewAvailableSpace();
-        window.addEventListener('resize', getPreviewAvailableSpace);
+        globalThis.addEventListener('resize', getPreviewAvailableSpace);
     });
 
     onUnmounted(() => {
-        window.removeEventListener('resize', getPreviewAvailableSpace);
+        globalThis.removeEventListener('resize', getPreviewAvailableSpace);
     });
 
     const getPreviewAvailableSpace = () => {
@@ -177,7 +177,7 @@
     const dateSeparator = () => (multiDates.value.enabled ? '; ' : ' - ');
 
     const formatValue = computed(() =>
-        !Array.isArray(previewValue.value) ? previewValue.value : previewValue.value.join(dateSeparator()),
+        Array.isArray(previewValue.value) ? previewValue.value.join(dateSeparator()) : previewValue.value,
     );
 
     const selectDate = (): void => {

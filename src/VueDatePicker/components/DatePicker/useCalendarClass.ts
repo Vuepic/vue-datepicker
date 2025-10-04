@@ -59,12 +59,12 @@ export const useCalendarClass = () => {
             return isStart ? (modelValue.value as Date[])[0] || null : (modelValue.value as Date[])[1];
         };
         const dateToCompare = modelValue.value && Array.isArray(modelValue.value) ? startDateCompare() : null;
-        return isDateEqual(getDate(day.value), dateToCompare!);
+        return isDateEqual(getDate(day.value), dateToCompare);
     };
 
     const checkDateBefore = (isStart: boolean) => {
         const dateToCompare = Array.isArray(modelValue.value) ? modelValue.value[0] : null;
-        return isStart ? !isDateBefore(hoveredDate.value, dateToCompare!) : true;
+        return isStart ? !isDateBefore(hoveredDate.value, dateToCompare) : true;
     };
 
     /**
@@ -77,7 +77,7 @@ export const useCalendarClass = () => {
             modelValue.value.length === 2
         ) {
             if (rootProps.hideOffsetDates && !day.current) return false;
-            return isDateEqual(getDate(day.value), modelValue.value[isStart ? 0 : 1]!);
+            return isDateEqual(getDate(day.value), modelValue.value[isStart ? 0 : 1]);
         }
 
         if (range.value.enabled) {
@@ -114,7 +114,7 @@ export const useCalendarClass = () => {
             return isDateEqual(calendarDay.value, modelValue.value ? (modelValue.value as Date) : today);
         }
         if (rootProps.modelAuto && Array.isArray(modelValue.value)) {
-            return isDateEqual(calendarDay.value, modelValue.value[0] ? modelValue.value[0] : today);
+            return isDateEqual(calendarDay.value, modelValue.value[0] ?? today);
         }
         return false;
     };

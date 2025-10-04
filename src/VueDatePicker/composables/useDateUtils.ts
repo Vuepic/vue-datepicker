@@ -22,8 +22,8 @@ import {
     type Day,
     setMinutes,
 } from 'date-fns';
-import { TZDate } from '@date-fns/tz';
-import type { DateValue, MaybeDate, Numeric, TimeKey, TimeModel, TimeObj } from '@/types'; // todo - check usage
+import { TZDate } from '@date-fns/tz'; // todo - check usage
+import type { MaybeDate, Numeric, TimeKey, TimeModel, TimeObj } from '@/types';
 
 export const useDateUtils = () => {
     const isValidNum = (value: Numeric | undefined): value is string | number => {

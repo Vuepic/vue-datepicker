@@ -67,18 +67,18 @@ export const useSlotsMapper = () => {
     ): string[] => {
         const toReturn: string[] = [];
 
-        slotNames[usage]().forEach((slot) => {
+        for (const slot of slotNames[usage]()) {
             if (slots[slot.name]) {
                 toReturn.push(slot.name);
             }
-        });
+        }
 
         if (presetDates?.length) {
-            presetDates.forEach((preset) => {
+            for (const preset of presetDates) {
                 if (preset.slot) {
                     toReturn.push(preset.slot);
                 }
-            });
+            }
         }
 
         return toReturn;

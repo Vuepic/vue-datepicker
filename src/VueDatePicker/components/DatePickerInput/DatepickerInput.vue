@@ -178,7 +178,7 @@
             handleRangeTextInput(value);
         } else if (multiDates.value.enabled) {
             const dates = value.split(`;`);
-            parsedDate.value = dates.map((val) => parseFreeInput(val.trim())).filter((val) => val, inputValue.value);
+            parsedDate.value = dates.map((val) => parseFreeInput(val.trim())).filter((val) => !!val, inputValue.value);
         } else {
             parsedDate.value = parseFreeInput(value, inputValue.value);
         }

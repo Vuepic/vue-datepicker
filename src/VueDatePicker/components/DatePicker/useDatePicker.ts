@@ -75,9 +75,7 @@ export const useDatePicker = (
         isAction: boolean = false,
     ): void => {
         if (shouldUpdateMonthView(isAction)) {
-            if (!calendars.value[instance]) {
-                calendars.value[instance] = { month: 0, year: 0 };
-            }
+            calendars.value[instance] ??= calendars.value[instance] = { month: 0, year: 0 };
             calendars.value[instance].month = month ?? calendars.value[instance]?.month;
             calendars.value[instance].year = year ?? calendars.value[instance]?.year;
         }
@@ -122,7 +120,7 @@ export const useDatePicker = (
     const mapInternalModuleValues = (fromMount = false): void => {
         if (modelValue.value) {
             if (Array.isArray(modelValue.value)) {
-                tempRange.value = modelValue.value as Date[];
+                tempRange.value = modelValue.value;
                 return assignExistingModelValueArr(fromMount);
             }
             return assignSingleValue(modelValue.value, fromMount);
@@ -254,9 +252,7 @@ export const useDatePicker = (
      */
     const handleNextMonthYear = (): void => {
         if (Array.isArray(modelValue.value) && modelValue.value.length === 2) {
-            const date = getDate(
-                getDate(modelValue.value[1] ? modelValue.value[1] : addMonths(modelValue.value[0]!, 1)),
-            );
+            const date = getDate(getDate(modelValue.value[1] ?? addMonths(modelValue.value[0]!, 1)));
             const [firstMonth, firstYear] = [getMonth(modelValue.value[0]!), getYear(modelValue.value[0]!)];
             const [secondMonth, secondYear] = [getMonth(modelValue.value[1]!), getYear(modelValue.value[1]!)];
 
@@ -284,7 +280,7 @@ export const useDatePicker = (
     // Handle mouse scroll
     const handleScroll = (event: WheelEvent, instance: number): void => {
         if (config.value.monthChangeOnScroll) {
-            const timeDelta: number = new Date().getTime() - lastScrollTime.value.getTime();
+            const timeDelta: number = Date.now() - lastScrollTime.value.getTime();
             const scrollDistance = Math.abs(event.deltaY);
             let minPause: number = 500;
             if (scrollDistance > 1) minPause = 100;
@@ -292,7 +288,7 @@ export const useDatePicker = (
             if (timeDelta > minPause) {
                 lastScrollTime.value = new Date();
                 autoChangeMonth(
-                    config.value.monthChangeOnScroll !== 'inverse' ? -event.deltaY : event.deltaY,
+                    config.value.monthChangeOnScroll === 'inverse' ? event.deltaY : -event.deltaY,
                     instance,
                 );
             }
@@ -514,7 +510,7 @@ export const useDatePicker = (
                 minutes: (time.minutes as number[])[index],
                 seconds: getSecondsValue(index !== 1),
             },
-            tempRange.value[index]!,
+            tempRange.value[index],
         );
     };
 
@@ -572,7 +568,7 @@ export const useDatePicker = (
         rootEmit('update-month-year', { instance, month: val.month, year: val.year });
         triggerCalendarTransition(multiCalendars.value.solo ? instance : undefined);
 
-        const flowActive = flow.value?.steps?.length ? flow.value.steps[props.flowStep!] : undefined;
+        const flowActive = flow.value?.steps?.length ? flow.value.steps[props.flowStep] : undefined;
         if (!val.fromNav && (flowActive === FlowStep.month || flowActive === FlowStep.year)) {
             updateFlow();
         }

@@ -157,7 +157,6 @@
         getInputRect: () => DOMRect;
     }>();
 
-    // const { setMenuFocused, setShiftKey, control } = useState();
     const slots = useSlots();
     const {
         state,
@@ -191,7 +190,7 @@
     onMounted(() => {
         menuMount.value = true;
         getCalendarWidth();
-        window.addEventListener('resize', getCalendarWidth);
+        globalThis.addEventListener('resize', getCalendarWidth);
 
         const menu = unrefElement(dpMenuRef);
         if (menu && !textInput.value.enabled && !inline.value.enabled) {
@@ -208,7 +207,7 @@
     });
 
     onUnmounted(() => {
-        window.removeEventListener('resize', getCalendarWidth);
+        globalThis.removeEventListener('resize', getCalendarWidth);
         document.removeEventListener('mousedown', handleClickOutside);
 
         const menu = unrefElement(dpMenuRef);
@@ -264,8 +263,6 @@
         return mapSlots(slots, 'shared');
     });
 
-    // const arrowClass = computed(() => (!props.openOnTop ? 'dp__arrow_top' : 'dp__arrow_bottom'));
-
     const disabledReadonlyOverlay = computed(() => ({
         dp__menu_disabled: rootProps.disabled,
         dp__menu_readonly: rootProps.readonly,
@@ -317,7 +314,7 @@
     };
 
     // todo
-    const onTimePickerClose = () => {
+    const _onTimePickerClose = () => {
         focusMenu();
     };
 

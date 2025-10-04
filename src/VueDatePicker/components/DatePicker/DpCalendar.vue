@@ -228,11 +228,11 @@
     // Class object for calendar wrapper
     const calendarWrapClass = computed(
         (): DynamicClass => ({
-            ...(ui.value.calendar ?? {}),
+            ...ui.value.calendar,
         }),
     );
 
-    const getDefaultMarker = (marker: Marker): Marker => ({ type: 'dot', ...(marker ?? {}) });
+    const getDefaultMarker = (marker: Marker): Marker => ({ type: 'dot', ...marker });
 
     const markerClass = computed((): ((marker: Marker) => DynamicClass) => (marker) => {
         const defaultMarker = getDefaultMarker(marker);
@@ -266,7 +266,7 @@
                 tpArrowStyle.value.left = `${width / 2}px`;
             }
 
-            if (window.innerWidth < left + tpWidth) {
+            if (globalThis.innerWidth < left + tpWidth) {
                 defaultPosition = { right: `0` };
                 transform = 0;
                 tpArrowStyle.value.left = `${tpWidth - width / 2}px`;

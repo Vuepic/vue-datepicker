@@ -208,10 +208,10 @@
             const container = unrefElement(containerRef);
             const toggleBtnHeight = btn ? btn.getBoundingClientRect().height : 0;
             if (parent) {
-                if (!parent.getBoundingClientRect().height) {
-                    containerHeight.value = config.value.modeHeight - toggleBtnHeight;
-                } else {
+                if (parent.getBoundingClientRect().height) {
                     containerHeight.value = parent.getBoundingClientRect().height - toggleBtnHeight;
+                } else {
+                    containerHeight.value = config.value.modeHeight - toggleBtnHeight;
                 }
             }
             if (el && container && setScroll) {

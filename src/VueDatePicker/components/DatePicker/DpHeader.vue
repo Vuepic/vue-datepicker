@@ -257,18 +257,18 @@
     });
 
     const toggleWrap = (val: Ref<boolean>, type: FlowStep, show?: boolean) => {
-        if (show !== undefined) {
-            val.value = show;
-        } else {
+        if (show === undefined) {
             val.value = !val.value;
+        } else {
+            val.value = show;
         }
 
-        if (!val.value) {
-            overlayOpen.value = false;
-            rootEmit('overlay-toggle', { open: false, overlay: type });
-        } else {
+        if (val.value) {
             overlayOpen.value = true;
             emit('overlay-opened', type);
+        } else {
+            overlayOpen.value = false;
+            rootEmit('overlay-toggle', { open: false, overlay: type });
         }
     };
 

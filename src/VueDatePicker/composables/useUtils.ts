@@ -8,7 +8,6 @@ import type {
     HighlightConfig,
     HighlightFn,
     InternalModelValue,
-    ModelValue,
     OverlayGridItem,
     SelectItem,
 } from '@/types';

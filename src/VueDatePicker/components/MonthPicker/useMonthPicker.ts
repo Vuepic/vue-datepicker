@@ -180,7 +180,7 @@ export const useMonthPicker = (props: BaseProps, emit: EmitFn<MonthPickerEmits>)
     };
 
     // todo
-    const presetDate = (value: Date[] | string[] | Date | string, noTz?: boolean) => {
+    const presetDate = (value: Date[] | string[] | Date | string, _noTz?: boolean) => {
         setPresetDate({
             value,
         });

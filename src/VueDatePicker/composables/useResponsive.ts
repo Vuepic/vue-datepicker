@@ -6,15 +6,15 @@ export const useResponsive = (config: ComputedRef<Config>) => {
 
     onMounted(() => {
         updateWindowWidth();
-        window.addEventListener('resize', updateWindowWidth, { passive: true });
+        globalThis.addEventListener('resize', updateWindowWidth, { passive: true });
     });
 
     onUnmounted(() => {
-        window.removeEventListener('resize', updateWindowWidth);
+        globalThis.removeEventListener('resize', updateWindowWidth);
     });
 
     const updateWindowWidth = () => {
-        windowWidth.value = window.document.documentElement.clientWidth;
+        windowWidth.value = globalThis.document.documentElement.clientWidth;
     };
 
     const isMobile = computed(() => (windowWidth.value <= config.value.mobileBreakpoint ? true : undefined));

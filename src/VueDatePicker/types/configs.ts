@@ -56,12 +56,12 @@ export interface TeleportConfig {
 }
 
 export interface UIConfig {
-    navBtnNext: CustomClass;
-    navBtnPrev: CustomClass;
-    calendar: CustomClass;
-    calendarCell: CustomClass;
-    menu: CustomClass;
-    input: CustomClass;
+    navBtnNext: CustomClass | undefined;
+    navBtnPrev: CustomClass | undefined;
+    calendar: CustomClass | undefined;
+    calendarCell: CustomClass | undefined;
+    menu: CustomClass | undefined;
+    input: CustomClass | undefined;
     dayClass: ((date: Date, internalModelValue: InternalModelValue) => string) | undefined;
 }
 

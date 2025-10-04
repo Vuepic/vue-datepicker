@@ -28,6 +28,6 @@
     }>();
 
     const instances = computed((): number[] =>
-        multiCalendars.value.count > 0 ? [...Array(multiCalendars.value.count).keys()] : [0],
+        multiCalendars.value.count > 0 ? [...new Array(multiCalendars.value.count).keys()] : [0],
     );
 </script>
