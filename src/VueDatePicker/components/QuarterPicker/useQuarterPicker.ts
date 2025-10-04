@@ -70,7 +70,7 @@ export const useQuarterPicker = (props: BaseProps, emit: EmitFn<QuarterPickerEmi
     const isHighlighted = (start: Date) => {
         return typeof highlight.value === 'function'
             ? highlight.value({ quarter: getQuarter(start), year: getYear(start) })
-            : !!highlight.value.quarters.find((value) => matchQuarter(value, start));
+            : highlight.value.quarters.some((value) => matchQuarter(value, start));
     };
 
     const quarters = computed(() => (instance: number) => {

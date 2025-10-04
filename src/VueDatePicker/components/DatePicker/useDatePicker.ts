@@ -548,7 +548,7 @@ export const useDatePicker = (
     const selectDate = (day: CalendarDay, isNext = false): void => {
         if (isDisabled(day.value) || (!day.current && rootProps.hideOffsetDates))
             return rootEmit('invalid-date', day.value);
-        clickedDate.value = JSON.parse(JSON.stringify(day));
+        clickedDate.value = structuredClone(day);
 
         if (!range.value.enabled) return handleSingleDateSelect(day);
 

@@ -307,7 +307,7 @@
     const onMouseLeave = (day: UnwrapRef<CalendarDay>): void => {
         if (showMakerTooltip.value) {
             showMakerTooltip.value = null;
-            markerTooltipStyle.value = JSON.parse(JSON.stringify({ bottom: '', left: '', transform: '' }));
+            markerTooltipStyle.value = structuredClone({ bottom: '', left: '', transform: '' });
             rootEmit('tooltip-close', day.marker!);
         }
     };

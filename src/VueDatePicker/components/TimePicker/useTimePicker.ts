@@ -54,8 +54,8 @@ export const useTimePicker = (emit: EmitFn<TimePickerEmits>) => {
         if (range.value.enabled) {
             const [firstStartTime, secondStartTime] = getDateFromStartTime() as Date[];
             modelValue.value = [
-                toTzSafe(getSetDateTime(firstStartTime!, 0)!, tz.value)!,
-                toTzSafe(getSetDateTime(secondStartTime!, 1), tz.value)!,
+                toTzSafe(getSetDateTime(firstStartTime, 0), tz.value)!,
+                toTzSafe(getSetDateTime(secondStartTime, 1), tz.value)!,
             ];
         } else {
             modelValue.value = toTzSafe(getSetDateTime(getDateFromStartTime() as Date), tz.value)!;

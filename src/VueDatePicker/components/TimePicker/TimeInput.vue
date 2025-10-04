@@ -408,12 +408,12 @@
     const toggleOverlay = (type: TimeKey): void => {
         if (!checkOverlayDisabled(type)) {
             overlays[type] = !overlays[type];
-            if (!overlays[type]) {
-                timeOverlayOpen.value = false;
-                emit('overlay-closed', type);
-            } else {
+            if (overlays[type]) {
                 timeOverlayOpen.value = true;
                 emit('overlay-opened', type);
+            } else {
+                timeOverlayOpen.value = false;
+                emit('overlay-closed', type);
             }
         }
     };

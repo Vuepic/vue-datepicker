@@ -28,7 +28,7 @@ export const useTimePickerUtils = (updateFlow?: () => void) => {
         }
         return 0;
     };
-    const getSetDateTime = (dateValue: Date | null, i?: number): Date => {
+    const getSetDateTime = (dateValue?: Date | null, i?: number): Date => {
         console.log(time, 'what is time');
         if (!dateValue) return setSeconds(getDate(), getSecondsValue(i));
         if (i !== undefined) {
@@ -64,16 +64,16 @@ export const useTimePickerUtils = (updateFlow?: () => void) => {
 
         if (isRangeCheck.value && !range.value.disableTimeRangeValidation) {
             const setNewTime = (index: number) =>
-                !modelValue.value
-                    ? (null as unknown as Date)
-                    : setTime(
+                modelValue.value
+                    ? setTime(
                           {
                               hours: (copies.hours as number[])[index],
                               minutes: (copies.minutes as number[])[index],
                               seconds: (copies.seconds as number[])[index],
                           },
                           (modelValue.value as Date[])[index],
-                      );
+                      )
+                    : (null as unknown as Date);
 
             const resetMilliseconds = (index: number) => setMilliseconds((modelValue.value as Date[])[index]!, 0);
             return !(

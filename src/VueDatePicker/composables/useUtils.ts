@@ -56,10 +56,10 @@ export const useUtils = () => {
         ].join(', ');
 
     const findNextFocusableElement = (startingElement: HTMLElement, reverse: boolean) => {
-        let focusable = [...document.querySelectorAll(getFocusableElementsSelector())];
+        let focusable = [...document.querySelectorAll(getFocusableElementsSelector())] as HTMLElement[];
 
         focusable = focusable.filter((elem) => {
-            return !startingElement.contains(elem) || elem.hasAttribute('data-datepicker-instance');
+            return !startingElement.contains(elem) || 'datepicker-instance' in elem.dataset;
         });
 
         const currentIndex = focusable.indexOf(startingElement);
@@ -145,7 +145,7 @@ export const useUtils = () => {
     const getGroupedList = (items: SelectItem[]): SelectItem[][] => {
         const list = [];
         const setList = (listItems: SelectItem[]) => {
-            return listItems.filter((item) => Boolean(item));
+            return listItems.filter((item) => !!item);
         };
         for (let i = 0; i < items.length; i += 3) {
             const listItems = [items[i]!, items[i + 1]!, items[i + 2]!];
