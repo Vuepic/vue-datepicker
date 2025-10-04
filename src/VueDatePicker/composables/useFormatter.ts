@@ -51,7 +51,7 @@ export const useFormatter = () => {
         const formatter = (value: Date) => format(value, textInput.value.format);
         if (Array.isArray(modelValue.value)) {
             return `${formatter(modelValue.value[0]!)} ${textInput.value.rangeSeparator} ${
-                modelValue.value[1] ? formatter(modelValue.value[1]!) : ''
+                modelValue.value[1] ? formatter(modelValue.value[1]) : ''
             }`;
         }
         return '';

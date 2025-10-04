@@ -72,8 +72,8 @@ export const useValidation = () => {
         const dateYear = getYear(date);
 
         const outOfYearRange =
-            dateYear < +(rootProps.yearRange![0]! as string | number) ||
-            dateYear > +(rootProps.yearRange![1]! as string | number);
+            dateYear < +(rootProps.yearRange![0] as string | number) ||
+            dateYear > +(rootProps.yearRange![1] as string | number);
 
         return !(
             aboveMax ||
@@ -157,7 +157,7 @@ export const useValidation = () => {
     const isValidYear = (val: MaybeDate) => {
         if (val) {
             const activeYear = getYear(val);
-            return activeYear >= +rootProps.yearRange![0]! && activeYear <= rootProps.yearRange![1]!;
+            return activeYear >= +rootProps.yearRange![0] && activeYear <= rootProps.yearRange![1];
         }
         return true;
     };

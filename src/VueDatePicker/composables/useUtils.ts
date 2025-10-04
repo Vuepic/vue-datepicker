@@ -71,7 +71,7 @@ export const useUtils = () => {
 
     const getNumVal = (num?: string | number | null): number | null => {
         if (num === 0) return num;
-        if (!num || isNaN(+num)) return null;
+        if (!num || Number.isNaN(+num)) return null;
         return +num;
     };
 

@@ -135,7 +135,7 @@
         parseExternalModelValue(rootProps.modelValue);
         nextTick().then(() => {
             if (!inline.value.enabled) {
-                window?.addEventListener('resize', onResize);
+                globalThis.addEventListener('resize', onResize);
             }
         });
 
@@ -143,16 +143,16 @@
             isOpen.value = true;
         }
 
-        window?.addEventListener('keyup', onKeyUp);
-        window?.addEventListener('keydown', onKeyDown);
+        globalThis.addEventListener('keyup', onKeyUp);
+        globalThis.addEventListener('keydown', onKeyDown);
     });
 
     onUnmounted(() => {
         if (!inline.value.enabled) {
-            window?.removeEventListener('resize', onResize);
+            globalThis.removeEventListener('resize', onResize);
         }
-        window?.removeEventListener('keyup', onKeyUp);
-        window?.removeEventListener('keydown', onKeyDown);
+        globalThis.removeEventListener('keyup', onKeyUp);
+        globalThis.removeEventListener('keydown', onKeyDown);
     });
 
     const slotList = mapSlots(slots, 'all', rootProps.presetDates);

@@ -48,7 +48,7 @@ export type HighlightFn = (
 ) => boolean;
 
 export type UIParsed = {
-    [K in keyof UIConfig]: K extends 'dayClass' ? UIConfig[K] : Record<string, boolean>;
+    [K in keyof UIConfig]: K extends 'dayClass' ? UIConfig[K] | undefined : Record<string, boolean> | undefined;
 };
 
 export type DisabledTimesFn = (time: TimeObj | TimeObj[] | (TimeObj | undefined)[]) => boolean;

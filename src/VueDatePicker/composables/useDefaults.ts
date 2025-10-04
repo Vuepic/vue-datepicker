@@ -234,10 +234,10 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
     const ui = computed((): UIParsed => {
         const defaulted = {
             ...Object.fromEntries(
-                Object.keys(props.ui!).map((item) => {
+                Object.keys(props.ui).map((item) => {
                     const key = item as keyof UIConfig;
-                    const value = props.ui![key];
-                    if (key === 'dayClass') return [key, props.ui![key]];
+                    const value = props.ui[key];
+                    if (key === 'dayClass') return [key, props.ui[key]];
                     const val = (
                         typeof props.ui![key] === 'string'
                             ? { [value as string]: true }

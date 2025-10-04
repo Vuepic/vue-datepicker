@@ -95,7 +95,7 @@ export const useYearPicker = (props: BaseProps, emit: EmitFn<YearPickerEmits>) =
     };
 
     const selectYear = (year: number) => {
-        rootEmit('update-month-year', { instance: 0, year, month: NaN });
+        rootEmit('update-month-year', { instance: 0, year, month: Number.NaN });
         if (multiDates.value.enabled) {
             if (!modelValue.value) {
                 modelValue.value = [setYear(resetDateTime(startOfYear(getDate())), year)];

@@ -187,15 +187,15 @@
     const handleInput = (event: Event | string): void => {
         const value = typeof event === 'string' ? event : (event.target as HTMLInputElement)?.value;
 
-        if (value !== '') {
+        if (value === '') {
+            handleOnEmptyInput();
+        } else {
             if (textInput.value.openMenu && !props.isMenuOpen) {
                 emit('open');
             }
             parseInput(value);
 
             emit('set-input-date', parsedDate.value);
-        } else {
-            handleOnEmptyInput();
         }
         textPasted.value = false;
         inputValue.value = value;

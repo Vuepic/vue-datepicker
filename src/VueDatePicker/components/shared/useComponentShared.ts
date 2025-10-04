@@ -13,7 +13,7 @@ export const useComponentShared = () => {
         if (modelValue.value && Array.isArray(modelValue.value)) {
             if (modelValue.value.some((dateVal) => isDateEqual(date, dateVal))) {
                 const value = modelValue.value.filter((dateVal) => !isDateEqual(dateVal, date));
-                modelValue.value = !value.length ? null : value;
+                modelValue.value = value.length ? value : null;
             } else if ((multiDatesLimit && +multiDatesLimit > modelValue.value.length) || !multiDatesLimit) {
                 modelValue.value.push(date);
             }
@@ -27,13 +27,13 @@ export const useComponentShared = () => {
         if (rangeDate.length === 2 && rangeDate[1] !== null) {
             rangeDate = [];
         }
-        if (!rangeDate.length) {
-            rangeDate = [date];
-            rootEmit('range-start', date);
-        } else {
-            if (isDateBefore(date, rangeDate[0]!)) rangeDate.unshift(date);
+        if (rangeDate.length) {
+            if (isDateBefore(date, rangeDate[0])) rangeDate.unshift(date);
             else rangeDate[1] = date;
             rootEmit('range-end', date);
+        } else {
+            rangeDate = [date];
+            rootEmit('range-start', date);
         }
 
         return rangeDate;
@@ -70,13 +70,13 @@ export const useComponentShared = () => {
         ) {
             if (
                 range.value.fixedStart &&
-                (isDateAfter(date, modelValue.value[0]!) || isDateEqual(date, modelValue.value[0]!))
+                (isDateAfter(date, modelValue.value[0]) || isDateEqual(date, modelValue.value[0]))
             ) {
                 return [modelValue.value[0]!, date];
             }
             if (
                 range.value.fixedEnd &&
-                (isDateBefore(date, modelValue.value[1]!) || isDateEqual(date, modelValue.value[1]!))
+                (isDateBefore(date, modelValue.value[1]) || isDateEqual(date, modelValue.value[1]))
             ) {
                 return [date, modelValue.value[1]!];
             }

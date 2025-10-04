@@ -110,7 +110,7 @@ describe('useValidation', () => {
         ctx.__mocks.safeDatesRef.value = {
             minDate: undefined,
             maxDate: undefined,
-            disabledDates: (d: Date) => d.toISOString().slice(0, 10) === '2024-01-12',
+            disabledDates: (d: Date) => d.toISOString().startsWith('2024-01-12'),
             allowedDates: null,
         } as any;
 
@@ -135,7 +135,7 @@ describe('useValidation', () => {
         ctx.__mocks.safeDatesRef.value = {
             minDate: undefined,
             maxDate: undefined,
-            disabledDates: (d: Date) => d.toISOString().slice(0, 10) === '2024-01-12',
+            disabledDates: (d: Date) => d.toISOString().startsWith('2024-01-12'),
             allowedDates: null,
         } as any;
 

@@ -64,7 +64,7 @@ export const useMonthYearPick = (
     const isDisabled = computed(() => (next: boolean) => {
         return validateMonthYear(
             set(getDate(), { month: props.month, year: props.year }),
-            rootProps.preventMinMaxNavigation!,
+            rootProps.preventMinMaxNavigation,
             next,
         );
     });

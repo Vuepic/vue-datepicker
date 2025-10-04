@@ -142,16 +142,16 @@ export const useMonthOrQuarterPicker = (emit: EmitFn<{ 'reset-flow': []; 'auto-a
             emit('reset-flow');
         }
 
-        if (show !== undefined) {
-            showYearPicker.value[instance] = show;
-        } else {
+        if (show === undefined) {
             showYearPicker.value[instance] = !showYearPicker.value[instance];
+        } else {
+            showYearPicker.value[instance] = show;
         }
 
-        if (!showYearPicker.value[instance]) {
-            rootEmit('overlay-toggle', { open: false, overlay: FlowStep.year });
-        } else {
+        if (showYearPicker.value[instance]) {
             rootEmit('overlay-toggle', { open: true, overlay: FlowStep.year });
+        } else {
+            rootEmit('overlay-toggle', { open: false, overlay: FlowStep.year });
         }
     };
 

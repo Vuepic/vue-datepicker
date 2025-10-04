@@ -14,14 +14,14 @@ export const useNavigationDisplay = () => {
 
     const showLeftIcon = computed(() => (instance: number) => {
         if (multiCalendars.value.count) {
-            return !multiCalendars.value.solo ? instance === 0 : true;
+            return multiCalendars.value.solo ? true : instance === 0;
         }
         return true;
     });
 
     const showRightIcon = computed(() => (instance: number) => {
         if (multiCalendars.value.count) {
-            return !multiCalendars.value.solo ? instance === multiCalendars.value.count - 1 : true;
+            return multiCalendars.value.solo ? true : instance === multiCalendars.value.count - 1;
         }
         return true;
     });
