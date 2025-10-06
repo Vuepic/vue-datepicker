@@ -75,10 +75,11 @@
                 :aria-label="ariaLabels?.clearInput"
                 class="dp--clear-btn"
                 type="button"
+                data-test-id="clear-input-value-btn"
                 @keydown="checkKeyDown($event, () => onClear($event), true, onClearKeydown)"
                 @click.prevent="onClear($event)"
             >
-                <CancelIcon class="dp__input_icons" data-test-id="clear-icon" />
+                <CancelIcon class="dp__input_icons" />
             </button>
         </div>
     </div>
@@ -96,6 +97,7 @@
     import { EventKey } from '@/constants';
     import type { DynamicClass, InputParsedDate, InternalModelValue } from '@/types';
 
+    // todo
     const emit = defineEmits<{
         clear: [];
         open: [];
