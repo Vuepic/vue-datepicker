@@ -278,7 +278,7 @@ describe('useYearPicker', () => {
 
             expect(ctx.modelValue.value).toBeInstanceOf(Date);
             expect(ctx.modelValue.value?.getFullYear()).toBe(2024);
-            expect(mockEmit).toHaveBeenCalledWith('auto-apply');
+            expect(mockEmit).toHaveBeenCalledExactlyOnceWith('auto-apply');
         });
 
         it('should emit update-month-year event when selecting year', () => {
@@ -286,7 +286,7 @@ describe('useYearPicker', () => {
 
             selectYear(2024);
 
-            expect(ctx.rootEmit).toHaveBeenCalledWith('update-month-year', {
+            expect(ctx.rootEmit).toHaveBeenCalledExactlyOnceWith('update-month-year', {
                 instance: 0,
                 year: 2024,
                 month: expect.any(Number),
@@ -324,7 +324,7 @@ describe('useYearPicker', () => {
             selectYear(2024);
 
             expect(ctx.modelValue.value).toBeInstanceOf(Array);
-            expect(mockEmit).toHaveBeenCalledWith('auto-apply', true);
+            expect(mockEmit).toHaveBeenCalledExactlyOnceWith('auto-apply', true);
         });
 
         it('should add year in multiDates mode when modelValue is null', () => {

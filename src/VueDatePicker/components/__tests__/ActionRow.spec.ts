@@ -576,7 +576,7 @@ describe('ActionRow', () => {
 
             wrapper.unmount();
 
-            expect(removeEventListenerSpy).toHaveBeenCalledWith('resize', expect.any(Function));
+            expect(removeEventListenerSpy).toHaveBeenCalledExactlyOnceWith('resize', expect.any(Function));
         });
 
         it('should handle custom preview format function', () => {

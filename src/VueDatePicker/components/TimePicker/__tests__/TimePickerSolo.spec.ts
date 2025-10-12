@@ -323,7 +323,7 @@ describe('TimePickerSolo', () => {
 
             wrapper.vm.toggleTimePicker(true);
 
-            expect(toggleSpy).toHaveBeenCalledWith(true, false, '');
+            expect(toggleSpy).toHaveBeenCalledExactlyOnceWith(true, false, '');
         });
 
         it('should pass flow parameter to TimePicker toggleTimePicker', () => {
@@ -333,7 +333,7 @@ describe('TimePickerSolo', () => {
 
             wrapper.vm.toggleTimePicker(true, true);
 
-            expect(toggleSpy).toHaveBeenCalledWith(true, true, '');
+            expect(toggleSpy).toHaveBeenCalledExactlyOnceWith(true, true, '');
         });
 
         it('should pass childOpen parameter to TimePicker toggleTimePicker', () => {
@@ -343,7 +343,7 @@ describe('TimePickerSolo', () => {
 
             wrapper.vm.toggleTimePicker(true, false, 'hours');
 
-            expect(toggleSpy).toHaveBeenCalledWith(true, false, 'hours');
+            expect(toggleSpy).toHaveBeenCalledExactlyOnceWith(true, false, 'hours');
         });
     });
 

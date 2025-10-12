@@ -189,7 +189,7 @@ describe('useQuarterPicker', () => {
         const picker = useQuarterPicker(mockProps, mockEmit);
         picker.selectQuarter(new Date(2024, 3, 1), 0, false);
 
-        expect(mockEmit).toHaveBeenCalledWith('auto-apply');
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('auto-apply');
     });
 
     it('should select single quarter and update model value', () => {
@@ -223,7 +223,7 @@ describe('useQuarterPicker', () => {
         const picker = useQuarterPicker(mockProps, mockEmit);
         picker.selectQuarter(new Date(2024, 3, 1), 0, false);
 
-        expect(mockEmit).toHaveBeenCalledWith('auto-apply', true);
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('auto-apply', true);
     });
 
     it('should update calendar month when selecting quarter', () => {
@@ -423,7 +423,7 @@ describe('useQuarterPicker', () => {
     it('should emit reset-flow when applicable', () => {
         // The emit function should be callable
         mockEmit('reset-flow');
-        expect(mockEmit).toHaveBeenCalledWith('reset-flow');
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('reset-flow');
     });
 
     it('should handle multi-quarter selection with limit', () => {
@@ -432,7 +432,7 @@ describe('useQuarterPicker', () => {
         const picker = useQuarterPicker(mockProps, mockEmit);
         picker.selectQuarter(new Date(2024, 0, 1), 0, false);
 
-        expect(mockEmit).toHaveBeenCalledWith('auto-apply', true);
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('auto-apply', true);
     });
 
     it('should maintain quarter state across year changes', () => {

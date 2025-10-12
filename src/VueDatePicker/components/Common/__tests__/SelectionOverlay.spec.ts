@@ -512,7 +512,7 @@ describe('SelectionOverlay', () => {
         });
 
         await nextTick();
-        expect(mockSetSelectionGrid).toHaveBeenCalledWith(true);
+        expect(mockSetSelectionGrid).toHaveBeenCalledExactlyOnceWith(true);
 
         // Reset mocks to original state
         vi.resetModules();

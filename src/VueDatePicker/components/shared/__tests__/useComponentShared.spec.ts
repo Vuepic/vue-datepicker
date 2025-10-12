@@ -179,7 +179,7 @@ describe('useComponentShared', () => {
 
             shared.checkRangeAutoApply(range, mockEmit, true, false);
 
-            expect(mockEmit).toHaveBeenCalledWith('auto-apply');
+            expect(mockEmit).toHaveBeenCalledExactlyOnceWith('auto-apply');
         });
 
         it('should not emit when autoApply is false', () => {
@@ -197,7 +197,7 @@ describe('useComponentShared', () => {
 
             shared.checkRangeAutoApply(range, mockEmit, true, true);
 
-            expect(mockEmit).toHaveBeenCalledWith('auto-apply');
+            expect(mockEmit).toHaveBeenCalledExactlyOnceWith('auto-apply');
         });
 
         it('should not emit when range start only but modelAuto is false', () => {

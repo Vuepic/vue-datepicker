@@ -120,7 +120,9 @@ describe('useTimePicker', () => {
 
             updateTime(16, true, false);
 
-            expect(emitMock).toHaveBeenCalledWith('time-update');
+            expect(emitMock).toHaveBeenCalledTimes(2);
+            expect(emitMock).toHaveBeenNthCalledWith(1, 'update-flow-step');
+            expect(emitMock).toHaveBeenNthCalledWith(2, 'time-update');
         });
 
         it('should update minutes when isHours and isSeconds are false', async () => {
@@ -128,7 +130,9 @@ describe('useTimePicker', () => {
 
             updateTime(45, false, false);
 
-            expect(emitMock).toHaveBeenCalledWith('time-update');
+            expect(emitMock).toHaveBeenCalledTimes(2);
+            expect(emitMock).toHaveBeenNthCalledWith(1, 'update-flow-step');
+            expect(emitMock).toHaveBeenNthCalledWith(2, 'time-update');
         });
 
         it('should update seconds when isSeconds is true', async () => {
@@ -136,7 +140,9 @@ describe('useTimePicker', () => {
 
             updateTime(30, false, true);
 
-            expect(emitMock).toHaveBeenCalledWith('time-update');
+            expect(emitMock).toHaveBeenCalledTimes(2);
+            expect(emitMock).toHaveBeenNthCalledWith(1, 'update-flow-step');
+            expect(emitMock).toHaveBeenNthCalledWith(2, 'time-update');
         });
 
         it('should emit time-update event', async () => {
@@ -144,7 +150,9 @@ describe('useTimePicker', () => {
 
             updateTime(16, true, false);
 
-            expect(emitMock).toHaveBeenCalledWith('time-update');
+            expect(emitMock).toHaveBeenCalledTimes(2);
+            expect(emitMock).toHaveBeenNthCalledWith(1, 'update-flow-step');
+            expect(emitMock).toHaveBeenNthCalledWith(2, 'time-update');
         });
 
         it('should update modelValue when updating time', async () => {
@@ -153,7 +161,9 @@ describe('useTimePicker', () => {
             updateTime(16, true, false);
 
             // ModelValue should be updated through getSetDateTime
-            expect(emitMock).toHaveBeenCalledWith('time-update');
+            expect(emitMock).toHaveBeenCalledTimes(2);
+            expect(emitMock).toHaveBeenNthCalledWith(1, 'update-flow-step');
+            expect(emitMock).toHaveBeenNthCalledWith(2, 'time-update');
         });
     });
 
@@ -187,7 +197,9 @@ describe('useTimePicker', () => {
 
             updateTime([15, 17], true, false);
 
-            expect(emitMock).toHaveBeenCalledWith('time-update');
+            expect(emitMock).toHaveBeenCalledTimes(2);
+            expect(emitMock).toHaveBeenNthCalledWith(1, 'update-flow-step');
+            expect(emitMock).toHaveBeenNthCalledWith(2, 'time-update');
         });
 
         it('should update array modelValue in range mode', async () => {
@@ -290,7 +302,9 @@ describe('useTimePicker', () => {
 
             updateTime(30, false, true);
 
-            expect(emitMock).toHaveBeenCalledWith('time-update');
+            expect(emitMock).toHaveBeenCalledTimes(2);
+            expect(emitMock).toHaveBeenNthCalledWith(1, 'update-flow-step');
+            expect(emitMock).toHaveBeenNthCalledWith(2, 'time-update');
 
             // Reset
             ctx.defaults.timeConfig.value.enableSeconds = false;
@@ -307,7 +321,9 @@ describe('useTimePicker', () => {
             updateTime(30, false, true);
 
             // Seconds should be handled according to enableSeconds config
-            expect(emitMock).toHaveBeenCalledWith('time-update');
+            expect(emitMock).toHaveBeenCalledTimes(2);
+            expect(emitMock).toHaveBeenNthCalledWith(1, 'update-flow-step');
+            expect(emitMock).toHaveBeenNthCalledWith(2, 'time-update');
         });
     });
 
@@ -317,7 +333,8 @@ describe('useTimePicker', () => {
 
             updateTime(16, true, false);
 
-            expect(emitMock).toHaveBeenCalledWith('update-flow-step');
+            expect(emitMock).toHaveBeenCalledTimes(2);
+            expect(emitMock).toHaveBeenNthCalledWith(1, 'update-flow-step');
         });
     });
 
@@ -437,8 +454,9 @@ describe('useTimePicker', () => {
 
             updateTime(16, true, false);
 
-            expect(emitMock).toHaveBeenCalledWith('update-flow-step');
-            expect(emitMock).toHaveBeenCalledWith('time-update');
+            expect(emitMock).toHaveBeenCalledTimes(2);
+            expect(emitMock).toHaveBeenNthCalledWith(1, 'update-flow-step');
+            expect(emitMock).toHaveBeenNthCalledWith(2, 'time-update');
         });
 
         it('should update modelValue after time change', async () => {
@@ -471,8 +489,10 @@ describe('useTimePicker', () => {
             updateTime(45, false, false);
             updateTime(30, false, true);
 
-            expect(emitMock).toHaveBeenCalledWith('update-flow-step');
-            expect(emitMock).toHaveBeenCalledWith('time-update');
+            expect(emitMock).toHaveBeenCalledTimes(6);
+            // Verify both event types are called (3 times each)
+            expect(emitMock).toHaveBeenNthCalledWith(1, 'update-flow-step');
+            expect(emitMock).toHaveBeenNthCalledWith(2, 'time-update');
         });
     });
 });

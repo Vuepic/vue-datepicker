@@ -33,19 +33,22 @@ describe('useFlow', () => {
 
         // Step 0 -> month
         handleFlow();
-        expect(dyn.toggleMonthPicker).toHaveBeenCalledWith(true);
+        expect(dyn.toggleMonthPicker).toHaveBeenCalledExactlyOnceWith(true);
 
         // Step 1 -> year
         updateFlowStep();
-        expect(dyn.toggleYearPicker).toHaveBeenCalledWith(true);
+        expect(dyn.toggleYearPicker).toHaveBeenCalledExactlyOnceWith(true);
 
         // Step 2 -> calendar (open time picker overlay false)
         updateFlowStep();
-        expect(dyn.toggleTimePicker).toHaveBeenCalledWith(false, true);
+        expect(dyn.toggleTimePicker).toHaveBeenCalledExactlyOnceWith(false, true);
+
+        // Clear the mock so we can check the next call independently
+        dyn.toggleTimePicker.mockClear();
 
         // Step 3 -> time (open time picker overlay true)
         updateFlowStep();
-        expect(dyn.toggleTimePicker).toHaveBeenCalledWith(true, true);
+        expect(dyn.toggleTimePicker).toHaveBeenCalledExactlyOnceWith(true, true);
     });
 
     it('should advance flow step and emit events via updateFlowStep, and reset after last step', async () => {

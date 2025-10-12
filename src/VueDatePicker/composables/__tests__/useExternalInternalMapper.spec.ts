@@ -271,7 +271,7 @@ describe('useExternalInternalMapper', () => {
 
             emitModelValue();
 
-            expect(mockRootEmit).toHaveBeenCalledWith('update:model-value', expect.any(Date));
+            expect(mockRootEmit).toHaveBeenCalledExactlyOnceWith('update:model-value', expect.any(Date));
         });
 
         it('should emit date range', () => {
@@ -281,7 +281,7 @@ describe('useExternalInternalMapper', () => {
 
             emitModelValue();
 
-            expect(mockRootEmit).toHaveBeenCalledWith('update:model-value', expect.any(Array));
+            expect(mockRootEmit).toHaveBeenCalledExactlyOnceWith('update:model-value', expect.any(Array));
         });
 
         it('should emit month value in month picker mode', () => {
@@ -291,7 +291,7 @@ describe('useExternalInternalMapper', () => {
 
             emitModelValue();
 
-            expect(mockRootEmit).toHaveBeenCalledWith('update:model-value', expect.anything());
+            expect(mockRootEmit).toHaveBeenCalledExactlyOnceWith('update:model-value', expect.anything());
         });
 
         it('should emit time value in time picker mode', () => {
@@ -301,7 +301,7 @@ describe('useExternalInternalMapper', () => {
 
             emitModelValue();
 
-            expect(mockRootEmit).toHaveBeenCalledWith('update:model-value', expect.anything());
+            expect(mockRootEmit).toHaveBeenCalledExactlyOnceWith('update:model-value', expect.anything());
         });
 
         it('should emit year value in year picker mode', () => {
@@ -311,7 +311,7 @@ describe('useExternalInternalMapper', () => {
 
             emitModelValue();
 
-            expect(mockRootEmit).toHaveBeenCalledWith('update:model-value', expect.anything());
+            expect(mockRootEmit).toHaveBeenCalledExactlyOnceWith('update:model-value', expect.anything());
         });
 
         it('should emit week range in week picker mode', () => {
@@ -321,7 +321,7 @@ describe('useExternalInternalMapper', () => {
 
             emitModelValue();
 
-            expect(mockRootEmit).toHaveBeenCalledWith('update:model-value', expect.anything());
+            expect(mockRootEmit).toHaveBeenCalledExactlyOnceWith('update:model-value', expect.anything());
         });
 
         it('should format input value after emitting', () => {
@@ -400,7 +400,7 @@ describe('useExternalInternalMapper', () => {
 
             emitModelValue();
 
-            expect(mockRootEmit).toHaveBeenCalledWith('update:model-value', expect.any(Number));
+            expect(mockRootEmit).toHaveBeenCalledExactlyOnceWith('update:model-value', expect.any(Number));
         });
 
         it('should parse ISO string modelType', () => {
@@ -443,7 +443,7 @@ describe('useExternalInternalMapper', () => {
 
             emitModelValue();
 
-            expect(mockRootEmit).toHaveBeenCalledWith('update:model-value', expect.any(Array));
+            expect(mockRootEmit).toHaveBeenCalledExactlyOnceWith('update:model-value', expect.any(Array));
         });
 
         it('should parse modelAuto value correctly', () => {

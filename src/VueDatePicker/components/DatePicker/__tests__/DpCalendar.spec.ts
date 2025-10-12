@@ -417,7 +417,7 @@ describe('DpCalendar', () => {
             },
         });
 
-        expect(customCalendar).toHaveBeenCalledWith(weeks);
+        expect(customCalendar).toHaveBeenCalledExactlyOnceWith(weeks);
 
         // Reset
         (ctx.rootProps as any).calendar = null;

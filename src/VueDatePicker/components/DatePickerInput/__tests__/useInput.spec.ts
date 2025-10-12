@@ -152,7 +152,7 @@ describe('useInput', () => {
             const { parseFreeInput } = useInput();
             const result = parseFreeInput('custom-date');
 
-            expect(customParser).toHaveBeenCalledWith('custom-date');
+            expect(customParser).toHaveBeenCalledExactlyOnceWith('custom-date');
             expect(result).toBeInstanceOf(Date);
             expect(result?.getMonth()).toBe(0);
             expect(result?.getDate()).toBe(15);

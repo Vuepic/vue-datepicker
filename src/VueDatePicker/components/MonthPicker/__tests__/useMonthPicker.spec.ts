@@ -222,8 +222,9 @@ describe('useMonthPicker', () => {
         const picker = useMonthPicker(mockProps, mockEmit);
         picker.selectMonth(5, 0);
 
-        expect(mockEmit).toHaveBeenCalledWith('auto-apply');
-        expect(mockEmit).toHaveBeenCalledWith('update-flow-step');
+        expect(mockEmit).toHaveBeenCalledTimes(2);
+        expect(mockEmit).toHaveBeenNthCalledWith(1, 'auto-apply');
+        expect(mockEmit).toHaveBeenNthCalledWith(2, 'update-flow-step');
     });
 
     it('should select single month and update model value', () => {
@@ -273,7 +274,7 @@ describe('useMonthPicker', () => {
         const picker = useMonthPicker(mockProps, mockEmit);
         picker.selectMonth(5, 0);
 
-        expect(mockEmit).toHaveBeenCalledWith('auto-apply', true);
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('auto-apply', true);
     });
 
     it('should update calendar month when selecting', () => {
@@ -287,7 +288,7 @@ describe('useMonthPicker', () => {
         const picker = useMonthPicker(mockProps, mockEmit);
         picker.selectYear(2025, 0);
 
-        expect(ctx.rootEmit).toHaveBeenCalledWith('update-month-year', expect.any(Object));
+        expect(ctx.rootEmit).toHaveBeenCalledExactlyOnceWith('update-month-year', expect.any(Object));
     });
 
     it('should set hover date correctly', () => {
@@ -302,14 +303,14 @@ describe('useMonthPicker', () => {
         const picker = useMonthPicker(mockProps, mockEmit);
         picker.presetDate(new Date(2024, 6, 15));
 
-        expect(mockEmit).toHaveBeenCalledWith('auto-apply');
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('auto-apply');
     });
 
     it('should preset date with array of dates', () => {
         const picker = useMonthPicker(mockProps, mockEmit);
         picker.presetDate([new Date(2024, 2, 1), new Date(2024, 5, 30)]);
 
-        expect(mockEmit).toHaveBeenCalledWith('auto-apply');
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('auto-apply');
     });
 
     it('should check if month is disabled with Map', () => {
@@ -419,7 +420,7 @@ describe('useMonthPicker', () => {
         const picker = useMonthPicker(mockProps, mockEmit);
         picker.selectMonth(7, 0);
 
-        expect(ctx.rootEmit).toHaveBeenCalledWith('update-month-year', {
+        expect(ctx.rootEmit).toHaveBeenCalledExactlyOnceWith('update-month-year', {
             instance: 0,
             year: 2024,
             month: 7,
@@ -432,7 +433,7 @@ describe('useMonthPicker', () => {
         const picker = useMonthPicker(mockProps, mockEmit);
         picker.selectYear(2025, 0);
 
-        expect(ctx.rootEmit).toHaveBeenCalledWith(
+        expect(ctx.rootEmit).toHaveBeenCalledExactlyOnceWith(
             'update-month-year',
             expect.objectContaining({
                 instance: 0,

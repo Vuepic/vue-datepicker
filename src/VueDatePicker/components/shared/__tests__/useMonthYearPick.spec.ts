@@ -69,7 +69,7 @@ describe('useMonthYearPick', () => {
         const picker = useMonthYearPick(defaultProps, mockEmit);
         picker.updateMonthYear(5, 2024, false);
 
-        expect(mockEmit).toHaveBeenCalledWith('update-month-year', {
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('update-month-year', {
             month: 5,
             year: 2024,
             fromNav: false,
@@ -80,7 +80,7 @@ describe('useMonthYearPick', () => {
         const picker = useMonthYearPick(defaultProps, mockEmit);
         picker.handleMonthYearChange(true, false);
 
-        expect(mockEmit).toHaveBeenCalledWith('update-month-year', {
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('update-month-year', {
             month: 3,
             year: 2024,
             fromNav: false,
@@ -91,7 +91,7 @@ describe('useMonthYearPick', () => {
         const picker = useMonthYearPick(defaultProps, mockEmit);
         picker.handleMonthYearChange(false, false);
 
-        expect(mockEmit).toHaveBeenCalledWith('update-month-year', {
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('update-month-year', {
             month: 1,
             year: 2024,
             fromNav: false,
@@ -102,7 +102,7 @@ describe('useMonthYearPick', () => {
         const picker = useMonthYearPick(defaultProps, mockEmit);
         picker.handleMonthYearChange(true, true);
 
-        expect(mockEmit).toHaveBeenCalledWith('update-month-year', {
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('update-month-year', {
             month: 3,
             year: 2024,
             fromNav: true,
@@ -114,7 +114,7 @@ describe('useMonthYearPick', () => {
         const picker = useMonthYearPick(props, mockEmit);
         picker.handleMonthYearChange(true, false);
 
-        expect(mockEmit).toHaveBeenCalledWith('update-month-year', {
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('update-month-year', {
             month: 0,
             year: 2025,
             fromNav: false,
@@ -126,7 +126,7 @@ describe('useMonthYearPick', () => {
         const picker = useMonthYearPick(props, mockEmit);
         picker.handleMonthYearChange(false, false);
 
-        expect(mockEmit).toHaveBeenCalledWith('update-month-year', {
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('update-month-year', {
             month: 11,
             year: 2023,
             fromNav: false,
@@ -139,7 +139,7 @@ describe('useMonthYearPick', () => {
         const picker = useMonthYearPick(props, mockEmit);
         picker.handleMonthYearChange(true, false);
 
-        expect(mockEmit).toHaveBeenCalledWith('update-month-year', {
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('update-month-year', {
             month: 0,
             year: 2024,
             fromNav: false,
@@ -152,7 +152,7 @@ describe('useMonthYearPick', () => {
         picker.handleMonthYearChange(true, false);
 
         // Should skip month 3 (April) and go to month 4 (May)
-        expect(mockEmit).toHaveBeenCalledWith('update-month-year', {
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('update-month-year', {
             month: 4,
             year: 2024,
             fromNav: false,
@@ -165,7 +165,7 @@ describe('useMonthYearPick', () => {
         picker.handleMonthYearChange(false, false);
 
         // Should skip month 1 (February) and go to month 0 (January)
-        expect(mockEmit).toHaveBeenCalledWith('update-month-year', {
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('update-month-year', {
             month: 0,
             year: 2024,
             fromNav: false,
@@ -179,7 +179,7 @@ describe('useMonthYearPick', () => {
         picker.handleMonthYearChange(true, false);
 
         // Should skip year 2025 and go to 2026
-        expect(mockEmit).toHaveBeenCalledWith('update-month-year', {
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('update-month-year', {
             month: 0,
             year: 2026,
             fromNav: false,
@@ -193,7 +193,7 @@ describe('useMonthYearPick', () => {
         picker.handleMonthYearChange(false, false);
 
         // Should skip year 2023 and go to 2022
-        expect(mockEmit).toHaveBeenCalledWith('update-month-year', {
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('update-month-year', {
             month: 11,
             year: 2022,
             fromNav: false,
@@ -206,7 +206,7 @@ describe('useMonthYearPick', () => {
         picker.handleMonthYearChange(true, false);
 
         // Should skip months 3, 4, 5 and go to month 6
-        expect(mockEmit).toHaveBeenCalledWith('update-month-year', {
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('update-month-year', {
             month: 6,
             year: 2024,
             fromNav: false,
@@ -220,7 +220,7 @@ describe('useMonthYearPick', () => {
         picker.handleMonthYearChange(true, false);
 
         // Should skip years 2025, 2026, 2027 and go to 2028
-        expect(mockEmit).toHaveBeenCalledWith('update-month-year', {
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('update-month-year', {
             month: 0,
             year: 2028,
             fromNav: false,
@@ -253,7 +253,7 @@ describe('useMonthYearPick', () => {
         const picker = useMonthYearPick(defaultProps, mockEmit);
         picker.handleMonthYearChange(true, false);
 
-        expect(mockEmit).toHaveBeenCalledWith('update-month-year', {
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('update-month-year', {
             month: 3,
             year: 2024,
             fromNav: false,
@@ -267,7 +267,7 @@ describe('useMonthYearPick', () => {
         picker.handleMonthYearChange(true, false);
 
         // Should skip month 0 (January) in 2025 and go to month 1 (February)
-        expect(mockEmit).toHaveBeenCalledWith('update-month-year', {
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('update-month-year', {
             month: 1,
             year: 2025,
             fromNav: false,
@@ -282,7 +282,7 @@ describe('useMonthYearPick', () => {
         picker.handleMonthYearChange(true, false);
 
         // Should stay in same year and skip to month 1
-        expect(mockEmit).toHaveBeenCalledWith('update-month-year', {
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('update-month-year', {
             month: 1,
             year: 2024,
             fromNav: false,
@@ -296,7 +296,7 @@ describe('useMonthYearPick', () => {
         picker.handleMonthYearChange(true, false);
 
         // Should skip January 2025 to February 2025, then skip year 2025 entirely to 2026
-        expect(mockEmit).toHaveBeenCalledWith('update-month-year', {
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('update-month-year', {
             month: 1,
             year: 2026,
             fromNav: false,
@@ -313,7 +313,7 @@ describe('useMonthYearPick', () => {
         const picker = useMonthYearPick(defaultProps, mockEmit);
 
         picker.handleMonthYearChange(true, false);
-        expect(mockEmit).toHaveBeenCalledWith('update-month-year', {
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('update-month-year', {
             month: 3,
             year: 2024,
             fromNav: false,
@@ -322,7 +322,7 @@ describe('useMonthYearPick', () => {
         mockEmit.mockClear();
 
         picker.handleMonthYearChange(false, false);
-        expect(mockEmit).toHaveBeenCalledWith('update-month-year', {
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('update-month-year', {
             month: 1,
             year: 2024,
             fromNav: false,

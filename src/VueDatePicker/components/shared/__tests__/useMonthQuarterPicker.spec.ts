@@ -168,7 +168,7 @@ describe('useMonthOrQuarterPicker', () => {
 
         picker.toggleYearPicker(0);
         expect(picker.showYearPicker.value[0]).toBe(true);
-        expect(mockEmit).toHaveBeenCalledWith('reset-flow');
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('reset-flow');
 
         picker.toggleYearPicker(0);
         expect(picker.showYearPicker.value[0]).toBe(false);
@@ -262,7 +262,7 @@ describe('useMonthOrQuarterPicker', () => {
 
         picker.toggleYearPicker(0);
 
-        expect(mockEmit).toHaveBeenCalledWith('reset-flow');
+        expect(mockEmit).toHaveBeenCalledExactlyOnceWith('reset-flow');
     });
 
     it('should handle focusStartDate in range mode', () => {

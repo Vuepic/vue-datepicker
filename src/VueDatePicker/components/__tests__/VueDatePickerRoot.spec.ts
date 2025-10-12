@@ -349,7 +349,7 @@ describe('VueDatePickerRoot', () => {
             wrapper.vm.updateInternalModelValue(newDate);
             await nextTick();
 
-            expect(mockUpdateInternalModelValue).toHaveBeenCalledWith(newDate);
+            expect(mockUpdateInternalModelValue).toHaveBeenCalledExactlyOnceWith(newDate);
         });
 
         it('should call VueDatePicker setMonthYear with value', async () => {
@@ -363,7 +363,7 @@ describe('VueDatePickerRoot', () => {
             wrapper.vm.setMonthYear(monthYear);
             await nextTick();
 
-            expect(mockSetMonthYear).toHaveBeenCalledWith(monthYear);
+            expect(mockSetMonthYear).toHaveBeenCalledExactlyOnceWith(monthYear);
         });
 
         it('should call VueDatePicker switchView with view and instance', async () => {
@@ -376,7 +376,7 @@ describe('VueDatePickerRoot', () => {
             wrapper.vm.switchView('month', 0);
             await nextTick();
 
-            expect(mockSwitchView).toHaveBeenCalledWith('month', 0);
+            expect(mockSwitchView).toHaveBeenCalledExactlyOnceWith('month', 0);
         });
     });
 
