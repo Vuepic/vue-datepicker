@@ -96,16 +96,6 @@
   }
 }
 
-.dp--menu-arrow {
-  height: 12px;
-  width: 12px;
-  background-color: green;
-  position: absolute;
-  border-inline-end: 1px solid var(--dp-menu-border-color);
-  border-top: 1px solid var(--dp-menu-border-color);
-  transform: translate(-50%, -50%) rotate(-45deg);
-}
-
 .dp__arrow_top {
   height: 12px;
   width: 12px;

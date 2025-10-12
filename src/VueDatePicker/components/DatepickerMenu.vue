@@ -6,7 +6,6 @@
         :role="inline.enabled ? undefined : 'dialog'"
         :aria-label="ariaLabels?.menu"
         :class="dpMenuClass"
-        :style="{ '--dp-arrow-left': arrowPos }"
         @mouseleave="clearHoverDate"
         @click="handleDpMenuClick"
         @keydown="onKeyDown"
@@ -126,32 +125,15 @@
     import type { MaybeRefOrGetter } from 'vue';
     import type { DynamicClass, MenuExposedFn, MenuView, MonthModel } from '@/types';
 
-    const emit = defineEmits([
-        'close-picker',
-        'select-date',
-        'auto-apply',
-        // 'time-update',
-        'flow-step',
-        'update-month-year',
-        // 'invalid-select',
-        // 'update:internal-model-value',
-        // 'invalid-fixed-range',
-        // 'tooltip-open',
-        // 'tooltip-close',
-        // 'time-picker-open',
-        // 'time-picker-close',
-        // 'am-pm-change',
-        // 'range-start',
-        // 'range-end',
-        'time-update', // todo
-        'auto-apply-invalid',
-        'date-update',
-        'invalid-date',
-        'overlay-toggle',
-        'menu-blur',
-    ]);
+    const emit = defineEmits<{
+        'close-picker': [];
+        'select-date': [];
+        'auto-apply': [ignoreClose?: boolean];
+        'time-update': [];
+        'menu-blur': [];
+    }>();
 
-    const props = defineProps<{
+    defineProps<{
         collapse: boolean;
         noOverlayFocus: boolean;
         getInputRect: () => DOMRect;
@@ -231,19 +213,6 @@
         if (rootProps.timePicker) return TimePickerSolo;
         if (rootProps.quarterPicker) return QuarterPicker;
         return DatePicker;
-    });
-
-    // todo
-    const arrowPos = computed(() => {
-        if (config.value.arrowLeft) return config.value.arrowLeft;
-        const menuRect = dpMenuRef.value?.getBoundingClientRect();
-        const inputRect = props.getInputRect();
-        if (inputRect?.width < calendarWidth?.value && inputRect?.left <= (menuRect?.left ?? 0)) {
-            return `${inputRect?.width / 2}px`;
-        } else if (inputRect?.right >= (menuRect?.right ?? 0) && inputRect?.width < calendarWidth?.value) {
-            return `${calendarWidth?.value - inputRect?.width / 2}px`;
-        }
-        return '50%';
     });
 
     const focusMenu = (): void => {

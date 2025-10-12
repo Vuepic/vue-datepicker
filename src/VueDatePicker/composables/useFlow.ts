@@ -5,7 +5,7 @@ import { useContext } from '@/composables/useContext.ts';
 
 import type { PickerSection } from '@/types';
 
-export const useFlow = (dynCmpRef: Ref<any>) => {
+export const useFlow = (dynCmpRef: Ref) => {
     const {
         rootEmit,
         rootProps,

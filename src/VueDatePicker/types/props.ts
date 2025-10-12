@@ -42,7 +42,6 @@ export interface RootProps {
     startTime?: TimeModel | TimeModel[];
     hideOffsetDates?: boolean;
     noToday?: boolean;
-    disabledWeekDays?: string[] | number[]; // todo - use filter
     allowedDates?: DateValue[];
     markers?: Marker[];
     presetDates?: PresetDate[];
@@ -87,7 +86,6 @@ export interface RootProps {
     quarterPicker?: boolean;
     yearFirst?: boolean;
     loading?: boolean;
-    onInternalModelChange?: any; // todo
     ui?: Partial<UIConfig>;
 }
 

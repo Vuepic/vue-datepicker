@@ -353,7 +353,6 @@
         }
     };
 
-    // todo move
     const timeUpdate = (): void => {
         if (rootProps.autoApply && isValidTime(modelValue.value)) {
             emitModelValue();

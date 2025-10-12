@@ -101,6 +101,7 @@ export const defaultTransitions = {
 };
 
 export const defaultFilters = {
+    weekDays: [],
     months: [],
     years: [],
     times: { hours: [], minutes: [], seconds: [] },

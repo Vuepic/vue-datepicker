@@ -60,7 +60,7 @@ describe('useValidation', () => {
                 minutes: date.getMinutes(),
                 seconds: date.getSeconds(),
             })),
-            setDateTimeFromObj: vi.fn((timeObj: any, date: Date) => {
+            setTime: vi.fn((timeObj: any, date: Date) => {
                 const newDate = new Date(date);
                 newDate.setHours(timeObj.hours || 0);
                 newDate.setMinutes(timeObj.minutes || 0);
@@ -92,7 +92,6 @@ describe('useValidation', () => {
             rootProps: {
                 yearPicker: false,
                 monthPicker: false,
-                disabledWeekDays: [],
                 yearRange: [1900, 2100],
                 disabledTimes: null,
                 maxTime: null,
@@ -160,7 +159,7 @@ describe('useValidation', () => {
         });
 
         it('should return false for disabled weekdays', () => {
-            mockContext.rootProps.disabledWeekDays = [0]; // Sunday
+            mockContext.defaults.filters.value.weekDays = [0]; // Sunday
             const sunday = createDate(2024, 5, 16); // June 16, 2024 is Sunday
             expect(validation.validateDate(sunday)).toBe(false);
         });

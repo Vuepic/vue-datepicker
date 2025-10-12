@@ -17,7 +17,6 @@ const {
     getMaxMonth,
     getYearFromDate,
     getTimeObj,
-    setDateTimeFromObj,
     sanitizeTime,
     getTimeObjFromCurrent,
     getBeforeAndAfterInRange,
@@ -125,15 +124,10 @@ describe('useDateUtils', () => {
         expect(year).toBe(2026);
     });
 
-    it('getTimeObj and setDateTimeFromObj should map values', () => {
+    it('getTimeObj should map values', () => {
         const base = new Date('2024-01-01T11:22:33');
         const obj = getTimeObj(base);
         expect(obj).toEqual({ hours: 11, minutes: 22, seconds: 33 });
-
-        const setFromObj = setDateTimeFromObj({ hours: 5, minutes: 6, seconds: 7 }, new Date('2024-01-01T00:00:00'));
-        expect(setFromObj.getHours()).toBe(5);
-        expect(setFromObj.getMinutes()).toBe(6);
-        expect(setFromObj.getSeconds()).toBe(7);
     });
 
     it('sanitizeTime should coerce numbers and allow single field override', () => {

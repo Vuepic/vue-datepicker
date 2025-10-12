@@ -71,6 +71,7 @@ export interface FlowConfig {
 }
 
 export interface FilterConfig {
+    weekDays: number[];
     months: number[];
     years: number[];
     times: { hours: number[]; minutes: number[]; seconds: number[] };

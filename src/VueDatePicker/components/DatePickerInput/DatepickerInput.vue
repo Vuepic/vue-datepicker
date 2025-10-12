@@ -97,7 +97,6 @@
     import { EventKey } from '@/constants';
     import type { DynamicClass, InputParsedDate, InternalModelValue } from '@/types';
 
-    // todo
     const emit = defineEmits<{
         clear: [];
         open: [];
@@ -106,7 +105,6 @@
         'select-date': [];
         'set-empty-date': [];
         toggle: [];
-        'focus-pref': [];
         focus: [];
         blur: [];
         'real-blur': [];

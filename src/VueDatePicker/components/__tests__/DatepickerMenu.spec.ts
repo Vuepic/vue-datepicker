@@ -1072,47 +1072,6 @@ describe('DatepickerMenu', () => {
         });
     });
 
-    describe('Arrow Position', () => {
-        it('should use config arrowLeft when provided', () => {
-            ctx.defaults.config.value.arrowLeft = '100px';
-
-            const wrapper = mount(DatepickerMenu, {
-                props: defaultProps,
-            });
-
-            expect(wrapper.attributes('style')).toContain('--dp-arrow-left: 100px');
-        });
-
-        it('should calculate arrow position when input is smaller than menu', () => {
-            const wrapper = mount(DatepickerMenu, {
-                props: {
-                    ...defaultProps,
-                    getInputRect: () => ({
-                        width: 100,
-                        left: 100,
-                        right: 200,
-                        top: 50,
-                        bottom: 100,
-                        height: 50,
-                        x: 100,
-                        y: 50,
-                        toJSON: () => ({}),
-                    }),
-                },
-            });
-
-            expect(wrapper.attributes('style')).toContain('--dp-arrow-left');
-        });
-
-        it('should default to 50% when input and menu positions align', () => {
-            const wrapper = mount(DatepickerMenu, {
-                props: defaultProps,
-            });
-
-            expect(wrapper.attributes('style')).toContain('--dp-arrow-left: 50%');
-        });
-    });
-
     describe('Click Handling', () => {
         it('should handle menu click', async () => {
             const wrapper = mount(DatepickerMenu, {

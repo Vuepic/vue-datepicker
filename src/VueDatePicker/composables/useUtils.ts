@@ -15,7 +15,6 @@ import type {
 export const useUtils = () => {
     const { getDate } = useDateUtils();
 
-    // todo - check usage
     const padZero = (val: number) => (val < 10 ? `0${val}` : val);
 
     const checkHighlightMonth = (defaultedHighlight: HighlightConfig | HighlightFn, month: number, year: number) => {

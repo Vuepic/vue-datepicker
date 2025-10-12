@@ -22,7 +22,6 @@ import {
     type Day,
     setMinutes,
 } from 'date-fns';
-import { TZDate } from '@date-fns/tz'; // todo - check usage
 import type { MaybeDate, Numeric, TimeKey, TimeModel, TimeObj } from '@/types';
 
 export const useDateUtils = () => {
@@ -38,11 +37,8 @@ export const useDateUtils = () => {
         return fromStartOfMonth ? startOfMonth(timeReset) : timeReset;
     };
 
-    const getDate = (date?: MaybeDate, timezone?: string, reset = false) => {
-        let newDate = date ? new Date(date) : new Date();
-        if (timezone) newDate = new TZDate(newDate, timezone); // todo
-        if (reset) resetDateTime(newDate);
-        return newDate;
+    const getDate = (date?: MaybeDate) => {
+        return date ? new Date(date) : new Date();
     };
 
     const setTime = (time: Partial<{ hours: Numeric; minutes: Numeric; seconds: Numeric }>, dateToSet?: MaybeDate) => {
@@ -141,14 +137,6 @@ export const useDateUtils = () => {
 
     const setTimeValue = (date: Date): Date => set(getDate(), getTimeObj(date));
 
-    const setDateTimeFromObj = (time: TimeModel, date?: Date | null) => {
-        return set(date ?? getDate(), {
-            hours: +time.hours || 0,
-            minutes: +time.minutes || 0,
-            seconds: +time.seconds || 0,
-        });
-    };
-
     const sanitizeTime = (time: TimeModel, type?: TimeKey, value?: number): Duration => {
         if (type && (value || value === 0)) {
             return Object.fromEntries(
@@ -211,7 +199,6 @@ export const useDateUtils = () => {
         getYearFromDate,
         getTimeObj,
         setTimeValue,
-        setDateTimeFromObj, // todo - use setTime
         sanitizeTime,
         getTimeObjFromCurrent,
         getBeforeAndAfterInRange,

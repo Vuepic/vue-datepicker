@@ -29,7 +29,7 @@ export const useValidation = () => {
         getDaysInBetween,
         setTimeValue,
         getTimeObj,
-        setDateTimeFromObj,
+        setTime,
     } = useDateUtils();
     const {
         defaults: { safeDates, range, multiDates, filters, timeConfig },
@@ -63,8 +63,8 @@ export const useValidation = () => {
 
         const disabledMonths = filters.value.months.map((month) => +month);
         const inDisabledMonths = disabledMonths.includes(getMonth(date));
-        const weekDayDisabled = rootProps.disabledWeekDays?.length
-            ? rootProps.disabledWeekDays.some((day) => +day === getDay(date))
+        const weekDayDisabled = filters.value.weekDays?.length
+            ? filters.value.weekDays.some((day) => +day === getDay(date))
             : false;
 
         const notInSpecific = checkAllowedDates(date);
@@ -378,7 +378,7 @@ export const useValidation = () => {
         selected: Date,
         minOrMaxDate: OptionalDate,
     ) => {
-        return minOrMax ? setDateTimeFromObj(minOrMax, selected) : getDate(minOrMaxDate ?? selected);
+        return minOrMax ? setTime(minOrMax, selected) : getDate(minOrMaxDate ?? selected);
     };
 
     const isValidDate = (value: Date | Date[] | null | (Date | null)[]): boolean => {
