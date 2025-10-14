@@ -145,6 +145,7 @@
             dp__disabled: props.disabled,
             dp__input_readonly: !defaultedTextInput.value.enabled,
             dp__input: true,
+            dp__input_not_clearable: !props.clearable,
             dp__input_icon_pad: !props.hideInputIcon,
             dp__input_valid: typeof props.state === 'boolean' ? props.state : false,
             dp__input_invalid: typeof props.state === 'boolean' ? !props.state : false,
