@@ -12,6 +12,7 @@ export const useExternalInternalMapper = () => {
     const { convertType, errorMapper } = useUtils();
     const {
         rootEmit,
+        state,
         rootProps,
         inputValue,
         defaults: { textInput, range, tz, multiDates, timeConfig, formats },
@@ -221,6 +222,7 @@ export const useExternalInternalMapper = () => {
      * Also does the validation of the provided value, if invalid it will use null as a default or an empty value
      */
     const parseExternalModelValue = (value: ModelValue): void => {
+        if (state.isTextInputDate) return;
         const mappedDate = mapExternalToInternal(value);
 
         if (isValidDate(convertType(mappedDate))) {
