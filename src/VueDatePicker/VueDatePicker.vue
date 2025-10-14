@@ -239,7 +239,7 @@
         emitModelValue,
         formatInputValue,
         checkBeforeEmit,
-    } = useExternalInternalMapper(emit, props, isInputFocused);
+    } = useExternalInternalMapper(emit, props, { isInputFocused, isTextInputDate });
 
     const wrapperClass = computed(
         (): DynamicClass => ({
@@ -469,7 +469,7 @@
                 selectDate();
                 emit('text-submit');
             } else if (props.autoApply) {
-                autoApplyValue();
+                autoApplyValue(true);
             }
             nextTick().then(() => {
                 isTextInputDate.value = false;
