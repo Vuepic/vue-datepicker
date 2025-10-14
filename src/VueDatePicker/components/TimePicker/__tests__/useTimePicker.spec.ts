@@ -24,12 +24,15 @@ vi.mock('@/composables/useContext.ts', () => {
             enableSeconds: false,
         }),
     };
+    const state = reactive({
+        isTextInputDate: false,
+    });
     return {
         useContext: () => ({
+            state,
             time,
             modelValue,
             rootProps,
-            isTextInputDate,
             defaults,
         }),
     };
@@ -394,14 +397,14 @@ describe('useTimePicker', () => {
         it('should handle text input date changes', async () => {
             const { useContext } = await import('@/composables/useContext.ts');
             const ctx = useContext();
-            ctx.isTextInputDate.value = true;
+            (ctx.state.isTextInputDate as any) = true;
 
             const result = useTimePicker(emitMock);
 
             expect(result.time).toBeDefined();
 
             // Reset
-            ctx.isTextInputDate.value = false;
+            (ctx.state.isTextInputDate as any) = false;
         });
     });
 

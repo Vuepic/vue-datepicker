@@ -56,7 +56,16 @@ vi.mock('@/composables/useContext.ts', () => {
     }));
 
     const inlineRef = ref({ enabled: false });
-    const configRef = ref({ keepActionRow: false, mobileBreakpoint: 768, closeOnScroll: false, closeOnClearValue: false, closeOnAutoApply: true, tabOutClosesMenu: false, setDateOnMenuClose: false, onClickOutside: undefined });
+    const configRef = ref({
+        keepActionRow: false,
+        mobileBreakpoint: 768,
+        closeOnScroll: false,
+        closeOnClearValue: false,
+        closeOnAutoApply: true,
+        tabOutClosesMenu: false,
+        setDateOnMenuClose: false,
+        onClickOutside: undefined,
+    });
     const textInputRef = ref({ enabled: false });
     const rangeRef = ref({ enabled: false, partialRange: false });
     const multiDatesRef = ref({ enabled: false });
@@ -187,7 +196,16 @@ describe('VueDatePicker', () => {
         ctx.__isTextInputDateRef.value = false;
         ctx.rootProps.teleport = false;
         ctx.__inlineRef.value = { enabled: false };
-        ctx.__configRef.value = { keepActionRow: false, mobileBreakpoint: 768, closeOnScroll: false, closeOnClearValue: false, closeOnAutoApply: true, tabOutClosesMenu: false, setDateOnMenuClose: false, onClickOutside: undefined };
+        ctx.__configRef.value = {
+            keepActionRow: false,
+            mobileBreakpoint: 768,
+            closeOnScroll: false,
+            closeOnClearValue: false,
+            closeOnAutoApply: true,
+            tabOutClosesMenu: false,
+            setDateOnMenuClose: false,
+            onClickOutside: undefined,
+        };
         ctx.__textInputRef.value = { enabled: false };
         ctx.__rangeRef.value = { enabled: false, partialRange: false };
         ctx.__multiDatesRef.value = { enabled: false };
@@ -552,7 +570,7 @@ describe('VueDatePicker', () => {
 
         it('should set mobile data attribute when on mobile', async () => {
             const { useResponsive } = await import('@/composables/useResponsive.ts');
-            const responsive = useResponsive({} as any);
+            const responsive = useResponsive();
             (responsive.isMobile as any).value = true;
 
             const wrapper = mount(VueDatePicker);

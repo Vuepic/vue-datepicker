@@ -74,6 +74,9 @@ vi.mock('@/composables/useContext.ts', () => ({
         inputValue: mockInputValue,
         modelValue: mockModelValue,
         defaults: mockDefaults,
+        state: {
+            isTextInputDate: false,
+        },
     }),
 }));
 

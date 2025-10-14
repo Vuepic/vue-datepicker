@@ -43,7 +43,7 @@ export const useExternalInternalMapper = () => {
 
     const convertZonedModelToLocal = (date: Date) => {
         if (tz.value.timezone && tz.value.convertModel) {
-            return getDate(date, tz.value.timezone);
+            return getDate(date); // todo
         }
         return date;
     };
