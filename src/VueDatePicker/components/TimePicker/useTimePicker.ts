@@ -16,14 +16,14 @@ export const useTimePicker = (emit: EmitFn<TimePickerEmits>) => {
         time,
         modelValue,
         rootProps,
-        isTextInputDate,
+        state,
         defaults: { startTime, range, tz, timeConfig },
     } = useContext();
     const { toTzSafe } = useTimeZone();
 
     const { getDate, getTimeObj } = useDateUtils();
     useRemapper(() => {
-        if (isTextInputDate.value) setTimeFromModel();
+        if (state.isTextInputDate) setTimeFromModel();
     });
     const { updateTimeValues, getSetDateTime, assignTime, assignStartTime, disabledTimesConfig, validateTime } =
         useTimePickerUtils(updateFlowStep);

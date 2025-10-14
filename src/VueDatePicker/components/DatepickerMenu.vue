@@ -146,7 +146,7 @@
         defaults: { textInput, inline, config, ui, ariaLabels },
         setState,
     } = useContext();
-    const { isMobile } = useResponsive(config);
+    const { isMobile } = useResponsive();
     const { mapSlots } = useSlotsMapper();
     const { handleEventPropagation, getElWithin, checkStopPropagation, checkKeyDown } = useUtils();
     const { arrowRight, arrowLeft, arrowDown, arrowUp } = useArrowNavigation();

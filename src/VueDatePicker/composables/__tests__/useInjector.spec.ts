@@ -74,8 +74,8 @@ describe('useInjector', () => {
             expect(context).toHaveProperty('today');
             expect(context).toHaveProperty('inputValue');
             expect(context).toHaveProperty('setState');
-            expect(context).toHaveProperty('isMobile');
-            expect(context).toHaveProperty('isTextInputDate');
+            // isTextInputDate is now in state object
+            expect(context!.state).toHaveProperty('isTextInputDate');
         });
 
         it('should initialize with provided props', () => {

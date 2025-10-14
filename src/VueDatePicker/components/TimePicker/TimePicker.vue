@@ -106,7 +106,14 @@
     import { ClockIcon, CalendarIcon } from '@/components/Icons';
     import TimeInput from '@/components/TimePicker/TimeInput.vue';
 
-    import { useSlotsMapper, useTransitions, useArrowNavigation, useContext, useUtils } from '@/composables';
+    import {
+        useSlotsMapper,
+        useTransitions,
+        useArrowNavigation,
+        useContext,
+        useUtils,
+        useResponsive,
+    } from '@/composables';
     import { useNavigationDisplay } from '@/components/shared/useNavigationDisplay.ts';
     import { FlowStep } from '@/constants';
 
@@ -137,7 +144,6 @@
         rootEmit,
         modelValue,
         rootProps,
-        isMobile,
         defaults: { ariaLabels, textInput, config, range, timeConfig },
     } = useContext();
     const { checkKeyDown, findFocusableEl, isModelAuto } = useUtils();
@@ -145,6 +151,7 @@
     const { transitionName, showTransition } = useTransitions();
     const { hideNavigationButtons } = useNavigationDisplay();
     const { mapSlots } = useSlotsMapper();
+    const { isMobile } = useResponsive();
     const slots = useSlots();
 
     const overlayRef = useTemplateRef('overlay');

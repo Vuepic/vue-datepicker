@@ -20,6 +20,7 @@ interface State {
     menuFocused: boolean;
     shiftKeyInMenu: boolean;
     isInputFocused: boolean;
+    isTextInputDate: boolean;
 }
 
 export const ContextKey = Symbol('ContextKey') as InjectionKey<{
@@ -35,8 +36,6 @@ export const ContextKey = Symbol('ContextKey') as InjectionKey<{
     year: ComputedRef<(instance: number) => number>;
     today: Date;
     inputValue: Ref<string>;
-    isMobile: ComputedRef<boolean>;
-    isTextInputDate: Ref<boolean>;
 }>;
 
 export const useInjector = (props: RootPropsWithDefaults, emit: EmitFn<RootEmits>) => {
@@ -48,11 +47,11 @@ export const useInjector = (props: RootPropsWithDefaults, emit: EmitFn<RootEmits
         menuFocused: false,
         shiftKeyInMenu: false,
         isInputFocused: false,
+        isTextInputDate: false,
     });
 
     const today = new Date();
     const inputValue = ref('');
-    const isTextInputDate = ref(false);
 
     const calendars = ref<CalendarMonthYear[]>([{ month: getMonth(today), year: getYear(today) }]);
 
@@ -85,8 +84,6 @@ export const useInjector = (props: RootPropsWithDefaults, emit: EmitFn<RootEmits
                 calendars.value[instance] ? calendars.value[instance].year : 0,
     );
 
-    const isMobile = computed(() => false);
-
     const setState = <T extends keyof State>(key: T, value: State[T]) => {
         state[key] = value;
     };
@@ -104,7 +101,5 @@ export const useInjector = (props: RootPropsWithDefaults, emit: EmitFn<RootEmits
         today,
         inputValue,
         setState,
-        isMobile,
-        isTextInputDate,
     });
 };

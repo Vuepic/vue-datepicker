@@ -27,11 +27,18 @@ vi.mock('@/composables/useContext.ts', () => {
         highlight: computed(() => highlightRef.value),
     };
 
+    const state = computed(() => ({
+        isTextInputDate: isTextInputDateRef.value,
+        menuFocused: false,
+        shiftKeyInMenu: false,
+        isInputFocused: false,
+    }));
+
     return {
         useContext: () => ({
             rootProps,
             rootEmit: vi.fn(),
-            isTextInputDate: computed(() => isTextInputDateRef.value),
+            state,
             month: computed(() => (instance: number) => calendarsRef.value[instance]?.month ?? monthRef.value),
             year: computed(() => (instance: number) => calendarsRef.value[instance]?.year ?? yearRef.value),
             modelValue: modelValueRef,

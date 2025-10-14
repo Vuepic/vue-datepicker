@@ -41,37 +41,62 @@ vi.mock('@/components/DatepickerMenu.vue', () => ({
 vi.mock('@/composables/useContext.ts', () => {
     const rootEmit = vi.fn();
     const setState = vi.fn();
-    const isTextInputDate = ref(false);
+    const isTextInputDateRef = ref(false);
     const inputValue = ref('');
     const modelValue = ref<Date | Date[] | null>(null);
     const rootProps = {
         teleport: false,
     };
 
+    const state = computed(() => ({
+        isTextInputDate: isTextInputDateRef.value,
+        menuFocused: false,
+        shiftKeyInMenu: false,
+        isInputFocused: false,
+    }));
+
+    const inlineRef = ref({ enabled: false });
+    const configRef = ref({ keepActionRow: false, mobileBreakpoint: 768, closeOnScroll: false, closeOnClearValue: false, closeOnAutoApply: true, tabOutClosesMenu: false, setDateOnMenuClose: false, onClickOutside: undefined });
+    const textInputRef = ref({ enabled: false });
+    const rangeRef = ref({ enabled: false, partialRange: false });
+    const multiDatesRef = ref({ enabled: false });
+    const teleportRef = ref({ center: false });
+    const floatingConfigRef = ref({ arrow: false, offset: 10 });
+    const transitionsRef = ref({
+        open: 'dp-open',
+        close: 'dp-close',
+        menuAppearTop: 'dp-menu-top',
+        menuAppearBottom: 'dp-menu-bottom',
+    });
+
     const defaults = {
-        inline: ref({ enabled: false }),
-        config: ref({ keepActionRow: false, mobileBreakpoint: 768 }),
-        textInput: ref({ enabled: false }),
-        range: ref({ enabled: false }),
-        multiDates: ref({ enabled: false }),
-        teleport: ref({ center: false }),
-        transitions: ref({
-            open: 'dp-open',
-            close: 'dp-close',
-            menuAppearTop: 'dp-menu-top',
-            menuAppearBottom: 'dp-menu-bottom',
-        }),
+        inline: computed(() => inlineRef.value),
+        config: computed(() => configRef.value),
+        textInput: computed(() => textInputRef.value),
+        range: computed(() => rangeRef.value),
+        multiDates: computed(() => multiDatesRef.value),
+        teleport: computed(() => teleportRef.value),
+        floatingConfig: computed(() => floatingConfigRef.value),
+        transitions: computed(() => transitionsRef.value),
     };
 
     return {
         useContext: () => ({
             rootEmit,
             setState,
-            isTextInputDate,
+            state,
             inputValue,
             modelValue,
             rootProps,
             defaults,
+            __isTextInputDateRef: isTextInputDateRef,
+            __inlineRef: inlineRef,
+            __configRef: configRef,
+            __textInputRef: textInputRef,
+            __rangeRef: rangeRef,
+            __multiDatesRef: multiDatesRef,
+            __teleportRef: teleportRef,
+            __floatingConfigRef: floatingConfigRef,
         }),
     };
 });
@@ -159,14 +184,15 @@ describe('VueDatePicker', () => {
         ctx = useContext();
         ctx.modelValue.value = null;
         ctx.inputValue.value = '';
-        ctx.isTextInputDate.value = false;
+        ctx.__isTextInputDateRef.value = false;
         ctx.rootProps.teleport = false;
-        ctx.defaults.inline.value.enabled = false;
-        ctx.defaults.config.value.keepActionRow = false;
-        ctx.defaults.textInput.value.enabled = false;
-        ctx.defaults.range.value.enabled = false;
-        ctx.defaults.multiDates.value.enabled = false;
-        ctx.defaults.teleport.value.center = false;
+        ctx.__inlineRef.value = { enabled: false };
+        ctx.__configRef.value = { keepActionRow: false, mobileBreakpoint: 768, closeOnScroll: false, closeOnClearValue: false, closeOnAutoApply: true, tabOutClosesMenu: false, setDateOnMenuClose: false, onClickOutside: undefined };
+        ctx.__textInputRef.value = { enabled: false };
+        ctx.__rangeRef.value = { enabled: false, partialRange: false };
+        ctx.__multiDatesRef.value = { enabled: false };
+        ctx.__teleportRef.value = { center: false };
+        ctx.__floatingConfigRef.value = { arrow: false, offset: 10 };
     });
 
     afterEach(() => {
@@ -340,7 +366,7 @@ describe('VueDatePicker', () => {
 
     describe('Inline Mode', () => {
         it('should not show menu wrapper class in inline mode', () => {
-            ctx.defaults.inline.value.enabled = true;
+            ctx.__inlineRef.value = { enabled: true };
 
             const wrapper = mount(VueDatePicker);
             const menuWrap = wrapper.find('.dp__outer_menu_wrap');
@@ -349,7 +375,7 @@ describe('VueDatePicker', () => {
         });
 
         it('should not apply floating styles in inline mode', () => {
-            ctx.defaults.inline.value.enabled = true;
+            ctx.__inlineRef.value = { enabled: true };
 
             const wrapper = mount(VueDatePicker);
             const menuWrap = wrapper.find('.dp__outer_menu_wrap');

@@ -1,5 +1,7 @@
 import type { CustomClass, InternalModelValue, PickerSection, TimeKey } from '@/types/generic.ts';
 import type { CalendarDay, MonthModel } from '@/types/picker.ts';
+import type { ShallowRef } from 'vue';
+import type { Placement, Strategy } from '@floating-ui/vue';
 
 export interface InputAttributesConfig {
     name: string;
@@ -186,4 +188,9 @@ export interface ActionRowConfig {
     selectBtnLabel: string;
     cancelBtnLabel: string;
     nowBtnLabel: string;
+}
+
+export interface FloatingConfig {
+    offset: number;
+    arrow: Readonly<ShallowRef<HTMLDivElement | null>> | boolean;
 }

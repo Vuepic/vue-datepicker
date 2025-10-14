@@ -50,7 +50,7 @@ export const useDatePicker = (
         modelValue,
         rootProps,
         today,
-        isTextInputDate,
+        state,
         defaults: { multiCalendars, startTime, range, config, tz, safeDates, multiDates, timeConfig, flow },
     } = useContext();
     const { validateMonthYearInRange, isDisabled, isDateRangeAllowed, checkMinMaxRange } = useValidation();
@@ -60,7 +60,7 @@ export const useDatePicker = (
     const { checkRangeAutoApply, getRangeWithFixedDate, handleMultiDatesSelect, setPresetDate } = useComponentShared();
     const { getMapDate } = useUtils();
     const { toTzSafe } = useTimeZone();
-    useRemapper(() => mapInternalModuleValues(isTextInputDate.value));
+    useRemapper(() => mapInternalModuleValues(state.isTextInputDate));
 
     const shouldUpdateMonthView = (isAction: boolean) => {
         if (!config.value.keepViewOnOffsetClick || isAction) return true;

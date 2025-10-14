@@ -141,10 +141,8 @@ export const defaultTime = {
 
 export const basePropDefaults = {
     flowStep: 0,
-    isTextInputDate: false,
     menuWrapRef: null,
     collapse: false,
-    isMobile: false,
 };
 
 export const propDefaults = {

@@ -1,7 +1,10 @@
-import { computed, type ComputedRef, onMounted, onUnmounted, ref } from 'vue';
-import type { Config } from '@/types';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { useContext } from '@/composables/useContext.ts';
 
-export const useResponsive = (config: ComputedRef<Config>) => {
+export const useResponsive = () => {
+    const {
+        defaults: { config },
+    } = useContext();
     const windowWidth = ref(0);
 
     onMounted(() => {

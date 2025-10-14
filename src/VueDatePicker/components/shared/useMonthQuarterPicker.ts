@@ -12,7 +12,7 @@ import type { OverlayGridItem, SelectItem } from '@/types';
 export const useMonthOrQuarterPicker = (emit: EmitFn<{ 'reset-flow': []; 'auto-apply': [ignoreClose?: boolean] }>) => {
     const {
         rootEmit,
-        isTextInputDate,
+        state,
         month,
         year,
         modelValue,
@@ -91,7 +91,7 @@ export const useMonthOrQuarterPicker = (emit: EmitFn<{ 'reset-flow': []; 'auto-a
     };
 
     watch(modelValue, (newVal, oldVal) => {
-        if (isTextInputDate.value) {
+        if (state.isTextInputDate) {
             if (JSON.stringify(newVal ?? {}) !== JSON.stringify(oldVal ?? {})) {
                 assign();
             }

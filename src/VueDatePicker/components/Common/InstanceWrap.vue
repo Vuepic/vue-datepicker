@@ -14,14 +14,14 @@
 
 <script lang="ts" setup>
     import { computed } from 'vue';
-    import { useContext } from '@/composables';
+    import { useContext, useResponsive } from '@/composables';
 
     defineProps<{ stretch?: boolean; collapse?: boolean }>();
 
     const {
-        isMobile,
         defaults: { multiCalendars },
     } = useContext();
+    const { isMobile } = useResponsive();
 
     defineSlots<{
         default(props: { instances: number[]; wrapClass: Record<string, boolean> }): any;

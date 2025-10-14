@@ -75,8 +75,8 @@ describe('useContext', () => {
             expect(context).toHaveProperty('today');
             expect(context).toHaveProperty('inputValue');
             expect(context).toHaveProperty('setState');
-            expect(context).toHaveProperty('isMobile');
-            expect(context).toHaveProperty('isTextInputDate');
+            // isTextInputDate is now in state
+            expect(context!.state).toHaveProperty('isTextInputDate');
         });
 
         it('should return readonly state', () => {
@@ -174,24 +174,14 @@ describe('useContext', () => {
             expect(inputValue.value).toBe('');
         });
 
-        it('should return isMobile computed', () => {
+        it('should have isTextInputDate in state', () => {
             const { ParentComponent, ChildComponent } = createTestComponents(true);
             const wrapper = mount(ParentComponent);
             const child = wrapper.findComponent(ChildComponent);
-            const { isMobile } = child.vm.context as any;
+            const { state } = child.vm.context as any;
 
-            expect(isMobile.value).toBeDefined();
-            expect(typeof isMobile.value).toBe('boolean');
-        });
-
-        it('should return isTextInputDate ref', () => {
-            const { ParentComponent, ChildComponent } = createTestComponents(true);
-            const wrapper = mount(ParentComponent);
-            const child = wrapper.findComponent(ChildComponent);
-            const { isTextInputDate } = child.vm.context as any;
-
-            expect(isTextInputDate.value).toBeDefined();
-            expect(typeof isTextInputDate.value).toBe('boolean');
+            expect(state).toHaveProperty('isTextInputDate');
+            expect(typeof state.isTextInputDate).toBe('boolean');
         });
     });
 

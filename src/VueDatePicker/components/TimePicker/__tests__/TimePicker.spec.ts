@@ -28,6 +28,8 @@ vi.mock('@/components/TimePicker/TimeInput.vue', () => ({
 }));
 
 // Mock composables
+const mockIsMobile = ref(false);
+
 vi.mock('@/composables/useContext.ts', () => {
     const rootEmit = vi.fn();
     const modelValue = ref(null);
@@ -37,7 +39,6 @@ vi.mock('@/composables/useContext.ts', () => {
         modelAuto: false,
         autoApply: false,
     };
-    const isMobile = ref(false);
     const defaults = {
         ariaLabels: ref({
             openTimePicker: 'Open time picker',
@@ -50,6 +51,7 @@ vi.mock('@/composables/useContext.ts', () => {
         config: ref({
             modeHeight: 255,
             keepActionRow: false,
+            mobileBreakpoint: 768,
         }),
         range: ref({
             enabled: false,
@@ -71,11 +73,16 @@ vi.mock('@/composables/useContext.ts', () => {
             rootEmit,
             modelValue,
             rootProps,
-            isMobile,
             defaults,
         }),
     };
 });
+
+vi.mock('@/composables/useResponsive.ts', () => ({
+    useResponsive: () => ({
+        isMobile: mockIsMobile,
+    }),
+}));
 
 vi.mock('@/composables/useTransitions.ts', () => ({
     useTransitions: () => ({
@@ -199,10 +206,8 @@ describe('TimePicker', () => {
             ctx.rootProps.timePicker = false;
         });
 
-        it('should apply mobile data attribute when on mobile', async () => {
-            const { useContext } = await import('@/composables/useContext.ts');
-            const ctx = useContext();
-            (ctx.isMobile as any).value = true;
+        it('should apply mobile data attribute when on mobile', () => {
+            mockIsMobile.value = true;
 
             const wrapper = mount(TimePicker, {
                 props: defaultProps,
@@ -212,7 +217,7 @@ describe('TimePicker', () => {
             expect(container.attributes('data-dp-mobile')).toBe('true');
 
             // Reset
-            (ctx.isMobile as any).value = false;
+            mockIsMobile.value = false;
         });
     });
 

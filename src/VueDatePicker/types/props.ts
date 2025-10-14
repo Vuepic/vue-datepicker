@@ -18,6 +18,7 @@ import type {
     WeekNumbersConfig,
     AriaLabelsConfig,
     ActionRowConfig,
+    FloatingConfig,
 } from '@/types/configs.ts';
 import type { CalendarWeek, Marker, TimeModel, PresetDate, HighlightFn, DisabledTimesFn } from '@/types/picker.ts';
 import type { PickerSection, DateValue, ModelValue, SixWeekMode } from '@/types/generic.ts';
@@ -87,6 +88,7 @@ export interface RootProps {
     yearFirst?: boolean;
     loading?: boolean;
     ui?: Partial<UIConfig>;
+    floating?: Partial<FloatingConfig>;
 }
 
 type WithDefaults<T, D> = Omit<T, keyof D> & Required<Pick<T, keyof D & keyof T>>;

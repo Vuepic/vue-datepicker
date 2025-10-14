@@ -40,7 +40,7 @@
                     <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
                         <slot :name="slot" v-bind="{ ...args }" />
                     </template>
-                    <template v-if="!inline.enabled && !teleport.center" #arrow>
+                    <template v-if="!inline.enabled && !teleport.center && floatingConfig.arrow === true" #arrow>
                         <div
                             ref="menu-arrow"
                             :class="{ dp__arrow_top: placement === 'bottom', dp__arrow_bottom: placement === 'top' }"
@@ -71,7 +71,7 @@
         type ComponentPublicInstance,
     } from 'vue';
     import { onClickOutside } from '@vueuse/core';
-    import { arrow, autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/vue';
+    import { arrow, autoUpdate, flip, type Middleware, offset, shift, useFloating } from '@floating-ui/vue';
 
     import DatepickerInput from '@/components/DatePickerInput/DatepickerInput.vue';
     import DatepickerMenu from '@/components/DatepickerMenu.vue';
@@ -91,16 +91,15 @@
     const {
         rootEmit,
         setState,
-        isTextInputDate,
         inputValue,
         modelValue,
         rootProps,
-        defaults: { inline, config, textInput, range, multiDates, teleport },
+        defaults: { inline, config, textInput, range, multiDates, teleport, floatingConfig },
     } = useContext();
     const { clearArrowNav } = useArrowNavigation();
     const { validateDate, isValidTime } = useValidation();
     const { menuTransition, showTransition } = useTransitions();
-    const { isMobile } = useResponsive(config);
+    const { isMobile } = useResponsive();
     const { mapSlots } = useSlotsMapper();
     const { findNextFocusableElement, getNumVal } = useUtils();
 
@@ -120,11 +119,18 @@
     const shiftKeyActive = ref(false);
     const collapse = ref(false);
 
+    const buildFloatingMiddlewares = (middlewares: Middleware[]) => {
+        if (!floatingConfig.value.arrow) return middlewares;
+        if (floatingConfig.value.arrow === true) middlewares.push(arrow({ element: menuArrowRef }));
+        else middlewares.push(arrow({ element: floatingConfig.value.arrow }));
+        return middlewares;
+    };
+
     const { floatingStyles, middlewareData, placement } = useFloating(
         inputRef as Ref<ComponentPublicInstance>,
         dpWrapMenuRef,
         {
-            middleware: [offset(10), flip(), shift(), arrow({ element: menuArrowRef })],
+            middleware: buildFloatingMiddlewares([offset(floatingConfig.value.offset), flip(), shift()]),
             whileElementsMounted(...args) {
                 return autoUpdate(...args, { animationFrame: true });
             },
@@ -336,7 +342,7 @@
         const validDate = Array.isArray(date) ? !date.some((d) => !validateDate(d)) : validateDate(date);
         const validTime = isValidTime(date as Date[]);
         if (validDate && validTime) {
-            isTextInputDate.value = true;
+            setState('isTextInputDate', true);
             modelValue.value = date as Date[];
             if (submit) {
                 shouldFocusNext.value = tabbed;
@@ -346,7 +352,7 @@
                 autoApplyValue();
             }
             nextTick().then(() => {
-                isTextInputDate.value = false;
+                setState('isTextInputDate', false);
             });
         } else {
             rootEmit('invalid-date', date as Date);

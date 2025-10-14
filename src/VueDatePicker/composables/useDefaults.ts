@@ -226,7 +226,7 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
             return { enabled: true, ...defaultRangeOptions, ...props.range };
         }
         return {
-            enabled: !!props.range,
+            enabled: props.range,
             ...defaultRangeOptions,
         };
     });
@@ -283,6 +283,13 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
         return defaultInputAttrs;
     });
 
+    const floatingConfig = computed(() => {
+        return {
+            offset: props.floating?.offset ?? 10,
+            arrow: props.floating?.arrow ?? true,
+        };
+    });
+
     return {
         transitions,
         multiCalendars,
@@ -305,5 +312,6 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
         timeConfig,
         flow,
         inputAttrs,
+        floatingConfig,
     };
 };

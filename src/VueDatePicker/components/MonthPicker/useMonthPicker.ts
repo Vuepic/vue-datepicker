@@ -16,7 +16,7 @@ export interface MonthPickerEmits {
 export const useMonthPicker = (props: BaseProps, emit: EmitFn<MonthPickerEmits>) => {
     const {
         rootEmit,
-        isTextInputDate,
+        state,
         calendars,
         year,
         modelValue,
@@ -25,7 +25,7 @@ export const useMonthPicker = (props: BaseProps, emit: EmitFn<MonthPickerEmits>)
     } = useContext();
 
     useRemapper(() => {
-        if (isTextInputDate.value) onYearSelect(getYear(getDate(rootProps.startDate)), 0);
+        if (state.isTextInputDate) onYearSelect(getYear(getDate(rootProps.startDate)), 0);
     });
     const { checkMinMaxRange } = useValidation();
     const { isDateBetween, getDate, resetDateTime, resetDate, getMinMonth, getMaxMonth } = useDateUtils();

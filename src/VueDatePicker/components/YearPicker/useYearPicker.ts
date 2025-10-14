@@ -13,7 +13,7 @@ export interface YearPickerEmits {
 export const useYearPicker = (props: BaseProps, emit: EmitFn<YearPickerEmits>) => {
     const {
         rootEmit,
-        isTextInputDate,
+        state,
         modelValue,
         rootProps,
         defaults: { highlight, multiDates, filters, range, safeDates },
@@ -24,7 +24,7 @@ export const useYearPicker = (props: BaseProps, emit: EmitFn<YearPickerEmits>) =
     const { checkRangeAutoApply, setMonthOrYearRange } = useComponentShared();
 
     useRemapper(() => {
-        if (isTextInputDate.value) focusYear.value = getYear(getDate(rootProps.startDate));
+        if (state.isTextInputDate) focusYear.value = getYear(getDate(rootProps.startDate));
     });
 
     const hoverDate = ref<Date | null>(null);

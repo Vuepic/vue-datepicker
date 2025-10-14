@@ -1,8 +1,21 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { defineComponent, computed, h } from 'vue';
+import { defineComponent, h, ref } from 'vue';
 import { mount } from '@vue/test-utils';
 import { useResponsive } from '@/composables/useResponsive';
-import type { Config } from '@/types';
+
+// Create a mutable mock config
+const mockConfigValue = ref({ mobileBreakpoint: 768 });
+
+// Mock useContext to provide the config
+vi.mock('@/composables/useContext.ts', () => {
+    return {
+        useContext: () => ({
+            defaults: {
+                config: mockConfigValue,
+            },
+        }),
+    };
+});
 
 describe('useResponsive', () => {
     let originalClientWidth: PropertyDescriptor | undefined;
@@ -16,6 +29,9 @@ describe('useResponsive', () => {
         // Spy on addEventListener and removeEventListener
         addEventListenerSpy = vi.spyOn(globalThis, 'addEventListener') as any;
         removeEventListenerSpy = vi.spyOn(globalThis, 'removeEventListener') as any;
+
+        // Reset mock config to default
+        mockConfigValue.value = { mobileBreakpoint: 768 };
     });
 
     afterEach(() => {
@@ -33,16 +49,12 @@ describe('useResponsive', () => {
             value: clientWidth,
         });
 
+        // Update the mock config with the specific mobile breakpoint
+        mockConfigValue.value = { mobileBreakpoint };
+
         return defineComponent({
             setup() {
-                const config = computed(
-                    () =>
-                        ({
-                            mobileBreakpoint,
-                        }) as Config,
-                );
-
-                const { isMobile } = useResponsive(config);
+                const { isMobile } = useResponsive();
                 return { isMobile };
             },
             render() {
