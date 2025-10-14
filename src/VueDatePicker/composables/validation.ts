@@ -8,6 +8,7 @@ import {
     isDateAfter,
     isDateBefore,
     isDateEqual,
+    isOutOfYearRange,
     resetDate,
     setTimeValue,
 } from '@/utils/date-utils';
@@ -54,7 +55,7 @@ export const useValidation = (props: PickerBasePropsType | AllPropsType) => {
 
         const dateYear = getYear(date);
 
-        const outOfYearRange = dateYear < +props.yearRange[0] || dateYear > +props.yearRange[1];
+        const outOfYearRange = isOutOfYearRange(props.yearRange, dateYear);
 
         return !(
             aboveMax ||
