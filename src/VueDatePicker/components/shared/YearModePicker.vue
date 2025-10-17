@@ -20,7 +20,7 @@
             @click="() => toggleYearPicker(false)"
             @keydown.enter="() => toggleYearPicker(false)"
         >
-            <slot v-if="$slots.year" name="year" :year="year" />
+            <slot v-if="$slots.year" name="year" :text="yearDisplayVal" :value="year" />
             <template v-if="!$slots.year">{{ year }}</template>
         </button>
         <ArrowBtn
@@ -58,13 +58,13 @@
 </template>
 
 <script setup lang="ts">
-    import { ref } from 'vue';
+    import { computed, ref } from 'vue';
 
     import SelectionOverlay from '@/components/Common/SelectionOverlay.vue';
     import ArrowBtn from '@/components/Common/ArrowBtn.vue';
     import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from '@/components/Icons';
 
-    import { useContext, useTransitions } from '@/composables';
+    import { useContext, useFormatter, useTransitions } from '@/composables';
     import { useNavigationDisplay } from '@/components/shared/useNavigationDisplay.ts';
 
     import type { OverlayGridItem } from '@/types';
@@ -85,7 +85,7 @@
 
     const emit = defineEmits<YearModePickerEmits>();
 
-    withDefaults(defineProps<YearModePickerProps>(), { showYearPicker: false });
+    const props = withDefaults(defineProps<YearModePickerProps>(), { showYearPicker: false });
 
     const { showRightIcon, showLeftIcon } = useNavigationDisplay();
     const {
@@ -93,8 +93,11 @@
         defaults: { config, ariaLabels, ui },
     } = useContext();
     const { showTransition, transitionName } = useTransitions();
+    const { formatYear } = useFormatter();
 
     const overlayOpen = ref(false);
+
+    const yearDisplayVal = computed(() => formatYear(props.year));
 
     const toggleYearPicker = (flow = false, show?: boolean) => {
         overlayOpen.value = !overlayOpen.value;

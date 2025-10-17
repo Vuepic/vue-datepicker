@@ -22,8 +22,13 @@ export const useUtilsWithContext = () => {
         return rootProps.reverseYears ? years.reverse() : years;
     };
 
+    const isOutOfYearRange = (year: number) => {
+        return year < +rootProps.yearRange[0]! || year > +rootProps.yearRange[1]!;
+    };
+
     return {
         getMonths,
         getYears,
+        isOutOfYearRange,
     };
 };

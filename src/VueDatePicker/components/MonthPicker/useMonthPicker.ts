@@ -32,7 +32,7 @@ export const useMonthPicker = (props: BaseProps, emit: EmitFn<MonthPickerEmits>)
     const { checkRangeAutoApply, getRangeWithFixedDate, handleMultiDatesSelect, setMonthOrYearRange, setPresetDate } =
         useComponentShared();
     const { padZero, checkHighlightMonth, checkMinMaxValue, groupListAndMap } = useUtils();
-    const { getMonths } = useUtilsWithContext();
+    const { getMonths, isOutOfYearRange } = useUtilsWithContext();
 
     const months = computed(() => getMonths());
     const hoverDate = ref<Date | null>(null);
@@ -116,7 +116,8 @@ export const useMonthPicker = (props: BaseProps, emit: EmitFn<MonthPickerEmits>)
                 ) ||
                 isMonthDisabled(safeDates.value.disabledDates, year.value(instance), month.value) ||
                 filters.value.months?.includes(month.value) ||
-                !isMonthAllowed(safeDates.value.allowedDates, year.value(instance), month.value);
+                !isMonthAllowed(safeDates.value.allowedDates, year.value(instance), month.value) ||
+                isOutOfYearRange(year.value(instance));
             const isBetween = isMonthBetween(month.value, instance);
             const highlighted = checkHighlightMonth(highlight.value, month.value, year.value(instance));
             return { active, disabled, isBetween, highlighted };

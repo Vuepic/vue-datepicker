@@ -134,6 +134,7 @@
             dp__disabled: rootProps.disabled,
             dp__input_readonly: !textInput.value.enabled,
             dp__input: true,
+            dp__input_not_clearable: !inputAttrs.value.clearable,
             dp__input_icon_pad: !inputAttrs.value.hideInputIcon,
             dp__input_valid: typeof inputAttrs.value.state === 'boolean' ? inputAttrs.value.state : false,
             dp__input_invalid: typeof inputAttrs.value.state === 'boolean' ? !inputAttrs.value.state : false,

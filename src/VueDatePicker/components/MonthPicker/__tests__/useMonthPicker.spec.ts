@@ -110,6 +110,7 @@ vi.mock('@/composables/useUtilsWithContext.ts', () => ({
             { text: 'Nov', value: 10 },
             { text: 'Dec', value: 11 },
         ]),
+        isOutOfYearRange: vi.fn(() => false),
     }),
 }));
 

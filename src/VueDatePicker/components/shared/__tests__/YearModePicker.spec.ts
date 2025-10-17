@@ -63,6 +63,7 @@ vi.mock('@/composables/useContext.ts', () => {
             openYearsOverlay: 'Open years overlay',
             yearPicker: (open: boolean) => (open ? 'Year picker' : 'Close year picker'),
         }),
+        formats: ref({ year: 'yyyy' }),
         ui: ref({ navBtnPrev: '', navBtnNext: '' }),
     };
 
