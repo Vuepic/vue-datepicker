@@ -384,7 +384,7 @@ export interface Slots {
     hours(props: { text: string; value: number }): any;
     minutes(props: { text: string; value: number }): any;
     month(props: { text: string; value: number }): any;
-    year(props: { text: string; value: number }): any;
+    year(props: { text: string; value: number; year: number }): any;
     'action-buttons'(props: { value: InternalModelValue }): any;
     'action-preview'(props: { value: InternalModelValue }): any;
     'calendar-header'(props: { day: string; index: number }): any;
