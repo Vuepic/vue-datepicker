@@ -167,9 +167,9 @@ describe('useDateUtils', () => {
 
     it('timeGetter should return value or duplicated array for range', () => {
         const date = new Date('2024-01-01T08:09:10');
-        expect(timeGetter('hours', date, false)).toBe(8);
-        expect(timeGetter('minutes', date, true)).toEqual([9, 9]);
-        expect(timeGetter('seconds', date, false)).toBe(0);
+        expect(timeGetter('hours', null, date, false)).toBe(8);
+        expect(timeGetter('minutes', [date, date], date, true)).toEqual([9, 9]);
+        expect(timeGetter('seconds', null, date, false)).toBe(10);
     });
 
     it('getWeekFromDate should return the start and end of the week based on weekStart', () => {

@@ -29,7 +29,6 @@ export const useTimePickerUtils = (updateFlow?: () => void) => {
         return 0;
     };
     const getSetDateTime = (dateValue?: Date | null, i?: number): Date => {
-        console.log(time, 'what is time');
         if (!dateValue) return setSeconds(getDate(), getSecondsValue(i));
         if (i !== undefined) {
             return setTime(

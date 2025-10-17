@@ -77,6 +77,7 @@ vi.mock('@/composables/useContext.ts', () => ({
         state: {
             isTextInputDate: false,
         },
+        updateTime: vi.fn(),
     }),
 }));
 

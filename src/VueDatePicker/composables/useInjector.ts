@@ -36,10 +36,11 @@ export const ContextKey = Symbol('ContextKey') as InjectionKey<{
     year: ComputedRef<(instance: number) => number>;
     today: Date;
     inputValue: Ref<string>;
+    updateTime: () => void;
 }>;
 
 export const useInjector = (props: RootPropsWithDefaults, emit: EmitFn<RootEmits>) => {
-    const { timeGetter } = useDateUtils();
+    const { setTimeModelValue } = useDateUtils();
     const defaults = useDefaults(props);
     const internalModelValue = ref<InternalModelValue>(null);
 
@@ -55,11 +56,8 @@ export const useInjector = (props: RootPropsWithDefaults, emit: EmitFn<RootEmits
 
     const calendars = ref<CalendarMonthYear[]>([{ month: getMonth(today), year: getYear(today) }]);
 
-    const time = reactive({
-        hours: timeGetter('hours', today, defaults.range.value.enabled),
-        minutes: timeGetter('minutes', today, defaults.range.value.enabled),
-        seconds: timeGetter('seconds', today, defaults.range.value.enabled),
-    });
+    const time = reactive({ hours: 0, minutes: 0, seconds: 0 });
+    setTimeModelValue(time, null, today, defaults.range.value.enabled);
 
     const modelValue = computed({
         get: (): InternalModelValue => {
@@ -88,6 +86,10 @@ export const useInjector = (props: RootPropsWithDefaults, emit: EmitFn<RootEmits
         state[key] = value;
     };
 
+    const updateTime = () => {
+        setTimeModelValue(time, modelValue.value, today, defaults.range.value.enabled);
+    };
+
     provide(ContextKey, {
         rootProps: props,
         defaults,
@@ -101,5 +103,6 @@ export const useInjector = (props: RootPropsWithDefaults, emit: EmitFn<RootEmits
         today,
         inputValue,
         setState,
+        updateTime,
     });
 };

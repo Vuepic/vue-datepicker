@@ -22,7 +22,7 @@ import {
     type Day,
     setMinutes,
 } from 'date-fns';
-import type { MaybeDate, Numeric, TimeKey, TimeModel, TimeObj } from '@/types';
+import type { InternalModelValue, MaybeDate, Numeric, TimeInternalModel, TimeKey, TimeModel, TimeObj } from '@/types';
 
 export const useDateUtils = () => {
     const isValidNum = (value: Numeric | undefined): value is string | number => {
@@ -172,14 +172,33 @@ export const useDateUtils = () => {
         return { before, after };
     };
 
-    const timeGetter = (type: TimeKey, date: Date, isRange: boolean) => {
+    const timeGetter = (type: TimeKey, date: Date | Date[] | null, fallbackDate: Date, isRange: boolean) => {
         const fn = {
-            hours: getHours(date),
-            minutes: getMinutes(date),
-            seconds: 0,
+            hours: getHours,
+            minutes: getMinutes,
+            seconds: getSeconds,
         };
 
-        return isRange ? [fn[type], fn[type]] : fn[type];
+        if (!date) return isRange ? [fn[type](fallbackDate), fn[type](fallbackDate)] : fn[type](fallbackDate);
+
+        if (Array.isArray(date)) {
+            const start = date[0] ?? fallbackDate;
+            const end = date[1] ?? fallbackDate;
+            return [fn[type](start), fn[type](end)];
+        }
+
+        return fn[type](date);
+    };
+
+    const setTimeModelValue = (
+        time: TimeInternalModel,
+        modelValue: InternalModelValue,
+        fallbackDate: Date,
+        isRange: boolean,
+    ) => {
+        time.hours = timeGetter('hours', modelValue, fallbackDate, isRange);
+        time.minutes = timeGetter('minutes', modelValue, fallbackDate, isRange);
+        time.seconds = timeGetter('seconds', modelValue, fallbackDate, isRange);
     };
 
     return {
@@ -203,5 +222,6 @@ export const useDateUtils = () => {
         getTimeObjFromCurrent,
         getBeforeAndAfterInRange,
         timeGetter,
+        setTimeModelValue,
     };
 };

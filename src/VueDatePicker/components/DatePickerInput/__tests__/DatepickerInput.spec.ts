@@ -118,7 +118,7 @@ describe('DatepickerInput', () => {
 
         await nextTick();
         const clearBtn = wrapper.find('[data-test-id="clear-input-value-btn"]');
-        console.log(wrapper.html());
+
         expect(clearBtn.exists()).toBe(true);
     });
 

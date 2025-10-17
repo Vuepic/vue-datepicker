@@ -1,448 +1,344 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { nextTick, reactive, ref } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 import { useRemapper } from '@/composables/useRemapper';
-import * as composables from '@/composables';
 
-// Mock the composables
-vi.mock('@/composables', async () => {
-    const actual = await vi.importActual('@/composables');
-    return {
-        ...actual,
-        useContext: vi.fn(),
-        useDateUtils: vi.fn(),
-    };
-});
+// Mock useDateUtils
+const mockSetTimeModelValue = vi.fn();
+vi.mock('@/composables/useDateUtils.ts', () => ({
+    useDateUtils: () => ({
+        setTimeModelValue: mockSetTimeModelValue,
+    }),
+}));
+
+// Mock useContext with configurable state
+let mockToday: any;
+let mockTime: any;
+let mockModelValue: any;
+let mockRangeEnabled: any;
+
+vi.mock('@/composables/useContext.ts', () => ({
+    useContext: () => ({
+        today: mockToday,
+        time: mockTime,
+        modelValue: mockModelValue,
+        defaults: {
+            range: computed(() => ({ enabled: mockRangeEnabled.value })),
+        },
+    }),
+}));
 
 describe('useRemapper', () => {
-    let mockContext: any;
-    let mockDateUtils: any;
-    let timeGetterSpy: ReturnType<typeof vi.fn>;
-
     beforeEach(() => {
-        // Reset all mocks
+        // Create fresh refs for each test to avoid watcher accumulation
+        mockToday = ref<Date>(new Date('2024-01-15T00:00:00'));
+        mockTime = ref<any>({ hours: 0, minutes: 0, seconds: 0 });
+        mockModelValue = ref<any>(null);
+        mockRangeEnabled = ref<boolean>(false);
         vi.clearAllMocks();
-
-        // Create spy for timeGetter
-        timeGetterSpy = vi.fn((type: string, date: Date, isRange: boolean) => {
-            if (type === 'hours') return isRange ? [10, 12] : 10;
-            if (type === 'minutes') return isRange ? [30, 45] : 30;
-            if (type === 'seconds') return isRange ? [0, 15] : 0;
-            return null;
-        });
-
-        // Mock useDateUtils
-        mockDateUtils = {
-            timeGetter: timeGetterSpy,
-        };
-
-        // Mock useContext with reactive objects
-        mockContext = {
-            today: ref(new Date('2024-01-15')),
-            time: reactive({
-                hours: 10,
-                minutes: 30,
-                seconds: 0,
-            }),
-            modelValue: ref(null),
-            defaults: {
-                range: ref({ enabled: false }),
-            },
-        };
-
-        // Setup mocks
-        vi.mocked(composables.useContext).mockReturnValue(mockContext);
-        vi.mocked(composables.useDateUtils).mockReturnValue(mockDateUtils);
     });
 
-    describe('range watcher', () => {
-        it('should update time when range.enabled changes from false to true', async () => {
+    describe('range.enabled watcher', () => {
+        it('should call setTimeModelValue when range.enabled changes from false to true', async () => {
             useRemapper();
 
             // Change range.enabled
-            mockContext.defaults.range.value = { enabled: true };
+            mockRangeEnabled.value = true;
             await nextTick();
 
-            // Verify timeGetter was called for hours, minutes, seconds
-            // Note: today is passed as a ref, not today.value
-            expect(timeGetterSpy).toHaveBeenCalledTimes(3);
-            expect(timeGetterSpy).toHaveBeenNthCalledWith(1, 'hours', mockContext.today, true);
-            expect(timeGetterSpy).toHaveBeenNthCalledWith(2, 'minutes', mockContext.today, true);
-            expect(timeGetterSpy).toHaveBeenNthCalledWith(3, 'seconds', mockContext.today, true);
-
-            // Verify time was updated
-            expect(mockContext.time.hours).toEqual([10, 12]);
-            expect(mockContext.time.minutes).toEqual([30, 45]);
-            expect(mockContext.time.seconds).toEqual([0, 15]);
+            expect(mockSetTimeModelValue).toHaveBeenCalledExactlyOnceWith(
+                mockTime,
+                mockModelValue.value,
+                mockToday,
+                true,
+            );
         });
 
-        it('should update time when range.enabled changes from true to false', async () => {
-            // Start with range enabled
-            mockContext.defaults.range.value = { enabled: true };
-            mockContext.time.hours = [10, 12];
-            mockContext.time.minutes = [30, 45];
-            mockContext.time.seconds = [0, 15];
+        it('should call setTimeModelValue when range.enabled changes from true to false', async () => {
+            mockRangeEnabled.value = true;
+            useRemapper();
+
+            // Clear the initial call if any
+            mockSetTimeModelValue.mockClear();
+
+            // Change range.enabled
+            mockRangeEnabled.value = false;
+            await nextTick();
+
+            expect(mockSetTimeModelValue).toHaveBeenCalledExactlyOnceWith(
+                mockTime,
+                mockModelValue.value,
+                mockToday,
+                false,
+            );
+        });
+
+        it('should not call setTimeModelValue when range.enabled stays the same', async () => {
+            useRemapper();
+            mockSetTimeModelValue.mockClear();
+
+            // Trigger a re-render without changing enabled value
+            mockTime.value = { hours: 10, minutes: 30, seconds: 0 };
+            await nextTick();
+
+            expect(mockSetTimeModelValue).not.toHaveBeenCalled();
+        });
+
+        it('should pass current context values to setTimeModelValue', async () => {
+            const testDate = new Date('2024-03-20T12:00:00');
+            const testTime = { hours: 14, minutes: 30, seconds: 45 };
+
+            mockToday.value = testDate;
+            mockTime.value = testTime;
+            mockModelValue.value = testDate;
 
             useRemapper();
 
-            // Change range.enabled to false
-            mockContext.defaults.range.value = { enabled: false };
+            mockRangeEnabled.value = true;
             await nextTick();
 
-            // Verify timeGetter was called with range disabled
-            expect(timeGetterSpy).toHaveBeenCalledTimes(3);
-            expect(timeGetterSpy).toHaveBeenNthCalledWith(1, 'hours', mockContext.today, false);
-            expect(timeGetterSpy).toHaveBeenNthCalledWith(2, 'minutes', mockContext.today, false);
-            expect(timeGetterSpy).toHaveBeenNthCalledWith(3, 'seconds', mockContext.today, false);
-
-            // Verify time was updated to single values
-            expect(mockContext.time.hours).toBe(10);
-            expect(mockContext.time.minutes).toBe(30);
-            expect(mockContext.time.seconds).toBe(0);
-        });
-
-        it('should not update time when range.enabled value stays the same', async () => {
-            useRemapper();
-
-            // Clear previous calls
-            timeGetterSpy.mockClear();
-
-            // Change range but keep enabled the same
-            mockContext.defaults.range.value = { enabled: false, someOtherProperty: 'changed' };
-            await nextTick();
-
-            // Should not call timeGetter
-            expect(timeGetterSpy).not.toHaveBeenCalled();
-        });
-
-        it('should handle deep changes in range object', async () => {
-            useRemapper();
-
-            // Modify nested property that doesn't affect enabled
-            const currentRange = mockContext.defaults.range.value;
-            mockContext.defaults.range.value = { ...currentRange, maxRange: 7 };
-            await nextTick();
-
-            // Should not trigger time update since enabled didn't change
-            timeGetterSpy.mockClear();
-            await nextTick();
-            expect(timeGetterSpy).not.toHaveBeenCalled();
-        });
-
-        it('should watch range with deep: true option', async () => {
-            useRemapper();
-
-            // Verify the watch is deep by changing nested properties
-            const range = mockContext.defaults.range;
-            range.value = { ...range.value, enabled: true };
-            await nextTick();
-
-            expect(timeGetterSpy).toHaveBeenCalled();
+            expect(mockSetTimeModelValue).toHaveBeenCalledExactlyOnceWith(mockTime, testDate, mockToday, true);
         });
     });
 
     describe('modelValue watcher', () => {
         it('should call reMap callback when modelValue changes', async () => {
-            const reMapSpy = vi.fn();
-            useRemapper(reMapSpy);
+            const reMapCallback = vi.fn();
+            useRemapper(reMapCallback);
 
-            // Change modelValue
-            mockContext.modelValue.value = new Date('2024-02-01');
+            mockModelValue.value = new Date('2024-05-20T10:00:00');
             await nextTick();
 
-            expect(reMapSpy).toHaveBeenCalled();
+            expect(reMapCallback).toHaveBeenCalledExactlyOnceWith();
         });
 
-        it('should not call reMap callback when modelValue stays the same', async () => {
-            const reMapSpy = vi.fn();
-            const initialDate = new Date('2024-01-15');
-            mockContext.modelValue.value = initialDate;
+        it('should not call reMap when callback is not provided', async () => {
+            const reMapCallback = vi.fn();
+            useRemapper(); // No callback provided
 
-            useRemapper(reMapSpy);
-            reMapSpy.mockClear();
-
-            // Set to the same value
-            mockContext.modelValue.value = initialDate;
+            mockModelValue.value = new Date('2024-05-20T10:00:00');
             await nextTick();
 
-            // Should not be called due to JSON.stringify comparison
-            expect(reMapSpy).not.toHaveBeenCalled();
+            expect(reMapCallback).not.toHaveBeenCalled();
         });
 
-        it('should call reMap when modelValue changes from null to date', async () => {
-            const reMapSpy = vi.fn();
-            mockContext.modelValue.value = null;
+        it('should call reMap when modelValue changes from null to a date', async () => {
+            const reMapCallback = vi.fn();
+            mockModelValue.value = null;
 
-            useRemapper(reMapSpy);
-            reMapSpy.mockClear();
+            useRemapper(reMapCallback);
+            reMapCallback.mockClear();
 
-            mockContext.modelValue.value = new Date('2024-02-01');
+            mockModelValue.value = new Date('2024-06-15T08:30:00');
             await nextTick();
 
-            expect(reMapSpy).toHaveBeenCalled();
+            expect(reMapCallback).toHaveBeenCalledExactlyOnceWith();
         });
 
-        it('should call reMap when modelValue changes from date to null', async () => {
-            const reMapSpy = vi.fn();
-            mockContext.modelValue.value = new Date('2024-01-15');
+        it('should call reMap when modelValue changes from a date to null', async () => {
+            const reMapCallback = vi.fn();
+            mockModelValue.value = new Date('2024-06-15T08:30:00');
 
-            useRemapper(reMapSpy);
-            reMapSpy.mockClear();
+            useRemapper(reMapCallback);
+            reMapCallback.mockClear();
 
-            mockContext.modelValue.value = null;
+            mockModelValue.value = null;
             await nextTick();
 
-            expect(reMapSpy).toHaveBeenCalled();
+            expect(reMapCallback).toHaveBeenCalledExactlyOnceWith();
         });
 
         it('should call reMap when array modelValue changes', async () => {
-            const reMapSpy = vi.fn();
-            mockContext.modelValue.value = [new Date('2024-01-01'), new Date('2024-01-15')];
+            const reMapCallback = vi.fn();
+            mockModelValue.value = [new Date('2024-01-01'), new Date('2024-01-10')];
 
-            useRemapper(reMapSpy);
-            reMapSpy.mockClear();
+            useRemapper(reMapCallback);
+            reMapCallback.mockClear();
 
-            mockContext.modelValue.value = [new Date('2024-02-01'), new Date('2024-02-15')];
+            mockModelValue.value = [new Date('2024-02-01'), new Date('2024-02-10')];
             await nextTick();
 
-            expect(reMapSpy).toHaveBeenCalled();
+            expect(reMapCallback).toHaveBeenCalledExactlyOnceWith();
         });
 
-        it('should not call reMap when no callback is provided', async () => {
-            useRemapper(); // No callback
+        it('should not call reMap when modelValue changes to the same value', async () => {
+            const reMapCallback = vi.fn();
+            const sameDate = new Date('2024-07-01T00:00:00');
+            mockModelValue.value = sameDate;
 
-            // Change modelValue
-            mockContext.modelValue.value = new Date('2024-02-01');
+            useRemapper(reMapCallback);
+            reMapCallback.mockClear();
+
+            // Set to the same date object
+            mockModelValue.value = sameDate;
             await nextTick();
 
-            // Should not throw or cause issues
-            expect(true).toBe(true);
+            // Should not be called because JSON.stringify of the same date is equal
+            expect(reMapCallback).not.toHaveBeenCalled();
         });
 
-        it('should handle undefined callback gracefully', async () => {
-            useRemapper(undefined);
+        it('should not call reMap when modelValue deeply changes but JSON is equivalent', async () => {
+            const reMapCallback = vi.fn();
+            const date1 = new Date('2024-07-01T12:00:00');
+            mockModelValue.value = date1;
 
-            mockContext.modelValue.value = new Date('2024-02-01');
+            useRemapper(reMapCallback);
+            reMapCallback.mockClear();
+
+            // Create a new date object with the same timestamp
+            mockModelValue.value = new Date(date1.getTime());
             await nextTick();
 
-            // Should not throw
-            expect(true).toBe(true);
+            // Should not be called because JSON.stringify produces the same result
+            expect(reMapCallback).not.toHaveBeenCalled();
         });
 
-        it('should use JSON.stringify for comparison', async () => {
-            const reMapSpy = vi.fn();
+        it('should handle nested array changes in modelValue', async () => {
+            const reMapCallback = vi.fn();
+            mockModelValue.value = [new Date('2024-01-01')];
 
-            // Set initial object value
-            mockContext.modelValue.value = { date: new Date('2024-01-15'), other: 'value' };
+            useRemapper(reMapCallback);
+            reMapCallback.mockClear();
 
-            useRemapper(reMapSpy);
-            reMapSpy.mockClear();
-
-            // Set to different object - JSON.stringify will produce different strings
-            mockContext.modelValue.value = { date: new Date('2024-01-15'), other: 'changed' };
+            // Modify array by adding an element
+            mockModelValue.value = [new Date('2024-01-01'), new Date('2024-01-15')];
             await nextTick();
 
-            // Should be called because the serialized strings differ
-            expect(reMapSpy).toHaveBeenCalled();
+            expect(reMapCallback).toHaveBeenCalledExactlyOnceWith();
         });
 
-        it('should watch modelValue with deep: true option', async () => {
-            const reMapSpy = vi.fn();
-            mockContext.modelValue.value = { nested: { value: 'test' } };
+        it('should handle complex object changes', async () => {
+            const reMapCallback = vi.fn();
+            mockModelValue.value = { month: 5, year: 2024 };
 
-            useRemapper(reMapSpy);
-            reMapSpy.mockClear();
+            useRemapper(reMapCallback);
+            reMapCallback.mockClear();
 
-            // Change nested property
-            mockContext.modelValue.value = { nested: { value: 'changed' } };
+            mockModelValue.value = { month: 6, year: 2024 };
             await nextTick();
 
-            expect(reMapSpy).toHaveBeenCalled();
+            expect(reMapCallback).toHaveBeenCalledExactlyOnceWith();
+        });
+
+        it('should handle undefined to null transition', async () => {
+            const reMapCallback = vi.fn();
+            mockModelValue.value = undefined;
+
+            useRemapper(reMapCallback);
+            reMapCallback.mockClear();
+
+            mockModelValue.value = null;
+            await nextTick();
+
+            // Both undefined and null are handled as {} in JSON.stringify comparison
+            // so this should not trigger reMap
+            expect(reMapCallback).not.toHaveBeenCalled();
         });
     });
 
-    describe('combined watchers', () => {
-        it('should handle both range and modelValue changes independently', async () => {
-            const reMapSpy = vi.fn();
-            useRemapper(reMapSpy);
+    describe('both watchers working together', () => {
+        it('should handle both range.enabled and modelValue changes independently', async () => {
+            const reMapCallback = vi.fn();
+            useRemapper(reMapCallback);
 
-            // Clear initial calls
-            timeGetterSpy.mockClear();
-            reMapSpy.mockClear();
-
-            // Change range
-            mockContext.defaults.range.value = { enabled: true };
+            // Change range.enabled
+            mockRangeEnabled.value = true;
             await nextTick();
+            expect(mockSetTimeModelValue).toHaveBeenCalledExactlyOnceWith(
+                mockTime,
+                mockModelValue.value,
+                mockToday,
+                true,
+            );
 
-            expect(timeGetterSpy).toHaveBeenCalled();
-            expect(reMapSpy).not.toHaveBeenCalled();
+            mockSetTimeModelValue.mockClear();
 
-            // Clear and change modelValue
-            timeGetterSpy.mockClear();
-            reMapSpy.mockClear();
-
-            mockContext.modelValue.value = new Date('2024-02-01');
+            // Change modelValue
+            mockModelValue.value = new Date('2024-08-10T10:00:00');
             await nextTick();
-
-            expect(timeGetterSpy).not.toHaveBeenCalled();
-            expect(reMapSpy).toHaveBeenCalled();
+            expect(reMapCallback).toHaveBeenCalledExactlyOnceWith();
+            expect(mockSetTimeModelValue).not.toHaveBeenCalled();
         });
 
         it('should handle simultaneous changes', async () => {
-            const reMapSpy = vi.fn();
-            useRemapper(reMapSpy);
+            const reMapCallback = vi.fn();
+            useRemapper(reMapCallback);
 
-            timeGetterSpy.mockClear();
-            reMapSpy.mockClear();
+            mockSetTimeModelValue.mockClear();
+            reMapCallback.mockClear();
 
-            // Change both at once
-            mockContext.defaults.range.value = { enabled: true };
-            mockContext.modelValue.value = new Date('2024-02-01');
+            // Change both at the same time
+            mockRangeEnabled.value = true;
+            mockModelValue.value = new Date('2024-09-01T15:00:00');
             await nextTick();
 
-            expect(timeGetterSpy).toHaveBeenCalled();
-            expect(reMapSpy).toHaveBeenCalled();
+            expect(mockSetTimeModelValue).toHaveBeenCalledExactlyOnceWith(
+                mockTime,
+                mockModelValue.value,
+                mockToday,
+                true,
+            );
+            expect(reMapCallback).toHaveBeenCalledExactlyOnceWith();
         });
     });
 
     describe('edge cases', () => {
-        it('should handle null modelValue changes', async () => {
-            const reMapSpy = vi.fn();
-            mockContext.modelValue.value = null;
+        it('should handle multiple rapid changes to modelValue', async () => {
+            const reMapCallback = vi.fn();
+            useRemapper(reMapCallback);
 
-            useRemapper(reMapSpy);
-            reMapSpy.mockClear();
+            reMapCallback.mockClear();
 
-            mockContext.modelValue.value = null;
+            mockModelValue.value = new Date('2024-10-01');
             await nextTick();
 
-            // JSON.stringify(null ?? {}) === JSON.stringify(null ?? {})
-            // Both become "{}", so should not call reMap
-            expect(reMapSpy).not.toHaveBeenCalled();
-        });
-
-        it('should handle undefined modelValue changes', async () => {
-            const reMapSpy = vi.fn();
-            mockContext.modelValue.value = undefined;
-
-            useRemapper(reMapSpy);
-            reMapSpy.mockClear();
-
-            mockContext.modelValue.value = new Date('2024-02-01');
+            mockModelValue.value = new Date('2024-10-02');
             await nextTick();
 
-            expect(reMapSpy).toHaveBeenCalled();
+            mockModelValue.value = new Date('2024-10-03');
+            await nextTick();
+
+            expect(reMapCallback).toHaveBeenCalledTimes(3);
         });
 
-        it('should handle rapid range changes', async () => {
+        it('should handle multiple rapid changes to range.enabled', async () => {
             useRemapper();
 
-            // Rapid changes
-            mockContext.defaults.range.value = { enabled: true };
-            mockContext.defaults.range.value = { enabled: false };
-            mockContext.defaults.range.value = { enabled: true };
+            mockRangeEnabled.value = true;
             await nextTick();
 
-            // Should have called timeGetter multiple times
-            expect(timeGetterSpy.mock.calls.length).toBeGreaterThan(0);
+            mockRangeEnabled.value = false;
+            await nextTick();
+
+            mockRangeEnabled.value = true;
+            await nextTick();
+
+            expect(mockSetTimeModelValue).toHaveBeenCalledTimes(3);
         });
 
-        it('should handle rapid modelValue changes', async () => {
-            const reMapSpy = vi.fn();
-            useRemapper(reMapSpy);
-            reMapSpy.mockClear();
+        it('should handle empty array modelValue', async () => {
+            const reMapCallback = vi.fn();
+            mockModelValue.value = [new Date('2024-01-01')];
 
-            // Rapid changes
-            mockContext.modelValue.value = new Date('2024-01-01');
-            mockContext.modelValue.value = new Date('2024-02-01');
-            mockContext.modelValue.value = new Date('2024-03-01');
+            useRemapper(reMapCallback);
+            reMapCallback.mockClear();
+
+            mockModelValue.value = [];
             await nextTick();
 
-            // reMap should be called for each change
-            expect(reMapSpy.mock.calls.length).toBeGreaterThan(0);
+            expect(reMapCallback).toHaveBeenCalledExactlyOnceWith();
         });
 
-        it('should handle complex object modelValue', async () => {
-            const reMapSpy = vi.fn();
-            mockContext.modelValue.value = {
-                start: new Date('2024-01-01'),
-                end: new Date('2024-01-15'),
-                meta: { selected: true },
-            };
+        it('should handle time object modelValue', async () => {
+            const reMapCallback = vi.fn();
+            mockModelValue.value = { hours: 10, minutes: 30, seconds: 0 };
 
-            useRemapper(reMapSpy);
-            reMapSpy.mockClear();
+            useRemapper(reMapCallback);
+            reMapCallback.mockClear();
 
-            mockContext.modelValue.value = {
-                start: new Date('2024-02-01'),
-                end: new Date('2024-02-15'),
-                meta: { selected: false },
-            };
+            mockModelValue.value = { hours: 11, minutes: 45, seconds: 30 };
             await nextTick();
 
-            expect(reMapSpy).toHaveBeenCalled();
-        });
-
-        it('should handle empty object vs null comparison', async () => {
-            const reMapSpy = vi.fn();
-            mockContext.modelValue.value = null;
-
-            useRemapper(reMapSpy);
-            reMapSpy.mockClear();
-
-            // Both null and undefined become {} in the comparison
-            mockContext.modelValue.value = undefined;
-            await nextTick();
-
-            // Should not call reMap as both stringify to "{}"
-            expect(reMapSpy).not.toHaveBeenCalled();
-        });
-    });
-
-    describe('timeGetter integration', () => {
-        it('should pass correct parameters to timeGetter', async () => {
-            mockContext.today.value = new Date('2024-06-15');
-
-            useRemapper();
-
-            timeGetterSpy.mockClear();
-            mockContext.defaults.range.value = { enabled: true };
-            await nextTick();
-
-            expect(timeGetterSpy).toHaveBeenCalledTimes(3);
-            expect(timeGetterSpy).toHaveBeenNthCalledWith(1, 'hours', mockContext.today, true);
-            expect(timeGetterSpy).toHaveBeenNthCalledWith(2, 'minutes', mockContext.today, true);
-            expect(timeGetterSpy).toHaveBeenNthCalledWith(3, 'seconds', mockContext.today, true);
-        });
-
-        it('should handle different timeGetter return values', async () => {
-            timeGetterSpy.mockImplementation((type: string) => {
-                if (type === 'hours') return 23;
-                if (type === 'minutes') return 59;
-                if (type === 'seconds') return 59;
-                return null;
-            });
-
-            useRemapper();
-
-            mockContext.defaults.range.value = { enabled: true };
-            await nextTick();
-
-            expect(mockContext.time.hours).toBe(23);
-            expect(mockContext.time.minutes).toBe(59);
-            expect(mockContext.time.seconds).toBe(59);
-        });
-
-        it('should handle null/undefined timeGetter returns', async () => {
-            timeGetterSpy.mockReturnValue(null);
-
-            useRemapper();
-
-            mockContext.defaults.range.value = { enabled: true };
-            await nextTick();
-
-            expect(mockContext.time.hours).toBeNull();
-            expect(mockContext.time.minutes).toBeNull();
-            expect(mockContext.time.seconds).toBeNull();
+            expect(reMapCallback).toHaveBeenCalledExactlyOnceWith();
         });
     });
 });

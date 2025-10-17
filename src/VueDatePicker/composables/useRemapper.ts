@@ -10,15 +10,13 @@ export const useRemapper = (reMap?: () => void) => {
         defaults: { range },
     } = useContext();
 
-    const { timeGetter } = useDateUtils();
+    const { setTimeModelValue } = useDateUtils();
 
     watch(
         range,
         (newVal, oldVal) => {
             if (newVal.enabled !== oldVal.enabled) {
-                time.hours = timeGetter('hours', today, range.value.enabled);
-                time.minutes = timeGetter('minutes', today, range.value.enabled);
-                time.seconds = timeGetter('seconds', today, range.value.enabled);
+                setTimeModelValue(time, modelValue.value, today, range.value.enabled);
             }
         },
         { deep: true },

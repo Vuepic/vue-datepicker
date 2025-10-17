@@ -63,3 +63,9 @@ export interface InvalidTimesConfig {
     minutes?: number[];
     seconds?: (number | undefined)[];
 }
+
+export interface TimeInternalModel {
+    hours: number | number[];
+    minutes: number | number[];
+    seconds: number | number[];
+}

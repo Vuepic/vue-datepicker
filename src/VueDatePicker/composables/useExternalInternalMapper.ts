@@ -17,13 +17,17 @@ export const useExternalInternalMapper = () => {
         inputValue,
         defaults: { textInput, range, tz, multiDates, timeConfig, formats },
         modelValue,
+        updateTime,
     } = useContext();
     const { formatSelectedDate, formatForTextInput } = useFormatter();
 
     watch(
         modelValue,
-        () => {
+        (newVal, oldVal) => {
             rootEmit('internal-model-change', modelValue.value);
+            if (JSON.stringify(oldVal ?? {}) !== JSON.stringify(newVal ?? {})) {
+                updateTime();
+            }
         },
         { deep: true },
     );
