@@ -98,11 +98,6 @@ Special thanks to our sponsors 🙏
     <img src="https://avatars.githubusercontent.com/u/99868704?s=200&v=4" width="80" alt="Hapio">
 </a>
 
-<a href="https://datagridvue.com/" target="_blank">
-    <img src="https://raw.githubusercontent.com/nruffing/data-grid-vue/049baf296f814e3b03faf48632a7508305e14ffc/vuepress/.vuepress/public/favicon.svg" width="80" alt="Data Grid Vue
-">
-</a>
-
 ## Contributors
 
 Thanks to all people who contributed to the project 🙏
