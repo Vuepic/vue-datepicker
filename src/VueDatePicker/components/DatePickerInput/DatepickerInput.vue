@@ -26,7 +26,7 @@
                 data-test-id="dp-input"
                 :name="inputAttrs.name"
                 :class="inputClass"
-                :inputmode="textInput.enabled ? 'text' : 'none'"
+                :inputmode="inputAttrs.inputmode"
                 :placeholder="rootProps.placeholder"
                 :disabled="rootProps.disabled"
                 :readonly="rootProps.readonly"

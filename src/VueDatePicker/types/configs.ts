@@ -1,17 +1,17 @@
 import type { CustomClass, InternalModelValue, PickerSection, TimeKey } from '@/types/generic.ts';
 import type { CalendarDay, MonthModel } from '@/types/picker.ts';
 import type { ShallowRef } from 'vue';
-import type { Placement, Strategy } from '@floating-ui/vue';
 
 export interface InputAttributesConfig {
-    name: string;
+    name?: string;
     required: boolean;
     autocomplete: string;
-    state: boolean;
+    state?: boolean;
     clearable: boolean;
     alwaysClearable: boolean;
     hideInputIcon: boolean;
-    id: string;
+    id?: string;
+    inputmode: 'search' | 'text' | 'none' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | undefined;
 }
 
 export interface TimeConfig {

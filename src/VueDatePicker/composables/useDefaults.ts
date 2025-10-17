@@ -20,6 +20,7 @@ import { MAP_KEY_FORMAT } from '@/constants';
 import type {
     Config,
     HighlightFn,
+    InputAttributesConfig,
     MultiCalendarsConfig,
     RootPropsWithDefaults,
     TimeModel,
@@ -278,9 +279,10 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
         return undefined;
     });
 
-    const inputAttrs = computed(() => {
-        if (props.inputAttrs) return { ...defaultInputAttrs, ...props.inputAttrs };
-        return defaultInputAttrs;
+    const inputAttrs = computed((): InputAttributesConfig => {
+        const inputmode = textInput.value.enabled ? 'text' : 'none';
+        if (props.inputAttrs) return { ...defaultInputAttrs, inputmode, ...props.inputAttrs };
+        return { ...defaultInputAttrs, inputmode };
     });
 
     const floatingConfig = computed(() => {
