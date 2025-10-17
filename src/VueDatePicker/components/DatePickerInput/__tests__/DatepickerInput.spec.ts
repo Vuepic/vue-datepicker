@@ -44,6 +44,7 @@ vi.mock('@/composables/useContext.ts', () => {
             hideInputIcon: false,
             state: undefined,
             alwaysClearable: false,
+            inputmode: 'none',
         }),
     };
     return { useContext: () => ({ rootEmit, rootProps, inputValue, defaults }) };

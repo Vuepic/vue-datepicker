@@ -190,5 +190,5 @@ export const defaultInputAttrs = {
     alwaysClearable: false,
     hideInputIcon: false,
     id: undefined,
-    inputmode: 'text',
+    inputmode: 'none',
 };
