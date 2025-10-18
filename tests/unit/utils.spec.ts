@@ -39,6 +39,7 @@ import {
     isDateAfter,
     isDateBefore,
     isDateBetween,
+    isOutOfYearRange,
     isValidDate,
     parseFreeInput,
     resetDate,
@@ -491,5 +492,17 @@ describe('Utils and date utils formatting', () => {
         expect((mappedDatesInTimezone.disabledDates as Map<string, any>).get(getMapKey(todayInTz))).toEqual(todayInTz);
         expect((mappedDatesInTimezone.allowedDates as Map<string, any>).get(getMapKey(todayInTz))).toEqual(todayInTz);
         expect(mappedDatesInTimezone.highlight).toEqual(highlightFn);
+    });
+
+    it('Should check if the year is out of range', () => {
+        const yearRange = [2020, 2025];
+        const yearInRange = 2023;
+        const yearOutOfRange = 2019;
+
+        expect(isOutOfYearRange(yearRange, yearInRange)).toBeFalsy();
+        expect(isOutOfYearRange(yearRange, yearOutOfRange)).toBeTruthy();
+
+        const emptyRange: number[] = [];
+        expect(isOutOfYearRange(emptyRange, yearInRange)).toBeFalsy();
     });
 });

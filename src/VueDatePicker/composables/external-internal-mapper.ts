@@ -24,7 +24,11 @@ import { modelTypePredefined } from '@/constants';
 /**
  * Handles values from external to internal and vise versa
  */
-export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, isInputFocused: Ref<boolean>) => {
+export const useExternalInternalMapper = (
+    emit: VueEmit,
+    props: AllPropsType,
+    { isInputFocused, isTextInputDate }: { isInputFocused: Ref<boolean>; isTextInputDate: Ref<boolean> },
+) => {
     const internalModelValue = ref();
 
     const { defaultedTextInput, defaultedRange, defaultedTz, defaultedMultiDates, getDefaultPattern } =
@@ -267,6 +271,9 @@ export const useExternalInternalMapper = (emit: VueEmit, props: AllPropsType, is
      * Also does the validation of the provided value, if invalid it will use null as a default or an empty value
      */
     const parseExternalModelValue = (value: ModelValue): void => {
+        // Prevent text input from being overridden by external value while typing
+        if (isTextInputDate.value) return;
+
         const mappedDate = mapExternalToInternal(value);
 
         if (isValidDate(convertType(mappedDate))) {

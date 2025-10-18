@@ -27,8 +27,8 @@
     });
 
     const emit = defineEmits<{
-        'activate': []
-        'set-ref': [i: Ref<HTMLElement | null>]
+        activate: [];
+        'set-ref': [i: Ref<HTMLElement | null>];
     }>();
 
     defineProps<{
