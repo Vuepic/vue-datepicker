@@ -80,7 +80,7 @@ If set to `true`, clicking on a date value will automatically select the value
 - Default: `false`
 
 :::tip
-When `auto-apply` is used in combination with [`flow`](/props/modes/#flow), to select date if flow is broken, you need to set [`partial-flow` prop](/props/modes-configuration/#partial-flow) to `true`
+When `auto-apply` is used in combination with [`flow`](/props/modes/#flow), to select date if flow is broken, you need to set [`flow.partial`](/props/modes/#flow) to `true`
 :::
 
 <GlobalDemo :autoApply="true" placeholder="Select Date"></GlobalDemo>

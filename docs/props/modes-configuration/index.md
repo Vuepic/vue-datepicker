@@ -480,15 +480,15 @@ interface TextInputOptions {
 ```
 - Default: `{ enterSubmit: true, tabSubmit: true, openMenu: 'open', rangeSeparator: '-' }`
 
-Properties explanation:
-
+:::info
 - `enterSubmit`: When enabled, pressing enter will select a date if the input value is a valid date object
 - `tabSubmit`: When enabled, pressing tab will select a date if the input value is a valid date object
 - `openMenu`: `open` value will keep the menu in the open state when the input field is clicked, `toggle` will toggle the menu, `false` disables menu from opening
-- `format`: Override the default parsing format. Default is the string value from [format](/props/formatting/#format). You can also pass multiple parser patterns or a custom parser function and parse the input yourself. When the input is focused, the date will be shown in this format.
+- `format`: Override the default parsing format. Default is the string value from [`format.input`](/props/formatting/#input). You can also pass multiple parser patterns or a custom parser function and parse the input yourself. When the input is focused, the date will be shown in this format.
 - `rangeSeparator`: If you use `range` mode, the default separator is `-`, you can change it here
 - `selectOnFocus`: Selects the input text when input is focused
 - `escClose`: Closes calendar on `esc` key press
+:::
 
 <GlobalDemo :text-input="{ format: 'MM.dd.yyyy HH:mm' }" placeholder="Start Typing ..."></GlobalDemo>
 

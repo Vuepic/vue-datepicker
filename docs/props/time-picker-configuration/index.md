@@ -60,7 +60,7 @@ interface TimeConfig {
 
 Enable or disable time picker
 
-:::info Info
+:::tip
 Does not have effect when using `time-picker` mode
 :::
 
@@ -85,7 +85,7 @@ Does not have effect when using `time-picker` mode
 
 ### `ignoreTimeValidation`
 
-By default, when using [`min-date`](#min-date) or [`max-date`](#max-date) the time set on those dates will be included in validation. If you want to just check dates, pass this option to disable time check
+By default, when using [`min-date`](/props/validation/#min-date) or [`max-date`](/props/validation/#max-date) the time set on those dates will be included in validation. If you want to just check dates, pass this option to disable time check
 
 - Default: `false`
 
@@ -429,8 +429,8 @@ Configures the time picker to display under the calendar rather than opening it 
 Set a default starting time. If not provided, default start time will be the current time
 
 - Type:
-    - Single picker: `{ hours?: number | string; minutes?: number | string; seconds?: number | string }`
-    - Range picker: `{ hours?: number | string; minutes?: number | string; seconds?: number | string }[]`
+    - Single picker: `{ hours?: number; minutes?: number; seconds?: number }`
+    - Range picker: `{ hours?: number; minutes?: number; seconds?: number }[]`
 
 - Default: `undefined`
 

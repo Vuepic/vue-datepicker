@@ -8,7 +8,7 @@ description: Use datepicker in specific mode
 
 Set the default mode for the datepicker
 
-::: tip Info
+:::tip
 Depending on the mode, [`v-model`](/props/general-configuration/#model-value) might be different, so make sure to use the proper configuration
 :::
 
@@ -19,7 +19,7 @@ Enable selecting a range of two dates
 - Type: `boolean | RangeConfig`
 - Default: `false`
 
-:::tip Info
+:::info
 If the `RangeConfig` object is provided, `range` is auto enabled.
 
 For more info about `range` configuration properties, please refer to [`range` configuration section](/props/modes-configuration/#range-configuration)
@@ -47,7 +47,7 @@ For more info about `range` configuration properties, please refer to [`range` c
 Enabling this prop will show multiple calendars side by side
 
 
-:::tip Info
+:::info
 If the `MultiCalendarsOptions` object is provided, `multi-calendars` are auto enabled.
 For more info take a look at [`multi-calendars` configuration section](/props/modes-configuration/#multi-calendars-configuration).
 
@@ -186,7 +186,7 @@ Enables selecting of a specific week range
 
 Change datepicker mode to select a quarter
 
-:::warning Warning
+:::warning
 When working with the `quarter-picker`, you will receive date(s) in the `v-model`. Each date will be 
 the first date of the quarter. When using validation for min or max dates, disabled dates and so on, use the first date of the
 targeted quarter
@@ -217,7 +217,7 @@ targeted quarter
 
 When enabled, will try to parse the date from the user input.
 
-:::tip Info
+:::info
 Text input works with all picker modes.
 
 If the `TextInputOptions` object is provided, `text-input` is auto enabled.
@@ -248,9 +248,7 @@ For more info take a look at [`text-input` configuration section](/props/modes-c
 
 Removes the input field and places the calendar in your parent component
 
-:::tip Info
-Text input works with all picker modes.
-
+:::info
 If the `InlineOptions` object is provided, `inline` is auto enabled.
 For more info take a look at [`inline` configuration section](/props/modes-configuration/#inline-configuration).
 :::
@@ -283,7 +281,7 @@ To deselect the date, click on the selected value
 - Type: `boolean | MultiDatesConfig`
 - Default: `false`
 
-:::tip Info
+:::info
 - When the `MultiDatesConfig` object is provided, prop is auto enabled
 - For additional `multi-dates` configuration properties, please refer to [`multi-dates` configuration section](/props/modes-configuration/#multi-dates-configuration)
 :::
@@ -321,7 +319,7 @@ When `partial` is set to `true` and combined with the auto-apply prop, it will s
 ```
 - Default: `undefined`
 
-::: warning Warning
+:::warning
 `flow` is not supported with [`multi-calendars`](#multi-calendars) mode
 :::
 
@@ -376,7 +374,7 @@ Automatically switch between range and single picker modes
 - Type: `Boolean`
 - Default: `false`
 
-::: warning Note
+:::warning
 Since this prop in the background uses a [`range.partialRange`](/props/modes-configuration/#partialrange) make sure that [`range`](#range) prop is provided and keep [`range.partialRange`](/props/modes-configuration/#partialrange) to `true`
 
 This is only compatible with date pickers, specific modes are not supported

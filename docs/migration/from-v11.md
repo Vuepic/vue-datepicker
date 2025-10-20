@@ -14,6 +14,7 @@ outline: [2, 4]
 - **`umd` and `iife` bundles are removed**
   - `iife`: Browser bundle, importing the component in `html` `<script>` tag
   - `umd`: Mostly used in older webpack bundles
+- `import` statement is changed to named instead of default
 - Removed props:
   - `position`
   - `auto-position`
@@ -71,6 +72,15 @@ outline: [2, 4]
 - When timezone is set, v-model will have proper GMT offset included (returned `TZDate` object from `date-fns/tz`)
 - All locale based formating is now done via unicode tokens
 - Type definition is now auto-generated, there might be some misalignment between types
+
+## Importing the component
+
+Importing the component is now done via named import:
+
+```js
+import VueDatePicker from '@vuepic/vue-datepicker'; // [!code --] 
+import { VueDatePicker } from '@vuepic/vue-datepicker'; // [!code ++]
+```
 
 ## Props changes
 

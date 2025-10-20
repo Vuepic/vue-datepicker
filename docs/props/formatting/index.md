@@ -14,7 +14,7 @@ Format options for the value displayed across the picker components
 
 Formats prop allows configuring the format of various picker elements.
 
-:::tip Info
+:::tip 
 - To find out supported unicode tokens, please refer to [`Unicode tokens`](https://date-fns.org/docs/format) documentation
 - All formating is based on the provided locale.
 :::
@@ -139,7 +139,7 @@ Changes the format quarter name in the quarter picker
 
 Changes the format of the selected value in the input field
 
-:::info Info
+:::info
 Default values are composed dynamically based on the picker mode
 
 - Date picker: `'MM/dd/yyyy HH:mm'`
@@ -154,7 +154,7 @@ If [`timeConfig.is24`](/props/time-picker-configuration/#is24) prop is set to `f
 When `range` is enabled, the format is repeated for the single value with `-` in between
 :::
 
-:::tip Extra
+:::tip 
 If unicode tokes do not meet your requirement, you can pass a function that returns a string.
 
 The function argument is the internal selected date value(s). 
@@ -183,12 +183,12 @@ The function argument is the internal selected date value(s).
 
 Changes the format of the selected value in the preview date section
 
-:::info Info
+:::info
 - If no value is provided, it will be the same as the `input`.
 - If `input` property value is provided, preview format will use the same one
 :::
 
-:::tip Extra
+:::tip
 If unicode tokes do not meet your requirement, you can pass a function that returns a string.
 
 The function argument is the internal selected date value(s).

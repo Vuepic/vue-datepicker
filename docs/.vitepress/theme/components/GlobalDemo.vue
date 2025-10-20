@@ -30,35 +30,37 @@
     }>();
 
     onMounted(() => {
-        if (!props.emptyModel) {
-            if (attrs.range) return assignRangeModelValue();
-            if (attrs.timePicker) return assignTimePickerModelValue();
-            if (attrs.monthPicker) return assignMonthPickerModelValue();
-            if (attrs.yearPicker) return assignYearPickerModelValue();
-            if (attrs.quarterPicker) return assignQuarterPickerModelValue();
-            return assignSingleModelValue();
-        }
+        if (attrs.range) return assignRangeModelValue();
+        if (attrs.timePicker) return assignTimePickerModelValue();
+        if (attrs.monthPicker) return assignMonthPickerModelValue();
+        if (attrs.yearPicker) return assignYearPickerModelValue();
+        if (attrs.quarterPicker) return assignQuarterPickerModelValue();
+        return assignSingleModelValue();
     });
 
     const assignRangeModelValue = () => {
         placeholder.value = 'Select Range';
-        modelBind.value = [new Date(), addDays(new Date(), 3)];
+        if (!props.emptyModel) modelBind.value = [new Date(), addDays(new Date(), 3)];
     };
 
     const assignTimePickerModelValue = () => {
-        modelBind.value = { hours: getHours(new Date()), minutes: getMinutes(new Date()) };
+        placeholder.value = 'Select Time';
+        if (!props.emptyModel) modelBind.value = { hours: getHours(new Date()), minutes: getMinutes(new Date()) };
     };
 
     const assignMonthPickerModelValue = () => {
-        modelBind.value = { month: getMonth(new Date()), year: getYear(new Date()) };
+        placeholder.value = 'Select Month';
+        if (!props.emptyModel) modelBind.value = { month: getMonth(new Date()), year: getYear(new Date()) };
     };
 
     const assignYearPickerModelValue = () => {
-        modelBind.value = getYear(new Date());
+        placeholder.value = 'Select Year';
+        if (!props.emptyModel) modelBind.value = getYear(new Date());
     };
 
     const assignQuarterPickerModelValue = () => {
-        modelBind.value = startOfQuarter(new Date());
+        placeholder.value = 'Select Quarter';
+        if (!props.emptyModel) modelBind.value = startOfQuarter(new Date());
     };
 
     const assignSingleModelValue = () => {
@@ -77,12 +79,12 @@
             return [
                 {
                     date: addDays(new Date(), 1),
-                    type: 'dot',
+                    type: 'dot' as const,
                     tooltip: [{ text: 'Dot with tooltip', color: 'green' }],
                 },
                 {
                     date: addDays(new Date(), 2),
-                    type: 'line',
+                    type: 'line' as const,
                     tooltip: [
                         { text: 'First tooltip', color: 'blue' },
                         { text: 'Second tooltip', color: 'yellow' },
@@ -90,7 +92,7 @@
                 },
                 {
                     date: addDays(new Date(), 3),
-                    type: 'dot',
+                    type: 'dot' as const,
                     color: 'yellow',
                 },
             ];

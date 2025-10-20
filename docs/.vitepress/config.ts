@@ -81,6 +81,10 @@ export default defineConfig({
                         text: 'General configuration',
                         link: '/props/general-configuration/',
                     },
+                    {
+                        text: 'Look and feel',
+                        link: '/props/look-and-feel/',
+                    },
                     // {
                     //     text: 'Calendar configuration',
                     //     link: '/props/calendar-configuration/',

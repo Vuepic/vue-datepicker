@@ -9,7 +9,7 @@ outline: [2, 4]
 
 Props to define datepicker validation
 
-:::info Info
+:::info
 - Props with type `Date | string | number` assumes that both `string` or `number` represent a date string or timestamp
 - When using time values, always use `24h` values even if the `timeConfig.is24` is set to `false`
 :::
@@ -21,7 +21,7 @@ All dates before the given date will be disabled
 - Type: `Date | string | number`
 - Default: `undefined`
 
-<GlobalDemo :minDate="new Date()" placeholder="Select Date"></GlobalDemo>
+<GlobalDemo :minDate="new Date()" :emptyModel="true"></GlobalDemo>
 
 ::: details Code Example
 ```vue
@@ -45,7 +45,7 @@ All dates after the given date will be disabled
 - Type: `Date | string | number`
 - Default: `undefined`
 
-<GlobalDemo :maxDate="new Date()" placeholder="Select Date"></GlobalDemo>
+<GlobalDemo :maxDate="new Date()" :emptyModel="true"></GlobalDemo>
 
 ::: details Code Example
 ```vue
@@ -69,7 +69,7 @@ Sets the minimal available time to pick
 - Type: `{ hours: number; minutes: number; seconds?: number }`
 - Default: `undefined`
 
-<GlobalDemo :minTime="{ hours: 11, minutes: 30 }" placeholder="Select Date" :emptyModel="true"></GlobalDemo>
+<GlobalDemo :minTime="{ hours: 11, minutes: 30 }" :emptyModel="true"></GlobalDemo>
 
 ::: details Code Example
 ```vue
@@ -93,7 +93,7 @@ Sets the maximal available time to pick
 - Type: `{ hours: number; minutes: number; seconds?: number }`
 - Default: `undefined`
 
-<GlobalDemo :maxTime="{ hours: 11, minutes: 30 }" placeholder="Select Date" :emptyModel="true"></GlobalDemo>
+<GlobalDemo :maxTime="{ hours: 11, minutes: 30 }" :emptyModel="true"></GlobalDemo>
 
 ::: details Code Example
 ```vue
@@ -127,7 +127,7 @@ type DisabledTimesProp =
 ```
 - Default: `undefined`
 
-:::tip Info
+:::tip
 Dynamic disabling of times in the time-picker overlay only works with the `Array` value provided
 
 Prop can be used either in `time-picker` or regular date picker modes
@@ -135,11 +135,11 @@ Prop can be used either in `time-picker` or regular date picker modes
 To disable full hour you can pass an object for example: `{ hours: 15, minutes: "*" }` with the `*` wildcard
 
 To have a better control of the `range` validation, you can provide an array containing 2 arrays.
-- First array will be used to validate start time
-- Second array will be used to validate end time
+- The first array will be used to validate start time
+- The second array will be used to validate end time
 :::
 
-<GlobalDemo :disabledTimes="[{ hours: 15, minutes: '*' }, { hours: 16, minutes: 15 }, { hours: 16, minutes: 20 }, { hours: 17, minutes: 30 }]" placeholder="Select Date" :emptyModel="true"></GlobalDemo>
+<GlobalDemo :disabledTimes="[{ hours: 15, minutes: '*' }, { hours: 16, minutes: 15 }, { hours: 16, minutes: 20 }, { hours: 17, minutes: 30 }]" :emptyModel="true"></GlobalDemo>
 
 ::: details Code Example
 ```vue
@@ -170,11 +170,11 @@ Disable specific dates
 - Type: `Date[] | string[] | number[] | (date: Date) => boolean`
 - Default: `[]`
 
-:::tip Info
+:::info
 If you use a custom function, make sure to return `true` for a disabled date and `false` for enabled
 :::
 
-<GlobalDemo :dates="[new Date()]" placeholder="Select Date" :emptyModel="true"></GlobalDemo>
+<GlobalDemo :dates="[new Date()]" :emptyModel="true"></GlobalDemo>
 
 ::: details Code Example
 ```vue
@@ -205,7 +205,7 @@ Allow only specific dates
 - Type: `string[] | Date[] | number[]`
 - Default: `[]`
 
-<GlobalDemo :dates="[new Date()]" placeholder="Select Date" :emptyModel="true"></GlobalDemo>
+<GlobalDemo :dates="[new Date()]" :emptyModel="true"></GlobalDemo>
 
 ::: details Code Example
 ```vue
@@ -248,7 +248,7 @@ interface Filters {
 ```
 - Default: `undefined`
 
-<GlobalDemo :filters="{ weekDays: [1, 2] }" placeholder="Select Date" :emptyModel="true"></GlobalDemo>
+<GlobalDemo :filters="{ weekDays: [1, 2] }" :emptyModel="true"></GlobalDemo>
 
 ::: details Code Example
 ```vue
