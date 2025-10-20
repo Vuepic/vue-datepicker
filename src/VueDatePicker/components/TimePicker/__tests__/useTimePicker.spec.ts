@@ -10,10 +10,7 @@ vi.mock('@/composables/useContext.ts', () => {
         seconds: 0,
     });
     const modelValue = ref<Date | Date[] | null>(new Date('2024-01-15T14:30:00'));
-    const rootProps = {
-        startTime: null,
-    };
-    const isTextInputDate = ref(false);
+    const rootProps = {};
     const defaults = {
         startTime: ref(null),
         range: ref({
@@ -22,6 +19,7 @@ vi.mock('@/composables/useContext.ts', () => {
         tz: ref(null),
         timeConfig: ref({
             enableSeconds: false,
+            startTime: null,
         }),
     };
     const state = reactive({
@@ -221,21 +219,21 @@ describe('useTimePicker', () => {
         it('should handle startTime prop', async () => {
             const { useContext } = await import('@/composables/useContext.ts');
             const ctx = useContext();
-            ctx.rootProps.startTime = { hours: 10, minutes: 30, seconds: 0 };
+            (ctx.defaults.startTime as any) = { hours: 10, minutes: 30, seconds: 0 };
 
             const result = useTimePicker(emitMock);
 
             expect(result.time).toBeDefined();
 
             // Reset
-            (ctx.rootProps as any).startTime = null;
+            (ctx.defaults.startTime as any).startTime = null;
         });
 
         it('should handle array startTime in range mode', async () => {
             const { useContext } = await import('@/composables/useContext.ts');
             const ctx = useContext();
             ctx.defaults.range.value.enabled = true;
-            ctx.rootProps.startTime = [
+            (ctx.defaults.startTime as any) = [
                 { hours: 10, minutes: 30, seconds: 0 },
                 { hours: 14, minutes: 45, seconds: 0 },
             ];
@@ -246,7 +244,7 @@ describe('useTimePicker', () => {
 
             // Reset
             ctx.defaults.range.value.enabled = false;
-            (ctx.rootProps as any).startTime = null;
+            (ctx.defaults.startTime as any).startTime = null;
         });
     });
 
@@ -427,27 +425,27 @@ describe('useTimePicker', () => {
         it('should parse startTime with all values', async () => {
             const { useContext } = await import('@/composables/useContext.ts');
             const ctx = useContext();
-            ctx.rootProps.startTime = { hours: '10', minutes: '30', seconds: '45' };
+            (ctx.defaults.startTime as any) = { hours: '10', minutes: '30', seconds: '45' };
 
             const result = useTimePicker(emitMock);
 
             expect(result).toBeDefined();
 
             // Reset
-            (ctx.rootProps as any).startTime = null;
+            (ctx.defaults.startTime as any).startTime = null;
         });
 
         it('should parse startTime without seconds', async () => {
             const { useContext } = await import('@/composables/useContext.ts');
             const ctx = useContext();
-            (ctx.rootProps as any).startTime = { hours: '10', minutes: '30', seconds: undefined };
+            (ctx.defaults.startTime as any).startTime = { hours: '10', minutes: '30', seconds: undefined };
 
             const result = useTimePicker(emitMock);
 
             expect(result).toBeDefined();
 
             // Reset
-            (ctx.rootProps as any).startTime = null;
+            (ctx.defaults.startTime as any).startTime = null;
         });
     });
 

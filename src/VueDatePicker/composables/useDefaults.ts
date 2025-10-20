@@ -53,12 +53,14 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
 
     const getDefaultStartTime = (): TimeModel | TimeModel[] | null => {
         if (range.value.enabled) {
-            if (props.startTime && Array.isArray(props.startTime)) {
-                return [assignTime(props.startTime[0]!), assignTime(props.startTime[1]!)];
+            if (timeConfig.value.startTime && Array.isArray(timeConfig.value.startTime)) {
+                return [assignTime(timeConfig.value.startTime[0]!), assignTime(timeConfig.value.startTime[1]!)];
             }
             return null;
         }
-        return props.startTime && !Array.isArray(props.startTime) ? assignTime(props.startTime) : null;
+        return timeConfig.value.startTime && !Array.isArray(timeConfig.value.startTime)
+            ? assignTime(timeConfig.value.startTime)
+            : null;
     };
 
     const getMultiCalendarsCount = (option?: boolean | number | string) => {

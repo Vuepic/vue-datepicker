@@ -64,7 +64,7 @@ describe('useDefaults', () => {
     it('should compute startTime for single and range modes honoring seconds flag', () => {
         // Single start time with seconds disabled -> seconds should be 0
         const single = useDefaults(
-            buildProps({ startTime: { hours: 8, minutes: 9 }, timeConfig: { enableSeconds: false } }),
+            buildProps({ timeConfig: { enableSeconds: false, startTime: { hours: 8, minutes: 9 } } }),
         );
         expect(single.startTime.value).toEqual({ hours: 8, minutes: 9, seconds: 0 });
 
@@ -72,11 +72,14 @@ describe('useDefaults', () => {
         const range = useDefaults(
             buildProps({
                 range: true,
-                startTime: [
-                    { hours: 1, minutes: 2 },
-                    { hours: 3, minutes: 4 },
-                ],
-                timeConfig: { enableSeconds: true },
+
+                timeConfig: {
+                    enableSeconds: true,
+                    startTime: [
+                        { hours: 1, minutes: 2 },
+                        { hours: 3, minutes: 4 },
+                    ],
+                },
             }),
         );
         expect(Array.isArray(range.startTime.value)).toBe(true);

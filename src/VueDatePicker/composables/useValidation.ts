@@ -244,7 +244,7 @@ export const useValidation = () => {
         const param = Array.isArray(date)
             ? [getTimeObj(date[0]!), date[1] ? getTimeObj(date[1]) : undefined]
             : getTimeObj(date);
-        const valid = !(rootProps.disabledTimes as DisabledTimesFn)(param);
+        const valid = !(rootProps.disabledTimes as DisabledTimesFn)(param as never);
         return isValid && valid;
     };
 

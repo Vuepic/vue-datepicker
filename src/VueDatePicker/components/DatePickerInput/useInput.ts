@@ -25,7 +25,7 @@ export const useInput = () => {
             return set(parsedDate, {
                 hours: +assignTimeTextInput.value!.hours,
                 minutes: +assignTimeTextInput.value!.minutes,
-                seconds: +assignTimeTextInput.value!.seconds,
+                seconds: +(assignTimeTextInput.value!.seconds ?? 0),
                 milliseconds: 0,
             });
         }

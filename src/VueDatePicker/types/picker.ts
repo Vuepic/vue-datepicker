@@ -30,7 +30,7 @@ export interface MonthModel {
 export interface TimeModel {
     hours: number | string;
     minutes: number | string;
-    seconds: number | string;
+    seconds?: number | string;
 }
 
 export type PresetDate = {
@@ -51,7 +51,10 @@ export type UIParsed = {
     [K in keyof UIConfig]: K extends 'dayClass' ? UIConfig[K] | undefined : Record<string, boolean> | undefined;
 };
 
-export type DisabledTimesFn = (time: TimeObj | TimeObj[] | (TimeObj | undefined)[]) => boolean;
+export type DisabledTimesFn =
+    | ((time: TimeObj) => boolean)
+    | ((time: TimeObj[]) => boolean)
+    | ((time: (TimeObj | undefined)[]) => boolean);
 
 export interface CalendarMonthYear {
     month: number;

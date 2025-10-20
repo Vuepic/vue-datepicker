@@ -40,7 +40,6 @@ export interface RootProps {
     autoApply?: boolean;
     disabledDates?: Date[] | string[] | ((date: Date) => boolean);
     startDate?: DateValue;
-    startTime?: TimeModel | TimeModel[];
     hideOffsetDates?: boolean;
     noToday?: boolean;
     allowedDates?: DateValue[];

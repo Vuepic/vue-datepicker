@@ -15,7 +15,6 @@ export const useTimePicker = (emit: EmitFn<TimePickerEmits>) => {
     const {
         time,
         modelValue,
-        rootProps,
         state,
         defaults: { startTime, range, tz, timeConfig },
     } = useContext();
@@ -38,13 +37,13 @@ export const useTimePicker = (emit: EmitFn<TimePickerEmits>) => {
     };
 
     const getDateFromStartTime = () => {
-        if (rootProps.startTime) {
-            if (Array.isArray(rootProps.startTime)) {
-                const parsedFirst = parseStartTime(rootProps.startTime[0]!);
-                const parsedSecond = parseStartTime(rootProps.startTime[1]!);
+        if (timeConfig.value.startTime) {
+            if (Array.isArray(timeConfig.value.startTime)) {
+                const parsedFirst = parseStartTime(timeConfig.value.startTime[0]!);
+                const parsedSecond = parseStartTime(timeConfig.value.startTime[1]!);
                 return [set(getDate(), parsedFirst), set(getDate(), parsedSecond)];
             }
-            const parsed = parseStartTime(rootProps.startTime);
+            const parsed = parseStartTime(timeConfig.value.startTime);
             return set(getDate(), parsed);
         }
         return range.value.enabled ? [null, null] : null;

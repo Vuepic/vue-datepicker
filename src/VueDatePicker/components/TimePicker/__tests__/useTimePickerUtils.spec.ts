@@ -560,7 +560,7 @@ describe('useTimePickerUtils', () => {
             assignStartTime({ hours: 10, minutes: 30, seconds: undefined as any });
 
             // When seconds is undefined, +undefined = NaN (implementation behavior)
-            expect(ctx.time.seconds).toBeNaN();
+            expect(ctx.time.seconds).toEqual(0);
 
             // Reset
             ctx.defaults.timeConfig.value.enableSeconds = false;

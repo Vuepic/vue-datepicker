@@ -127,7 +127,9 @@ export const useTimePickerUtils = (updateFlow?: () => void) => {
             const isMulti = Array.isArray(startTime);
             const hours = isMulti ? [+startTime[0]!.hours, +startTime[1]!.hours] : +startTime.hours;
             const minutes = isMulti ? [+startTime[0]!.minutes, +startTime[1]!.minutes] : +startTime.minutes;
-            const seconds = isMulti ? [+startTime[0]!.seconds, +startTime[1]!.seconds] : +startTime.seconds;
+            const seconds = isMulti
+                ? [+(startTime[0]!.seconds ?? 0), +(startTime[1]!.seconds ?? 0)]
+                : +(startTime.seconds ?? 0);
 
             assignTime('hours', hours);
             assignTime('minutes', minutes);

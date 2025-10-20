@@ -137,6 +137,7 @@ export const defaultTime = {
     minutesIncrement: 1,
     secondsIncrement: 1,
     timePickerInline: false,
+    startTime: undefined,
 };
 
 export const basePropDefaults = {

@@ -1,5 +1,5 @@
 import type { CustomClass, InternalModelValue, PickerSection, TimeKey } from '@/types/generic.ts';
-import type { CalendarDay, MonthModel } from '@/types/picker.ts';
+import type { CalendarDay, MonthModel, TimeModel } from '@/types/picker.ts';
 import type { ShallowRef } from 'vue';
 
 export interface InputAttributesConfig {
@@ -27,6 +27,7 @@ export interface TimeConfig {
     minutesGridIncrement: number | string;
     secondsGridIncrement: number | string;
     timePickerInline: boolean;
+    startTime: TimeModel | TimeModel[];
 }
 
 export interface Config {
@@ -117,8 +118,8 @@ export interface FormatsConfig {
     year: string;
     weekDay: string;
     quarter: string;
-    input?: string | ((date: Date | Date[]) => string);
-    preview?: string | ((date: Date | Date[]) => string);
+    input?: string | ((date: Date) => string) | ((dates: Date[]) => string);
+    preview?: string | ((date: Date) => string) | ((dates: Date[]) => string);
 }
 
 export interface TextInputConfig {

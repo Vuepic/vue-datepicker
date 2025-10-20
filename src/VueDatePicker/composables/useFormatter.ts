@@ -34,7 +34,7 @@ export const useFormatter = () => {
     const formatSelectedDate = (value: Date | Date[] | null, customPattern?: string, preview?: boolean) => {
         const fmt = preview ? formats.value.preview : formats.value.input;
         if (!value) return '';
-        if (typeof fmt === 'function') return fmt(value);
+        if (typeof fmt === 'function') return fmt(value as never);
         const pattern = customPattern ?? fmt;
         const options = { locale: rootProps.locale };
 

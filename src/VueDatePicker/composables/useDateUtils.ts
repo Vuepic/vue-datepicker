@@ -142,14 +142,14 @@ export const useDateUtils = () => {
             return Object.fromEntries(
                 (['hours', 'minutes', 'seconds'] as TimeKey[]).map((timeType) => {
                     if (timeType === type) return [timeType, value];
-                    return [timeType, Number.isNaN(+time[timeType]) ? undefined : +time[timeType]];
+                    return [timeType, Number.isNaN(+time[timeType]!) ? undefined : +time[timeType]!];
                 }),
             );
         }
         return {
             hours: Number.isNaN(+time.hours) ? undefined : +time.hours,
             minutes: Number.isNaN(+time.minutes) ? undefined : +time.minutes,
-            seconds: Number.isNaN(+time.seconds) ? undefined : +time.seconds,
+            seconds: Number.isNaN(+(time.seconds ?? '')) ? undefined : +time.seconds!,
         };
     };
 
