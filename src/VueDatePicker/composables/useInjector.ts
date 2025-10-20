@@ -16,7 +16,7 @@ import { useDateUtils, useDefaults } from '@/composables';
 import type { CalendarMonthYear, InternalModelValue, RootEmits, RootPropsWithDefaults } from '@/types';
 import { getMonth, getYear } from 'date-fns';
 
-interface State {
+export interface State {
     menuFocused: boolean;
     shiftKeyInMenu: boolean;
     isInputFocused: boolean;
