@@ -84,7 +84,7 @@ typings/
 
 # Nuxt.js build / generate output
 .nuxt
-dist
+./dist
 
 # Gatsby files
 .cache/
@@ -92,8 +92,6 @@ dist
 # https://nextjs.org/blog/next-9-1#public-directory-support
 # public
 
-# vuepress build output
-.vuepress/dist
 
 # Serverless directories
 .serverless/
@@ -106,3 +104,6 @@ dist
 
 # TernJS port file
 .tern-port
+
+docs/.vitepress/cache
+docs/.vitepress/dist

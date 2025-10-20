@@ -8,7 +8,10 @@
   "homepage": "https://vue3datepicker.com",
   "types": "index.d.ts",
   "type": "module",
+  "main": "dist/vue-datepicker.umd.cjs",
   "module": "dist/vue-datepicker.js",
+  "browser": "dist/vue-datepicker.js",
+  "unpkg": "dist/vue-datepicker.iife.js",
   "style": "dist/main.css",
   "sass": "src/VueDatePicker/style/main.scss",
   "files": [
