@@ -52,7 +52,7 @@ export interface RootProps {
     filters?: Partial<FilterConfig>;
     arrowNavigation?: boolean;
     highlight?: HighlightFn | Partial<HighlightConfig>;
-    teleport?: Partial<TeleportConfig> | boolean;
+    teleport?: Partial<TeleportConfig> | boolean; // todo to centered
     locale?: Locale;
     weekNumName?: string;
     weekStart?: string | number;
@@ -72,7 +72,7 @@ export interface RootProps {
     placeholder?: string;
     timePicker?: boolean;
     range?: boolean | Partial<RangeConfig>;
-    uid?: string;
+    uid?: string; // todo
     disabled?: boolean;
     readonly?: boolean;
     inline?: boolean | { input?: boolean };

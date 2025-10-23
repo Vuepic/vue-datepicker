@@ -49,6 +49,7 @@ const inputSlots = [{ name: 'trigger' }, { name: 'input-icon' }, { name: 'clear-
 
 const slotNames = {
     all: () => slots,
+    root: () => slots.concat(inputSlots as never),
     monthYear: () => slots.filter((slot) => slot.use.includes('month-year')),
     input: () => inputSlots,
     timePicker: () => slots.filter((slot) => slot.use.includes('time')),
@@ -62,7 +63,17 @@ const slotNames = {
 export const useSlotsMapper = () => {
     const mapSlots = (
         slots: Slots,
-        usage: 'all' | 'monthYear' | 'timePicker' | 'input' | 'action' | 'calendar' | 'menu' | 'shared' | 'yearMode',
+        usage:
+            | 'all'
+            | 'monthYear'
+            | 'timePicker'
+            | 'input'
+            | 'action'
+            | 'calendar'
+            | 'menu'
+            | 'shared'
+            | 'yearMode'
+            | 'root',
         presetDates?: PresetDate[],
     ): string[] => {
         const toReturn: string[] = [];
