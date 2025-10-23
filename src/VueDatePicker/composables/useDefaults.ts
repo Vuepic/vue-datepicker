@@ -11,7 +11,6 @@ import {
     defaultTransitions,
     defaultFilters,
     defaultFormats,
-    defaultTeleport,
     defaultTime,
     defaultInputAttrs,
 } from '@/constants/defaults.ts';
@@ -19,6 +18,7 @@ import { MAP_KEY_FORMAT } from '@/constants';
 
 import type {
     Config,
+    FloatingConfig,
     HighlightFn,
     InputAttributesConfig,
     MultiCalendarsConfig,
@@ -264,10 +264,10 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
     });
 
     const teleport = computed(() => {
-        if (typeof props.teleport === 'boolean' || !props.teleport) {
-            return { ...defaultTeleport, enabled: !!props.teleport };
-        }
-        return { ...defaultTeleport, ...props.teleport, enabled: true };
+        if (!props.teleport) return undefined;
+        if (typeof props.teleport === 'string') return props.teleport;
+        if (typeof props.teleport === 'boolean') return 'body';
+        return props.teleport;
     });
 
     const timeConfig = computed(() => {
@@ -287,10 +287,12 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
         return { ...defaultInputAttrs, inputmode };
     });
 
-    const floatingConfig = computed(() => {
+    const floatingConfig = computed((): FloatingConfig => {
         return {
             offset: props.floating?.offset ?? 10,
             arrow: props.floating?.arrow ?? true,
+            strategy: props.floating?.strategy ?? undefined,
+            placement: props.floating?.placement ?? undefined,
         };
     });
 

@@ -18,41 +18,53 @@
                 <slot :name="slot" v-bind="args" />
             </template>
         </DatepickerInput>
-        <div
-            ref="dp-menu-wrap"
-            :class="{ 'dp--menu-wrapper': !inline.enabled, dp__outer_menu_wrap: true }"
-            :style="!inline.enabled ? floatingStyles : undefined"
-        >
-            <transition :name="menuTransition(placement === 'top')" :css="showTransition && !inline.enabled">
-                <DatepickerMenu
-                    v-if="isOpen"
-                    ref="dp-menu"
-                    :class="{ [theme]: true, 'dp--menu-wrapper': rootProps.teleport }"
-                    :no-overlay-focus="noOverlayFocus"
-                    :collapse="collapse"
-                    :get-input-rect="getInputRect"
-                    @close-picker="closeMenu"
-                    @select-date="selectDate"
-                    @auto-apply="autoApplyValue"
-                    @time-update="timeUpdate"
-                    @menu-blur="rootEmit('blur')"
+        <teleport :to="teleport" :disabled="!teleport">
+            <div
+                ref="dp-menu-wrap"
+                :class="{
+                    'dp--menu-wrapper': !inline.enabled,
+                    dp__outer_menu_wrap: true,
+                    'dp--centered': rootProps.centered,
+                }"
+                :style="!inline.enabled && !rootProps.centered ? floatingStyles : undefined"
+            >
+                <transition
+                    :name="menuTransition(placement.startsWith('top'))"
+                    :css="showTransition && !inline.enabled && !rootProps.centered && shouldRender"
                 >
-                    <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
-                        <slot :name="slot" v-bind="{ ...args }" />
-                    </template>
-                    <template v-if="!inline.enabled && !teleport.center && floatingConfig.arrow === true" #arrow>
-                        <div
-                            ref="menu-arrow"
-                            :class="{ dp__arrow_top: placement === 'bottom', dp__arrow_bottom: placement === 'top' }"
-                            :style="{
-                                left: middlewareData.arrow?.x != null ? `${middlewareData.arrow.x}px` : '',
-                                top: middlewareData.arrow?.y != null ? `${middlewareData.arrow.y}px` : '',
-                            }"
-                        ></div>
-                    </template>
-                </DatepickerMenu>
-            </transition>
-        </div>
+                    <DatepickerMenu
+                        v-if="isOpen && shouldRender"
+                        ref="dp-menu"
+                        :class="{ [theme]: true }"
+                        :no-overlay-focus="noOverlayFocus"
+                        :collapse="collapse"
+                        :get-input-rect="getInputRect"
+                        @close-picker="closeMenu"
+                        @select-date="selectDate"
+                        @auto-apply="autoApplyValue"
+                        @time-update="timeUpdate"
+                        @menu-blur="rootEmit('blur')"
+                    >
+                        <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
+                            <slot :name="slot" v-bind="{ ...args }" />
+                        </template>
+                        <template v-if="!inline.enabled && !rootProps.centered && floatingConfig.arrow === true" #arrow>
+                            <div
+                                ref="menu-arrow"
+                                :class="{
+                                    dp__arrow_top: placement === 'bottom',
+                                    dp__arrow_bottom: placement === 'top',
+                                }"
+                                :style="{
+                                    left: middlewareData.arrow?.x != null ? `${middlewareData.arrow.x}px` : '',
+                                    top: middlewareData.arrow?.y != null ? `${middlewareData.arrow.y}px` : '',
+                                }"
+                            ></div>
+                        </template>
+                    </DatepickerMenu>
+                </transition>
+            </div>
+        </teleport>
     </div>
 </template>
 
@@ -105,6 +117,7 @@
 
     const slots = useSlots();
     const isOpen = ref(false);
+    const shouldRender = ref(false);
     const modelValueRef = toRef(rootProps, 'modelValue');
     const timezoneRef = toRef(rootProps, 'timezone');
 
@@ -126,14 +139,14 @@
         return middlewares;
     };
 
-    const { floatingStyles, middlewareData, placement } = useFloating(
+    const { floatingStyles, middlewareData, placement, y } = useFloating(
         inputRef as Ref<ComponentPublicInstance>,
         dpWrapMenuRef,
         {
+            strategy: floatingConfig.value.strategy,
+            placement: floatingConfig.value.placement,
             middleware: buildFloatingMiddlewares([offset(floatingConfig.value.offset), flip(), shift()]),
-            whileElementsMounted(...args) {
-                return autoUpdate(...args, { animationFrame: true });
-            },
+            whileElementsMounted: autoUpdate,
         },
     );
 
@@ -171,6 +184,13 @@
         },
         { deep: true },
     );
+
+    watch([placement, y], () => {
+        shouldRender.value = false;
+        nextTick().then(() => {
+            shouldRender.value = true;
+        });
+    });
 
     const { parseExternalModelValue, emitModelValue, formatInputValue, checkBeforeEmit } = useExternalInternalMapper();
 

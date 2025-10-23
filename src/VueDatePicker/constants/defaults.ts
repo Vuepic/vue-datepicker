@@ -116,11 +116,6 @@ export const defaultFormats = {
     preview: undefined,
 };
 
-export const defaultTeleport = {
-    target: 'body',
-    center: false,
-};
-
 export const defaultTime = {
     enableTimePicker: true,
     ignoreTimeValidation: false,
@@ -180,6 +175,7 @@ export const propDefaults = {
     focusStartDate: false,
     yearFirst: false,
     loading: false,
+    centered: false,
 };
 
 export const defaultInputAttrs = {

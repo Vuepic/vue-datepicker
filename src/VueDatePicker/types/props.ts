@@ -2,7 +2,6 @@ import type { Locale } from 'date-fns';
 import type {
     TimeConfig,
     Config,
-    TeleportConfig,
     UIConfig,
     FlowConfig,
     FilterConfig,
@@ -52,7 +51,8 @@ export interface RootProps {
     filters?: Partial<FilterConfig>;
     arrowNavigation?: boolean;
     highlight?: HighlightFn | Partial<HighlightConfig>;
-    teleport?: Partial<TeleportConfig> | boolean; // todo to centered
+    teleport?: string | boolean | HTMLElement;
+    centered?: boolean;
     locale?: Locale;
     weekNumName?: string;
     weekStart?: string | number;
