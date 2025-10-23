@@ -152,3 +152,17 @@
         font-size: 46px;
     }
 }
+
+
+.w-full {
+    width: 100%;
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+}
+
+.gapped {
+    gap: 5px;
+}

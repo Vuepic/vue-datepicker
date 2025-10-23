@@ -7,17 +7,24 @@
         :markers="markersProp"
         :placeholder="placeholder"
         :calendar="calendar ? calendarFn : undefined"
-    ></VueDatePicker>
+        :locale="localized ? zhCN : undefined"
+    >
+        <template v-for="(slot, i) in Object.keys(slots)" #[slot]="args" :key="i">
+            <slot :name="slot" v-bind="args" />
+        </template>
+    </VueDatePicker>
 </template>
 
 <script lang="ts" setup>
-    import { ref, useAttrs, onMounted, computed } from 'vue';
+    import { ref, useAttrs, onMounted, computed, useSlots } from 'vue';
     import { useData } from 'vitepress';
     import { addDays, getHours, getMinutes, getMonth, getYear, startOfQuarter } from 'date-fns';
+    import { zhCN } from 'date-fns/locale';
     import { VueDatePicker } from '../lib';
 
     const { isDark } = useData();
     const attrs = useAttrs();
+    const slots = useSlots();
 
     const modelBind = ref();
     const placeholder = ref();
@@ -27,6 +34,7 @@
         highlight?: boolean;
         markers?: boolean;
         calendar?: boolean;
+        localized?: boolean;
     }>();
 
     onMounted(() => {

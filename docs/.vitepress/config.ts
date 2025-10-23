@@ -10,10 +10,22 @@ export default defineConfig({
     sitemap: {
         hostname: 'https://vue3datepicker.com',
     },
+    head: [
+        ['link', { rel: 'icon', href: '/logo.png' }],
+        [
+            'meta',
+            {
+                name: 'description',
+                content:
+                    'Vue 3 datepicker component. Lightweight and powerful with support for the timepicker, range picker, month-year picker, text input, week numbers and many more. Options to customize the datepicker from the ground up with props, slots and custom components. Dark and light mode available',
+            },
+        ],
+    ],
     metaChunk: true,
     cleanUrls: true,
     lastUpdated: true,
     themeConfig: {
+        logo: '/logo.png',
         editLink: {
             pattern: 'https://github.com/Vuepic/vue-datepicker/tree/main/docs/:path',
         },
@@ -85,27 +97,64 @@ export default defineConfig({
                         text: 'Look and feel',
                         link: '/props/look-and-feel/',
                     },
-                    // {
-                    //     text: 'Calendar configuration',
-                    //     link: '/props/calendar-configuration/',
-                    // },
-
-                    // {
-                    //     text: 'Localization',
-                    //     link: '/props/localization/',
-                    // },
-                    // {
-                    //     text: 'Positioning',
-                    //     link: '/props/positioning/',
-                    // },
-                    // {
-                    //     text: 'Keyboard',
-                    //     link: '/props/keyboard/',
-                    // },
-                    // {
-                    //     text: 'Look and feel',
-                    //     link: '/props/look-and-feel/',
-                    // },
+                    {
+                        text: 'Localization',
+                        link: '/props/localization/',
+                    },
+                    {
+                        text: 'Timezone',
+                        link: '/props/timezone/',
+                    },
+                ],
+            },
+            {
+                text: 'Slots',
+                collapsed: true,
+                items: [
+                    {
+                        text: 'Sections',
+                        link: '/slots/sections/',
+                    },
+                    {
+                        text: 'Content',
+                        link: '/slots/content/',
+                    },
+                    {
+                        text: 'Trigger and input',
+                        link: '/slots/trigger-and-input/',
+                    },
+                    {
+                        text: 'Icons',
+                        link: '/slots/icons/',
+                    },
+                    {
+                        text: 'Overlay',
+                        link: '/slots/overlay/',
+                    },
+                ],
+            },
+            {
+                text: 'Methods and events',
+                collapsed: true,
+                items: [
+                    {
+                        text: 'Methods',
+                        link: '/methods-and-events/methods/',
+                    },
+                    {
+                        text: 'Events',
+                        link: '/methods-and-events/events/',
+                    },
+                ],
+            },
+            {
+                text: 'Customization',
+                collapsed: true,
+                items: [
+                    {
+                        text: 'Theming',
+                        link: '/customization/theming/',
+                    },
                 ],
             },
             {

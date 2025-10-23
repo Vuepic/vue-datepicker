@@ -135,14 +135,18 @@ Add markers to the specified dates with (optional) tooltips. For color options, 
 interface Marker {
     date: Date | string | number;
     type?: 'dot' | 'line';
-    tooltip?: { text: string; color?: string;}[];
+    tooltip?: { text: string; color?: string; slot?: string }[];
     color?: string;
-    // el is ah HTML element of a calendar cell
+    // el is an HTML element of a calendar cell
     customPosition?: (el: HTMLElement) => Record<string, string | number>;
 }
 ```
 
 - Default: `[]`
+
+:::tip
+ - You can provide a `slot` name in the tooltip object to use a custom slot for the tooltip
+:::
 
 <GlobalDemo :markers="true" placeholder="Select Date"></GlobalDemo>
 
@@ -706,3 +710,27 @@ interface FloatingConfig {
 </script>
 ```
 :::
+
+## aria-labels
+
+## week-numbers
+
+## day-names
+
+## config
+
+## start-date
+
+## focus-start-date
+
+## week-num-name
+
+## centered
+
+## arrow-navigation
+
+## prevent-min-max-navigation
+
+## preset-dates
+
+## hide-month-year-select

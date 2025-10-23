@@ -15,6 +15,9 @@ outline: [2, 4]
   - `iife`: Browser bundle, importing the component in `html` `<script>` tag
   - `umd`: Mostly used in older webpack bundles
 - `import` statement is changed to named instead of default
+- Removed `onScroll` and `dpWrapMenuRef` exposed methods
+- Removed `@recalculate-position` emit
+- Slot action row param to internalModelVAlue to modelValue
 - Removed props:
   - `position`
   - `auto-position`

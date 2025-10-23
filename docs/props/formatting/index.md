@@ -12,11 +12,15 @@ Format options for the value displayed across the picker components
 
 ## formats
 
-Formats prop allows configuring the format of various picker elements.
+Formats prop allows configuring the format of various picker elements
 
 :::tip 
 - To find out supported unicode tokens, please refer to [`Unicode tokens`](https://date-fns.org/docs/format) documentation
-- All formating is based on the provided locale.
+- All formating is based on the provided [`locale`](/props/localization/#locale) prop
+:::
+
+:::tip
+For convenience, the library provides re-export from `date-fns` for all supported locales`
 :::
 
 - Type:
