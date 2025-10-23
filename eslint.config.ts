@@ -10,7 +10,7 @@ export default defineConfigWithVueTs(
         files: ['**/*.{ts,mts,tsx,vue}'],
     },
 
-    globalIgnores(['**/dist/**', '**/coverage/**', '**/*.scss', '**/node_modules/**']),
+    globalIgnores(['**/dist/**', '**/coverage/**', '**/*.scss', '**/node_modules/**', '**/.vitepress/theme/lib/**']),
 
     pluginVue.configs['flat/recommended'],
     vueTsConfigs.recommended,
