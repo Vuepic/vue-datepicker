@@ -72,7 +72,7 @@ export interface RootProps {
     placeholder?: string;
     timePicker?: boolean;
     range?: boolean | Partial<RangeConfig>;
-    uid?: string; // todo
+    menuId?: string;
     disabled?: boolean;
     readonly?: boolean;
     inline?: boolean | { input?: boolean };

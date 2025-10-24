@@ -1,3 +1,2 @@
-import VueDatePickerRoot from './VueDatePicker/VueDatePickerRoot.vue';
-
-export { VueDatePickerRoot as VueDatePicker };
+export { default as VueDatePicker } from './VueDatePicker/VueDatePickerRoot.vue';
+export { TZDate } from '@date-fns/tz';

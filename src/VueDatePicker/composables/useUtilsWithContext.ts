@@ -23,7 +23,7 @@ export const useUtilsWithContext = () => {
     };
 
     const isOutOfYearRange = (year: number) => {
-        return year < +rootProps.yearRange[0]! || year > +rootProps.yearRange[1]!;
+        return year < +rootProps.yearRange[0] || year > +rootProps.yearRange[1];
     };
 
     return {

@@ -1,6 +1,6 @@
 <template>
     <div
-        :id="rootProps.uid ? `dp-menu-${rootProps.uid}` : undefined"
+        :id="rootProps.menuId"
         ref="dp-menu"
         :tabindex="inline.enabled ? undefined : '0'"
         :role="inline.enabled ? undefined : 'dialog'"
@@ -65,7 +65,7 @@
                     </template>
                 </template>
             </div>
-            <div class="dp__instance_calendar" role="document">
+            <div class="dp__instance_calendar">
                 <component
                     :is="displayComponent"
                     ref="dyn-cmp"
