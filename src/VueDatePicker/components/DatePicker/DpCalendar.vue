@@ -115,7 +115,7 @@
 
 <script lang="ts" setup>
     import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
-    import { unrefElement } from '@vueuse/core';
+    import { unrefElement, useSwipe } from '@vueuse/core';
     import { getISOWeek, getWeek, set, type Day } from 'date-fns';
 
     import { useArrowNavigation, useHelperFns, useDateUtils, useContext, useFormatter } from '@/composables';
@@ -166,8 +166,22 @@
         left: '',
         transform: '',
     });
-    const touch = ref({ startX: 0, endX: 0, startY: 0, endY: 0 });
     const tpArrowStyle = ref<{ left?: string; right?: string }>({ left: '50%' });
+
+    useSwipe(calendarWrapRef, {
+        onSwipeEnd: (_ev, direction) => {
+            if (config.value.noSwipe) return;
+            if (rootProps.vertical) {
+                if (direction === 'up' || direction === 'down') {
+                    emit('handle-swipe', direction === 'up' ? 'left' : 'right');
+                }
+            } else {
+                if (direction === 'left' || direction === 'right') {
+                    emit('handle-swipe', direction === 'right' ? 'left' : 'right');
+                }
+            }
+        },
+    });
 
     const calendarWeeks = computed(() => {
         if (rootProps.calendar) return rootProps.calendar(props.mappedDates);
@@ -183,26 +197,12 @@
 
     onMounted(() => {
         emit('mount', { cmp: 'calendar', dayRefs: dayRefs.value });
-        if (!config.value.noSwipe) {
-            if (calendarWrapRef.value) {
-                calendarWrapRef.value.addEventListener('touchstart', onTouchStart, { passive: false });
-                calendarWrapRef.value.addEventListener('touchend', onTouchEnd, { passive: false });
-                calendarWrapRef.value.addEventListener('touchmove', onTouchMove, { passive: false });
-            }
-        }
         if (config.value.monthChangeOnScroll && calendarWrapRef.value) {
             calendarWrapRef.value.addEventListener('wheel', onScroll, { passive: false });
         }
     });
 
     onUnmounted(() => {
-        if (!config.value.noSwipe) {
-            if (calendarWrapRef.value) {
-                calendarWrapRef.value.removeEventListener('touchstart', onTouchStart);
-                calendarWrapRef.value.removeEventListener('touchend', onTouchEnd);
-                calendarWrapRef.value.removeEventListener('touchmove', onTouchMove);
-            }
-        }
         if (config.value.monthChangeOnScroll && calendarWrapRef.value) {
             calendarWrapRef.value.removeEventListener('wheel', onScroll);
         }
@@ -310,30 +310,6 @@
             showMakerTooltip.value = null;
             markerTooltipStyle.value = structuredClone({ bottom: '', left: '', transform: '' });
             rootEmit('tooltip-close', day.marker!);
-        }
-    };
-
-    const onTouchStart = (ev: TouchEvent): void => {
-        touch.value.startX = ev.changedTouches[0]!.screenX;
-        touch.value.startY = ev.changedTouches[0]!.screenY;
-    };
-
-    const onTouchEnd = (ev: TouchEvent): void => {
-        touch.value.endX = ev.changedTouches[0]!.screenX;
-        touch.value.endY = ev.changedTouches[0]!.screenY;
-        handleTouch();
-    };
-
-    const onTouchMove = (ev: TouchEvent): void => {
-        if (rootProps.vertical && !rootProps.inline) {
-            ev.preventDefault();
-        }
-    };
-
-    const handleTouch = () => {
-        const property = rootProps.vertical ? 'Y' : 'X';
-        if (Math.abs(touch.value[`start${property}`] - touch.value[`end${property}`]) > 10) {
-            emit('handle-swipe', touch.value[`start${property}`] > touch.value[`end${property}`] ? 'right' : 'left');
         }
     };
 
