@@ -18,7 +18,9 @@
 
 <script lang="ts" setup>
     import { onMounted, type Ref, useTemplateRef } from 'vue';
-    import { useUtils } from '@/composables';
+    import { useHelperFns } from '@/composables';
+
+    const { checkKeyDown } = useHelperFns();
 
     const emit = defineEmits<{
         activate: [];
@@ -32,7 +34,6 @@
     }>();
 
     const elRef = useTemplateRef('arrow-btn');
-    const { checkKeyDown } = useUtils();
 
     onMounted(() => emit('set-ref', elRef));
 </script>

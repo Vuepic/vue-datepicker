@@ -177,7 +177,7 @@
     import { ChevronUpIcon, ChevronDownIcon, ClockIcon, CalendarIcon } from '@/components/Icons';
     import SelectionOverlay from '@/components/Common/SelectionOverlay.vue';
 
-    import { useTransitions, useArrowNavigation, useContext, useUtils, useDateUtils } from '@/composables';
+    import { useTransitions, useArrowNavigation, useContext, useHelperFns, useDateUtils } from '@/composables';
     import type {
         DynamicClass,
         Hour12,
@@ -218,13 +218,14 @@
 
     const { setTimePickerElements, setTimePickerBackRef } = useArrowNavigation();
     const {
+        getDate,
         rootEmit,
         rootProps,
         defaults: { ariaLabels, filters, config, range, multiCalendars, timeConfig },
     } = useContext();
-    const { checkKeyDown, groupListAndMap, hoursToAmPmHours } = useUtils();
+    const { checkKeyDown, hoursToAmPmHours } = useHelperFns();
 
-    const { getDate, sanitizeTime } = useDateUtils();
+    const { sanitizeTime, groupListAndMap } = useDateUtils();
     const { transitionName, showTransition } = useTransitions();
 
     const overlays = reactive({
@@ -243,7 +244,7 @@
     });
 
     const setTime = (time: Duration) => {
-        return set(new Date(), {
+        return set(getDate(), {
             hours: time.hours,
             minutes: time.minutes,
             seconds: timeConfig.value.enableSeconds ? time.seconds : 0,

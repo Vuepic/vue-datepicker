@@ -1,10 +1,9 @@
-import { useContext } from '@/composables/useContext.ts';
-import { useDateUtils } from '@/composables/useDateUtils.ts';
 import { format, setMonth, setYear } from 'date-fns';
+import { useContext } from '@/composables/useContext.ts';
 
 export const useFormatter = () => {
-    const { getDate } = useDateUtils();
     const {
+        getDate,
         state,
         modelValue,
         rootProps,

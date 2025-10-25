@@ -1,7 +1,7 @@
 import { computed, type EmitFn, nextTick, onMounted, ref } from 'vue';
 import { getYear, setYear, startOfYear } from 'date-fns';
 
-import { useContext, useDateUtils, useRemapper, useUtils, useUtilsWithContext } from '@/composables';
+import { useContext, useDateUtils, useRemapper, useUtilsWithContext, useValidation } from '@/composables';
 import { useComponentShared } from '@/components/shared/useComponentShared.ts';
 import type { BaseProps } from '@/types';
 
@@ -13,15 +13,17 @@ export interface YearPickerEmits {
 export const useYearPicker = (props: BaseProps, emit: EmitFn<YearPickerEmits>) => {
     const {
         rootEmit,
+        getDate,
         state,
         modelValue,
         rootProps,
         defaults: { highlight, multiDates, filters, range, safeDates },
     } = useContext();
     const { getYears } = useUtilsWithContext();
-    const { checkHighlightYear, groupListAndMap, checkMinMaxValue } = useUtils();
-    const { getDate, isDateBetween, resetDate, resetDateTime, getYearFromDate } = useDateUtils();
+    const { isDateBetween, resetDate, resetDateTime, getYearFromDate, checkHighlightYear, groupListAndMap } =
+        useDateUtils();
     const { checkRangeAutoApply, setMonthOrYearRange } = useComponentShared();
+    const { checkMinMaxValue } = useValidation();
 
     useRemapper(() => {
         if (state.isTextInputDate) focusYear.value = getYear(getDate(rootProps.startDate));
@@ -91,7 +93,7 @@ export const useYearPicker = (props: BaseProps, emit: EmitFn<YearPickerEmits>) =
     });
 
     const yearToDate = (year: number): Date => {
-        return setYear(resetDate(startOfYear(new Date())), year);
+        return setYear(resetDate(startOfYear(getDate())), year);
     };
 
     const selectYear = (year: number) => {
@@ -121,7 +123,7 @@ export const useYearPicker = (props: BaseProps, emit: EmitFn<YearPickerEmits>) =
     };
 
     const setHoverValue = (value: number) => {
-        hoverDate.value = setYear(resetDate(new Date()), value);
+        hoverDate.value = setYear(resetDate(getDate()), value);
     };
 
     return {

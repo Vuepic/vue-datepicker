@@ -1,18 +1,18 @@
 import { computed, type EmitFn } from 'vue';
 import { addMonths, addYears, getMonth, getYear, set, setYear, subMonths, subYears } from 'date-fns';
 
-import { useContext, useDateUtils, useValidation } from '@/composables';
+import { useContext, useValidation } from '@/composables';
 
 export const useMonthYearPick = (
     props: { month: number; year: number },
     emit: EmitFn<{ 'update-month-year': [val: { fromNav?: boolean; month: number; year: number }] }>,
 ) => {
     const {
+        getDate,
         rootProps,
         defaults: { filters },
     } = useContext();
     const { validateMonthYearInRange, validateMonthYear } = useValidation();
-    const { getDate } = useDateUtils();
 
     const recursiveMonthAdjust = (date: Date, increment: boolean): Date => {
         let monthDate = date;

@@ -1,7 +1,7 @@
 import { computed, type EmitFn, nextTick, onMounted, ref } from 'vue';
 import { getMonth, getYear, set } from 'date-fns';
 
-import { useContext, useDateUtils, useRemapper, useUtils, useUtilsWithContext, useValidation } from '@/composables';
+import { useContext, useDateUtils, useRemapper, useHelperFns, useUtilsWithContext, useValidation } from '@/composables';
 import { useMonthOrQuarterPicker } from '@/components/shared/useMonthQuarterPicker.ts';
 import { useComponentShared } from '@/components/shared/useComponentShared.ts';
 import type { BaseProps, OverlayGridItem } from '@/types';
@@ -15,6 +15,7 @@ export interface MonthPickerEmits {
 
 export const useMonthPicker = (props: BaseProps, emit: EmitFn<MonthPickerEmits>) => {
     const {
+        getDate,
         rootEmit,
         state,
         calendars,
@@ -27,11 +28,12 @@ export const useMonthPicker = (props: BaseProps, emit: EmitFn<MonthPickerEmits>)
     useRemapper(() => {
         if (state.isTextInputDate) onYearSelect(getYear(getDate(rootProps.startDate)), 0);
     });
-    const { checkMinMaxRange } = useValidation();
-    const { isDateBetween, getDate, resetDateTime, resetDate, getMinMonth, getMaxMonth } = useDateUtils();
+    const { checkMinMaxRange, checkMinMaxValue } = useValidation();
+    const { isDateBetween, resetDateTime, resetDate, getMinMonth, getMaxMonth, checkHighlightMonth, groupListAndMap } =
+        useDateUtils();
     const { checkRangeAutoApply, getRangeWithFixedDate, handleMultiDatesSelect, setMonthOrYearRange, setPresetDate } =
         useComponentShared();
-    const { padZero, checkHighlightMonth, checkMinMaxValue, groupListAndMap } = useUtils();
+    const { padZero } = useHelperFns();
     const { getMonths, isOutOfYearRange } = useUtilsWithContext();
 
     const months = computed(() => getMonths());
@@ -129,7 +131,7 @@ export const useMonthPicker = (props: BaseProps, emit: EmitFn<MonthPickerEmits>)
     };
 
     const selectSingleMonth = (month: number, instance: number) => {
-        const date = modelValue.value ? (modelValue.value as Date) : resetDate(new Date());
+        const date = modelValue.value ? (modelValue.value as Date) : resetDate(getDate());
         modelValue.value = set(date, { month, year: year.value(instance) });
         emit('auto-apply');
         emit('update-flow-step');

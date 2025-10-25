@@ -91,7 +91,7 @@
 
     import { CalendarIcon, CancelIcon } from '@/components/Icons';
 
-    import { useContext, useUtils, useValidation } from '@/composables';
+    import { useContext, useHelperFns, useValidation } from '@/composables';
     import { useInput } from '@/components/DatePickerInput/useInput.ts';
 
     import { EventKey } from '@/constants';
@@ -122,7 +122,7 @@
     } = useContext();
     const { checkMinMaxRange, isValidDate } = useValidation();
     const { parseFreeInput, textPasted } = useInput();
-    const { checkKeyDown, checkStopPropagation } = useUtils();
+    const { checkKeyDown, checkStopPropagation } = useHelperFns();
 
     const inputRef = useTemplateRef('dp-input');
     const parsedDate = ref<InputParsedDate>(null);

@@ -16,26 +16,18 @@ import {
     subMonths,
 } from 'date-fns';
 
-import { useContext, useDateUtils, useUtils } from '@/composables';
+import { useContext, useDateUtils, useHelperFns } from '@/composables';
 import type { DisabledTimesFn, InternalModelValue, MaybeDate, OptionalDate, TimeModel } from '@/types';
 
 export const useValidation = () => {
     const {
-        getDate,
-        isDateBefore,
-        isDateAfter,
-        isDateEqual,
-        resetDate,
-        getDaysInBetween,
-        setTimeValue,
-        getTimeObj,
-        setTime,
-    } = useDateUtils();
-    const {
         defaults: { safeDates, range, multiDates, filters, timeConfig },
         rootProps,
+        getDate,
     } = useContext();
-    const { getMapKeyType, getMapDate, errorMapper, convertType } = useUtils();
+    const { getMapKeyType, getMapDate, errorMapper, convertType } = useHelperFns();
+    const { isDateBefore, isDateAfter, isDateEqual, resetDate, getDaysInBetween, setTimeValue, getTimeObj, setTime } =
+        useDateUtils();
 
     const isDateDisabled = (date: Date) => {
         if (!safeDates.value.disabledDates) return false;
@@ -398,6 +390,27 @@ export const useValidation = () => {
         throw new Error(errorMapper.prop('range'));
     };
 
+    const checkMinMaxValue = (value: number | string, min?: number, max?: number): boolean => {
+        const hasMax = max !== undefined && max !== null;
+        const hasMin = min !== undefined && min !== null;
+
+        if (!hasMax && !hasMin) return false;
+
+        const maxVal = +(max as number);
+        const minVal = +(min as number);
+
+        if (hasMax && hasMin) {
+            return +value > maxVal || +value < minVal;
+        }
+        if (hasMax) return +value > maxVal;
+
+        if (hasMin) {
+            return +value < minVal;
+        }
+
+        return false;
+    };
+
     return {
         isDisabled,
         validateDate,
@@ -411,6 +424,7 @@ export const useValidation = () => {
         isValidDate,
         checkPartialRangeValue,
         checkRangeEnabled,
+        checkMinMaxValue,
         isTimeValid,
         isMonthValid,
     };

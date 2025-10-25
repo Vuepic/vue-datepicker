@@ -11,10 +11,9 @@ import {
     type Reactive,
     type ComputedRef,
 } from 'vue';
-import { useDateUtils, useDefaults } from '@/composables';
-
-import type { CalendarMonthYear, InternalModelValue, RootEmits, RootPropsWithDefaults } from '@/types';
+import { useDefaults, useHelperFns } from '@/composables';
 import { getMonth, getYear } from 'date-fns';
+import type { CalendarMonthYear, DateGetter, InternalModelValue, RootEmits, RootPropsWithDefaults } from '@/types';
 
 export interface State {
     menuFocused: boolean;
@@ -37,10 +36,11 @@ export const ContextKey = Symbol('ContextKey') as InjectionKey<{
     today: Date;
     inputValue: Ref<string>;
     updateTime: () => void;
+    getDate: DateGetter;
 }>;
 
 export const useInjector = (props: RootPropsWithDefaults, emit: EmitFn<RootEmits>) => {
-    const { setTimeModelValue } = useDateUtils();
+    const { setTimeModelValue } = useHelperFns();
     const defaults = useDefaults(props);
     const internalModelValue = ref<InternalModelValue>(null);
 
@@ -51,7 +51,7 @@ export const useInjector = (props: RootPropsWithDefaults, emit: EmitFn<RootEmits
         isTextInputDate: false,
     });
 
-    const today = new Date();
+    const today = defaults.getDate(new Date());
     const inputValue = ref('');
 
     const calendars = ref<CalendarMonthYear[]>([{ month: getMonth(today), year: getYear(today) }]);
@@ -104,5 +104,6 @@ export const useInjector = (props: RootPropsWithDefaults, emit: EmitFn<RootEmits
         inputValue,
         setState,
         updateTime,
+        getDate: defaults.getDate,
     });
 };

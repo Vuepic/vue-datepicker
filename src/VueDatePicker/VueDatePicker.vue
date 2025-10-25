@@ -95,7 +95,7 @@
         useTransitions,
         useValidation,
         useResponsive,
-        useUtils,
+        useHelperFns,
         useContext,
     } from '@/composables';
     import type { DynamicClass, InputParsedDate, MenuView, ModelValue, MonthModel } from '@/types';
@@ -113,7 +113,7 @@
     const { menuTransition, showTransition } = useTransitions();
     const { isMobile } = useResponsive();
     const { mapSlots } = useSlotsMapper();
-    const { findNextFocusableElement, getNumVal } = useUtils();
+    const { findNextFocusableElement, getNumVal } = useHelperFns();
 
     const slots = useSlots();
     const isOpen = ref(false);

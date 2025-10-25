@@ -143,9 +143,10 @@
         useArrowNavigation,
         useTransitions,
         useDateUtils,
-        useUtils,
+        useHelperFns,
         useContext,
         useFormatter,
+        useValidation,
     } from '@/composables';
     import { useMonthYearPick } from '@/components/shared/useMonthYearPick.ts';
     import { useNavigationDisplay } from '@/components/shared/useNavigationDisplay.ts';
@@ -182,10 +183,11 @@
     const { showLeftIcon, showRightIcon } = useNavigationDisplay();
     const { buildMatrix } = useArrowNavigation();
     const { handleMonthYearChange, isDisabled, updateMonthYear } = useMonthYearPick(props, emit);
-    const { checkHighlightYear, checkHighlightMonth } = useUtils();
-    const { getMaxMonth, getMinMonth, getYearFromDate } = useDateUtils();
-    const { checkKeyDown, groupListAndMap, checkMinMaxValue } = useUtils();
+    const { getMaxMonth, getMinMonth, getYearFromDate, groupListAndMap, checkHighlightYear, checkHighlightMonth } =
+        useDateUtils();
+    const { checkKeyDown } = useHelperFns();
     const { formatYear } = useFormatter();
+    const { checkMinMaxValue } = useValidation();
 
     const showMonthPicker = ref(false);
     const showYearPicker = ref(false);

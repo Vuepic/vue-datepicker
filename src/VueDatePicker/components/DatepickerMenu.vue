@@ -119,7 +119,14 @@
     import DatePicker from '@/components/DatePicker/DatePicker.vue';
     import QuarterPicker from '@/components/QuarterPicker/QuarterPicker.vue';
 
-    import { useSlotsMapper, useArrowNavigation, useFlow, useResponsive, useContext, useUtils } from '@/composables';
+    import {
+        useSlotsMapper,
+        useArrowNavigation,
+        useFlow,
+        useResponsive,
+        useContext,
+        useHelperFns,
+    } from '@/composables';
     import { ArrowDirection, EventKey } from '@/constants';
 
     import type { MaybeRefOrGetter } from 'vue';
@@ -148,7 +155,7 @@
     } = useContext();
     const { isMobile } = useResponsive();
     const { mapSlots } = useSlotsMapper();
-    const { handleEventPropagation, getElWithin, checkStopPropagation, checkKeyDown } = useUtils();
+    const { handleEventPropagation, getElWithin, checkStopPropagation, checkKeyDown } = useHelperFns();
     const { arrowRight, arrowLeft, arrowDown, arrowUp } = useArrowNavigation();
 
     const innerMenuRef = useTemplateRef('inner-menu');

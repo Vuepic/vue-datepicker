@@ -62,7 +62,7 @@
     import { computed, onUnmounted, onMounted, ref, useTemplateRef } from 'vue';
     import { unrefElement } from '@vueuse/core';
 
-    import { useArrowNavigation, useContext, useFormatter, useUtils, useValidation } from '@/composables';
+    import { useArrowNavigation, useContext, useFormatter, useHelperFns, useValidation } from '@/composables';
 
     interface ActionRowEmits {
         'close-picker': [];
@@ -92,7 +92,7 @@
     const { isTimeValid, isMonthValid } = useValidation();
     const { buildMatrix } = useArrowNavigation();
     const { formatPreview } = useFormatter();
-    const { checkKeyDown, convertType } = useUtils();
+    const { checkKeyDown, convertType } = useHelperFns();
 
     const cancelButtonRef = useTemplateRef('cancel-btn');
     const selectButtonRef = useTemplateRef('select-btn');

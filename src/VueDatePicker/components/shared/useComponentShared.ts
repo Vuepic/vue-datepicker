@@ -2,8 +2,9 @@ import type { EmitFn } from 'vue';
 import { useContext, useDateUtils } from '@/composables';
 
 export const useComponentShared = () => {
-    const { getDate, isDateAfter, isDateBefore, isDateEqual } = useDateUtils();
+    const { isDateAfter, isDateBefore, isDateEqual } = useDateUtils();
     const {
+        getDate,
         rootEmit,
         modelValue,
         defaults: { range },

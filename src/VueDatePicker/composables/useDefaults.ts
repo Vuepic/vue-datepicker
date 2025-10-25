@@ -1,6 +1,6 @@
 import { computed } from 'vue';
 
-import { useUtils, useTimeZone, useDateUtils } from '@/composables';
+import { useHelperFns } from '@/composables';
 import {
     defaultActionRow,
     defaultConfig,
@@ -21,6 +21,7 @@ import type {
     FloatingConfig,
     HighlightFn,
     InputAttributesConfig,
+    MaybeDate,
     MultiCalendarsConfig,
     RootPropsWithDefaults,
     TimeModel,
@@ -28,11 +29,22 @@ import type {
     UIConfig,
     UIParsed,
 } from '@/types';
+import { TZDate } from '@date-fns/tz';
+import { set } from 'date-fns';
 
 export const useDefaults = (props: RootPropsWithDefaults) => {
-    const { getTimeObjFromCurrent } = useDateUtils();
-    const { toTzSafe } = useTimeZone();
-    const { getMapKey, getMapKeyType } = useUtils();
+    const { getMapKey, getMapKeyType, getTimeObjFromCurrent } = useHelperFns();
+
+    function getDate(date?: MaybeDate, reset?: boolean) {
+        let newDate;
+        if (props.timezone) {
+            newDate = new TZDate((date as Date) ?? new Date(), props.timezone);
+        } else {
+            newDate = date ? new Date(date) : new Date();
+        }
+
+        return reset ? set(newDate, { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 }) : newDate;
+    }
 
     const getTimeFormat = (): string => {
         const seconds = timeConfig.value.enableSeconds ? ':ss' : '';
@@ -49,7 +61,7 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
         return timeConfig.value.enableTimePicker ? `MM/dd/yyyy, ${getTimeFormat()}` : 'MM/dd/yyyy';
     };
 
-    const assignTime = (date: TimeModel) => getTimeObjFromCurrent(date, timeConfig.value.enableSeconds);
+    const assignTime = (time: TimeModel) => getTimeObjFromCurrent(getDate(), time, timeConfig.value.enableSeconds);
 
     const getDefaultStartTime = (): TimeModel | TimeModel[] | null => {
         if (range.value.enabled) {
@@ -73,7 +85,7 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
         const format = getMapKeyType(props.monthPicker, props.yearPicker);
         return new Map(
             datesArr.map((date) => {
-                const d = toTzSafe(date, tz.value, isSpecificMode.value);
+                const d = getDate(date, isSpecificMode.value);
                 return [getMapKey(d!, format), d];
             }),
         );
@@ -172,24 +184,6 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
         };
     });
 
-    const tz = computed(() => {
-        if (!props.timezone) return { timezone: undefined, exactMatch: false };
-        if (typeof props.timezone === 'string') {
-            return {
-                timezone: props.timezone,
-                exactMatch: false,
-                dateInTz: undefined,
-                convertModel: true,
-            };
-        }
-        return {
-            timezone: props.timezone.timezone,
-            exactMatch: props.timezone.exactMatch ?? false,
-            dateInTz: props.timezone.dateInTz ?? undefined,
-            convertModel: props.timezone.convertModel ?? true,
-        };
-    });
-
     const multiDates = computed(() => {
         if (typeof props.multiDates === 'boolean') {
             return { enabled: props.multiDates, dragSelect: true, limit: null };
@@ -203,8 +197,8 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
 
     const safeDates = computed(() => {
         return {
-            minDate: toTzSafe(props.minDate, tz.value, isSpecificMode.value),
-            maxDate: toTzSafe(props.maxDate, tz.value, isSpecificMode.value),
+            minDate: props.minDate ? getDate(props.minDate) : null,
+            maxDate: props.maxDate ? getDate(props.maxDate) : null,
             disabledDates: Array.isArray(props.disabledDates)
                 ? datesArrToMap(props.disabledDates)
                 : props.disabledDates,
@@ -216,7 +210,7 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
             markers: props.markers?.length
                 ? new Map(
                       props.markers.map((marker) => {
-                          const date = toTzSafe(marker.date, tz.value);
+                          const date = getDate(marker.date);
                           return [getMapKey(date!, MAP_KEY_FORMAT.DATE), marker];
                       }),
                   )
@@ -310,7 +304,6 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
         weekNumbers,
         range,
         safeDates,
-        tz,
         multiDates,
         ui,
         formats,
@@ -319,5 +312,6 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
         flow,
         inputAttrs,
         floatingConfig,
+        getDate,
     };
 };

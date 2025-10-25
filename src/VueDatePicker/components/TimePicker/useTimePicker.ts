@@ -1,7 +1,7 @@
 import { onMounted, type EmitFn } from 'vue';
 import { set } from 'date-fns';
 
-import { useContext, useDateUtils, useRemapper, useTimeZone } from '@/composables';
+import { useContext, useDateUtils, useRemapper } from '@/composables';
 import { useTimePickerUtils } from '@/components/TimePicker/useTimePickerUtils.ts';
 
 import type { TimeModel } from '@/types';
@@ -13,14 +13,14 @@ export interface TimePickerEmits {
 
 export const useTimePicker = (emit: EmitFn<TimePickerEmits>) => {
     const {
+        getDate,
         time,
         modelValue,
         state,
-        defaults: { startTime, range, tz, timeConfig },
+        defaults: { startTime, range, timeConfig },
     } = useContext();
-    const { toTzSafe } = useTimeZone();
 
-    const { getDate, getTimeObj } = useDateUtils();
+    const { getTimeObj } = useDateUtils();
     useRemapper(() => {
         if (state.isTextInputDate) setTimeFromModel();
     });
@@ -52,12 +52,9 @@ export const useTimePicker = (emit: EmitFn<TimePickerEmits>) => {
     const assignEmptyModel = () => {
         if (range.value.enabled) {
             const [firstStartTime, secondStartTime] = getDateFromStartTime() as Date[];
-            modelValue.value = [
-                toTzSafe(getSetDateTime(firstStartTime, 0), tz.value)!,
-                toTzSafe(getSetDateTime(secondStartTime, 1), tz.value)!,
-            ];
+            modelValue.value = [getSetDateTime(firstStartTime, 0), getSetDateTime(secondStartTime, 1)];
         } else {
-            modelValue.value = toTzSafe(getSetDateTime(getDateFromStartTime() as Date), tz.value)!;
+            modelValue.value = getSetDateTime(getDateFromStartTime() as Date);
         }
     };
 

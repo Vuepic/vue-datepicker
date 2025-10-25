@@ -6,13 +6,14 @@ import { useContext, useDateUtils } from '@/composables';
 import type { TimeKey, TimeModel } from '@/types';
 
 export const useTimePickerUtils = (updateFlow?: () => void) => {
-    const { getDate, isDateEqual, setTime } = useDateUtils();
     const {
+        getDate,
         modelValue,
         time,
         rootProps,
         defaults: { range, timeConfig },
     } = useContext();
+    const { isDateEqual, setTime } = useDateUtils();
 
     const getTimeValue = (type: TimeKey, i?: number): number => {
         if (Array.isArray(time[type])) return time[type][i as number]!;

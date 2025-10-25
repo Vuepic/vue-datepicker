@@ -24,6 +24,7 @@ export interface QuarterPickerEmits {
 
 export const useQuarterPicker = (props: BaseProps, emit: EmitFn<QuarterPickerEmits>) => {
     const {
+        getDate,
         rootProps,
         modelValue,
         year,
@@ -74,7 +75,7 @@ export const useQuarterPicker = (props: BaseProps, emit: EmitFn<QuarterPickerEmi
     };
 
     const quarters = computed(() => (instance: number) => {
-        const activeYear = set(new Date(), { year: year.value(instance) });
+        const activeYear = set(getDate(), { year: year.value(instance) });
         return eachQuarterOfInterval({
             start: startOfYear(activeYear),
             end: endOfYear(activeYear),

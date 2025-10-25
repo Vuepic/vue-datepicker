@@ -111,6 +111,7 @@
     const slots = useSlots();
     const { setHoverDate, getDayClassData, clearHoverDate } = useCalendarClass();
     const {
+        getDate,
         rootEmit,
         rootProps,
         defaults: { multiCalendars, timeConfig },
@@ -185,7 +186,7 @@
     const selectWeekDate = (selectStart: boolean, id: string | null) => {
         if (!rootProps.range) {
             const activeDate = modelValue.value ? modelValue.value : today;
-            const date = id ? new Date(id) : activeDate;
+            const date = id ? getDate(id) : activeDate;
             const toSelect = selectStart
                 ? startOfWeek(date as Date, { weekStartsOn: 1 })
                 : endOfWeek(date as Date, { weekStartsOn: 1 });

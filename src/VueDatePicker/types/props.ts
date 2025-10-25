@@ -7,7 +7,6 @@ import type {
     FilterConfig,
     TransitionsConfig,
     MultiCalendarsConfig,
-    TimeZoneConfig,
     HighlightConfig,
     FormatsConfig,
     TextInputConfig,
@@ -31,7 +30,7 @@ export interface RootProps {
     transitions?: boolean | Partial<TransitionsConfig>;
     ariaLabels?: Partial<AriaLabelsConfig>;
     hideNavigation?: PickerSection[];
-    timezone?: string | Partial<TimeZoneConfig>;
+    timezone?: string;
     vertical?: boolean;
     hideMonthYearSelect?: boolean;
     disableYearSelect?: boolean;

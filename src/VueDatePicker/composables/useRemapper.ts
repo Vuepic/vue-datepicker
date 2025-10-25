@@ -1,6 +1,6 @@
 import { watch } from 'vue';
 
-import { useDateUtils, useContext } from '@/composables';
+import { useContext, useHelperFns } from '@/composables';
 
 export const useRemapper = (reMap?: () => void) => {
     const {
@@ -9,8 +9,7 @@ export const useRemapper = (reMap?: () => void) => {
         modelValue,
         defaults: { range },
     } = useContext();
-
-    const { setTimeModelValue } = useDateUtils();
+    const { setTimeModelValue } = useHelperFns();
 
     watch(
         range,

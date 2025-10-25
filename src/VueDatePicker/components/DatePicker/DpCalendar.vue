@@ -118,7 +118,7 @@
     import { unrefElement } from '@vueuse/core';
     import { getISOWeek, getWeek, set, type Day } from 'date-fns';
 
-    import { useArrowNavigation, useUtils, useDateUtils, useContext, useFormatter } from '@/composables';
+    import { useArrowNavigation, useHelperFns, useDateUtils, useContext, useFormatter } from '@/composables';
 
     import type { UnwrapRef } from 'vue';
     import type { CalendarDay, CalendarWeek, DynamicClass, Marker } from '@/types';
@@ -143,13 +143,14 @@
     const props = defineProps<DpCalendarProps>();
 
     const {
+        getDate,
         rootEmit,
         rootProps,
         defaults: { transitions, config, ariaLabels, multiCalendars, weekNumbers, multiDates, ui },
     } = useContext();
     const { buildMultiLevelMatrix } = useArrowNavigation();
-    const { getDate, isDateAfter, isDateEqual, resetDateTime, getCellId } = useDateUtils();
-    const { checkKeyDown, checkStopPropagation, isTouchDevice } = useUtils();
+    const { isDateAfter, isDateEqual, resetDateTime, getCellId } = useDateUtils();
+    const { checkKeyDown, checkStopPropagation, isTouchDevice } = useHelperFns();
     const { formatWeekDay } = useFormatter();
 
     const calendarWrapRef = useTemplateRef('calendar-wrap');

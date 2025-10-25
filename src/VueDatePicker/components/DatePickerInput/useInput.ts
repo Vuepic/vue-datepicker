@@ -1,24 +1,25 @@
 import { computed, ref } from 'vue';
 import { isDate, isValid, parse, set } from 'date-fns';
-import { useContext, useDateUtils } from '@/composables';
+import { useContext, useHelperFns } from '@/composables';
 
 export const useInput = () => {
     const {
+        getDate,
         rootProps,
         defaults: { textInput, startTime, timeConfig },
     } = useContext();
-    const { getTimeObjFromCurrent } = useDateUtils();
+    const { getTimeObjFromCurrent } = useHelperFns();
 
     const textPasted = ref(false);
 
     const assignTimeTextInput = computed(() =>
         Array.isArray(startTime.value)
             ? startTime.value[0]
-            : (startTime.value ?? getTimeObjFromCurrent({}, timeConfig.value.enableSeconds)),
+            : (startTime.value ?? getTimeObjFromCurrent(getDate(), {}, timeConfig.value.enableSeconds)),
     );
 
     const parseStringToDate = (value: string, pattern: string, inputVal?: string): Date | null => {
-        const parsedDate = parse(value, pattern.slice(0, value.length), new Date(), { locale: rootProps.locale });
+        const parsedDate = parse(value, pattern.slice(0, value.length), getDate(), { locale: rootProps.locale });
 
         if (isValid(parsedDate) && isDate(parsedDate)) {
             if (inputVal || textPasted.value) return parsedDate;

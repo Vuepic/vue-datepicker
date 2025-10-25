@@ -1,23 +1,24 @@
 import { ref } from 'vue';
 import { addDays, isAfter, isBefore } from 'date-fns';
 
-import { useContext, useDateUtils, useUtils, useValidation } from '@/composables';
+import { useContext, useDateUtils, useValidation } from '@/composables';
 
 import type { UnwrapRef } from 'vue';
 import type { CalendarDay } from '@/types';
 
 export const useCalendarClass = () => {
     const {
+        isModelAuto,
+        matchDate,
         isDateAfter,
         isDateBefore,
         isDateBetween,
         isDateEqual,
-        getDate,
         getWeekFromDate,
         getBeforeAndAfterInRange,
     } = useDateUtils();
-    const { isModelAuto, matchDate } = useUtils();
     const {
+        getDate,
         today,
         rootProps,
         defaults: { multiCalendars, multiDates, ui, highlight, safeDates, range },

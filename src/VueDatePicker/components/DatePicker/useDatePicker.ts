@@ -14,12 +14,13 @@ import {
     type Day,
 } from 'date-fns';
 
-import { useDateUtils, useRemapper, useValidation, useContext, useUtils, useTimeZone } from '@/composables';
+import { useDateUtils, useRemapper, useValidation, useContext, useHelperFns } from '@/composables';
 import { useTimePickerUtils } from '@/components/TimePicker/useTimePickerUtils.ts';
 import { useComponentShared } from '@/components/shared/useComponentShared.ts';
 
 import { CMP, FlowStep } from '@/constants';
 import type { BasePropsWithDefaults, CalendarDay, CalendarWeek, Marker, TimeKey } from '@/types';
+import { TZDate } from '@date-fns/tz';
 
 export interface DatePickerEmits {
     mount: [cmp: CMP];
@@ -42,6 +43,7 @@ export const useDatePicker = (
     const clickedDate = ref<CalendarDay | undefined>();
 
     const {
+        getDate,
         rootEmit,
         calendars,
         month,
@@ -51,15 +53,14 @@ export const useDatePicker = (
         rootProps,
         today,
         state,
-        defaults: { multiCalendars, startTime, range, config, tz, safeDates, multiDates, timeConfig, flow },
+        defaults: { multiCalendars, startTime, range, config, safeDates, multiDates, timeConfig, flow },
     } = useContext();
     const { validateMonthYearInRange, isDisabled, isDateRangeAllowed, checkMinMaxRange } = useValidation();
     const { updateTimeValues, getSetDateTime, assignTime, assignStartTime, validateTime, disabledTimesConfig } =
         useTimePickerUtils(updateFlow);
-    const { getDate, resetDateTime, setTime, isDateBefore, isDateEqual, getDaysInBetween } = useDateUtils();
+    const { resetDateTime, setTime, isDateBefore, isDateEqual, getDaysInBetween } = useDateUtils();
     const { checkRangeAutoApply, getRangeWithFixedDate, handleMultiDatesSelect, setPresetDate } = useComponentShared();
-    const { getMapDate } = useUtils();
-    const { toTzSafe } = useTimeZone();
+    const { getMapDate } = useHelperFns();
     useRemapper(() => mapInternalModuleValues(state.isTextInputDate));
 
     const shouldUpdateMonthView = (isAction: boolean) => {
@@ -142,7 +143,7 @@ export const useDatePicker = (
     };
 
     // Assign month and year values per date
-    const assignMonthAndYear = (date = new Date(), fromMount = false): void => {
+    const assignMonthAndYear = (date = getDate(), fromMount = false): void => {
         if (!multiCalendars.value.count || !multiCalendars.value.static || fromMount) {
             setCalendarMonthYear(0, getMonth(date), getYear(date));
         }
@@ -375,8 +376,8 @@ export const useDatePicker = (
     // Get days for the calendar to be displayed in a table grouped by weeks
     const getCalendarDays = (month: number, year: number): CalendarWeek[] => {
         const weeks: CalendarWeek[] = [];
-        const firstDate = new Date(year, month);
-        const lastDate = new Date(year, month + 1, 0);
+        const firstDate = getDate(new Date(year, month));
+        const lastDate = getDate(new Date(year, month + 1, 0));
 
         const weekStartsOn = rootProps.weekStart as Day;
 
@@ -588,19 +589,19 @@ export const useDatePicker = (
 
     // Select current date on now button
     const selectCurrentDate = (): void => {
-        const dateInTz = toTzSafe(getDate(), tz.value)!;
+        const date = getDate();
         if (!range.value.enabled && !multiDates.value.enabled) {
-            modelValue.value = dateInTz;
+            modelValue.value = date;
         } else if (modelValue.value && Array.isArray(modelValue.value) && modelValue.value[0]) {
             if (multiDates.value.enabled) {
-                modelValue.value = [...modelValue.value, dateInTz];
+                modelValue.value = [...modelValue.value, date];
             } else {
-                modelValue.value = isDateBefore(dateInTz, modelValue.value[0])
-                    ? [dateInTz, modelValue.value[0]]
-                    : [modelValue.value[0], dateInTz];
+                modelValue.value = isDateBefore(date, modelValue.value[0])
+                    ? [date, modelValue.value[0]]
+                    : [modelValue.value[0], date];
             }
         } else {
-            modelValue.value = [dateInTz];
+            modelValue.value = [date];
         }
 
         selectOnAutoApply();

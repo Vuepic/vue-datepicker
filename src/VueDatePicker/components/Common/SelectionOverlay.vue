@@ -69,7 +69,7 @@
     import { computed, nextTick, onBeforeUpdate, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
     import { unrefElement } from '@vueuse/core';
 
-    import { useArrowNavigation, useContext, useUtils } from '@/composables';
+    import { useArrowNavigation, useContext, useHelperFns } from '@/composables';
     import { useNavigationDisplay } from '@/components/shared/useNavigationDisplay.ts';
 
     import { EventKey } from '@/constants';
@@ -104,7 +104,7 @@
     } = useContext();
     const { hideNavigationButtons } = useNavigationDisplay();
     const { handleEventPropagation, convertType, checkKeyDown, checkStopPropagation, getElWithin, findFocusableEl } =
-        useUtils();
+        useHelperFns();
 
     const toggleButton = useTemplateRef('toggle-button');
     const containerRef = useTemplateRef('overlay-container');

@@ -111,8 +111,9 @@
         useTransitions,
         useArrowNavigation,
         useContext,
-        useUtils,
         useResponsive,
+        useHelperFns,
+        useDateUtils,
     } from '@/composables';
     import { useNavigationDisplay } from '@/components/shared/useNavigationDisplay.ts';
     import { FlowStep } from '@/constants';
@@ -141,12 +142,14 @@
     const props = defineProps<TimePickerProps>();
 
     const {
+        getDate,
         rootEmit,
         modelValue,
         rootProps,
         defaults: { ariaLabels, textInput, config, range, timeConfig },
     } = useContext();
-    const { checkKeyDown, findFocusableEl, isModelAuto } = useUtils();
+    const { isModelAuto } = useDateUtils();
+    const { checkKeyDown, findFocusableEl } = useHelperFns();
     const { buildMatrix, setTimePicker } = useArrowNavigation();
     const { transitionName, showTransition } = useTransitions();
     const { hideNavigationButtons } = useNavigationDisplay();

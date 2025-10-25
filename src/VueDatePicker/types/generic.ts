@@ -72,6 +72,6 @@ export interface TimeInputSection {
     separator?: boolean;
 }
 
-export type TimeOverlayCheck = 'noHoursOverlay' | 'noMinutesOverlay' | 'noSecondsOverlay';
-
 export type Hour12 = 'AM' | 'PM';
+
+export type DateGetter = (date?: MaybeDate, reset?: boolean, skipInstanceCheck?: boolean) => Date;

@@ -2,7 +2,7 @@ import { computed, type EmitFn, onMounted, ref, watch } from 'vue';
 import { addYears, differenceInYears, endOfYear, getMonth, getYear, set, startOfYear, subYears } from 'date-fns';
 
 import { FlowStep } from '@/constants';
-import { useContext, useDateUtils, useUtils, useUtilsWithContext, useValidation } from '@/composables';
+import { useContext, useDateUtils, useUtilsWithContext, useValidation } from '@/composables';
 
 import type { OverlayGridItem, SelectItem } from '@/types';
 
@@ -11,6 +11,7 @@ import type { OverlayGridItem, SelectItem } from '@/types';
  */
 export const useMonthOrQuarterPicker = (emit: EmitFn<{ 'reset-flow': []; 'auto-apply': [ignoreClose?: boolean] }>) => {
     const {
+        getDate,
         rootEmit,
         state,
         month,
@@ -20,17 +21,16 @@ export const useMonthOrQuarterPicker = (emit: EmitFn<{ 'reset-flow': []; 'auto-a
         rootProps,
         defaults: { multiCalendars, range, safeDates, filters, highlight },
     } = useContext();
-    const { getDate, resetDate, getYearFromDate } = useDateUtils();
-    const { checkHighlightYear, groupListAndMap, checkMinMaxValue } = useUtils();
+    const { resetDate, getYearFromDate, checkHighlightYear, groupListAndMap } = useDateUtils();
     const { getYears } = useUtilsWithContext();
-    const { validateMonthYear } = useValidation();
+    const { validateMonthYear, checkMinMaxValue } = useValidation();
 
     const showYearPicker = ref([false]);
 
     const years = computed(() => getYears());
 
     const isDisabled = computed(() => (instance: number, next: boolean) => {
-        const currentDate = set(resetDate(new Date()), {
+        const currentDate = set(resetDate(getDate()), {
             month: month.value(instance),
             year: year.value(instance),
         });

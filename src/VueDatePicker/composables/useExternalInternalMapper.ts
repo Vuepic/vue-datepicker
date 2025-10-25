@@ -1,24 +1,25 @@
 import { watch } from 'vue';
 import { getHours, getMinutes, getMonth, getSeconds, getYear, parse, set, setYear } from 'date-fns';
 
-import { useDateUtils, useValidation, useContext, useUtils, useFormatter } from '@/composables';
+import { useDateUtils, useValidation, useContext, useHelperFns, useFormatter } from '@/composables';
 import { modelTypePredefined } from '@/constants';
 
 import type { ModelTypeConverted, ModelValue, MonthModel, TimeModel } from '@/types';
 
 export const useExternalInternalMapper = () => {
-    const { getDate, setTime, getWeekFromDate } = useDateUtils();
     const { checkPartialRangeValue, checkRangeEnabled, isValidDate } = useValidation();
-    const { convertType, errorMapper } = useUtils();
+    const { convertType, errorMapper } = useHelperFns();
     const {
+        getDate,
         rootEmit,
         state,
         rootProps,
         inputValue,
-        defaults: { textInput, range, tz, multiDates, timeConfig, formats },
+        defaults: { textInput, range, multiDates, timeConfig, formats },
         modelValue,
         updateTime,
     } = useContext();
+    const { setTime, getWeekFromDate } = useDateUtils();
     const { formatSelectedDate, formatForTextInput } = useFormatter();
 
     watch(
@@ -44,13 +45,6 @@ export const useExternalInternalMapper = () => {
             formatInputValue();
         },
     );
-
-    const convertZonedModelToLocal = (date: Date) => {
-        if (tz.value.timezone && tz.value.convertModel) {
-            return getDate(date); // todo
-        }
-        return date;
-    };
 
     const getTimeVal = (date?: Date): TimeModel | ModelTypeConverted | null => {
         if (!date) return null;
@@ -256,29 +250,29 @@ export const useExternalInternalMapper = () => {
 
     const parseModelType = (value: string | number | Date): Date => {
         if (rootProps.modelType) {
-            if (modelTypePredefined.includes(rootProps.modelType)) return new Date(value);
+            if (modelTypePredefined.includes(rootProps.modelType)) return getDate(value);
 
             if (rootProps.modelType === 'format' && typeof formats.value.input === 'string')
-                return parse(value as string, formats.value.input, new Date(), { locale: rootProps.locale });
+                return parse(value as string, formats.value.input, getDate(), { locale: rootProps.locale });
 
-            return parse(value as string, rootProps.modelType, new Date(), { locale: rootProps.locale });
+            return parse(value as string, rootProps.modelType, getDate(), { locale: rootProps.locale });
         }
 
-        return new Date(value);
+        return getDate(value);
     };
 
     const toModelType = (val: Date): string | number | Date => {
         if (!val) return '';
         if (rootProps.modelType) {
-            if (rootProps.modelType === 'timestamp') return +convertZonedModelToLocal(val);
-            if (rootProps.modelType === 'iso') return convertZonedModelToLocal(val).toISOString();
+            if (rootProps.modelType === 'timestamp') return +val;
+            if (rootProps.modelType === 'iso') return val.toISOString();
 
             if (rootProps.modelType === 'format' && typeof formats.value.input === 'string')
-                return formatSelectedDate(convertZonedModelToLocal(val));
+                return formatSelectedDate(val);
 
-            return formatSelectedDate(convertZonedModelToLocal(val), rootProps.modelType);
+            return formatSelectedDate(val, rootProps.modelType);
         }
-        return convertZonedModelToLocal(val);
+        return val;
     };
 
     const emitValue = (value: ModelValue) => {

@@ -93,13 +93,6 @@ export interface TransitionsConfig {
     vPrevious: string;
 }
 
-export interface TimeZoneConfig {
-    timezone: string | undefined;
-    exactMatch: boolean;
-    dateInTz?: string;
-    convertModel?: boolean;
-}
-
 export interface HighlightConfig {
     dates: Date[];
     years: number[];

@@ -12,41 +12,46 @@ import {
     isBefore,
     isEqual,
     set,
-    setHours,
-    setMilliseconds,
-    setSeconds,
     startOfMonth,
     startOfWeek,
     subDays,
     type Duration,
     type Day,
-    setMinutes,
 } from 'date-fns';
-import type { InternalModelValue, MaybeDate, Numeric, TimeInternalModel, TimeKey, TimeModel, TimeObj } from '@/types';
+import type {
+    HighlightConfig,
+    HighlightFn,
+    InternalModelValue,
+    MaybeDate,
+    Numeric,
+    OverlayGridItem,
+    SelectItem,
+    TimeKey,
+    TimeModel,
+    TimeObj,
+} from '@/types';
+import { useHelperFns } from '@/composables/useHelperFns.ts';
+import { useContext } from '@/composables/useContext.ts';
 
 export const useDateUtils = () => {
-    const isValidNum = (value: Numeric | undefined): value is string | number => {
-        const num = value ?? -1;
-        return +num >= 0;
-    };
+    const { getDate } = useContext();
+    const { getMapDate, getGroupedList } = useHelperFns();
 
     const resetDateTime = (date: MaybeDate, fromStartOfMonth?: boolean): Date => {
-        if (!date) return new Date();
+        if (!date) return getDate();
         const dateParse = getDate(date);
         const timeReset = set(dateParse, { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 });
         return fromStartOfMonth ? startOfMonth(timeReset) : timeReset;
     };
 
-    const getDate = (date?: MaybeDate) => {
-        return date ? new Date(date) : new Date();
-    };
-
     const setTime = (time: Partial<{ hours: Numeric; minutes: Numeric; seconds: Numeric }>, dateToSet?: MaybeDate) => {
-        let date = getDate(dateToSet);
-        if (isValidNum(time.hours)) date = setHours(date, +time.hours);
-        if (isValidNum(time.minutes)) date = setMinutes(date, +time.minutes);
-        if (isValidNum(time.seconds)) date = setSeconds(date, +time.seconds);
-        return setMilliseconds(date, 0);
+        const date = getDate(dateToSet);
+        return set(date, {
+            hours: +(time.hours ?? getHours(date)),
+            minutes: +(time.minutes ?? getMinutes(date)),
+            seconds: +(time.seconds ?? getSeconds(date)),
+            milliseconds: 0,
+        });
     };
 
     const getWeekFromDate = (date: Date, weekStart: string | number): [Date, Date] => {
@@ -153,57 +158,73 @@ export const useDateUtils = () => {
         };
     };
 
-    const getTimeObjFromCurrent = (
-        obj: TimeModel | Record<string, string | number>,
-        enableSeconds: boolean,
-    ): TimeModel => {
-        const date = getDate();
-        const defaultTime = {
-            hours: getHours(date),
-            minutes: getMinutes(date),
-            seconds: enableSeconds ? getSeconds(date) : 0,
-        };
-        return Object.assign(defaultTime, obj);
-    };
-
     const getBeforeAndAfterInRange = (range: number, date: Date) => {
         const before = subDays(resetDateTime(date), range);
         const after = addDays(resetDateTime(date), range);
         return { before, after };
     };
 
-    const timeGetter = (type: TimeKey, date: Date | Date[] | null, fallbackDate: Date, isRange: boolean) => {
-        const fn = {
-            hours: getHours,
-            minutes: getMinutes,
-            seconds: getSeconds,
-        };
-
-        if (!date) return isRange ? [fn[type](fallbackDate), fn[type](fallbackDate)] : fn[type](fallbackDate);
-
-        if (Array.isArray(date)) {
-            const start = date[0] ?? fallbackDate;
-            const end = date[1] ?? fallbackDate;
-            return [fn[type](start), fn[type](end)];
+    const isModelAuto = (modelValue: InternalModelValue): boolean => {
+        if (Array.isArray(modelValue)) {
+            return !!modelValue[0] && !!modelValue[1];
         }
-
-        return fn[type](date);
+        return false;
     };
 
-    const setTimeModelValue = (
-        time: TimeInternalModel,
-        modelValue: InternalModelValue,
-        fallbackDate: Date,
-        isRange: boolean,
-    ) => {
-        time.hours = timeGetter('hours', modelValue, fallbackDate, isRange);
-        time.minutes = timeGetter('minutes', modelValue, fallbackDate, isRange);
-        time.seconds = timeGetter('seconds', modelValue, fallbackDate, isRange);
+    const matchDate = (date: Date, mapOrFn: Map<string, any> | ((date: Date) => boolean) | null) => {
+        if (!date) return true;
+        if (!mapOrFn) return false;
+        if (mapOrFn instanceof Map) {
+            return !!getMapDate(date, mapOrFn);
+        }
+        return mapOrFn(getDate(date));
+    };
+
+    const checkHighlightMonth = (defaultedHighlight: HighlightConfig | HighlightFn, month: number, year: number) => {
+        return typeof defaultedHighlight === 'function'
+            ? defaultedHighlight({ month: month, year })
+            : defaultedHighlight.months.some((value) => value.month === month && value.year === year);
+    };
+
+    const checkHighlightYear = (defaultedHighlight: HighlightConfig | HighlightFn, year: number) => {
+        return typeof defaultedHighlight === 'function'
+            ? defaultedHighlight(year)
+            : defaultedHighlight.years.includes(year);
+    };
+
+    const groupListAndMap = (
+        list: SelectItem[],
+        cb: (item: SelectItem) => {
+            active: boolean;
+            disabled: boolean;
+            highlighted?: boolean;
+            isBetween?: boolean;
+        },
+    ): OverlayGridItem[][] => {
+        return getGroupedList(list).map((items) => {
+            return items.map((item) => {
+                const { active, disabled, isBetween, highlighted } = cb(item);
+                return {
+                    ...item,
+                    active,
+                    disabled: disabled,
+                    className: {
+                        dp__overlay_cell_active: active,
+                        dp__overlay_cell: !active,
+                        dp__overlay_cell_disabled: disabled,
+                        dp__overlay_cell_pad: true,
+                        dp__overlay_cell_active_disabled: disabled && active,
+                        dp__cell_in_between: isBetween,
+                        'dp--highlighted': highlighted,
+                    },
+                };
+            });
+        });
     };
 
     return {
         resetDateTime,
-        getDate,
+        groupListAndMap,
         setTime,
         getWeekFromDate,
         isDateAfter,
@@ -219,9 +240,10 @@ export const useDateUtils = () => {
         getTimeObj,
         setTimeValue,
         sanitizeTime,
-        getTimeObjFromCurrent,
         getBeforeAndAfterInRange,
-        timeGetter,
-        setTimeModelValue,
+        isModelAuto,
+        matchDate,
+        checkHighlightMonth,
+        checkHighlightYear,
     };
 };
