@@ -155,11 +155,20 @@ export const useMonthOrQuarterPicker = (emit: EmitFn<{ 'reset-flow': []; 'auto-a
         }
     };
 
+    const setStartDate = () => {
+        if (rootProps.startDate) {
+            if ((modelValue.value && rootProps.focusStartDate) || !modelValue.value) {
+                selectYear(getYear(getDate(rootProps.startDate)), 0);
+            }
+        }
+    };
+
     return {
         isDisabled,
         groupedYears,
         showYearPicker,
         selectYear,
+        setStartDate,
         toggleYearPicker,
         handleYearSelect,
         handleYear,

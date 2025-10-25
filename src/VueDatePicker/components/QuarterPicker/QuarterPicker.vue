@@ -5,7 +5,6 @@
                 <slot v-if="$slots['top-extra']" name="top-extra" :value="modelValue" />
                 <div>
                     <YearModePicker
-                        v-bind="$props"
                         :items="groupedYears(instance)"
                         :instance="instance"
                         :show-year-picker="showYearPicker[instance]"

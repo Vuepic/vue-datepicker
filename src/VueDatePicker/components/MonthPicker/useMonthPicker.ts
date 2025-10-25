@@ -47,14 +47,11 @@ export const useMonthPicker = (props: BaseProps, emit: EmitFn<MonthPickerEmits>)
         handleYearSelect,
         handleYear,
         isDisabled,
+        setStartDate,
     } = useMonthOrQuarterPicker(emit);
 
     onMounted(() => {
-        if (rootProps.startDate) {
-            if ((modelValue.value && rootProps.focusStartDate) || !modelValue.value) {
-                onYearSelect(getYear(getDate(rootProps.startDate)), 0);
-            }
-        }
+        setStartDate();
     });
 
     const getMonthYear = (date?: Date) => {

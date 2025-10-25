@@ -1,4 +1,4 @@
-import { computed, type EmitFn, ref } from 'vue';
+import { computed, type EmitFn, onMounted, ref } from 'vue';
 import {
     eachQuarterOfInterval,
     endOfQuarter,
@@ -38,10 +38,22 @@ export const useQuarterPicker = (props: BaseProps, emit: EmitFn<QuarterPickerEmi
     const { isDisabled: isDateDisabled } = useValidation();
     const { formatQuarterText } = useFormatter();
 
-    const { selectYear, groupedYears, showYearPicker, isDisabled, toggleYearPicker, handleYearSelect, handleYear } =
-        useMonthOrQuarterPicker(emit);
+    const {
+        selectYear,
+        groupedYears,
+        showYearPicker,
+        isDisabled,
+        toggleYearPicker,
+        handleYearSelect,
+        handleYear,
+        setStartDate,
+    } = useMonthOrQuarterPicker(emit);
 
     const hoverDate = ref();
+
+    onMounted(() => {
+        setStartDate();
+    });
 
     const isQuarterActive = computed(() => (date: Date) => {
         if (modelValue.value) {
