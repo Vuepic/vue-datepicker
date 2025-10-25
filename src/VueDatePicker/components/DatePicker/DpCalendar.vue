@@ -175,10 +175,8 @@
                 if (direction === 'up' || direction === 'down') {
                     emit('handle-swipe', direction === 'up' ? 'left' : 'right');
                 }
-            } else {
-                if (direction === 'left' || direction === 'right') {
-                    emit('handle-swipe', direction === 'right' ? 'left' : 'right');
-                }
+            } else if (direction === 'left' || direction === 'right') {
+                emit('handle-swipe', direction === 'right' ? 'left' : 'right');
             }
         },
     });
