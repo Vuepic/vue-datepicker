@@ -290,7 +290,7 @@ export const useExternalInternalMapper = () => {
             if (multiDates.value.enabled) {
                 return modelValue.value.map((value) => mapper(value));
             }
-            return [mapper(modelValue.value[0]!), modelValue.value[1] ?? null];
+            return [mapper(modelValue.value[0]!), modelValue.value[1] ? mapper(modelValue.value[1]) : null];
         }
         return mapper(convertType(modelValue.value));
     };

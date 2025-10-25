@@ -63,9 +63,7 @@ export const useValidation = () => {
 
         const dateYear = getYear(date);
 
-        const outOfYearRange =
-            dateYear < +(rootProps.yearRange[0] as string | number) ||
-            dateYear > +(rootProps.yearRange[1] as string | number);
+        const outOfYearRange = dateYear < +rootProps.yearRange[0] || dateYear > +rootProps.yearRange[1];
 
         return !(
             aboveMax ||

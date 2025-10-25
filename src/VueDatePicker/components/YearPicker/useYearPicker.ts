@@ -23,7 +23,7 @@ export const useYearPicker = (props: BaseProps, emit: EmitFn<YearPickerEmits>) =
     const { isDateBetween, resetDate, resetDateTime, getYearFromDate, checkHighlightYear, groupListAndMap } =
         useDateUtils();
     const { checkRangeAutoApply, setMonthOrYearRange } = useComponentShared();
-    const { checkMinMaxValue } = useValidation();
+    const { checkMinMaxValue, checkMinMaxRange } = useValidation();
 
     useRemapper(() => {
         if (state.isTextInputDate) focusYear.value = getYear(getDate(rootProps.startDate));
@@ -58,10 +58,7 @@ export const useYearPicker = (props: BaseProps, emit: EmitFn<YearPickerEmits>) =
     };
 
     const isYearAllowed = (year: number) => {
-        if (safeDates.value.allowedDates instanceof Map) {
-            return safeDates.value.allowedDates.size ? safeDates.value.allowedDates.has(`${year}`) : false;
-        }
-        return true;
+        return safeDates.value.allowedDates?.size ? safeDates.value.allowedDates.has(`${year}`) : true;
     };
 
     const isYearDisabled = (year: number) => {
@@ -112,17 +109,19 @@ export const useYearPicker = (props: BaseProps, emit: EmitFn<YearPickerEmits>) =
             return emit('auto-apply', true);
         }
         if (range.value.enabled) {
-            modelValue.value = setMonthOrYearRange(yearToDate(year));
-            nextTick().then(() => {
-                checkRangeAutoApply(
-                    modelValue.value as Date[],
-                    emit,
-                    rootProps.autoApply,
-                    rootProps.modelAuto,
-                    range.value.partialRange,
-                    (modelValue.value as Date[]).length < 2,
-                );
-            });
+            if (checkMinMaxRange(yearToDate(year), modelValue.value)) {
+                modelValue.value = setMonthOrYearRange(yearToDate(year));
+                nextTick().then(() => {
+                    checkRangeAutoApply(
+                        modelValue.value as Date[],
+                        emit,
+                        rootProps.autoApply,
+                        rootProps.modelAuto,
+                        range.value.partialRange,
+                        (modelValue.value as Date[]).length < 2,
+                    );
+                });
+            }
         } else {
             modelValue.value = yearToDate(year);
             emit('auto-apply');
