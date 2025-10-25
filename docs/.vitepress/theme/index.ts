@@ -6,6 +6,7 @@ import './style.css';
 import '../theme/lib/dist/main.css';
 
 import GlobalDemo from './components/GlobalDemo.vue';
+import TimeZoneDemo from './components/TimeZoneDemo.vue';
 
 export default {
     extends: DefaultTheme,
@@ -15,5 +16,6 @@ export default {
     enhanceApp({ app }) {
         app.component('StarAndSponsor', StartAndSponsor);
         app.component('GlobalDemo', GlobalDemo);
+        app.component('TimeZoneDemo', TimeZoneDemo);
     },
 } satisfies Theme;

@@ -680,18 +680,23 @@ Configure floating menu
 
 ```ts
 import { type ShallowRef } from 'vue';
+import type { Placement, Strategy } from '@floating-ui/vue';
 
 interface FloatingConfig {
-    offset?: number;
-    arrow?: Readonly<ShallowRef<HTMLDivElement | null>> | boolean;
+  offset?: number;
+  arrow?: Readonly<ShallowRef<HTMLDivElement | null>> | boolean;
+  strategy?: Strategy;
+  placement?: Placement;
 }
 ```
 
-- Default: `{ offset: 10, arrow: true }`
+- Default: `{ offset: 10, arrow: true, strategy: undeifned, placement: undefined }`
 
 :::info
 - `offset` - Offset from the input field
 - `arrow` - Show/hide floating menu arrow. If you use `arrow` slot, you should pass the `template ref` for proper arrow positioning
+- `strategy` - Use `absolute` or `fixed` positioning strategy
+- `placement` - Position of the floating menu
 :::
 
 <GlobalDemo :floating="{ arrow: false, offset: 0 }"></GlobalDemo>
@@ -724,6 +729,8 @@ interface FloatingConfig {
 ## focus-start-date
 
 ## week-num-name
+
+## teleport
 
 ## centered
 

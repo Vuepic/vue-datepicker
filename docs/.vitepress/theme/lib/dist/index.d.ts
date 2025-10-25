@@ -15,10 +15,13 @@ import { Locale } from 'date-fns';
 import { MaybeRefOrGetter } from 'vue';
 import { nextTick } from 'vue';
 import { OnCleanup } from '@vue/reactivity';
+import { Placement } from '@floating-ui/vue';
 import { PublicProps } from 'vue';
 import { ShallowRef } from 'vue';
 import { ShallowUnwrapRef } from 'vue';
 import { Slot } from 'vue';
+import { Strategy } from '@floating-ui/vue';
+import { TZDate } from '@date-fns/tz';
 import { VNodeProps } from 'vue';
 import { WatchOptions } from 'vue';
 import { WatchStopHandle } from 'vue';
@@ -113,6 +116,7 @@ preventMinMaxNavigation: boolean;
 reverseYears: boolean;
 weekPicker: boolean;
 arrowNavigation: boolean;
+centered: boolean;
 locale: Locale;
 weekNumName: string;
 weekStart: string | number;
@@ -398,6 +402,8 @@ declare interface FilterConfig {
 declare interface FloatingConfig {
     offset: number;
     arrow: Readonly<ShallowRef<HTMLDivElement | null>> | boolean;
+    strategy?: Strategy;
+    placement?: Placement;
 }
 
 declare interface FlowConfig {
@@ -554,7 +560,7 @@ declare interface RootProps {
     transitions?: boolean | Partial<TransitionsConfig>;
     ariaLabels?: Partial<AriaLabelsConfig>;
     hideNavigation?: PickerSection[];
-    timezone?: string | Partial<TimeZoneConfig>;
+    timezone?: string;
     vertical?: boolean;
     hideMonthYearSelect?: boolean;
     disableYearSelect?: boolean;
@@ -574,7 +580,8 @@ declare interface RootProps {
     filters?: Partial<FilterConfig>;
     arrowNavigation?: boolean;
     highlight?: HighlightFn | Partial<HighlightConfig>;
-    teleport?: Partial<TeleportConfig> | boolean;
+    teleport?: string | boolean | HTMLElement;
+    centered?: boolean;
     locale?: Locale;
     weekNumName?: string;
     weekStart?: string | number;
@@ -594,7 +601,7 @@ declare interface RootProps {
     placeholder?: string;
     timePicker?: boolean;
     range?: boolean | Partial<RangeConfig>;
-    uid?: string;
+    menuId?: string;
     disabled?: boolean;
     readonly?: boolean;
     inline?: boolean | {
@@ -760,11 +767,6 @@ declare interface SidebarSlotProps {
 
 declare type SixWeekMode = 'append' | 'prepend' | 'center' | 'fair';
 
-declare interface TeleportConfig {
-    target: string | HTMLElement;
-    center: boolean;
-}
-
 declare interface TextInputConfig {
     enterSubmit: boolean;
     tabSubmit: boolean;
@@ -816,13 +818,6 @@ declare interface TimePickerSlotProps {
     updateTime: (value: number | number[], isHours?: boolean, isSeconds?: boolean) => void;
 }
 
-declare interface TimeZoneConfig {
-    timezone: string | undefined;
-    exactMatch: boolean;
-    dateInTz?: string;
-    convertModel?: boolean;
-}
-
 declare interface TransitionsConfig {
     menuAppearTop: string;
     menuAppearBottom: string;
@@ -833,6 +828,8 @@ declare interface TransitionsConfig {
     vNext: string;
     vPrevious: string;
 }
+
+export { TZDate }
 
 declare interface UIConfig {
     navBtnNext: CustomClass | undefined;

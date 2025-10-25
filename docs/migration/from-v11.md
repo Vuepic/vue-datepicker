@@ -23,18 +23,18 @@ outline: [2, 4]
   - `auto-position`
   - `alt-position`
   - `utc`
-  - `teleport`
   - `format-locale`
   - `month-name-format`
+  - `uid`
 - Renamed props:
-  - `teleport-center` is renamed to `centered`
   - `disable-month-year-select`
-- Moved props (prop behaviour is retained, just moved under appropriate prop group):
-  - `select-text` (renamed)
-  - `cancel-text` (renamed)
-  - `now-button-label` (renamed)
-  - `format` (renamed)
-  - `preview-format`(renamed)
+  - `teleport-center`
+- Moved props (prop behavior is retained, just moved under appropriate prop group):
+  - `select-text` (and renamed)
+  - `cancel-text` (and renamed)
+  - `now-button-label` (and renamed)
+  - `format` (and renamed)
+  - `preview-format`(and renamed)
   - `name`
   - `required`
   - `autocomplete`
@@ -42,7 +42,7 @@ outline: [2, 4]
   - `clearable`
   - `always-clearable`
   - `hide-input-icon`
-  - `disabled-week-days` (renamed)
+  - `disabled-week-days` (and renamed)
   - `enable-time-picker`
   - `ignore-time-validation`
   - `enable-seconds`
@@ -71,10 +71,9 @@ outline: [2, 4]
   - `day-names`
   - `locale`
   - `flow`
-- Timezone will not do any initial v-model conversion if date is provided, the date/time will be retained as is 
-- When timezone is set, v-model will have proper GMT offset included (returned `TZDate` object from `date-fns/tz`)
-- All locale based formating is now done via unicode tokens
-- Type definition is now auto-generated, there might be some misalignment between types
+- Timezone behavior is chained, places check the [`timezone`](/props/timezone/) prop info
+- All locale-based formating is now done via Unicode tokens
+- Type definition is now auto-generated, there might be some misalignment between types from previous version and the new one
 
 ## Importing the component
 
@@ -87,12 +86,17 @@ import { VueDatePicker } from '@vuepic/vue-datepicker'; // [!code ++]
 
 ## Props changes
 
-### `position`, `auto-position`, `alt-position` and `teleport`
+### `position`, `auto-position`, `alt-position`
 
 Since the position logic is now done via `@floating-ui/vue` library and custom positioning logic is removed, 
 there is no need to keep these props.
 
-`position` and `auto-position` props can be replaced with appropriate options in the [`floating`]() prop 
+`position` and `auto-position` props can be replaced with appropriate options in the [`floating`](/prp[s]) prop 
+
+### `uid`
+
+The `uid` prop is now removed. Previously, it was using the same value and appending `'dp-menu'` or `'dp-input'` to it. 
+Now, you can pass two separate values via `menu-id` prop for the menu, or `inputAttrs.id` for the input id.
 
 ### `utc`
 
@@ -295,4 +299,6 @@ These two props are now part of the `FlowConfig` prop object:
 </template>
 ```
 
+### `timezone`
 
+Timezone prop type is changed, and will now only accept `string` value
