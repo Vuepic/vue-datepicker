@@ -114,7 +114,14 @@ export const useYearPicker = (props: BaseProps, emit: EmitFn<YearPickerEmits>) =
         if (range.value.enabled) {
             modelValue.value = setMonthOrYearRange(yearToDate(year));
             nextTick().then(() => {
-                checkRangeAutoApply(modelValue.value as Date[], emit, rootProps.autoApply, rootProps.modelAuto);
+                checkRangeAutoApply(
+                    modelValue.value as Date[],
+                    emit,
+                    rootProps.autoApply,
+                    rootProps.modelAuto,
+                    range.value.partialRange,
+                    (modelValue.value as Date[]).length < 2,
+                );
             });
         } else {
             modelValue.value = yearToDate(year);

@@ -147,7 +147,14 @@ export const useMonthPicker = (props: BaseProps, emit: EmitFn<MonthPickerEmits>)
             modelValue.value = setMonthOrYearRange(monthToDate(month, instance));
         }
         nextTick().then(() => {
-            checkRangeAutoApply(modelValue.value as Date[], emit, rootProps.autoApply, rootProps.modelAuto);
+            checkRangeAutoApply(
+                modelValue.value as Date[],
+                emit,
+                rootProps.autoApply,
+                rootProps.modelAuto,
+                range.value.partialRange,
+                (modelValue.value as Date[]).length < 2,
+            );
         });
     };
 

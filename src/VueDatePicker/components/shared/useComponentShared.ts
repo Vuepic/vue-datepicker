@@ -42,16 +42,18 @@ export const useComponentShared = () => {
 
     const checkRangeAutoApply = (
         range: Date[],
-        emit: EmitFn<{ 'auto-apply': [] }>,
+        emit: EmitFn<{ 'auto-apply': [ignoreClose?: boolean] }>,
         autoApply: boolean,
         modelAuto: boolean,
+        partial: boolean,
+        ignoreClose: boolean,
     ) => {
         if (!range) return;
         if (range[0] && range[1] && autoApply) {
-            emit('auto-apply');
+            emit('auto-apply', ignoreClose);
         }
-        if (range[0] && !range[1] && modelAuto && autoApply) {
-            emit('auto-apply');
+        if (range[0] && !range[1] && (modelAuto || partial) && autoApply) {
+            emit('auto-apply', ignoreClose);
         }
     };
 

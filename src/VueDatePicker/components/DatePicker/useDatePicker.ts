@@ -20,7 +20,6 @@ import { useComponentShared } from '@/components/shared/useComponentShared.ts';
 
 import { CMP, FlowStep } from '@/constants';
 import type { BasePropsWithDefaults, CalendarDay, CalendarWeek, Marker, TimeKey } from '@/types';
-import { TZDate } from '@date-fns/tz';
 
 export interface DatePickerEmits {
     mount: [cmp: CMP];
@@ -29,7 +28,7 @@ export interface DatePickerEmits {
     'focus-menu': [];
     'select-date': [];
     'time-update': [];
-    'auto-apply': [fromFlow?: boolean];
+    'auto-apply': [ignoreClose?: boolean];
 }
 
 export const useDatePicker = (
@@ -424,7 +423,7 @@ export const useDatePicker = (
 
     // Before range selecting, ensure that modelValue is properly set
     const presetTempRange = () => {
-        tempRange.value = modelValue.value ? (modelValue.value as Date[]).slice() : [];
+        tempRange.value = modelValue.value ? (modelValue.value as Date[]).slice().filter((val) => !!val) : [];
         if (tempRange.value.length === 2 && !(range.value.fixedStart || range.value.fixedEnd)) {
             tempRange.value = [];
         }
@@ -538,7 +537,14 @@ export const useDatePicker = (
             validateRangeAfterTimeSet();
             modelValue.value = tempRange.value.slice();
 
-            checkRangeAutoApply(tempRange.value, emit, rootProps.autoApply, rootProps.modelAuto);
+            checkRangeAutoApply(
+                tempRange.value,
+                emit,
+                rootProps.autoApply,
+                range.value.partialRange,
+                rootProps.modelAuto,
+                tempRange.value.length < 2,
+            );
         }
     };
 
