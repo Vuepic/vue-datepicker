@@ -103,14 +103,7 @@ export const useQuarterPicker = (props: BaseProps, emit: EmitFn<QuarterPickerEmi
 
     const selectRangedQuarter = (date: Date) => {
         modelValue.value = setMonthOrYearRange(date);
-        checkRangeAutoApply(
-            modelValue.value,
-            emit,
-            rootProps.autoApply,
-            rootProps.modelAuto,
-            range.value.partialRange,
-            modelValue.value.length < 2,
-        );
+        checkRangeAutoApply(modelValue.value, emit, modelValue.value.length < 2);
     };
 
     const selectSingleQuarter = (date: Date) => {

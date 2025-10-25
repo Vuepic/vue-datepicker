@@ -540,10 +540,7 @@ export const useDatePicker = (
             checkRangeAutoApply(
                 tempRange.value,
                 emit,
-                rootProps.autoApply,
-                range.value.partialRange,
-                rootProps.modelAuto,
-                tempRange.value.length < 2,
+                tempRange.value.length < 2 || props.flowStep !== flow.value?.steps?.length,
             );
         }
     };

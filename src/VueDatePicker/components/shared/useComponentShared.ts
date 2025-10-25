@@ -6,6 +6,7 @@ export const useComponentShared = () => {
     const {
         getDate,
         rootEmit,
+        rootProps,
         modelValue,
         defaults: { range },
     } = useContext();
@@ -41,18 +42,20 @@ export const useComponentShared = () => {
     };
 
     const checkRangeAutoApply = (
-        range: Date[],
+        selectedRange: Date[],
         emit: EmitFn<{ 'auto-apply': [ignoreClose?: boolean] }>,
-        autoApply: boolean,
-        modelAuto: boolean,
-        partial: boolean,
         ignoreClose: boolean,
     ) => {
         if (!range) return;
-        if (range[0] && range[1] && autoApply) {
+        if (selectedRange[0] && selectedRange[1] && rootProps.autoApply) {
             emit('auto-apply', ignoreClose);
         }
-        if (range[0] && !range[1] && (modelAuto || partial) && autoApply) {
+        if (
+            selectedRange[0] &&
+            !selectedRange[1] &&
+            (rootProps.modelAuto || range.value.partialRange) &&
+            rootProps.autoApply
+        ) {
             emit('auto-apply', ignoreClose);
         }
     };
