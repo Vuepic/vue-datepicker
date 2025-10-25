@@ -42,6 +42,7 @@
                 @keypress="handleKeyPress"
                 @keydown="handleKeyPress($event)"
                 @paste="handlePaste"
+                @invalid="rootEmit('invalid', $event)"
             />
             <div @click="emit('toggle')">
                 <span

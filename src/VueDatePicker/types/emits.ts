@@ -23,4 +23,5 @@ export interface RootEmits {
     'range-end': [date: Date];
     'date-click': [date: Date];
     'overlay-toggle': [toggle: { open: boolean; overlay: PickerSection }];
+    invalid: [event: Event];
 }
