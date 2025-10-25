@@ -57,8 +57,8 @@
                             :class="{ 'dp--preset-range-collapsed': collapse }"
                             :data-test-id="preset.testId ?? undefined"
                             :data-dp-mobile="isMobile"
-                            @click.prevent="presetDate(preset.value, preset.noTz)"
-                            @keydown="checkKeyDown($event, () => presetDate(preset.value, preset.noTz), true)"
+                            @click.prevent="presetDate(preset.value)"
+                            @keydown="checkKeyDown($event, () => presetDate(preset.value), true)"
                         >
                             {{ preset.label }}
                         </button>
@@ -317,8 +317,8 @@
         callChildFn('selectCurrentDate');
     };
 
-    const presetDate = (value: MaybeRefOrGetter<Date[] | string[] | string | Date>, noTz?: boolean) => {
-        callChildFn('presetDate', toValue(value), noTz);
+    const presetDate = (value: MaybeRefOrGetter<Date[] | string[] | string | Date>) => {
+        callChildFn('presetDate', toValue(value));
     };
 
     const clearHoverDate = () => {

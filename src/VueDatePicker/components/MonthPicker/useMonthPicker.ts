@@ -189,8 +189,7 @@ export const useMonthPicker = (props: BaseProps, emit: EmitFn<MonthPickerEmits>)
         hoverDate.value = monthToDate(month, instance);
     };
 
-    // todo
-    const presetDate = (value: Date[] | string[] | Date | string, _noTz?: boolean) => {
+    const presetDate = (value: Date[] | string[] | Date | string) => {
         setPresetDate({
             value,
         });

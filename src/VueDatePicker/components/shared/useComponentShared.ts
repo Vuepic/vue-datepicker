@@ -57,7 +57,6 @@ export const useComponentShared = () => {
         }
     };
 
-    // todo with timezone
     const setPresetDate = (opts: { value: Date[] | string[] | Date | string }) => {
         if (Array.isArray(opts.value) && opts.value.length <= 2 && range.value.enabled) {
             modelValue.value = opts.value.map((date) => getDate(date));

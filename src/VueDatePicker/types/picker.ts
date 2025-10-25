@@ -38,7 +38,6 @@ export type PresetDate = {
     value: MaybeRefOrGetter<Date[] | string[] | Date | string>;
     style?: Record<string, string>;
     slot?: string;
-    noTz?: boolean;
     testId?: string;
 };
 

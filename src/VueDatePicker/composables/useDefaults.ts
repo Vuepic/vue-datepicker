@@ -86,7 +86,7 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
         return new Map(
             datesArr.map((date) => {
                 const d = getDate(date, isSpecificMode.value);
-                return [getMapKey(d!, format), d];
+                return [getMapKey(d, format), d];
             }),
         );
     };
@@ -211,7 +211,7 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
                 ? new Map(
                       props.markers.map((marker) => {
                           const date = getDate(marker.date);
-                          return [getMapKey(date!, MAP_KEY_FORMAT.DATE), marker];
+                          return [getMapKey(date, MAP_KEY_FORMAT.DATE), marker];
                       }),
                   )
                 : null,
