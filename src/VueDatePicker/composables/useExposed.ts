@@ -15,7 +15,8 @@ export const useExposed = (datePicker: Readonly<ShallowRef<InstanceType<typeof V
 
     const updateInternalModelValue = (value: Date | Date[]) => datePicker.value?.updateInternalModelValue(value);
 
-    const setMonthYear = (value: Partial<MonthModel>) => datePicker.value?.setMonthYear(value);
+    const setMonthYear = (value: Partial<MonthModel>, instance?: number) =>
+        datePicker.value?.setMonthYear(value, instance);
 
     const parseModel = () => datePicker.value?.parseModel();
 

@@ -416,9 +416,9 @@
         rootEmit('blur');
     };
 
-    const setMonthYear = (value: Partial<MonthModel>) => {
+    const setMonthYear = (value: Partial<MonthModel>, instance?: number) => {
         if (dpMenuRef.value) {
-            dpMenuRef.value.updateMonthYear(0, {
+            dpMenuRef.value.updateMonthYear(instance ?? 0, {
                 month: getNumVal(value.month) as number,
                 year: getNumVal(value.year) as number,
             });
