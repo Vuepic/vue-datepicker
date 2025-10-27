@@ -333,7 +333,10 @@
 
     const getWeekNumber = (firstCurrentDate: CalendarDay) => {
         if (weekNumbers.value.type === 'local')
-            return getWeek(firstCurrentDate.value, { weekStartsOn: +rootProps.weekStart as Day });
+            return getWeek(firstCurrentDate.value, {
+                weekStartsOn: +rootProps.weekStart as Day,
+                locale: rootProps.locale,
+            });
         if (weekNumbers.value.type === 'iso') return getISOWeek(firstCurrentDate.value);
         if (typeof weekNumbers.value.type === 'function') return weekNumbers.value.type(firstCurrentDate.value);
         return '';
