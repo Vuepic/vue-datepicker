@@ -61,6 +61,7 @@ export const defaultActionRow = {
     selectBtnLabel: 'Select',
     cancelBtnLabel: 'Cancel',
     nowBtnLabel: 'Now',
+    nowBtnRound: undefined,
 };
 
 export const defaultAriaLabels = {

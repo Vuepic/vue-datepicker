@@ -2,6 +2,7 @@ import type { CustomClass, InternalModelValue, PickerSection, TimeKey } from '@/
 import type { CalendarDay, MonthModel, TimeModel } from '@/types/picker.ts';
 import type { ShallowRef } from 'vue';
 import type { Placement, Strategy } from '@floating-ui/vue';
+import type { NearestMinutes, RoundingMethod } from 'date-fns';
 
 export interface InputAttributesConfig {
     name?: string;
@@ -179,6 +180,7 @@ export interface ActionRowConfig {
     selectBtnLabel: string;
     cancelBtnLabel: string;
     nowBtnLabel: string;
+    nowBtnRound?: Partial<{ rounding: RoundingMethod; roundTo: NearestMinutes }>;
 }
 
 export interface FloatingConfig {

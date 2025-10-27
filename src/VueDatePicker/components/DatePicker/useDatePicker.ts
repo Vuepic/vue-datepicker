@@ -13,6 +13,7 @@ import {
     subMonths,
     format,
     type Day,
+    roundToNearestMinutes,
 } from 'date-fns';
 
 import { useDateUtils, useRemapper, useValidation, useContext, useHelperFns, useFormatter } from '@/composables';
@@ -592,9 +593,21 @@ export const useDatePicker = (
         }
     };
 
+    const getCurrentDate = () => {
+        let date = getDate();
+        if (rootProps.actionRow?.nowBtnRound) {
+            date = roundToNearestMinutes(date, {
+                roundingMethod: rootProps.actionRow.nowBtnRound.rounding ?? 'ceil',
+                nearestTo: rootProps.actionRow.nowBtnRound.roundTo ?? 15,
+            });
+        }
+
+        return date;
+    };
+
     // Select current date on now button
     const selectCurrentDate = (): void => {
-        const date = getDate();
+        const date = getCurrentDate();
         if (!range.value.enabled && !multiDates.value.enabled) {
             modelValue.value = date;
         } else if (modelValue.value && Array.isArray(modelValue.value) && modelValue.value[0]) {
