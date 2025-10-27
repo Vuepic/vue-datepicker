@@ -121,6 +121,7 @@ export interface TextInputConfig {
     selectOnFocus: boolean;
     escClose: boolean;
     format: string;
+    maskFormat: string;
 }
 
 export interface RangeConfig {

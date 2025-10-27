@@ -56,8 +56,60 @@ export const useInput = () => {
         return null;
     };
 
+    function createMaskedValue(raw: string, maskFormat: string): string {
+        const tokenPattern = /(YYYY|MM|DD|hh|mm|ss)/g;
+        const tokens: string[] = [...maskFormat.matchAll(tokenPattern)].map((m) => m[0]);
+        const delimiters: string[] = maskFormat.replace(tokenPattern, '|').split('|').filter(Boolean);
+        const tokenLengths: number[] = tokens.map((t) => t.length);
+
+        let masked = '',
+            index = 0;
+        for (let i = 0; i < tokens.length; i++) {
+            const len = tokenLengths[i]!;
+            const part = raw.slice(index, index + len);
+            if (!part) break;
+            masked += part;
+            if (part.length === len && delimiters[i]) masked += delimiters[i];
+            index += len;
+        }
+        return masked;
+    }
+
+    function applyMaxValues(raw: string, tokens: string[]): string {
+        const maxValues: Record<string, number> = {
+            MM: 12,
+            DD: 31,
+            hh: 23,
+            mm: 59,
+            ss: 59,
+        };
+
+        let result = '',
+            index = 0;
+        for (let i = 0; i < tokens.length; i++) {
+            const token = tokens[i]!;
+            const len = token.length;
+            const part = raw.slice(index, index + len);
+            if (!part) break;
+
+            if (part.length < len) {
+                result += part;
+            } else {
+                let num = parseInt(part, 10);
+                if (maxValues[token] && num > maxValues[token]) num = maxValues[token];
+                result += num.toString().padStart(len, '0').slice(0, len);
+            }
+
+            index += len;
+        }
+
+        return result;
+    }
+
     return {
         textPasted,
         parseFreeInput,
+        applyMaxValues,
+        createMaskedValue,
     };
 };

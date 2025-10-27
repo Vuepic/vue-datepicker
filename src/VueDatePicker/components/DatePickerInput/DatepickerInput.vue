@@ -122,7 +122,7 @@
         defaults: { textInput, ariaLabels, inline, config, range, multiDates, ui, inputAttrs },
     } = useContext();
     const { checkMinMaxRange, isValidDate } = useValidation();
-    const { parseFreeInput, textPasted } = useInput();
+    const { parseFreeInput, textPasted, createMaskedValue, applyMaxValues } = useInput();
     const { checkKeyDown, checkStopPropagation } = useHelperFns();
 
     const inputRef = useTemplateRef('dp-input');
@@ -189,18 +189,30 @@
     const handleInput = (event: Event | string): void => {
         const value = typeof event === 'string' ? event : (event.target as HTMLInputElement)?.value;
 
-        if (value === '') {
-            handleOnEmptyInput();
-        } else {
+        const maskFormat = textInput?.value?.maskFormat;
+        let parsedValue = value;
+        if (typeof maskFormat === 'string') {
+            const tokenPattern = /(YYYY|MM|DD|hh|mm|ss)/g;
+            const tokenPatternMap = maskFormat.matchAll(tokenPattern);
+            const tokens = [...tokenPatternMap].map((m) => m[0]);
+            const raw = value.replace(/\D/g, '');
+
+            const adjustedRaw = applyMaxValues(raw, tokens);
+
+            parsedValue = createMaskedValue(adjustedRaw, maskFormat);
+        }
+
+        if (parsedValue !== '') {
             if (textInput.value.openMenu && !props.isMenuOpen) {
                 emit('open');
             }
-            parseInput(value);
-
+            parseInput(parsedValue);
             emit('set-input-date', parsedDate.value);
+        } else {
+            handleOnEmptyInput();
         }
         textPasted.value = false;
-        inputValue.value = value;
+        inputValue.value = parsedValue;
         rootEmit('text-input', event, parsedDate.value);
     };
 

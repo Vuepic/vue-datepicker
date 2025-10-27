@@ -41,6 +41,7 @@ export const defaultTextInputOptions = {
     rangeSeparator: ' - ',
     escClose: true,
     format: undefined,
+    maskFormat: undefined,
 };
 
 export const defaultHighlightOptions = {
