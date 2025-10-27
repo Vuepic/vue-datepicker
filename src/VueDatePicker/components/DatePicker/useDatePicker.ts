@@ -649,7 +649,7 @@ export const useDatePicker = (
         return null;
     };
 
-    const updateTime = (values: TimeInternalModel) => {
+    const verifyRangeTimeUpdate = (values: TimeInternalModel) => {
         let ev = '';
         if (range.value.enabled && Array.isArray(modelValue.value)) {
             for (const key of Object.keys(values)) {
@@ -664,6 +664,11 @@ export const useDatePicker = (
                 }
             }
         }
+        return ev;
+    };
+
+    const updateTime = (values: TimeInternalModel) => {
+        const ev = verifyRangeTimeUpdate(values);
         updateTimeValues(values, handleTimeUpdate);
         if (ev) {
             rootEmit(ev as never, (modelValue.value as Date[])[ev === 'range-start' ? 0 : 1]);

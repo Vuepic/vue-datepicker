@@ -202,14 +202,14 @@
             parsedValue = createMaskedValue(adjustedRaw, maskFormat);
         }
 
-        if (parsedValue !== '') {
+        if (parsedValue === '') {
+            handleOnEmptyInput();
+        } else {
             if (textInput.value.openMenu && !props.isMenuOpen) {
                 emit('open');
             }
             parseInput(parsedValue);
             emit('set-input-date', parsedDate.value);
-        } else {
-            handleOnEmptyInput();
         }
         textPasted.value = false;
         inputValue.value = parsedValue;

@@ -56,7 +56,7 @@ export const useInput = () => {
         return null;
     };
 
-    function createMaskedValue(raw: string, maskFormat: string): string {
+    const createMaskedValue = (raw: string, maskFormat: string) => {
         const tokenPattern = /(YYYY|MM|DD|hh|mm|ss)/g;
         const tokens: string[] = [...maskFormat.matchAll(tokenPattern)].map((m) => m[0]);
         const delimiters: string[] = maskFormat.replace(tokenPattern, '|').split('|').filter(Boolean);
@@ -73,9 +73,9 @@ export const useInput = () => {
             index += len;
         }
         return masked;
-    }
+    };
 
-    function applyMaxValues(raw: string, tokens: string[]): string {
+    const applyMaxValues = (raw: string, tokens: string[]) => {
         const maxValues: Record<string, number> = {
             MM: 12,
             DD: 31,
@@ -95,7 +95,7 @@ export const useInput = () => {
             if (part.length < len) {
                 result += part;
             } else {
-                let num = parseInt(part, 10);
+                let num = Number.parseInt(part, 10);
                 if (maxValues[token] && num > maxValues[token]) num = maxValues[token];
                 result += num.toString().padStart(len, '0').slice(0, len);
             }
@@ -104,7 +104,7 @@ export const useInput = () => {
         }
 
         return result;
-    }
+    };
 
     return {
         textPasted,
