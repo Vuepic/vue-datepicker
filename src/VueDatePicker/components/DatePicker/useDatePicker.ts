@@ -11,7 +11,6 @@ import {
     set,
     startOfWeek,
     subMonths,
-    format,
     type Day,
     roundToNearestMinutes,
 } from 'date-fns';
@@ -653,7 +652,7 @@ export const useDatePicker = (
     const updateTime = (values: TimeInternalModel) => {
         let ev = '';
         if (range.value.enabled && Array.isArray(modelValue.value)) {
-            Object.keys(values).forEach((key) => {
+            for (const key of Object.keys(values)) {
                 const rangeVal = values[key as keyof typeof values];
                 if (Array.isArray(rangeVal)) {
                     if (time[key][0] !== rangeVal[0]) {
@@ -663,7 +662,7 @@ export const useDatePicker = (
                         ev = 'range-start';
                     }
                 }
-            });
+            }
         }
         updateTimeValues(values, handleTimeUpdate);
         if (ev) {

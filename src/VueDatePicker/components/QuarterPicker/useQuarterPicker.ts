@@ -25,7 +25,6 @@ export interface QuarterPickerEmits {
 export const useQuarterPicker = (props: BaseProps, emit: EmitFn<QuarterPickerEmits>) => {
     const {
         getDate,
-        rootProps,
         modelValue,
         year,
         calendars,
