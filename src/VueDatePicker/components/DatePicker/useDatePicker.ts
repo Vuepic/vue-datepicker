@@ -19,7 +19,7 @@ import { useTimePickerUtils } from '@/components/TimePicker/useTimePickerUtils.t
 import { useComponentShared } from '@/components/shared/useComponentShared.ts';
 
 import { CMP, FlowStep } from '@/constants';
-import type { BasePropsWithDefaults, CalendarDay, CalendarWeek, Marker, TimeKey } from '@/types';
+import type { BasePropsWithDefaults, CalendarDay, CalendarWeek, Marker, TimeInternalModel, TimeKey } from '@/types';
 
 export interface DatePickerEmits {
     mount: [cmp: CMP];
@@ -635,8 +635,25 @@ export const useDatePicker = (
         return null;
     };
 
-    const updateTime = (value: number | number[], isHours = true, isSeconds = false) => {
-        updateTimeValues(value, isHours, isSeconds, handleTimeUpdate);
+    const updateTime = (values: TimeInternalModel) => {
+        let ev = '';
+        if (range.value.enabled && Array.isArray(modelValue.value)) {
+            Object.keys(values).forEach((key) => {
+                const rangeVal = values[key as keyof typeof values];
+                if (Array.isArray(rangeVal)) {
+                    if (time[key][0] !== rangeVal[0]) {
+                        ev = 'range-start';
+                    }
+                    if (time[key][1] !== rangeVal[1]) {
+                        ev = 'range-start';
+                    }
+                }
+            });
+        }
+        updateTimeValues(values, handleTimeUpdate);
+        if (ev) {
+            rootEmit(ev as never, (modelValue.value as Date[])[ev === 'range-start' ? 0 : 1]);
+        }
     };
 
     return {

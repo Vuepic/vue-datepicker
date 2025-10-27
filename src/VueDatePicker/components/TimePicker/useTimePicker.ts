@@ -4,7 +4,7 @@ import { set } from 'date-fns';
 import { useContext, useDateUtils, useRemapper } from '@/composables';
 import { useTimePickerUtils } from '@/components/TimePicker/useTimePickerUtils.ts';
 
-import type { TimeModel } from '@/types';
+import type { TimeInternalModel, TimeModel } from '@/types';
 
 export interface TimePickerEmits {
     'update-flow-step': [];
@@ -102,8 +102,8 @@ export const useTimePicker = (emit: EmitFn<TimePickerEmits>) => {
         emit('time-update');
     };
 
-    const updateTime = (value: number | number[], isHours = true, isSeconds = false) => {
-        updateTimeValues(value, isHours, isSeconds, handleTimeUpdate);
+    const updateTime = (values: TimeInternalModel) => {
+        updateTimeValues(values, handleTimeUpdate);
     };
 
     return {

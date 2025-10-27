@@ -3,7 +3,7 @@ import { isAfter, isBefore, setMilliseconds, setSeconds } from 'date-fns';
 
 import { useContext, useDateUtils } from '@/composables';
 
-import type { TimeKey, TimeModel } from '@/types';
+import type { TimeInternalModel, TimeKey, TimeModel } from '@/types';
 
 export const useTimePickerUtils = (updateFlow?: () => void) => {
     const {
@@ -104,15 +104,10 @@ export const useTimePickerUtils = (updateFlow?: () => void) => {
         updateTime('seconds', value);
     };
 
-    const updateTimeValues = (
-        value: number | number[],
-        isHours: boolean,
-        isSeconds: boolean,
-        handleTimeUpdate: (date: Date | Date[]) => void,
-    ) => {
-        if (isHours) updateHours(value);
-        if (!isHours && !isSeconds) updateMinutes(value);
-        if (isSeconds) updateSeconds(value);
+    const updateTimeValues = (values: TimeInternalModel, handleTimeUpdate: (date: Date | Date[]) => void) => {
+        updateHours(values.hours);
+        updateMinutes(values.minutes);
+        updateSeconds(values.seconds);
 
         if (modelValue.value) {
             handleTimeUpdate(modelValue.value);

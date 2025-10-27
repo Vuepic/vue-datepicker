@@ -142,7 +142,6 @@
     const props = defineProps<TimePickerProps>();
 
     const {
-        getDate,
         rootEmit,
         modelValue,
         rootProps,

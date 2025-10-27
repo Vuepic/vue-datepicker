@@ -52,9 +52,9 @@
             :validate-time="validateTime"
             :no-overlay-focus="noOverlayFocus"
             @mount="componentMounted(CMP.timePicker)"
-            @update:hours="updateTime($event)"
-            @update:minutes="updateTime($event, false)"
-            @update:seconds="updateTime($event, false, true)"
+            @update:hours="updateTime({ hours: $event, minutes: time.minutes, seconds: time.seconds })"
+            @update:minutes="updateTime({ hours: time.hours, minutes: $event, seconds: time.seconds })"
+            @update:seconds="updateTime({ hours: time.hours, minutes: time.minutes, seconds: $event })"
             @reset-flow="$emit('reset-flow')"
         >
             <template v-for="(slot, i) in timePickerSlots" #[slot]="args" :key="i">
