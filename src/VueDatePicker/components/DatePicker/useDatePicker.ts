@@ -11,10 +11,11 @@ import {
     set,
     startOfWeek,
     subMonths,
+    format,
     type Day,
 } from 'date-fns';
 
-import { useDateUtils, useRemapper, useValidation, useContext, useHelperFns } from '@/composables';
+import { useDateUtils, useRemapper, useValidation, useContext, useHelperFns, useFormatter } from '@/composables';
 import { useTimePickerUtils } from '@/components/TimePicker/useTimePickerUtils.ts';
 import { useComponentShared } from '@/components/shared/useComponentShared.ts';
 
@@ -57,6 +58,7 @@ export const useDatePicker = (
     const { validateMonthYearInRange, isDisabled, isDateRangeAllowed, checkMinMaxRange } = useValidation();
     const { updateTimeValues, getSetDateTime, assignTime, assignStartTime, validateTime, disabledTimesConfig } =
         useTimePickerUtils(updateFlow);
+    const { formatDay } = useFormatter();
     const { resetDateTime, setTime, isDateBefore, isDateEqual, getDaysInBetween } = useDateUtils();
     const { checkRangeAutoApply, getRangeWithFixedDate, handleMultiDatesSelect, setPresetDate } = useComponentShared();
     const { getMapDate } = useHelperFns();
@@ -363,7 +365,7 @@ export const useDatePicker = (
             const next = addDays(startDate, i);
             const isNext = getMonth(next) !== month;
             dates.push({
-                text: rootProps.hideOffsetDates && isNext ? '' : next.getDate(),
+                text: rootProps.hideOffsetDates && isNext ? '' : formatDay(next),
                 value: next,
                 current: !isNext,
                 classData: {},

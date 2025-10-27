@@ -107,6 +107,7 @@ export interface FormatsConfig {
     year: string;
     weekDay: string;
     quarter: string;
+    day: string;
     input?: string | ((date: Date) => string) | ((dates: Date[]) => string);
     preview?: string | ((date: Date) => string) | ((dates: Date[]) => string);
 }

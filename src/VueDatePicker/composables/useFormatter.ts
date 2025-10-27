@@ -30,6 +30,10 @@ export const useFormatter = () => {
         return [start, end].map((date) => formatQuarter(date)).join('-');
     };
 
+    const formatDay = (date: Date) => {
+        return format(date, formats.value.day, { locale: rootProps.locale });
+    };
+
     const formatSelectedDate = (value: Date | Date[] | null, customPattern?: string, preview?: boolean) => {
         const fmt = preview ? formats.value.preview : formats.value.input;
         if (!value) return '';
@@ -78,5 +82,6 @@ export const useFormatter = () => {
         formatForTextInput,
         formatPreview,
         formatQuarterText,
+        formatDay,
     };
 };

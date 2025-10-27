@@ -112,6 +112,7 @@ export const defaultFormats = {
     year: 'yyyy',
     weekDay: 'EEEEEE',
     quarter: 'MMMM',
+    day: 'd',
     input: undefined,
     preview: undefined,
 };
