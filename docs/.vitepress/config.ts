@@ -26,6 +26,18 @@ export default defineConfig({
     lastUpdated: true,
     themeConfig: {
         logo: '/logo.png',
+        search: {
+            provider: 'algolia',
+            options: {
+                appId: process.env.ALGOLIA_APP_ID,
+                apiKey: process.env.ALGOLIA_API_KEY,
+                indexName: 'vue3-date-time-picker',
+            },
+        },
+        carbonAds: {
+            code: process.env.CARBON_CODE,
+            placement: 'vue3datepickercom',
+        },
         editLink: {
             pattern: 'https://github.com/Vuepic/vue-datepicker/tree/main/docs/:path',
         },
