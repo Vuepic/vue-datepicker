@@ -3,7 +3,7 @@
         <div ref="calendar-wrap" :class="calendarWrapClass" role="grid">
             <div class="dp__calendar_header" role="row">
                 <div v-if="weekNumbers" class="dp__calendar_header_item" role="gridcell">
-                    {{ weekNumbers.weekNumName }}
+                    {{ weekNumbers.label }}
                 </div>
                 <div
                     v-for="(dayVal, i) in weekDays"

@@ -177,7 +177,7 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
             return {
                 type: props.weekNumbers?.type ?? defaultWeekNumbers.type,
                 hideOnOffsetDates: props.weekNumbers?.hideOnOffsetDates ?? defaultWeekNumbers.hideOnOffsetDates,
-                weekNumName: props.weekNumbers.weekNumName ?? defaultWeekNumbers.weekNumName,
+                label: props.weekNumbers.label ?? defaultWeekNumbers.label,
             };
         }
         return props.weekNumbers ? defaultWeekNumbers : undefined;

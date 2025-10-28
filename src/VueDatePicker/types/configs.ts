@@ -145,7 +145,7 @@ export interface MultiDatesConfig {
 export interface WeekNumbersConfig {
     type?: 'iso' | 'local' | ((date: Date) => string | number);
     hideOnOffsetDates?: boolean;
-    weekNumName?: string;
+    label?: string;
 }
 
 export interface AriaLabelsConfig {

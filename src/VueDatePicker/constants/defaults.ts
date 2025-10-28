@@ -196,5 +196,5 @@ export const defaultInputAttrs = {
 export const defaultWeekNumbers = {
     type: 'local',
     hideOnOffsetDates: false,
-    weekNumName: 'W',
+    label: 'W',
 };
