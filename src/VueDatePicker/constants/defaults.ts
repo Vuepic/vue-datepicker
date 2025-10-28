@@ -168,7 +168,6 @@ export const propDefaults = {
     reverseYears: false,
     weekPicker: false,
     arrowNavigation: false,
-    weekNumName: 'W',
     monthPicker: false,
     yearPicker: false,
     quarterPicker: false,
