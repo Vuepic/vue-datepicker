@@ -179,7 +179,16 @@ Emits when [`text-input`](/props/modes/#text-input) prop is enabled and input va
 - Type: `(event: Event, parsedDate: Date | null) => void`
 
 :::info
-- `event` - Propagated event from `@input` event
+- `event` - Propagated value from the `@input` event
 - `parsedDate` - Result of a parsed date (returns `null` if unable to parse)
 :::
 
+## @invalid
+
+Propagated `oninvalid` event from the input field
+
+- Type: `(event: Event) => void`
+
+:::info
+- `event` - Propagated value from the `@invalid` event
+  :::

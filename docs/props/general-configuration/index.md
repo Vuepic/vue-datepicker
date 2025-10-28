@@ -12,18 +12,48 @@ General behavior props configuration
 
 v-model binding
 
-- Type:
-    - Single picker: `Date | string`
-        - In case of `multiDates` it will be `Date[] | string[]`
-    - Month picker: `{ month: number | string; year: number | string }`
-    - Time picker: `{ hours: number | string; minutes: number | string; seconds?: number | string }`
-    - Week picker: `[Date, Date] | [string, string]`
-    - Range picker: `[Date, Date] | [string | string]`
-        - If you use `time-picker`, it will be `{ hours: number | string; minutes: number | string; seconds?: number | string }[]`
-        - If you use `month-picker`, it will be `{ month: number | string; year: number | string }[]`
-        - If you use `week-picker`, it will be `[[Date, Date], [Date, Date]]`
-    - Year picker: `number | string`
-    - Quarter picker: Same as single or range pickers
+:::danger
+Different modes require different types for `model-value`
+
+- Exception to this rule is if you use [`model-type`](#model-type)
+:::
+
+:::info Date Picker
+- Single - `Date`
+- Range - `[Date, Date]` or `[Date, null]` in case of partial range 
+:::
+
+:::info Time Picker
+- Single - `{ hours: number; minutes: number; seconds?: number }`
+- Range - `{ hours: number; minutes: number; seconds?: number }[]`
+:::
+
+:::info Week Picker
+- Single - `[Date, Date]`
+- Range - `[[Date, Date], [Date, Date]]`
+:::
+
+:::info Month Picker
+- Single - `{ month: number; year: number }`
+- Range - `{ month: number; year: number }[]`
+:::
+
+:::info Year Picker
+- Single - `number`
+- Range - `[number, number]`
+:::
+
+:::info Quarter Picker
+- Single - `Date`
+- Range - `[Date, Date]`
+:::
+
+:::tip
+ - `Date` values can also be `string` or `number`, as long as `new Date(value)` returns a valid date
+ - `number` values can also be `string` values, as long as `Number(value)` returns a valid number
+:::
+
+
 - Default: `undefined`
 
 ::: details Code Example
@@ -148,7 +178,7 @@ interface Marker {
  - You can provide a `slot` name in the tooltip object to use a custom slot for the tooltip
 :::
 
-<GlobalDemo :markers="true" placeholder="Select Date"></GlobalDemo>
+<GlobalDemo :markers="markers" placeholder="Select Date"></GlobalDemo>
 
 ::: details Code Example
 ```vue
@@ -210,7 +240,7 @@ type HighlightFn = ((date: Date) => boolean)
 
 - Default: `undefined`
 
-<GlobalDemo :highlight="true" placeholder="Select Date"></GlobalDemo>
+<GlobalDemo :highlight="highlight" placeholder="Select Date"></GlobalDemo>
 
 ::: details Code Example
 ```vue
@@ -312,6 +342,8 @@ Control which buttons are shown in the action row
 - Type: 
 
 ```ts
+import type { RoundingMethod, NearestMinutes } from 'date-fns';
+
 interface ActionRow {
  selectBtnLabel?: string;
  cancelBtnLabel?: string;
@@ -320,10 +352,11 @@ interface ActionRow {
  showCancel?: boolean;
  showNow?: boolean;
  showPreview?: boolean;
+ nowBtnRound?: { rounding?: RoundingMethod; roundTo?: NearestMinutes }
 }
 ```
 
-- Default: `{ showSelect: true, showCancel: true, showNow: false, showPreview: true }`
+- Default: 
 
 ```ts
 {
@@ -333,13 +366,19 @@ interface ActionRow {
   showSelect: true,
   showCancel: true,
   showNow: false,
-  showPreview: true;
+  showPreview: true, 
+  nowBtnRound: undefined,
 }
 ```
 
 :::info
 - `showNow` - Places another button in the action row, where click on it results in selecting the current date and time
+- `nowBtnRound` - When `showNow` is enabled, you can configure `now` button to round the selected time to the nearest minute. 
+It supports two properties:
+  - `rounding` - A round method:  `"ceil" | "floor" | "round" | "trunc"`
+  - `roundTo` - Value of minutes to round to: values from `1` to `30`
 :::
+
 
 <GlobalDemo :actionRow="{ showPreview: false, showNow: true }" placeholder="Select Date"></GlobalDemo>
 
@@ -544,10 +583,11 @@ interface CalendarWeek {
     value: Date; // Date that is going to be selected, do not modify
     current: boolean; // If the date belongs to the currenct month
     classData: Record<string, boolean>; // All classes for a specific date
-  }
+  }[]
 }
 ```
-<GlobalDemo :calendar="true"></GlobalDemo>
+
+<GlobalDemo :calendar="calendarFn"></GlobalDemo>
 
 ::: details Code Example
 ```vue
@@ -718,26 +758,463 @@ interface FloatingConfig {
 
 ## aria-labels
 
+Customize the language of the HTML `aria-labels` for localized accessibility
+
+- Type
+```ts 
+interface AriaLabelsConfig {
+  toggleOverlay?: string;
+  menu?: string;
+  input?: string;
+  openTimePicker?: string;
+  closeTimePicker?: string;
+  incrementValue?: (type: 'hours' | 'minutes' | 'seconds') => string;
+  decrementValue?: (type: 'hours' | 'minutes' | 'seconds') => string;
+  openTpOverlay?: (type: 'hours' | 'minutes' | 'seconds') => string;
+  amPmButton?: string;
+  openYearsOverlay?: string;
+  openMonthsOverlay?: string;
+  nextMonth?: string;
+  prevMonth?: string;
+  nextYear: string;
+  prevYear: string;
+  day?: ({value}: {value: Date}) => string;
+  weekDay?: (day: number) => string;
+  clearInput?: string;
+  calendarIcon?: string;
+  timePicker?: string;
+  monthPicker: (overlay: boolean) => string;
+  yearPicker: (overlay: boolean) => string;
+  timeOverlay: (type: 'hours' | 'minutes' | 'seconds') => string;
+}
+```
+
+- Default: `{}`
+
+::: details Code Example
+```vue
+<template>
+  <VueDatePicker v-model="date" :aria-labels="ariaLabels" />
+</template>
+
+<script setup>
+  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { ref } from 'vue';
+
+  const date = ref();
+  const ariaLabels = { menu: 'Some custom menu label' }
+</script>
+```
+:::
+
 ## week-numbers
+
+Display week numbers in the calendar. You can switch between local index, ISO numbering and custom function
+
+- Type: `boolean | WeekNumbersConfig`
+```ts
+interface WeekNumbersConfig {
+  type?: 'iso' | 'local' | ((date: Date) => string | number);
+  hideOnOffsetDates?: boolean;
+  label?: string
+}
+```
+- Default: `false`
+
+<GlobalDemo :weekNumbers="{ type: 'local' }"></GlobalDemo>
+
+::: details Code Example
+```vue
+<template>
+  <VueDatePicker v-model="date" :week-numbers="{ type: 'local' }" />
+</template>
+
+<script setup>
+  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { ref } from 'vue';
+
+  const date = ref();
+</script>
+```
+:::
 
 ## day-names
 
+Provide custom labels for day names in the calendar header
+
+:::warning
+- The array order will be rendered as is, make sure to sync it with [`week-start`](#week-start) prop
+- Make sure that a provided array has a **length of 7**
+:::
+
+- Type: `(() => string[]) | string[]`
+- Default: `null`;
+
+<GlobalDemo :dayNames="['1', '2', '3', '4', '5', '6', '7']"></GlobalDemo>
+
+::: details Code Example
+```vue
+<template>
+  <VueDatePicker v-model="date" :day-names="['1', '2', '3', '4', '5', '6', '7']" />
+</template>
+
+<script setup>
+  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { ref } from 'vue';
+
+  const date = ref();
+</script>
+```
+:::
+
 ## config
+
+General configuration for customizing specific date picker behaviour
+
+- Type:
+```ts
+interface Config {
+  allowStopPropagation: boolean;
+  closeOnScroll: boolean;
+  modeHeight: number;
+  allowPreventDefault: boolean;
+  closeOnClearValue: boolean;
+  closeOnAutoApply: boolean;
+  noSwipe: boolean;
+  keepActionRow: boolean;
+  onClickOutside?: (validate: () => boolean, evt: PointerEvent) => void;
+  tabOutClosesMenu: boolean;
+  arrowLeft?: string;
+  keepViewOnOffsetClick?: boolean;
+  timeArrowHoldThreshold: number;
+  shadowDom?: boolean;
+  mobileBreakpoint: number;
+  setDateOnMenuClose?: boolean;
+  escClose?: boolean;
+  spaceConfirm?: boolean;
+  monthChangeOnArrows?: boolean;
+  monthChangeOnScroll?: boolean | string;
+}
+```
+- Default:
+```ts
+ {
+  allowStopPropagation: true, 
+  closeOnScroll: false,
+  modeHeight: 255, 
+  allowPreventDefault: false,
+  closeOnClearValue: true,
+  closeOnAutoApply: true,
+  noSwipe: false,
+  keepActionRow: false,
+  onClickOutside: undefined,
+  tabOutClosesMenu: true,
+  arrowLeft: undefined,
+  keepViewOnOffsetClick: false,
+  timeArrowHoldThreshold: 0,
+  shadowDom: false,
+  mobileBreakpoint: 600,
+  setDateOnMenuClose: false,
+  escClose: true,
+  spaceConfirm: true;
+  monthChangeOnArrows: true
+  monthChangeOnScroll: true;
+}
+```
+
+:::info
+- `allowStopPropagation` - Enable `event.sportPropagation` on click events
+- `closeOnScroll` - Close datepicker menu on page scroll
+- `modeHeight` - If you use [`month-picker`](/props/modes/#month-picker), [`time-picker`](/props/modes/#time-picker) or [`year-picker`](/props/modes/#year-picker), set custom height of the picker in `px`
+- `allowPreventDefault` - Due to the different implementations of how click outside listeners are implemented, you might encounter issues where the menu closes if the picker is used in dialogs when `teleport` prop is enabled. To prevent this issue, you need to set this option to `true`
+- `closeOnClearValue` - Prevent closing the menu on value clear from the input field
+- `closeOnAutoApply` - If set to `false`, clicking on a date value will automatically select the value but will not close the datepicker menu. Closing will be available on a click-away or clicking on the input again
+- `noSwipe` - Disable touch events on the calendar
+- `keepActionRow` - When enabled, it will keep the action row even if the [`auto-apply`](#auto-apply) prop is enabled
+- `onClickOutside` - Provide custom click outside handler. Exposed validation function that will return `true` or `false` depending on the selected value and pointer event
+- `tabOutClosesMenu` - When tabbing out of the picker menu it will close the picker menu (not compatible when using `teleport`)
+- `arrowLeft` - Overrides default arrow position from left side of the menu. To keep it always in the center, set it to `50%`. Accepts valid `CSS` value
+- `keepViewOnOffsetClick` - When enabled, clicking on the offset date will not change the month that is currently in the view
+- `timeArrowHoldThreshold` - When provided with a value `> 0`, clicking and holding the arrow button in the `time-picker` will increment/decrement the value. This value represents the `setTimeout` value, meaning the larger the number, the change will be slower.`0` disables the hold event
+- `shadowDom` - Set to `true` if you are using the component with web components
+- `mobileBreakpoint` - Mobile breakpoint in pixels
+- `setDateOnMenuClose` - When enabled, clicking away from the menu will set the selected date if some date is selected. Behaves similar to `auto-apply`, but it only applies the date on click-away
+- `escClose` - `Esc` key closes the menu
+- `spaceConfirm` - `space` key selects the date (like you pressed the select button)
+- `monthChangeOnArrows` - Change months via arrow keys
+- `monthChangeOnScroll` - Scrolling the mouse wheel over the calendar will change the month. Scroll down for next month and vice versa. You can set the value to `inverse` to reverse scrolling up and down.
+:::
 
 ## start-date
 
+Open the datepicker to some preselected month and year
+
+- Type: `Date | string | number`
+- Default: `undefined`
+
+<GlobalDemo :startDate="new Date(2020, 1)"></GlobalDemo>
+
+::: details Code Example
+```vue
+<template>
+  <VueDatePicker v-model="date" :start-date="new Date(2020, 1)" />
+</template>
+
+<script setup>
+  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { ref } from 'vue';
+
+  const date = ref();
+</script>
+```
+:::
+
 ## focus-start-date
 
-## week-num-name
+Open the datepicker to provided `start-date` ignoring the `v-model` value
+
+- Type: `boolean`
+- Default: `false`
+
+<GlobalDemo :startDate="new Date(2020, 1)" :focusStartDate="true" :bindSingle="true"></GlobalDemo>
+
+::: details Code Example
+```vue
+<template>
+  <VueDatePicker v-model="date" :start-date="new Date(2020, 1)" focus-start-date />
+</template>
+
+<script setup>
+  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { ref } from 'vue';
+
+  const date = ref();
+</script>
+```
+:::
 
 ## teleport
 
+Use teleport to position the datepicker menu. This is useful if you have hidden overflow on the parent HTML element where the menu is not showing in full.
+
+:::tip
+- Setting the prop to `true`, the menu will be placed on the `body` tag
+- If you use `string` value, provide `id` of the element
+:::
+
+- Type: `string | boolean | HTMLElement`
+- Default: `false`
+
+<GlobalDemo :teleport="true"></GlobalDemo>
+
+::: details Code Example
+```vue
+<template>
+  <VueDatePicker v-model="date" :teleport="true" />
+</template>
+
+<script setup>
+  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { ref } from 'vue';
+
+  const date = ref();
+</script>
+```
+:::
+
 ## centered
+
+Sets the menu position on the page center, useful for smaller screens where there is no space available above or below the input field
+
+- Type: `boolean`
+- Default: `false`
+
+<GlobalDemo :centered="true"></GlobalDemo>
+
+::: details Code Example
+```vue
+<template>
+  <VueDatePicker v-model="date" centered />
+</template>
+
+<script setup>
+  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { ref } from 'vue';
+
+  const date = ref();
+</script>
+```
+:::
 
 ## arrow-navigation
 
-## prevent-min-max-navigation
+Navigate the menu via arrow keys
+
+<GlobalDemo :arrow-navigation="true"></GlobalDemo>
+
+::: details Code Example
+```vue
+<template>
+  <VueDatePicker v-model="date" arrow-navigation />
+</template>
+
+<script setup>
+  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { ref } from 'vue';
+
+  const date = ref();
+</script>
+```
+:::
 
 ## preset-dates
 
+When configured, it will provide a sidebar with a configured range / date that the user can select
+
+- Type: `PresetDate[]`
+```ts
+import type { MaybeRefOrGetter } from "vue";
+
+interface PresetDate {
+  label: string;
+  value: MaybeRefOrGetter<Date[] | string[] | Date | string>;
+  style?: Record<string, string>;
+  slot?: string;
+  testId?: string;
+}
+```
+- Default: `[]`
+
+:::tip
+- You can provide a custom `slot` name for a specific preset date and use it as standard slot
+:::
+
+<GlobalDemo :presetDates="presetDates" :range="true">
+    <template #preset-date-range-button="{ label, value, presetDate }">
+        <span 
+            role="button"
+            :tabindex="0"
+            @click="presetDate(value)">
+            {{ label }}
+        </span>
+    </template>
+</GlobalDemo>
+
+::: details Code Example
+```vue
+<template>
+  <VueDatePicker v-model="date">
+    <template #preset-date-range-button="{ label, value, presetDate }">
+      <span 
+        role="button"
+        :tabindex="0"
+        @click="presetDate(value)">
+        {{ label }}
+      </span>
+    </template>
+  </VueDatePicker>
+</template>
+
+<script setup>
+  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { ref } from 'vue';
+  import { endOfMonth, endOfYear, startOfMonth, startOfYear, subMonths } from 'date-fns';
+
+  const date = ref();
+  const presetDates = ref([
+    {
+      label: 'Today (Slot)',
+      value: [new Date(), new Date()],
+      slot: 'preset-date-range-button'
+    },
+    { label: 'Today', value: [new Date(), new Date()] },
+    { label: 'This month', value: [startOfMonth(new Date()), endOfMonth(new Date())] },
+    {
+      label: 'Last month',
+      value: [startOfMonth(subMonths(new Date(), 1)), endOfMonth(subMonths(new Date(), 1))],
+    },
+    { label: 'This year', value: [startOfYear(new Date()), endOfYear(new Date())] },
+  ]);
+</script>
+```
+:::
+
 ## hide-month-year-select
+
+Removes the month and year picker
+
+- Type: `boolean`
+- Default: `false`
+
+<GlobalDemo :hideMonthYearSelect="true"></GlobalDemo>
+
+::: details Code Example
+```vue
+<template>
+  <VueDatePicker v-model="date" hide-month-year-select />
+</template>
+
+<script setup>
+  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { ref } from 'vue';
+
+  const date = ref();
+</script>
+```
+:::
+
+
+<script setup>
+    import { ref } from 'vue';
+    import { endOfMonth, endOfYear, startOfMonth, startOfYear, subMonths, addDays } from 'date-fns';
+    
+    const presetDates = ref([
+        {
+            label: 'Today (Slot)',
+            value: [new Date(), new Date()],
+            slot: 'preset-date-range-button'
+        },
+        { label: 'Today', value: [new Date(), new Date()] },
+        { label: 'This month', value: [startOfMonth(new Date()), endOfMonth(new Date())] },
+        {
+            label: 'Last month',
+            value: [startOfMonth(subMonths(new Date(), 1)), endOfMonth(subMonths(new Date(), 1))],
+        },
+        { label: 'This year', value: [startOfYear(new Date()), endOfYear(new Date())] },
+    ]);
+
+    const markers = [
+        {
+            date: addDays(new Date(), 1),
+            type: 'dot',
+            tooltip: [{ text: 'Dot with tooltip', color: 'green' }],
+        },
+        {
+            date: addDays(new Date(), 2),
+            type: 'line',
+            tooltip: [
+                { text: 'First tooltip', color: 'blue' },
+                { text: 'Second tooltip', color: 'yellow' },
+            ],
+        },
+        {
+            date: addDays(new Date(), 3),
+            type: 'dot',
+            color: 'yellow',
+        },
+    ];
+    
+    const highlight = { dates: [addDays(new Date(), 1), addDays(new Date(), 2), addDays(new Date(), 3)] };
+    
+    const calendarFn = (weeks) => {
+        return weeks
+            .filter((week) => week.days.some((day) => day.text === 15))
+            .map((week) => ({
+                ...week,
+                days: week.days.map((day) => {
+                     day.classData['custom-class'] = true;
+                    return day;
+                    }),
+                }));
+         };
+</script>

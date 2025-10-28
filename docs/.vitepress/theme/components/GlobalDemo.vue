@@ -3,10 +3,7 @@
         v-model="modelBind"
         :dark="isDark"
         v-bind="$attrs"
-        :highlight="highlightProp"
-        :markers="markersProp"
         :placeholder="placeholder"
-        :calendar="calendar ? calendarFn : undefined"
         :locale="localized ? zhCN : undefined"
     >
         <template v-for="(slot, i) in Object.keys(slots)" #[slot]="args" :key="i">
@@ -16,7 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { ref, useAttrs, onMounted, computed, useSlots } from 'vue';
+    import { ref, useAttrs, onMounted, useSlots } from 'vue';
     import { useData } from 'vitepress';
     import { addDays, getHours, getMinutes, getMonth, getYear, startOfQuarter } from 'date-fns';
     import { zhCN } from 'date-fns/locale';
@@ -31,10 +28,8 @@
 
     const props = defineProps<{
         emptyModel?: boolean;
-        highlight?: boolean;
-        markers?: boolean;
-        calendar?: boolean;
         localized?: boolean;
+        bindSingle?: boolean;
     }>();
 
     onMounted(() => {
@@ -72,51 +67,7 @@
     };
 
     const assignSingleModelValue = () => {
+        if (props.bindSingle) modelBind.value = new Date();
         placeholder.value = 'Select Date';
-    };
-
-    const highlightProp = computed(() => {
-        if (props.highlight) {
-            return { dates: [addDays(new Date(), 1), addDays(new Date(), 2), addDays(new Date(), 3)] };
-        }
-        return undefined;
-    });
-
-    const markersProp = computed(() => {
-        if (props.markers) {
-            return [
-                {
-                    date: addDays(new Date(), 1),
-                    type: 'dot' as const,
-                    tooltip: [{ text: 'Dot with tooltip', color: 'green' }],
-                },
-                {
-                    date: addDays(new Date(), 2),
-                    type: 'line' as const,
-                    tooltip: [
-                        { text: 'First tooltip', color: 'blue' },
-                        { text: 'Second tooltip', color: 'yellow' },
-                    ],
-                },
-                {
-                    date: addDays(new Date(), 3),
-                    type: 'dot' as const,
-                    color: 'yellow',
-                },
-            ];
-        }
-        return undefined;
-    });
-
-    const calendarFn = (weeks) => {
-        return weeks
-            .filter((week) => week.days.some((day) => day.text === 15))
-            .map((week) => ({
-                ...week,
-                days: week.days.map((day) => {
-                    day.classData['custom-class'] = true;
-                    return day;
-                }),
-            }));
     };
 </script>

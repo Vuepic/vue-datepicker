@@ -264,3 +264,43 @@ interface Filters {
 </script>
 ```
 :::
+
+
+## prevent-min-max-navigation
+
+Prevent navigation after or before the [`min-date`](#min-date) or [`max-date`](#max-date)
+
+- Type: `boolean`
+- Default: `false`
+
+<GlobalDemo :preventMinMaxNavigation="true" :minDate="minDate" :maxDate="maxDate"></GlobalDemo>
+
+::: details Code Example
+```vue
+<template>
+  <VueDatePicker 
+    v-model="date"
+    prevent-min-max-navigation
+    :min-date="minDate"
+    :max-date="maxDate"
+  />
+</template>
+
+<script setup>
+  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { ref } from 'vue';
+  import { addMonths, subMonths } from 'date-fns';
+
+  const minDate = subMonths(new Date(), 2);
+  const maxDate = addMonths(new Date(), 2);
+
+  const date = ref();
+</script>
+```
+
+<script setup>
+    import { addMonths, subMonths } from 'date-fns';
+
+    const minDate = subMonths(new Date(), 2);
+    const maxDate = addMonths(new Date(), 2);
+</script>

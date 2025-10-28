@@ -30,6 +30,7 @@ interface FormatsConfig {
   year?: string;
   weekDay?: string;
   quarter?: string;
+  day?: string;
   input?: string | ((date: Date) => string) | ((dates: Date[]) => string);
   preview?: string | ((date: Date) => string) | ((dates: Date[]) => string);
 }
@@ -42,6 +43,7 @@ interface FormatsConfig {
   year: 'yyyy', 
   weekDay: 'EEEEEE',
   quarter: 'MMMM',
+  day: 'd',
   input: undefined,
   preview: undefined,
 }
@@ -53,7 +55,7 @@ Changes the format of the month name in the month picker overlay
 
 - Default: `'LLL'`
 
-<GlobalDemo :monthPicker="true" :formats="{ month: 'LLLL' }" placeholder="Select Month"></GlobalDemo>
+<GlobalDemo :monthPicker="true" :formats="{ month: 'LLLL' }"></GlobalDemo>
 
 ::: details Code Example
 ```vue
@@ -76,7 +78,7 @@ Changes the format of the year text in the year picker overlay
 
 - Default: `'yyyy'`
 
-<GlobalDemo :yearPicker="true" :formats="{ year: 'yo' }" placeholder="Select Year"></GlobalDemo>
+<GlobalDemo :yearPicker="true" :formats="{ year: 'yo' }"></GlobalDemo>
 
 ::: details Code Example
 ```vue
@@ -99,7 +101,7 @@ Changes the format week day name in the calendar
 
 - Default: `'EEEEEE'`
 
-<GlobalDemo :formats="{ weekDay: 'EEEEE' }" placeholder="Select Date"></GlobalDemo>
+<GlobalDemo :formats="{ weekDay: 'EEEEE' }"></GlobalDemo>
 
 ::: details Code Example
 ```vue
@@ -122,7 +124,7 @@ Changes the format quarter name in the quarter picker
 
 - Default: `'MMMM'`
 
-<GlobalDemo :quarterPicker="true" :formats="{ quarter: 'qqqq' }" placeholder="Select Quarter"></GlobalDemo>
+<GlobalDemo :quarterPicker="true" :formats="{ quarter: 'qqqq' }"></GlobalDemo>
 
 ::: details Code Example
 ```vue
@@ -135,6 +137,29 @@ Changes the format quarter name in the quarter picker
   import { ref } from 'vue';
 
   const quarter = ref();
+</script>
+```
+:::
+
+### `quarter`
+
+Changes the format of the day value in the calendar
+
+- Default: `'d'`
+
+<GlobalDemo :formats="{ day: 'dd' }"></GlobalDemo>
+
+::: details Code Example
+```vue
+<template>
+  <VueDatePicker v-model="date" :formats="{ day: 'dd' }" />
+</template>
+
+<script setup>
+  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { ref } from 'vue';
+
+  const date = ref();
 </script>
 ```
 :::
@@ -166,7 +191,7 @@ The function argument is the internal selected date value(s).
 
 - Default: `undefined`
 
-<GlobalDemo :formats="{ input: 'dd.MM.yyyy - HH:mm' }" placeholder="Select Date"></GlobalDemo>
+<GlobalDemo :formats="{ input: 'dd.MM.yyyy - HH:mm' }"></GlobalDemo>
 
 ::: details Code Example
 ```vue
@@ -200,7 +225,7 @@ The function argument is the internal selected date value(s).
 
 - Default: `undefined`
 
-<GlobalDemo :formats="{ preview: 'dd.MM.yyyy - HH:mm' }" placeholder="Select Date"></GlobalDemo>
+<GlobalDemo :formats="{ preview: 'dd.MM.yyyy - HH:mm' }"></GlobalDemo>
 
 ::: details Code Example
 ```vue

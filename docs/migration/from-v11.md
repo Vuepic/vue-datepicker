@@ -16,8 +16,8 @@ outline: [2, 4]
   - `umd`: Mostly used in older webpack bundles
 - `import` statement is changed to named instead of default
 - Removed `onScroll` and `dpWrapMenuRef` exposed methods
-- Removed `@recalculate-position` emit
-- Slot action row param to internalModelVAlue to modelValue
+- In `action-row` slot, param `internalModelValue` is renamed to `modelValue`
+- `noTz` property from `preset-dates` config array is removed
 - Removed props:
   - `position`
   - `auto-position`
@@ -26,6 +26,7 @@ outline: [2, 4]
   - `format-locale`
   - `month-name-format`
   - `uid`
+  - `week-num-name`
 - Renamed props:
   - `disable-month-year-select`
   - `teleport-center`
@@ -71,6 +72,7 @@ outline: [2, 4]
   - `day-names`
   - `locale`
   - `flow`
+  - `week-numbers`
 - Timezone behavior is chained, places check the [`timezone`](/props/timezone/) prop info
 - All locale-based formating is now done via Unicode tokens
 - Type definition is now auto-generated, there might be some misalignment between types from previous version and the new one
@@ -131,7 +133,7 @@ Prop type for locale is changed, making this prop redundant, use `locale` prop i
 
 ### `month-name-format`
 
-To change the month name format, you should use [`formats`]() prop and unicode tokens
+To change the month name format, you should use [`formats`](/props/formatting/#formats) prop and unicode tokens
 
 ```js
 <template>
@@ -157,7 +159,7 @@ The prop is renamed to `centered`
 
 ### `select-text`, `cancel-text` and `now-button-label`
 
-These props are now grouped under [`action-row`]() prop and renamed to unify the labels:
+These props are now grouped under [`action-row`](/props/general-configuration/#action-row) prop and renamed to unify the labels:
 
 - `select-text` -> `selectBtnLabel`
 - `cancel-text` -> `cancelBtnLabel`
@@ -180,7 +182,7 @@ These props are now grouped under [`action-row`]() prop and renamed to unify the
 
 ### `format` and `preview-format`
 
-These props are now grouped under [`formats`]() prop and renamed:
+These props are now grouped under [`formats`](/props/formatting/#formats) prop and renamed:
 
 - `format` -> `input`
 - `preview-format` -> `preview`
@@ -197,7 +199,7 @@ These props are now grouped under [`formats`]() prop and renamed:
 
 ### `name`, `required`, `autocomplete`, `state`, `clearable`, `always-clearable` and `hide-input-icon`
 
-These props are now grouped under [`input-attrs`]() prop. Prop types and names are unchanged.
+These props are now grouped under [`input-attrs`](/props/general-configuration/#input-attrs) prop. Prop types and names are unchanged.
 
 Use camel case for naming multi-word props. e.g. `always-clearable` -> `alwaysClearable`
 
@@ -227,7 +229,7 @@ This prop is renamed to `hide-month-year-select`
 
 ### `disabled-week-days`
 
-This prop is now moved under [`filters`]() prop and renamed to `weekDays`.
+This prop is now moved under [`filters`](/props/validation/#filters) prop and renamed to `weekDays`.
 
 ```js
 <template>
@@ -240,7 +242,7 @@ This prop is now moved under [`filters`]() prop and renamed to `weekDays`.
 
 ### `enable-time-picker`, `ignore-time-validation`, `enable-seconds`, `enable-minutes`, `is-24`, `no-hours-overlay`, `no-minutes-overlay`, `no-seconds-overlay`, `hours-grid-increment`, `minutes-grid-ncrement`, `seconds-grid-ncrement`, `time-picker-inline`
 
-These props are now grouped under [`time-config`]() prop. Prop types and names are unchanged.
+These props are now grouped under [`time-config`](/props/time-picker-configuration/#time-config) prop. Prop types and names are unchanged.
 
 Use camel case for naming multi-word props. e.g. `enable-time-picker` -> `enableTimePicker`
 
@@ -256,7 +258,7 @@ Use camel case for naming multi-word props. e.g. `enable-time-picker` -> `enable
 
 ### `day-class`
 
-This prop is now moved under [`ui`]() prop.
+This prop is now moved under [`ui`](/props/look-and-feel/#ui) prop.
 
 ```js
 <template>
@@ -269,7 +271,7 @@ This prop is now moved under [`ui`]() prop.
 
 ### `esc-close`, `space-confirm`, `month-change-on-arrows`, `month-change-on-scroll`
 
-These props are now grouped under [`config`]() prop. Prop types and names are unchanged.
+These props are now grouped under [`config`](/props/general-configuration/#config) prop. Prop types and names are unchanged.
 
 Use camel case for naming multi-word props. e.g. `esc-close` -> `escClose`
 
@@ -302,3 +304,18 @@ These two props are now part of the `FlowConfig` prop object:
 ### `timezone`
 
 Timezone prop type is changed, and will now only accept `string` value
+
+### `week-numbers` and `week-num-name`
+
+- `week-numbers` prop now accepts only boolean or config object
+- `week-num-name` prop is now moved under `week-numbers` as `label` property
+
+```js
+<template>
+  <VueDatePicker
+    week-numbers="iso" // [!code --]
+    week-num-name="ww" // [!code --]
+    :week-numbers="{ type: 'iso', label: 'ww' }" // [!code ++]
+  />
+</template>
+```

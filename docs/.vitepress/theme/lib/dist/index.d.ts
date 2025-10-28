@@ -13,10 +13,12 @@ import { GlobalComponents } from 'vue';
 import { GlobalDirectives } from 'vue';
 import { Locale } from 'date-fns';
 import { MaybeRefOrGetter } from 'vue';
+import { NearestMinutes } from 'date-fns';
 import { nextTick } from 'vue';
 import { OnCleanup } from '@vue/reactivity';
 import { Placement } from '@floating-ui/vue';
 import { PublicProps } from 'vue';
+import { RoundingMethod } from 'date-fns';
 import { ShallowRef } from 'vue';
 import { ShallowUnwrapRef } from 'vue';
 import { Slot } from 'vue';
@@ -33,7 +35,7 @@ selectDate: () => void;
 clearValue: () => void;
 formatInputValue: () => void;
 updateInternalModelValue: (value: Date | Date[]) => void;
-setMonthYear: (value: Partial<MonthModel>) => void;
+setMonthYear: (value: Partial<MonthModel>, instance?: number) => void;
 parseModel: () => void;
 switchView: (view: MenuView, instance?: number) => void;
 handleFlow: () => void;
@@ -41,6 +43,7 @@ toggleMenu: () => void;
 }, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {
 blur: () => any;
 focus: () => any;
+invalid: (event: Event) => any;
 open: () => any;
 "update:model-value": (value: any) => any;
 "internal-model-change": (value: InternalModelValue) => any;
@@ -70,6 +73,7 @@ overlay: PickerSection;
 }, string, PublicProps, Readonly<RootProps> & Readonly<{
 onBlur?: (() => any) | undefined;
 onFocus?: (() => any) | undefined;
+onInvalid?: ((event: Event) => any) | undefined;
 onOpen?: (() => any) | undefined;
 "onUpdate:model-value"?: ((value: any) => any) | undefined;
 "onInternal-model-change"?: ((value: InternalModelValue) => any) | undefined;
@@ -118,7 +122,6 @@ weekPicker: boolean;
 arrowNavigation: boolean;
 centered: boolean;
 locale: Locale;
-weekNumName: string;
 weekStart: string | number;
 yearPicker: boolean;
 modelAuto: boolean;
@@ -158,7 +161,7 @@ openMenu: () => void;
 onScroll: () => void;
 formatInputValue: () => void;
 updateInternalModelValue: (value: Date | Date[]) => void;
-setMonthYear: (value: Partial<MonthModel>) => void;
+setMonthYear: (value: Partial<MonthModel>, instance?: number) => void;
 parseModel: (value?: ModelValue) => void;
 switchView: (view: MenuView, instance?: number) => void;
 toggleMenu: () => void;
@@ -192,7 +195,7 @@ openMenu: () => void;
 onScroll: () => void;
 formatInputValue: () => void;
 updateInternalModelValue: (value: Date | Date[]) => void;
-setMonthYear: (value: Partial<MonthModel>) => void;
+setMonthYear: (value: Partial<MonthModel>, instance?: number) => void;
 parseModel: (value?: ModelValue) => void;
 switchView: (view: MenuView, instance?: number) => void;
 toggleMenu: () => void;
@@ -231,7 +234,7 @@ declare function __VLS_template(): {
             onScroll: () => void;
             formatInputValue: () => void;
             updateInternalModelValue: (value: Date | Date[]) => void;
-            setMonthYear: (value: Partial<MonthModel>) => void;
+            setMonthYear: (value: Partial<MonthModel>, instance?: number) => void;
             parseModel: (value?: ModelValue) => void;
             switchView: (view: MenuView, instance?: number) => void;
             toggleMenu: () => void;
@@ -265,7 +268,7 @@ declare function __VLS_template(): {
         onScroll: () => void;
         formatInputValue: () => void;
         updateInternalModelValue: (value: Date | Date[]) => void;
-        setMonthYear: (value: Partial<MonthModel>) => void;
+        setMonthYear: (value: Partial<MonthModel>, instance?: number) => void;
         parseModel: (value?: ModelValue) => void;
         switchView: (view: MenuView, instance?: number) => void;
         toggleMenu: () => void;
@@ -294,6 +297,10 @@ declare interface ActionRowConfig {
     selectBtnLabel: string;
     cancelBtnLabel: string;
     nowBtnLabel: string;
+    nowBtnRound?: Partial<{
+        rounding: RoundingMethod;
+        roundTo: NearestMinutes;
+    }>;
 }
 
 declare interface ActionRowSlotProps {
@@ -416,6 +423,7 @@ declare interface FormatsConfig {
     year: string;
     weekDay: string;
     quarter: string;
+    day: string;
     input?: string | ((date: Date) => string) | ((dates: Date[]) => string);
     preview?: string | ((date: Date) => string) | ((dates: Date[]) => string);
 }
@@ -535,7 +543,6 @@ declare type PresetDate = {
     value: MaybeRefOrGetter<Date[] | string[] | Date | string>;
     style?: Record<string, string>;
     slot?: string;
-    noTz?: boolean;
     testId?: string;
 };
 
@@ -583,9 +590,8 @@ declare interface RootProps {
     teleport?: string | boolean | HTMLElement;
     centered?: boolean;
     locale?: Locale;
-    weekNumName?: string;
     weekStart?: string | number;
-    weekNumbers?: 'iso' | 'local' | ((date: Date) => string | number) | WeekNumbersConfig;
+    weekNumbers?: boolean | WeekNumbersConfig;
     dayNames?: (() => string[]) | string[];
     monthPicker?: boolean;
     yearPicker?: boolean;
@@ -775,6 +781,7 @@ declare interface TextInputConfig {
     selectOnFocus: boolean;
     escClose: boolean;
     format: string;
+    maskFormat: string;
 }
 
 declare interface TimeConfig {
@@ -844,8 +851,9 @@ declare interface UIConfig {
 export declare const VueDatePicker: __VLS_WithTemplateSlots<typeof __VLS_component, __VLS_TemplateResult["slots"]>;
 
 declare interface WeekNumbersConfig {
-    type: 'iso' | 'local' | ((date: Date) => string | number);
+    type?: 'iso' | 'local' | ((date: Date) => string | number);
     hideOnOffsetDates?: boolean;
+    label?: string;
 }
 
 export { }
