@@ -192,3 +192,9 @@ export const defaultInputAttrs = {
     id: undefined,
     inputmode: 'none',
 };
+
+export const defaultWeekNumbers = {
+    type: 'local',
+    hideOnOffsetDates: false,
+    weekNumName: 'W',
+};

@@ -24,7 +24,7 @@
 
     const slots = useSlots();
     const { mapSlots } = useSlotsMapper();
-    const slotList = mapSlots(slots, 'root');
+    const slotList = mapSlots(slots, 'root', props.presetDates);
 
     const datePicker = useTemplateRef('date-picker');
 

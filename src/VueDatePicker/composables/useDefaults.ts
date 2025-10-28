@@ -13,6 +13,7 @@ import {
     defaultFormats,
     defaultTime,
     defaultInputAttrs,
+    defaultWeekNumbers,
 } from '@/constants/defaults.ts';
 import { MAP_KEY_FORMAT } from '@/constants';
 
@@ -174,14 +175,12 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
     const weekNumbers = computed(() => {
         if (typeof props.weekNumbers === 'object') {
             return {
-                type: props.weekNumbers?.type ?? 'local',
-                hideOnOffsetDates: props.weekNumbers?.hideOnOffsetDates ?? false,
+                type: props.weekNumbers?.type ?? defaultWeekNumbers.type,
+                hideOnOffsetDates: props.weekNumbers?.hideOnOffsetDates ?? defaultWeekNumbers.hideOnOffsetDates,
+                weekNumName: props.weekNumbers.weekNumName ?? defaultWeekNumbers.weekNumName,
             };
         }
-        return {
-            type: props.weekNumbers!,
-            hideOnOffsetDates: false,
-        };
+        return props.weekNumbers ? defaultWeekNumbers : undefined;
     });
 
     const multiDates = computed(() => {

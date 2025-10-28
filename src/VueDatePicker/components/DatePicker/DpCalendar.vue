@@ -2,8 +2,8 @@
     <div :class="calendarParentClass">
         <div ref="calendar-wrap" :class="calendarWrapClass" role="grid">
             <div class="dp__calendar_header" role="row">
-                <div v-if="rootProps.weekNumbers" class="dp__calendar_header_item" role="gridcell">
-                    {{ rootProps.weekNumName }}
+                <div v-if="weekNumbers" class="dp__calendar_header_item" role="gridcell">
+                    {{ weekNumbers.weekNumName }}
                 </div>
                 <div
                     v-for="(dayVal, i) in weekDays"
@@ -23,7 +23,7 @@
             <transition :name="transitionName" :css="!!transitions">
                 <div v-if="showCalendar" class="dp__calendar" role="rowgroup" @mouseleave="isMouseDown = false">
                     <div v-for="(week, weekInd) in calendarWeeks" :key="weekInd" class="dp__calendar_row" role="row">
-                        <div v-if="rootProps.weekNumbers" class="dp__calendar_item dp__week_num" role="gridcell">
+                        <div v-if="weekNumbers" class="dp__calendar_item dp__week_num" role="gridcell">
                             <div class="dp__cell_inner">
                                 {{ getWeekNum(week.days) }}
                             </div>
@@ -332,20 +332,23 @@
     };
 
     const getWeekNumber = (firstCurrentDate: CalendarDay) => {
-        if (weekNumbers.value.type === 'local')
-            return getWeek(firstCurrentDate.value, {
-                weekStartsOn: +rootProps.weekStart as Day,
-                locale: rootProps.locale,
-            });
-        if (weekNumbers.value.type === 'iso') return getISOWeek(firstCurrentDate.value);
-        if (typeof weekNumbers.value.type === 'function') return weekNumbers.value.type(firstCurrentDate.value);
+        if (weekNumbers.value) {
+            if (weekNumbers.value.type === 'local')
+                return getWeek(firstCurrentDate.value, {
+                    weekStartsOn: +rootProps.weekStart as Day,
+                    locale: rootProps.locale,
+                });
+            if (weekNumbers.value.type === 'iso') return getISOWeek(firstCurrentDate.value);
+            if (typeof weekNumbers.value.type === 'function') return weekNumbers.value.type(firstCurrentDate.value);
+            return '';
+        }
         return '';
     };
 
     // Get week number if enabled
     const getWeekNum = (days: UnwrapRef<CalendarDay[]>): string | number => {
         const firstCurrentDate = days[0];
-        if (weekNumbers.value.hideOnOffsetDates) {
+        if (weekNumbers.value?.hideOnOffsetDates) {
             return days.some((day) => day.current) ? getWeekNumber(firstCurrentDate!) : '';
         }
         return getWeekNumber(firstCurrentDate!);

@@ -53,9 +53,8 @@ export interface RootProps {
     teleport?: string | boolean | HTMLElement;
     centered?: boolean;
     locale?: Locale;
-    weekNumName?: string;
     weekStart?: string | number;
-    weekNumbers?: 'iso' | 'local' | ((date: Date) => string | number) | WeekNumbersConfig;
+    weekNumbers?: boolean | WeekNumbersConfig;
     dayNames?: (() => string[]) | string[];
     monthPicker?: boolean;
     yearPicker?: boolean;
