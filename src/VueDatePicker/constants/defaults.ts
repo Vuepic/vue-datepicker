@@ -30,7 +30,10 @@ export const defaultConfig = {
     shadowDom: false,
     mobileBreakpoint: 600,
     setDateOnMenuClose: false,
-    escClose: false,
+    escClose: true,
+    spaceConfirm: true,
+    monthChangeOnArrows: true,
+    monthChangeOnScroll: true,
 };
 
 export const defaultTextInputOptions = {
