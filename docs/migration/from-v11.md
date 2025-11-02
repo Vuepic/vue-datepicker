@@ -93,7 +93,7 @@ import { VueDatePicker } from '@vuepic/vue-datepicker'; // [!code ++]
 Since the position logic is now done via `@floating-ui/vue` library and custom positioning logic is removed, 
 there is no need to keep these props.
 
-`position` and `auto-position` props can be replaced with appropriate options in the [`floating`](/prp[s]) prop 
+`position` and `auto-position` props can be replaced with appropriate options in the [`floating`](/props/general-configuration/#floating) prop 
 
 ### `uid`
 
