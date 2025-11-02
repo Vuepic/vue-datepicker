@@ -13,7 +13,6 @@
   "sass": "src/VueDatePicker/style/main.scss",
   "files": [
     "dist/*",
-    "index.d.ts",
     "LICENSE",
     "README.md",
     "CHANGELOG.md"
