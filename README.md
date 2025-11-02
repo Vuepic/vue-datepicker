@@ -61,7 +61,7 @@ bun add @vuepic/vue-datepicker
 import { createApp } from 'vue';
 import App from './App.vue';
 
-import VueDatePicker from '@vuepic/vue-datepicker';
+import { VueDatePicker } from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 
 const app = createApp(App);
@@ -77,7 +77,7 @@ app.component('VueDatePicker', VueDatePicker);
 
 <script setup>
   import { ref } from 'vue';
-  import VueDatePicker from '@vuepic/vue-datepicker';
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import '@vuepic/vue-datepicker/dist/main.css';
 
   const date = ref(null);
