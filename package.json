@@ -20,8 +20,9 @@
   ],
   "exports": {
     ".": {
-      "types": "./index.d.ts",
-      "import": "./dist/vue-datepicker.js"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/vue-datepicker.js",
+      "default": "./dist/vue-datepicker.js"
     },
     "./dist/main.css": {
       "import": "./dist/main.css",
