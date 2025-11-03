@@ -141,7 +141,7 @@ Changes the format quarter name in the quarter picker
 ```
 :::
 
-### `quarter`
+### `day`
 
 Changes the format of the day value in the calendar
 
