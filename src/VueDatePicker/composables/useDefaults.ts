@@ -135,16 +135,16 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
         if (typeof props.textInput === 'object') {
             return {
                 ...defaultTextInputOptions,
-                format: getDefaultPattern(),
-                pattern: getDefaultPattern(),
+                format: formats.value.input,
+                pattern: formats.value.input,
                 ...props.textInput,
                 enabled: true,
             };
         }
         return {
             ...defaultTextInputOptions,
-            format: getDefaultPattern(),
-            pattern: getDefaultPattern() as string | string[] | ((value: string) => Date),
+            format: formats.value.input,
+            pattern: formats.value.input,
             enabled: props.textInput,
         };
     });
