@@ -140,13 +140,13 @@ export const useHelperFns = () => {
 
         if (!date) return isRange ? [fn[type](fallbackDate), fn[type](fallbackDate)] : fn[type](fallbackDate);
 
-        if (Array.isArray(date)) {
+        if (Array.isArray(date) && isRange) {
             const start = date[0] ?? fallbackDate;
             const end = date[1] ?? fallbackDate;
             return [fn[type](start), fn[type](end)];
         }
 
-        return fn[type](date);
+        return fn[type](date as Date);
     };
 
     const setTimeModelValue = (
