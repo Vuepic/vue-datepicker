@@ -12,7 +12,6 @@ on:
 
 permissions:
   contents: read
-  id-token: read
   issues: read
   pull-requests: read
 
