@@ -224,6 +224,14 @@ Prop type is changed, and no longer provides arguments if a function is provided
 
 Locale prop type is changed, and will now only accept `date-fns` `Locale` object.
 
+If you don't have it in the project, you can install it via `npm install date-fns`
+
+and then import it:
+
+```ts
+import { znCh } from 'date-fns/locale'
+```
+
 ### `disable-month-year-select`
 
 This prop is renamed to `hide-month-year-select`
