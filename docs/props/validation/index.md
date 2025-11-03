@@ -144,7 +144,11 @@ To have a better control of the `range` validation, you can provide an array con
 ::: details Code Example
 ```vue
 <template>
-  <VueDatePicker v-model="date" :max-time="{ hours: 11, minutes: 30 }" :disabled-times="disabledTimes" />
+  <VueDatePicker 
+    v-model="date"
+    :max-time="{ hours: 11, minutes: 30 }"
+    :disabled-times="disabledTimes"
+  />
 </template>
 
 <script setup>
@@ -174,25 +178,25 @@ Disable specific dates
 If you use a custom function, make sure to return `true` for a disabled date and `false` for enabled
 :::
 
-<GlobalDemo :dates="[new Date()]" :emptyModel="true"></GlobalDemo>
+<GlobalDemo :disabledDates="disabledDates" :emptyModel="true"></GlobalDemo>
 
 ::: details Code Example
 ```vue
 <template>
-  <VueDatePicker v-model="date" :max-time="{ hours: 11, minutes: 30 }" :disabled-times="disabledTimes" />
+  <VueDatePicker v-model="date" :disabled-dates="disabledDates" />
 </template>
 
 <script setup>
   import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { addDays } from 'date-fns';
   import { ref } from 'vue';
 
   const date = ref();
 
   const disabledDates = [
-    { hours: 15, minutes: '*' }, // disable full hour
-    { hours: 16, minutes: 15 },
-    { hours: 16, minutes: 20 },
-    { hours: 17, minutes: 30 },
+    new Date(),
+    addDays(new Date(), 1),
+    addDays(new Date(), 2),
   ];
 </script>
 ```
@@ -205,25 +209,25 @@ Allow only specific dates
 - Type: `string[] | Date[] | number[]`
 - Default: `[]`
 
-<GlobalDemo :dates="[new Date()]" :emptyModel="true"></GlobalDemo>
+<GlobalDemo :allowedDates="disabledDates" :emptyModel="true"></GlobalDemo>
 
 ::: details Code Example
 ```vue
 <template>
-  <VueDatePicker v-model="date" :max-time="{ hours: 11, minutes: 30 }" :disabled-times="disabledTimes" />
+  <VueDatePicker v-model="date" :allowed-dates="allowedDates" />
 </template>
 
 <script setup>
   import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { addDays } from 'date-fns';
   import { ref } from 'vue';
 
   const date = ref();
 
-  const disabledDates = [
-    { hours: 15, minutes: '*' }, // disable full hour
-    { hours: 16, minutes: 15 },
-    { hours: 16, minutes: 20 },
-    { hours: 17, minutes: 30 },
+  const allowedDates = [
+    new Date(),
+    addDays(new Date(), 1),
+    addDays(new Date(), 2),
   ];
 </script>
 ```
@@ -299,8 +303,14 @@ Prevent navigation after or before the [`min-date`](#min-date) or [`max-date`](#
 ```
 
 <script setup>
-    import { addMonths, subMonths } from 'date-fns';
+    import { addMonths, subMonths, addDays } from 'date-fns';
 
     const minDate = subMonths(new Date(), 2);
     const maxDate = addMonths(new Date(), 2);
+
+    const disabledDates = [
+        new Date(),
+        addDays(new Date(), 1),
+        addDays(new Date(), 2),
+    ];
 </script>
