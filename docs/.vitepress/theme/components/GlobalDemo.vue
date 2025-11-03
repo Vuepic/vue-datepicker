@@ -1,15 +1,17 @@
 <template>
-    <VueDatePicker
-        v-model="modelBind"
-        :dark="isDark"
-        v-bind="$attrs"
-        :placeholder="placeholder"
-        :locale="localized ? zhCN : undefined"
-    >
-        <template v-for="(slot, i) in Object.keys(slots)" #[slot]="args" :key="i">
-            <slot :name="slot" v-bind="args" />
-        </template>
-    </VueDatePicker>
+    <ClientOnly>
+        <VueDatePicker
+            v-model="modelBind"
+            :dark="isDark"
+            v-bind="$attrs"
+            :placeholder="placeholder"
+            :locale="localized ? zhCN : undefined"
+        >
+            <template v-for="(slot, i) in Object.keys(slots)" #[slot]="args" :key="i">
+                <slot :name="slot" v-bind="args" />
+            </template>
+        </VueDatePicker>
+    </ClientOnly>
 </template>
 
 <script lang="ts" setup>

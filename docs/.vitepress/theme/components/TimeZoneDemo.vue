@@ -1,11 +1,13 @@
 <template>
-    <div>
-        <VueDatePicker v-model="modelBind" :dark="isDark" placeholder="Select Date" timezone="utc" />
-        <div class="flex gapped" style="margin-top: 1rem">
-            <button class="theme-btn" type="button" @click="getDate">Get date</button>
-            <button class="theme-btn" type="button" @click="getDateInTimeZone">Get date in the timezone</button>
+    <ClientOnly>
+        <div>
+            <VueDatePicker v-model="modelBind" :dark="isDark" placeholder="Select Date" timezone="utc" />
+            <div class="flex gapped" style="margin-top: 1rem">
+                <button class="theme-btn" type="button" @click="getDate">Get date</button>
+                <button class="theme-btn" type="button" @click="getDateInTimeZone">Get date in the timezone</button>
+            </div>
         </div>
-    </div>
+    </ClientOnly>
 </template>
 
 <script lang="ts" setup>

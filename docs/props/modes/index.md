@@ -286,7 +286,7 @@ To deselect the date, click on the selected value
 - For additional `multi-dates` configuration properties, please refer to [`multi-dates` configuration section](/props/modes-configuration/#multi-dates-configuration)
 :::
 
-<GlobalDemo :multi-dates="true" placeholder="Select Multiple Dates"></GlobalDemo>
+<GlobalDemo :multiDates="true" placeholder="Select Multiple Dates"></GlobalDemo>
 
 ::: details Code Example
 ```vue
