@@ -62,6 +62,7 @@ outline: [2, 4]
   - `month-change-on-arrows`
   - `month-change-on-scroll`
   - `partial-flow` (renamed)
+  - `start-time`
 - Removed emits: 
   - `recalculate-position`
   - `update:model-timezone-value`
@@ -240,7 +241,7 @@ This prop is now moved under [`filters`](/props/validation/#filters) prop and re
 </template>
 ```
 
-### `enable-time-picker`, `ignore-time-validation`, `enable-seconds`, `enable-minutes`, `is-24`, `no-hours-overlay`, `no-minutes-overlay`, `no-seconds-overlay`, `hours-grid-increment`, `minutes-grid-ncrement`, `seconds-grid-ncrement`, `time-picker-inline`
+### `enable-time-picker`, `ignore-time-validation`, `enable-seconds`, `enable-minutes`, `is-24`, `no-hours-overlay`, `no-minutes-overlay`, `no-seconds-overlay`, `hours-grid-increment`, `minutes-grid-ncrement`, `seconds-grid-ncrement`, `time-picker-inline`, `start-time`
 
 These props are now grouped under [`time-config`](/props/time-picker-configuration/#time-config) prop. Prop types and names are unchanged.
 
