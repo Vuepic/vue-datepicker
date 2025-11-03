@@ -50,7 +50,7 @@ export const useInput = () => {
         }
 
         if (typeof textInput.value.pattern === 'function') {
-            return textInput.value.pattern(value);
+            return textInput.value.pattern(value as never) as unknown as Date;
         }
 
         return null;
