@@ -9,6 +9,13 @@ on:
     branches:
       - main
       - next
+
+permissions:
+  contents: read
+  id-token: read
+  issues: read
+  pull-requests: read
+
 jobs:
   sonarcloud:
     name: SonarCloud
