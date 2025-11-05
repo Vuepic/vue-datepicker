@@ -157,7 +157,6 @@
         mount: [];
         'reset-flow': [];
         'update-month-year': [value: { fromNav?: boolean; month: number; year: number }];
-        'overlay-opened': [type: FlowStep];
     }
 
     interface DpHeaderProps {
@@ -267,7 +266,7 @@
 
         if (val.value) {
             overlayOpen.value = true;
-            emit('overlay-opened', type);
+            rootEmit('overlay-toggle', { open: true, overlay: type });
         } else {
             overlayOpen.value = false;
             rootEmit('overlay-toggle', { open: false, overlay: type });
