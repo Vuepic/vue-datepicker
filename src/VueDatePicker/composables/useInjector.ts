@@ -64,9 +64,7 @@ export const useInjector = (props: RootPropsWithDefaults, emit: EmitFn<RootEmits
             return internalModelValue.value;
         },
         set: (value: InternalModelValue): void => {
-            if (!props.readonly && !props.disabled) {
-                internalModelValue.value = value;
-            }
+            internalModelValue.value = value;
         },
     });
 
