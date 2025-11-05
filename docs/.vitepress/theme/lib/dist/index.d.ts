@@ -289,7 +289,7 @@ declare type __VLS_WithTemplateSlots<T, S> = T & {
     };
 };
 
-declare interface ActionRowConfig {
+export declare interface ActionRowConfig {
     showSelect: boolean;
     showCancel: boolean;
     showNow: boolean;
@@ -303,14 +303,14 @@ declare interface ActionRowConfig {
     }>;
 }
 
-declare interface ActionRowSlotProps {
+export declare interface ActionRowSlotProps {
     internalModelValue: InternalModelValue;
     disabled: boolean;
     selectDate: () => void;
     closePicker: () => void;
 }
 
-declare interface AriaLabelsConfig {
+export declare interface AriaLabelsConfig {
     toggleOverlay: string;
     menu: string;
     input: string;
@@ -336,7 +336,22 @@ declare interface AriaLabelsConfig {
     timeOverlay?: (type: TimeKey) => string;
 }
 
-declare interface CalendarDay {
+declare const basePropDefaults: {
+    flowStep: number;
+    menuWrapRef: null;
+    collapse: boolean;
+};
+
+export declare interface BaseProps {
+    flowStep?: number;
+    collapse?: boolean;
+    menuWrapRef: HTMLElement | null;
+    noOverlayFocus: boolean;
+}
+
+export declare type BasePropsWithDefaults = WithDefaults<BaseProps, typeof basePropDefaults>;
+
+export declare interface CalendarDay {
     text: number | string;
     value: Date;
     current: boolean;
@@ -344,11 +359,16 @@ declare interface CalendarDay {
     marker?: Marker | null;
 }
 
-declare interface CalendarWeek {
+export declare interface CalendarMonthYear {
+    month: number;
+    year: number;
+}
+
+export declare interface CalendarWeek {
     days: CalendarDay[];
 }
 
-declare interface Config {
+export declare interface Config {
     allowStopPropagation: boolean;
     closeOnScroll: boolean;
     modeHeight: number;
@@ -371,13 +391,17 @@ declare interface Config {
     monthChangeOnScroll?: boolean | string;
 }
 
-declare type CustomClass = string | string[];
+export declare type CustomClass = string | string[];
 
-declare type DateValue = Date | string | number;
+export declare type DateGetter = (date?: MaybeDate, reset?: boolean, skipInstanceCheck?: boolean) => Date;
 
-declare type DisabledTimesFn = ((time: TimeObj) => boolean) | ((time: TimeObj[]) => boolean) | ((time: (TimeObj | undefined)[]) => boolean);
+export declare type DateValue = Date | string | number;
 
-declare interface DpInputSlotProps {
+export declare type DisabledTimesFn = ((time: TimeObj) => boolean) | ((time: TimeObj[]) => boolean) | ((time: (TimeObj | undefined)[]) => boolean);
+
+export declare type DPElements = 'action-row' | 'action-prev' | 'action-next' | 'overlay-month' | 'overlay-year';
+
+export declare interface DpInputSlotProps {
     value: string;
     isMenuOpen: boolean;
     onInput: (ev: string | Event) => void;
@@ -393,9 +417,9 @@ declare interface DpInputSlotProps {
     toggleMenu: () => void;
 }
 
-declare type DynamicClass = Record<string, boolean | undefined>;
+export declare type DynamicClass = Record<string, boolean | undefined>;
 
-declare interface FilterConfig {
+export declare interface FilterConfig {
     weekDays: number[];
     months: number[];
     years: number[];
@@ -406,19 +430,19 @@ declare interface FilterConfig {
     };
 }
 
-declare interface FloatingConfig {
+export declare interface FloatingConfig {
     offset: number;
     arrow: Readonly<ShallowRef<HTMLDivElement | null>> | boolean;
     strategy?: Strategy;
     placement?: Placement;
 }
 
-declare interface FlowConfig {
+export declare interface FlowConfig {
     steps: PickerSection[];
     partial: boolean;
 }
 
-declare interface FormatsConfig {
+export declare interface FormatsConfig {
     month: string;
     year: string;
     weekDay: string;
@@ -428,7 +452,7 @@ declare interface FormatsConfig {
     preview?: string | ((date: Date) => string) | ((dates: Date[]) => string);
 }
 
-declare interface HighlightConfig {
+export declare interface HighlightConfig {
     dates: Date[];
     years: number[];
     months: MonthModel[];
@@ -442,14 +466,14 @@ declare interface HighlightConfig {
     };
 }
 
-declare type HighlightFn = (date: Date | MonthModel | number | {
+export declare type HighlightFn = (date: Date | MonthModel | number | {
     quarter: number;
     year: number;
 }, disabled?: boolean) => boolean;
 
-declare type Hour12 = 'AM' | 'PM';
+export declare type Hour12 = 'AM' | 'PM';
 
-declare interface InputAttributesConfig {
+export declare interface InputAttributesConfig {
     name?: string;
     required: boolean;
     autocomplete: string;
@@ -461,17 +485,23 @@ declare interface InputAttributesConfig {
     inputmode: 'search' | 'text' | 'none' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | undefined;
 }
 
-declare type InputParsedDate = Date | Array<Date | null> | null;
+export declare type InputParsedDate = Date | Array<Date | null> | null;
 
-declare type InternalModelValue = Date | Date[] | null;
+export declare type InternalModelValue = Date | Date[] | null;
 
-declare interface InternalTime {
+export declare interface InternalTime {
     hours: number | number[];
     minutes: number | number[];
     seconds: number | number[];
 }
 
-declare interface Marker {
+export declare interface InvalidTimesConfig {
+    hours: number[];
+    minutes?: number[];
+    seconds?: (number | undefined)[];
+}
+
+export declare interface Marker {
     date: Date | string;
     type?: 'dot' | 'line';
     tooltip?: {
@@ -483,16 +513,22 @@ declare interface Marker {
     customPosition?: (el: HTMLElement) => Record<string, string>;
 }
 
-declare type MenuView = 'month' | 'year' | 'calendar' | 'time';
+export declare type MaybeDate = DateValue | null | undefined;
 
-declare type ModelValue = Date | Date[] | string | string[] | TimeModel | TimeModel[] | MonthModel | MonthModel[] | number | number[] | null | undefined;
+export declare type MenuExposedFn = 'selectCurrentDate' | 'presetDate' | 'clearHoverDate' | 'handleArrow' | 'updateMonthYear' | 'selectWeekDate' | 'changeYear' | 'changeMonth';
 
-declare interface MonthModel {
+export declare type MenuView = 'month' | 'year' | 'calendar' | 'time';
+
+export declare type ModelTypeConverted = string | number | Date;
+
+export declare type ModelValue = Date | Date[] | string | string[] | TimeModel | TimeModel[] | MonthModel | MonthModel[] | number | number[] | null | undefined;
+
+export declare interface MonthModel {
     month: number | string;
     year: number | string;
 }
 
-declare interface MonthYearOverlaySlotProps {
+export declare interface MonthYearOverlaySlotProps {
     month: number;
     year: number;
     items: {
@@ -504,7 +540,7 @@ declare interface MonthYearOverlaySlotProps {
     toggle: () => void;
 }
 
-declare interface MonthYearSlotProps {
+export declare interface MonthYearSlotProps {
     year: number;
     month?: number;
     months?: {
@@ -525,20 +561,32 @@ declare interface MonthYearSlotProps {
     isDisabled?: (next: boolean) => boolean;
 }
 
-declare interface MultiCalendarsConfig {
+export declare interface MultiCalendarsConfig {
     static: boolean;
     solo: boolean;
     count: number;
 }
 
-declare interface MultiDatesConfig {
+export declare interface MultiDatesConfig {
     limit: number | string;
     dragSelect: boolean;
 }
 
-declare type PickerSection = 'month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds';
+export declare type Numeric = number | string | null;
 
-declare type PresetDate = {
+export declare type OptionalDate = Date | string | null;
+
+export declare interface OverlayGridItem {
+    value: number;
+    text: string;
+    active: boolean;
+    disabled: boolean;
+    className: DynamicClass;
+}
+
+export declare type PickerSection = 'month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds';
+
+export declare type PresetDate = {
     label: string;
     value: MaybeRefOrGetter<Date[] | string[] | Date | string>;
     style?: Record<string, string>;
@@ -546,7 +594,43 @@ declare type PresetDate = {
     testId?: string;
 };
 
-declare interface RangeConfig {
+declare const propDefaults: {
+    weekStart: number;
+    yearRange: () => [number, number];
+    ui: () => {};
+    locale: () => Locale;
+    dark: boolean;
+    transitions: boolean;
+    hideNavigation: () => never[];
+    vertical: boolean;
+    hideMonthYearSelect: boolean;
+    disableYearSelect: boolean;
+    autoApply: boolean;
+    disabledDates: () => never[];
+    hideOffsetDates: boolean;
+    noToday: boolean;
+    markers: () => never[];
+    presetDates: () => never[];
+    preventMinMaxNavigation: boolean;
+    reverseYears: boolean;
+    weekPicker: boolean;
+    arrowNavigation: boolean;
+    monthPicker: boolean;
+    yearPicker: boolean;
+    quarterPicker: boolean;
+    timePicker: boolean;
+    modelAuto: boolean;
+    multiDates: boolean;
+    range: boolean;
+    inline: boolean;
+    sixWeeks: boolean;
+    focusStartDate: boolean;
+    yearFirst: boolean;
+    loading: boolean;
+    centered: boolean;
+};
+
+export declare interface RangeConfig {
     noDisabledRange: boolean;
     showLastInRange: boolean;
     minMaxRawRange: boolean;
@@ -559,7 +643,39 @@ declare interface RangeConfig {
     autoRange?: string | number;
 }
 
-declare interface RootProps {
+export declare interface RootEmits {
+    'update:model-value': [value: any];
+    'internal-model-change': [value: InternalModelValue];
+    'text-submit': [];
+    'text-input': [event: Event | string, parsedDate: InputParsedDate];
+    open: [];
+    closed: [];
+    focus: [];
+    blur: [];
+    cleared: [];
+    'flow-step': [step: number];
+    'update-month-year': [value: {
+        instance: number;
+        month: number;
+        year: number;
+    }];
+    'invalid-select': [];
+    'invalid-fixed-range': [date: Date];
+    'invalid-date': [date: Date];
+    'tooltip-open': [marker: Marker];
+    'tooltip-close': [marker: Marker];
+    'am-pm-change': [value: Hour12];
+    'range-start': [date: Date];
+    'range-end': [date: Date];
+    'date-click': [date: Date];
+    'overlay-toggle': [toggle: {
+        open: boolean;
+        overlay: PickerSection;
+    }];
+    invalid: [event: Event];
+}
+
+export declare interface RootProps {
     multiCalendars?: boolean | number | string | Partial<MultiCalendarsConfig>;
     modelValue?: ModelValue;
     modelType?: string;
@@ -627,7 +743,9 @@ declare interface RootProps {
     floating?: Partial<FloatingConfig>;
 }
 
-declare interface RootSlots {
+export declare type RootPropsWithDefaults = WithDefaults<RootProps, typeof propDefaults>;
+
+export declare interface RootSlots {
     'clock-icon'(): any;
     'arrow-left'(): any;
     'arrow-right'(): any;
@@ -745,7 +863,12 @@ declare interface RootSlots {
     }): any;
 }
 
-declare interface SidebarSlotProps {
+export declare interface SelectItem<T = number> {
+    value: T;
+    text: string;
+}
+
+export declare interface SidebarSlotProps {
     modelValue: InternalModelValue;
     month?: ComputedRef<(instance: number) => number>;
     year?: ComputedRef<(instance: number) => number>;
@@ -771,9 +894,9 @@ declare interface SidebarSlotProps {
     handleYearSelect?: (year: number, instance: number) => void;
 }
 
-declare type SixWeekMode = 'append' | 'prepend' | 'center' | 'fair';
+export declare type SixWeekMode = 'append' | 'prepend' | 'center' | 'fair';
 
-declare interface TextInputConfig {
+export declare interface TextInputConfig {
     enterSubmit: boolean;
     tabSubmit: boolean;
     openMenu: string | boolean;
@@ -784,7 +907,7 @@ declare interface TextInputConfig {
     maskFormat: string;
 }
 
-declare interface TimeConfig {
+export declare interface TimeConfig {
     enableTimePicker: boolean;
     ignoreTimeValidation: boolean;
     enableSeconds: boolean;
@@ -800,32 +923,43 @@ declare interface TimeConfig {
     startTime: TimeModel | TimeModel[];
 }
 
-declare type TimeKey = 'hours' | 'minutes' | 'seconds';
+export declare interface TimeInputSection {
+    type: TimeKey;
+    separator?: boolean;
+}
 
-declare interface TimeModel {
+export declare interface TimeInternalModel {
+    hours: number | number[];
+    minutes: number | number[];
+    seconds: number | number[];
+}
+
+export declare type TimeKey = 'hours' | 'minutes' | 'seconds';
+
+export declare interface TimeModel {
     hours: number | string;
     minutes: number | string;
     seconds?: number | string;
 }
 
-declare type TimeObj = {
+export declare type TimeObj = {
     hours: number;
     minutes: number;
     seconds: number;
 };
 
-declare type TimeOverlaySlotProps = InternalTime & {
+export declare type TimeOverlaySlotProps = InternalTime & {
     setHours: (hours: number | number[]) => void;
     setMinutes: (minutes: number | number[]) => void;
     setSeconds: (seconds: number | number[]) => void;
 };
 
-declare interface TimePickerSlotProps {
+export declare interface TimePickerSlotProps {
     time: InternalTime;
     updateTime: (value: number | number[], isHours?: boolean, isSeconds?: boolean) => void;
 }
 
-declare interface TransitionsConfig {
+export declare interface TransitionsConfig {
     menuAppearTop: string;
     menuAppearBottom: string;
     open: string;
@@ -838,7 +972,7 @@ declare interface TransitionsConfig {
 
 export { TZDate }
 
-declare interface UIConfig {
+export declare interface UIConfig {
     navBtnNext: CustomClass | undefined;
     navBtnPrev: CustomClass | undefined;
     calendar: CustomClass | undefined;
@@ -848,12 +982,18 @@ declare interface UIConfig {
     dayClass: ((date: Date, internalModelValue: InternalModelValue) => string) | undefined;
 }
 
+export declare type UIParsed = {
+    [K in keyof UIConfig]: K extends 'dayClass' ? UIConfig[K] | undefined : Record<string, boolean> | undefined;
+};
+
 export declare const VueDatePicker: __VLS_WithTemplateSlots<typeof __VLS_component, __VLS_TemplateResult["slots"]>;
 
-declare interface WeekNumbersConfig {
+export declare interface WeekNumbersConfig {
     type?: 'iso' | 'local' | ((date: Date) => string | number);
     hideOnOffsetDates?: boolean;
     label?: string;
 }
+
+declare type WithDefaults<T, D> = Omit<T, keyof D> & Required<Pick<T, keyof D & keyof T>>;
 
 export { }

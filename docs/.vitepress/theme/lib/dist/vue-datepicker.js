@@ -393,7 +393,7 @@ const Nn = () => {
   const A = j({
     get: () => o.value,
     set: (i) => {
-      !e.readonly && !e.disabled && (o.value = i);
+      o.value = i;
     }
   }), I = j(
     () => (i) => d.value[i] ? d.value[i].month : 0
@@ -3320,7 +3320,7 @@ const Un = {
     months: {},
     menuWrapRef: {}
   },
-  emits: ["mount", "reset-flow", "update-month-year", "overlay-opened"],
+  emits: ["mount", "reset-flow", "update-month-year"],
   setup(e, { expose: w, emit: p }) {
     const r = p, o = e, {
       rootEmit: s,
@@ -3362,7 +3362,7 @@ const Un = {
       ) || B.value.years.includes(T.value), h = D(I.value, T.value);
       return { active: ie, disabled: le, highlighted: h };
     })), Ae = (T, ie, le) => {
-      le === void 0 ? T.value = !T.value : T.value = le, T.value ? (W.value = !0, r("overlay-opened", ie)) : (W.value = !1, s("overlay-toggle", { open: !1, overlay: ie }));
+      le === void 0 ? T.value = !T.value : T.value = le, T.value ? (W.value = !0, s("overlay-toggle", { open: !0, overlay: ie })) : (W.value = !1, s("overlay-toggle", { open: !1, overlay: ie }));
     }, se = (T = !1, ie) => {
       E(T), Ae(ve, qe.month, ie);
     }, H = (T = !1, ie) => {
