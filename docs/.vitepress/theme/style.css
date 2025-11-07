@@ -180,3 +180,21 @@
         border-color: var(--vp-c-brand-3);
     }
 }
+
+
+html.has-bb-banner {
+    @media (min-width: 960px) {
+        .VPNav {
+            top: 72px;
+        }
+    }
+
+    #VPSidebarNav {
+        padding-top: 70px !important;
+    }
+
+    .aside-content {
+        padding-top: 60px !important;
+    }
+}
+

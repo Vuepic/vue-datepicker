@@ -20,6 +20,13 @@ export default defineConfig({
                     'Vue 3 datepicker component. Lightweight and powerful with support for the timepicker, range picker, month-year picker, text input, week numbers and many more. Options to customize the datepicker from the ground up with props, slots and custom components. Dark and light mode available',
             },
         ],
+        [
+            'script',
+            {
+                async: 'true',
+                src: 'https://media.bitterbrains.com/main.js?from=JASKAR&type=top',
+            },
+        ],
     ],
     metaChunk: true,
     cleanUrls: true,
