@@ -12,7 +12,7 @@
             @close="closeMenu"
             @focus="handleInputFocus"
             @blur="handleBlur"
-            @real-blur="isInputFocused = false"
+            @real-blur="setState('isInputFocused', false)"
         >
             <template v-for="(slot, i) in inputSlots" #[slot]="args" :key="i">
                 <slot :name="slot" v-bind="args" />
@@ -127,7 +127,6 @@
     const pickerWrapperRef = useTemplateRef('picker-wrapper');
     const menuArrowRef = useTemplateRef('menu-arrow');
 
-    const isInputFocused = ref(false);
     const shouldFocusNext = ref(false);
     const shiftKeyActive = ref(false);
     const collapse = ref(false);
@@ -397,7 +396,7 @@
 
     const handleInputFocus = () => {
         if (textInput.value.enabled) {
-            isInputFocused.value = true;
+            setState('isInputFocused', true);
             formatInputValue();
         }
 
@@ -406,7 +405,7 @@
 
     const handleBlur = () => {
         if (textInput.value.enabled) {
-            isInputFocused.value = false;
+            setState('isInputFocused', false);
             parseExternalModelValue(rootProps.modelValue);
             if (shouldFocusNext.value) {
                 const el = findNextFocusableElement(pickerWrapperRef.value!, shiftKeyActive.value);

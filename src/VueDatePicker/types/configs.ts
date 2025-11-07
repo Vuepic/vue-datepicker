@@ -120,7 +120,7 @@ export interface TextInputConfig {
     rangeSeparator: string;
     selectOnFocus: boolean;
     escClose: boolean;
-    format: string;
+    format: string | string[] | ((value: string) => Date | null);
     maskFormat: string;
 }
 

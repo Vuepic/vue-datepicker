@@ -135,9 +135,9 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
         if (typeof props.textInput === 'object') {
             return {
                 ...defaultTextInputOptions,
-                format: formats.value.input,
-                pattern: formats.value.input,
                 ...props.textInput,
+                format: typeof props.textInput.format === 'string' ? props.textInput.format : formats.value.input,
+                pattern: props.textInput.format ?? formats.value.input,
                 enabled: true,
             };
         }
