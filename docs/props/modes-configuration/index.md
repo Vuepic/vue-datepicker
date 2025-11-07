@@ -492,6 +492,11 @@ interface TextInputOptions {
 - `maskFormat`: Check [here](#maskformat)
 :::
 
+:::info
+- When custom `format` is provided, focusing on the input will auto format the value to a given format if there is a selected date
+- If custom `format` is of type `string[]` or a `function`, it defaults to the `formats.input`
+:::
+
 <GlobalDemo :text-input="{ format: 'MM.dd.yyyy HH:mm' }" placeholder="Start Typing ..."></GlobalDemo>
 
 ::: details Code Example
