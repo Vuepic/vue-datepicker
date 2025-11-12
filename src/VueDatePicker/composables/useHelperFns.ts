@@ -131,7 +131,13 @@ export const useHelperFns = () => {
         dateArr: (name: string) => `You need to use array as "model-value" binding in order to support "${name}"`,
     };
 
-    const timeGetter = (type: TimeKey, date: Date | Date[] | null, fallbackDate: Date, isRange: boolean) => {
+    const timeGetter = (
+        type: TimeKey,
+        date: Date | Date[] | null,
+        fallbackDate: Date,
+        isRange: boolean,
+        time: TimeInternalModel,
+    ) => {
         const fn = {
             hours: getHours,
             minutes: getMinutes,
@@ -142,8 +148,8 @@ export const useHelperFns = () => {
 
         if (Array.isArray(date) && isRange) {
             const start = date[0] ?? fallbackDate;
-            const end = date[1] ?? fallbackDate;
-            return [fn[type](start), fn[type](end)];
+            const end = date[1];
+            return [fn[type](start), end ? fn[type](end) : ((time[type] as number[])[1] ?? fn[type](fallbackDate))];
         }
 
         return fn[type](date as Date);
@@ -155,9 +161,9 @@ export const useHelperFns = () => {
         fallbackDate: Date,
         isRange: boolean,
     ) => {
-        time.hours = timeGetter('hours', modelValue, fallbackDate, isRange);
-        time.minutes = timeGetter('minutes', modelValue, fallbackDate, isRange);
-        time.seconds = timeGetter('seconds', modelValue, fallbackDate, isRange);
+        time.hours = timeGetter('hours', modelValue, fallbackDate, isRange, time);
+        time.minutes = timeGetter('minutes', modelValue, fallbackDate, isRange, time);
+        time.seconds = timeGetter('seconds', modelValue, fallbackDate, isRange, time);
     };
 
     const getTimeObjFromCurrent = (
