@@ -542,7 +542,9 @@ export const useDatePicker = (
             checkRangeAutoApply(
                 tempRange.value,
                 emit,
-                tempRange.value.length < 2 || props.flowStep !== flow.value?.steps?.length,
+                tempRange.value.length < 2 || flow.value?.steps.length
+                    ? props.flowStep !== flow.value?.steps?.length
+                    : false,
             );
         }
     };
