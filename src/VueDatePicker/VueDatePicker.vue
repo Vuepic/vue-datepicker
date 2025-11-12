@@ -117,7 +117,7 @@
 
     const slots = useSlots();
     const isOpen = ref(false);
-    const shouldRender = ref(false);
+    const shouldRender = ref(inline.value.enabled);
     const modelValueRef = toRef(rootProps, 'modelValue');
     const timezoneRef = toRef(rootProps, 'timezone');
 
@@ -185,10 +185,12 @@
     );
 
     watch([placement, y], () => {
-        shouldRender.value = false;
-        nextTick().then(() => {
-            shouldRender.value = true;
-        });
+        if (!inline.value.enabled && !rootProps.centered) {
+            shouldRender.value = false;
+            nextTick().then(() => {
+                shouldRender.value = true;
+            });
+        }
     });
 
     const { parseExternalModelValue, emitModelValue, formatInputValue, checkBeforeEmit } = useExternalInternalMapper();
