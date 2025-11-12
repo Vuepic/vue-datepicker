@@ -70,7 +70,7 @@ export interface DpInputSlotProps {
 }
 
 export interface ActionRowSlotProps {
-    internalModelValue: InternalModelValue;
+    modelValue: InternalModelValue;
     disabled: boolean;
     selectDate: () => void;
     closePicker: () => void;
