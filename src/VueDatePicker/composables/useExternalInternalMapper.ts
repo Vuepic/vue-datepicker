@@ -56,7 +56,7 @@ export const useExternalInternalMapper = () => {
         };
     };
 
-    const getMonthVal = (date: Date): MonthModel | ModelTypeConverted => {
+    const getMonthVal = (date: Date): MonthModel | ModelTypeConverted | null => {
         if (rootProps.modelType) return toModelType(date);
         return { month: getMonth(date), year: getYear(date) };
     };
@@ -261,8 +261,8 @@ export const useExternalInternalMapper = () => {
         return getDate(value);
     };
 
-    const toModelType = (val: Date): string | number | Date => {
-        if (!val) return '';
+    const toModelType = (val: Date): string | number | Date | null => {
+        if (!val) return null;
         if (rootProps.modelType) {
             if (rootProps.modelType === 'timestamp') return +val;
             if (rootProps.modelType === 'iso') return val.toISOString();
