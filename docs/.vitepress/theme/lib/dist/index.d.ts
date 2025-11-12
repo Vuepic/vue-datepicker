@@ -304,7 +304,7 @@ export declare interface ActionRowConfig {
 }
 
 export declare interface ActionRowSlotProps {
-    internalModelValue: InternalModelValue;
+    modelValue: InternalModelValue;
     disabled: boolean;
     selectDate: () => void;
     closePicker: () => void;
@@ -956,7 +956,7 @@ export declare type TimeOverlaySlotProps = InternalTime & {
 
 export declare interface TimePickerSlotProps {
     time: InternalTime;
-    updateTime: (value: number | number[], isHours?: boolean, isSeconds?: boolean) => void;
+    updateTime: (time: TimeInternalModel) => void;
 }
 
 export declare interface TransitionsConfig {
