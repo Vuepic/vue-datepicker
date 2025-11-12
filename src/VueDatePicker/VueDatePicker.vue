@@ -433,6 +433,7 @@
     };
 
     const clickOutside = (validateBeforeEmit: () => boolean, evt: PointerEvent) => {
+        if (!isOpen.value) return;
         if (config.value.onClickOutside) return config.value.onClickOutside(validateBeforeEmit, evt);
         return closeMenu(true);
     };
