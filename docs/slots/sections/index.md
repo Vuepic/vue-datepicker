@@ -191,7 +191,7 @@ const formatDate = (date) => {
           <select 
             class="w-full" 
             :value="time.hours"
-            @change="updateTime(+$event.target.value)"
+            @change="updateTime({...time, hours: +$event.target.value,})"
           >
             <option 
               v-for="h in hoursArray"
@@ -201,7 +201,7 @@ const formatDate = (date) => {
           <select
             class="w-full"
             :value="time.minutes"
-            @change="updateTime(+$event.target.value, false)"
+            @change="updateTime({...time, minutes: $event.target.value})"
           >
             <option 
               v-for="m in minutesArray"
@@ -221,7 +221,11 @@ const formatDate = (date) => {
     minutes: number | number[];
     seconds: number | number[];
   };
-  updateTime: (value: number | number[], isHours: boolean, isSeconds: boolean) => void;
+  updateTime: (time: { 
+      hours: number | number[];
+      minutes: number | number[];
+      seconds?: number | number[];
+  }) => void;
 }
 ```
 
@@ -232,7 +236,7 @@ const formatDate = (date) => {
 
 :::tip
 Keep in mind that when you are using the range picker, both values for the time must be emitted.
-For example if you want to update the second date hours, you will call a function something like this `updateTime([firstValueSaved, newSecondValue])`
+For example, if you want to update the second date hours, you will call a function something like this `updateTime(...time, hours: [12, time.hours[1]])`
 :::
 
 
@@ -245,7 +249,7 @@ For example if you want to update the second date hours, you will call a functio
         <select 
           style="width: 100%" 
           :value="time.hours"
-          @change="updateTime(+$event.target.value)"
+          @change="updateTime({ ...time, hours: +$event.target.value })"
         >
           <option 
             v-for="h in hoursArray"
@@ -255,7 +259,7 @@ For example if you want to update the second date hours, you will call a functio
         <select
           style="width: 100%"
           :value="time.minutes"
-          @change="updateTime(+$event.target.value, false)"
+          @change="updateTime({...time, minutes: +$event.target.value })"
         >
           <option 
             v-for="m in minutesArray"

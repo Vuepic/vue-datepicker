@@ -17,6 +17,7 @@ outline: [2, 4]
 - `import` statement is changed to named instead of default
 - Removed `onScroll` and `dpWrapMenuRef` exposed methods
 - In `action-row` slot, param `internalModelValue` is renamed to `modelValue`
+- In `time-picker` slot, exposed function `updateTime` parameters are changed 
 - `noTz` property from `preset-dates` config array is removed
 - Removed props:
   - `position`
@@ -261,6 +262,24 @@ Use camel case for naming multi-word props. e.g. `enable-time-picker` -> `enable
     :enable-time-picker="false" // [!code --]
     :time-config="{ enableTimePicker: false }" // [!code ++]
   />
+</template>
+```
+
+### `time-picker` slot `updateTime`
+
+Function parameters for `updateTime` in [`time-picker`](/slots/sections/#time-picker) slot are changed
+and now accept a full time object instead of determining the value to update via `boolean` flags.
+
+To update time, pass back the exposed time object and override the properties you want to update.
+
+```js
+<template>
+  <VueDatePicker>
+    <template #time-picker="{ time, updateTime }">
+      <button @click="updateTime(0, false)">Reset minutes</button>  // [!code --]
+      <button @click="updateTime({ ...time, minutes: 0 })">Reset minutes</button>  // [!code ++]
+    </template>
+  </VueDatePicker>
 </template>
 ```
 

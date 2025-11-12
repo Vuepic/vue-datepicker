@@ -1,6 +1,6 @@
 import type { ComputedRef } from 'vue';
 import type { InternalModelValue } from '@/types/generic.ts';
-import type { Marker } from '@/types/picker.ts';
+import type { Marker, TimeInternalModel } from '@/types/picker.ts';
 
 export interface InternalTime {
     hours: number | number[];
@@ -78,7 +78,7 @@ export interface ActionRowSlotProps {
 
 export interface TimePickerSlotProps {
     time: InternalTime;
-    updateTime: (value: number | number[], isHours?: boolean, isSeconds?: boolean) => void;
+    updateTime: (time: TimeInternalModel) => void;
 }
 
 export interface RootSlots {
