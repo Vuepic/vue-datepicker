@@ -117,7 +117,7 @@
 
     const slots = useSlots();
     const isOpen = ref(false);
-    const shouldRender = ref(inline.value.enabled);
+    const shouldRender = ref(inline.value.enabled || rootProps.centered);
     const modelValueRef = toRef(rootProps, 'modelValue');
     const timezoneRef = toRef(rootProps, 'timezone');
 
