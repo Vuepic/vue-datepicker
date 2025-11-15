@@ -130,6 +130,7 @@
     const shouldFocusNext = ref(false);
     const shiftKeyActive = ref(false);
     const collapse = ref(false);
+    const watchRender = ref(true);
 
     const buildFloatingMiddlewares = (middlewares: Middleware[]) => {
         if (!floatingConfig.value.arrow) return middlewares;
@@ -185,9 +186,10 @@
     );
 
     watch([placement, y], () => {
-        if (!inline.value.enabled && !rootProps.centered) {
+        if (!inline.value.enabled && !rootProps.centered && watchRender.value) {
             shouldRender.value = false;
             nextTick().then(() => {
+                watchRender.value = false;
                 shouldRender.value = true;
             });
         }
@@ -248,6 +250,7 @@
 
     const openMenu = () => {
         if (!rootProps.disabled && !rootProps.readonly) {
+            watchRender.value = true;
             isOpen.value = true;
 
             if (isOpen.value) {
@@ -336,6 +339,7 @@
     };
 
     const closeMenu = (fromClickAway = false): void => {
+        watchRender.value = true;
         if (fromClickAway && modelValue.value && config.value.setDateOnMenuClose) {
             selectDate();
         }
