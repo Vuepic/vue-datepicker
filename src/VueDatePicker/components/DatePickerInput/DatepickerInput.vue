@@ -28,9 +28,9 @@
                 :class="inputClass"
                 :inputmode="inputAttrs.inputmode"
                 :placeholder="rootProps.placeholder"
-                :disabled="rootProps.disabled"
-                :readonly="rootProps.readonly"
-                :required="inputAttrs.required"
+                :disabled="boolHtmlAttribute(rootProps.disabled)"
+                :readonly="boolHtmlAttribute(rootProps.readonly)"
+                :required="boolHtmlAttribute(inputAttrs.required)"
                 :value="inputValue"
                 :autocomplete="inputAttrs.autocomplete"
                 :aria-label="ariaLabels.input"
@@ -92,7 +92,7 @@
 
     import { CalendarIcon, CancelIcon } from '@/components/Icons';
 
-    import { useContext, useHelperFns, useValidation } from '@/composables';
+    import { useContext, useHelperFns, useValidation, useUtils } from '@/composables';
     import { useInput } from '@/components/DatePickerInput/useInput.ts';
 
     import { EventKey } from '@/constants';
@@ -124,6 +124,7 @@
     const { checkMinMaxRange, isValidDate } = useValidation();
     const { parseFreeInput, textPasted, createMaskedValue, applyMaxValues } = useInput();
     const { checkKeyDown, checkStopPropagation } = useHelperFns();
+    const { boolHtmlAttribute } = useUtils();
 
     const inputRef = useTemplateRef('dp-input');
     const parsedDate = ref<InputParsedDate>(null);

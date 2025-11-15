@@ -56,7 +56,7 @@
                         'dp--time-overlay-btn': !disabledBox(timeInput.type),
                         'dp--hidden-el': timeOverlayOpen,
                     }"
-                    :disabled="checkOverlayDisabled(timeInput.type)"
+                    :disabled="boolHtmlAttribute(checkOverlayDisabled(timeInput.type))"
                     tabindex="0"
                     :data-test-id="`${timeInput.type}-toggle-overlay-btn-${props.order}`"
                     @keydown="checkKeyDown($event, () => toggleOverlay(timeInput.type), true)"
@@ -177,7 +177,14 @@
     import { ChevronUpIcon, ChevronDownIcon, ClockIcon, CalendarIcon } from '@/components/Icons';
     import SelectionOverlay from '@/components/Common/SelectionOverlay.vue';
 
-    import { useTransitions, useArrowNavigation, useContext, useHelperFns, useDateUtils } from '@/composables';
+    import {
+        useTransitions,
+        useArrowNavigation,
+        useContext,
+        useHelperFns,
+        useDateUtils,
+        useUtils,
+    } from '@/composables';
     import type {
         DynamicClass,
         Hour12,
@@ -224,6 +231,7 @@
         defaults: { ariaLabels, filters, config, range, multiCalendars, timeConfig },
     } = useContext();
     const { checkKeyDown, hoursToAmPmHours } = useHelperFns();
+    const { boolHtmlAttribute } = useUtils();
 
     const { sanitizeTime, groupListAndMap } = useDateUtils();
     const { transitionName, showTransition } = useTransitions();

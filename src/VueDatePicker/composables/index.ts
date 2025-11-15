@@ -14,3 +14,4 @@ export { useFormatter } from './useFormatter.ts';
 export { useUtilsWithContext } from './useUtilsWithContext.ts';
 export { useExposed } from './useExposed.ts';
 export { useHelperFns } from './useHelperFns.ts';
+export { useUtils } from './useUtils.ts';

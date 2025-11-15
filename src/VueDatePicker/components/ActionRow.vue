@@ -12,7 +12,12 @@
             />
         </template>
         <template v-else>
-            <div v-if="actionRow.showPreview" class="dp__selection_preview" :title="formatValue" :style="previewStyle">
+            <div
+                v-if="actionRow.showPreview"
+                class="dp__selection_preview"
+                :title="formatValue || undefined"
+                :style="previewStyle"
+            >
                 <slot v-if="$slots['action-preview'] && showPreview" name="action-preview" :value="modelValue" />
                 <template v-if="!$slots['action-preview'] && showPreview">
                     {{ formatValue }}
@@ -45,7 +50,7 @@
                         ref="select-btn"
                         type="button"
                         class="dp__action_button dp__action_select"
-                        :disabled="disabled"
+                        :disabled="boolHtmlAttribute(disabled)"
                         data-test-id="select-button"
                         @keydown="checkKeyDown($event, () => selectDate())"
                         @click="selectDate"
@@ -62,7 +67,7 @@
     import { computed, onUnmounted, onMounted, ref, useTemplateRef } from 'vue';
     import { unrefElement } from '@vueuse/core';
 
-    import { useArrowNavigation, useContext, useFormatter, useHelperFns, useValidation } from '@/composables';
+    import { useArrowNavigation, useContext, useFormatter, useHelperFns, useValidation, useUtils } from '@/composables';
 
     interface ActionRowEmits {
         'close-picker': [];
@@ -93,6 +98,7 @@
     const { buildMatrix } = useArrowNavigation();
     const { formatPreview } = useFormatter();
     const { checkKeyDown, convertType } = useHelperFns();
+    const { boolHtmlAttribute } = useUtils();
 
     const cancelButtonRef = useTemplateRef('cancel-btn');
     const selectButtonRef = useTemplateRef('select-btn');

@@ -25,7 +25,7 @@
                 <ArrowBtn
                     v-if="showLeftIcon(instance) && !rootProps.vertical"
                     :aria-label="ariaLabels?.prevMonth"
-                    :disabled="isDisabled(false)"
+                    :disabled="boolHtmlAttribute(isDisabled(false))"
                     :class="ui?.navBtnPrev"
                     el-name="action-prev"
                     @activate="handleMonthYearChange(false, true)"
@@ -94,7 +94,7 @@
                     v-if="showLeftIcon(instance) && rootProps.vertical"
                     :aria-label="ariaLabels?.prevMonth"
                     el-name="action-prev"
-                    :disabled="isDisabled(false)"
+                    :disabled="boolHtmlAttribute(isDisabled(false))"
                     :class="ui?.navBtnPrev"
                     @activate="handleMonthYearChange(false, true)"
                 >
@@ -105,7 +105,7 @@
                     v-if="showRightIcon(instance)"
                     ref="rightIcon"
                     el-name="action-next"
-                    :disabled="isDisabled(true)"
+                    :disabled="boolHtmlAttribute(isDisabled(true))"
                     :aria-label="ariaLabels?.nextMonth"
                     :class="ui?.navBtnNext"
                     @activate="handleMonthYearChange(true, true)"
@@ -147,6 +147,7 @@
         useContext,
         useFormatter,
         useValidation,
+        useUtils,
     } from '@/composables';
     import { useMonthYearPick } from '@/components/shared/useMonthYearPick.ts';
     import { useNavigationDisplay } from '@/components/shared/useNavigationDisplay.ts';
@@ -187,6 +188,7 @@
     const { checkKeyDown } = useHelperFns();
     const { formatYear } = useFormatter();
     const { checkMinMaxValue } = useValidation();
+    const { boolHtmlAttribute } = useUtils();
 
     const showMonthPicker = ref(false);
     const showYearPicker = ref(false);

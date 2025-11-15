@@ -4,7 +4,7 @@
             v-if="showLeftIcon(instance)"
             ref="mpPrevIconRef"
             :aria-label="ariaLabels?.prevYear"
-            :disabled="isDisabled(false)"
+            :disabled="boolHtmlAttribute(isDisabled(false))"
             :class="ui?.navBtnPrev"
             @activate="handleYear(false)"
         >
@@ -27,7 +27,7 @@
             v-if="showRightIcon(instance)"
             ref="mpNextIconRef"
             :aria-label="ariaLabels?.nextYear"
-            :disabled="isDisabled(true)"
+            :disabled="boolHtmlAttribute(isDisabled(true))"
             :class="ui?.navBtnNext"
             @activate="handleYear(true)"
         >
@@ -64,7 +64,7 @@
     import ArrowBtn from '@/components/Common/ArrowBtn.vue';
     import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from '@/components/Icons';
 
-    import { useContext, useFormatter, useTransitions } from '@/composables';
+    import { useContext, useFormatter, useTransitions, useUtils } from '@/composables';
     import { useNavigationDisplay } from '@/components/shared/useNavigationDisplay.ts';
 
     import type { OverlayGridItem } from '@/types';
@@ -94,6 +94,7 @@
     } = useContext();
     const { showTransition, transitionName } = useTransitions();
     const { formatYear } = useFormatter();
+    const { boolHtmlAttribute } = useUtils();
 
     const overlayOpen = ref(false);
 

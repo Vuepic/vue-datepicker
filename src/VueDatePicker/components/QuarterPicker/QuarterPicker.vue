@@ -31,7 +31,7 @@
                                 'dp--highlighted': quarter.highlighted,
                             }"
                             :data-test-id="quarter.value"
-                            :disabled="quarter.disabled"
+                            :disabled="boolHtmlAttribute(quarter.disabled)"
                             @click="selectQuarter(quarter.value, instance, quarter.disabled)"
                             @mouseover="setHoverDate(quarter.value)"
                         >
@@ -56,7 +56,7 @@
     import YearModePicker from '@/components/shared/YearModePicker.vue';
 
     import { type QuarterPickerEmits, useQuarterPicker } from '@/components/QuarterPicker/useQuarterPicker.ts';
-    import { useContext, useSlotsMapper } from '@/composables';
+    import { useContext, useSlotsMapper, useUtils } from '@/composables';
     import type { BaseProps } from '@/types';
 
     const emit = defineEmits<QuarterPickerEmits>();
@@ -67,6 +67,7 @@
     } = useContext();
     const slots = useSlots();
     const { mapSlots } = useSlotsMapper();
+    const { boolHtmlAttribute } = useUtils();
 
     const yearModeSlots = mapSlots(slots, 'yearMode');
 

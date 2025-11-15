@@ -30,7 +30,7 @@
     defineProps<{
         ariaLabel?: string;
         elName?: string;
-        disabled: boolean;
+        disabled?: boolean;
     }>();
 
     const elRef = useTemplateRef('arrow-btn');
