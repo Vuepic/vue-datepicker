@@ -151,7 +151,7 @@ export const useHelperFns = () => {
             const end = date[1];
             return [fn[type](start), end ? fn[type](end) : ((time[type] as number[])[1] ?? fn[type](fallbackDate))];
         }
-
+        if (Array.isArray(date) && !isRange) return fn[type](date[date.length - 1] ?? fallbackDate);
         return fn[type](date as Date);
     };
 
