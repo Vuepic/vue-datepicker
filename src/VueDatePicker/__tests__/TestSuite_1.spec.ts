@@ -60,4 +60,11 @@ describe('Test Suite 1', () => {
             expect(getMonthToggleBtn(dp).text()).toEqual(getMonthToggleText(nextMonth));
         });
     });
+
+    describe('centered option', () => {
+        it('Should open menu when centered is enabled', async () => {
+            const dp = await openMenu({ centered: true });
+            expect(dp.find('.dp__menu').exists()).toBe(true);
+        });
+    });
 });
