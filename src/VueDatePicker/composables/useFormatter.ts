@@ -18,8 +18,8 @@ export const useFormatter = () => {
         return format(setMonth(getDate(), month), formats.value.month, { locale: rootProps.locale });
     };
 
-    const formatWeekDay = (day: number) => {
-        return format(getDate(`2017-01-0${day}T00:00:00+00:00`), formats.value.weekDay, { locale: rootProps.locale });
+    const formatWeekDay = (date: Date) => {
+        return format(date, formats.value.weekDay, { locale: rootProps.locale });
     };
 
     const formatQuarter = (quarter: Date) => {

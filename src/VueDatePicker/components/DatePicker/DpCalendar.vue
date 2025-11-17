@@ -116,7 +116,7 @@
 <script lang="ts" setup>
     import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
     import { unrefElement, useSwipe } from '@vueuse/core';
-    import { getISOWeek, getWeek, set, type Day } from 'date-fns';
+    import { getISOWeek, getWeek, set, type Day, startOfWeek, endOfWeek, eachDayOfInterval } from 'date-fns';
 
     import { useArrowNavigation, useHelperFns, useDateUtils, useContext, useFormatter } from '@/composables';
 
@@ -376,14 +376,13 @@
     };
 
     const getDayNames = (): string[] => {
-        const daysArray = [1, 2, 3, 4, 5, 6, 7];
+        const now = getDate();
+        const start = startOfWeek(now, { locale: rootProps.locale, weekStartsOn: +rootProps.weekStart as Day });
+        const end = endOfWeek(now, { locale: rootProps.locale, weekStartsOn: +rootProps.weekStart as Day });
 
-        const days = daysArray.map((day) => formatWeekDay(day));
+        const daysInWeek = eachDayOfInterval({ start, end });
 
-        const beforeWeekStart = days.slice(0, +rootProps.weekStart);
-        const afterWeekStart = days.slice(+rootProps.weekStart + 1, days.length);
-
-        return [days[+rootProps.weekStart]!].concat(...afterWeekStart).concat(...beforeWeekStart);
+        return daysInWeek.map((day) => formatWeekDay(day));
     };
 
     defineExpose({ triggerTransition });
