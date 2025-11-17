@@ -281,130 +281,6 @@ When using disabled dates with `minRange` or `mixRange`, disabled dates are not 
 ```
 :::
 
-[//]: # (## preset-dates)
-
-[//]: # ()
-[//]: # (When configured, it will provide a sidebar with configured range/date that user can select)
-
-[//]: # ()
-[//]: # (::: tip Info)
-
-[//]: # (- If the `timezone` prop is provided, values from preset dates will be converted to the provided timezone. If you don't want that, pass `noTz: true` to all presets)
-
-[//]: # (- `testId` &#40;if provided&#41; will add `data-test` attribute on the preset button)
-
-[//]: # (:::)
-
-[//]: # ()
-[//]: # (- Type: `PresetDate[]`)
-
-[//]: # (- Default: `[]`)
-
-[//]: # ()
-[//]: # (```ts)
-
-[//]: # (import type { MaybeRefOrGetter } from "vue";)
-
-[//]: # ()
-[//]: # (interface PresetDate {)
-
-[//]: # (  label: string;)
-
-[//]: # (  value: MaybeRefOrGetter<Date[] | string[] | Date | string>;)
-
-[//]: # (  style?: Record<string, string>;)
-
-[//]: # (  slot?: string;)
-
-[//]: # (  noTz?: boolean;)
-
-[//]: # (  testId?: string;)
-
-[//]: # (})
-
-[//]: # (```)
-
-[//]: # ()
-[//]: # (<PresetRange></PresetRange>)
-
-[//]: # ()
-[//]: # (::: details Code Example)
-
-[//]: # (```vue)
-
-[//]: # (<template>)
-
-[//]: # (    <VueDatePicker v-model="date" range :preset-dates="presetDates">)
-
-[//]: # (      <template #preset-date-range-button="{ label, value, presetDate }">)
-
-[//]: # (        <span )
-
-[//]: # (            role="button")
-
-[//]: # (            :tabindex="0")
-
-[//]: # (            @click="presetDate&#40;value&#41;")
-
-[//]: # (            @keyup.enter.prevent="presetDate&#40;value&#41;")
-
-[//]: # (            @keyup.space.prevent="presetDate&#40;value&#41;">)
-
-[//]: # (          {{ label }})
-
-[//]: # (        </span>)
-
-[//]: # (      </template>)
-
-[//]: # (    </VueDatePicker>)
-
-[//]: # (</template>)
-
-[//]: # ()
-[//]: # (<script setup>)
-
-[//]: # (import { ref } from 'vue';)
-
-[//]: # (import { endOfMonth, endOfYear, startOfMonth, startOfYear, subMonths } from 'date-fns';)
-
-[//]: # ()
-[//]: # (const date = ref&#40;&#41;;)
-
-[//]: # ()
-[//]: # (const presetDates = ref&#40;[)
-
-[//]: # (  { label: 'Today', value: [new Date&#40;&#41;, new Date&#40;&#41;] },)
-
-[//]: # (  {)
-
-[//]: # (    label: 'Today &#40;Slot&#41;',)
-
-[//]: # (    value: [new Date&#40;&#41;, new Date&#40;&#41;],)
-
-[//]: # (    slot: 'preset-date-range-button')
-
-[//]: # (  },)
-
-[//]: # (  { label: 'This month', value: [startOfMonth&#40;new Date&#40;&#41;&#41;, endOfMonth&#40;new Date&#40;&#41;&#41;] },)
-
-[//]: # (  {)
-
-[//]: # (    label: 'Last month',)
-
-[//]: # (    value: [startOfMonth&#40;subMonths&#40;new Date&#40;&#41;, 1&#41;&#41;, endOfMonth&#40;subMonths&#40;new Date&#40;&#41;, 1&#41;&#41;],)
-
-[//]: # (  },)
-
-[//]: # (  { label: 'This year', value: [startOfYear&#40;new Date&#40;&#41;&#41;, endOfYear&#40;new Date&#40;&#41;&#41;] },)
-
-[//]: # (]&#41;;)
-
-[//]: # (</script>)
-
-[//]: # (```)
-
-[//]: # (:::)
-
 ## `multi-calendars` configuration
 
 `multi-calendars` prop can be extended with the configuration object, instead of passing a `boolean` or `number` values,
@@ -477,6 +353,7 @@ interface TextInputOptions {
   format?: string | string[] | ((value: string) => Date | null);
   escClose?: boolean;
   maskFormat?: string;
+  applyOnBlur?: boolean;
 }
 ```
 - Default: `{ enterSubmit: true, tabSubmit: true, openMenu: 'open', rangeSeparator: '-' }`
@@ -490,6 +367,7 @@ interface TextInputOptions {
 - `selectOnFocus`: Selects the input text when input is focused
 - `escClose`: Closes calendar on `esc` key press
 - `maskFormat`: Check [here](#maskformat)
+- `applyOnBlur`: Tries to select a typed date when the input loses focus (has no effect if `auto-apply` is enabled) 
 :::
 
 :::info
