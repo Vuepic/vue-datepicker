@@ -21,6 +21,7 @@ import type {
 import type { CalendarWeek, Marker, TimeModel, PresetDate, HighlightFn, DisabledTimesFn } from '@/types/picker.ts';
 import type { PickerSection, DateValue, ModelValue, SixWeekMode } from '@/types/generic.ts';
 import { basePropDefaults, type propDefaults } from '@/constants/defaults.ts';
+import type { WeekStart } from '@/types/enums.ts';
 
 export interface RootProps {
     multiCalendars?: boolean | number | string | Partial<MultiCalendarsConfig>;
@@ -53,7 +54,7 @@ export interface RootProps {
     teleport?: string | boolean | HTMLElement;
     centered?: boolean;
     locale?: Locale;
-    weekStart?: string | number;
+    weekStart?: string | number | WeekStart;
     weekNumbers?: boolean | WeekNumbersConfig;
     dayNames?: (() => string[]) | string[];
     monthPicker?: boolean;
