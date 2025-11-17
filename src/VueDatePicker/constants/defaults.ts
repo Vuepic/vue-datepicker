@@ -45,6 +45,7 @@ export const defaultTextInputOptions = {
     escClose: true,
     format: undefined,
     maskFormat: undefined,
+    applyOnBlur: false,
 };
 
 export const defaultHighlightOptions = {
