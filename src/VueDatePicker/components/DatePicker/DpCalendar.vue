@@ -45,6 +45,8 @@
                             :aria-label="ariaLabels?.day?.(dayVal)"
                             :tabindex="!dayVal.current && rootProps.hideOffsetDates ? undefined : 0"
                             :data-test-id="getCellId(dayVal.value)"
+                            :data-dp-element-active="!!dayVal.classData.dp__active_date ? 0 : undefined"
+                            data-dp-action-element="0"
                             @click.prevent="onDateSelect($event, dayVal)"
                             @touchend="onDateSelect($event, dayVal, false)"
                             @keydown="checkKeyDown($event, () => $emit('select-date', dayVal))"
@@ -118,7 +120,7 @@
     import { unrefElement, useSwipe } from '@vueuse/core';
     import { getISOWeek, getWeek, set, type Day, startOfWeek, endOfWeek, eachDayOfInterval } from 'date-fns';
 
-    import { useArrowNavigation, useHelperFns, useDateUtils, useContext, useFormatter } from '@/composables';
+    import { useHelperFns, useDateUtils, useContext, useFormatter } from '@/composables';
 
     import type { UnwrapRef } from 'vue';
     import type { CalendarDay, CalendarWeek, DynamicClass, Marker } from '@/types';
@@ -148,7 +150,6 @@
         rootProps,
         defaults: { transitions, config, ariaLabels, multiCalendars, weekNumbers, multiDates, ui },
     } = useContext();
-    const { buildMultiLevelMatrix } = useArrowNavigation();
     const { isDateAfter, isDateEqual, resetDateTime, getCellId } = useDateUtils();
     const { checkKeyDown, checkStopPropagation, isTouchDevice } = useHelperFns();
     const { formatWeekDay } = useFormatter();
@@ -318,9 +319,6 @@
             } else {
                 dayRefs.value[weekInd] = [el];
             }
-        }
-        if (rootProps.arrowNavigation) {
-            buildMultiLevelMatrix(dayRefs.value, 'calendar');
         }
     };
 

@@ -91,7 +91,6 @@
     import {
         useExternalInternalMapper,
         useSlotsMapper,
-        useArrowNavigation,
         useTransitions,
         useValidation,
         useResponsive,
@@ -108,7 +107,6 @@
         rootProps,
         defaults: { inline, config, textInput, range, multiDates, teleport, floatingConfig },
     } = useContext();
-    const { clearArrowNav } = useArrowNavigation();
     const { validateDate, isValidTime } = useValidation();
     const { menuTransition, showTransition } = useTransitions();
     const { isMobile } = useResponsive();
@@ -348,7 +346,6 @@
                 isOpen.value = false;
                 setState('menuFocused', false);
                 setState('shiftKeyInMenu', false);
-                clearArrowNav();
                 rootEmit('closed');
                 if (inputValue.value) {
                     parseExternalModelValue(modelValueRef.value);

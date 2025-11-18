@@ -5,6 +5,7 @@
             v-show="!hideNavigationButtons('time')"
             ref="open-tp-btn"
             type="button"
+            data-dp-action-element="0"
             :class="{ ...toggleButtonClass, 'dp--hidden-el': showTimePicker }"
             :aria-label="ariaLabels?.openTimePicker"
             :tabindex="noOverlayFocus ? undefined : 0"
@@ -83,6 +84,7 @@
                         v-if="!rootProps.timePicker && !timeConfig.timePickerInline"
                         v-show="!hideNavigationButtons('time')"
                         ref="close-tp-btn"
+                        data-dp-action-element="1"
                         type="button"
                         :class="{ ...toggleButtonClass, 'dp--hidden-el': timePickerOverlayOpen }"
                         :aria-label="ariaLabels?.closeTimePicker"
@@ -101,7 +103,6 @@
 
 <script lang="ts" setup>
     import { computed, nextTick, onMounted, ref, useSlots, useTemplateRef } from 'vue';
-    import { unrefElement } from '@vueuse/core';
 
     import { ClockIcon, CalendarIcon } from '@/components/Icons';
     import TimeInput from '@/components/TimePicker/TimeInput.vue';
@@ -109,7 +110,6 @@
     import {
         useSlotsMapper,
         useTransitions,
-        useArrowNavigation,
         useContext,
         useResponsive,
         useHelperFns,
@@ -143,13 +143,13 @@
 
     const {
         rootEmit,
+        setState,
         modelValue,
         rootProps,
         defaults: { ariaLabels, textInput, config, range, timeConfig },
     } = useContext();
     const { isModelAuto } = useDateUtils();
     const { checkKeyDown, findFocusableEl } = useHelperFns();
-    const { buildMatrix, setTimePicker } = useArrowNavigation();
     const { transitionName, showTransition } = useTransitions();
     const { hideNavigationButtons } = useNavigationDisplay();
     const { mapSlots } = useSlotsMapper();
@@ -157,7 +157,6 @@
     const slots = useSlots();
 
     const overlayRef = useTemplateRef('overlay');
-    const openTimePickerBtn = useTemplateRef('open-tp-btn');
     const closeTimePickerBtn = useTemplateRef('close-tp-btn');
     const timeInputRefs = useTemplateRef('tp-input');
 
@@ -165,11 +164,6 @@
 
     onMounted(() => {
         emit('mount');
-        if (!rootProps.timePicker && rootProps.arrowNavigation) {
-            buildMatrix([unrefElement(openTimePickerBtn.value!) as HTMLElement], 'time');
-        } else {
-            setTimePicker(true, rootProps.timePicker);
-        }
     });
 
     const shouldShowRangedInput = computed(() => {
@@ -204,12 +198,9 @@
             emit('reset-flow');
         }
         showTimePicker.value = show;
+        setState('arrowNavigationLevel', show ? 1 : 0);
 
         rootEmit('overlay-toggle', { open: show, overlay: FlowStep.time });
-
-        if (rootProps.arrowNavigation) {
-            setTimePicker(show);
-        }
 
         nextTick(() => {
             if (childOpen !== '' && timeInputRefs.value?.[0]) {

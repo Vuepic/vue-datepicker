@@ -17,8 +17,9 @@
             type="button"
             :aria-label="`${year}-${ariaLabels?.openYearsOverlay}`"
             :data-test-id="`year-mode-btn-${instance}`"
+            data-dp-action-element="0"
             @click="() => toggleYearPicker(false)"
-            @keydown.enter="() => toggleYearPicker(false)"
+            @keydown.enter.prevent="() => toggleYearPicker(false)"
         >
             <slot v-if="$slots.year" name="year" :text="yearDisplayVal" :value="year" />
             <template v-if="!$slots.year">{{ year }}</template>

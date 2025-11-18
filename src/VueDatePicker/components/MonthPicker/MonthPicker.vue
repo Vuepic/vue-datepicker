@@ -22,6 +22,7 @@
                     :height="config.modeHeight"
                     :no-overlay-focus="Boolean(noOverlayFocus || rootProps.textInput)"
                     use-relative
+                    :level="0"
                     type="month"
                     @selected="selectMonth($event, instance)"
                     @hover-value="setHoverDate($event, instance)"

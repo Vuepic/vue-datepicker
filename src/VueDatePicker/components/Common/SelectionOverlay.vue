@@ -28,13 +28,14 @@
                     :class="{ dp__flex_row: items.length >= 3 }"
                 >
                     <div
-                        v-for="(col, ind) in row"
+                        v-for="col in row"
                         :key="col.value"
-                        :ref="(el) => assignRef(el, col, i, ind)"
                         role="gridcell"
                         :class="cellClassName"
                         :aria-selected="col.active || undefined"
                         :aria-disabled="col.disabled || undefined"
+                        :data-dp-action-element="level ?? 1"
+                        :data-dp-element-active="col.active ? (level ?? 1) : undefined"
                         tabindex="0"
                         :data-test-id="col.text"
                         @click.prevent="onClick(col)"
@@ -57,6 +58,7 @@
             :aria-label="ariaLabels?.toggleOverlay"
             :class="actionButtonClass"
             tabindex="0"
+            :data-dp-action-element="level ?? 1"
             @click="toggle"
             @keydown="onBtnKeyDown"
         >
@@ -69,13 +71,11 @@
     import { computed, nextTick, onBeforeUpdate, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
     import { unrefElement } from '@vueuse/core';
 
-    import { useArrowNavigation, useContext, useHelperFns } from '@/composables';
+    import { useContext, useHelperFns } from '@/composables';
     import { useNavigationDisplay } from '@/components/shared/useNavigationDisplay.ts';
 
     import { EventKey } from '@/constants';
     import type { DynamicClass, OverlayGridItem, PickerSection } from '@/types';
-
-    const { setSelectionGrid, buildMultiLevelMatrix, setMonthPicker } = useArrowNavigation();
 
     const emit = defineEmits<{
         selected: [value: number];
@@ -87,24 +87,19 @@
     const props = defineProps<{
         items: OverlayGridItem[][];
         type: PickerSection;
-        isLast: boolean;
-        skipButtonRef?: boolean;
-        headerRefs?: (HTMLElement | null)[];
         useRelative?: boolean;
         height?: number | string;
-        noOverlayFocus?: boolean;
-        focusValue?: number;
-        menuWrapRef?: HTMLElement | null;
         overlayLabel?: string;
+        isLast: boolean;
+        level?: 0 | 1 | 2;
     }>();
 
     const {
-        rootProps,
-        defaults: { ariaLabels, textInput, config },
+        setState,
+        defaults: { ariaLabels, config },
     } = useContext();
     const { hideNavigationButtons } = useNavigationDisplay();
-    const { handleEventPropagation, convertType, checkKeyDown, checkStopPropagation, getElWithin, findFocusableEl } =
-        useHelperFns();
+    const { handleEventPropagation, checkKeyDown } = useHelperFns();
 
     const toggleButton = useTemplateRef('toggle-button');
     const containerRef = useTemplateRef('overlay-container');
@@ -112,7 +107,6 @@
 
     const scrollable = ref(false);
     const selectionActiveRef = ref<HTMLElement | null>(null);
-    const elementRefs = ref<Array<HTMLElement | null>[]>([]);
     const hoverValue = ref();
     const containerHeight = ref(0);
 
@@ -120,43 +114,15 @@
         selectionActiveRef.value = null;
     });
 
-    /**
-     * On mounted hook, set the scroll position, if any to a selected value when opening overlay
-     */
-    onMounted(() => {
-        nextTick().then(() => setContainerHeightAndScroll());
-        if (!props.noOverlayFocus) {
-            focusGrid();
-        }
-        handleArrowNav(true);
+    onMounted(async () => {
+        await nextTick();
+        setContainerHeightAndScroll();
+        setState('arrowNavigationLevel', props.level ?? 1);
     });
 
-    onUnmounted(() => handleArrowNav(false));
-
-    const handleArrowNav = (value: boolean): void => {
-        if (rootProps.arrowNavigation) {
-            if (props.headerRefs?.length) {
-                setMonthPicker(value);
-            } else {
-                setSelectionGrid(value);
-            }
-        }
-    };
-
-    const focusGrid = (): void => {
-        const elm = unrefElement(gridWrapRef);
-        if (elm) {
-            if (!textInput.value.enabled) {
-                if (selectionActiveRef.value) {
-                    selectionActiveRef.value?.focus({ preventScroll: true });
-                } else {
-                    elm.focus({ preventScroll: true });
-                }
-            }
-
-            scrollable.value = elm.clientHeight < elm.scrollHeight;
-        }
-    };
+    onUnmounted(() => {
+        setState('arrowNavigationLevel', (props.level ?? 1) - 1);
+    });
 
     // Dynamic class  for the overlay
     const dpOverlayClass = computed(
@@ -202,7 +168,7 @@
 
     const setContainerHeightAndScroll = (setScroll = true) => {
         nextTick().then(() => {
-            const el = unrefElement(selectionActiveRef);
+            const el = document.querySelector<HTMLElement>(`[data-dp-element-active="${props.level ?? 1}"]`);
             const parent = unrefElement(gridWrapRef);
             const btn = unrefElement(toggleButton);
             const container = unrefElement(containerRef);
@@ -245,63 +211,15 @@
         }
     };
 
-    const assignRef = (el: any, col: OverlayGridItem, rowInd: number, colInd: number): void => {
-        if (el) {
-            if (col.active || col.value === props.focusValue) {
-                selectionActiveRef.value = el;
-            }
-            if (rootProps.arrowNavigation) {
-                if (Array.isArray(elementRefs.value[rowInd])) {
-                    elementRefs.value[rowInd][colInd] = el;
-                } else {
-                    elementRefs.value[rowInd] = [el];
-                }
-                buildMatrix();
-            }
-        }
-    };
-
-    const buildMatrix = () => {
-        const refs = props.headerRefs?.length
-            ? [props.headerRefs].concat(elementRefs.value)
-            : elementRefs.value.concat([props.skipButtonRef ? [] : [toggleButton.value]]);
-
-        buildMultiLevelMatrix(convertType(refs), props.headerRefs?.length ? 'monthPicker' : 'selectionGrid');
-    };
-
-    const handleArrowKey = (ev: KeyboardEvent) => {
-        if (rootProps.arrowNavigation) return;
-        checkStopPropagation(ev, config.value, true);
-    };
-
     const setHoverValue = (val: number) => {
         hoverValue.value = val;
         emit('hover-value', val);
-    };
-
-    const onTab = () => {
-        toggle();
-        if (!props.isLast) {
-            const actionRow = getElWithin(props.menuWrapRef ?? null, 'action-row');
-            if (actionRow) {
-                const focusable = findFocusableEl(actionRow);
-                focusable?.focus();
-            }
-        }
     };
 
     const onKeyDown = (ev: KeyboardEvent) => {
         switch (ev.key) {
             case EventKey.esc:
                 return handleEsc(ev);
-            case EventKey.arrowLeft:
-                return handleArrowKey(ev);
-            case EventKey.arrowRight:
-                return handleArrowKey(ev);
-            case EventKey.arrowUp:
-                return handleArrowKey(ev);
-            case EventKey.arrowDown:
-                return handleArrowKey(ev);
             default:
                 return;
         }
@@ -309,8 +227,5 @@
 
     const onBtnKeyDown = (ev: KeyboardEvent) => {
         if (ev.key === EventKey.enter) return toggle();
-        if (ev.key === EventKey.tab) return onTab();
     };
-
-    defineExpose({ focusGrid });
 </script>

@@ -3,6 +3,7 @@
         ref="arrow-btn"
         type="button"
         :data-dp-element="elName"
+        data-dp-action-element="0"
         class="dp__btn dp--arrow-btn-nav"
         tabindex="0"
         :aria-label="ariaLabel"
@@ -17,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { onMounted, type Ref, useTemplateRef } from 'vue';
+    import { type Ref } from 'vue';
     import { useHelperFns } from '@/composables';
 
     const { checkKeyDown } = useHelperFns();
@@ -32,8 +33,4 @@
         elName?: string;
         disabled?: boolean;
     }>();
-
-    const elRef = useTemplateRef('arrow-btn');
-
-    onMounted(() => emit('set-ref', elRef));
 </script>

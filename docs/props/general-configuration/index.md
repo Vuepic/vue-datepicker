@@ -1050,6 +1050,17 @@ Sets the menu position on the page center, useful for smaller screens where ther
 
 Navigate the menu via arrow keys
 
+:::tip
+If you wish to integrate arrow navigation within slots, you can set the following attributes:
+
+- `:data-dp-action-element="{level}"` - Set on the element that can receive focus
+- `:data-dp-element-active="{level}"` - (optional) Set on the element that can have active state. If present, focus starts from the active element
+
+Available levels: `0 | 1 | 2`
+
+Levels indicate level in the menu hierarchy. On the initial menu level, you are on level `0`. If you open an overlay, you are on level `1`. If overlay has another overlay (e.g. hours/minutes), you are on level `2`.
+:::
+
 <GlobalDemo :arrow-navigation="true"></GlobalDemo>
 
 ::: details Code Example

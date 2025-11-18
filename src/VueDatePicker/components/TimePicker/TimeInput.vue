@@ -10,7 +10,6 @@
             <template v-if="timeInput.separator"> <template v-if="!timeOverlayOpen">:</template> </template>
             <template v-else>
                 <button
-                    :ref="(el) => assignRefs(el, i, 0)"
                     type="button"
                     :class="{
                         dp__btn: true,
@@ -23,6 +22,7 @@
                     :data-test-id="`${timeInput.type}-time-inc-btn-${props.order}`"
                     :aria-label="ariaLabels?.incrementValue(timeInput.type)"
                     tabindex="0"
+                    :data-dp-action-element="level"
                     @keydown="
                         checkKeyDown($event, () => handleTimeValue(timeInput.type, true, { keyboard: true }), true)
                     "
@@ -45,7 +45,6 @@
                     </template>
                 </button>
                 <button
-                    :ref="(el) => assignRefs(el, i, 1)"
                     type="button"
                     :aria-label="`${timeValueDisplay(timeInput.type).text}-${ariaLabels?.openTpOverlay(timeInput.type)}`"
                     :class="{
@@ -58,6 +57,7 @@
                     }"
                     :disabled="boolHtmlAttribute(checkOverlayDisabled(timeInput.type))"
                     tabindex="0"
+                    :data-dp-action-element="level"
                     :data-test-id="`${timeInput.type}-toggle-overlay-btn-${props.order}`"
                     @keydown="checkKeyDown($event, () => toggleOverlay(timeInput.type), true)"
                     @click="toggleOverlay(timeInput.type)"
@@ -71,7 +71,6 @@
                     <template v-if="!$slots[timeInput.type]">{{ timeValueDisplay(timeInput.type).text }}</template>
                 </button>
                 <button
-                    :ref="(el) => assignRefs(el, i, 2)"
                     type="button"
                     :class="{
                         dp__btn: true,
@@ -84,6 +83,7 @@
                     :data-test-id="`${timeInput.type}-time-dec-btn-${props.order}`"
                     :aria-label="ariaLabels?.decrementValue(timeInput.type)"
                     tabindex="0"
+                    :data-dp-action-element="level"
                     @keydown="
                         checkKeyDown($event, () => handleTimeValue(timeInput.type, false, { keyboard: true }), true)
                     "
@@ -117,6 +117,7 @@
                 role="button"
                 :aria-label="ariaLabels?.amPmButton"
                 tabindex="0"
+                :data-dp-action-element="level"
                 :data-compact="isCompact"
                 @click="setAmPm"
                 @keydown="checkKeyDown($event, () => setAmPm(), true)"
@@ -132,6 +133,7 @@
                     :is-last="rootProps.autoApply && !config.keepActionRow"
                     :type="timeInput.type"
                     :aria-labels="ariaLabels"
+                    :level="timeConfig.timePickerInline || rootProps.timePicker ? 1 : 2"
                     :overlay-label="ariaLabels.timeOverlay?.(timeInput.type)"
                     @selected="handleTimeFromOverlay(timeInput.type, $event)"
                     @toggle="toggleOverlay(timeInput.type)"
@@ -177,14 +179,7 @@
     import { ChevronUpIcon, ChevronDownIcon, ClockIcon, CalendarIcon } from '@/components/Icons';
     import SelectionOverlay from '@/components/Common/SelectionOverlay.vue';
 
-    import {
-        useTransitions,
-        useArrowNavigation,
-        useContext,
-        useHelperFns,
-        useDateUtils,
-        useUtils,
-    } from '@/composables';
+    import { useTransitions, useContext, useHelperFns, useDateUtils, useUtils } from '@/composables';
     import type {
         DynamicClass,
         Hour12,
@@ -223,7 +218,6 @@
     const emit = defineEmits<TimeInputEmits>();
     const props = withDefaults(defineProps<TimeInputProps>(), {});
 
-    const { setTimePickerElements, setTimePickerBackRef } = useArrowNavigation();
     const {
         getDate,
         rootEmit,
@@ -243,7 +237,6 @@
     });
     const amPm = ref<Hour12>('AM');
     const amPmButton = ref<HTMLElement | null>(null);
-    const elementRefs = ref<HTMLElement[][]>([]);
     const holdTimeout = ref();
     const timeOverlayOpen = ref(false);
 
@@ -259,6 +252,8 @@
             milliseconds: 0,
         });
     };
+
+    const level = computed(() => (rootProps.timePicker || timeConfig.value.timePickerInline ? 0 : 1));
 
     const disabledBox = computed(
         () => (type: TimeKey) => isValueDisabled(type, props[type]) || isOverlayValueDisabled(type, props[type]),
@@ -483,25 +478,6 @@
 
     const openChildCmp = (child: TimeKey): void => {
         overlays[child] = true;
-    };
-
-    const assignRefs = (el: any, col: number, pos: number): void => {
-        if (el && rootProps.arrowNavigation) {
-            if (Array.isArray(elementRefs.value[col])) {
-                elementRefs.value[col][pos] = el;
-            } else {
-                elementRefs.value[col] = [el];
-            }
-            const matrix = elementRefs.value.reduce(
-                (col, row) => row.map((_, i) => [...(col[i]! || []), row[i]!]),
-                [] as HTMLElement[][],
-            );
-            setTimePickerBackRef(props.closeTimePickerBtn);
-            if (amPmButton.value) {
-                matrix[1] = matrix[1]!.concat(amPmButton.value);
-            }
-            setTimePickerElements(matrix, props.order as 0 | 1);
-        }
     };
 
     const handleTimeFromOverlay = (type: TimeKey, value: number): void => {
