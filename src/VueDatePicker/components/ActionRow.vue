@@ -30,6 +30,7 @@
                         v-if="!inline.enabled && actionRow.showCancel"
                         ref="cancel-btn"
                         type="button"
+                        data-dp-action-element="0"
                         class="dp__action_button dp__action_cancel"
                         @click="$emit('close-picker')"
                         @keydown="checkKeyDown($event, () => $emit('close-picker'))"
@@ -39,6 +40,7 @@
                     <button
                         v-if="actionRow.showNow"
                         type="button"
+                        data-dp-action-element="0"
                         class="dp__action_button dp__action_cancel"
                         @click="$emit('select-now')"
                         @keydown="checkKeyDown($event, () => $emit('select-now'))"
@@ -49,6 +51,7 @@
                         v-if="actionRow.showSelect"
                         ref="select-btn"
                         type="button"
+                        data-dp-action-element="0"
                         class="dp__action_button dp__action_select"
                         :disabled="boolHtmlAttribute(disabled)"
                         data-test-id="select-button"
@@ -65,9 +68,8 @@
 
 <script lang="ts" setup>
     import { computed, onUnmounted, onMounted, ref, useTemplateRef } from 'vue';
-    import { unrefElement } from '@vueuse/core';
 
-    import { useArrowNavigation, useContext, useFormatter, useHelperFns, useValidation, useUtils } from '@/composables';
+    import { useContext, useFormatter, useHelperFns, useValidation, useUtils } from '@/composables';
 
     interface ActionRowEmits {
         'close-picker': [];
@@ -95,13 +97,10 @@
     } = useContext();
 
     const { isTimeValid, isMonthValid } = useValidation();
-    const { buildMatrix } = useArrowNavigation();
     const { formatPreview } = useFormatter();
     const { checkKeyDown, convertType } = useHelperFns();
     const { boolHtmlAttribute } = useUtils();
 
-    const cancelButtonRef = useTemplateRef('cancel-btn');
-    const selectButtonRef = useTemplateRef('select-btn');
     const actionBtnContainer = useTemplateRef('action-buttons-container');
     const actionRowRef = useTemplateRef('action-row');
 
@@ -109,9 +108,6 @@
     const previewStyle = ref<any>({});
 
     onMounted(() => {
-        if (rootProps.arrowNavigation) {
-            buildMatrix([unrefElement(cancelButtonRef), unrefElement(selectButtonRef)] as HTMLElement[], 'actionRow');
-        }
         getPreviewAvailableSpace();
         globalThis.addEventListener('resize', getPreviewAvailableSpace);
     });

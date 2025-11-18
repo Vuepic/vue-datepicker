@@ -121,11 +121,11 @@
 
     import {
         useSlotsMapper,
-        useArrowNavigation,
         useFlow,
         useResponsive,
         useContext,
         useHelperFns,
+        useArrowNavigation,
     } from '@/composables';
     import { ArrowDirection, EventKey } from '@/constants';
 
@@ -156,7 +156,7 @@
     const { isMobile } = useResponsive();
     const { mapSlots } = useSlotsMapper();
     const { handleEventPropagation, getElWithin, checkStopPropagation, checkKeyDown } = useHelperFns();
-    const { arrowRight, arrowLeft, arrowDown, arrowUp } = useArrowNavigation();
+    useArrowNavigation();
 
     const innerMenuRef = useTemplateRef('inner-menu');
     const dpMenuRef = useTemplateRef('dp-menu');
@@ -184,7 +184,7 @@
         const menu = unrefElement(dpMenuRef);
         if (menu && !textInput.value.enabled && !inline.value.enabled) {
             setState('menuFocused', true);
-            focusMenu();
+            // focusMenu();
         }
 
         if (menu) {
@@ -266,12 +266,8 @@
     };
 
     const handleArrowKey = (arrow: ArrowDirection): void => {
-        if (rootProps.arrowNavigation) {
-            if (arrow === ArrowDirection.up) return arrowUp();
-            if (arrow === ArrowDirection.down) return arrowDown();
-            if (arrow === ArrowDirection.left) return arrowLeft();
-            if (arrow === ArrowDirection.right) return arrowRight();
-        } else if (arrow === ArrowDirection.left || arrow === ArrowDirection.up) {
+        if (rootProps.arrowNavigation) return;
+        if (arrow === ArrowDirection.left || arrow === ArrowDirection.up) {
             callChildFn('handleArrow', ArrowDirection.left, 0, arrow === ArrowDirection.up);
         } else {
             callChildFn('handleArrow', ArrowDirection.right, 0, arrow === ArrowDirection.down);

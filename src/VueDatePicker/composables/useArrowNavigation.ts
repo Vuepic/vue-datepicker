@@ -1,194 +1,184 @@
-import { computed, reactive, ref } from 'vue';
-
-type ElRefs = Array<HTMLElement | null | undefined>;
-
-const refSets = reactive({
-    monthYear: [] as ElRefs,
-    calendar: [] as ElRefs[],
-    time: [] as ElRefs,
-    actionRow: [] as ElRefs,
-    selectionGrid: [] as ElRefs[],
-    timePicker: {
-        '0': [] as ElRefs[],
-        '1': [] as ElRefs[],
-    },
-    monthPicker: [] as ElRefs[],
-});
-const timePickerBackRef = ref<HTMLElement | null>(null);
-const isSelectionGrid = ref(false);
-const isTimePicker = ref(false);
-const isMonthPicker = ref(false);
-const isTimePickerMode = ref(false);
-
-const selectedIndex = ref(0);
-const activeRow = ref(0);
+import { useContext } from '@/composables/useContext.ts';
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { EventKey } from '@/constants';
 
 export const useArrowNavigation = () => {
-    const matrix = computed((): ElRefs[] => {
-        if (isSelectionGrid.value) return [...refSets.selectionGrid, refSets.actionRow].filter((set) => set.length);
-        if (isTimePicker.value) {
-            return [
-                ...refSets.timePicker[0],
-                ...refSets.timePicker[1],
-                isTimePickerMode.value ? [] : [timePickerBackRef.value],
-                refSets.actionRow,
-            ].filter((set) => set.length);
-        }
-        if (isMonthPicker.value) return [...refSets.monthPicker, refSets.actionRow];
-        return [refSets.monthYear, ...refSets.calendar, refSets.time, refSets.actionRow].filter((set) => set.length);
+    const { rootProps, state } = useContext();
+
+    const level = computed(() => state.arrowNavigationLevel);
+    const rowIndex = ref(-1);
+    const colIndex = ref(-1);
+
+    watch(level, (newVal, oldVal) => {
+        focusInitial(newVal === 0 && oldVal > 0);
     });
 
-    // Handles left and right arrow
-    const handleSelectionIndexX = (increment?: boolean): void => {
-        selectedIndex.value = increment ? selectedIndex.value + 1 : selectedIndex.value - 1;
-        let el = null;
-        if (matrix.value[activeRow.value]) {
-            el = matrix.value[activeRow.value]![selectedIndex.value];
+    const gridMatrix = ref<HTMLElement[][]>([]);
+    const elementPositions = ref(new Map<HTMLElement, { row: number; col: number }>());
+
+    const buildMatrix = () => {
+        const elements = Array.from(
+            document.querySelectorAll<HTMLElement>(`[data-dp-action-element="${level.value}"]`),
+        );
+
+        const positionMap = new Map<number, HTMLElement[]>();
+        const positions = new Map<HTMLElement, { row: number; col: number }>();
+
+        for (const el of elements) {
+            const rect = el.getBoundingClientRect();
+            const row = rect.top;
+            const col = rect.left;
+
+            if (!positionMap.has(row)) {
+                positionMap.set(row, []);
+            }
+            positionMap.get(row)!.push(el);
+            positions.set(el, { row, col });
         }
 
-        if (!el && matrix.value[activeRow.value + (increment ? 1 : -1)]) {
-            activeRow.value = activeRow.value + (increment ? 1 : -1);
-            selectedIndex.value = increment ? 0 : matrix.value[activeRow.value]!.length - 1;
-        } else if (!el) {
-            selectedIndex.value = increment ? selectedIndex.value - 1 : selectedIndex.value + 1;
+        gridMatrix.value = Array.from(positionMap.entries())
+            .sort((a, b) => a[0] - b[0])
+            .map(([_, rowElements]) =>
+                rowElements.sort((a, b) => {
+                    const posA = positions.get(a)!;
+                    const posB = positions.get(b)!;
+                    return posA.col - posB.col;
+                }),
+            );
+        elementPositions.value = positions;
+    };
+
+    const setIndex = (row: number, col: number) => {
+        if (level.value === 0) {
+            rowIndex.value = row;
+            colIndex.value = col;
         }
     };
 
-    // Handles up and down arrow
-    const handleSelectionIndexY = (increment?: boolean): void => {
-        if ((activeRow.value === 0 && !increment) || (activeRow.value === matrix.value.length && increment)) return;
-        activeRow.value = increment ? activeRow.value + 1 : activeRow.value - 1;
-        const el = matrix.value[activeRow.value];
-
-        if (!el) {
-            activeRow.value = increment ? activeRow.value - 1 : activeRow.value + 1;
-        } else if (
-            matrix.value[activeRow.value] &&
-            !matrix.value[activeRow.value]![selectedIndex.value] &&
-            selectedIndex.value !== 0
+    const handleKeyDown = (ev: KeyboardEvent) => {
+        if (
+            ![EventKey.arrowUp, EventKey.arrowDown, EventKey.arrowLeft, EventKey.arrowRight].includes(ev.key as never)
         ) {
-            selectedIndex.value = matrix.value[activeRow.value]!.length - 1;
+            return;
+        }
+        buildMatrix();
+
+        ev.preventDefault();
+
+        const currentElement = document.activeElement as HTMLElement;
+
+        if (!currentElement?.hasAttribute('data-dp-action-element')) {
+            return;
+        }
+
+        let currentRowIndex = -1;
+        let currentColIndex = -1;
+
+        for (let i = 0; i < gridMatrix.value.length; i++) {
+            const colIndex = gridMatrix.value[i]!.indexOf(currentElement);
+            if (colIndex !== -1) {
+                currentRowIndex = i;
+                currentColIndex = colIndex;
+                break;
+            }
+        }
+
+        if (currentRowIndex === -1) return;
+
+        switch (ev.key) {
+            case EventKey.arrowLeft:
+                return handleArrowLeft(currentRowIndex, currentColIndex);
+            case EventKey.arrowRight:
+                return handleArrowRight(currentRowIndex, currentColIndex);
+            case EventKey.arrowUp:
+                return handleArrowUp(currentRowIndex, currentColIndex);
+            case EventKey.arrowDown:
+                return handleArrowDown(currentRowIndex, currentColIndex);
+            default:
+                return;
         }
     };
 
-    const handleElFocus = (increment: boolean): void => {
-        let el = null;
-        if (matrix.value[activeRow.value]) {
-            el = matrix.value[activeRow.value]![selectedIndex.value];
+    const handleArrowLeft = (currentRowIndex: number, currentColIndex: number) => {
+        if (currentColIndex > 0) {
+            const targetElement = gridMatrix.value[currentRowIndex]![currentColIndex - 1];
+            setIndex(currentRowIndex, currentColIndex - 1);
+            if (targetElement) targetElement.focus();
         }
-        if (el) {
-            el.focus({ preventScroll: !isSelectionGrid.value });
+    };
+
+    const handleArrowRight = (currentRowIndex: number, currentColIndex: number) => {
+        if (currentColIndex < gridMatrix.value[currentRowIndex]!.length - 1) {
+            const targetElement = gridMatrix.value[currentRowIndex]![currentColIndex + 1];
+            setIndex(currentRowIndex, currentColIndex + 1);
+            if (targetElement) targetElement.focus();
+        }
+    };
+
+    const handleArrowUp = (currentRowIndex: number, currentColIndex: number) => {
+        if (currentRowIndex > 0) {
+            const targetRow = gridMatrix.value[currentRowIndex - 1];
+            const targetColIndex = Math.min(currentColIndex, targetRow!.length - 1);
+            const targetElement = targetRow![targetColIndex];
+            setIndex(currentRowIndex - 1, targetColIndex);
+            if (targetElement) targetElement.focus();
+        }
+    };
+
+    const handleArrowDown = (currentRowIndex: number, currentColIndex: number) => {
+        if (currentRowIndex < gridMatrix.value.length - 1) {
+            const targetRow = gridMatrix.value[currentRowIndex + 1];
+            const targetColIndex = Math.min(currentColIndex, targetRow!.length - 1);
+            const targetElement = targetRow![targetColIndex];
+            setIndex(currentRowIndex + 1, targetColIndex);
+            if (targetElement) targetElement.focus();
+        }
+    };
+
+    const focusPreviousActive = () => {
+        nextTick().then(() => {
+            buildMatrix();
+
+            const el = gridMatrix.value[rowIndex.value]?.[colIndex.value];
+            if (el) {
+                focusEl(el);
+            }
+        });
+    };
+
+    const focusEl = (el: HTMLElement) => {
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                el.focus({ preventScroll: true });
+            });
+        });
+    };
+
+    const focusInitial = (ignoreActive: boolean) => {
+        if (ignoreActive) {
+            return focusPreviousActive();
+        }
+        const active = document.querySelector<HTMLElement>(`[data-dp-element-active="${level.value}"]`);
+        if (active && !ignoreActive) {
+            focusEl(active);
         } else {
-            selectedIndex.value = increment ? selectedIndex.value - 1 : selectedIndex.value + 1;
+            const el = document.querySelector<HTMLElement>(`[data-dp-action-element="${level.value}"]`);
+            if (el) {
+                focusEl(el);
+            }
         }
     };
 
-    const arrowRight = (): void => {
-        handleSelectionIndexX(true);
-        handleElFocus(true);
-    };
-
-    const arrowLeft = (): void => {
-        handleSelectionIndexX(false);
-        handleElFocus(false);
-    };
-
-    const arrowUp = (): void => {
-        handleSelectionIndexY(false);
-        handleElFocus(true);
-    };
-
-    const arrowDown = (): void => {
-        handleSelectionIndexY(true);
-        handleElFocus(true);
-    };
-
-    /**
-     * Add values per page, holds the ref values of the focusable elements
-     * Build top to bottom
-     */
-    const buildMatrix = (
-        elements: Array<HTMLElement | null | undefined>,
-        set: 'monthYear' | 'time' | 'actionRow',
-    ): void => {
-        refSets[set] = elements;
-    };
-
-    const buildMultiLevelMatrix = (
-        elements: HTMLElement[][],
-        set: 'calendar' | 'selectionGrid' | 'monthPicker',
-    ): void => {
-        refSets[set] = elements;
-    };
-
-    const resetNavigation = (): void => {
-        selectedIndex.value = 0;
-        activeRow.value = 0;
-    };
-
-    const setMonthPicker = (value: boolean): void => {
-        isMonthPicker.value = value;
-        resetNavigation();
-    };
-
-    /**
-     * For selection grid, things are handled per grid
-     */
-    const setSelectionGrid = (value: boolean): void => {
-        isSelectionGrid.value = value;
-        resetNavigation();
-        if (!value) {
-            refSets.selectionGrid = [];
+    onMounted(() => {
+        if (rootProps.arrowNavigation) {
+            focusInitial(false);
+            document.addEventListener('keydown', handleKeyDown);
         }
-    };
+    });
 
-    const setTimePicker = (value: boolean, mode = false) => {
-        isTimePicker.value = value;
-        isTimePickerMode.value = mode;
-        resetNavigation();
-        if (!value) {
-            refSets.timePicker[0] = [];
-            refSets.timePicker[1] = [];
+    onUnmounted(() => {
+        if (rootProps.arrowNavigation) {
+            document.removeEventListener('keydown', handleKeyDown);
         }
-    };
-
-    const setTimePickerElements = (elements: HTMLElement[][], order: 0 | 1 = 0): void => {
-        refSets.timePicker[order] = elements;
-    };
-
-    const setTimePickerBackRef = (el: HTMLElement | null): void => {
-        timePickerBackRef.value = el;
-    };
-
-    const clearArrowNav = (): void => {
-        refSets.monthYear = [];
-        refSets.calendar = [];
-        refSets.time = [];
-        refSets.actionRow = [];
-        refSets.selectionGrid = [];
-        refSets.timePicker[0] = [];
-        refSets.timePicker[1] = [];
-        isSelectionGrid.value = false;
-        isTimePicker.value = false;
-        isTimePickerMode.value = false;
-        isMonthPicker.value = false;
-        resetNavigation();
-        timePickerBackRef.value = null;
-    };
-
-    return {
-        buildMatrix,
-        buildMultiLevelMatrix,
-        setTimePickerBackRef,
-        setSelectionGrid,
-        setTimePicker,
-        setTimePickerElements,
-        arrowRight,
-        arrowLeft,
-        arrowUp,
-        arrowDown,
-        clearArrowNav,
-        setMonthPicker,
-        refSets, // exposed for testing
-    };
+    });
 };

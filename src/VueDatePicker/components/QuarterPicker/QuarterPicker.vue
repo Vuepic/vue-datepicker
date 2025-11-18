@@ -30,6 +30,7 @@
                                 'dp--qr-btn-disabled': quarter.disabled,
                                 'dp--highlighted': quarter.highlighted,
                             }"
+                            data-dp-action-element="0"
                             :data-test-id="quarter.value"
                             :disabled="boolHtmlAttribute(quarter.disabled)"
                             @click="selectQuarter(quarter.value, instance, quarter.disabled)"

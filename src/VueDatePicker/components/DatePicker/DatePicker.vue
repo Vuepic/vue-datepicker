@@ -107,7 +107,6 @@
         assignMonthAndYear,
         setStartTime,
     } = useDatePicker(props, emit, triggerCalendarTransition, updateFlowStep);
-
     const slots = useSlots();
     const { setHoverDate, getDayClassData, clearHoverDate } = useCalendarClass();
     const {

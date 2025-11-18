@@ -20,6 +20,7 @@ export interface State {
     shiftKeyInMenu: boolean;
     isInputFocused: boolean;
     isTextInputDate: boolean;
+    arrowNavigationLevel: number;
 }
 
 export const ContextKey = Symbol('ContextKey') as InjectionKey<{
@@ -49,6 +50,7 @@ export const useInjector = (props: RootPropsWithDefaults, emit: EmitFn<RootEmits
         shiftKeyInMenu: false,
         isInputFocused: false,
         isTextInputDate: false,
+        arrowNavigationLevel: 0,
     });
 
     const today = defaults.getDate(new Date());

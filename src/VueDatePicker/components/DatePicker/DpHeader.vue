@@ -29,7 +29,6 @@
                     :class="ui?.navBtnPrev"
                     el-name="action-prev"
                     @activate="handleMonthYearChange(false, true)"
-                    @set-ref="setElRefs($event, 0)"
                 >
                     <slot v-if="$slots['arrow-left']" name="arrow-left" />
                     <ChevronLeftIcon v-if="!$slots['arrow-left']" />
@@ -40,15 +39,16 @@
                         dp__year_disable_select: rootProps.disableYearSelect,
                     }"
                 >
-                    <template v-for="(type, i) in selectionButtonsDisplay" :key="type.type">
+                    <template v-for="type in selectionButtonsDisplay" :key="type.type">
                         <button
-                            :ref="(el) => setElRefs(el as HTMLElement, i + 1)"
                             type="button"
                             :data-dp-element="`overlay-${type.type}`"
                             class="dp__btn dp__month_year_select"
                             :class="{ 'dp--hidden-el': overlayOpen }"
                             :aria-label="`${type.text}-${type.ariaLabel}`"
                             :data-test-id="`${type.type}-toggle-overlay-${instance}`"
+                            tabindex="0"
+                            data-dp-action-element="0"
                             @click="type.toggle(false)"
                             @keydown="checkKeyDown($event, () => type.toggle(), true)"
                         >
@@ -109,7 +109,6 @@
                     :aria-label="ariaLabels?.nextMonth"
                     :class="ui?.navBtnNext"
                     @activate="handleMonthYearChange(true, true)"
-                    @set-ref="setElRefs($event, rootProps.disableYearSelect ? 2 : 3)"
                 >
                     <slot
                         v-if="$slots[rootProps.vertical ? 'arrow-down' : 'arrow-right']"
@@ -127,7 +126,6 @@
 
 <script lang="ts" setup>
     import { computed, onMounted, ref, type Ref } from 'vue';
-    import { type MaybeElementRef, unrefElement } from '@vueuse/core';
 
     import {
         CalendarIcon,
@@ -140,7 +138,6 @@
     import SelectionOverlay from '@/components/Common/SelectionOverlay.vue';
 
     import {
-        useArrowNavigation,
         useTransitions,
         useDateUtils,
         useHelperFns,
@@ -181,7 +178,6 @@
     } = useContext();
     const { transitionName, showTransition } = useTransitions();
     const { showLeftIcon, showRightIcon } = useNavigationDisplay();
-    const { buildMatrix } = useArrowNavigation();
     const { handleMonthYearChange, isDisabled, updateMonthYear } = useMonthYearPick(props, emit);
     const { getMaxMonth, getMinMonth, getYearFromDate, groupListAndMap, checkHighlightYear, checkHighlightMonth } =
         useDateUtils();
@@ -193,7 +189,6 @@
     const showMonthPicker = ref(false);
     const showYearPicker = ref(false);
     const overlayOpen = ref(false);
-    const elementRefs = ref<Array<HTMLElement | null | undefined>>([null, null, null, null]);
 
     onMounted(() => {
         emit('mount');
@@ -288,13 +283,6 @@
     const checkFlow = (flow: boolean): void => {
         if (!flow) {
             emit('reset-flow');
-        }
-    };
-
-    const setElRefs = (el: MaybeElementRef<HTMLElement | null>, i: number): void => {
-        if (rootProps.arrowNavigation) {
-            elementRefs.value[i] = unrefElement(el);
-            buildMatrix(elementRefs.value, 'monthYear');
         }
     };
 
