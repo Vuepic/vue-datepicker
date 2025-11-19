@@ -107,3 +107,6 @@ typings/
 
 docs/.vitepress/cache
 docs/.vitepress/dist
+
+# ignore .DS_Store files
+.DS_Store

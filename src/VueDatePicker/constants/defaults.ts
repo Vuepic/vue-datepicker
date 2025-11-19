@@ -1,3 +1,4 @@
+import { WeekStart } from '.';
 import { enUS } from 'date-fns/locale';
 
 export const defaultRangeOptions = {
@@ -148,7 +149,7 @@ export const basePropDefaults = {
 };
 
 export const propDefaults = {
-    weekStart: 1,
+    weekStart: WeekStart.Monday,
     yearRange: (): [number, number] => [1900, 2100],
     ui: () => ({}),
     locale: () => enUS,
