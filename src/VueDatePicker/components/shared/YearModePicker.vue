@@ -69,6 +69,7 @@
     import { useNavigationDisplay } from '@/components/shared/useNavigationDisplay.ts';
 
     import type { OverlayGridItem } from '@/types';
+    import type { YearModeSlots } from '@/constants/slots.ts';
 
     interface YearModePickerEmits {
         'handle-year': [increment: boolean];
@@ -84,8 +85,8 @@
         isDisabled: (isNext: boolean) => boolean;
     }
 
+    defineSlots<YearModeSlots>();
     const emit = defineEmits<YearModePickerEmits>();
-
     const props = withDefaults(defineProps<YearModePickerProps>(), { showYearPicker: false });
 
     const { showRightIcon, showLeftIcon } = useNavigationDisplay();

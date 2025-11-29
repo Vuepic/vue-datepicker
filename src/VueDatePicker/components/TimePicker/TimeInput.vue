@@ -31,17 +31,15 @@
                     @mouseup="clearHold"
                 >
                     <template v-if="!timeConfig.timePickerInline">
-                        <slot v-if="$slots['arrow-up']" name="arrow-up" />
-                        <ChevronUpIcon v-if="!$slots['arrow-up']" />
+                        <slot name="arrow-up">
+                            <ChevronUpIcon />
+                        </slot>
                     </template>
                     <template v-else>
-                        <template v-if="$slots['tp-inline-arrow-up']">
-                            <slot name="tp-inline-arrow-up" />
-                        </template>
-                        <template v-else>
+                        <slot name="tp-inline-arrow-up">
                             <span class="dp__tp_inline_btn_bar dp__tp_btn_in_l"></span>
                             <span class="dp__tp_inline_btn_bar dp__tp_btn_in_r"></span>
-                        </template>
+                        </slot>
                     </template>
                 </button>
                 <button
@@ -63,12 +61,12 @@
                     @click="toggleOverlay(timeInput.type)"
                 >
                     <slot
-                        v-if="$slots[timeInput.type]"
                         :name="timeInput.type"
                         :text="timeValueDisplay(timeInput.type).text"
                         :value="timeValueDisplay(timeInput.type).value"
-                    />
-                    <template v-if="!$slots[timeInput.type]">{{ timeValueDisplay(timeInput.type).text }}</template>
+                    >
+                        {{ timeValueDisplay(timeInput.type).text }}
+                    </slot>
                 </button>
                 <button
                     type="button"
@@ -92,38 +90,34 @@
                     @mouseup="clearHold"
                 >
                     <template v-if="!timeConfig.timePickerInline">
-                        <slot v-if="$slots['arrow-down']" name="arrow-down" />
-                        <ChevronDownIcon v-if="!$slots['arrow-down']" />
+                        <slot name="arrow-down"> <ChevronDownIcon /> </slot>
                     </template>
                     <template v-else>
-                        <template v-if="$slots['tp-inline-arrow-down']">
-                            <slot name="tp-inline-arrow-down" />
-                        </template>
-                        <template v-else>
+                        <slot name="tp-inline-arrow-down">
                             <span class="dp__tp_inline_btn_bar dp__tp_btn_in_l"></span>
                             <span class="dp__tp_inline_btn_bar dp__tp_btn_in_r"></span>
-                        </template>
+                        </slot>
                     </template>
                 </button>
             </template>
         </div>
         <div v-if="!timeConfig.is24">
-            <slot v-if="$slots['am-pm-button']" name="am-pm-button" :toggle="setAmPm" :value="amPm"></slot>
-            <button
-                v-if="!$slots['am-pm-button']"
-                ref="amPmButton"
-                type="button"
-                class="dp__pm_am_button"
-                role="button"
-                :aria-label="ariaLabels?.amPmButton"
-                tabindex="0"
-                :data-dp-action-element="level"
-                :data-compact="isCompact"
-                @click="setAmPm"
-                @keydown="checkKeyDown($event, () => setAmPm(), true)"
-            >
-                {{ amPm }}
-            </button>
+            <slot name="am-pm-button" :toggle="setAmPm" :value="amPm">
+                <button
+                    ref="amPmButton"
+                    type="button"
+                    class="dp__pm_am_button"
+                    role="button"
+                    :aria-label="ariaLabels?.amPmButton"
+                    tabindex="0"
+                    :data-dp-action-element="level"
+                    :data-compact="isCompact"
+                    @click="setAmPm"
+                    @keydown="checkKeyDown($event, () => setAmPm(), true)"
+                >
+                    {{ amPm }}
+                </button>
+            </slot>
         </div>
         <template v-for="(timeInput, i) in timeInputOverlays" :key="i">
             <transition :name="transitionName(overlays[timeInput.type])" :css="showTransition">
@@ -140,11 +134,12 @@
                     @reset-flow="$emit('reset-flow')"
                 >
                     <template #button-icon>
-                        <slot v-if="$slots['clock-icon']" name="clock-icon" />
-                        <component
-                            :is="timeConfig.timePickerInline ? CalendarIcon : ClockIcon"
-                            v-if="!$slots['clock-icon']"
-                        />
+                        <slot name="clock-icon">
+                            <component
+                                :is="timeConfig.timePickerInline ? CalendarIcon : ClockIcon"
+                                v-if="!$slots['clock-icon']"
+                            />
+                        </slot>
                     </template>
                     <template v-if="$slots[`${timeInput.type}-overlay-value`]" #item="{ item }">
                         <slot :name="`${timeInput.type}-overlay-value`" :text="item.text" :value="item.value" />
@@ -190,6 +185,7 @@
         TimeKey,
         TimeModel,
     } from '@/types';
+    import { type TimeInputSlots } from '@/constants/slots.ts';
 
     type TimeOverlayCheck = 'noHoursOverlay' | 'noMinutesOverlay' | 'noSecondsOverlay';
 
@@ -215,6 +211,7 @@
         validateTime: any;
     }
 
+    defineSlots<TimeInputSlots>();
     const emit = defineEmits<TimeInputEmits>();
     const props = withDefaults(defineProps<TimeInputProps>(), {});
 

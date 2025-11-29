@@ -36,12 +36,9 @@
                             @click="selectQuarter(quarter.value, instance, quarter.disabled)"
                             @mouseover="setHoverDate(quarter.value)"
                         >
-                            <template v-if="$slots['quarter']"
-                                ><slot name="quarter" :value="quarter.value" :text="quarter.text"
-                            /></template>
-                            <template v-else>
+                            <slot name="quarter" :value="quarter.value" :text="quarter.text">
                                 {{ quarter.text }}
-                            </template>
+                            </slot>
                         </button>
                     </div>
                 </div>
@@ -56,10 +53,12 @@
     import InstanceWrap from '@/components/Common/InstanceWrap.vue';
     import YearModePicker from '@/components/shared/YearModePicker.vue';
 
+    import { useContext, useUtils } from '@/composables';
+    import { getSlotsByComponent, type QuarterPickerSlots, SlotUse } from '@/constants/slots.ts';
     import { type QuarterPickerEmits, useQuarterPicker } from '@/components/QuarterPicker/useQuarterPicker.ts';
-    import { useContext, useSlotsMapper, useUtils } from '@/composables';
     import type { BaseProps } from '@/types';
 
+    defineSlots<QuarterPickerSlots>();
     const emit = defineEmits<QuarterPickerEmits>();
     const props = defineProps<BaseProps>();
 
@@ -67,10 +66,9 @@
         defaults: { config },
     } = useContext();
     const slots = useSlots();
-    const { mapSlots } = useSlotsMapper();
     const { boolHtmlAttribute } = useUtils();
 
-    const yearModeSlots = mapSlots(slots, 'yearMode');
+    const yearModeSlots = getSlotsByComponent(slots, SlotUse.YearMode);
 
     const {
         groupedYears,

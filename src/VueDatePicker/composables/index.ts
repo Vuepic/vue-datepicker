@@ -1,6 +1,5 @@
 export { useArrowNavigation } from './useArrowNavigation.ts';
 export { useExternalInternalMapper } from './useExternalInternalMapper.ts';
-export { useSlotsMapper } from './useSlotsMapper.ts';
 export { useTransitions } from './useTransition.ts';
 export { useRemapper } from './useRemapper.ts';
 export { useValidation } from './useValidation.ts';

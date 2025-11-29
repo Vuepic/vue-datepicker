@@ -2,20 +2,17 @@
     <InstanceWrap v-slot="{ instances, wrapClass }" :collapse="collapse" stretch>
         <div v-for="instance in instances" :key="instance" :class="wrapClass">
             <slot v-if="$slots['top-extra']" name="top-extra" :value="modelValue" />
-            <template v-if="$slots['month-year']">
-                <slot
-                    name="month-year"
-                    v-bind="{
-                        year,
-                        months: groupedMonths(instance),
-                        years: groupedYears(instance),
-                        selectMonth,
-                        selectYear,
-                        instance,
-                    }"
-                />
-            </template>
-            <template v-else>
+            <slot
+                name="month-year"
+                v-bind="{
+                    year,
+                    months: groupedMonths(instance),
+                    years: groupedYears(instance),
+                    selectMonth,
+                    selectYear,
+                    instance,
+                }"
+            >
                 <SelectionOverlay
                     :items="groupedMonths(instance)"
                     :is-last="rootProps.autoApply && !config.keepActionRow"
@@ -47,7 +44,7 @@
                         <slot :name="`month-overlay-value`" :text="item.text" :value="item.value" />
                     </template>
                 </SelectionOverlay>
-            </template>
+            </slot>
         </div>
     </InstanceWrap>
 </template>
@@ -60,21 +57,23 @@
     import YearModePicker from '@/components/shared/YearModePicker.vue';
 
     import { type MonthPickerEmits, useMonthPicker } from '@/components/MonthPicker/useMonthPicker.ts';
-    import { useContext, useSlotsMapper } from '@/composables';
+    import { useContext } from '@/composables';
     import type { BaseProps } from '@/types';
+    import { type ComponentSlots, SlotUse, getSlotsByComponent } from '@/constants/slots.ts';
 
+    defineSlots<ComponentSlots<SlotUse.MonthPicker> & ComponentSlots<SlotUse.YearMode>>();
     const emit = defineEmits<MonthPickerEmits>();
     const props = defineProps<BaseProps>();
 
     const slots = useSlots();
-    const { mapSlots } = useSlotsMapper();
 
     const {
         rootProps,
         defaults: { config },
     } = useContext();
 
-    const yearModeSlots = mapSlots(slots, 'yearMode');
+    // const yearModeSlots = mapSlots(slots, 'yearMode');
+    const yearModeSlots = getSlotsByComponent(slots, SlotUse.YearMode);
 
     onMounted(() => {
         emit('mount');

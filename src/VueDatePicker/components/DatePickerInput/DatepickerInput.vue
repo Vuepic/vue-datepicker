@@ -1,9 +1,9 @@
 <template>
     <div @click="handleOpen">
-        <slot v-if="$slots.trigger && !$slots['dp-input'] && !inline.enabled" name="trigger" />
+        <slot v-if="!$slots['dp-input'] && !inline.enabled" name="trigger" />
         <div v-if="!$slots.trigger && (!inline.enabled || inline.input)" class="dp__input_wrap">
             <slot
-                v-if="$slots['dp-input'] && !$slots.trigger && (!inline.enabled || (inline.enabled && inline.input))"
+                v-if="!$slots.trigger && (!inline.enabled || (inline.enabled && inline.input))"
                 name="dp-input"
                 :value="inputValue"
                 :is-menu-open="isMenuOpen"
@@ -18,32 +18,33 @@
                 :open-menu="() => $emit('open')"
                 :close-menu="() => $emit('close')"
                 :toggle-menu="() => $emit('toggle')"
-            />
-            <input
-                v-if="!$slots['dp-input']"
-                :id="inputAttrs.id"
-                ref="dp-input"
-                data-test-id="dp-input"
-                :name="inputAttrs.name"
-                :class="inputClass"
-                :inputmode="inputAttrs.inputmode"
-                :placeholder="rootProps.placeholder"
-                :disabled="boolHtmlAttribute(rootProps.disabled)"
-                :readonly="boolHtmlAttribute(rootProps.readonly)"
-                :required="boolHtmlAttribute(inputAttrs.required)"
-                :value="inputValue"
-                :autocomplete="inputAttrs.autocomplete"
-                :aria-label="ariaLabels.input"
-                :aria-disabled="rootProps.disabled || undefined"
-                :aria-invalid="inputAttrs.state === false ? true : undefined"
-                @input="handleInput"
-                @blur="handleBlur"
-                @focus="handleFocus"
-                @keypress="handleKeyPress"
-                @keydown="handleKeyPress($event)"
-                @paste="handlePaste"
-                @invalid="rootEmit('invalid', $event)"
-            />
+            >
+                <input
+                    :id="inputAttrs.id"
+                    ref="dp-input"
+                    data-test-id="dp-input"
+                    :name="inputAttrs.name"
+                    :class="inputClass"
+                    :inputmode="inputAttrs.inputmode"
+                    :placeholder="rootProps.placeholder"
+                    :disabled="boolHtmlAttribute(rootProps.disabled)"
+                    :readonly="boolHtmlAttribute(rootProps.readonly)"
+                    :required="boolHtmlAttribute(inputAttrs.required)"
+                    :value="inputValue"
+                    :autocomplete="inputAttrs.autocomplete"
+                    :aria-label="ariaLabels.input"
+                    :aria-disabled="rootProps.disabled || undefined"
+                    :aria-invalid="inputAttrs.state === false ? true : undefined"
+                    @input="handleInput"
+                    @blur="handleBlur"
+                    @focus="handleFocus"
+                    @keypress="handleKeyPress"
+                    @keydown="handleKeyPress($event)"
+                    @paste="handlePaste"
+                    @invalid="rootEmit('invalid', $event)"
+                />
+            </slot>
+
             <div @click="emit('toggle')">
                 <span
                     v-if="$slots['input-icon'] && !inputAttrs.hideInputIcon"
@@ -97,7 +98,9 @@
 
     import { EventKey } from '@/constants';
     import type { DynamicClass, InputParsedDate, InternalModelValue } from '@/types';
+    import { type ComponentSlots, SlotUse } from '@/constants/slots.ts';
 
+    defineSlots<ComponentSlots<SlotUse.Input>>();
     const emit = defineEmits<{
         clear: [];
         open: [];

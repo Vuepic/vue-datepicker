@@ -28,9 +28,9 @@
     import TimePicker from '@/components/TimePicker/TimePicker.vue';
     import InstanceWrap from '@/components/Common/InstanceWrap.vue';
 
-    import { useSlotsMapper } from '@/composables';
     import { useTimePicker } from '@/components/TimePicker/useTimePicker.ts';
     import type { BaseProps, TimeKey } from '@/types';
+    import { getSlotsByComponent, SlotUse, type TimePickerSlots } from '@/constants/slots.ts';
 
     interface TimePickerEmits {
         'time-update': [];
@@ -39,13 +39,13 @@
         'update-flow-step': [];
     }
 
+    defineSlots<TimePickerSlots>();
     const emit = defineEmits<TimePickerEmits>();
 
     defineProps<BaseProps>();
 
     const slots = useSlots();
-    const { mapSlots } = useSlotsMapper();
-    const timePickerSlots = mapSlots(slots, 'timePicker');
+    const timePickerSlots = getSlotsByComponent(slots, SlotUse.TimePicker);
 
     const tpRef = useTemplateRef('time-input');
     const { time, modelValue, disabledTimesConfig, updateTime, validateTime } = useTimePicker(emit);

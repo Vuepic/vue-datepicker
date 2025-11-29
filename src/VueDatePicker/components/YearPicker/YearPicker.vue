@@ -37,9 +37,10 @@
 
     import { useContext } from '@/composables';
     import type { BaseProps } from '@/types';
+    import type { YearPickerSlots } from '@/constants/slots.ts';
 
+    defineSlots<YearPickerSlots>();
     const emit = defineEmits<YearPickerEmits>();
-
     const props = defineProps<BaseProps>();
 
     const {

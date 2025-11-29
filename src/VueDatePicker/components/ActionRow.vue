@@ -75,6 +75,7 @@
     import { computed, onUnmounted, onMounted, ref, useTemplateRef } from 'vue';
 
     import { useContext, useFormatter, useHelperFns, useValidation, useUtils } from '@/composables';
+    import { type ActionRowSlots } from '@/constants/slots.ts';
 
     interface ActionRowEmits {
         'close-picker': [];
@@ -86,6 +87,8 @@
         menuMount?: boolean;
         calendarWidth?: number;
     }
+
+    defineSlots<ActionRowSlots>();
 
     const emit = defineEmits<ActionRowEmits>();
 

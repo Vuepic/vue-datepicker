@@ -8,11 +8,12 @@
 
 <script lang="ts" setup>
     import VueDatePicker from '@/VueDatePicker.vue';
-    import { useExposed, useInjector, useSlotsMapper } from '@/composables';
+    import { useExposed, useInjector } from '@/composables';
     import { propDefaults } from '@/constants/defaults.ts';
 
     import type { RootEmits, RootProps, RootSlots } from '@/types';
     import { useSlots, useTemplateRef } from 'vue';
+    import { getAllSlots } from '@/constants/slots.ts';
 
     const emit = defineEmits<RootEmits>();
 
@@ -23,8 +24,7 @@
     useInjector(props, emit);
 
     const slots = useSlots();
-    const { mapSlots } = useSlotsMapper();
-    const slotList = mapSlots(slots, 'root', props.presetDates);
+    const slotList = getAllSlots(slots, props.presetDates);
 
     const datePicker = useTemplateRef('date-picker');
 

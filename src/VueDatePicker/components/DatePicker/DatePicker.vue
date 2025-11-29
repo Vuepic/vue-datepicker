@@ -32,35 +32,32 @@
                 @mount="componentMounted(CMP.calendar)"
             >
                 <template v-for="(slot, j) in calendarSlots" #[slot]="args" :key="j">
-                    <slot :name="slot" v-bind="{ ...args }" />
+                    <slot :name="slot" v-bind="args as any" />
                 </template>
             </DpCalendar>
         </div>
     </InstanceWrap>
     <div v-if="timeConfig.enableTimePicker">
-        <template v-if="$slots['time-picker']">
-            <slot name="time-picker" v-bind="{ time, updateTime }" />
-        </template>
-
-        <TimePicker
-            v-else
-            ref="time-picker"
-            :hours="time.hours"
-            :minutes="time.minutes"
-            :seconds="time.seconds"
-            :disabled-times-config="disabledTimesConfig"
-            :validate-time="validateTime"
-            :no-overlay-focus="noOverlayFocus"
-            @mount="componentMounted(CMP.timePicker)"
-            @update:hours="updateTime({ hours: $event, minutes: time.minutes, seconds: time.seconds })"
-            @update:minutes="updateTime({ hours: time.hours, minutes: $event, seconds: time.seconds })"
-            @update:seconds="updateTime({ hours: time.hours, minutes: time.minutes, seconds: $event })"
-            @reset-flow="$emit('reset-flow')"
-        >
-            <template v-for="(slot, i) in timePickerSlots" #[slot]="args" :key="i">
-                <slot :name="slot" v-bind="args" />
-            </template>
-        </TimePicker>
+        <slot name="time-picker" v-bind="{ time, updateTime }">
+            <TimePicker
+                ref="time-picker"
+                :hours="time.hours"
+                :minutes="time.minutes"
+                :seconds="time.seconds"
+                :disabled-times-config="disabledTimesConfig"
+                :validate-time="validateTime"
+                :no-overlay-focus="noOverlayFocus"
+                @mount="componentMounted(CMP.timePicker)"
+                @update:hours="updateTime({ hours: $event, minutes: time.minutes, seconds: time.seconds })"
+                @update:minutes="updateTime({ hours: time.hours, minutes: $event, seconds: time.seconds })"
+                @update:seconds="updateTime({ hours: time.hours, minutes: time.minutes, seconds: $event })"
+                @reset-flow="$emit('reset-flow')"
+            >
+                <template v-for="(slot, i) in timePickerSlots" #[slot]="args" :key="i">
+                    <slot :name="slot" v-bind="args" />
+                </template>
+            </TimePicker>
+        </slot>
     </div>
 </template>
 
@@ -73,17 +70,18 @@
     import InstanceWrap from '@/components/Common/InstanceWrap.vue';
     import TimePicker from '@/components/TimePicker/TimePicker.vue';
 
-    import { useSlotsMapper, useDateUtils, useContext, useUtilsWithContext } from '@/composables';
+    import { useContext, useDateUtils, useUtilsWithContext } from '@/composables';
     import { type DatePickerEmits, useDatePicker } from '@/components/DatePicker/useDatePicker.ts';
 
     import { basePropDefaults } from '@/constants/defaults.ts';
     import { CMP, FlowStep } from '@/constants';
 
     import { useCalendarClass } from '@/components/DatePicker/useCalendarClass.ts';
+    import { type DatePickerSlots, getSlotsByComponent, SlotUse } from '@/constants/slots.ts';
     import type { BaseProps, TimeKey } from '@/types';
 
     const emit = defineEmits<DatePickerEmits>();
-
+    defineSlots<DatePickerSlots>();
     const props = withDefaults(defineProps<BaseProps>(), basePropDefaults);
 
     const {
@@ -117,15 +115,14 @@
     } = useContext();
     const { getYears, getMonths } = useUtilsWithContext();
     const { getCellId } = useDateUtils();
-    const { mapSlots } = useSlotsMapper();
 
     const headerRefs = useTemplateRef('calendar-header');
     const calendarRefs = useTemplateRef('calendar');
     const timePickerRef = useTemplateRef('time-picker');
 
-    const calendarSlots = mapSlots(slots, 'calendar');
-    const headerSlots = mapSlots(slots, 'monthYear');
-    const timePickerSlots = mapSlots(slots, 'timePicker');
+    const calendarSlots = getSlotsByComponent(slots, SlotUse.Calendar);
+    const headerSlots = getSlotsByComponent(slots, SlotUse.DatePickerHeader);
+    const timePickerSlots = getSlotsByComponent(slots, SlotUse.TimePicker);
 
     const componentMounted = (cmp: CMP) => {
         emit('mount', cmp);
@@ -142,7 +139,7 @@
     );
 
     /**
-     * Array of the dates from which calendar is built.
+     * Array of the dates from which the calendar is built.
      * It also sets classes depending on picker modes, active dates, today, v-model.
      */
     const mappedDates = computed(() => (instance: number) => {

@@ -13,8 +13,9 @@
             @keydown="checkKeyDown($event, () => toggleTimePicker(true))"
             @click="toggleTimePicker(true)"
         >
-            <slot v-if="$slots['clock-icon']" name="clock-icon" />
-            <ClockIcon v-if="!$slots['clock-icon']" />
+            <slot name="clock-icon">
+                <ClockIcon />
+            </slot>
         </button>
         <transition :name="transitionName(showTimePicker)" :css="showTransition && !timeConfig.timePickerInline">
             <div
@@ -39,7 +40,6 @@
                     style="display: flex"
                 >
                     <slot
-                        v-if="$slots['time-picker-overlay']"
                         name="time-picker-overlay"
                         :hours="hours"
                         :minutes="minutes"
@@ -47,8 +47,7 @@
                         :set-hours="updateHours"
                         :set-minutes="updateMinutes"
                         :set-seconds="updateSeconds"
-                    ></slot>
-                    <template v-if="!$slots['time-picker-overlay']">
+                    >
                         <div :class="timeConfig.timePickerInline ? 'dp__flex' : 'dp__overlay_row dp__flex_row'">
                             <TimeInput
                                 v-for="(tInput, index) in timeInputs"
@@ -75,11 +74,11 @@
                                 @overlay-opened="timeInputOverlayOpen"
                             >
                                 <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
-                                    <slot :name="slot" v-bind="args" />
+                                    <slot :name="slot as never" v-bind="args" />
                                 </template>
                             </TimeInput>
                         </div>
-                    </template>
+                    </slot>
                     <button
                         v-if="!rootProps.timePicker && !timeConfig.timePickerInline"
                         v-show="!hideNavigationButtons('time')"
@@ -92,8 +91,9 @@
                         @keydown="checkKeyDown($event, () => toggleTimePicker(false))"
                         @click="toggleTimePicker(false)"
                     >
-                        <slot v-if="$slots['calendar-icon']" name="calendar-icon" />
-                        <CalendarIcon v-if="!$slots['calendar-icon']" />
+                        <slot name="calendar-icon">
+                            <CalendarIcon />
+                        </slot>
                     </button>
                 </div>
             </div>
@@ -104,21 +104,15 @@
 <script lang="ts" setup>
     import { computed, nextTick, onMounted, ref, useSlots, useTemplateRef } from 'vue';
 
-    import { ClockIcon, CalendarIcon } from '@/components/Icons';
+    import { CalendarIcon, ClockIcon } from '@/components/Icons';
     import TimeInput from '@/components/TimePicker/TimeInput.vue';
 
-    import {
-        useSlotsMapper,
-        useTransitions,
-        useContext,
-        useResponsive,
-        useHelperFns,
-        useDateUtils,
-    } from '@/composables';
+    import { useContext, useDateUtils, useHelperFns, useResponsive, useTransitions } from '@/composables';
     import { useNavigationDisplay } from '@/components/shared/useNavigationDisplay.ts';
     import { FlowStep } from '@/constants';
 
     import type { InvalidTimesConfig, TimeKey } from '@/types';
+    import { getSlotsByComponent, SlotUse, type TimePickerSlots } from '@/constants/slots.ts';
 
     interface TimePickerEmits {
         'update:hours': [hours: number | number[]];
@@ -137,6 +131,8 @@
         validateTime: (type: TimeKey, value: number | number[]) => boolean;
     }
 
+    defineSlots<TimePickerSlots>();
+
     const emit = defineEmits<TimePickerEmits>();
 
     const props = defineProps<TimePickerProps>();
@@ -152,7 +148,6 @@
     const { checkKeyDown, findFocusableEl } = useHelperFns();
     const { transitionName, showTransition } = useTransitions();
     const { hideNavigationButtons } = useNavigationDisplay();
-    const { mapSlots } = useSlotsMapper();
     const { isMobile } = useResponsive();
     const slots = useSlots();
 
@@ -215,7 +210,7 @@
         dp__button_bottom: rootProps.autoApply && !config.value.keepActionRow,
     }));
 
-    const timeInputSlots = mapSlots(slots, 'timePicker');
+    const timeInputSlots = getSlotsByComponent(slots, SlotUse.TimeInput);
 
     const getEvent = (event: number, index: number, property: TimeKey) => {
         if (!range.value.enabled) {

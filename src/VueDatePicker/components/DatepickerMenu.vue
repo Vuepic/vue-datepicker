@@ -43,7 +43,7 @@
                 <template v-for="(preset, i) in rootProps.presetDates" :key="i">
                     <template v-if="preset.slot">
                         <slot
-                            :name="preset.slot"
+                            :name="preset.slot as never"
                             :preset-date="presetDate"
                             :label="preset.label"
                             :value="preset.value"
@@ -82,7 +82,7 @@
                     @time-update="$emit('time-update')"
                 >
                     <template v-for="(slot, i) in sharedSlots" #[slot]="args" :key="i">
-                        <slot :name="slot" v-bind="{ ...args }" />
+                        <slot :name="slot as never" v-bind="{ ...args }" />
                     </template>
                 </component>
             </div>
@@ -102,13 +102,14 @@
             @select-now="selectCurrentDate"
         >
             <template v-for="(slot, i) in actionSlots" #[slot]="args" :key="i">
-                <slot :name="slot" v-bind="{ ...args }" />
+                <slot :name="slot" v-bind="args as any" />
             </template>
         </ActionRow>
     </div>
 </template>
 
 <script lang="ts" setup>
+    import type { MaybeRefOrGetter } from 'vue';
     import { computed, onMounted, onUnmounted, ref, toValue, useSlots, useTemplateRef } from 'vue';
     import { unrefElement } from '@vueuse/core';
 
@@ -119,18 +120,12 @@
     import DatePicker from '@/components/DatePicker/DatePicker.vue';
     import QuarterPicker from '@/components/QuarterPicker/QuarterPicker.vue';
 
-    import {
-        useSlotsMapper,
-        useFlow,
-        useResponsive,
-        useContext,
-        useHelperFns,
-        useArrowNavigation,
-    } from '@/composables';
+    import { useArrowNavigation, useContext, useFlow, useHelperFns, useResponsive } from '@/composables';
     import { ArrowDirection, EventKey } from '@/constants';
-
-    import type { MaybeRefOrGetter } from 'vue';
     import type { DynamicClass, MenuExposedFn, MenuView, MonthModel } from '@/types';
+    import { getSlotsByComponent, type MenuSlots, SlotUse } from '@/constants/slots.ts';
+
+    defineSlots<MenuSlots>();
 
     const emit = defineEmits<{
         'close-picker': [];
@@ -154,7 +149,6 @@
         setState,
     } = useContext();
     const { isMobile } = useResponsive();
-    const { mapSlots } = useSlotsMapper();
     const { handleEventPropagation, getElWithin, checkStopPropagation, checkKeyDown } = useHelperFns();
     useArrowNavigation();
 
@@ -231,13 +225,8 @@
 
     const getSidebarProps = computed(() => dynCmpRef.value?.getSidebarProps() || {});
 
-    const actionSlots = mapSlots(slots, 'action');
-
-    const sharedSlots = computed((): string[] => {
-        if (rootProps.monthPicker || rootProps.yearPicker) return mapSlots(slots, 'monthYear');
-        if (rootProps.timePicker) return mapSlots(slots, 'timePicker');
-        return mapSlots(slots, 'shared');
-    });
+    const actionSlots = getSlotsByComponent(slots, SlotUse.ActionRow);
+    const sharedSlots = getSlotsByComponent(slots, SlotUse.PassTrough);
 
     const disabledReadonlyOverlay = computed(() => ({
         dp__menu_disabled: rootProps.disabled,

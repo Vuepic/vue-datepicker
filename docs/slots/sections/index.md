@@ -41,16 +41,14 @@ Create and use a custom component implementation in the header for month/year se
 
 - Exposed props:
 ```ts
-{
-  year: number;
+interface DatePickerMonthYearSlotProps {
   month: number;
-  instance: number;
-  months: { value: number; text: string; className?: Record<string, boolean> }[];
-  years: { value: number; text: string; className?: Record<string, boolean> }[];
-  updateMonthYear: (month: number, year: number, fromNav: boolean) => void;
+  year: number;
+  months: SelectItem[];
+  years: SelectItem[];
+  updateMonthYear: (month: number, year: number, fromNav?: boolean) => void;
   handleMonthYearChange: (isNext: boolean, fromNav?: boolean) => void;
-  selectMonth: (month: number, instance: number) => void;
-  selectYear: (year: number, instance: number) => void;
+  instance: number;
   isDisabled: (next: boolean) => boolean;
 }
 ```
@@ -70,13 +68,13 @@ Create and use a custom component implementation in the header for month/year se
 
 - Exposed props:
 ```ts
-{
-  year: ComputedRef<(instance: number) => number>; 
+export interface MonthPickerMonthYearSlotProps {
+  year: (instance: number) => number;
   months: OverlayGridItem[][];
   years: OverlayGridItem[][];
+  instance: number;
   selectMonth: (month: number, instance: number) => void;
-  selectYear: (year: number, instance: number) => void; 
-  instance: number; 
+  selectYear: (year: number, instance: number) => void;
 }
 ```
 
@@ -93,9 +91,9 @@ Create and use a custom component implementation in the header for month/year se
 
 - Exposed props:
 ```ts
-{
+export interface YearPickerMonthYearSlotProps {
   years: OverlayGridItem[][];
-  selectYear: (year: number) => void;
+  selectYear: (year: number, instance: number) => void;
 }
 ```
 
@@ -111,6 +109,11 @@ interface OverlayGridItem {
   active: boolean;
   disabled: boolean;
   className: Record<string, boolean | undefined>;
+}
+
+export interface SelectItem<T = number> {
+  value: T;
+  text: string;
 }
 ```
 
@@ -312,7 +315,7 @@ Create and use a custom component for the action row
 - Exposed props:
 ```ts
 {
-  internalModelValue: Date | Date[] | null;
+  modelValue: Date | Date[] | null;
   selectDate: () => void;
   closePicker: () => void;
   disabled: boolean;
@@ -320,7 +323,7 @@ Create and use a custom component for the action row
 ```
 
 :::info
- - `internalModelValue` - Current selected value in the datepicker
+ - `modelValue` - Current selected value in the datepicker
  - `selectDate` - Function to select the current `internalModelValue` value
  - `closePicker` - Function to close the datepicker menu
  - `disabled` - If the value is invalid based on the provided configuration

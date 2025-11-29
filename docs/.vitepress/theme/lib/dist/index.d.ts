@@ -102,7 +102,6 @@ overlay: PickerSection;
 }) => any) | undefined;
 }>, {
 timePicker: boolean;
-monthPicker: boolean;
 dark: boolean;
 transitions: boolean | Partial<TransitionsConfig>;
 hideNavigation: PickerSection[];
@@ -122,7 +121,8 @@ weekPicker: boolean;
 arrowNavigation: boolean;
 centered: boolean;
 locale: Locale;
-weekStart: string | number;
+weekStart: string | number | WeekStart;
+monthPicker: boolean;
 yearPicker: boolean;
 modelAuto: boolean;
 multiDates: boolean | Partial<MultiDatesConfig>;
@@ -187,7 +187,7 @@ errorCaptured?: ((err: unknown, instance: ComponentPublicInstance | null, info: 
 $forceUpdate: () => void;
 $nextTick: nextTick;
 $watch<T extends string | ((...args: any) => any)>(source: T, cb: T extends (...args: any) => infer R ? (...args: [R, R, OnCleanup]) => any : (...args: [any, any, OnCleanup]) => any, options?: WatchOptions): WatchStopHandle;
-} & Readonly<{}> & Omit<Readonly<{}> & Readonly<{}>, "onScroll" | "openMenu" | "selectDate" | "handleFlow" | "switchView" | "formatInputValue" | "closeMenu" | "clearValue" | "updateInternalModelValue" | "setMonthYear" | "parseModel" | "toggleMenu" | "getDpWrapMenuRef"> & ShallowUnwrapRef<    {
+} & Readonly<{}> & Omit<Readonly<{}> & Readonly<{}>, "onScroll" | "openMenu" | "handleFlow" | "switchView" | "formatInputValue" | "closeMenu" | "selectDate" | "clearValue" | "updateInternalModelValue" | "setMonthYear" | "parseModel" | "toggleMenu" | "getDpWrapMenuRef"> & ShallowUnwrapRef<    {
 closeMenu: (fromClickAway?: boolean) => void;
 selectDate: () => void;
 clearValue: () => void;
@@ -260,7 +260,7 @@ declare function __VLS_template(): {
             $forceUpdate: () => void;
             $nextTick: nextTick;
             $watch<T extends string | ((...args: any) => any)>(source: T, cb: T extends (...args: any) => infer R ? (...args: [R, R, OnCleanup]) => any : (...args: [any, any, OnCleanup]) => any, options?: WatchOptions): WatchStopHandle;
-        } & Readonly<{}> & Omit<Readonly<{}> & Readonly<{}>, "onScroll" | "openMenu" | "selectDate" | "handleFlow" | "switchView" | "formatInputValue" | "closeMenu" | "clearValue" | "updateInternalModelValue" | "setMonthYear" | "parseModel" | "toggleMenu" | "getDpWrapMenuRef"> & ShallowUnwrapRef<    {
+        } & Readonly<{}> & Omit<Readonly<{}> & Readonly<{}>, "onScroll" | "openMenu" | "handleFlow" | "switchView" | "formatInputValue" | "closeMenu" | "selectDate" | "clearValue" | "updateInternalModelValue" | "setMonthYear" | "parseModel" | "toggleMenu" | "getDpWrapMenuRef"> & ShallowUnwrapRef<    {
         closeMenu: (fromClickAway?: boolean) => void;
         selectDate: () => void;
         clearValue: () => void;
@@ -395,6 +395,32 @@ export declare type CustomClass = string | string[];
 
 export declare type DateGetter = (date?: MaybeDate, reset?: boolean, skipInstanceCheck?: boolean) => Date;
 
+export declare interface DatePickerMonthYearSlotProps {
+    month: number;
+    year: number;
+    months: SelectItem[];
+    years: SelectItem[];
+    updateMonthYear: (month: number, year: number, fromNav: boolean) => void;
+    handleMonthYearChange: (isNext: boolean, fromNav?: boolean) => void;
+    instance: number;
+    isDisabled: (next: boolean) => boolean;
+}
+
+export declare interface DatePickerSidebarSlotProps {
+    modelValue: InternalModelValue;
+    month: ComputedRef<(instance: number) => number>;
+    year: ComputedRef<(instance: number) => number>;
+    time: InternalTime;
+    updateTime: (time: TimeInternalModel) => void;
+    updateMonthYear: (instance: number, val: {
+        month: number;
+        year: number;
+        fromNav?: boolean;
+    }) => void;
+    selectDate: (year: number, instance: number) => void;
+    presetDate: (value: Date[] | string[] | Date | string, noTz?: boolean) => void;
+}
+
 export declare type DateValue = Date | string | number;
 
 export declare type DisabledTimesFn = ((time: TimeObj) => boolean) | ((time: TimeObj[]) => boolean) | ((time: (TimeObj | undefined)[]) => boolean);
@@ -528,6 +554,27 @@ export declare interface MonthModel {
     year: number | string;
 }
 
+export declare interface MonthPickerMonthYearSlotProps {
+    year: (instance: number) => number;
+    months: OverlayGridItem[][];
+    years: OverlayGridItem[][];
+    instance: number;
+    selectMonth: (month: number, instance: number) => void;
+    selectYear: (year: number, instance: number) => void;
+}
+
+export declare interface MonthPickerSidebarSlotProps {
+    modelValue: InternalModelValue;
+    year: ComputedRef<(instance: number) => number>;
+    getModelMonthYear?: () => {
+        month: number | null;
+        year: number | null;
+    }[];
+    selectMonth: (month: number, instance: number) => void;
+    selectYear: (year: number, instance: number) => void;
+    handleYear: (instance: number, increment?: boolean) => void;
+}
+
 export declare interface MonthYearOverlaySlotProps {
     month: number;
     year: number;
@@ -538,27 +585,6 @@ export declare interface MonthYearOverlaySlotProps {
     updateMonthYear: (month: number, year: number) => void;
     instance: number;
     toggle: () => void;
-}
-
-export declare interface MonthYearSlotProps {
-    year: number;
-    month?: number;
-    months?: {
-        value: number;
-        text: string;
-        className?: Record<string, boolean>;
-    }[];
-    years?: {
-        value: number;
-        text: string;
-        className?: Record<string, boolean>;
-    }[];
-    updateMonthYear?: (month: number, year: number, fromNav: boolean) => void;
-    handleMonthYearChange?: (isNext: boolean, fromNav?: boolean) => void;
-    instance?: number;
-    selectMonth?: (month: number, instance: number) => void;
-    selectYear?: (year: number, instance: number) => void;
-    isDisabled?: (next: boolean) => boolean;
 }
 
 export declare interface MultiCalendarsConfig {
@@ -595,7 +621,7 @@ export declare type PresetDate = {
 };
 
 declare const propDefaults: {
-    weekStart: number;
+    weekStart: WeekStart;
     yearRange: () => [number, number];
     ui: () => {};
     locale: () => Locale;
@@ -629,6 +655,14 @@ declare const propDefaults: {
     loading: boolean;
     centered: boolean;
 };
+
+export declare interface QuarterPickerSidebarSlotProps {
+    modelValue: InternalModelValue;
+    year: ComputedRef<(instance: number) => number>;
+    selectQuarter: (date: Date, instance: number, disabled: boolean) => void;
+    handleYearSelect: (year: number, instance: number) => void;
+    handleYear: (instance: number, increment?: boolean) => void;
+}
 
 export declare interface RangeConfig {
     noDisabledRange: boolean;
@@ -706,7 +740,7 @@ export declare interface RootProps {
     teleport?: string | boolean | HTMLElement;
     centered?: boolean;
     locale?: Locale;
-    weekStart?: string | number;
+    weekStart?: string | number | WeekStart;
     weekNumbers?: boolean | WeekNumbersConfig;
     dayNames?: (() => string[]) | string[];
     monthPicker?: boolean;
@@ -746,20 +780,21 @@ export declare interface RootProps {
 export declare type RootPropsWithDefaults = WithDefaults<RootProps, typeof propDefaults>;
 
 export declare interface RootSlots {
-    'clock-icon'(): any;
-    'arrow-left'(): any;
-    'arrow-right'(): any;
-    'arrow-up'(): any;
-    'arrow-down'(): any;
-    'calendar-icon'(): any;
-    'input-icon'(): any;
-    'tp-inline-arrow-up'(): any;
-    'tp-inline-arrow-down'(): any;
+    'clock-icon'(props: any): any;
+    'arrow-left'(props: any): any;
+    'arrow-right'(props: any): any;
+    'arrow-up'(props: any): any;
+    'arrow-down'(props: any): any;
+    'calendar-icon'(props: any): any;
+    'input-icon'(props: any): any;
+    'tp-inline-arrow-up'(props: any): any;
+    'tp-inline-arrow-down'(props: any): any;
     'clear-icon'(props: {
         clear: (ev?: Event) => void;
     }): any;
-    trigger(): any;
-    'menu-header'(): any;
+    'arrow'(props: any): any;
+    trigger(props: any): any;
+    'menu-header'(props: {}): any;
     day(props: {
         date: Date;
         day: number;
@@ -809,6 +844,10 @@ export declare interface RootSlots {
         text: string;
         value: number;
     }): any;
+    seconds(props: {
+        text: string;
+        value: number;
+    }): any;
     month(props: {
         text: string;
         value: number;
@@ -822,6 +861,7 @@ export declare interface RootSlots {
     }): any;
     'action-preview'(props: {
         value: InternalModelValue;
+        formatValue: string;
     }): any;
     'calendar-header'(props: {
         day: string;
@@ -843,9 +883,19 @@ export declare interface RootSlots {
         toggle: () => void;
         value: string;
     }): any;
-    'left-sidebar'(props: SidebarSlotProps): any;
-    'right-sidebar'(props: SidebarSlotProps): any;
-    'month-year'(props: MonthYearSlotProps): any;
+    'left-sidebar'(props: DatePickerSidebarSlotProps): any;
+    'left-sidebar'(props: MonthPickerSidebarSlotProps): any;
+    'left-sidebar'(props: QuarterPickerSidebarSlotProps): any;
+    'left-sidebar'(props: TimePickerSidebarSlotProps): any;
+    'left-sidebar'(props: YearPickerSidebarSlotProps): any;
+    'right-sidebar'(props: DatePickerSidebarSlotProps): any;
+    'right-sidebar'(props: MonthPickerSidebarSlotProps): any;
+    'right-sidebar'(props: QuarterPickerSidebarSlotProps): any;
+    'right-sidebar'(props: TimePickerSidebarSlotProps): any;
+    'right-sidebar'(props: YearPickerSidebarSlotProps): any;
+    'month-year'(props: DatePickerMonthYearSlotProps): any;
+    'month-year'(props: MonthPickerMonthYearSlotProps): any;
+    'month-year'(props: YearPickerMonthYearSlotProps): any;
     'dp-input'(props: DpInputSlotProps): any;
     'time-picker'(props: TimePickerSlotProps): any;
     'action-row'(props: ActionRowSlotProps): any;
@@ -868,32 +918,6 @@ export declare interface SelectItem<T = number> {
     text: string;
 }
 
-export declare interface SidebarSlotProps {
-    modelValue: InternalModelValue;
-    month?: ComputedRef<(instance: number) => number>;
-    year?: ComputedRef<(instance: number) => number>;
-    time?: InternalTime;
-    updateTime?: (value: number | number[], isHours?: boolean, isSeconds?: boolean) => void;
-    updateMonthYear?: (instance: number, val: {
-        month: number;
-        year: number;
-        fromNav?: boolean;
-    }) => void;
-    selectDate?: (day: {
-        value: Date;
-    }, isNext?: boolean) => void;
-    presetDate?: (value: Date[] | string[] | Date | string, noTz?: boolean) => void;
-    getModelMonthYear?: () => {
-        month: number | null;
-        year: number | null;
-    }[];
-    selectMonth?: (month: number, instance: number) => void;
-    selectYear?: (year: number, instance: number) => void;
-    handleYear?: (instance: number, increment?: boolean) => void;
-    selectQuarter?: (date: Date, instance: number, disabled: boolean) => void;
-    handleYearSelect?: (year: number, instance: number) => void;
-}
-
 export declare type SixWeekMode = 'append' | 'prepend' | 'center' | 'fair';
 
 export declare interface TextInputConfig {
@@ -905,6 +929,7 @@ export declare interface TextInputConfig {
     escClose: boolean;
     format: string | string[] | ((value: string) => Date | null);
     maskFormat: string;
+    applyOnBlur: boolean;
 }
 
 export declare interface TimeConfig {
@@ -916,6 +941,9 @@ export declare interface TimeConfig {
     noHoursOverlay: boolean;
     noMinutesOverlay: boolean;
     noSecondsOverlay: boolean;
+    hoursIncrement: number | string;
+    minutesIncrement: number | string;
+    secondsIncrement: number | string;
     hoursGridIncrement: number | string;
     minutesGridIncrement: number | string;
     secondsGridIncrement: number | string;
@@ -953,6 +981,12 @@ export declare type TimeOverlaySlotProps = InternalTime & {
     setMinutes: (minutes: number | number[]) => void;
     setSeconds: (seconds: number | number[]) => void;
 };
+
+export declare interface TimePickerSidebarSlotProps {
+    modelValue: InternalModelValue;
+    time: InternalTime;
+    updateTime: (time: TimeInternalModel) => void;
+}
 
 export declare interface TimePickerSlotProps {
     time: InternalTime;
@@ -994,6 +1028,26 @@ export declare interface WeekNumbersConfig {
     label?: string;
 }
 
+export declare enum WeekStart {
+    Sunday = 0,
+    Monday = 1,
+    Tuesday = 2,
+    Wednesday = 3,
+    Thursday = 4,
+    Friday = 5,
+    Saturday = 6
+}
+
 declare type WithDefaults<T, D> = Omit<T, keyof D> & Required<Pick<T, keyof D & keyof T>>;
+
+export declare interface YearPickerMonthYearSlotProps {
+    years: OverlayGridItem[][];
+    selectYear: (year: number, instance: number) => void;
+}
+
+export declare interface YearPickerSidebarSlotProps {
+    modelValue: InternalModelValue;
+    selectYear: (year: number) => void;
+}
 
 export { }

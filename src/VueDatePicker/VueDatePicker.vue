@@ -70,18 +70,18 @@
 
 <script lang="ts" setup>
     import {
+        type ComponentPublicInstance,
         computed,
+        nextTick,
         onMounted,
         onUnmounted,
         ref,
+        type Ref,
+        Teleport as TeleportCmp,
         toRef,
         useSlots,
-        watch,
-        nextTick,
         useTemplateRef,
-        Teleport as TeleportCmp,
-        type Ref,
-        type ComponentPublicInstance,
+        watch,
     } from 'vue';
     import { onClickOutside } from '@vueuse/core';
     import { arrow, autoUpdate, flip, type Middleware, offset, shift, useFloating } from '@floating-ui/vue';
@@ -90,15 +90,15 @@
     import DatepickerMenu from '@/components/DatepickerMenu.vue';
 
     import {
+        useContext,
         useExternalInternalMapper,
-        useSlotsMapper,
+        useHelperFns,
+        useResponsive,
         useTransitions,
         useValidation,
-        useResponsive,
-        useHelperFns,
-        useContext,
     } from '@/composables';
     import type { DynamicClass, InputParsedDate, MenuView, ModelValue, MonthModel } from '@/types';
+    import { getAllSlots, getSlotsByComponent, SlotUse } from '@/constants/slots.ts';
 
     const {
         rootEmit,
@@ -111,7 +111,6 @@
     const { validateDate, isValidTime } = useValidation();
     const { menuTransition, showTransition } = useTransitions();
     const { isMobile } = useResponsive();
-    const { mapSlots } = useSlotsMapper();
     const { findNextFocusableElement, getNumVal } = useHelperFns();
 
     const slots = useSlots();
@@ -173,8 +172,8 @@
         globalThis.removeEventListener('keydown', onKeyDown);
     });
 
-    const slotList = mapSlots(slots, 'all', rootProps.presetDates);
-    const inputSlots = mapSlots(slots, 'input');
+    const slotList = getAllSlots(slots, rootProps.presetDates);
+    const inputSlots = getSlotsByComponent(slots, SlotUse.Input);
 
     watch(
         [modelValueRef, timezoneRef],

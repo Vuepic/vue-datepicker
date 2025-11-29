@@ -295,15 +295,15 @@ Depending on the mode used, different set of props will be exposed
 
 - Exposed props:
 ```ts
-{
-  modelValue: Date | Date[] | null;
+export interface DatePickerSidebarSlotProps {
+  modelValue: InternalModelValue;
   month: ComputedRef<(instance: number) => number>;
   year: ComputedRef<(instance: number) => number>;
-  time: { hours: number | number[]; minutes: number | number[]; seconds: number | number[] };
-  updateTime: (value: number | number[], isHours?: boolean, isSeconds?: boolean) => void;
+  time: InternalTime;
+  updateTime: (time: TimeInternalModel) => void;
   updateMonthYear: (instance: number, val: { month: number; year: number; fromNav?: boolean }) => void;
-  selectDate: (day: { value: Date }, isNext?: boolean) => void;
-  presetDate: (value: Date[] | string[] | Date | string) => void;
+  selectDate: (year: number, instance: number) => void;
+  presetDate: (value: Date[] | string[] | Date | string, noTz?: boolean) => void;
 }
 ```
 
@@ -324,13 +324,13 @@ Depending on the mode used, different set of props will be exposed
 
 - Exposed props:
 ```ts
-{
-  modelValue: Date | Date[] | null;
+export interface MonthPickerSidebarSlotProps {
+  modelValue: InternalModelValue;
   year: ComputedRef<(instance: number) => number>;
+  getModelMonthYear?: () => { month: number | null; year: number | null }[];
   selectMonth: (month: number, instance: number) => void;
   selectYear: (year: number, instance: number) => void;
   handleYear: (instance: number, increment?: boolean) => void;
-  getModelMonthYear: () => { month: number | null; year: number | null }[];
 }
 ```
 
@@ -346,8 +346,8 @@ Depending on the mode used, different set of props will be exposed
 
 - Exposed props:
 ```ts
-{
-  modelValue: Date | Date[] | null;
+export interface YearPickerSidebarSlotProps {
+  modelValue: InternalModelValue;
   selectYear: (year: number) => void;
 }
 ```
@@ -361,12 +361,12 @@ Depending on the mode used, different set of props will be exposed
 
 - Exposed props:
 ```ts
-{
-  modelValue:  Date | Date[] | null;
+export interface QuarterPickerSidebarSlotProps {
+  modelValue: InternalModelValue;
   year: ComputedRef<(instance: number) => number>;
-  handleYear?: (instance: number, increment?: boolean) => void;
-  selectQuarter?: (date: Date, instance: number, disabled: boolean) => void;
-  handleYearSelect?: (year: number, instance: number) => void;
+  selectQuarter: (date: Date, instance: number, disabled: boolean) => void;
+  handleYearSelect: (year: number, instance: number) => void;
+  handleYear: (instance: number, increment?: boolean) => void;
 }
 ```
 
@@ -382,10 +382,10 @@ Depending on the mode used, different set of props will be exposed
 
 - Exposed props:
 ```ts
-{
-  modelValue: Date | Date[] | null;
+export interface TimePickerSidebarSlotProps {
+  modelValue: InternalModelValue;
   time: InternalTime;
-  updateTime: (value: number | number[], isHours?: boolean, isSeconds?: boolean) => void;
+  updateTime: (time: TimeInternalModel) => void;
 }
 ```
 
@@ -470,7 +470,11 @@ This slot replaces the content inside the `marker` tooltip
 - `day` - The date marker is displayed on
 :::
 
-<GlobalDemo :markers="true">
+:::warning
+Tooltip color will be ignored if this slot is provided, you will have to style it yourself
+:::
+
+<GlobalDemo :markers="markers">
     <template #marker-tooltip="{ tooltip, day }">
         <div v-if="tooltip.color === 'green'">Hello from slot</div>
         <span v-else>{{ tooltip.text }}</span>
@@ -561,7 +565,7 @@ When slot is provided, you will have to do a custom styling to position it in th
 </style>
 
 
-<GlobalDemo :markers="true">
+<GlobalDemo :markers="markers">
     <template #marker="{ marker, day, date }">
         <span class="custom-marker"></span>
       </template>
@@ -638,12 +642,33 @@ This slot replaces the default quarter item
 :::
 
 <script setup>
-  import {  format } from "date-fns";
+  import {  format, addDays } from "date-fns";
 
   
   const formatQuarter = (quarter) => {
       return format(quarter, 'QQQ')
-  }
+  };
+
+  const markers = [
+    {
+      date: addDays(new Date(), 1),
+      type: 'dot',
+      tooltip: [{ text: 'Dot with tooltip', color: 'green' }],
+    },
+    {
+      date: addDays(new Date(), 2),
+      type: 'line',
+      tooltip: [
+        { text: 'First tooltip', color: 'blue' },
+        { text: 'Second tooltip', color: 'yellow' },
+      ],
+    },
+    {
+      date: addDays(new Date(), 3),
+      type: 'dot',
+      color: 'yellow',
+    },
+  ]
 </script>
 
 <GlobalDemo :quarterPicker="true">

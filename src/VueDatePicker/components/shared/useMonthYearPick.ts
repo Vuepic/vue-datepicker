@@ -57,7 +57,7 @@ export const useMonthYearPick = (
         }
     };
 
-    const updateMonthYear = (month: number, year: number, fromNav: boolean): void => {
+    const updateMonthYear = (month: number, year: number, fromNav: boolean = false): void => {
         emit('update-month-year', { month, year, fromNav });
     };
 

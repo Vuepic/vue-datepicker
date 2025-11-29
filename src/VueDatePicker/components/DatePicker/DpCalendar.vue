@@ -13,10 +13,9 @@
                     data-test-id="calendar-header"
                     :aria-label="ariaLabels?.weekDay?.(i)"
                 >
-                    <slot v-if="$slots['calendar-header']" name="calendar-header" :day="dayVal" :index="i" />
-                    <template v-if="!$slots['calendar-header']">
+                    <slot name="calendar-header" :day="dayVal" :index="i">
                         {{ dayVal }}
-                    </template>
+                    </slot>
                 </div>
             </div>
             <div class="dp__calendar_header_separator"></div>
@@ -65,17 +64,16 @@
                                 <template v-if="!$slots.day"> {{ dayVal.text }} </template>
                                 <template v-if="dayVal.marker && showDay(dayVal)">
                                     <slot
-                                        v-if="$slots.marker"
                                         name="marker"
                                         :marker="dayVal.marker"
                                         :day="+dayVal.text"
                                         :date="dayVal.value"
-                                    ></slot>
-                                    <div
-                                        v-else
-                                        :class="markerClass(dayVal.marker)"
-                                        :style="dayVal.marker.color ? { backgroundColor: dayVal.marker.color } : {}"
-                                    ></div>
+                                    >
+                                        <div
+                                            :class="markerClass(dayVal.marker)"
+                                            :style="dayVal.marker.color ? { backgroundColor: dayVal.marker.color } : {}"
+                                        ></div>
+                                    </slot>
                                 </template>
                                 <div
                                     v-if="dateMatch(dayVal.value)"
@@ -89,19 +87,13 @@
                                             :key="i"
                                             class="dp__tooltip_text"
                                         >
-                                            <slot
-                                                v-if="$slots['marker-tooltip']"
-                                                name="marker-tooltip"
-                                                :tooltip="tooltip"
-                                                :day="dayVal.value"
-                                            ></slot>
-                                            <template v-if="!$slots['marker-tooltip']">
+                                            <slot name="marker-tooltip" :tooltip="tooltip" :day="dayVal.value">
                                                 <div
                                                     class="dp__tooltip_mark"
                                                     :style="tooltip.color ? { backgroundColor: tooltip.color } : {}"
                                                 ></div>
                                                 <div>{{ tooltip.text }}</div>
-                                            </template>
+                                            </slot>
                                         </div>
                                         <div class="dp__arrow_bottom_tp" :style="tpArrowStyle"></div>
                                     </div>
@@ -124,6 +116,7 @@
 
     import type { UnwrapRef } from 'vue';
     import type { CalendarDay, CalendarWeek, DynamicClass, Marker } from '@/types';
+    import { type CalendarSlots } from '@/constants/slots.ts';
 
     interface DPCalendarEmits {
         mount: [component: { cmp: string; dayRefs: HTMLElement[][] }];
@@ -139,6 +132,8 @@
         month: number;
         year: number;
     }
+
+    defineSlots<CalendarSlots>();
 
     const emit = defineEmits<DPCalendarEmits>();
 

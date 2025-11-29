@@ -150,6 +150,7 @@
     import { useNavigationDisplay } from '@/components/shared/useNavigationDisplay.ts';
     import { FlowStep, HeaderPicker } from '@/constants';
     import type { OverlayGridItem, SelectItem } from '@/types';
+    import { type ComponentSlots, SlotUse } from '@/constants/slots.ts';
 
     interface DpHeaderEmits {
         mount: [];
@@ -166,8 +167,8 @@
         menuWrapRef: HTMLElement | null;
     }
 
+    defineSlots<ComponentSlots<SlotUse.DatePickerHeader>>();
     const emit = defineEmits<DpHeaderEmits>();
-
     const props = defineProps<DpHeaderProps>();
 
     const {

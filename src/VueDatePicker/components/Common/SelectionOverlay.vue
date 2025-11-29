@@ -16,10 +16,7 @@
             role="grid"
         >
             <div class="dp__selection_grid_header"><slot name="header"></slot></div>
-            <template v-if="$slots.overlay">
-                <slot name="overlay" />
-            </template>
-            <template v-else>
+            <slot name="overlay">
                 <div
                     v-for="(row, i) in items"
                     :key="i"
@@ -43,12 +40,13 @@
                         @mouseover="setHoverValue(col.value)"
                     >
                         <div :class="col.className">
-                            <slot v-if="$slots.item" name="item" :item="col" />
-                            <template v-if="!$slots.item">{{ col.text }}</template>
+                            <slot name="item" :item="col">
+                                {{ col.text }}
+                            </slot>
                         </div>
                     </div>
                 </div>
-            </template>
+            </slot>
         </div>
         <button
             v-if="$slots['button-icon']"
