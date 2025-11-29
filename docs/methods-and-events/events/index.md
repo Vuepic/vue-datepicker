@@ -152,9 +152,9 @@ Will have one param
 
 - `Date | Date[]`: `v-model` value in a given timezone
 
-## @date-update
+## @date-click
 
-Emits a date value when date is clicked on the calendar
+Emits a date value when the date is clicked on the calendar
 
 ## @invalid-date
 
