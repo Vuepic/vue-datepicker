@@ -25,6 +25,9 @@ interface TimeConfig {
   noHoursOverlay?: boolean;
   noMinutesOverlay?: boolean;
   noSecondsOverlay?: boolean;
+  hoursIncrement?: number | string;
+  minutesIncrement?: number | string;
+  secondsIncrement?: number | string;
   hoursGridIncrement?: number | string;
   minutesGridIncrement?: number | string;
   secondsGridIncrement?: number | string;
