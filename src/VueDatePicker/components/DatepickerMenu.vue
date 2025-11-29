@@ -89,9 +89,9 @@
             <div v-if="$slots['right-sidebar']" class="dp__sidebar_right">
                 <slot name="right-sidebar" v-bind="getSidebarProps" />
             </div>
-            <div v-if="$slots['action-extra']" class="dp__action_extra">
-                <slot v-if="$slots['action-extra']" name="action-extra" :select-current-date="selectCurrentDate" />
-            </div>
+        </div>
+        <div v-if="$slots['action-extra']" class="dp__action_extra">
+            <slot v-if="$slots['action-extra']" name="action-extra" :select-current-date="selectCurrentDate" />
         </div>
         <ActionRow
             v-if="!rootProps.autoApply || config.keepActionRow"
