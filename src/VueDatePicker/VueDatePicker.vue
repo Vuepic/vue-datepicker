@@ -18,7 +18,7 @@
                 <slot :name="slot" v-bind="args" />
             </template>
         </DatepickerInput>
-        <teleport :to="teleport" :disabled="!teleport">
+        <TeleportCmp :to="teleport" :disabled="!teleport">
             <div
                 ref="dp-menu-wrap"
                 :class="{
@@ -64,7 +64,7 @@
                     </DatepickerMenu>
                 </transition>
             </div>
-        </teleport>
+        </TeleportCmp>
     </div>
 </template>
 
@@ -79,6 +79,7 @@
         watch,
         nextTick,
         useTemplateRef,
+        Teleport as TeleportCmp,
         type Ref,
         type ComponentPublicInstance,
     } from 'vue';
