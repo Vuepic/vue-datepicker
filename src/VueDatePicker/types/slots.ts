@@ -112,7 +112,7 @@ export interface RootSlots {
     month(props: { text: string; value: number }): any;
     year(props: { text: string; value: number }): any;
     'action-buttons'(props: { value: InternalModelValue }): any;
-    'action-preview'(props: { value: InternalModelValue }): any;
+    'action-preview'(props: { value: InternalModelValue; formatValue: string }): any;
     'calendar-header'(props: { day: string; index: number }): any;
     'marker-tooltip'(props: { day: Date; tooltip: { text?: string; html?: string; color?: string } }): any;
     'action-extra'(props: { selectCurrentDate: () => void }): any;

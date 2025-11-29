@@ -154,12 +154,14 @@ This slot replaces the date preview section in the action row
 - Exposed props:
 ```ts
 {
-  value: Date | Date[] | null
+  value: Date | Date[] | null;
+  ormatValue: string;
 }
 ```
 
 :::info
 - `value` - Current selection in the picker
+- `formatValue` - Formatted value of the selected date(s)
 :::
 
 <GlobalDemo>

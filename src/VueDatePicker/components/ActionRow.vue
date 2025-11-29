@@ -18,7 +18,12 @@
                 :title="formatValue || undefined"
                 :style="previewStyle"
             >
-                <slot v-if="$slots['action-preview'] && showPreview" name="action-preview" :value="modelValue" />
+                <slot
+                    v-if="$slots['action-preview'] && showPreview"
+                    name="action-preview"
+                    :value="modelValue"
+                    :format-value="formatValue"
+                />
                 <template v-if="!$slots['action-preview'] && showPreview">
                     {{ formatValue }}
                 </template>
