@@ -126,11 +126,23 @@
   }
 }
 
-.dp__range_between {
+%--dp--range-in-between {
   background: var(--dp-range-between-dates-background-color);
   color: var(--dp-range-between-dates-text-color);
   border-radius: 0;
   border: 1px solid var(--dp-range-between-border-color);
+}
+
+.dp__range_between {
+  @extend %--dp--range-in-between;
+}
+
+.dp--extended-fixed-start {
+  @extend %--dp--range-in-between;
+}
+
+.dp--extended-fixed-end {
+  @extend %--dp--range-in-between;
 }
 
 .dp__range_between_week {

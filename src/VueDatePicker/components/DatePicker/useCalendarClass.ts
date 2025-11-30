@@ -4,7 +4,7 @@ import { addDays, isAfter, isBefore } from 'date-fns';
 import { useContext, useDateUtils, useValidation } from '@/composables';
 
 import type { UnwrapRef } from 'vue';
-import type { CalendarDay } from '@/types';
+import type { CalendarDay, InternalModelValue } from '@/types';
 
 export const useCalendarClass = () => {
     const {
@@ -31,7 +31,7 @@ export const useCalendarClass = () => {
     //
 
     /**
-     * When using range picker keep track of hovered value in the calendar
+     * When using range picker, keep track of hovered value in the calendar
      */
     const setHoverDate = (day: UnwrapRef<CalendarDay>): void => {
         if (!day.current && rootProps.hideOffsetDates) {
@@ -189,7 +189,7 @@ export const useCalendarClass = () => {
         return true;
     };
 
-    // Check if date is hovered, for single picker mode
+    // Check if the date is hovered, for single picker mode
     const dateHover = (day: CalendarDay) => {
         if (rootProps.weekPicker) return false;
         const isInRange = range.value.enabled ? !rangeActiveStartEnd(day) && !rangeActiveStartEnd(day, false) : true;
@@ -299,7 +299,7 @@ export const useCalendarClass = () => {
         };
     };
 
-    // Get set of classes for the single date picker
+    // Get a set of classes for the single date picker
     const singleDateClasses = (day: CalendarDay): Record<string, boolean> => {
         return {
             dp__active_date: isActive(day),
@@ -307,7 +307,7 @@ export const useCalendarClass = () => {
         };
     };
 
-    // Get set of classes for the single week picker
+    // Get a set of classes for the single-week picker
     const weekPickerSingleClasses = (day: CalendarDay): Record<string, boolean> => {
         if (modelValue.value && !Array.isArray(modelValue.value)) {
             const week = getWeekFromDate(modelValue.value, rootProps.weekStart);
@@ -323,7 +323,7 @@ export const useCalendarClass = () => {
         };
     };
 
-    // Get set of classes for the range week picker
+    // Get a set of classes for the range week picker
     const weekPickerRangeClasses = (day: CalendarDay) => {
         if (modelValue.value && Array.isArray(modelValue.value)) {
             const startWeek = getWeekFromDate(modelValue.value[0]!, rootProps.weekStart);
@@ -357,7 +357,53 @@ export const useCalendarClass = () => {
         return { isRangeStart, isRangeEnd };
     };
 
-    // Get set of classes for the range
+    const isFixedRange = (value: InternalModelValue): value is [Date, Date] => {
+        return (
+            range.value.enabled &&
+            (range.value.fixedStart || range.value.fixedEnd) &&
+            Array.isArray(modelValue.value) &&
+            modelValue.value.length === 2
+        );
+    };
+
+    const isFixedRangeExcludeActive = (
+        day: CalendarDay,
+        start: boolean,
+        isRangeStart: boolean,
+        isRangeEnd: boolean,
+    ) => {
+        if (!isFixedRange(modelValue.value) || !hoveredDate.value) return false;
+        if (start) {
+            return (
+                range.value.fixedEnd &&
+                isDateEqual(day.value, hoveredDate.value) &&
+                isBefore(day.value, modelValue.value[0]) &&
+                !isRangeStart
+            );
+        }
+        return (
+            range.value.fixedStart &&
+            isDateEqual(day.value, hoveredDate.value) &&
+            isAfter(day.value, modelValue.value[1]) &&
+            !isRangeEnd
+        );
+    };
+
+    const isExtendedFixedStartEnd = (day: CalendarDay, start: boolean) => {
+        if (!isFixedRange(modelValue.value) || !hoveredDate.value) return false;
+        if (start) {
+            return (
+                range.value.fixedEnd &&
+                isAfter(day.value, hoveredDate.value) &&
+                isBefore(day.value, modelValue.value[0])
+            );
+        }
+        return (
+            range.value.fixedStart && isBefore(day.value, hoveredDate.value) && isAfter(day.value, modelValue.value[1])
+        );
+    };
+
+    // Get a set of classes for the range
     const rangeDateClasses = (day: CalendarDay): Record<string, boolean> => {
         const { isRangeStart, isRangeEnd } = rangeStartEnd(day);
         return {
@@ -366,12 +412,16 @@ export const useCalendarClass = () => {
             dp__range_between: isBetween(day),
             dp__date_hover:
                 isDateEqual(day.value, hoveredDate.value) && !isRangeStart && !isRangeEnd && !rootProps.weekPicker,
-            dp__date_hover_start: isHoverDateStartEnd(day, true),
-            dp__date_hover_end: isHoverDateStartEnd(day, false),
+            dp__date_hover_start:
+                isHoverDateStartEnd(day, true) || isFixedRangeExcludeActive(day, true, isRangeStart, isRangeEnd),
+            dp__date_hover_end:
+                isHoverDateStartEnd(day, false) || isFixedRangeExcludeActive(day, false, isRangeStart, isRangeEnd),
+            'dp--extended-fixed-start': isExtendedFixedStartEnd(day, true),
+            'dp--extended-fixed-end': isExtendedFixedStartEnd(day, false),
         };
     };
 
-    // Get set of classes for auto range
+    // Get a set of classes for auto range
     const autoRangeClasses = (day: CalendarDay): Record<string, boolean> => {
         return {
             ...rangeDateClasses(day),
@@ -381,7 +431,7 @@ export const useCalendarClass = () => {
         };
     };
 
-    // Return specific set of classes depending on the config, since we don't need to check for all
+    // Return a specific set of classes depending on the config, since we don't need to check for all
     const getModeClasses = (day: CalendarDay) => {
         if (range.value.enabled) {
             if (range.value.autoRange) return autoRangeClasses(day);
@@ -396,7 +446,7 @@ export const useCalendarClass = () => {
         return singleDateClasses(day);
     };
 
-    // Get needed classes
+    // Get necessary classes
     const getDayClassData = (day: CalendarDay): Record<string, boolean> => {
         if (rootProps.hideOffsetDates && !day.current) return {};
         return {
