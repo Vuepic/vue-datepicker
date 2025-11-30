@@ -175,7 +175,7 @@ export const useDatePicker = (
     /**
      * In case of multi-calendars, check if the range can fit within the view
      * If it can, set focus index to the first date in the range, rest will be auto adjusted
-     * In case of solo multi calendars, always take 0 index as reference
+     * In case of solo multi calendars, always take index 0 as reference
      */
     const getRangeFocusIndex = (dates: Date[]) => {
         if (multiCalendars.value.count) {
@@ -203,7 +203,7 @@ export const useDatePicker = (
         assignTime('seconds', getValue(getSeconds, 'seconds'));
     };
 
-    // Assign range values, or in case of multiDates, set
+    // Assign range values, or in the case of multiDates, set
     const assignExistingMulti = (dates: Date[], fromMount: boolean) => {
         if ((range.value.enabled || rootProps.weekPicker) && !multiDates.value.enabled) {
             return assignRangeValue(dates, fromMount);
@@ -237,7 +237,7 @@ export const useDatePicker = (
         }
     };
 
-    // In multi calendar mode, when the month/year is changed, sync all calendars
+    // In multi-calendar mode, when the month/year is changed, sync all calendars
     const autoChangeMultiCalendars = (instance: number): void => {
         for (let i = instance - 1; i >= 0; i--) {
             const date = subMonths(set(getDate(), { month: month.value(i + 1), year: year.value(i + 1) }), 1);
@@ -445,7 +445,7 @@ export const useDatePicker = (
     };
 
     /**
-     * When using next calendar on auto range mode, adjust month and year for both calendars
+     * When using the next calendar on auto range mode, adjust the month and year for both calendars
      */
     const handleNextCalendarAutoRange = (date: string | Date) => {
         const monthValue = getMonth(getDate(date));
@@ -461,7 +461,7 @@ export const useDatePicker = (
         }
     };
 
-    // Handle range with fixed start/end
+    // Handle range with a fixed start /end
     const setFixedDateRange = (day: CalendarDay) => {
         if (
             includesDisabled(day.value) ||
@@ -482,8 +482,13 @@ export const useDatePicker = (
             rootEmit('range-start', tempRange.value[0]);
         } else if (checkMinMaxRange(getDate(day.value), modelValue.value) && !includesDisabled(day.value)) {
             if (isDateBefore(getDate(day.value), getDate(tempRange.value[0]))) {
-                tempRange.value.unshift(getDate(day.value));
-                rootEmit('range-end', tempRange.value[0]);
+                if (range.value.autoSwitchStartEnd) {
+                    tempRange.value.unshift(getDate(day.value));
+                    rootEmit('range-end', tempRange.value[0]);
+                } else {
+                    tempRange.value[0] = getDate(day.value);
+                    rootEmit('range-start', tempRange.value[0]);
+                }
             } else {
                 tempRange.value[1] = getDate(day.value);
                 rootEmit('range-end', tempRange.value[1]);
@@ -493,7 +498,7 @@ export const useDatePicker = (
         }
     };
 
-    // Check if seconds are enabled, and return proper value
+    // Check if seconds are enabled and return the proper value
     const getSecondsValue = (getFirst = true): number => {
         if (timeConfig.value.enableSeconds) {
             if (Array.isArray(time.seconds)) {
@@ -551,7 +556,7 @@ export const useDatePicker = (
 
     /**
      * Called when the date in the calendar is clicked
-     * Do a necessary formatting and assign value to internal
+     * Do the necessary formatting and assign value to internal
      */
     const selectDate = (day: CalendarDay, isNext = false): void => {
         if (isDisabled(day.value) || (!day.current && rootProps.hideOffsetDates))
@@ -606,7 +611,7 @@ export const useDatePicker = (
         return date;
     };
 
-    // Select current date on now button
+    // Select the current date on now button
     const selectCurrentDate = (): void => {
         const date = getCurrentDate();
         if (!range.value.enabled && !multiDates.value.enabled) {
@@ -643,7 +648,7 @@ export const useDatePicker = (
         emit('time-update');
     };
 
-    // Get last date in the multi dates arr
+    // Get the last date in the multi dates arr
     const multiDatesLast = (): Date | null => {
         if (Array.isArray(modelValue.value) && modelValue.value.length) {
             return modelValue.value[modelValue.value.length - 1]!;

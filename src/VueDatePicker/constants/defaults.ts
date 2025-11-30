@@ -12,6 +12,7 @@ export const defaultRangeOptions = {
     autoRange: undefined,
     fixedStart: false,
     fixedEnd: false,
+    autoSwitchStartEnd: true,
 };
 
 export const defaultConfig = {

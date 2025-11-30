@@ -4,7 +4,7 @@
             v-model="modelBind"
             :dark="isDark"
             v-bind="$attrs"
-            :placeholder="placeholder"
+            :placeholder="overridePlaceholder ?? placeholder"
             :locale="localized ? zhCN : undefined"
         >
             <template v-for="(slot, i) in Object.keys(slots)" #[slot]="args" :key="i">
@@ -32,6 +32,7 @@
         emptyModel?: boolean;
         localized?: boolean;
         bindSingle?: boolean;
+        overridePlaceholder?: string;
     }>();
 
     onMounted(() => {

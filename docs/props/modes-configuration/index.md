@@ -24,6 +24,7 @@ interface RangeConfig {
     maxRange?: string | number;
     minRange?: string | number;
     autoRange?: string | number;
+    autoSwitchStartEnd?: boolean;
 }
 ```
 
@@ -270,6 +271,32 @@ When using disabled dates with `minRange` or `mixRange`, disabled dates are not 
 ```vue
 <template>
   <VueDatePicker v-model="date" :range="{ maxRange: 14, minMaxRawRange: true }" :filters="{ weekDays: [1,2,3,4,5] }" />
+</template>
+
+<script setup>
+  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { ref } from 'vue';
+
+  const date = ref();
+</script>
+```
+:::
+
+### `autoSwitchStartEnd`
+
+By default, when selecting the second date in the range, if the second selected date is before the first date, the range will be auto-switched so that the second date becomes the first one.
+
+Disabling this behavior, in a same scenario, will result in range being reset where the first date becomes the newly selected date and requires manually selecting the second date again. This can be useful if you want to do 
+some custom validation logic
+
+- Default: `true`
+
+<GlobalDemo :range="{ autoSwitchStartEnd: false }" overridePlaceholder="Try selecing end date before start date..." :emptyModel="true"></GlobalDemo>
+
+::: details Code Example
+```vue
+<template>
+  <VueDatePicker v-model="date" :range="{ autoSwitchStartEnd: false }"  />
 </template>
 
 <script setup>
