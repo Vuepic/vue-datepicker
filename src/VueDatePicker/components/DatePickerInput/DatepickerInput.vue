@@ -162,7 +162,9 @@
     const splitByAny = (str: string) => {
         if (textInput.value.separators?.length) {
             const pattern = new RegExp(
-                textInput.value.separators.map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'),
+                textInput.value.separators
+                    .map((s) => String.raw`${s}`.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+                    .join('|'),
             );
             return str.split(pattern);
         }

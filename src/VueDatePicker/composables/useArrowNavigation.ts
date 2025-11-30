@@ -38,14 +38,16 @@ export const useArrowNavigation = () => {
 
         gridMatrix.value = Array.from(positionMap.entries())
             .sort((a, b) => a[0] - b[0])
-            .map(([_, rowElements]) =>
-                rowElements.sort((a, b) => {
-                    const posA = positions.get(a)!;
-                    const posB = positions.get(b)!;
-                    return posA.col - posB.col;
-                }),
-            );
+            .map(([_, rowElements]) => sortRow(rowElements, positions));
         elementPositions.value = positions;
+    };
+
+    const sortRow = (rowElements: HTMLElement[], positions: Map<HTMLElement, { row: number; col: number }>) => {
+        return rowElements.sort((a, b) => {
+            const posA = positions.get(a)!;
+            const posB = positions.get(b)!;
+            return posA.col - posB.col;
+        });
     };
 
     const setIndex = (row: number, col: number) => {

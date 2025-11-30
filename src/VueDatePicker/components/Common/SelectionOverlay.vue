@@ -215,12 +215,8 @@
     };
 
     const onKeyDown = (ev: KeyboardEvent) => {
-        switch (ev.key) {
-            case EventKey.esc:
-                return handleEsc(ev);
-            default:
-                return;
-        }
+        if (ev.key === EventKey.esc) return handleEsc(ev);
+        return;
     };
 
     const onBtnKeyDown = (ev: KeyboardEvent) => {

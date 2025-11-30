@@ -178,7 +178,6 @@
         const menu = unrefElement(dpMenuRef);
         if (menu && !textInput.value.enabled && !inline.value.enabled) {
             setState('menuFocused', true);
-            // focusMenu();
         }
 
         if (menu) {

@@ -72,7 +72,6 @@
         defaults: { config },
     } = useContext();
 
-    // const yearModeSlots = mapSlots(slots, 'yearMode');
     const yearModeSlots = getSlotsByComponent(slots, SlotUse.YearMode);
 
     onMounted(() => {
