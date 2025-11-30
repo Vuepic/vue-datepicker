@@ -47,6 +47,7 @@ export const defaultTextInputOptions = {
     format: undefined,
     maskFormat: undefined,
     applyOnBlur: false,
+    separators: undefined,
 };
 
 export const defaultHighlightOptions = {

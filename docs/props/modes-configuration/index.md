@@ -354,6 +354,7 @@ interface TextInputOptions {
   escClose?: boolean;
   maskFormat?: string;
   applyOnBlur?: boolean;
+  separators?: string[];
 }
 ```
 - Default: `{ enterSubmit: true, tabSubmit: true, openMenu: 'open', rangeSeparator: '-' }`
@@ -367,12 +368,18 @@ interface TextInputOptions {
 - `selectOnFocus`: Selects the input text when input is focused
 - `escClose`: Closes calendar on `esc` key press
 - `maskFormat`: Check [here](#maskformat)
-- `applyOnBlur`: Tries to select a typed date when the input loses focus (has no effect if `auto-apply` is enabled) 
+- `applyOnBlur`: Tries to select a typed date when the input loses focus (has no effect if `auto-apply` is enabled)
+- `separators`: In case of a range picker, you can define custom separators to be used as check between the two dates 
 :::
 
 :::info
 - When custom `format` is provided, focusing on the input will auto format the value to a given format if there is a selected date
 - If custom `format` is of type `string[]` or a `function`, it defaults to the `formats.input`
+:::
+
+:::warning
+When using custom `seprators`, make sure to exclude the characters that are used in the `format` string. 
+For example, if you use `MM.dd.yyyy HH:mm` as `format`, **DO NOT USE** `'.'` and `':'` as separators
 :::
 
 <GlobalDemo :text-input="{ format: 'MM.dd.yyyy HH:mm' }" placeholder="Start Typing ..."></GlobalDemo>

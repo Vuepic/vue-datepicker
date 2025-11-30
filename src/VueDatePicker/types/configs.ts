@@ -126,6 +126,7 @@ export interface TextInputConfig {
     format: string | string[] | ((value: string) => Date | null);
     maskFormat: string;
     applyOnBlur: boolean;
+    separators: string[];
 }
 
 export interface RangeConfig {

@@ -159,9 +159,18 @@
         }
     };
 
+    const splitByAny = (str: string) => {
+        if (textInput.value.separators?.length) {
+            const pattern = new RegExp(
+                textInput.value.separators.map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'),
+            );
+            return str.split(pattern);
+        }
+        return str.split(textInput.value.rangeSeparator);
+    };
+
     const handleRangeTextInput = (value: string) => {
-        const { rangeSeparator } = textInput.value;
-        const [dateOne, dateTwo] = value.split(`${rangeSeparator}`);
+        const [dateOne, dateTwo] = splitByAny(value);
 
         if (dateOne) {
             const parsedDateOne = parseFreeInput(dateOne.trim(), inputValue.value);
