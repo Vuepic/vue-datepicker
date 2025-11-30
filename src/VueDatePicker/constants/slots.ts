@@ -17,6 +17,8 @@ export enum SlotUse {
     YearPicker = 'year-picker',
 }
 
+const timeOverlayUse = [SlotUse.TimeInput, SlotUse.TimePicker, SlotUse.PassTrough];
+
 const slots = [
     { name: 'trigger', use: [SlotUse.Input] },
     { name: 'input-icon', use: [SlotUse.Input] },
@@ -52,27 +54,27 @@ const slots = [
     { name: 'year-overlay-header', use: [SlotUse.DatePickerHeader, SlotUse.PassTrough] },
     {
         name: 'hours-overlay-value',
-        use: [SlotUse.TimeInput, SlotUse.TimePicker, SlotUse.PassTrough],
+        use: timeOverlayUse,
     },
     {
         name: 'hours-overlay-header',
-        use: [SlotUse.TimeInput, SlotUse.TimePicker, SlotUse.PassTrough],
+        use: timeOverlayUse,
     },
     {
         name: 'minutes-overlay-value',
-        use: [SlotUse.TimeInput, SlotUse.TimePicker, SlotUse.PassTrough],
+        use: timeOverlayUse,
     },
     {
         name: 'minutes-overlay-header',
-        use: [SlotUse.TimeInput, SlotUse.TimePicker, SlotUse.PassTrough],
+        use: timeOverlayUse,
     },
     {
         name: 'seconds-overlay-value',
-        use: [SlotUse.TimeInput, SlotUse.TimePicker, SlotUse.PassTrough],
+        use: timeOverlayUse,
     },
     {
         name: 'seconds-overlay-header',
-        use: [SlotUse.TimeInput, SlotUse.TimePicker, SlotUse.PassTrough],
+        use: timeOverlayUse,
     },
     { name: 'hours', use: [SlotUse.TimeInput, SlotUse.TimePicker, SlotUse.PassTrough] },
     { name: 'minutes', use: [SlotUse.TimeInput, SlotUse.TimePicker, SlotUse.PassTrough] },

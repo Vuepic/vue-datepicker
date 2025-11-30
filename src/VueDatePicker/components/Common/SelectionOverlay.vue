@@ -216,7 +216,6 @@
 
     const onKeyDown = (ev: KeyboardEvent) => {
         if (ev.key === EventKey.esc) return handleEsc(ev);
-        return;
     };
 
     const onBtnKeyDown = (ev: KeyboardEvent) => {
