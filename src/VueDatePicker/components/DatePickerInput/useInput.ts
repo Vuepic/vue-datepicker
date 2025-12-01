@@ -18,8 +18,33 @@ export const useInput = () => {
             : (startTime.value ?? getTimeObjFromCurrent(getDate(), {}, timeConfig.value.enableSeconds)),
     );
 
+    const getPatternForValue = (fullPattern: string, value: string) => {
+        const separatorRegex = /[^a-zA-Z]+/g;
+        const valueSeparatorRegex = /[^0-9]+/g;
+
+        const valueParts = value.split(valueSeparatorRegex);
+        const patternParts = fullPattern.split(separatorRegex);
+        const patternSeparators = fullPattern.match(separatorRegex) || [];
+        const valueSeparators = value.match(valueSeparatorRegex) || [];
+
+        let result = '';
+
+        for (let i = 0; i < valueParts.length && i < patternParts.length; i++) {
+            if (i > 0 && valueSeparators[i - 1]) {
+                result += patternSeparators[i - 1] || valueSeparators[i - 1];
+            }
+
+            const valuePartLength = valueParts[i]?.length;
+            result += patternParts[i]?.slice(0, valuePartLength);
+        }
+
+        return result;
+    };
+
     const parseStringToDate = (value: string, pattern: string, inputVal?: string): Date | null => {
-        const parsedDate = parse(value, pattern.slice(0, value.length), getDate(), { locale: rootProps.locale });
+        const parsedDate = parse(value, getPatternForValue(pattern, value), getDate(), {
+            locale: rootProps.locale,
+        });
 
         if (isValid(parsedDate) && isDate(parsedDate)) {
             if (inputVal || textPasted.value) return parsedDate;

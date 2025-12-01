@@ -361,7 +361,7 @@
             modelValue.value = null;
             return;
         }
-        const validDate = Array.isArray(date) ? !date.some((d) => !validateDate(d)) : validateDate(date);
+        const validDate = Array.isArray(date) ? date.every((d) => validateDate(d)) : validateDate(date);
         const validTime = isValidTime(date as Date[]);
         if (validDate && validTime) {
             setState('isTextInputDate', true);

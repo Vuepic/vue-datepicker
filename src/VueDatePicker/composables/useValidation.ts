@@ -155,9 +155,9 @@ export const useValidation = () => {
     const shouldCheckMinMaxRange = (modelValue: InternalModelValue, index: number): modelValue is Array<Date> => {
         return Boolean(
             Array.isArray(modelValue) &&
-                modelValue[index] &&
-                (range.value.maxRange || range.value.minRange) &&
-                isValidYear(modelValue[index]),
+            modelValue[index] &&
+            (range.value.maxRange || range.value.minRange) &&
+            isValidYear(modelValue[index]),
         );
     };
 
