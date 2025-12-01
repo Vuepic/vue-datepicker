@@ -147,7 +147,7 @@ export interface RootSlots {
     seconds(props: { text: string; value: number }): any;
     month(props: { text: string; value: number }): any;
     year(props: { text: string; value: number }): any;
-    'action-buttons'(props: { value: InternalModelValue }): any;
+    'action-buttons'(props: { value: InternalModelValue; selectDate: () => void; selectionDisabled: boolean }): any;
     'action-preview'(props: { value: InternalModelValue; formatValue: string }): any;
     'calendar-header'(props: { day: string; index: number }): any;
     'marker-tooltip'(props: { day: Date; tooltip: { text?: string; html?: string; color?: string } }): any;

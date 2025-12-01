@@ -29,7 +29,13 @@
                 </template>
             </div>
             <div ref="action-buttons-container" class="dp__action_buttons" data-dp-element="action-row">
-                <slot v-if="$slots['action-buttons']" name="action-buttons" :value="modelValue" />
+                <slot
+                    v-if="$slots['action-buttons']"
+                    name="action-buttons"
+                    :value="modelValue"
+                    :select-date="selectDate"
+                    :selection-disabled="disabled"
+                />
                 <template v-if="!$slots['action-buttons']">
                     <button
                         v-if="!inline.enabled && actionRow.showCancel"

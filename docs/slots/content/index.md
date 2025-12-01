@@ -116,11 +116,15 @@ This slot replaces the buttons section in the action row
 ```ts
 {
   value: Date | Date[] | null
+  selectDate: () => void
+  selectionDisabled: boolean
 }
 ```
 
 :::info
 - `value` - Current selection in the picker
+- `selectDate` - Function to call to select current selection in the picker
+- `selectionDisabled` - Boolean indicating if the picked selection is valid or not
 :::
 
 ::: details Code Example
@@ -155,7 +159,7 @@ This slot replaces the date preview section in the action row
 ```ts
 {
   value: Date | Date[] | null;
-  ormatValue: string;
+  formatValue: string;
 }
 ```
 
