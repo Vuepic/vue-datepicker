@@ -90,13 +90,8 @@ As you may know, maintaining an open-source project is a very time-consuming job
 
 Please ⭐️ this repository if you like the component!
 
-You can also make a financial contribution via sponsoring this project or one time donation. [Become a sponsor](https://github.com/sponsors/Vuepic)
+You can also make a financial contribution via sponsoring this project or one-time donation. [Become a sponsor](https://github.com/sponsors/Vuepic)
 
-Special thanks to our sponsors 🙏
-
-<a href="https://hapio.io/" target="_blank">
-    <img src="https://avatars.githubusercontent.com/u/99868704?s=200&v=4" width="80" alt="Hapio">
-</a>
 
 ## Contributors
 
