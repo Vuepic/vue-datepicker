@@ -20,7 +20,7 @@ export const useInput = () => {
 
     const getPatternForValue = (fullPattern: string, value: string) => {
         const separatorRegex = /[^a-zA-Z]+/g;
-        const valueSeparatorRegex = /[^0-9]+/g;
+        const valueSeparatorRegex = /\D+/g;
 
         const valueParts = value.split(valueSeparatorRegex);
         const patternParts = fullPattern.split(separatorRegex);
