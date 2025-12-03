@@ -109,3 +109,27 @@ Type: `(flowStep?: number) => void`
 :::tip
 Function supports `flowStep` parameter to trigger flow from a given step again
 :::
+
+## dpMenuRef
+
+Access internal `dpMenuRef`
+
+This is the actual floating menu component
+
+Type: `() => Ref<ComponentPublicInstance | null>`
+
+## dpWrapMenuRef
+
+Access internal `dpWrapMenuRef`
+
+This is the `div` element that wraps the menu
+
+Type: `() => Ref<HTMLElement | null>`
+
+## inputRef
+
+Access internal `inputRef`
+
+This is the input component (not the input field)
+
+Type: `() => Ref<ComponentPublicInstance | null>`

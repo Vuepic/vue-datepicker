@@ -465,8 +465,8 @@
         toggleMenu,
         handleFlow,
         getDpWrapMenuRef,
-        dpMenuRef,
-        dpWrapMenuRef,
-        inputRef,
+        dpMenuRef: () => dpMenuRef,
+        dpWrapMenuRef: () => dpWrapMenuRef,
+        inputRef: () => inputRef,
     });
 </script>

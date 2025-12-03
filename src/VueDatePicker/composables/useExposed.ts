@@ -26,6 +26,10 @@ export const useExposed = (datePicker: Readonly<ShallowRef<InstanceType<typeof V
 
     const handleFlow = () => datePicker.value?.handleFlow();
 
+    const dpMenuRef = () => datePicker.value?.dpMenuRef();
+    const dpWrapMenuRef = () => datePicker.value?.dpWrapMenuRef();
+    const inputRef = () => datePicker.value?.inputRef();
+
     return {
         openMenu,
         closeMenu,
@@ -38,5 +42,8 @@ export const useExposed = (datePicker: Readonly<ShallowRef<InstanceType<typeof V
         switchView,
         handleFlow,
         toggleMenu,
+        dpMenuRef,
+        dpWrapMenuRef,
+        inputRef,
     };
 };
