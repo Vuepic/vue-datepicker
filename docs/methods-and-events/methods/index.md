@@ -110,7 +110,7 @@ Type: `(flowStep?: number) => void`
 Function supports `flowStep` parameter to trigger flow from a given step again
 :::
 
-## dpMenuRef
+## dpMenuRef <Badge type="tip" text="v12.1+" />
 
 Access internal `dpMenuRef`
 
@@ -118,7 +118,7 @@ This is the actual floating menu component
 
 Type: `() => Ref<ComponentPublicInstance | null>`
 
-## dpWrapMenuRef
+## dpWrapMenuRef <Badge type="tip" text="v12.1+" />
 
 Access internal `dpWrapMenuRef`
 
@@ -126,7 +126,7 @@ This is the `div` element that wraps the menu
 
 Type: `() => Ref<HTMLElement | null>`
 
-## inputRef
+## inputRef <Badge type="tip" text="v12.1+" />
 
 Access internal `inputRef`
 

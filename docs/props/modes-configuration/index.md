@@ -24,7 +24,7 @@ interface RangeConfig {
     maxRange?: string | number;
     minRange?: string | number;
     autoRange?: string | number;
-    autoSwitchStartEnd?: boolean;
+    autoSwitchStartEnd?: boolean; // v12.1+
 }
 ```
 
@@ -282,7 +282,7 @@ When using disabled dates with `minRange` or `mixRange`, disabled dates are not 
 ```
 :::
 
-### `autoSwitchStartEnd`
+### `autoSwitchStartEnd` <Badge type="tip" text="v12.1+" />
 
 By default, when selecting the second date in the range, if the second selected date is before the first date, the range will be auto-switched so that the second date becomes the first one.
 
@@ -380,8 +380,8 @@ interface TextInputOptions {
   format?: string | string[] | ((value: string) => Date | null);
   escClose?: boolean;
   maskFormat?: string;
-  applyOnBlur?: boolean;
-  separators?: string[];
+  applyOnBlur?: boolean; // v12.1+
+  separators?: string[]; // v12.1+
 }
 ```
 - Default: `{ enterSubmit: true, tabSubmit: true, openMenu: 'open', rangeSeparator: '-' }`
@@ -395,8 +395,8 @@ interface TextInputOptions {
 - `selectOnFocus`: Selects the input text when input is focused
 - `escClose`: Closes calendar on `esc` key press
 - `maskFormat`: Check [here](#maskformat)
-- `applyOnBlur`: Tries to select a typed date when the input loses focus (has no effect if `auto-apply` is enabled)
-- `separators`: In case of a range picker, you can define custom separators to be used as check between the two dates 
+- `applyOnBlur` <Badge type="tip" text="v12.1+" />: Tries to select a typed date when the input loses focus (has no effect if `auto-apply` is enabled)
+- `separators` <Badge type="tip" text="v12.1+" />: In case of a range picker, you can define custom separators to be used as check between the two dates 
 :::
 
 :::info

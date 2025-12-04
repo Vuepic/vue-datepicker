@@ -116,15 +116,15 @@ This slot replaces the buttons section in the action row
 ```ts
 {
   value: Date | Date[] | null
-  selectDate: () => void
-  selectionDisabled: boolean
+  selectDate: () => void // v12.1+
+  selectionDisabled: boolean // v12.1+
 }
 ```
 
 :::info
 - `value` - Current selection in the picker
-- `selectDate` - Function to call to select current selection in the picker
-- `selectionDisabled` - Boolean indicating if the picked selection is valid or not
+- `selectDate` <Badge type="tip" text="v12.1+" /> - Function to call to select current selection in the picker
+- `selectionDisabled` <Badge type="tip" text="v12.1+" /> - Boolean indicating if the picked selection is valid or not
 :::
 
 ::: details Code Example
