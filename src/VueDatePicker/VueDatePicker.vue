@@ -131,9 +131,20 @@
     const watchRender = ref(true);
 
     const buildFloatingMiddlewares = (middlewares: Middleware[]) => {
-        if (!floatingConfig.value.arrow) return middlewares;
-        if (floatingConfig.value.arrow === true) middlewares.push(arrow({ element: menuArrowRef }));
-        else middlewares.push(arrow({ element: floatingConfig.value.arrow }));
+        if (floatingConfig.value.arrow) {
+            middlewares.push(
+                arrow({ element: floatingConfig.value.arrow === true ? menuArrowRef : floatingConfig.value.arrow }),
+            );
+        }
+
+        if (floatingConfig.value.flip) {
+            middlewares.push(flip(typeof floatingConfig.value.flip === 'object' ? floatingConfig.value.flip : {}));
+        }
+
+        if (floatingConfig.value.shift) {
+            middlewares.push(shift(typeof floatingConfig.value.shift === 'object' ? floatingConfig.value.shift : {}));
+        }
+
         return middlewares;
     };
 
@@ -143,7 +154,7 @@
         {
             strategy: floatingConfig.value.strategy,
             placement: floatingConfig.value.placement,
-            middleware: buildFloatingMiddlewares([offset(floatingConfig.value.offset), flip(), shift()]),
+            middleware: buildFloatingMiddlewares([offset(floatingConfig.value.offset)]),
             whileElementsMounted: autoUpdate,
         },
     );

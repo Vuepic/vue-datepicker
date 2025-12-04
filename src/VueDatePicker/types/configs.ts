@@ -1,7 +1,7 @@
 import type { CustomClass, InternalModelValue, PickerSection, TimeKey } from '@/types/generic.ts';
 import type { CalendarDay, MonthModel, TimeModel } from '@/types/picker.ts';
 import type { ShallowRef } from 'vue';
-import type { Placement, Strategy } from '@floating-ui/vue';
+import type { FlipOptions, Placement, ShiftOptions, Strategy } from '@floating-ui/vue';
 import type { NearestMinutes, RoundingMethod } from 'date-fns';
 
 export interface InputAttributesConfig {
@@ -196,4 +196,6 @@ export interface FloatingConfig {
     arrow: Readonly<ShallowRef<HTMLDivElement | null>> | boolean;
     strategy?: Strategy;
     placement?: Placement;
+    flip?: boolean | FlipOptions;
+    shift?: boolean | ShiftOptions;
 }

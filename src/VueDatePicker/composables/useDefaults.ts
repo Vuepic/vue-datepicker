@@ -286,6 +286,8 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
             arrow: props.floating?.arrow ?? true,
             strategy: props.floating?.strategy ?? undefined,
             placement: props.floating?.placement ?? undefined,
+            flip: props.floating?.flip ?? true,
+            shift: props.floating?.shift ?? true,
         };
     });
 

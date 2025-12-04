@@ -727,16 +727,20 @@ interface FloatingConfig {
   arrow?: Readonly<ShallowRef<HTMLDivElement | null>> | boolean;
   strategy?: Strategy;
   placement?: Placement;
+  flip?: boolean | FlipOptions;
+  shift?: boolean | ShiftOptions;
 }
 ```
 
-- Default: `{ offset: 10, arrow: true, strategy: undeifned, placement: undefined }`
+- Default: `{ offset: 10, arrow: true, strategy: undeifned, placement: undefined, flip: true, shift: true }`
 
 :::info
 - `offset` - Offset from the input field
 - `arrow` - Show/hide floating menu arrow. If you use `arrow` slot, you should pass the `template ref` for proper arrow positioning
-- `strategy` - Use `absolute` or `fixed` positioning strategy
-- `placement` - Position of the floating menu
+- [`strategy`](https://floating-ui.com/docs/usefloating#strategy) - Use `absolute` or `fixed` positioning strategy
+- [`placement`](https://floating-ui.com/docs/tutorial#placements) - Position of the floating menu
+- [`flip`](https://floating-ui.com/docs/flip#flip) - Enable/disable or configure flip middleware
+- [`shift`](https://floating-ui.com/docs/shift#shift) - Enable/disable or configure shift middleware
 :::
 
 <GlobalDemo :floating="{ arrow: false, offset: 0 }"></GlobalDemo>
