@@ -9,6 +9,7 @@ import { ComponentPublicInstance } from 'vue';
 import { ComputedRef } from 'vue';
 import { DebuggerEvent } from 'vue';
 import { DefineComponent } from 'vue';
+import { FlipOptions } from '@floating-ui/vue';
 import { GlobalComponents } from 'vue';
 import { GlobalDirectives } from 'vue';
 import { Locale } from 'date-fns';
@@ -21,6 +22,7 @@ import { PublicProps } from 'vue';
 import { RoundingMethod } from 'date-fns';
 import { ShallowRef } from 'vue';
 import { ShallowUnwrapRef } from 'vue';
+import { ShiftOptions } from '@floating-ui/vue';
 import { Slot } from 'vue';
 import { Strategy } from '@floating-ui/vue';
 import { TZDate } from '@date-fns/tz';
@@ -40,6 +42,9 @@ parseModel: () => void;
 switchView: (view: MenuView, instance?: number) => void;
 handleFlow: () => void;
 toggleMenu: () => void;
+dpMenuRef: () => Readonly<ShallowRef<any>>;
+dpWrapMenuRef: () => any;
+inputRef: () => any;
 }, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {
 blur: () => any;
 focus: () => any;
@@ -167,6 +172,9 @@ switchView: (view: MenuView, instance?: number) => void;
 toggleMenu: () => void;
 handleFlow: (skipStep?: number) => void;
 getDpWrapMenuRef: () => any;
+dpMenuRef: () => Readonly<ShallowRef<any>>;
+dpWrapMenuRef: () => any;
+inputRef: () => any;
 }, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, {}, {}, string, {}, GlobalComponents, GlobalDirectives, string, ComponentProvideOptions> & {
 beforeCreate?: (() => void) | (() => void)[];
 created?: (() => void) | (() => void)[];
@@ -187,7 +195,7 @@ errorCaptured?: ((err: unknown, instance: ComponentPublicInstance | null, info: 
 $forceUpdate: () => void;
 $nextTick: nextTick;
 $watch<T extends string | ((...args: any) => any)>(source: T, cb: T extends (...args: any) => infer R ? (...args: [R, R, OnCleanup]) => any : (...args: [any, any, OnCleanup]) => any, options?: WatchOptions): WatchStopHandle;
-} & Readonly<{}> & Omit<Readonly<{}> & Readonly<{}>, "onScroll" | "openMenu" | "handleFlow" | "switchView" | "formatInputValue" | "closeMenu" | "selectDate" | "clearValue" | "updateInternalModelValue" | "setMonthYear" | "parseModel" | "toggleMenu" | "getDpWrapMenuRef"> & ShallowUnwrapRef<    {
+} & Readonly<{}> & Omit<Readonly<{}> & Readonly<{}>, "onScroll" | "openMenu" | "handleFlow" | "switchView" | "formatInputValue" | "closeMenu" | "selectDate" | "clearValue" | "updateInternalModelValue" | "setMonthYear" | "parseModel" | "toggleMenu" | "getDpWrapMenuRef" | "dpMenuRef" | "dpWrapMenuRef" | "inputRef"> & ShallowUnwrapRef<    {
 closeMenu: (fromClickAway?: boolean) => void;
 selectDate: () => void;
 clearValue: () => void;
@@ -201,6 +209,9 @@ switchView: (view: MenuView, instance?: number) => void;
 toggleMenu: () => void;
 handleFlow: (skipStep?: number) => void;
 getDpWrapMenuRef: () => any;
+dpMenuRef: () => Readonly<ShallowRef<any>>;
+dpWrapMenuRef: () => any;
+inputRef: () => any;
 }> & {} & ComponentCustomProperties & {} & {
 $slots: any;
 }) | null;
@@ -240,6 +251,9 @@ declare function __VLS_template(): {
             toggleMenu: () => void;
             handleFlow: (skipStep?: number) => void;
             getDpWrapMenuRef: () => any;
+            dpMenuRef: () => Readonly<ShallowRef<any>>;
+            dpWrapMenuRef: () => any;
+            inputRef: () => any;
             }, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, {}, {}, string, {}, GlobalComponents, GlobalDirectives, string, ComponentProvideOptions> & {
                 beforeCreate?: (() => void) | (() => void)[];
                 created?: (() => void) | (() => void)[];
@@ -260,7 +274,7 @@ declare function __VLS_template(): {
             $forceUpdate: () => void;
             $nextTick: nextTick;
             $watch<T extends string | ((...args: any) => any)>(source: T, cb: T extends (...args: any) => infer R ? (...args: [R, R, OnCleanup]) => any : (...args: [any, any, OnCleanup]) => any, options?: WatchOptions): WatchStopHandle;
-        } & Readonly<{}> & Omit<Readonly<{}> & Readonly<{}>, "onScroll" | "openMenu" | "handleFlow" | "switchView" | "formatInputValue" | "closeMenu" | "selectDate" | "clearValue" | "updateInternalModelValue" | "setMonthYear" | "parseModel" | "toggleMenu" | "getDpWrapMenuRef"> & ShallowUnwrapRef<    {
+        } & Readonly<{}> & Omit<Readonly<{}> & Readonly<{}>, "onScroll" | "openMenu" | "handleFlow" | "switchView" | "formatInputValue" | "closeMenu" | "selectDate" | "clearValue" | "updateInternalModelValue" | "setMonthYear" | "parseModel" | "toggleMenu" | "getDpWrapMenuRef" | "dpMenuRef" | "dpWrapMenuRef" | "inputRef"> & ShallowUnwrapRef<    {
         closeMenu: (fromClickAway?: boolean) => void;
         selectDate: () => void;
         clearValue: () => void;
@@ -274,6 +288,9 @@ declare function __VLS_template(): {
         toggleMenu: () => void;
         handleFlow: (skipStep?: number) => void;
         getDpWrapMenuRef: () => any;
+        dpMenuRef: () => Readonly<ShallowRef<any>>;
+        dpWrapMenuRef: () => any;
+        inputRef: () => any;
         }> & {} & ComponentCustomProperties & {} & {
             $slots: any;
         }) | null;
@@ -461,6 +478,8 @@ export declare interface FloatingConfig {
     arrow: Readonly<ShallowRef<HTMLDivElement | null>> | boolean;
     strategy?: Strategy;
     placement?: Placement;
+    flip?: boolean | FlipOptions;
+    shift?: boolean | ShiftOptions;
 }
 
 export declare interface FlowConfig {
@@ -675,6 +694,7 @@ export declare interface RangeConfig {
     maxRange?: string | number;
     minRange?: string | number;
     autoRange?: string | number;
+    autoSwitchStartEnd: boolean;
 }
 
 export declare interface RootEmits {
@@ -858,6 +878,8 @@ export declare interface RootSlots {
     }): any;
     'action-buttons'(props: {
         value: InternalModelValue;
+        selectDate: () => void;
+        selectionDisabled: boolean;
     }): any;
     'action-preview'(props: {
         value: InternalModelValue;
@@ -930,6 +952,7 @@ export declare interface TextInputConfig {
     format: string | string[] | ((value: string) => Date | null);
     maskFormat: string;
     applyOnBlur: boolean;
+    separators: string[];
 }
 
 export declare interface TimeConfig {
