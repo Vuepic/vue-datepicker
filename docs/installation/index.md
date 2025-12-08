@@ -39,7 +39,7 @@ Then import and register component
 **Note**: `css` file is imported separately
 
 ```js
-import VueDatePicker from '@vuepic/vue-datepicker';
+import { VueDatePicker } from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 ```
 
