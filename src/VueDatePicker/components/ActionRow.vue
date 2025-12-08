@@ -17,6 +17,7 @@
                 class="dp__selection_preview"
                 :title="formatValue || undefined"
                 :style="previewStyle"
+                data-test-id="dp-selection-preview"
             >
                 <slot
                     v-if="$slots['action-preview'] && showPreview"
