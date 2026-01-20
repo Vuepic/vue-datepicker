@@ -732,7 +732,7 @@ interface FloatingConfig {
 }
 ```
 
-- Default: `{ offset: 10, arrow: true, strategy: undeifned, placement: undefined, flip: true, shift: true }`
+- Default: `{ offset: 10, arrow: true, strategy: undefined, placement: undefined, flip: true, shift: true }`
 
 :::info
 - `offset` - Offset from the input field
