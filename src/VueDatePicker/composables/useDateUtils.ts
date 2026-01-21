@@ -199,11 +199,12 @@ export const useDateUtils = () => {
             disabled: boolean;
             highlighted?: boolean;
             isBetween?: boolean;
+            ariaLabel?: string;
         },
     ): OverlayGridItem[][] => {
         return getGroupedList(list).map((items) => {
             return items.map((item) => {
-                const { active, disabled, isBetween, highlighted } = cb(item);
+                const { active, disabled, isBetween, highlighted, ariaLabel } = cb(item);
                 return {
                     ...item,
                     active,
@@ -217,6 +218,7 @@ export const useDateUtils = () => {
                         dp__cell_in_between: isBetween,
                         'dp--highlighted': highlighted,
                     },
+                    ariaLabel,
                 };
             });
         });

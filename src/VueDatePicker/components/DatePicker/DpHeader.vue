@@ -46,6 +46,9 @@
                             class="dp__btn dp__month_year_select"
                             :class="{ 'dp--hidden-el': overlayOpen }"
                             :aria-label="`${type.text}-${type.ariaLabel}`"
+                            aria-haspopup="dialog"
+                            :aria-expanded="type.showSelectionGrid"
+                            :ref="(el) => setToggleRef(el as HTMLElement | null, type.type)"
                             :data-test-id="`${type.type}-toggle-overlay-${instance}`"
                             tabindex="0"
                             data-dp-action-element="0"
@@ -126,6 +129,7 @@
 
 <script lang="ts" setup>
     import { computed, onMounted, ref, type Ref } from 'vue';
+    import { format, set } from 'date-fns';
 
     import {
         CalendarIcon,
@@ -172,6 +176,7 @@
     const props = defineProps<DpHeaderProps>();
 
     const {
+        getDate,
         rootEmit,
         rootProps,
         modelValue,
@@ -190,6 +195,8 @@
     const showMonthPicker = ref(false);
     const showYearPicker = ref(false);
     const overlayOpen = ref(false);
+    const monthToggleRef = ref<HTMLElement | null>(null);
+    const yearToggleRef = ref<HTMLElement | null>(null);
 
     onMounted(() => {
         emit('mount');
@@ -229,6 +236,8 @@
 
     const groupedMonths = computed((): OverlayGridItem[][] => {
         return groupListAndMap(props.months, (month: SelectItem) => {
+            const monthDate = set(getDate(), { year: props.year, month: month.value, date: 1 });
+            const ariaLabel = format(monthDate, 'MMMM yyyy', { locale: rootProps.locale });
             const active = props.month === month.value;
             const disabled =
                 checkMinMaxValue(
@@ -237,12 +246,13 @@
                     getMaxMonth(props.year, safeDates.value.maxDate),
                 ) || filters.value.months.includes(month.value);
             const highlighted = checkHighlightMonth(highlight.value, month.value, props.year);
-            return { active, disabled, highlighted };
+            return { active, disabled, highlighted, ariaLabel };
         });
     });
 
     const groupedYears = computed((): OverlayGridItem[][] => {
         return groupListAndMap(props.years, (year: SelectItem) => {
+            const ariaLabel = formatYear(year.value);
             const active = props.year === year.value;
             const disabled =
                 checkMinMaxValue(
@@ -251,11 +261,20 @@
                     getYearFromDate(safeDates.value.maxDate),
                 ) || filters.value.years.includes(year.value);
             const highlighted = checkHighlightYear(highlight.value, year.value);
-            return { active, disabled, highlighted };
+            return { active, disabled, highlighted, ariaLabel };
         });
     });
 
-    const toggleWrap = (val: Ref<boolean>, type: FlowStep, show?: boolean) => {
+    const focusToggle = (type: HeaderPicker) => {
+        const target = type === HeaderPicker.month ? monthToggleRef.value : yearToggleRef.value;
+        if (target) {
+            requestAnimationFrame(() => {
+                target.focus({ preventScroll: true });
+            });
+        }
+    };
+
+    const toggleWrap = (val: Ref<boolean>, type: FlowStep, pickerType: HeaderPicker, show?: boolean) => {
         if (show === undefined) {
             val.value = !val.value;
         } else {
@@ -268,22 +287,31 @@
         } else {
             overlayOpen.value = false;
             rootEmit('overlay-toggle', { open: false, overlay: type });
+            focusToggle(pickerType);
         }
     };
 
     const toggleMonthPicker = (flow = false, show?: boolean): void => {
         checkFlow(flow);
-        toggleWrap(showMonthPicker, FlowStep.month, show);
+        toggleWrap(showMonthPicker, FlowStep.month, HeaderPicker.month, show);
     };
 
     const toggleYearPicker = (flow = false, show?: boolean): void => {
         checkFlow(flow);
-        toggleWrap(showYearPicker, FlowStep.year, show);
+        toggleWrap(showYearPicker, FlowStep.year, HeaderPicker.year, show);
     };
 
     const checkFlow = (flow: boolean): void => {
         if (!flow) {
             emit('reset-flow');
+        }
+    };
+
+    const setToggleRef = (el: HTMLElement | null, type: HeaderPicker) => {
+        if (type === HeaderPicker.month) {
+            monthToggleRef.value = el;
+        } else {
+            yearToggleRef.value = el;
         }
     };
 

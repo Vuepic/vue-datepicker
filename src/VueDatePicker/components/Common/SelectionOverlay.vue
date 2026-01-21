@@ -29,6 +29,7 @@
                         :key="col.value"
                         role="gridcell"
                         :class="cellClassName"
+                        :aria-label="col.ariaLabel ?? col.text"
                         :aria-selected="col.active || undefined"
                         :aria-disabled="col.disabled || undefined"
                         :data-dp-action-element="level ?? 1"

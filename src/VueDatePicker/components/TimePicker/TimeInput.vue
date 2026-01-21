@@ -366,6 +366,13 @@
             generatedArray.unshift({ value: amPm.value === 'PM' ? 12 : 0, text: '12' });
         }
 
+        const toAriaLabel = (value: SelectItem) => {
+            const unit = type === 'hours' ? 'hour' : type === 'minutes' ? 'minute' : 'second';
+            const count = Number(value.text);
+            const labelUnit = count === 1 ? unit : `${unit}s`;
+            return `${value.text} ${labelUnit}`;
+        };
+
         return groupListAndMap(generatedArray, (value: SelectItem) => {
             const active = false;
             const disabled =
@@ -374,7 +381,7 @@
                 isValueDisabled(type, value.value) ||
                 isOverlayValueDisabled(type, value.value);
 
-            return { active, disabled };
+            return { active, disabled, ariaLabel: toAriaLabel(value) };
         });
     };
 

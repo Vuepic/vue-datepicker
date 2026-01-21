@@ -1,16 +1,23 @@
 <template>
     <div :class="calendarParentClass">
-        <div ref="calendar-wrap" :class="calendarWrapClass" role="grid">
-            <div class="dp__calendar_header" role="row">
-                <div v-if="weekNumbers" class="dp__calendar_header_item" role="gridcell">
+        <div
+            ref="calendar-wrap"
+            :class="calendarWrapClass"
+            role="listbox"
+            :aria-multiselectable="isMultiSelectable"
+            @keydown.capture="onCalendarKeydown"
+        >
+            <div class="dp__calendar_header" role="presentation">
+                <div v-if="weekNumbers" class="dp__calendar_header_item" role="presentation" aria-hidden="true">
                     {{ weekNumbers.label }}
                 </div>
                 <div
                     v-for="(dayVal, i) in weekDays"
                     :key="i"
                     class="dp__calendar_header_item"
-                    role="gridcell"
+                    role="presentation"
                     data-test-id="calendar-header"
+                    aria-hidden="true"
                     :aria-label="ariaLabels?.weekDay?.(i)"
                 >
                     <slot name="calendar-header" :day="dayVal" :index="i">
@@ -20,9 +27,14 @@
             </div>
             <div class="dp__calendar_header_separator"></div>
             <transition :name="transitionName" :css="!!transitions">
-                <div v-if="showCalendar" class="dp__calendar" role="rowgroup" @mouseleave="isMouseDown = false">
-                    <div v-for="(week, weekInd) in calendarWeeks" :key="weekInd" class="dp__calendar_row" role="row">
-                        <div v-if="weekNumbers" class="dp__calendar_item dp__week_num" role="gridcell">
+                <div v-if="showCalendar" class="dp__calendar" role="presentation" @mouseleave="isMouseDown = false">
+                    <div v-for="(week, weekInd) in calendarWeeks" :key="weekInd" class="dp__calendar_row" role="presentation">
+                        <div
+                            v-if="weekNumbers"
+                            class="dp__calendar_item dp__week_num"
+                            role="presentation"
+                            aria-hidden="true"
+                        >
                             <div class="dp__cell_inner">
                                 {{ getWeekNum(week.days) }}
                             </div>
@@ -32,7 +44,7 @@
                             :id="getCellId(dayVal.value)"
                             :ref="(el) => assignDayRef(el, weekInd, dayInd)"
                             :key="dayInd + weekInd"
-                            role="gridcell"
+                            role="option"
                             class="dp__calendar_item"
                             :aria-selected="
                                 (dayVal.classData.dp__active_date ||
@@ -41,7 +53,7 @@
                                 undefined
                             "
                             :aria-disabled="dayVal.classData.dp__cell_disabled || undefined"
-                            :aria-label="ariaLabels?.day?.(dayVal)"
+                            :aria-label="getDayAriaLabel(dayVal)"
                             :tabindex="!dayVal.current && rootProps.hideOffsetDates ? undefined : 0"
                             :data-test-id="getCellId(dayVal.value)"
                             :data-dp-element-active="!!dayVal.classData.dp__active_date ? 0 : undefined"
@@ -110,9 +122,10 @@
 <script lang="ts" setup>
     import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
     import { unrefElement, useSwipe } from '@vueuse/core';
-    import { getISOWeek, getWeek, set, type Day, startOfWeek, endOfWeek, eachDayOfInterval } from 'date-fns';
+    import { format, getISOWeek, getWeek, set, type Day, startOfWeek, endOfWeek, eachDayOfInterval } from 'date-fns';
 
     import { useHelperFns, useDateUtils, useContext, useFormatter } from '@/composables';
+    import { EventKey } from '@/constants';
 
     import type { UnwrapRef } from 'vue';
     import type { CalendarDay, CalendarWeek, DynamicClass, Marker } from '@/types';
@@ -143,7 +156,7 @@
         getDate,
         rootEmit,
         rootProps,
-        defaults: { transitions, config, ariaLabels, multiCalendars, weekNumbers, multiDates, ui },
+        defaults: { transitions, config, ariaLabels, multiCalendars, weekNumbers, multiDates, range, ui },
     } = useContext();
     const { isDateAfter, isDateEqual, resetDateTime, getCellId } = useDateUtils();
     const { checkKeyDown, checkStopPropagation, isTouchDevice } = useHelperFns();
@@ -163,6 +176,7 @@
         transform: '',
     });
     const tpArrowStyle = ref<{ left?: string; right?: string }>({ left: '50%' });
+    const isMultiSelectable = computed(() => range.value.enabled || multiDates.value.enabled);
 
     useSwipe(calendarWrapRef, {
         onSwipeEnd: (_ev, direction) => {
@@ -324,6 +338,50 @@
         }
     };
 
+    const onCalendarKeydown = (event: KeyboardEvent) => {
+        if (rootProps.arrowNavigation || !calendarWrapRef.value) return;
+
+        const target = event.target as HTMLElement | null;
+        if (!target) return;
+
+        const option = target.closest<HTMLElement>('.dp__calendar_item[role="option"]');
+        if (!option || !calendarWrapRef.value.contains(option)) return;
+
+        if (
+            event.key !== EventKey.arrowLeft &&
+            event.key !== EventKey.arrowRight &&
+            event.key !== EventKey.arrowUp &&
+            event.key !== EventKey.arrowDown
+        ) {
+            return;
+        }
+
+        const options = Array.from(calendarWrapRef.value.querySelectorAll<HTMLElement>('.dp__calendar_item[role="option"]'));
+        const currentIndex = options.indexOf(option);
+        if (currentIndex === -1) return;
+
+        const row = option.closest<HTMLElement>('.dp__calendar_row');
+        const columns = row ? row.querySelectorAll<HTMLElement>('.dp__calendar_item[role="option"]').length : 7;
+
+        const step =
+            event.key === EventKey.arrowUp
+                ? -columns
+                : event.key === EventKey.arrowDown
+                  ? columns
+                  : event.key === EventKey.arrowLeft
+                    ? -1
+                    : 1;
+
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
+        const nextIndex = currentIndex + step;
+        if (nextIndex < 0 || nextIndex >= options.length) return;
+
+        options[nextIndex]?.focus();
+    };
+
     const getWeekNumber = (firstCurrentDate: CalendarDay) => {
         if (weekNumbers.value) {
             if (weekNumbers.value.type === 'local')
@@ -366,6 +424,10 @@
         } else if (multiDates.value.enabled) {
             emit('select-date', day);
         }
+    };
+
+    const getDayAriaLabel = (day: CalendarDay): string => {
+        return ariaLabels?.day?.(day) ?? format(day.value, 'MMMM do, yyyy', { locale: rootProps.locale });
     };
 
     const getDayNames = (): string[] => {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { addMonths, subMonths } from 'date-fns';
+import { addMonths, format, subMonths } from 'date-fns';
 import { getMonthToggleBtn, getMonthToggleText, openMenu, selectDate } from '@/__tests__/tests-utils.ts';
 
 describe('Test Suite 1', () => {
@@ -65,6 +65,30 @@ describe('Test Suite 1', () => {
         it('Should open menu when centered is enabled', async () => {
             const dp = await openMenu({ centered: true });
             expect(dp.find('.dp__menu').exists()).toBe(true);
+        });
+    });
+
+    describe('accessibility', () => {
+        it('Should announce full date for calendar cells', async () => {
+            const dp = await openMenu({});
+            const today = new Date();
+            const cell = dp.find(`[data-test-id="dp-${format(today, 'yyyy-MM-dd')}"]`);
+
+            expect(cell.attributes('aria-label')).toBe(format(today, 'MMMM do, yyyy'));
+        });
+
+        it('Should announce full month and year in month overlay', async () => {
+            const dp = await openMenu({});
+            const today = new Date();
+            const monthToggle = getMonthToggleBtn(dp);
+
+            expect(monthToggle.attributes('aria-expanded')).toBe('false');
+            await monthToggle.trigger('click');
+            await dp.vm.$nextTick();
+
+            const monthCell = dp.find(`[data-test-id="${format(today, 'LLL')}"]`);
+            expect(monthCell.attributes('aria-label')).toBe(format(today, 'MMMM yyyy'));
+            expect(monthToggle.attributes('aria-expanded')).toBe('true');
         });
     });
 });

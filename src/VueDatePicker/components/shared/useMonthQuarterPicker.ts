@@ -2,7 +2,7 @@ import { computed, type EmitFn, onMounted, ref, watch } from 'vue';
 import { addYears, differenceInYears, endOfYear, getMonth, getYear, set, startOfYear, subYears } from 'date-fns';
 
 import { FlowStep } from '@/constants';
-import { useContext, useDateUtils, useUtilsWithContext, useValidation } from '@/composables';
+import { useContext, useDateUtils, useFormatter, useUtilsWithContext, useValidation } from '@/composables';
 
 import type { OverlayGridItem, SelectItem } from '@/types';
 
@@ -22,6 +22,7 @@ export const useMonthOrQuarterPicker = (emit: EmitFn<{ 'reset-flow': []; 'auto-a
         defaults: { multiCalendars, range, safeDates, filters, highlight },
     } = useContext();
     const { resetDate, getYearFromDate, checkHighlightYear, groupListAndMap } = useDateUtils();
+    const { formatYear } = useFormatter();
     const { getYears } = useUtilsWithContext();
     const { validateMonthYear, checkMinMaxValue } = useValidation();
 
@@ -112,6 +113,7 @@ export const useMonthOrQuarterPicker = (emit: EmitFn<{ 'reset-flow': []; 'auto-a
 
     const groupedYears = computed(() => (instance: number): OverlayGridItem[][] => {
         return groupListAndMap(years.value, (y: SelectItem) => {
+            const ariaLabel = formatYear(y.value);
             const active = year.value(instance) === y.value;
             const disabled =
                 checkMinMaxValue(
@@ -121,7 +123,7 @@ export const useMonthOrQuarterPicker = (emit: EmitFn<{ 'reset-flow': []; 'auto-a
                 ) || filters.value.years?.includes(year.value(instance));
             const highlighted = checkHighlightYear(highlight.value, y.value);
 
-            return { active, disabled, highlighted };
+            return { active, disabled, highlighted, ariaLabel };
         });
     });
 

@@ -47,6 +47,7 @@ export interface OverlayGridItem {
     active: boolean;
     disabled: boolean;
     className: DynamicClass;
+    ariaLabel?: string;
 }
 
 export type Numeric = number | string | null;

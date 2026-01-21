@@ -1,7 +1,7 @@
 import { computed, type EmitFn, nextTick, onMounted, ref } from 'vue';
 import { getYear, setYear, startOfYear } from 'date-fns';
 
-import { useContext, useDateUtils, useRemapper, useUtilsWithContext, useValidation } from '@/composables';
+import { useContext, useDateUtils, useFormatter, useRemapper, useUtilsWithContext, useValidation } from '@/composables';
 import { useComponentShared } from '@/components/shared/useComponentShared.ts';
 import type { BaseProps } from '@/types';
 
@@ -22,6 +22,7 @@ export const useYearPicker = (props: BaseProps, emit: EmitFn<YearPickerEmits>) =
     const { getYears } = useUtilsWithContext();
     const { isDateBetween, resetDate, resetDateTime, getYearFromDate, checkHighlightYear, groupListAndMap } =
         useDateUtils();
+    const { formatYear } = useFormatter();
     const { checkRangeAutoApply, setMonthOrYearRange } = useComponentShared();
     const { checkMinMaxValue, checkMinMaxRange } = useValidation();
 
@@ -73,6 +74,7 @@ export const useYearPicker = (props: BaseProps, emit: EmitFn<YearPickerEmits>) =
 
     const groupedYears = computed(() => {
         return groupListAndMap(getYears(), (year) => {
+            const ariaLabel = formatYear(year.value);
             const active = isYearActive(year.value);
             const disabled =
                 checkMinMaxValue(
@@ -85,7 +87,7 @@ export const useYearPicker = (props: BaseProps, emit: EmitFn<YearPickerEmits>) =
                 isYearDisabled(year.value);
             const isBetween = isYearBetween(year.value) && !active;
             const highlighted = checkHighlightYear(highlight.value, year.value);
-            return { active, disabled, isBetween, highlighted };
+            return { active, disabled, isBetween, highlighted, ariaLabel };
         });
     });
 
