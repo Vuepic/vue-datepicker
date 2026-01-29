@@ -35,7 +35,7 @@
     "build": "run-s clean type-check build:es build:css",
     "type-check": "vue-tsc --build",
     "build:es": "cross-env NODE_ENV=production vite build --mode production",
-    "build:css": "cross-env NODE_ENV=production node_modules/.bin/sass src/VueDatePicker/style/main.scss dist/main.css --style compressed",
+    "build:css": "cross-env NODE_ENV=production node_modules/.bin/sass src/VueDatePicker/style/main.scss dist/main.css --style compressed --embed-sources",
     "build:for-docs": "run-s build docs:copy-build",
     "test": "cross-env NODE_ENV=test vitest",
     "test:coverage": "cross-env NODE_ENV=test vitest --environment jsdom run --coverage",
