@@ -221,4 +221,6 @@
     const onBtnKeyDown = (ev: KeyboardEvent) => {
         if (ev.key === EventKey.enter) return toggle();
     };
+
+    defineExpose({ scrollToActive: () => setContainerHeightAndScroll(true) });
 </script>

@@ -36,9 +36,10 @@
             <ChevronRightIcon v-if="!$slots['arrow-right']" />
         </ArrowBtn>
     </div>
-    <transition :name="transitionName(showYearPicker)" :css="showTransition">
+    <transition :name="transitionName(showYearPicker)" :css="showTransition" @after-enter="overlayRef?.scrollToActive()">
         <SelectionOverlay
             v-if="showYearPicker"
+            ref="overlayRef"
             :items="items"
             :config="config"
             :is-last="rootProps.autoApply && !config.keepActionRow"
@@ -59,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-    import { computed, ref } from 'vue';
+    import { computed, ref, useTemplateRef } from 'vue';
 
     import SelectionOverlay from '@/components/Common/SelectionOverlay.vue';
     import ArrowBtn from '@/components/Common/ArrowBtn.vue';
@@ -99,6 +100,7 @@
     const { boolHtmlAttribute } = useUtils();
 
     const overlayOpen = ref(false);
+    const overlayRef = useTemplateRef<InstanceType<typeof SelectionOverlay>>('overlayRef');
 
     const yearDisplayVal = computed(() => formatYear(props.year));
 
