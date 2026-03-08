@@ -36,6 +36,7 @@ export const useExternalInternalMapper = () => {
     watch(range, (newVal, oldVal) => {
         if (newVal.enabled !== oldVal.enabled) {
             modelValue.value = null;
+            updateTime(); // Ensure time model switches from plain to array when range changes.
         }
     });
 

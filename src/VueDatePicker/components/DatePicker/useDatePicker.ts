@@ -1,4 +1,4 @@
-import { computed, onMounted, ref, nextTick, type EmitFn, type UnwrapRef } from 'vue';
+import { computed, onMounted, ref, nextTick, type EmitFn, type UnwrapRef, watch } from 'vue';
 import {
     add,
     addDays,
@@ -61,7 +61,7 @@ export const useDatePicker = (
     const { formatDay } = useFormatter();
     const { resetDateTime, setTime, isDateBefore, isDateEqual, getDaysInBetween } = useDateUtils();
     const { checkRangeAutoApply, getRangeWithFixedDate, handleMultiDatesSelect, setPresetDate } = useComponentShared();
-    const { getMapDate } = useHelperFns();
+    const { getMapDate, setTimeModelValue } = useHelperFns();
     useRemapper(() => mapInternalModuleValues(state.isTextInputDate));
 
     const shouldUpdateMonthView = (isAction: boolean) => {
@@ -402,7 +402,7 @@ export const useDatePicker = (
     // Called on selectDate when the regular single picker is used
     const handleSingleDateSelect = (day: CalendarDay) => {
         const date = setTime(
-            { hours: time.hours as number, minutes: time.minutes as number, seconds: getSecondsValue() },
+            { hours: time.hours, minutes: time.minutes, seconds: getSecondsValue() },
             getDate(day.value),
         );
         rootEmit('date-click', date);

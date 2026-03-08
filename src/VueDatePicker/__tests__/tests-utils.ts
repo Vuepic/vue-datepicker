@@ -26,3 +26,7 @@ export const selectDate = async (dp: DPInstance, date: Date) => {
 export const getMonthToggleText = (date: Date) => {
     return format(date, 'LLL');
 };
+
+export const clearInput = (dp: DPInstance) => {
+    return dp.find(`[data-test-id="clear-input-value-btn"]`).trigger('click');
+};
