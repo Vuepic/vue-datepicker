@@ -166,10 +166,12 @@
 
     const setContainerHeightAndScroll = (setScroll = true) => {
         nextTick().then(() => {
-            const el = document.querySelector<HTMLElement>(`[data-dp-element-active="${props.level ?? 1}"]`);
             const parent = unrefElement(gridWrapRef);
             const btn = unrefElement(toggleButton);
             const container = unrefElement(containerRef);
+            const el = container
+                ? container.querySelector<HTMLElement>(`[data-dp-element-active="${props.level ?? 1}"]`)
+                : document.querySelector<HTMLElement>(`[data-dp-element-active="${props.level ?? 1}"]`);
             const toggleBtnHeight = btn ? btn.getBoundingClientRect().height : 0;
             if (parent) {
                 if (parent.getBoundingClientRect().height) {
