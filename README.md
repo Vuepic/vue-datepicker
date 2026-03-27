@@ -22,6 +22,7 @@
 - Month picker
 - Year picker
 - Quarter picker
+- Half year picker
 - Week picker
 - Multiple dates select
 - Multiple calendars

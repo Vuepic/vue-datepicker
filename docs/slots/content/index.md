@@ -382,6 +382,27 @@ export interface QuarterPickerSidebarSlotProps {
 - `handleYear` - Handles auto year increment/decrement
 :::
 
+**Half year picker**
+
+- Exposed props:
+```ts
+export interface HalfYearPickerSidebarSlotProps {
+  modelValue: InternalModelValue;
+  year: ComputedRef<(instance: number) => number>;
+  selectHalfYear: (date: Date, instance: number, disabled: boolean) => void;
+  handleYearSelect: (year: number, instance: number) => void;
+  handleYear: (instance: number, increment?: boolean) => void;
+}
+```
+
+:::info
+- `modelValue` - Internal model value
+- `year` - Access to a selected year for a given instance
+- `selectHalfYear` - Function that selects half year
+- `handleYearSelect` - Function that selects year
+- `handleYear` - Handles auto year increment/decrement
+:::
+
 **Time picker**
 
 - Exposed props:
@@ -701,6 +722,49 @@ This slot replaces the default quarter item
   const formatQuarter = (quarter) => {
     return format(quarter, 'QQQ')
   }
+</script>
+```
+:::
+
+## half-year
+
+This slot replaces the default half year item
+
+- Exposed props:
+```ts
+{
+  value: Date;
+  text: string;
+}
+```
+
+:::info
+- `value` - First date for a given half year (January 1 or July 1)
+- `text` - The text value displayed in the half year button
+:::
+
+<GlobalDemo :halfYearPicker="true">
+    <template #half-year="{ value, text }">
+        <span>{{ value.getMonth() < 6 ? 'H1' : 'H2' }} {{ value.getFullYear() }}</span>
+    </template>
+</GlobalDemo>
+
+::: details Code Example
+
+```vue
+<template>
+  <VueDatePicker v-model="halfYear" half-year-picker>
+    <template #half-year="{ value, text }">
+      <span>{{ value.getMonth() < 6 ? 'H1' : 'H2' }} {{ value.getFullYear() }}</span>
+    </template>
+  </VueDatePicker>
+</template>
+
+<script setup>
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
+  import { ref } from 'vue';
+
+  const halfYear = ref();
 </script>
 ```
 :::
