@@ -1,7 +1,7 @@
 <template>
     <InstanceWrap v-slot="{ instances, wrapClass }" :collapse="collapse" stretch>
         <div v-for="instance in instances" :key="instance" :class="wrapClass">
-            <div class="dp-half-year-picker-wrap" :style="{ minHeight: `${config.modeHeight}px` }">
+            <div class="dp-half-year-picker-wrap" :style="{ minHeight: `${Math.ceil(config.modeHeight / 2)}px` }">
                 <slot v-if="$slots['top-extra']" name="top-extra" :value="modelValue" />
                 <div>
                     <YearModePicker
