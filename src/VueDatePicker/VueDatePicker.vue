@@ -222,7 +222,7 @@
     const noOverlayFocus = computed(() => {
         return (
             inline.value.enabled &&
-            (rootProps.timePicker || rootProps.monthPicker || rootProps.yearPicker || rootProps.quarterPicker)
+            (rootProps.timePicker || rootProps.monthPicker || rootProps.yearPicker || rootProps.quarterPicker || rootProps.halfYearPicker)
         );
     });
 

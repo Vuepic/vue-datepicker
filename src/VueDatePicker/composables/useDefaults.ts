@@ -58,6 +58,7 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
         if (props.timePicker) return getTimeFormat();
         if (props.weekPicker) return `${weekNumbers.value?.type === 'iso' ? 'II' : 'ww'}-RR`;
         if (props.yearPicker) return 'yyyy';
+        if (props.halfYearPicker) return 'MM/yyyy';
         if (props.quarterPicker) return 'QQQ/yyyy';
         return timeConfig.value.enableTimePicker ? `MM/dd/yyyy, ${getTimeFormat()}` : 'MM/dd/yyyy';
     };
@@ -92,7 +93,7 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
         );
     };
 
-    const isSpecificMode = computed(() => props.monthPicker || props.yearPicker || props.quarterPicker);
+    const isSpecificMode = computed(() => props.monthPicker || props.yearPicker || props.quarterPicker || props.halfYearPicker);
 
     const multiCalendars = computed(() => {
         const isConfig = typeof props.multiCalendars === 'object' && props.multiCalendars;

@@ -119,6 +119,7 @@
     import TimePickerSolo from '@/components/TimePicker/TimePickerSolo.vue';
     import DatePicker from '@/components/DatePicker/DatePicker.vue';
     import QuarterPicker from '@/components/QuarterPicker/QuarterPicker.vue';
+    import HalfYearPicker from '@/components/HalfYearPicker/HalfYearPicker.vue';
 
     import { useArrowNavigation, useContext, useFlow, useHelperFns, useResponsive } from '@/composables';
     import { ArrowDirection, EventKey } from '@/constants';
@@ -212,6 +213,7 @@
         if (rootProps.yearPicker) return YearPicker;
         if (rootProps.timePicker) return TimePickerSolo;
         if (rootProps.quarterPicker) return QuarterPicker;
+        if (rootProps.halfYearPicker) return HalfYearPicker;
         return DatePicker;
     });
 

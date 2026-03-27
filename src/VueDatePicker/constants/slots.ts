@@ -14,6 +14,7 @@ export enum SlotUse {
     MonthPicker = 'month-picker',
     YearMode = 'year-mode',
     QuarterPicker = 'quarter-picker',
+    HalfYearPicker = 'half-year-picker',
     YearPicker = 'year-picker',
 }
 
@@ -98,6 +99,7 @@ const slots = [
     { name: 'action-row', use: [SlotUse.ActionRow] },
     { name: 'marker', use: [SlotUse.Calendar, SlotUse.PassTrough] },
     { name: 'quarter', use: [SlotUse.QuarterPicker, SlotUse.PassTrough] },
+    { name: 'half-year', use: [SlotUse.HalfYearPicker, SlotUse.PassTrough] },
     {
         name: 'top-extra',
         use: [
@@ -105,6 +107,7 @@ const slots = [
             SlotUse.PassTrough,
             SlotUse.MonthPicker,
             SlotUse.QuarterPicker,
+            SlotUse.HalfYearPicker,
             SlotUse.YearPicker,
         ],
     },
@@ -160,6 +163,8 @@ export type TimePickerSlots = ComponentSlots<SlotUse.TimePicker> & TimeInputSlot
 export type TimeInputSlots = ComponentSlots<SlotUse.TimeInput>;
 
 export type QuarterPickerSlots = ComponentSlots<SlotUse.QuarterPicker> & YearModeSlots;
+
+export type HalfYearPickerSlots = ComponentSlots<SlotUse.HalfYearPicker> & YearModeSlots;
 
 export type YearPickerSlots = ComponentSlots<SlotUse.YearPicker>;
 

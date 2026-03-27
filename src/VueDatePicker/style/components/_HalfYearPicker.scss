@@ -1,0 +1,53 @@
+@use "shared";
+
+.dp-half-year-picker-wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: var(--dp-menu-min-width);
+}
+
+.dp--hy-btn-disabled {
+  cursor: not-allowed;
+  background: var(--dp-disabled-color);
+
+  &:hover {
+    background: var(--dp-disabled-color);
+  }
+}
+
+.dp--hy-btn {
+  @extend %dp--btn-placeholder;
+
+  width: 100%;
+  padding: var(--dp-common-padding);
+
+  &:not(.dp--highlighted, .dp--hy-btn-active, .dp--hy-btn-disabled, .dp--hy-btn-between) {
+    background: none;
+  }
+
+  &:hover:not(.dp--hy-btn-active, .dp--hy-btn-disabled) {
+    background: var(--dp-hover-color);
+    color: var(--dp-hover-text-color);
+    transition: var(--dp-common-transition);
+  }
+}
+
+.dp--half-year-items {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  justify-content: space-evenly;
+}
+
+.dp--hy-btn-active {
+  background: var(--dp-primary-color);
+  color: var(--dp-primary-text-color);
+}
+
+.dp--hy-btn-between {
+  background: var(--dp-hover-color);
+  color: var(--dp-hover-text-color);
+}

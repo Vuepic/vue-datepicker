@@ -45,6 +45,14 @@ export interface QuarterPickerSidebarSlotProps {
     handleYear: (instance: number, increment?: boolean) => void;
 }
 
+export interface HalfYearPickerSidebarSlotProps {
+    modelValue: InternalModelValue;
+    year: ComputedRef<(instance: number) => number>;
+    selectHalfYear: (date: Date, instance: number, disabled: boolean) => void;
+    handleYearSelect: (year: number, instance: number) => void;
+    handleYear: (instance: number, increment?: boolean) => void;
+}
+
 export interface TimePickerSidebarSlotProps {
     modelValue: InternalModelValue;
     time: InternalTime;
@@ -157,11 +165,13 @@ export interface RootSlots {
     'left-sidebar'(props: DatePickerSidebarSlotProps): any;
     'left-sidebar'(props: MonthPickerSidebarSlotProps): any;
     'left-sidebar'(props: QuarterPickerSidebarSlotProps): any;
+    'left-sidebar'(props: HalfYearPickerSidebarSlotProps): any;
     'left-sidebar'(props: TimePickerSidebarSlotProps): any;
     'left-sidebar'(props: YearPickerSidebarSlotProps): any;
     'right-sidebar'(props: DatePickerSidebarSlotProps): any;
     'right-sidebar'(props: MonthPickerSidebarSlotProps): any;
     'right-sidebar'(props: QuarterPickerSidebarSlotProps): any;
+    'right-sidebar'(props: HalfYearPickerSidebarSlotProps): any;
     'right-sidebar'(props: TimePickerSidebarSlotProps): any;
     'right-sidebar'(props: YearPickerSidebarSlotProps): any;
     'month-year'(props: DatePickerMonthYearSlotProps): any;
@@ -172,5 +182,6 @@ export interface RootSlots {
     'action-row'(props: ActionRowSlotProps): any;
     marker(props: { marker: Marker; day: number; date: Date }): any;
     quarter(props: { value: Date; text: string }): any;
+    'half-year'(props: { value: Date; text: string }): any;
     'top-extra'(props: { value: InternalModelValue }): any;
 }
