@@ -373,7 +373,7 @@ export const useValidation = () => {
 
     const isValidDate = (value: Date | Date[] | null | (Date | null)[]): boolean => {
         if (Array.isArray(value)) {
-            return isValid(value[0]) && (value[1] ? isValid(value[1]) : true);
+            return value.every((v) => v === null || isValid(v));
         }
         return value ? isValid(value) : false;
     };

@@ -307,6 +307,27 @@ export const useCalendarClass = () => {
         };
     };
 
+    // Get a set of classes for the week picker with multi-dates
+    const weekPickerMultiDatesClasses = (day: CalendarDay): Record<string, boolean> => {
+        if (modelValue.value && Array.isArray(modelValue.value)) {
+            const matchingWeek = (modelValue.value as Date[]).find((date) => {
+                const [start, end] = getWeekFromDate(date, rootProps.weekStart);
+                return isDateEqual(day.value, start) || isDateEqual(day.value, end) ||
+                    (isDateAfter(day.value, start) && isDateBefore(day.value, end));
+            });
+            if (matchingWeek) {
+                const [start, end] = getWeekFromDate(matchingWeek, rootProps.weekStart);
+                return {
+                    ...autoRangeClasses(day),
+                    dp__range_start: isDateEqual(start, day.value),
+                    dp__range_end: isDateEqual(end, day.value),
+                    dp__range_between_week: isDateAfter(day.value, start) && isDateBefore(day.value, end),
+                };
+            }
+        }
+        return { ...autoRangeClasses(day) };
+    };
+
     // Get a set of classes for the single-week picker
     const weekPickerSingleClasses = (day: CalendarDay): Record<string, boolean> => {
         if (modelValue.value && !Array.isArray(modelValue.value)) {
@@ -440,6 +461,7 @@ export const useCalendarClass = () => {
             return rangeDateClasses(day);
         }
         if (rootProps.weekPicker) {
+            if (multiDates.value.enabled) return weekPickerMultiDatesClasses(day);
             return weekPickerSingleClasses(day);
         }
 

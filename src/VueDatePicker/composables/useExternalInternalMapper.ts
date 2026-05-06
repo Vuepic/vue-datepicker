@@ -126,6 +126,19 @@ export const useExternalInternalMapper = () => {
         throw new Error(errorMapper.dateArr('multi-dates'));
     };
 
+    // Map external week picker + multi dates format to internal model value
+    const mapWeekMultiDatesExternalToInternal = (value: any): Date[] => {
+        if (Array.isArray(value)) {
+            return value.map((week: any) => {
+                if (Array.isArray(week) && week.length) {
+                    return parseModelType(week[0]);
+                }
+                return parseModelType(week);
+            });
+        }
+        throw new Error(errorMapper.dateArr('multi-dates'));
+    };
+
     // Map external week picker format to internal model value
     const mapWeekExternalToInternal = (value: Date[]) => {
         if (Array.isArray(value) && range.value.enabled) {
@@ -210,6 +223,7 @@ export const useExternalInternalMapper = () => {
         if (rootProps.timePicker) return mapTimeExternalToInternal(convertType(value));
         if (rootProps.monthPicker) return mapMonthExternalToInternal(convertType(value));
         if (rootProps.yearPicker) return mapYearExternalToInternal(convertType(value));
+        if (rootProps.weekPicker && multiDates.value.enabled) return mapWeekMultiDatesExternalToInternal(convertType(value));
         if (multiDates.value.enabled) return mapMultiDateExternalToInternal(convertType(value));
         if (rootProps.weekPicker) return mapWeekExternalToInternal(convertType(value));
         return mapDateExternalToInternal(convertType(value));
@@ -235,6 +249,12 @@ export const useExternalInternalMapper = () => {
     // Get proper input value depending on the mode
     const getInputValue = (): string => {
         if (!modelValue.value) return '';
+        if (rootProps.weekPicker && multiDates.value.enabled) {
+            return (modelValue.value as Date[]).map((date) => {
+                const [start, end] = getWeekFromDate(date, rootProps.weekStart);
+                return formatSelectedDate([start, end]);
+            }).join('; ');
+        }
         if (multiDates.value.enabled)
             return (modelValue.value as Date[]).map((date) => formatSelectedDate(date)).join('; ');
         if (textInput.value.enabled) return formatForTextInput();
@@ -310,6 +330,14 @@ export const useExternalInternalMapper = () => {
         return rootEmit('update:model-value', mapInternalWeekPickerToExternal());
     };
 
+    const emitWeekMultiDates = () => {
+        const dates = (modelValue.value as Date[]) || [];
+        const weekRanges = dates.map((date) =>
+            getWeekFromDate(date, rootProps.weekStart).map((d) => toModelType(d))
+        );
+        return emitValue(weekRanges as any);
+    };
+
     /**
      * When date is selected, emit event to update modelValue on external,
      * and format input value
@@ -320,6 +348,7 @@ export const useExternalInternalMapper = () => {
         if (rootProps.monthPicker) return modeEmitter(getMonthVal);
         if (rootProps.timePicker) return modeEmitter(getTimeVal);
         if (rootProps.yearPicker) return modeEmitter(getYear);
+        if (rootProps.weekPicker && multiDates.value.enabled) return emitWeekMultiDates();
         if (rootProps.weekPicker) return emitWeekPicker();
         return emitValue(mapInternalDatesToExternal());
     };

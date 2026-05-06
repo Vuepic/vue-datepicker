@@ -59,7 +59,7 @@ export const useDatePicker = (
     const { updateTimeValues, getSetDateTime, assignTime, assignStartTime, validateTime, disabledTimesConfig } =
         useTimePickerUtils(updateFlow);
     const { formatDay } = useFormatter();
-    const { resetDateTime, setTime, isDateBefore, isDateEqual, getDaysInBetween } = useDateUtils();
+    const { resetDateTime, setTime, isDateBefore, isDateEqual, getDaysInBetween, getWeekFromDate } = useDateUtils();
     const { checkRangeAutoApply, getRangeWithFixedDate, handleMultiDatesSelect, setPresetDate } = useComponentShared();
     const { getMapDate } = useHelperFns();
     useRemapper(() => mapInternalModuleValues(state.isTextInputDate));
@@ -401,9 +401,14 @@ export const useDatePicker = (
 
     // Called on selectDate when the regular single picker is used
     const handleSingleDateSelect = (day: CalendarDay) => {
+        let dateToSelect = getDate(day.value);
+        if (rootProps.weekPicker && multiDates.value.enabled) {
+            const [weekStart] = getWeekFromDate(dateToSelect, rootProps.weekStart);
+            dateToSelect = weekStart;
+        }
         const date = setTime(
             { hours: time.hours as number, minutes: time.minutes as number, seconds: getSecondsValue() },
-            getDate(day.value),
+            dateToSelect,
         );
         rootEmit('date-click', date);
         if (multiDates.value.enabled) {
