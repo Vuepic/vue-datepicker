@@ -105,8 +105,8 @@ typings/
 # TernJS port file
 .tern-port
 
-docs/.vitepress/cache
-docs/.vitepress/dist
+packages/docs/src/.vitepress/cache
+packages/docs/src/.vitepress/dist
 
 # ignore .DS_Store files
 .DS_Store

@@ -1,0 +1,210 @@
+.dp__menu {
+  background: var(--dp-background-color);
+  border-radius: var(--dp-border-radius);
+  min-width: var(--dp-menu-min-width);
+  font-family: var(--dp-font-family);
+  font-size: var(--dp-font-size);
+  user-select: none;
+  border: 1px solid var(--dp-menu-border-color);
+  box-sizing: border-box;
+
+  &::after {
+    box-sizing: border-box;
+  }
+
+  &::before {
+    box-sizing: border-box;
+  }
+
+  &:focus {
+    border: 1px solid var(--dp-menu-border-color);
+    outline: none;
+  }
+}
+
+.dp--menu-wrapper {
+  position: absolute;
+  z-index: 99999;
+}
+
+.dp__menu_inner {
+  padding: var(--dp-menu-padding);
+}
+
+.dp--menu--inner-stretched {
+  padding: 6px 0;
+}
+
+.dp__menu_index {
+  z-index: 99999;
+}
+
+%__dp_menu_readonly_disabled {
+  position: absolute;
+  inset: 0;
+  z-index: 999999;
+}
+
+.dp__menu_disabled {
+  @extend %__dp_menu_readonly_disabled;
+
+  background: rgb(255 255 255 / 50%);
+  cursor: not-allowed;
+}
+
+.dp__menu_readonly {
+  @extend %__dp_menu_readonly_disabled;
+
+  background: transparent;
+  cursor: default;
+}
+
+.dp-menu-loading {
+  @extend %__dp_menu_readonly_disabled;
+
+  background: rgb(255 255 255 / 50%);
+  cursor: default;
+}
+
+.dp--menu-load-container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.dp--menu-loader {
+  width: 48px;
+  height: 48px;
+  border: var(--dp-loader);
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: dp-load-rotation 1s linear infinite;
+  position: absolute;
+}
+
+@keyframes dp-load-rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.dp__arrow_top {
+  height: 12px;
+  width: 12px;
+  background-color: var(--dp-background-color);
+  position: absolute;
+  border-inline-end: 1px solid var(--dp-menu-border-color);
+  border-top: 1px solid var(--dp-menu-border-color);
+  transform: translate(0, -50%) rotate(-45deg);
+}
+
+.dp__arrow_bottom {
+  left: var(--dp-arrow-left);
+  bottom: 0;
+  height: 12px;
+  width: 12px;
+  background-color: var(--dp-background-color);
+  position: absolute;
+  border-inline-end: 1px solid var(--dp-menu-border-color);
+  border-bottom: 1px solid var(--dp-menu-border-color);
+  transform: translate(-50%, 50%) rotate(45deg);
+}
+
+.dp__action_extra {
+  text-align: center;
+  padding: 2px 0;
+}
+
+.dp--preset-dates {
+  padding: 5px;
+  border-inline-end: 1px solid var(--dp-border-color);
+
+  &[data-dp-mobile] {
+    display: flex;
+    align-self: center;
+    border: none;
+    overflow-x: auto;
+    max-width: calc(var(--dp-menu-width) - var(--dp-action-row-padding) * 2);
+  }
+}
+
+.dp--preset-dates-collapsed {
+  display: flex;
+  align-self: center;
+  border: none;
+  overflow-x: auto;
+  max-width: calc(var(--dp-menu-width) - var(--dp-action-row-padding) * 2);
+}
+
+.dp__sidebar_left {
+  padding: 5px;
+  border-inline-end: 1px solid var(--dp-border-color);
+}
+
+.dp__sidebar_right {
+  padding: 5px;
+  margin-inline-end: 1px solid var(--dp-border-color);
+}
+
+.dp--preset-range {
+  display: block;
+  width: 100%;
+  padding: 5px;
+  text-align: left;
+  white-space: nowrap;
+  color: var(--dp-text-color);
+  border-radius: var(--dp-border-radius);
+  transition: var(--dp-common-transition);
+
+  &:hover {
+    background-color: var(--dp-hover-color);
+    color: var(--dp-hover-text-color);
+    cursor: pointer;
+  }
+
+  &[data-dp-mobile] {
+    border: 1px solid var(--dp-border-color);
+    margin: 0 3px;
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.dp--preset-range-collapsed {
+  border: 1px solid var(--dp-border-color);
+  margin: 0 3px;
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.dp__menu_content_wrapper {
+  display: flex;
+
+  &[data-dp-mobile] {
+    flex-direction: column-reverse;
+  }
+}
+
+.dp--menu-content-wrapper-collapsed {
+  flex-direction: column-reverse;
+}

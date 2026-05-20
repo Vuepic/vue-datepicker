@@ -1,0 +1,163 @@
+@use 'components/DatepickerInput';
+@use 'components/DatepickerMenu';
+@use 'components/Calendar';
+@use 'components/MonthYearInput';
+@use 'components/SelectionOverlay';
+@use 'components/TimeInput';
+@use 'components/ActionRow';
+@use 'components/QuarterPicker';
+@use 'components/shared';
+
+.dp__flex {
+  display: flex;
+  align-items: center;
+}
+
+.dp__btn {
+  @extend %dp--btn-placeholder;
+
+  background: none;
+}
+
+.dp__main {
+  font-family: var(--dp-font-family);
+  user-select: none;
+  box-sizing: border-box;
+  position: relative;
+  width: 100%;
+}
+
+.dp__main * {
+  direction: var(--dp-direction, ltr);
+}
+
+.dp__pointer {
+  cursor: pointer;
+}
+
+// Allow control of color property on icons
+.dp__icon {
+  stroke: currentcolor;
+  fill: currentcolor;
+}
+
+// Div style that is displayed on the bottom of the menu for switching layouts
+.dp__button {
+  width: 100%;
+  text-align: center;
+  color: var(--dp-icon-color);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  place-content: center center;
+  padding: var(--dp-common-padding);
+  box-sizing: border-box;
+  height: var(--dp-button-height);
+
+  &.dp__overlay_action {
+    position: absolute;
+    bottom: 0;
+  }
+
+  &:hover {
+    background: var(--dp-hover-color);
+    color: var(--dp-hover-icon-color);
+  }
+
+  svg {
+    height: var(--dp-button-icon-height);
+    width: auto;
+  }
+}
+
+.dp__button_bottom {
+  border-bottom-left-radius: var(--dp-border-radius);
+  border-bottom-right-radius: var(--dp-border-radius);
+}
+
+.dp__flex_display {
+  display: flex;
+}
+
+.dp__flex_display_with_input {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.dp__relative {
+  position: relative;
+}
+
+.calendar-next-enter-active,
+.calendar-next-leave-active,
+.calendar-prev-enter-active,
+.calendar-prev-leave-active {
+  transition: all var(--dp-transition-timing-general) ease-out;
+}
+
+.calendar-next-enter-from {
+  opacity: 0;
+  transform: translateX(var(--dp-transition-length));
+}
+
+.calendar-next-leave-to {
+  opacity: 0;
+  transform: translateX(calc(var(--dp-transition-length) * -1));
+}
+
+.calendar-prev-enter-from {
+  opacity: 0;
+  transform: translateX(calc(var(--dp-transition-length) * -1));
+}
+
+.calendar-prev-leave-to {
+  opacity: 0;
+  transform: translateX(var(--dp-transition-length));
+}
+
+.dp-menu-appear-bottom-enter-active,
+.dp-menu-appear-bottom-leave-active,
+.dp-menu-appear-top-enter-active,
+.dp-menu-appear-top-leave-active,
+.dp-slide-up-enter-active,
+.dp-slide-up-leave-active,
+.dp-slide-down-enter-active,
+.dp-slide-down-leave-active {
+  transition: all var(--dp-animation-duration) var(--dp-transition-timing);
+}
+
+.dp-menu-appear-top-enter-from,
+.dp-menu-appear-top-leave-to,
+.dp-slide-down-leave-to,
+.dp-slide-up-enter-from {
+  opacity: 0;
+  transform: translateY(var(--dp-transition-length));
+}
+
+.dp-menu-appear-bottom-enter-from,
+.dp-menu-appear-bottom-leave-to,
+.dp-slide-down-enter-from,
+.dp-slide-up-leave-to {
+  opacity: 0;
+  transform: translateY(calc(var(--dp-transition-length) * -1));
+}
+
+.dp--arrow-btn-nav {
+  transition: var(--dp-common-transition);
+  height: 100%;
+}
+
+.dp--highlighted {
+  background-color: var(--dp-highlight-color);
+}
+
+.dp--hidden-el {
+  visibility: hidden;
+}
+
+.dp--centered {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: fixed;
+}
