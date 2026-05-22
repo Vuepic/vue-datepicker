@@ -16,59 +16,67 @@ v-model binding
 Different modes require different types for `model-value`
 
 - Exception to this rule is if you use [`model-type`](#model-type)
-:::
+  :::
 
 :::info Date Picker
+
 - Single - `Date`
-- Range - `[Date, Date]` or `[Date, null]` in case of partial range 
-:::
+- Range - `[Date, Date]` or `[Date, null]` in case of partial range
+  :::
 
 :::info Time Picker
+
 - Single - `{ hours: number; minutes: number; seconds?: number }`
 - Range - `{ hours: number; minutes: number; seconds?: number }[]`
-:::
+  :::
 
 :::info Week Picker
+
 - Single - `[Date, Date]`
 - Range - `[[Date, Date], [Date, Date]]`
-:::
+  :::
 
 :::info Month Picker
+
 - Single - `{ month: number; year: number }`
 - Range - `{ month: number; year: number }[]`
-:::
+  :::
 
 :::info Year Picker
+
 - Single - `number`
 - Range - `[number, number]`
-:::
+  :::
 
 :::info Quarter Picker
+
 - Single - `Date`
 - Range - `[Date, Date]`
-:::
+  :::
 
 :::tip
- - `Date` values can also be `string` or `number`, as long as `new Date(value)` returns a valid date
- - `number` values can also be `string` values, as long as `Number(value)` returns a valid number
-:::
 
+- `Date` values can also be `string` or `number`, as long as `new Date(value)` returns a valid date
+- `number` values can also be `string` values, as long as `Number(value)` returns a valid number
+  :::
 
 - Default: `undefined`
 
 ::: details Code Example
+
 ```vue
 <template>
-  <VueDatePicker :model-value="date" @update:model-value="(value) => date = value" />
+  <VueDatePicker :model-value="date" @update:model-value="(value) => (date = value)" />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
 </script>
 ```
+
 :::
 
 ## model-type
@@ -79,6 +87,7 @@ Specify a custom format for `v-model`
 - Default: `undefined`
 
 :::info
+
 - `timestamp` - uses timestamp for binding
 - `format` - uses provided format or fallbacks to the default one. Must be a **string**
 - `iso` - date that will be returned will be in iso string format
@@ -88,18 +97,20 @@ This is only compatible with date pickers, [`time-picker`](/props/modes/#time-pi
 :::
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" model-type="dd.MM.yyyy" />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
 </script>
 ```
+
 :::
 
 ## auto-apply
@@ -116,18 +127,20 @@ When `auto-apply` is used in combination with [`flow`](/props/modes/#flow), to s
 <GlobalDemo :autoApply="true" placeholder="Select Date"></GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" auto-apply />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
 </script>
 ```
+
 :::
 
 ## no-today
@@ -140,18 +153,20 @@ Hide today mark from the calendar
 <GlobalDemo :noToday="true" placeholder="Select Date"></GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" no-today />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
 </script>
 ```
+
 :::
 
 ## markers
@@ -163,31 +178,33 @@ Add markers to the specified dates with (optional) tooltips. For color options, 
 
 ```ts
 interface Marker {
-    date: Date | string | number;
-    type?: 'dot' | 'line';
-    tooltip?: { text: string; color?: string; slot?: string }[];
-    color?: string;
-    // el is an HTML element of a calendar cell
-    customPosition?: (el: HTMLElement) => Record<string, string | number>;
+  date: Date | string | number;
+  type?: 'dot' | 'line';
+  tooltip?: { text: string; color?: string; slot?: string }[];
+  color?: string;
+  // el is an HTML element of a calendar cell
+  customPosition?: (el: HTMLElement) => Record<string, string | number>;
 }
 ```
 
 - Default: `[]`
 
 :::tip
- - You can provide a `slot` name in the tooltip object to use a custom slot for the tooltip
-:::
+
+- You can provide a `slot` name in the tooltip object to use a custom slot for the tooltip
+  :::
 
 <GlobalDemo :markers="markers" placeholder="Select Date"></GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" :markers="markers" />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
   import { addDays } from 'date-fns';
 
@@ -214,6 +231,7 @@ interface Marker {
   ];
 </script>
 ```
+
 :::
 
 ## highlight
@@ -224,18 +242,19 @@ Specify highlighted dates
 
 ```ts
 interface Highlight {
-    dates: Date[];
-    years: number[];
-    months: { month: number; year: number }[];
-    quarters: { quarter: number; year: number }[];
-    weekdays: number[];
-    options: { highlightDisabled: boolean };
+  dates: Date[];
+  years: number[];
+  months: { month: number; year: number }[];
+  quarters: { quarter: number; year: number }[];
+  weekdays: number[];
+  options: { highlightDisabled: boolean };
 }
 
-type HighlightFn = ((date: Date) => boolean)
-    | ((month: { month: number; year: number }) => boolean)
-    | ((yearOrWeekDay: number) => boolean)
-    | ((quarter: { quarter: number; year: number }) => boolean);
+type HighlightFn =
+  | ((date: Date) => boolean)
+  | ((month: { month: number; year: number }) => boolean)
+  | ((yearOrWeekDay: number) => boolean)
+  | ((quarter: { quarter: number; year: number }) => boolean);
 ```
 
 - Default: `undefined`
@@ -243,24 +262,22 @@ type HighlightFn = ((date: Date) => boolean)
 <GlobalDemo :highlight="highlight" placeholder="Select Date"></GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" :highlight="{ dates: highlighted }" />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
   import { addDays } from 'date-fns';
 
   const date = ref();
-  const highlighted = [
-    addDays(new Date(), 1),
-    addDays(new Date(), 2),
-    addDays(new Date(), 3),
-  ];
+  const highlighted = [addDays(new Date(), 1), addDays(new Date(), 2), addDays(new Date(), 3)];
 </script>
 ```
+
 :::
 
 ## disabled
@@ -273,18 +290,20 @@ Disables the input
 <GlobalDemo :disabled="true" placeholder="Select Date"></GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" disabled />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
 </script>
 ```
+
 :::
 
 ## readonly
@@ -297,18 +316,20 @@ Sets the input in readonly state
 <GlobalDemo :readonly="true" placeholder="Select Date"></GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" readonly />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
 </script>
 ```
+
 :::
 
 ## hide-navigation
@@ -321,42 +342,44 @@ Hide navigation buttons from the overlays
 <GlobalDemo :hideNavigation="['month', 'year']" placeholder="Select Date"></GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" :hide-navigation="['month', 'year']" />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
 </script>
 ```
+
 :::
 
 ## action-row
 
 Control which buttons are shown in the action row
 
-- Type: 
+- Type:
 
 ```ts
 import type { RoundingMethod, NearestMinutes } from 'date-fns';
 
 interface ActionRow {
- selectBtnLabel?: string;
- cancelBtnLabel?: string;
- nowBtnLabel?: string;
- showSelect?: boolean;
- showCancel?: boolean;
- showNow?: boolean;
- showPreview?: boolean;
- nowBtnRound?: { rounding?: RoundingMethod; roundTo?: NearestMinutes }
+  selectBtnLabel?: string;
+  cancelBtnLabel?: string;
+  nowBtnLabel?: string;
+  showSelect?: boolean;
+  showCancel?: boolean;
+  showNow?: boolean;
+  showPreview?: boolean;
+  nowBtnRound?: { rounding?: RoundingMethod; roundTo?: NearestMinutes };
 }
 ```
 
-- Default: 
+- Default:
 
 ```ts
 {
@@ -366,35 +389,37 @@ interface ActionRow {
   showSelect: true,
   showCancel: true,
   showNow: false,
-  showPreview: true, 
+  showPreview: true,
   nowBtnRound: undefined,
 }
 ```
 
 :::info
-- `showNow` - Places another button in the action row, where click on it results in selecting the current date and time
-- `nowBtnRound` - When `showNow` is enabled, you can configure `now` button to round the selected time to the nearest minute. 
-It supports two properties:
-  - `rounding` - A round method:  `"ceil" | "floor" | "round" | "trunc"`
-  - `roundTo` - Value of minutes to round to: values from `1` to `30`
-:::
 
+- `showNow` - Places another button in the action row, where click on it results in selecting the current date and time
+- `nowBtnRound` - When `showNow` is enabled, you can configure `now` button to round the selected time to the nearest minute.
+  It supports two properties:
+  - `rounding` - A round method: `"ceil" | "floor" | "round" | "trunc"`
+  - `roundTo` - Value of minutes to round to: values from `1` to `30`
+    :::
 
 <GlobalDemo :actionRow="{ showPreview: false, showNow: true }" placeholder="Select Date"></GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" :action-row="{ showPreview: false, showNow: true }" />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
 </script>
 ```
+
 :::
 
 ## loading
@@ -407,18 +432,20 @@ Adds a loading overlay in the menu
 <GlobalDemo :loading="true" placeholder="Select Date"></GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" loading />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
 </script>
 ```
+
 :::
 
 ## year-first
@@ -431,18 +458,20 @@ Reverse button order in the calendar header
 <GlobalDemo :yearFirst="true" placeholder="Select Date"></GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" year-first />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
 </script>
 ```
+
 :::
 
 ## disable-year-select
@@ -455,18 +484,20 @@ Removes the year button from the menu and cycles trough the current or provided 
 <GlobalDemo :disableYearSelect="true" placeholder="Select Date"></GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" disable-year-select />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
 </script>
 ```
+
 :::
 
 ## input-attrs
@@ -488,12 +519,13 @@ interface InputAttrs {
   inputmode?: 'search' | 'text' | 'none' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | undefined;
 }
 ```
+
 - Default:
 
 ```ts
 {
-  name: undefined, 
-  required: false, 
+  name: undefined,
+  required: false,
   autocomplete: 'off',
   state: undefined,
   clearable: true,
@@ -505,6 +537,7 @@ interface InputAttrs {
 ```
 
 :::info
+
 - `name` - `HTMLInputElement` name attribute
 - `required` - `HTMLInputElement` required attribute
 - `state` - Validation state of the calendar value. Sets the green/red border depending on the value
@@ -513,23 +546,25 @@ interface InputAttrs {
 - `hideInputIcon` - Hide calendar icon in the input field
 - `id` - Sets the `id` attribute on the input field
 - `inputmode` - `HTMLInputElement` inputmode attribute
-:::
+  :::
 
 <GlobalDemo :inputAttrs="{ hideInputIcon: true }" placeholder="Select Date"></GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" :input-attrs="{ hideInputIcon: true }" />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
 </script>
 ```
+
 :::
 
 ## six-weeks
@@ -540,30 +575,32 @@ Always display six weeks on the calendar. This will prevent dynamic calendar hei
 - Default: `false`
 
 :::info
+
 - `boolean` - Legacy enable, same as append
 - `'append'` - Always add new row(s) at the bottom of the calendar
 - `'prepend'` - Always add new row(s) at the beginning of the calendar
 - `'center'` - If the month that needs padding starts with the beginning of a week, add a week at the start. If a second week needs to be added, add it in the end. This way, every month will have offset days on each end, and months like Feb. 2021 will not have that huge tail. This mode does not add a week before if the month already starts with a partial week
 - `'fair'` - The first extra week is added to either start or end of the month, depending on which partial week has fewer offset days. This solves the same problems as center, but aims to distribute the padding more evenly. Since it leads to more months having a leading offset week, which is not necessarily desirable. The difference is visible e.g. in June 2021
-:::
+  :::
 
 <GlobalDemo :sixWeeks="'center'" placeholder="Select Date"></GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" six-weeks="center" />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
 </script>
 ```
-:::
 
+:::
 
 ## calendar
 
@@ -583,37 +620,39 @@ interface CalendarWeek {
     value: Date; // Date that is going to be selected, do not modify
     current: boolean; // If the date belongs to the currenct month
     classData: Record<string, boolean>; // All classes for a specific date
-  }[]
+  }[];
 }
 ```
 
 <GlobalDemo :calendar="calendarFn"></GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" :calendar="calendarFn" />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
 
   const calendarFn = (weeks) => {
     return weeks
-        .filter((week) => week.days.some((day) => day.text === 15))
-        .map((week) => ({
-          ...week,
-          days: week.days.map((day) => {
-            day.classData['custom-class'] = true;
-            return day;
-          }),
-        }));
-  }
+      .filter((week) => week.days.some((day) => day.text === 15))
+      .map((week) => ({
+        ...week,
+        days: week.days.map((day) => {
+          day.classData['custom-class'] = true;
+          return day;
+        }),
+      }));
+  };
 </script>
 ```
+
 :::
 
 ## hide-offset-dates
@@ -626,18 +665,20 @@ Hide dates from the previous/next month in the calendar
 <GlobalDemo :hideOffsetDates="true"></GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" hide-offset-dates />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
 </script>
 ```
+
 :::
 
 ## week-start
@@ -650,18 +691,20 @@ Day from which the week starts. 0-6, 0 is Sunday, 6 is Saturday
 <GlobalDemo weekStart="0"></GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" :week-start="WeekStart.Sunday" />
 </template>
 
 <script setup>
-  import { VueDatePicker, WeekStart } from "@vuepic/vue-datepicker";
+  import { VueDatePicker, WeekStart } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
 </script>
 ```
+
 :::
 
 ## year-range
@@ -674,18 +717,20 @@ Specify start and end year for years to generate
 <GlobalDemo :yearRange="[2020, 2040]"></GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" :year-range="[2020, 2040]" />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
 </script>
 ```
+
 :::
 
 ## reverse-years
@@ -698,25 +743,27 @@ Reverse the order of the years in years overlay
 <GlobalDemo :reverseYears="true" :yearRange="[2020, 2040]"></GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" :year-range="[2020, 2040]" reverse-years />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
 </script>
 ```
+
 :::
 
 ## floating
 
 Configure floating menu
 
-- Type: 
+- Type:
 
 ```ts
 import { type ShallowRef } from 'vue';
@@ -727,7 +774,7 @@ interface FloatingConfig {
   arrow?: Readonly<ShallowRef<HTMLDivElement | null>> | boolean;
   strategy?: Strategy;
   placement?: Placement;
-  flip?: boolean | FlipOptions // v12.1+
+  flip?: boolean | FlipOptions; // v12.1+
   shift?: boolean | ShiftOptions; // v12.1+
 }
 ```
@@ -735,29 +782,32 @@ interface FloatingConfig {
 - Default: `{ offset: 10, arrow: true, strategy: undefined, placement: undefined, flip: true, shift: true }`
 
 :::info
+
 - `offset` - Offset from the input field
 - `arrow` - Show/hide floating menu arrow. If you use `arrow` slot, you should pass the `template ref` for proper arrow positioning
 - [`strategy`](https://floating-ui.com/docs/usefloating#strategy) - Use `absolute` or `fixed` positioning strategy
 - [`placement`](https://floating-ui.com/docs/tutorial#placements) - Position of the floating menu
 - [`flip`](https://floating-ui.com/docs/flip#flip) <Badge type="tip" text="v12.1+" /> - Enable/disable or configure flip middleware
 - [`shift`](https://floating-ui.com/docs/shift#shift) <Badge type="tip" text="v12.1+" /> - Enable/disable or configure shift middleware
-:::
+  :::
 
 <GlobalDemo :floating="{ arrow: false, offset: 0 }"></GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" :floating="{ arrow: false, offset: 0 }" />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
 </script>
 ```
+
 :::
 
 ## aria-labels
@@ -765,7 +815,8 @@ interface FloatingConfig {
 Customize the language of the HTML `aria-labels` for localized accessibility
 
 - Type
-```ts 
+
+```ts
 interface AriaLabelsConfig {
   toggleOverlay?: string;
   menu?: string;
@@ -782,7 +833,7 @@ interface AriaLabelsConfig {
   prevMonth?: string;
   nextYear: string;
   prevYear: string;
-  day?: ({value}: {value: Date}) => string;
+  day?: ({ value }: { value: Date }) => string;
   weekDay?: (day: number) => string;
   clearInput?: string;
   calendarIcon?: string;
@@ -796,19 +847,21 @@ interface AriaLabelsConfig {
 - Default: `{}`
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" :aria-labels="ariaLabels" />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
-  const ariaLabels = { menu: 'Some custom menu label' }
+  const ariaLabels = { menu: 'Some custom menu label' };
 </script>
 ```
+
 :::
 
 ## week-numbers
@@ -816,30 +869,34 @@ interface AriaLabelsConfig {
 Display week numbers in the calendar. You can switch between local index, ISO numbering and custom function
 
 - Type: `boolean | WeekNumbersConfig`
+
 ```ts
 interface WeekNumbersConfig {
   type?: 'iso' | 'local' | ((date: Date) => string | number);
   hideOnOffsetDates?: boolean;
-  label?: string
+  label?: string;
 }
 ```
+
 - Default: `false`
 
 <GlobalDemo :weekNumbers="{ type: 'local' }"></GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" :week-numbers="{ type: 'local' }" />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
 </script>
 ```
+
 :::
 
 ## day-names
@@ -847,9 +904,10 @@ interface WeekNumbersConfig {
 Provide custom labels for day names in the calendar header
 
 :::warning
+
 - The array order will be rendered as is, make sure to sync it with [`week-start`](#week-start) prop
 - Make sure that a provided array has a **length of 7**
-:::
+  :::
 
 - Type: `(() => string[]) | string[]`
 - Default: `null`;
@@ -857,18 +915,20 @@ Provide custom labels for day names in the calendar header
 <GlobalDemo :dayNames="['1', '2', '3', '4', '5', '6', '7']"></GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" :day-names="['1', '2', '3', '4', '5', '6', '7']" />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
 </script>
 ```
+
 :::
 
 ## config
@@ -876,6 +936,7 @@ Provide custom labels for day names in the calendar header
 General configuration for customizing specific date picker behaviour
 
 - Type:
+
 ```ts
 interface Config {
   allowStopPropagation: boolean;
@@ -900,12 +961,14 @@ interface Config {
   monthChangeOnScroll?: boolean | string;
 }
 ```
+
 - Default:
+
 ```ts
  {
-  allowStopPropagation: true, 
+  allowStopPropagation: true,
   closeOnScroll: false,
-  modeHeight: 255, 
+  modeHeight: 255,
   allowPreventDefault: false,
   closeOnClearValue: true,
   closeOnAutoApply: true,
@@ -927,6 +990,7 @@ interface Config {
 ```
 
 :::info
+
 - `allowStopPropagation` - Enable `event.sportPropagation` on click events
 - `closeOnScroll` - Close datepicker menu on page scroll
 - `modeHeight` - If you use [`month-picker`](/props/modes/#month-picker), [`time-picker`](/props/modes/#time-picker) or [`year-picker`](/props/modes/#year-picker), set custom height of the picker in `px`
@@ -947,7 +1011,7 @@ interface Config {
 - `spaceConfirm` - `space` key selects the date (like you pressed the select button)
 - `monthChangeOnArrows` - Change months via arrow keys
 - `monthChangeOnScroll` - Scrolling the mouse wheel over the calendar will change the month. Scroll down for next month and vice versa. You can set the value to `inverse` to reverse scrolling up and down.
-:::
+  :::
 
 ## start-date
 
@@ -959,18 +1023,20 @@ Open the datepicker to some preselected month and year
 <GlobalDemo :startDate="new Date(2020, 1)"></GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" :start-date="new Date(2020, 1)" />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
 </script>
 ```
+
 :::
 
 ## focus-start-date
@@ -983,18 +1049,20 @@ Open the datepicker to provided `start-date` ignoring the `v-model` value
 <GlobalDemo :startDate="new Date(2020, 1)" :focusStartDate="true" :bindSingle="true"></GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" :start-date="new Date(2020, 1)" focus-start-date />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
 </script>
 ```
+
 :::
 
 ## teleport
@@ -1002,9 +1070,10 @@ Open the datepicker to provided `start-date` ignoring the `v-model` value
 Use teleport to position the datepicker menu. This is useful if you have hidden overflow on the parent HTML element where the menu is not showing in full.
 
 :::tip
+
 - Setting the prop to `true`, the menu will be placed on the `body` tag
 - If you use `string` value, provide `id` of the element
-:::
+  :::
 
 - Type: `string | boolean | HTMLElement`
 - Default: `false`
@@ -1012,18 +1081,20 @@ Use teleport to position the datepicker menu. This is useful if you have hidden 
 <GlobalDemo :teleport="true"></GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" :teleport="true" />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
 </script>
 ```
+
 :::
 
 ## centered
@@ -1036,18 +1107,20 @@ Sets the menu position on the page center, useful for smaller screens where ther
 <GlobalDemo :centered="true"></GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" centered />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
 </script>
 ```
+
 :::
 
 ## arrow-navigation
@@ -1070,18 +1143,20 @@ Levels indicate level in the menu hierarchy. On the initial menu level, you are 
 <GlobalDemo :arrow-navigation="true"></GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" arrow-navigation />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
 </script>
 ```
+
 :::
 
 ## preset-dates
@@ -1089,8 +1164,9 @@ Levels indicate level in the menu hierarchy. On the initial menu level, you are 
 When configured, it will provide a sidebar with a configured range / date that the user can select
 
 - Type: `PresetDate[]`
+
 ```ts
-import type { MaybeRefOrGetter } from "vue";
+import type { MaybeRefOrGetter } from 'vue';
 
 interface PresetDate {
   label: string;
@@ -1100,11 +1176,13 @@ interface PresetDate {
   testId?: string;
 }
 ```
+
 - Default: `[]`
 
 :::tip
+
 - You can provide a custom `slot` name for a specific preset date and use it as standard slot
-:::
+  :::
 
 <GlobalDemo :presetDates="presetDates" :range="true">
     <template #preset-date-range-button="{ label, value, presetDate }">
@@ -1118,14 +1196,12 @@ interface PresetDate {
 </GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date">
     <template #preset-date-range-button="{ label, value, presetDate }">
-      <span 
-        role="button"
-        :tabindex="0"
-        @click="presetDate(value)">
+      <span role="button" :tabindex="0" @click="presetDate(value)">
         {{ label }}
       </span>
     </template>
@@ -1133,7 +1209,7 @@ interface PresetDate {
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
   import { endOfMonth, endOfYear, startOfMonth, startOfYear, subMonths } from 'date-fns';
 
@@ -1142,7 +1218,7 @@ interface PresetDate {
     {
       label: 'Today (Slot)',
       value: [new Date(), new Date()],
-      slot: 'preset-date-range-button'
+      slot: 'preset-date-range-button',
     },
     { label: 'Today', value: [new Date(), new Date()] },
     { label: 'This month', value: [startOfMonth(new Date()), endOfMonth(new Date())] },
@@ -1154,6 +1230,7 @@ interface PresetDate {
   ]);
 </script>
 ```
+
 :::
 
 ## hide-month-year-select
@@ -1166,20 +1243,21 @@ Removes the month and year picker
 <GlobalDemo :hideMonthYearSelect="true"></GlobalDemo>
 
 ::: details Code Example
+
 ```vue
 <template>
   <VueDatePicker v-model="date" hide-month-year-select />
 </template>
 
 <script setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
 </script>
 ```
-:::
 
+:::
 
 <script setup>
     import { ref } from 'vue';

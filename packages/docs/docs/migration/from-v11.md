@@ -17,7 +17,7 @@ outline: [2, 4]
 - `import` statement is changed to named instead of default
 - Removed `onScroll` and `dpWrapMenuRef` exposed methods
 - In `action-row` slot, param `internalModelValue` is renamed to `modelValue`
-- In `time-picker` slot, exposed function `updateTime` parameters are changed 
+- In `time-picker` slot, exposed function `updateTime` parameters are changed
 - `noTz` property from `preset-dates` config array is removed
 - Removed props:
   - `position`
@@ -64,7 +64,7 @@ outline: [2, 4]
   - `month-change-on-scroll`
   - `partial-flow` (renamed)
   - `start-time`
-- Removed emits: 
+- Removed emits:
   - `recalculate-position`
   - `update:model-timezone-value`
   - `time-picker-open`
@@ -84,7 +84,7 @@ outline: [2, 4]
 Importing the component is now done via named import:
 
 ```js
-import VueDatePicker from '@vuepic/vue-datepicker'; // [!code --] 
+import VueDatePicker from '@vuepic/vue-datepicker'; // [!code --]
 import { VueDatePicker } from '@vuepic/vue-datepicker'; // [!code ++]
 ```
 
@@ -92,14 +92,14 @@ import { VueDatePicker } from '@vuepic/vue-datepicker'; // [!code ++]
 
 ### `position`, `auto-position`, `alt-position`
 
-Since the position logic is now done via `@floating-ui/vue` library and custom positioning logic is removed, 
+Since the position logic is now done via `@floating-ui/vue` library and custom positioning logic is removed,
 there is no need to keep these props.
 
-`position` and `auto-position` props can be replaced with appropriate options in the [`floating`](/props/general-configuration/#floating) prop 
+`position` and `auto-position` props can be replaced with appropriate options in the [`floating`](/props/general-configuration/#floating) prop
 
 ### `uid`
 
-The `uid` prop is now removed. Previously, it was using the same value and appending `'dp-menu'` or `'dp-input'` to it. 
+The `uid` prop is now removed. Previously, it was using the same value and appending `'dp-menu'` or `'dp-input'` to it.
 Now, you can pass two separate values via `menu-id` prop for the menu, or `inputAttrs.id` for the input id.
 
 ### `utc`
@@ -230,7 +230,7 @@ If you don't have it in the project, you can install it via `npm install date-fn
 and then import it:
 
 ```ts
-import { znCh } from 'date-fns/locale'
+import { znCh } from 'date-fns/locale';
 ```
 
 ### `disable-month-year-select`
@@ -282,7 +282,6 @@ To update time, pass back the exposed time object and override the properties yo
   </VueDatePicker>
 </template>
 ```
-
 
 ### `day-class`
 
