@@ -1,0 +1,17 @@
+{
+  "name": "playground",
+  "version": "13.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite"
+  },
+  "dependencies": {
+    "@vuepic/vue-datepicker": "workspace:*",
+    "vue": "^3.5.34"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  }
+}

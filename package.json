@@ -1,6 +1,6 @@
 {
   "name": "vuepic",
-  "version": "12.1.0",
+  "version": "13.0.0",
   "private": false,
   "description": "Datepicker component for Vue 3",
   "homepage": "https://vue3datepicker.com",
@@ -9,6 +9,7 @@
   "type": "module",
   "scripts": {},
   "devDependencies": {
+    "@inquirer/prompts": "^8.4.3",
     "@microsoft/api-extractor": "^7.58.7",
     "@tsconfig/node24": "^24.0.4",
     "@types/jsdom": "^28.0.3",
@@ -34,10 +35,7 @@
     "oxlint": "^1.66.0",
     "postcss": "^8.5.15",
     "rimraf": "^6.1.3",
-    "sass": "^1.99.0",
-    "sass-loader": "^17.0.0",
-    "stylelint": "^17.11.1",
-    "stylelint-config-standard-scss": "^17.0.0",
+    "semver": "^7.8.1",
     "typescript": "^6.0.3",
     "unplugin-dts": "^1.0.1",
     "vite": "^8.0.13",

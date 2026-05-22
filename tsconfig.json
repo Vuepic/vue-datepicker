@@ -4,6 +4,8 @@
   "compilerOptions": {
     "module": "preserve",
     "moduleResolution": "bundler",
+
+    // Include Node.js types and avoid accidentally including other `@types/*` packages.
     "types": ["node"]
   }
 }

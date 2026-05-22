@@ -1,9 +1,0 @@
-{
-  "extends": ["stylelint-config-standard-scss"],
-  "rules": {
-    "selector-class-pattern": "[^ ]",
-    "scss/dollar-variable-pattern": "[^ ]",
-    "scss/percent-placeholder-pattern": "[^ ]"
-  },
-  "ignoreFiles": ["**/*.vue"]
-}

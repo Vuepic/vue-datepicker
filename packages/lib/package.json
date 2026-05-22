@@ -1,0 +1,86 @@
+{
+  "name": "@vuepic/vue-datepicker",
+  "version": "13.0.0",
+  "private": false,
+  "description": "Datepicker component for Vue 3",
+  "keywords": [
+    "date",
+    "datepicker",
+    "daterangepicker",
+    "datetimepicker",
+    "vue",
+    "vue-datepicker",
+    "vue3-datepicker"
+  ],
+  "homepage": "https://vue3datepicker.com",
+  "bugs": {
+    "url": "https://github.com/Vuepic/vue-datepicker/issues"
+  },
+  "license": "MIT",
+  "author": "Vuepic",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vuepic/vue-datepicker.git"
+  },
+  "style": "dist/main.css",
+  "files": [
+    "dist/*"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    },
+    "./dist/main.css": "./src/VueDatePicker/assets/css/main.css"
+  },
+  "publishConfig": {
+    "module": "dist/vue-datepicker.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/vue-datepicker.js",
+        "default": "./dist/vue-datepicker.js"
+      },
+      "./dist/main.css": {
+        "import": "./dist/main.css",
+        "require": "./dist/main.css",
+        "default": "./dist/main.css"
+      }
+    }
+  },
+  "scripts": {
+    "clean": "rimraf ./dist",
+    "build": "run-s clean type-check lint fmt:check build:lib",
+    "type-check": "vue-tsc --build",
+    "build:lib": "vite build --mode production",
+    "test": "cross-env NODE_ENV=test vitest",
+    "test:coverage": "cross-env NODE_ENV=test vitest --environment jsdom run --coverage",
+    "lint": "run-s lint:*",
+    "lint:oxlint": "oxlint src --fix",
+    "lint:eslint": "eslint \"src/**\" --fix --cache",
+    "format": "oxfmt .",
+    "fmt:check": "oxfmt --check"
+  },
+  "dependencies": {
+    "@date-fns/tz": "^1.4.1",
+    "@floating-ui/vue": "^1.1.11",
+    "@vueuse/core": "^14.3.0",
+    "date-fns": "^4.2.1"
+  },
+  "devDependencies": {
+    "vue": "^3.5.34"
+  },
+  "peerDependencies": {
+    "vue": ">=3.5.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "engines": {
+    "node": ">=18.12.0"
+  }
+}

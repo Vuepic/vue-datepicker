@@ -1,0 +1,267 @@
+@import 'common.css';
+@import 'components/ActionRow.css';
+@import 'components/Calendar.css';
+@import 'components/DatePickerInput.css';
+@import 'components/DatePickerMenu.css';
+@import 'components/MonthYearInput.css';
+@import 'components/QuarterPicker.css';
+@import 'components/SelectionOverlay.css';
+@import 'components/TimeInput.css';
+
+:root {
+  --dp-common-transition: all 0.1s ease-in;
+  --dp-menu-padding: 6px 8px;
+  --dp-animation-duration: 0.1s;
+  --dp-menu-appear-transition-timing: cubic-bezier(0.4, 0, 1, 1);
+  --dp-transition-timing: ease-out;
+  --dp-action-row-transition: all 0.2s ease-in;
+  --dp-font-family:
+    -apple-system, blinkmacsystemfont, 'Segoe UI', roboto, oxygen, ubuntu, cantarell, 'Open Sans', 'Helvetica Neue',
+    sans-serif;
+  --dp-border-radius: 4px;
+  --dp-cell-border-radius: 4px;
+  --dp-transition-length: 22px;
+  --dp-transition-timing-general: 0.1s;
+  --dp-button-height: 35px;
+  --dp-month-year-row-height: 35px;
+  --dp-month-year-row-button-size: 25px;
+  --dp-button-icon-height: 20px;
+  --dp-calendar-wrap-padding: 0 5px;
+  --dp-cell-size: 35px;
+  --dp-cell-padding: 5px;
+  --dp-common-padding: 10px;
+  --dp-input-icon-padding: 35px;
+  --dp-input-padding: 6px 30px 6px 12px;
+  --dp-input-not-clearable-padding: 12px;
+  --dp-menu-min-width: 260px;
+  --dp-action-buttons-padding: 1px 6px;
+  --dp-row-margin: 5px 0;
+  --dp-calendar-header-cell-padding: 0.5rem;
+  --dp-multi-calendars-spacing: 10px;
+  --dp-overlay-col-padding: 3px;
+  --dp-time-inc-dec-button-size: 32px;
+  --dp-font-size: 1rem;
+  --dp-preview-font-size: 0.8rem;
+  --dp-time-font-size: 2rem;
+  --dp-action-button-height: 22px;
+  --dp-action-row-padding: 8px;
+  --dp-direction: ltr;
+}
+
+.dp--theme-dark {
+  --dp-background-color: #212121;
+  --dp-text-color: #fff;
+  --dp-hover-color: #484848;
+  --dp-hover-text-color: #fff;
+  --dp-hover-icon-color: #959595;
+  --dp-primary-color: #005cb2;
+  --dp-primary-disabled-color: #61a8ea;
+  --dp-primary-text-color: #fff;
+  --dp-secondary-color: #a9a9a9;
+  --dp-border-color: #2d2d2d;
+  --dp-menu-border-color: #2d2d2d;
+  --dp-border-color-hover: #aaaeb7;
+  --dp-border-color-focus: #aaaeb7;
+  --dp-disabled-color: #737373;
+  --dp-disabled-color-text: #d0d0d0;
+  --dp-scroll-bar-background: #212121;
+  --dp-scroll-bar-color: #484848;
+  --dp-success-color: #00701a;
+  --dp-success-color-disabled: #428f59;
+  --dp-icon-color: #959595;
+  --dp-danger-color: #e53935;
+  --dp-marker-color: #e53935;
+  --dp-tooltip-color: #3e3e3e;
+  --dp-highlight-color: rgb(0 92 178 / 20%);
+  --dp-range-between-dates-background-color: var(--dp-hover-color, #484848);
+  --dp-range-between-dates-text-color: var(--dp-hover-text-color, #fff);
+  --dp-range-between-border-color: var(--dp-hover-color, #fff);
+  --dp-loader: 5px solid #005cb2;
+}
+
+.dp--theme-light {
+  --dp-background-color: #fff;
+  --dp-text-color: #212121;
+  --dp-hover-color: #f3f3f3;
+  --dp-hover-text-color: #212121;
+  --dp-hover-icon-color: #959595;
+  --dp-primary-color: #1976d2;
+  --dp-primary-disabled-color: #6bacea;
+  --dp-primary-text-color: #fff;
+  --dp-secondary-color: #c0c4cc;
+  --dp-border-color: #ddd;
+  --dp-menu-border-color: #ddd;
+  --dp-border-color-hover: #aaaeb7;
+  --dp-border-color-focus: #aaaeb7;
+  --dp-disabled-color: #f6f6f6;
+  --dp-scroll-bar-background: #f3f3f3;
+  --dp-scroll-bar-color: #959595;
+  --dp-success-color: #76d275;
+  --dp-success-color-disabled: #a3d9b1;
+  --dp-icon-color: #959595;
+  --dp-danger-color: #ff6f60;
+  --dp-marker-color: #ff6f60;
+  --dp-tooltip-color: #fafafa;
+  --dp-disabled-color-text: #8e8e8e;
+  --dp-highlight-color: rgb(25 118 210 / 10%);
+  --dp-range-between-dates-background-color: var(--dp-hover-color, #f3f3f3);
+  --dp-range-between-dates-text-color: var(--dp-hover-text-color, #212121);
+  --dp-range-between-border-color: var(--dp-hover-color, #f3f3f3);
+  --dp-loader: 5px solid #1976d2;
+}
+
+.dp--flex {
+  display: flex;
+  align-items: center;
+}
+
+.dp--btn {
+  border: none;
+  font: inherit;
+  transition: var(--dp-common-transition);
+  line-height: normal;
+  background: none;
+}
+
+.dp--main {
+  font-family: var(--dp-font-family) sans-serif;
+  user-select: none;
+  box-sizing: border-box;
+  position: relative;
+  width: 100%;
+}
+
+.dp--main * {
+  direction: var(--dp-direction, ltr);
+}
+
+.dp--pointer {
+  cursor: pointer;
+}
+
+/* Allow control of color property on icons */
+.dp--icon {
+  stroke: currentcolor;
+  fill: currentcolor;
+}
+
+/* Div style that is displayed on the bottom of the menu for switching layouts */
+.dp--button {
+  width: 100%;
+  text-align: center;
+  color: var(--dp-icon-color);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  place-content: center center;
+  padding: var(--dp-common-padding);
+  box-sizing: border-box;
+  height: var(--dp-button-height);
+
+  &.dp--overlay-action {
+    position: absolute;
+    bottom: 0;
+  }
+
+  &:hover {
+    background: var(--dp-hover-color);
+    color: var(--dp-hover-icon-color);
+  }
+
+  svg {
+    height: var(--dp-button-icon-height);
+    width: auto;
+  }
+}
+
+.dp--button-bottom {
+  border-bottom-left-radius: var(--dp-border-radius);
+  border-bottom-right-radius: var(--dp-border-radius);
+}
+
+.dp--flex-display {
+  display: flex;
+}
+
+.dp--flex-display-with-input {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.dp--relative {
+  position: relative;
+}
+
+.calendar-next-enter-active,
+.calendar-next-leave-active,
+.calendar-prev-enter-active,
+.calendar-prev-leave-active {
+  transition: all var(--dp-transition-timing-general) ease-out;
+}
+
+.calendar-next-enter-from {
+  opacity: 0;
+  transform: translateX(var(--dp-transition-length));
+}
+
+.calendar-next-leave-to {
+  opacity: 0;
+  transform: translateX(calc(var(--dp-transition-length) * -1));
+}
+
+.calendar-prev-enter-from {
+  opacity: 0;
+  transform: translateX(calc(var(--dp-transition-length) * -1));
+}
+
+.calendar-prev-leave-to {
+  opacity: 0;
+  transform: translateX(var(--dp-transition-length));
+}
+
+.dp-menu-appear-bottom-enter-active,
+.dp-menu-appear-bottom-leave-active,
+.dp-menu-appear-top-enter-active,
+.dp-menu-appear-top-leave-active,
+.dp-slide-up-enter-active,
+.dp-slide-up-leave-active,
+.dp-slide-down-enter-active,
+.dp-slide-down-leave-active {
+  transition: all var(--dp-animation-duration) var(--dp-transition-timing);
+}
+
+.dp-menu-appear-top-enter-from,
+.dp-menu-appear-top-leave-to,
+.dp-slide-down-leave-to,
+.dp-slide-up-enter-from {
+  opacity: 0;
+  transform: translateY(var(--dp-transition-length));
+}
+
+.dp-menu-appear-bottom-enter-from,
+.dp-menu-appear-bottom-leave-to,
+.dp-slide-down-enter-from,
+.dp-slide-up-leave-to {
+  opacity: 0;
+  transform: translateY(calc(var(--dp-transition-length) * -1));
+}
+
+.dp--arrow-btn-nav {
+  transition: var(--dp-common-transition);
+  height: 100%;
+}
+
+.dp--highlighted {
+  background-color: var(--dp-highlight-color);
+}
+
+.dp--hidden-el {
+  visibility: hidden;
+}
+
+.dp--centered {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: fixed;
+}

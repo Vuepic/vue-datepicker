@@ -1,0 +1,15 @@
+.dp--btn-base {
+  border: none;
+  font: inherit;
+  transition: var(--dp-common-transition);
+  line-height: normal;
+  background: none;
+}
+
+.dp--year-mode-picker {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--dp-cell-size);
+}
