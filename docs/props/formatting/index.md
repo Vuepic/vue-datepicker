@@ -19,10 +19,6 @@ Formats prop allows configuring the format of various picker elements
 - All formating is based on the provided [`locale`](/props/localization/#locale) prop
 :::
 
-:::tip
-For convenience, the library provides re-export from `date-fns` for all supported locales`
-:::
-
 - Type:
 ```ts
 interface FormatsConfig {
