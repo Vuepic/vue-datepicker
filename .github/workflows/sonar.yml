@@ -33,7 +33,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Test and coverage
-        run: pnpm --filter --filter @vuepic/vue-datepicker test:coverage
+        run: pnpm --filter @vuepic/vue-datepicker test:coverage
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v8.1.0
