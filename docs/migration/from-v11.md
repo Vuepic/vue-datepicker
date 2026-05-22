@@ -54,8 +54,8 @@ outline: [2, 4]
   - `no-minutes-overlay`
   - `no-seconds-overlay`
   - `hours-grid-increment`
-  - `minutes-grid-ncrement`
-  - `seconds-grid-ncrement`
+  - `minutes-grid-increment`
+  - `seconds-grid-increment`
   - `time-picker-inline`
   - `day-class`
   - `esc-close`
@@ -250,7 +250,7 @@ This prop is now moved under [`filters`](/props/validation/#filters) prop and re
 </template>
 ```
 
-### `enable-time-picker`, `ignore-time-validation`, `enable-seconds`, `enable-minutes`, `is-24`, `no-hours-overlay`, `no-minutes-overlay`, `no-seconds-overlay`, `hours-grid-increment`, `minutes-grid-ncrement`, `seconds-grid-ncrement`, `time-picker-inline`, `start-time`
+### `enable-time-picker`, `ignore-time-validation`, `enable-seconds`, `enable-minutes`, `is-24`, `no-hours-overlay`, `no-minutes-overlay`, `no-seconds-overlay`, `hours-grid-increment`, `minutes-grid-increment`, `seconds-grid-increment`, `time-picker-inline`, `start-time`
 
 These props are now grouped under [`time-config`](/props/time-picker-configuration/#time-config) prop. Prop types and names are unchanged.
 
