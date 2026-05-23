@@ -69,7 +69,7 @@ export const useExternalInternalMapper = () => {
       }
       return checkRangeEnabled(
         () => [
-          setYear(getDate(), value[0]!),
+          setYear(getDate(), value[0]),
           value[1] ? setYear(getDate(), value[1]) : checkPartialRangeValue(range.value.partialRange),
         ],
         range.value.enabled,
@@ -87,7 +87,7 @@ export const useExternalInternalMapper = () => {
   const mapTimeExternalToInternal = (value: TimeModel | TimeModel[]): Date | Date[] => {
     // Unlike in other modes, partial range is not supported here, since the time needs to be defined on both time inputs
     if (Array.isArray(value)) {
-      return [convertCustomModeType(value[0], setTime(value[0]!)), convertCustomModeType(value[1], setTime(value[1]!))];
+      return [convertCustomModeType(value[0], setTime(value[0])), convertCustomModeType(value[1], setTime(value[1]))];
     }
     return convertCustomModeType(value, setTime(value));
   };
@@ -100,7 +100,7 @@ export const useExternalInternalMapper = () => {
       }
       return checkRangeEnabled(
         () => [
-          convertCustomModeType(value[0], set(today, { month: +value[0]!.month, year: +value[0]!.year })),
+          convertCustomModeType(value[0], set(today, { month: +value[0].month, year: +value[0].year })),
           convertCustomModeType(
             value[1],
             value[1]
@@ -138,7 +138,7 @@ export const useExternalInternalMapper = () => {
   // Map external format to internal model value for range and single picker
   const mapDateExternalToInternal = (value: Date | Date[]) => {
     if (rootProps.modelAuto) {
-      if (Array.isArray(value)) return [parseModelType(value[0]!), parseModelType(value[1]!)];
+      if (Array.isArray(value)) return [parseModelType(value[0]), parseModelType(value[1])];
       // In case of auto-apply, if we add null, it will never select range
       return rootProps.autoApply ? [parseModelType(value)] : [parseModelType(value), null];
     }
@@ -147,10 +147,10 @@ export const useExternalInternalMapper = () => {
         () =>
           value[1]
             ? [
-                parseModelType(value[0]!),
+                parseModelType(value[0]),
                 value[1] ? parseModelType(value[1]) : checkPartialRangeValue(range.value.partialRange),
               ]
-            : [parseModelType(value[0]!)],
+            : [parseModelType(value[0])],
         range.value.enabled,
       );
     }
@@ -171,7 +171,7 @@ export const useExternalInternalMapper = () => {
   const getRangeEmitValue = (): Date[] => {
     const mv = modelValue.value as Date[];
     return [
-      toModelType(mv[0]!),
+      toModelType(mv[0]),
       mv[1] ? toModelType(mv[1]) : checkPartialRangeValue(range.value.partialRange),
     ] as Date[];
   };
@@ -285,14 +285,14 @@ export const useExternalInternalMapper = () => {
       if (multiDates.value.enabled) {
         return modelValue.value.map((value) => mapper(value));
       }
-      return [mapper(modelValue.value[0]!), modelValue.value[1] ? mapper(modelValue.value[1]) : null];
+      return [mapper(modelValue.value[0]), modelValue.value[1] ? mapper(modelValue.value[1]) : null];
     }
     return mapper(convertType(modelValue.value));
   };
 
   const mapInternalWeekPickerToExternal = () => {
     if (Array.isArray(modelValue.value)) {
-      const startWeek = getWeekFromDate(modelValue.value[0]!, rootProps.weekStart);
+      const startWeek = getWeekFromDate(modelValue.value[0], rootProps.weekStart);
       const endWeek = modelValue.value[1] ? getWeekFromDate(modelValue.value[1], rootProps.weekStart) : [];
       return [startWeek.map((date) => getDate(date)), endWeek.map((date) => getDate(date))];
     }

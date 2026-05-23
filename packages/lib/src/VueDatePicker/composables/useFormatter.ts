@@ -42,7 +42,7 @@ export const useFormatter = () => {
     const options = { locale: rootProps.locale };
 
     if (Array.isArray(value)) {
-      return `${format(value[0]!, pattern, options)}${rootProps.modelAuto && !value[1] ? '' : textInput.value.rangeSeparator}${
+      return `${format(value[0], pattern, options)}${rootProps.modelAuto && !value[1] ? '' : textInput.value.rangeSeparator}${
         value[1] ? format(value[1], pattern, options) : ''
       }`;
     }
@@ -53,7 +53,7 @@ export const useFormatter = () => {
   const formatRangeTextInput = () => {
     const formatter = (value: Date) => format(value, textInput.value.format as string);
     if (Array.isArray(modelValue.value)) {
-      return `${formatter(modelValue.value[0]!)}${textInput.value.rangeSeparator}${
+      return `${formatter(modelValue.value[0])}${textInput.value.rangeSeparator}${
         modelValue.value[1] ? formatter(modelValue.value[1]) : ''
       }`;
     }

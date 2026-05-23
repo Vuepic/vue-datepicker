@@ -45,14 +45,14 @@ export const useMonthOrQuarterPicker = (emit: EmitFn<{ 'reset-flow': []; 'auto-a
   const assignMultiCalendars = () => {
     for (let i = 0; i < multiCalendars.value.count; i++) {
       if (i === 0) {
-        calendars.value[i] = calendars.value[0]!;
+        calendars.value[i] = calendars.value[0];
       } else if (i === multiCalendars.value.count - 1 && isSoloMultiInRange()) {
         calendars.value[i] = {
-          month: getMonth((modelValue.value as Date[])[1]!),
-          year: getYear((modelValue.value as Date[])[1]!),
+          month: getMonth((modelValue.value as Date[])[1]),
+          year: getYear((modelValue.value as Date[])[1]),
         };
       } else {
-        const prevDate = set(getDate(), calendars.value[i - 1]!);
+        const prevDate = set(getDate(), calendars.value[i - 1]);
         calendars.value[i] = { month: getMonth(prevDate), year: getYear(addYears(prevDate, 1)) };
       }
     }
@@ -60,8 +60,8 @@ export const useMonthOrQuarterPicker = (emit: EmitFn<{ 'reset-flow': []; 'auto-a
 
   const updateMultiCalendars = (instance: number) => {
     if (!instance) return assignMultiCalendars();
-    const date = set(getDate(), calendars.value[instance]!);
-    calendars.value[0]!.year = getYear(subYears(date, multiCalendars.value.count - 1));
+    const date = set(getDate(), calendars.value[instance]);
+    calendars.value[0].year = getYear(subYears(date, multiCalendars.value.count - 1));
     return assignMultiCalendars();
   };
 
@@ -73,13 +73,13 @@ export const useMonthOrQuarterPicker = (emit: EmitFn<{ 'reset-flow': []; 'auto-a
   const getRangedValueDate = (dates: Date[]) => {
     if (rootProps.focusStartDate) return dates[0];
     if (multiCalendars.value.solo) return dates[0];
-    return dates[1] ? getDateToFocus(dates[0]!, dates[1]) : dates[0];
+    return dates[1] ? getDateToFocus(dates[0], dates[1]) : dates[0];
   };
 
   const checkModelValue = () => {
     if (modelValue.value) {
       const firstDate = Array.isArray(modelValue.value) ? getRangedValueDate(modelValue.value) : modelValue.value;
-      calendars.value[0] = { month: getMonth(firstDate!), year: getYear(firstDate!) };
+      calendars.value[0] = { month: getMonth(firstDate), year: getYear(firstDate) };
     }
   };
 
@@ -103,8 +103,8 @@ export const useMonthOrQuarterPicker = (emit: EmitFn<{ 'reset-flow': []; 'auto-a
   });
 
   const selectYear = (year: number, instance: number) => {
-    calendars.value[instance]!.year = year;
-    rootEmit('update-month-year', { instance, year, month: calendars.value[instance]!.month });
+    calendars.value[instance].year = year;
+    rootEmit('update-month-year', { instance, year, month: calendars.value[instance].month });
     if (multiCalendars.value.count && !multiCalendars.value.solo) {
       updateMultiCalendars(instance);
     }

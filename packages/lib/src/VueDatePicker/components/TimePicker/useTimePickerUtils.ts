@@ -16,14 +16,14 @@ export const useTimePickerUtils = (updateFlow?: () => void) => {
   const { isDateEqual, setTime } = useDateUtils();
 
   const getTimeValue = (type: TimeKey, i?: number): number => {
-    if (Array.isArray(time[type])) return time[type][i as number]!;
+    if (Array.isArray(time[type])) return time[type][i as number];
     return time[type];
   };
   // Check if seconds are enabled, and return proper value
   const getSecondsValue = (i?: number): number => {
     if (timeConfig.value.enableSeconds) {
       if (Array.isArray(time.seconds)) {
-        return time.seconds[i as number]!;
+        return time.seconds[i as number];
       }
       return time.seconds;
     }
@@ -75,7 +75,7 @@ export const useTimePickerUtils = (updateFlow?: () => void) => {
             )
           : (null as unknown as Date);
 
-      const resetMilliseconds = (index: number) => setMilliseconds((modelValue.value as Date[])[index]!, 0);
+      const resetMilliseconds = (index: number) => setMilliseconds((modelValue.value as Date[])[index], 0);
       return !(
         isDateEqual(setNewTime(0), setNewTime(1)) &&
         (isAfter(setNewTime(0), resetMilliseconds(1)) || isBefore(setNewTime(1), resetMilliseconds(0)))
@@ -121,10 +121,10 @@ export const useTimePickerUtils = (updateFlow?: () => void) => {
   const assignStartTime = (startTime: TimeModel | TimeModel[] | null): void => {
     if (startTime) {
       const isMulti = Array.isArray(startTime);
-      const hours = isMulti ? [+startTime[0]!.hours, +startTime[1]!.hours] : +startTime.hours;
-      const minutes = isMulti ? [+startTime[0]!.minutes, +startTime[1]!.minutes] : +startTime.minutes;
+      const hours = isMulti ? [+startTime[0].hours, +startTime[1].hours] : +startTime.hours;
+      const minutes = isMulti ? [+startTime[0].minutes, +startTime[1].minutes] : +startTime.minutes;
       const seconds = isMulti
-        ? [+(startTime[0]!.seconds ?? 0), +(startTime[1]!.seconds ?? 0)]
+        ? [+(startTime[0].seconds ?? 0), +(startTime[1].seconds ?? 0)]
         : +(startTime.seconds ?? 0);
 
       assignTime('hours', hours);
@@ -137,7 +137,7 @@ export const useTimePickerUtils = (updateFlow?: () => void) => {
 
   const getDisabledTimesData = (ind: number, hours?: number) => {
     const data: { hours: number; disabledArr: TimeModel[] } = {
-      hours: Array.isArray(time.hours) ? time.hours[ind]! : time.hours!,
+      hours: Array.isArray(time.hours) ? time.hours[ind] : time.hours,
       disabledArr: [],
     };
 

@@ -67,7 +67,7 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
   const getDefaultStartTime = (): TimeModel | TimeModel[] | null => {
     if (range.value.enabled) {
       if (timeConfig.value.startTime && Array.isArray(timeConfig.value.startTime)) {
-        return [assignTime(timeConfig.value.startTime[0]!), assignTime(timeConfig.value.startTime[1]!)];
+        return [assignTime(timeConfig.value.startTime[0]), assignTime(timeConfig.value.startTime[1])];
       }
       return null;
     }

@@ -84,7 +84,7 @@ export const useCalendarClass = () => {
     if (range.value.enabled) {
       return (
         (checkDateEqual(day, isStart) && checkDateBefore(isStart)) ||
-        (isDateEqual(day.value, Array.isArray(modelValue.value) ? modelValue.value[0]! : null) &&
+        (isDateEqual(day.value, Array.isArray(modelValue.value) ? modelValue.value[0] : null) &&
           checkRangeDirection(isStart))
       );
     }
@@ -243,7 +243,7 @@ export const useCalendarClass = () => {
 
   const isDateAfterMaxRange = (day: CalendarDay) => {
     if (Array.isArray(modelValue.value) && modelValue.value.length === 1) {
-      const { before, after } = getBeforeAndAfterInRange(+range.value.maxRange!, modelValue.value[0]!);
+      const { before, after } = getBeforeAndAfterInRange(+range.value.maxRange!, modelValue.value[0]);
       return isBefore(day.value, before) || isAfter(day.value, after);
     }
     return false;
@@ -251,8 +251,8 @@ export const useCalendarClass = () => {
 
   const isDateBeforeMinRange = (day: CalendarDay) => {
     if (Array.isArray(modelValue.value) && modelValue.value.length === 1) {
-      const { before, after } = getBeforeAndAfterInRange(+range.value.minRange!, modelValue.value[0]!);
-      return isDateBetween([before, after], modelValue.value[0]!, day.value);
+      const { before, after } = getBeforeAndAfterInRange(+range.value.minRange!, modelValue.value[0]);
+      return isDateBetween([before, after], modelValue.value[0], day.value);
     }
     return false;
   };
@@ -322,7 +322,7 @@ export const useCalendarClass = () => {
   // Get a set of classes for the range week picker
   const weekPickerRangeClasses = (day: CalendarDay) => {
     if (modelValue.value && Array.isArray(modelValue.value)) {
-      const startWeek = getWeekFromDate(modelValue.value[0]!, rootProps.weekStart);
+      const startWeek = getWeekFromDate(modelValue.value[0], rootProps.weekStart);
       const endWeek = modelValue.value[1] ? getWeekFromDate(modelValue.value[1], rootProps.weekStart) : [];
 
       return {

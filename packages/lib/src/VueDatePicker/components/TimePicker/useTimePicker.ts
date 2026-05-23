@@ -39,8 +39,8 @@ export const useTimePicker = (emit: EmitFn<TimePickerEmits>) => {
   const getDateFromStartTime = () => {
     if (timeConfig.value.startTime) {
       if (Array.isArray(timeConfig.value.startTime)) {
-        const parsedFirst = parseStartTime(timeConfig.value.startTime[0]!);
-        const parsedSecond = parseStartTime(timeConfig.value.startTime[1]!);
+        const parsedFirst = parseStartTime(timeConfig.value.startTime[0]);
+        const parsedSecond = parseStartTime(timeConfig.value.startTime[1]);
         return [set(getDate(), parsedFirst), set(getDate(), parsedSecond)];
       }
       const parsed = parseStartTime(timeConfig.value.startTime);
@@ -76,12 +76,12 @@ export const useTimePicker = (emit: EmitFn<TimePickerEmits>) => {
 
     if (range.value.enabled) {
       return assignNewTime(
-        [first!.hours, second!.hours],
-        [first!.minutes, second!.minutes],
-        [first!.seconds, second!.seconds],
+        [first.hours, second.hours],
+        [first.minutes, second.minutes],
+        [first.seconds, second.seconds],
       );
     }
-    return assignNewTime(first!.hours, first!.minutes, first!.seconds);
+    return assignNewTime(first.hours, first.minutes, first.seconds);
   };
 
   onMounted(() => {

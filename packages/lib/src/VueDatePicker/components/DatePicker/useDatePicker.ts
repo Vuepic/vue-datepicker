@@ -133,7 +133,7 @@ export const useDatePicker = (
 
   const shouldAssignMultiSolo = () => {
     if (Array.isArray(modelValue.value) && range.value.enabled) {
-      return getMonth(modelValue.value[0]!) === getMonth(modelValue.value[1] ?? modelValue.value[0]!);
+      return getMonth(modelValue.value[0]) === getMonth(modelValue.value[1] ?? modelValue.value[0]);
     }
     return false;
   };
@@ -180,8 +180,8 @@ export const useDatePicker = (
   const getRangeFocusIndex = (dates: Date[]) => {
     if (multiCalendars.value.count) {
       if (multiCalendars.value.solo) return 0;
-      const startMonth = getMonth(dates[0]!);
-      const endMonth = getMonth(dates[1]!);
+      const startMonth = getMonth(dates[0]);
+      const endMonth = getMonth(dates[1]);
       const showInTheSameView = Math.abs(endMonth - startMonth) < multiCalendars.value.count;
       return showInTheSameView ? 0 : 1;
     }
@@ -195,8 +195,8 @@ export const useDatePicker = (
       assignMonthAndYear(dates[0], fromMount);
     }
     const getValue = (mapper: (date: Date) => number, keys: TimeKey): number[] => [
-      mapper(dates[0]!),
-      dates?.[1] ? mapper(dates[1]) : (time[keys]! as number[])[1]!,
+      mapper(dates[0]),
+      dates?.[1] ? mapper(dates[1]) : (time[keys] as number[])[1],
     ];
     assignTime('hours', getValue(getHours, 'hours'));
     assignTime('minutes', getValue(getMinutes, 'minutes'));
@@ -211,7 +211,7 @@ export const useDatePicker = (
 
     if (multiDates.value.enabled && fromMount) {
       const lastEntry = dates[dates.length - 1];
-      return assignSingleValue(lastEntry!, fromMount);
+      return assignSingleValue(lastEntry, fromMount);
     }
   };
 
@@ -254,9 +254,9 @@ export const useDatePicker = (
    */
   const handleNextMonthYear = (): void => {
     if (Array.isArray(modelValue.value) && modelValue.value.length === 2) {
-      const date = getDate(getDate(modelValue.value[1] ?? addMonths(modelValue.value[0]!, 1)));
-      const [firstMonth, firstYear] = [getMonth(modelValue.value[0]!), getYear(modelValue.value[0]!)];
-      const [secondMonth, secondYear] = [getMonth(modelValue.value[1]!), getYear(modelValue.value[1]!)];
+      const date = getDate(getDate(modelValue.value[1] ?? addMonths(modelValue.value[0], 1)));
+      const [firstMonth, firstYear] = [getMonth(modelValue.value[0]), getYear(modelValue.value[0])];
+      const [secondMonth, secondYear] = [getMonth(modelValue.value[1]), getYear(modelValue.value[1])];
 
       if (
         (firstMonth !== secondMonth || (firstMonth === secondMonth && firstYear !== secondYear)) &&
@@ -341,13 +341,13 @@ export const useDatePicker = (
       for (let i = 1; i <= diff; i++) {
         const addLeadingWeek = doesAlternate ? !!(i % 2) == requiresLeadingWeek : requiresLeadingWeek;
         if (addLeadingWeek) {
-          const first = weeks[0]!.days[0];
-          const days = getWeekDays(addDays(first!.value, -7), getMonth(firstDate));
+          const first = weeks[0].days[0];
+          const days = getWeekDays(addDays(first.value, -7), getMonth(firstDate));
           weeks.unshift({ days });
         } else {
           const lastWeek = weeks[weeks.length - 1];
-          const last = lastWeek!.days[lastWeek!.days.length - 1];
-          const days = getWeekDays(addDays(last!.value, 1), getMonth(firstDate));
+          const last = lastWeek.days[lastWeek.days.length - 1];
+          const days = getWeekDays(addDays(last.value, 1), getMonth(firstDate));
           weeks.push({ days });
         }
       }
@@ -384,7 +384,7 @@ export const useDatePicker = (
     const addDaysToWeek = (date: Date) => {
       const days = getWeekDays(date, month);
       weeks.push({ days });
-      if (!weeks[weeks.length - 1]!.days.some((day) => isDateEqual(getDate(day.value), resetDateTime(lastDate)))) {
+      if (!weeks[weeks.length - 1].days.some((day) => isDateEqual(getDate(day.value), resetDateTime(lastDate)))) {
         const nextDate = addDays(date, 7);
         addDaysToWeek(nextDate);
       }
@@ -411,7 +411,7 @@ export const useDatePicker = (
 
   const includesDisabled = (day: Date) => {
     if (!range.value.noDisabledRange) return false;
-    const daysBetween = getDaysInBetween(tempRange.value[0]!, day);
+    const daysBetween = getDaysInBetween(tempRange.value[0], day);
     return daysBetween.some((date) => isDisabled(date));
   };
 
@@ -489,7 +489,7 @@ export const useDatePicker = (
   const getSecondsValue = (getFirst = true): number => {
     if (timeConfig.value.enableSeconds) {
       if (Array.isArray(time.seconds)) {
-        return getFirst ? time.seconds[0]! : time.seconds[1]!;
+        return getFirst ? time.seconds[0] : time.seconds[1];
       }
       return time.seconds;
     }
@@ -636,7 +636,7 @@ export const useDatePicker = (
   // Get the last date in the multi dates arr
   const multiDatesLast = (): Date | null => {
     if (Array.isArray(modelValue.value) && modelValue.value.length) {
-      return modelValue.value[modelValue.value.length - 1]!;
+      return modelValue.value[modelValue.value.length - 1];
     }
     return null;
   };

@@ -75,7 +75,7 @@ export const useInput = () => {
     }
 
     if (typeof textInput.value.pattern === 'function') {
-      return textInput.value.pattern(value as never) as unknown as Date;
+      return textInput.value.pattern(value as never) as Date;
     }
 
     return null;
@@ -90,7 +90,7 @@ export const useInput = () => {
     let masked = '',
       index = 0;
     for (let i = 0; i < tokens.length; i++) {
-      const len = tokenLengths[i]!;
+      const len = tokenLengths[i];
       const part = raw.slice(index, index + len);
       if (!part) break;
       masked += part;
@@ -112,7 +112,7 @@ export const useInput = () => {
     let result = '',
       index = 0;
     for (let i = 0; i < tokens.length; i++) {
-      const token = tokens[i]!;
+      const token = tokens[i];
       const len = token.length;
       const part = raw.slice(index, index + len);
       if (!part) break;

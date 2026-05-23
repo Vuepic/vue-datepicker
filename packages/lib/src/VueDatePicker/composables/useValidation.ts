@@ -139,7 +139,7 @@ export const useValidation = () => {
   // Check if there are disabled dates for a given range
   const isDateRangeAllowed = (pickedRange: Date[]): boolean => {
     if (range.value.noDisabledRange) {
-      const datesInBetween = eachDayOfInterval({ start: pickedRange[0]!, end: pickedRange[1]! });
+      const datesInBetween = eachDayOfInterval({ start: pickedRange[0], end: pickedRange[1] });
       return !datesInBetween.some((date) => isDisabled(date));
     }
     return true;
@@ -164,8 +164,8 @@ export const useValidation = () => {
   // If min or max range is set, validate given range
   const checkMinMaxRange = (secondDate: Date, modelValue: InternalModelValue, index = 0): boolean => {
     if (shouldCheckMinMaxRange(modelValue, index) && isValidYear(secondDate)) {
-      const absoluteDiff = differenceInCalendarDays(secondDate, modelValue[index]!);
-      const daysInBetween = getDaysInBetween(modelValue[index]!, secondDate);
+      const absoluteDiff = differenceInCalendarDays(secondDate, modelValue[index]);
+      const daysInBetween = getDaysInBetween(modelValue[index], secondDate);
       const disabledDates = daysInBetween.length === 1 ? 0 : daysInBetween.filter((date) => isDisabled(date)).length;
       const diff = Math.abs(absoluteDiff) - (range.value.minMaxRawRange ? 0 : disabledDates);
       if (range.value.minRange && range.value.maxRange)
@@ -210,8 +210,8 @@ export const useValidation = () => {
     const [disabledTimesStart, disabledTimesEnd] = disabledTimes;
     const [startDate, endDate] = dates;
     return (
-      !checkDisabledTimePerRange(disabledTimesStart!, startDate!, isValid) &&
-      !checkDisabledTimePerRange(disabledTimesEnd!, endDate!, isValid) &&
+      !checkDisabledTimePerRange(disabledTimesStart, startDate, isValid) &&
+      !checkDisabledTimePerRange(disabledTimesEnd, endDate, isValid) &&
       isValid
     );
   };
@@ -348,11 +348,11 @@ export const useValidation = () => {
     isValid: boolean,
   ) => {
     if (Array.isArray(selectedDateTime)) {
-      const dateOne = getDateForCompareValidation(minOrMax, selectedDateTime[0]!, dateCompare);
-      const dateTwo = getDateForCompareValidation(minOrMax, selectedDateTime[1]!, dateCompare);
+      const dateOne = getDateForCompareValidation(minOrMax, selectedDateTime[0], dateCompare);
+      const dateTwo = getDateForCompareValidation(minOrMax, selectedDateTime[1], dateCompare);
       return (
-        validateTime(selectedDateTime[0]!, dateOne, map, !!dateCompare) &&
-        validateTime(selectedDateTime[1]!, dateTwo, map, !!dateCompare) &&
+        validateTime(selectedDateTime[0], dateOne, map, !!dateCompare) &&
+        validateTime(selectedDateTime[1], dateTwo, map, !!dateCompare) &&
         isValid
       );
     }

@@ -57,7 +57,7 @@ export const useHelperFns = () => {
     const currentIndex = focusable.indexOf(startingElement);
 
     if (currentIndex >= 0 && (reverse ? currentIndex - 1 >= 0 : currentIndex + 1 <= focusable.length)) {
-      return focusable[currentIndex + (reverse ? -1 : 1)] as HTMLElement;
+      return focusable[currentIndex + (reverse ? -1 : 1)];
     }
   };
 
@@ -111,7 +111,7 @@ export const useHelperFns = () => {
   const hoursToAmPmHours = (index: number): number => {
     const hoursValues = [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
-    return hoursValues[index]!;
+    return hoursValues[index];
   };
 
   const getGroupedList = (items: SelectItem[]): SelectItem[][] => {
@@ -120,7 +120,7 @@ export const useHelperFns = () => {
       return listItems.filter((item) => !!item);
     };
     for (let i = 0; i < items.length; i += 3) {
-      const listItems = [items[i]!, items[i + 1]!, items[i + 2]!];
+      const listItems = [items[i], items[i + 1], items[i + 2]];
       list.push(setList(listItems));
     }
     return list;
