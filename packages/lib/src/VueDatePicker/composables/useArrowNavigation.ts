@@ -3,14 +3,18 @@ import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { EventKey } from '@/constants';
 
 export const useArrowNavigation = () => {
-  const { rootProps, state } = useContext();
+  const {
+    rootProps,
+    state,
+    defaults: { textInput },
+  } = useContext();
 
   const level = computed(() => state.arrowNavigationLevel);
   const rowIndex = ref(-1);
   const colIndex = ref(-1);
 
   watch(level, (newVal, oldVal) => {
-    focusInitial(newVal === 0 && oldVal > 0);
+    focusInitial(textInput.value.enabled && textInput.value.selectOnFocus ? true : newVal === 0 && oldVal > 0);
   });
 
   const gridMatrix = ref<HTMLElement[][]>([]);

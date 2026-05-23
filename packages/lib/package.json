@@ -31,8 +31,7 @@
     ".": {
       "types": "./src/index.ts",
       "import": "./src/index.ts"
-    },
-    "./dist/main.css": "./src/VueDatePicker/assets/css/main.css"
+    }
   },
   "publishConfig": {
     "module": "dist/vue-datepicker.js",

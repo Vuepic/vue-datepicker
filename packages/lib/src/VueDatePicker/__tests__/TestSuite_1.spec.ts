@@ -1,6 +1,7 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { addMonths, subMonths } from 'date-fns';
-import { getMonthToggleBtn, getMonthToggleText, openMenu, selectDate } from '@/__tests__/tests-utils.ts';
+import { clearInput, getMonthToggleBtn, getMonthToggleText, openMenu, selectDate } from '@/__tests__/tests-utils.ts';
+import { nextTick } from 'vue';
 
 describe('Test Suite 1', () => {
   describe('multi-calendars', () => {
@@ -65,6 +66,47 @@ describe('Test Suite 1', () => {
     it('Should open menu when centered is enabled', async () => {
       const dp = await openMenu({ centered: true });
       expect(dp.find('.dp--menu').exists()).toBe(true);
+    });
+  });
+
+  describe('range toggle', () => {
+    const frozenSystemDate = new Date(2026, 2, 15, 12, 30, 30);
+    beforeEach(() => {
+      vi.setSystemTime(frozenSystemDate);
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it('Should allow selecting single date after disabling range while menu is closed.', async () => {
+      const startDate = new Date(2026, 2, 1);
+      const endDate = new Date(2026, 2, 15);
+      const dp = await openMenu({ range: true, modelValue: [startDate, endDate] });
+
+      dp.vm.closeMenu();
+      await nextTick();
+      clearInput(dp);
+      await nextTick();
+
+      await dp.setProps({ range: false, modelValue: null });
+
+      dp.vm.openMenu();
+      await nextTick();
+
+      const dateToSelect = new Date(2026, 2, 18);
+      const expectedModelDate = new Date(
+        dateToSelect.getFullYear(),
+        dateToSelect.getMonth(),
+        dateToSelect.getDate(),
+        frozenSystemDate.getHours(),
+        frozenSystemDate.getMinutes(),
+        0,
+      );
+      await selectDate(dp, dateToSelect);
+      await nextTick();
+
+      expect(dp.emitted('date-click')![0]![0]).toEqual(expectedModelDate);
     });
   });
 });

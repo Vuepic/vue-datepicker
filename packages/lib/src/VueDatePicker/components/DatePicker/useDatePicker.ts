@@ -396,10 +396,7 @@ export const useDatePicker = (
 
   // Called on selectDate when the regular single picker is used
   const handleSingleDateSelect = (day: CalendarDay) => {
-    const date = setTime(
-      { hours: time.hours as number, minutes: time.minutes as number, seconds: getSecondsValue() },
-      getDate(day.value),
-    );
+    const date = setTime({ hours: time.hours, minutes: time.minutes, seconds: getSecondsValue() }, getDate(day.value));
     rootEmit('date-click', date);
     if (multiDates.value.enabled) {
       handleMultiDatesSelect(date, multiDates.value.limit);

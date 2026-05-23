@@ -38,5 +38,5 @@ export const getMonthToggleText = (date: Date) => {
 };
 
 export const clearInput = (dp: DPInstance) => {
-    return dp.find(`[data-test-id="clear-input-value-btn"]`).trigger('click');
+  return dp.find(`[data-test-id="clear-input-value-btn"]`).trigger('click');
 };
