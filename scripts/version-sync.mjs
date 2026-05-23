@@ -50,6 +50,6 @@ const updatePackageJson = (path, version) => {
   });
 
   for (const dir of dirs) {
-    updatePackageJson(`${dir !== '' ? 'packages' : ''}/${dir}`, version);
+    updatePackageJson(`${dir === '' ? '' : 'packages'}/${dir}`, version);
   }
 })();
