@@ -2,20 +2,20 @@ import { h } from 'vue';
 import type { Theme } from 'vitepress';
 import DefaultTheme from 'vitepress/theme';
 import StartAndSponsor from './components/Layout/StartAndSponsor.vue';
+// @ts-expect-error leave as is
 import './style.css';
-import '@vuepic/vue-datepicker/dist/main.css';
 
 import GlobalDemo from './components/GlobalDemo.vue';
 import TimeZoneDemo from './components/TimeZoneDemo.vue';
 
 export default {
-    extends: DefaultTheme,
-    Layout: () => {
-        return h(DefaultTheme.Layout, null, {});
-    },
-    enhanceApp({ app }) {
-        app.component('StarAndSponsor', StartAndSponsor);
-        app.component('GlobalDemo', GlobalDemo);
-        app.component('TimeZoneDemo', TimeZoneDemo);
-    },
+  extends: DefaultTheme,
+  Layout: () => {
+    return h(DefaultTheme.Layout, null, {});
+  },
+  enhanceApp({ app }) {
+    app.component('StarAndSponsor', StartAndSponsor);
+    app.component('GlobalDemo', GlobalDemo);
+    app.component('TimeZoneDemo', TimeZoneDemo);
+  },
 } satisfies Theme;

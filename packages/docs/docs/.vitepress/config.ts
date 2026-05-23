@@ -54,7 +54,7 @@ export default defineConfig({
       placement: 'vue3datepickercom',
     },
     editLink: {
-      pattern: 'https://github.com/Vuepic/vue-datepicker/tree/main/docs/:path',
+      pattern: 'https://github.com/Vuepic/vue-datepicker/tree/main/packages/docs/docs/:path',
     },
     nav: [
       { text: 'Home', link: '/' },
@@ -189,6 +189,10 @@ export default defineConfig({
         text: 'Migration guides',
         collapsed: true,
         items: [
+          {
+            text: 'Migrating from v12',
+            link: '/migration/from-v12',
+          },
           {
             text: 'Migrating from v11',
             link: '/migration/from-v11',

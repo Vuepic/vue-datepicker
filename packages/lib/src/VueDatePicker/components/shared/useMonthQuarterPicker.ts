@@ -115,7 +115,7 @@ export const useMonthOrQuarterPicker = (emit: EmitFn<{ 'reset-flow': []; 'auto-a
       const active = year.value(instance) === y.value;
       const disabled =
         checkMinMaxValue(y.value, getYearFromDate(safeDates.value.minDate), getYearFromDate(safeDates.value.maxDate)) ||
-        filters.value.years?.includes(year.value(instance));
+        filters.value.years?.includes(y.value);
       const highlighted = checkHighlightYear(highlight.value, y.value);
 
       return { active, disabled, highlighted };

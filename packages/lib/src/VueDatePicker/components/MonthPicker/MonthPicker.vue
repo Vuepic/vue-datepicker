@@ -5,6 +5,7 @@
       <slot
         name="month-year"
         v-bind="{
+          mode: 'month',
           year,
           months: groupedMonths(instance),
           years: groupedYears(instance),

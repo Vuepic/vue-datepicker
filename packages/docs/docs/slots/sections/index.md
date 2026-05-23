@@ -42,6 +42,7 @@ Create and use a custom component implementation in the header for month/year se
 - Exposed props:
 ```ts
 interface DatePickerMonthYearSlotProps {
+  mode: 'date';
   month: number;
   year: number;
   months: SelectItem[];
@@ -69,6 +70,7 @@ interface DatePickerMonthYearSlotProps {
 - Exposed props:
 ```ts
 export interface MonthPickerMonthYearSlotProps {
+  mode: 'month';
   year: (instance: number) => number;
   months: OverlayGridItem[][];
   years: OverlayGridItem[][];
@@ -92,6 +94,7 @@ export interface MonthPickerMonthYearSlotProps {
 - Exposed props:
 ```ts
 export interface YearPickerMonthYearSlotProps {
+  mode: 'year';
   years: OverlayGridItem[][];
   selectYear: (year: number, instance: number) => void;
 }
@@ -117,33 +120,31 @@ export interface SelectItem<T = number> {
 }
 ```
 
+:::warning Note
+In case you use `TypeScript`, either use type casting or add a check for the `mode` prop to have proper type inheretance for proper mode.
+:::
 
 ::: details Code Example
 ```vue
 <template>
   <VueDatePicker v-model="date">
-    <template #month-year="{
-        month,
-        year,
-        months, 
-        years, 
-        updateMonthYear, 
-        handleMonthYearChange
-    }">
-      <div style="display: flex; width: 100%; gap: 5px;">
-        <select 
-          style="display flex;"
-          :value="month" 
-          @change="(ev) => updateMonthYear(+ev.target.value, year)">
-            <option v-for="m in months" :key="m.value" :value="m.value">{{ m.text }}</option>
-        </select>
-        <select 
-          style="display flex;"
-          :value="year"
-          @change="(ev) => updateMonthYear(month, +ev.target.value)">
-            <option v-for="y in years" :key="y.value" :value="y.value">{{ y.text }}</option>
-        </select>
-      </div>
+    <template #month-year="data">
+      <template v-if="data.mode === 'date'">
+          <div style="display: flex; width: 100%; gap: 5px;">
+            <select 
+              style="display: flex;"
+              :value="data.month" 
+              @change="(ev) => data.updateMonthYear(+ev.target.value, data.year)">
+                <option v-for="m in data.months" :key="m.value" :value="m.value">{{ m.text }}</option>
+            </select>
+            <select 
+              style="display: flex;"
+              :value="data.year"
+              @change="(ev) => data.updateMonthYear(data.month, +ev.target.value)">
+                <option v-for="y in data.years" :key="y.value" :value="y.value">{{ y.text }}</option>
+            </select>
+          </div>
+      </template>
     </template>
   </VueDatePicker>
 </template>

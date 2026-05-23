@@ -63,17 +63,19 @@ export type TimeOverlaySlotProps = InternalTime & {
 };
 
 export interface DatePickerMonthYearSlotProps {
+  mode: 'date';
   month: number;
   year: number;
   months: SelectItem[];
   years: SelectItem[];
-  updateMonthYear: (month: number, year: number, fromNav: boolean) => void;
+  updateMonthYear: (month: number, year: number, fromNav?: boolean) => void;
   handleMonthYearChange: (isNext: boolean, fromNav?: boolean) => void;
   instance: number;
   isDisabled: (next: boolean) => boolean;
 }
 
 export interface MonthPickerMonthYearSlotProps {
+  mode: 'month';
   year: (instance: number) => number;
   months: OverlayGridItem[][];
   years: OverlayGridItem[][];
@@ -83,6 +85,7 @@ export interface MonthPickerMonthYearSlotProps {
 }
 
 export interface YearPickerMonthYearSlotProps {
+  mode: 'year';
   years: OverlayGridItem[][];
   selectYear: (year: number, instance: number) => void;
 }
@@ -164,9 +167,9 @@ export interface RootSlots {
   'right-sidebar'(props: QuarterPickerSidebarSlotProps): any;
   'right-sidebar'(props: TimePickerSidebarSlotProps): any;
   'right-sidebar'(props: YearPickerSidebarSlotProps): any;
-  'month-year'(props: DatePickerMonthYearSlotProps): any;
-  'month-year'(props: MonthPickerMonthYearSlotProps): any;
-  'month-year'(props: YearPickerMonthYearSlotProps): any;
+  'month-year'(props: DatePickerMonthYearSlotProps | MonthPickerMonthYearSlotProps | YearPickerMonthYearSlotProps): any;
+  // 'month-year'(props: MonthPickerMonthYearSlotProps): any;
+  // 'month-year'(props: YearPickerMonthYearSlotProps): any;
   'dp-input'(props: DpInputSlotProps): any;
   'time-picker'(props: TimePickerSlotProps): any;
   'action-row'(props: ActionRowSlotProps): any;
