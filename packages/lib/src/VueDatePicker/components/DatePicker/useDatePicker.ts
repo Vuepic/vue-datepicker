@@ -210,8 +210,10 @@ export const useDatePicker = (
     }
 
     if (multiDates.value.enabled && fromMount) {
-      const lastEntry = dates[dates.length - 1];
-      return assignSingleValue(lastEntry, fromMount);
+      const lastEntry = dates.at(-1);
+      if (lastEntry) {
+        return assignSingleValue(lastEntry, fromMount);
+      }
     }
   };
 
@@ -345,10 +347,15 @@ export const useDatePicker = (
           const days = getWeekDays(addDays(first.value, -7), getMonth(firstDate));
           weeks.unshift({ days });
         } else {
-          const lastWeek = weeks[weeks.length - 1];
-          const last = lastWeek.days[lastWeek.days.length - 1];
-          const days = getWeekDays(addDays(last.value, 1), getMonth(firstDate));
-          weeks.push({ days });
+          const lastWeek = weeks.at(-1);
+          if (lastWeek) {
+            const last = lastWeek.days.at(-1);
+
+            if (last) {
+              const days = getWeekDays(addDays(last.value, 1), getMonth(firstDate));
+              weeks.push({ days });
+            }
+          }
         }
       }
     }
@@ -384,7 +391,7 @@ export const useDatePicker = (
     const addDaysToWeek = (date: Date) => {
       const days = getWeekDays(date, month);
       weeks.push({ days });
-      if (!weeks[weeks.length - 1].days.some((day) => isDateEqual(getDate(day.value), resetDateTime(lastDate)))) {
+      if (!weeks.at(-1)?.days.some((day) => isDateEqual(getDate(day.value), resetDateTime(lastDate)))) {
         const nextDate = addDays(date, 7);
         addDaysToWeek(nextDate);
       }
