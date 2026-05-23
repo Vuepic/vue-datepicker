@@ -25,4 +25,3 @@ If applicable, add screenshots to help explain your problem.
 
 **Desktop & mobile (please complete the following information):**
  - Browser [e.g. chrome, safari]
- - Library version [e.g. 3.0.0]

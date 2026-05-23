@@ -4,11 +4,10 @@ As an open source project, the best way to support @vuepic/vue-datepicker is to 
 You can start with reporting new issues, improving the docs, or - if you feel confident enough
 to dive into the source code - send a pull request!
 
-**Any help is much appreciated!**
-
 ## Found a bug?
 
-If you find a bug in the source code, you can help by [submitting an issue](https://github.com/Vuepic/vue-datepicker/issues/new?assignees=&labels=&template=bug_report.md&title=)
+If you find a bug in the code, you can help by [submitting an issue](#submitting-an-issue)
+
 
 ## Missing a feature?
 
@@ -16,24 +15,27 @@ You can *request* a new feature by [submitting a request issue](https://github.c
 Repository. If you would like to *implement* a new feature, please submit an issue with a proposal for your work first,
 so we can discuss what is the best way to implement, as well as to be sure nobody else works on that already.
 
+> Do not create PRs for features that are not approved first in the issue tracker.
+
 ## Submission guidelines
 
 ### Submitting an issue
 
+If you find a bug in the source code, you can help by [submitting an issue](https://github.com/Vuepic/vue-datepicker/issues/new?template=bug_report.md)
+
+> You must follow the issue template. If no info is provided for reproduction, the issue will be closed without review.
+
 Before you submit an issue, please search the issue tracker, maybe an issue for your problem already exists and the discussion
 might inform you of workarounds readily available.
 
-Please provide steps to reproduce for found bug. This will help to understand and fix the issue faster.
-
 ### Submitting a pull request
 
-Before you submit your pull request consider the following guidelines:
+Before you submit your pull request, ensure the following guidelines are followed:
 
-- Fork the project, install NPM dependencies and start the development server.
-- Follow defined [coding standard](#coding-standard).
-- Commit your changes using a descriptive commit message that follows defined [commit message conventions](#commit-message-guidelines).
+- Fork the project, install NPM dependencies using `pnpm` and start the development server from  the `playground` folder.
+- Commit your changes using a descriptive commit message that follows defined [commit message guidelines](#commit-message-guidelines).
 - Push the code to your forked repository and create a pull request on GitHub.
-- If somebody from project contributors suggest changes then:
+- If somebody from project contributors suggests changes, then:
     - Make the required updates.
     - Re-run all test suites to ensure tests are still passing.
     - Rebase your branch and force push to your GitHub repository (this will update your Pull Request). Basically you can
@@ -42,52 +44,17 @@ Before you submit your pull request consider the following guidelines:
 
 That's it! Thank you for your contribution!
 
-## <a name="coding-standard"></a> Coding standard
+## Coding standard
 
 To ensure consistency throughout the source code, keep these rules in mind as you are working:
 
 - All features or bug fixes **must be tested**, ideally by unit tests.
 - If you are implementing a new feature or extending public API, you should **document it**.
-- Follow defined rules in [.eslintrc.cjs](https://github.com/Vuepic/vue-datepicker/blob/main/.eslintrc.cjs) and [.prettier.cjs](https://github.com/Vuepic/vue-datepicker/blob/main/.prettierrc.cjs).
-  when you submit your PR.
+- Ensure that the following scripts pass without errors:
+  - `pnpm --filter @vuepic/vue-datepicker build`
+  - `pnpm --filter @vuepic/vue-datepicker test`
 
-Some highlights:
-
-- use 4 spaces for indentation
-- always use semicolons
-- always use trailing comma
-- use single quotes where possible
-- prefer `const` over `let` (and do not use `var`)
 
 ## Commit Message Guidelines
 
-The project have very precise rules over how git commit messages can be formatted. This leads to
-**more readable messages** that are easy to follow when looking through the **project history**.
-
-```
-{type}({scope - optional}): {subject}
-<BLANK LINE>
-{body}
-<BLANK LINE>
-{footer}
-```
-
-#### Subject - {subject}
-
-Summary of the changes made.
-
-#### Allowed Types - {types}
-
-- feat -> feature
-- fix -> bug fix
-- docs -> documentation
-- style -> formatting, lint stuff
-- refactor -> code restructure without changing external behavior
-- test -> adding missing tests
-- chore -> maintenance
-- rearrange -> files moved, added, deleted etc
-- update -> update code (versions, library compatibility)
-
-#### Scope - {scope}
-
-Where the change was (i.e. the file, the component, the package).
+The project follows [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/).
