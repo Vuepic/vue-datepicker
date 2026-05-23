@@ -331,6 +331,17 @@ export const useDatePicker = (
     }
   };
 
+  const handleSixWeeksWithoutLeading = (weeks: CalendarWeek[], firstDate: Date, lastWeek?: CalendarWeek) => {
+    if (lastWeek) {
+      const last = lastWeek.days.at(-1);
+
+      if (last) {
+        const days = getWeekDays(addDays(last.value, 1), getMonth(firstDate));
+        weeks.push({ days });
+      }
+    }
+  };
+
   const handleSixWeeks = (weeks: CalendarWeek[], firstDate: Date, lastDate: Date, weekStart: Day): CalendarWeek[] => {
     if (rootProps.sixWeeks && weeks.length < 6) {
       const diff = 6 - weeks.length;
@@ -348,14 +359,7 @@ export const useDatePicker = (
           weeks.unshift({ days });
         } else {
           const lastWeek = weeks.at(-1);
-          if (lastWeek) {
-            const last = lastWeek.days.at(-1);
-
-            if (last) {
-              const days = getWeekDays(addDays(last.value, 1), getMonth(firstDate));
-              weeks.push({ days });
-            }
-          }
+          handleSixWeeksWithoutLeading(weeks, firstDate, lastWeek);
         }
       }
     }
