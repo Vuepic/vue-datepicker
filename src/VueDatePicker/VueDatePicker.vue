@@ -20,6 +20,7 @@
         </DatepickerInput>
         <TeleportCmp :to="teleport" :disabled="!teleport">
             <div
+                v-if="isOpen"
                 ref="dp-menu-wrap"
                 :class="{
                     'dp--menu-wrapper': !inline.enabled,
@@ -33,7 +34,7 @@
                     :css="showTransition && !inline.enabled && !rootProps.centered && shouldRender"
                 >
                     <DatepickerMenu
-                        v-if="isOpen && shouldRender"
+                        v-if="shouldRender"
                         ref="dp-menu"
                         :class="{ [theme]: true }"
                         :no-overlay-focus="noOverlayFocus"
