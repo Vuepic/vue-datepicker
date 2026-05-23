@@ -144,7 +144,7 @@
    */
   const actionButtonClass = computed(
     (): DynamicClass => ({
-      'dp--btn': true,
+      'dp--btn-base dp--bg-none': true,
       'dp--button': true,
       'dp--overlay-action': true,
       'dp--over-action-scroll': scrollable.value,

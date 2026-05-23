@@ -57,14 +57,11 @@
 }
 
 .dp--inc-dec-button-disabled {
-  /* @extend %__dp_time_arrow_disabled; */
-
   background: var(--dp-disabled-color);
   color: var(--dp-disabled-color-text);
   cursor: not-allowed;
 
   &:hover {
-    /* @extend %__dp_time_arrow_disabled; */
     background: var(--dp-disabled-color);
     color: var(--dp-disabled-color-text);
     cursor: not-allowed;
@@ -132,16 +129,6 @@
   align-items: center;
 }
 
-/* %__dp_time_arrow_disabled { */
-
-/*     background: var(--dp-disabled-color); */
-
-/*     color: var(--dp-disabled-color-text); */
-
-/*     cursor: not-allowed; */
-
-/* } */
-
 .dp--pm-am-button {
   background: var(--dp-primary-color);
   color: var(--dp-primary-text-color);
@@ -188,21 +175,9 @@
 }
 
 .dp--time-overlay-btn {
-  /* @extend %dp--btn-placeholder; */
-
-  border: none;
-  font: inherit;
-  transition: var(--dp-common-transition);
-  line-height: normal;
   background: none;
 }
 
 .dp--time-invalid {
-  /* @extend %dp--btn-placeholder; */
-
-  border: none;
-  font: inherit;
-  transition: var(--dp-common-transition);
-  line-height: normal;
   background-color: var(--dp-disabled-color);
 }

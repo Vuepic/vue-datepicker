@@ -87,8 +87,6 @@
   cursor: pointer;
   border-radius: var(--dp-border-radius);
   text-align: center;
-  background: var(--dp-primary-color);
-  color: var(--dp-primary-text-color);
 }
 
 .dp--overlay-cell {

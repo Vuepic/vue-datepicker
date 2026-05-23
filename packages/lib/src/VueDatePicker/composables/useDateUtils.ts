@@ -209,7 +209,7 @@ export const useDateUtils = () => {
           active,
           disabled: disabled,
           className: {
-            'dp--overlay-cell-active': active,
+            'dp--active dp--overlay-cell-active': active,
             'dp--overlay-cell': !active,
             'dp--overlay-cell-disabled': disabled,
             'dp--overlay-cell-pad': true,

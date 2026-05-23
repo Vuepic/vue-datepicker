@@ -43,7 +43,7 @@
   cursor: pointer;
   border-radius: var(--dp-border-radius);
   font-size: var(--dp-preview-font-size);
-  font-family: var(--dp-font-family) sans-serif;
+  font-family: var(--dp-font-family);
 }
 
 .dp--action-cancel {

@@ -12,7 +12,7 @@
         <button
           type="button"
           :class="{
-            'dp--btn': true,
+            'dp--btn-base dp--bg-none': true,
             'dp--inc-dec-button': !timeConfig.timePickerInline,
             'dp--inc-dec-button-inline': timeConfig.timePickerInline,
             'dp--tp-inline-btn-top': timeConfig.timePickerInline,
@@ -47,8 +47,8 @@
             'dp--time-display': true,
             'dp--time-display-block': !timeConfig.timePickerInline,
             'dp--time-display-inline': timeConfig.timePickerInline,
-            'dp--time-invalid': disabledBox(timeInput.type),
-            'dp--time-overlay-btn': !disabledBox(timeInput.type),
+            'dp--btn-base dp--time-invalid': disabledBox(timeInput.type),
+            'dp--btn-base dp--time-overlay-btn': !disabledBox(timeInput.type),
             'dp--hidden-el': timeOverlayOpen,
           }"
           :disabled="boolHtmlAttribute(checkOverlayDisabled(timeInput.type))"
@@ -69,7 +69,7 @@
         <button
           type="button"
           :class="{
-            'dp--btn': true,
+            'dp--btn-base dp--bg-none': true,
             'dp--inc-dec-button': !timeConfig.timePickerInline,
             'dp--inc-dec-button-inline': timeConfig.timePickerInline,
             'dp--tp-inline-btn-bottom': timeConfig.timePickerInline,

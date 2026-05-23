@@ -4,7 +4,7 @@
     type="button"
     :data-dp-element="elName"
     data-dp-action-element="0"
-    class="dp--btn dp--arrow-btn-nav"
+    class="dp--btn-base dp--bg-none dp--arrow-btn-nav"
     tabindex="0"
     :aria-label="ariaLabel"
     :aria-disabled="disabled || undefined"

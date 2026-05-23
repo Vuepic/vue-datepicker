@@ -15,20 +15,14 @@
 }
 
 .dp--qr-btn {
-  /* @extend %dp--btn-placeholder; */
-
-  border: none;
-  font: inherit;
-  transition: var(--dp-common-transition);
-  line-height: normal;
   width: 100%;
   padding: var(--dp-common-padding);
 
-  &:not(.dp--highlighted, .dp--qr-btn-active, .dp--qr-btn-disabled, .dp--qr-btn-between) {
+  &:not(.dp--highlighted, .dp--active, .dp--qr-btn-disabled, .dp--qr-btn-between) {
     background: none;
   }
 
-  &:hover:not(.dp--qr-btn-active, .dp--qr-btn-disabled) {
+  &:hover:not(.dp--active, .dp--qr-btn-disabled) {
     background: var(--dp-hover-color);
     color: var(--dp-hover-text-color);
     transition: var(--dp-common-transition);
@@ -42,11 +36,6 @@
   width: 100%;
   height: 100%;
   justify-content: space-evenly;
-}
-
-.dp--qr-btn-active {
-  background: var(--dp-primary-color);
-  color: var(--dp-primary-text-color);
 }
 
 .dp--qr-btn-between {

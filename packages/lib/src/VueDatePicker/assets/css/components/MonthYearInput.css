@@ -32,66 +32,19 @@
   transform: rotate(180deg);
 }
 
-/* %__dp_inner_nav_disabled { */
-
-/*  background: var(--dp-disabled-color); */
-
-/*  color: var(--dp-disabled-color-text); */
-
-/*  cursor: not-allowed; */
-
-/* } */
-
 .dp--inner-nav-disabled {
-  /* @extend %__dp_inner_nav_disabled; */
   background: var(--dp-disabled-color);
   color: var(--dp-disabled-color-text);
   cursor: not-allowed;
 
   &:hover {
-    /* @extend %__dp_inner_nav_disabled; */
     background: var(--dp-disabled-color);
     color: var(--dp-disabled-color-text);
     cursor: not-allowed;
   }
 }
 
-/* %dp--month-year-select-base { */
-
-/*  text-align: center; */
-
-/*  cursor: pointer; */
-
-/*  height: var(--dp-month-year-row-height); */
-
-/*  display: flex; */
-
-/*  align-items: center; */
-
-/*  justify-content: center; */
-
-/*  border-radius: var(--dp-border-radius); */
-
-/*  box-sizing: border-box; */
-
-/*  color: var(--dp-text-color); */
-
-/*  &:hover { */
-
-/*    background: var(--dp-hover-color); */
-
-/*    color: var(--dp-hover-text-color); */
-
-/*    transition: var(--dp-common-transition); */
-
-/*  } */
-
-/* } */
-
-.dp--month-year-select {
-  width: 50%;
-
-  /* @extend %dp--month-year-select-base; */
+.dp--month-year-select-base {
   text-align: center;
   cursor: pointer;
   height: var(--dp-month-year-row-height);
@@ -109,25 +62,12 @@
   }
 }
 
+.dp--month-year-select {
+  width: 50%;
+}
+
 .dp--year-select {
   width: 100%;
-
-  /* @extend %dp--month-year-select-base; */
-  text-align: center;
-  cursor: pointer;
-  height: var(--dp-month-year-row-height);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--dp-border-radius);
-  box-sizing: border-box;
-  color: var(--dp-text-color);
-
-  &:hover {
-    background: var(--dp-hover-color);
-    color: var(--dp-hover-text-color);
-    transition: var(--dp-common-transition);
-  }
 }
 
 .dp--month-year-wrap {
@@ -145,4 +85,17 @@
   display: flex;
   width: 100%;
   flex-direction: column;
+}
+
+.dp--year-mode-picker {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--dp-cell-size);
+}
+
+.dp--arrow-btn-nav {
+  transition: var(--dp-common-transition);
+  height: 100%;
 }

@@ -222,9 +222,9 @@
   const sharedSlots = getSlotsByComponent(slots, SlotUse.PassTrough);
 
   const disabledReadonlyOverlay = computed(() => ({
-    'dp--menu-disabled': rootProps.disabled,
-    'dp--menu-readonly': rootProps.readonly,
-    'dp-menu-loading': rootProps.loading,
+    'dp--menu-unclickable dp--menu-disabled': rootProps.disabled,
+    'dp--menu-unclickable dp--menu-readonly': rootProps.readonly,
+    'dp--menu-unclickable dp-menu-loading': rootProps.loading,
   }));
 
   const dpMenuClass = computed(

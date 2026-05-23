@@ -35,16 +35,16 @@
               role="gridcell"
               class="dp--calendar-item"
               :aria-selected="
-                (dayVal.classData['dp--active-date'] ||
-                  dayVal.classData['dp--range-start'] ||
-                  dayVal.classData['dp--range-end']) ??
+                (dayVal.classData['dp--active'] ||
+                  dayVal.classData['dp--range-border-start'] ||
+                  dayVal.classData['dp--range-border-end']) ??
                 undefined
               "
               :aria-disabled="dayVal.classData['dp--cell-disabled'] || undefined"
               :aria-label="ariaLabels?.day?.(dayVal)"
               :tabindex="!dayVal.current && rootProps.hideOffsetDates ? undefined : 0"
               :data-test-id="getCellId(dayVal.value)"
-              :data-dp-element-active="!!dayVal.classData['dp--active-date'] ? 0 : undefined"
+              :data-dp-element-active="!!dayVal.classData['dp--active'] ? 0 : undefined"
               data-dp-action-element="0"
               @click.prevent="onDateSelect($event, dayVal)"
               @touchend="onDateSelect($event, dayVal, false)"

@@ -13,7 +13,7 @@
     </ArrowBtn>
     <button
       ref="mpYearButtonRef"
-      class="dp--btn dp--year-select"
+      class="dp--btn-base dp--bg-none dp--month-year-select-base dp--year-select"
       type="button"
       :aria-label="`${year}-${ariaLabels?.openYearsOverlay}`"
       :data-test-id="`year-mode-btn-${instance}`"

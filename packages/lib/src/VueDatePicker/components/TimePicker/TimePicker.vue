@@ -203,7 +203,7 @@
   };
 
   const toggleButtonClass = computed(() => ({
-    'dp--btn': true,
+    'dp--btn-base dp--bg-none': true,
     'dp--button': true,
     'dp--button-bottom': rootProps.autoApply && !config.value.keepActionRow,
   }));

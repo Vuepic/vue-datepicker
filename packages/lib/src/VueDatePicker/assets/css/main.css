@@ -110,88 +110,6 @@
   --dp-loader: 5px solid #1976d2;
 }
 
-.dp--flex {
-  display: flex;
-  align-items: center;
-}
-
-.dp--btn {
-  border: none;
-  font: inherit;
-  transition: var(--dp-common-transition);
-  line-height: normal;
-  background: none;
-}
-
-.dp--main {
-  font-family: var(--dp-font-family) sans-serif;
-  user-select: none;
-  box-sizing: border-box;
-  position: relative;
-  width: 100%;
-}
-
-.dp--main * {
-  direction: var(--dp-direction, ltr);
-}
-
-.dp--pointer {
-  cursor: pointer;
-}
-
-/* Allow control of color property on icons */
-.dp--icon {
-  stroke: currentcolor;
-  fill: currentcolor;
-}
-
-/* Div style that is displayed on the bottom of the menu for switching layouts */
-.dp--button {
-  width: 100%;
-  text-align: center;
-  color: var(--dp-icon-color);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  place-content: center center;
-  padding: var(--dp-common-padding);
-  box-sizing: border-box;
-  height: var(--dp-button-height);
-
-  &.dp--overlay-action {
-    position: absolute;
-    bottom: 0;
-  }
-
-  &:hover {
-    background: var(--dp-hover-color);
-    color: var(--dp-hover-icon-color);
-  }
-
-  svg {
-    height: var(--dp-button-icon-height);
-    width: auto;
-  }
-}
-
-.dp--button-bottom {
-  border-bottom-left-radius: var(--dp-border-radius);
-  border-bottom-right-radius: var(--dp-border-radius);
-}
-
-.dp--flex-display {
-  display: flex;
-}
-
-.dp--flex-display-with-input {
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.dp--relative {
-  position: relative;
-}
-
 .calendar-next-enter-active,
 .calendar-next-leave-active,
 .calendar-prev-enter-active,
@@ -246,22 +164,7 @@
   transform: translateY(calc(var(--dp-transition-length) * -1));
 }
 
-.dp--arrow-btn-nav {
-  transition: var(--dp-common-transition);
-  height: 100%;
-}
-
-.dp--highlighted {
-  background-color: var(--dp-highlight-color);
-}
-
-.dp--hidden-el {
-  visibility: hidden;
-}
-
-.dp--centered {
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  position: fixed;
+.dp--flex-display-with-input {
+  flex-direction: column;
+  align-items: flex-start;
 }

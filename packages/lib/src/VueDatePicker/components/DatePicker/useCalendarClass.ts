@@ -298,8 +298,8 @@ export const useCalendarClass = () => {
   // Get a set of classes for the single date picker
   const singleDateClasses = (day: CalendarDay): Record<string, boolean> => {
     return {
-      'dp--active-date': isActive(day),
-      'dp--date-hover': dateHover(day),
+      'dp--active': isActive(day),
+      'dp--date-hoverable': dateHover(day),
     };
   };
 
@@ -309,9 +309,9 @@ export const useCalendarClass = () => {
       const week = getWeekFromDate(modelValue.value, rootProps.weekStart);
       return {
         ...autoRangeClasses(day),
-        'dp--range-start': isDateEqual(week[0], day.value),
-        'dp--range-end': isDateEqual(week[1], day.value),
-        'dp--range-between-week': isDateAfter(day.value, week[0]) && isDateBefore(day.value, week[1]),
+        'dp--range-border-start dp--active': isDateEqual(week[0], day.value),
+        'dp--range-border-end dp--active': isDateEqual(week[1], day.value),
+        'dp--range-preview dp--range-between-week': isDateAfter(day.value, week[0]) && isDateBefore(day.value, week[1]),
       };
     }
     return {
@@ -327,9 +327,9 @@ export const useCalendarClass = () => {
 
       return {
         ...autoRangeClasses(day),
-        'dp--range-start': isDateEqual(startWeek[0], day.value) || isDateEqual(endWeek[0], day.value),
-        'dp--range-end': isDateEqual(startWeek[1], day.value) || isDateEqual(endWeek[1], day.value),
-        'dp--range-between-week':
+        'dp--range-border-start dp--active': isDateEqual(startWeek[0], day.value) || isDateEqual(endWeek[0], day.value),
+        'dp--range-border-end dp--active': isDateEqual(startWeek[1], day.value) || isDateEqual(endWeek[1], day.value),
+        'dp--range-preview dp--range-between-week':
           (isDateAfter(day.value, startWeek[0]) && isDateBefore(day.value, startWeek[1])) ||
           (isDateAfter(day.value, endWeek[0]) && isDateBefore(day.value, endWeek[1])),
         'dp--range-between': isDateAfter(day.value, startWeek[1]) && isDateBefore(day.value, endWeek[0]),
@@ -392,17 +392,15 @@ export const useCalendarClass = () => {
   const rangeDateClasses = (day: CalendarDay): Record<string, boolean> => {
     const { isRangeStart, isRangeEnd } = rangeStartEnd(day);
     return {
-      'dp--range-start': isRangeStart,
-      'dp--range-end': isRangeEnd,
-      'dp--range-between': isBetween(day),
-      'dp--date-hover':
+      'dp--range-border-start dp--active': isRangeStart,
+      'dp--range-border-end dp--active': isRangeEnd,
+      'dp--range-between': isBetween(day) || isExtendedFixedStartEnd(day, true) || isExtendedFixedStartEnd(day, false),
+      'dp--date-hoverable':
         isDateEqual(day.value, hoveredDate.value) && !isRangeStart && !isRangeEnd && !rootProps.weekPicker,
-      'dp--date-hover-start':
+      'dp--date-hoverable dp--date-hoverable-start':
         isHoverDateStartEnd(day, true) || isFixedRangeExcludeActive(day, true, isRangeStart, isRangeEnd),
-      'dp--date-hover-end':
+      'dp--date-hoverable dp--date-hoverable-end':
         isHoverDateStartEnd(day, false) || isFixedRangeExcludeActive(day, false, isRangeStart, isRangeEnd),
-      'dp--extended-fixed-start': isExtendedFixedStartEnd(day, true),
-      'dp--extended-fixed-end': isExtendedFixedStartEnd(day, false),
     };
   };
 
@@ -410,9 +408,9 @@ export const useCalendarClass = () => {
   const autoRangeClasses = (day: CalendarDay): Record<string, boolean> => {
     return {
       ...rangeDateClasses(day),
-      'dp--cell-auto-range': isAutoRangeInBetween(day),
-      'dp--cell-auto-range-start': isAutoRangeStart(day),
-      'dp--cell-auto-range-end': isHoverRangeEnd(day),
+      'dp--range-preview dp--cell-auto-range': isAutoRangeInBetween(day),
+      'dp--range-preview dp--range-border-start dp--cell-auto-range-start': isAutoRangeStart(day),
+      'dp--range-preview dp--range-border-end dp--cell-auto-range-end': isHoverRangeEnd(day),
     };
   };
 

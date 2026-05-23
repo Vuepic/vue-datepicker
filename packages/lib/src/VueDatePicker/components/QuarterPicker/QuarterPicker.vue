@@ -23,9 +23,9 @@
           <div v-for="(quarter, i) in quarters(instance)" :key="i">
             <button
               type="button"
-              class="dp--qr-btn"
+              class="dp--btn-base dp--qr-btn"
               :class="{
-                'dp--qr-btn-active': quarter.active,
+                'dp--active': quarter.active,
                 'dp--qr-btn-between': quarter.isBetween,
                 'dp--qr-btn-disabled': quarter.disabled,
                 'dp--highlighted': quarter.highlighted,
