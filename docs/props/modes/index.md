@@ -213,6 +213,42 @@ targeted quarter
 ```
 :::
 
+## half-year-picker
+
+Change datepicker mode to select a half year
+
+:::warning
+When working with the `half-year-picker`, you will receive date(s) in the `v-model`. Each date will be
+the first date of the half year (January 1 or July 1). When using validation for min or max dates, disabled dates and so on, use the first date of the
+targeted half year
+:::
+
+- Type: `boolean`
+- Default: `false`
+
+<GlobalDemo :halfYearPicker="true" placeholder="Select Half Year"></GlobalDemo>
+
+::: details Code Example
+```vue
+<template>
+  <VueDatePicker v-model="halfYear" half-year-picker />
+</template>
+
+<script setup>
+  import { VueDatePicker } from "@vuepic/vue-datepicker"
+  import { ref, computed } from 'vue';
+
+  // H1 starts Jan 1, H2 starts Jul 1
+  const getStartOfHalfYear = (date) => {
+    const month = date.getMonth();
+    return new Date(date.getFullYear(), month < 6 ? 0 : 6, 1);
+  };
+
+  const halfYear = ref(getStartOfHalfYear(new Date()));
+</script>
+```
+:::
+
 ## text-input
 
 When enabled, will try to parse the date from the user input.

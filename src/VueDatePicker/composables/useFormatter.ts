@@ -30,6 +30,14 @@ export const useFormatter = () => {
         return [start, end].map((date) => formatQuarter(date)).join('-');
     };
 
+    const formatHalfYear = (date: Date) => {
+        return format(date, formats.value.halfYear, { locale: rootProps.locale });
+    };
+
+    const formatHalfYearText = (start: Date, end: Date) => {
+        return [start, end].map((date) => formatHalfYear(date)).join('-');
+    };
+
     const formatDay = (date: Date) => {
         return format(date, formats.value.day, { locale: rootProps.locale });
     };
@@ -82,6 +90,8 @@ export const useFormatter = () => {
         formatForTextInput,
         formatPreview,
         formatQuarterText,
+        formatHalfYear,
+        formatHalfYearText,
         formatDay,
     };
 };

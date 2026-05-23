@@ -48,6 +48,11 @@ Different modes require different types for `model-value`
 - Range - `[Date, Date]`
 :::
 
+:::info Half Year Picker
+- Single - `Date`
+- Range - `[Date, Date]`
+:::
+
 :::tip
  - `Date` values can also be `string` or `number`, as long as `new Date(value)` returns a valid date
  - `number` values can also be `string` values, as long as `Number(value)` returns a valid number
@@ -228,6 +233,7 @@ interface Highlight {
     years: number[];
     months: { month: number; year: number }[];
     quarters: { quarter: number; year: number }[];
+    halfYears: { halfYear: number; year: number }[];
     weekdays: number[];
     options: { highlightDisabled: boolean };
 }
@@ -235,7 +241,8 @@ interface Highlight {
 type HighlightFn = ((date: Date) => boolean)
     | ((month: { month: number; year: number }) => boolean)
     | ((yearOrWeekDay: number) => boolean)
-    | ((quarter: { quarter: number; year: number }) => boolean);
+    | ((quarter: { quarter: number; year: number }) => boolean)
+    | ((halfYear: { halfYear: number; year: number }) => boolean);
 ```
 
 - Default: `undefined`

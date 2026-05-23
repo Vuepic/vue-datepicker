@@ -42,7 +42,7 @@ export type PresetDate = {
 };
 
 export type HighlightFn = (
-    date: Date | MonthModel | number | { quarter: number; year: number },
+    date: Date | MonthModel | number | { quarter: number; year: number } | { halfYear: number; year: number },
     disabled?: boolean,
 ) => boolean;
 

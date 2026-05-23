@@ -102,6 +102,7 @@ export interface HighlightConfig {
     years: number[];
     months: MonthModel[];
     quarters: { quarter: number; year: number }[];
+    halfYears: { halfYear: number; year: number }[];
     weekdays: number[];
     options: { highlightDisabled: boolean };
 }
@@ -111,6 +112,7 @@ export interface FormatsConfig {
     year: string;
     weekDay: string;
     quarter: string;
+    halfYear: string;
     day: string;
     input?: string | ((date: Date) => string) | ((dates: Date[]) => string);
     preview?: string | ((date: Date) => string) | ((dates: Date[]) => string);

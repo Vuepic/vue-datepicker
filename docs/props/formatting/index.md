@@ -26,6 +26,7 @@ interface FormatsConfig {
   year?: string;
   weekDay?: string;
   quarter?: string;
+  halfYear?: string;
   day?: string;
   input?: string | ((date: Date) => string) | ((dates: Date[]) => string);
   preview?: string | ((date: Date) => string) | ((dates: Date[]) => string);
@@ -39,6 +40,7 @@ interface FormatsConfig {
   year: 'yyyy', 
   weekDay: 'EEEEEE',
   quarter: 'MMMM',
+  halfYear: 'MMMM',
   day: 'd',
   input: undefined,
   preview: undefined,
@@ -133,6 +135,29 @@ Changes the format quarter name in the quarter picker
   import { ref } from 'vue';
 
   const quarter = ref();
+</script>
+```
+:::
+
+### `halfYear`
+
+Changes the format of the half year name in the half year picker
+
+- Default: `'MMMM'`
+
+<GlobalDemo :halfYearPicker="true" :formats="{ halfYear: 'MMM' }"></GlobalDemo>
+
+::: details Code Example
+```vue
+<template>
+  <VueDatePicker v-model="halfYear" half-year-picker :formats="{ halfYear: 'MMM' }" />
+</template>
+
+<script setup>
+  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { ref } from 'vue';
+
+  const halfYear = ref();
 </script>
 ```
 :::

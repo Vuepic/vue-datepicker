@@ -83,6 +83,7 @@ export interface RootProps {
     calendar?: (month: CalendarWeek[]) => CalendarWeek[];
     config?: Partial<Config>;
     quarterPicker?: boolean;
+    halfYearPicker?: boolean;
     yearFirst?: boolean;
     loading?: boolean;
     ui?: Partial<UIConfig>;
