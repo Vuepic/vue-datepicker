@@ -35,7 +35,7 @@ export default defineConfig({
     rolldownOptions: {
       output: {
         assetFileNames: (asset) => {
-          return asset.originalFileNames[0];
+          return asset.originalFileNames[0] === 'style.css' ? 'main.css' : asset.originalFileNames[0];
         },
       },
       external: ['vue', 'date-fns', '@date-fns/tz', '@floating-ui/vue', '@vueuse/core'],
