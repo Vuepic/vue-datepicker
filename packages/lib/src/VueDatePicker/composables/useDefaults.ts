@@ -31,7 +31,7 @@ import type {
   UIParsed,
 } from '@/types';
 import { TZDate } from '@date-fns/tz';
-import { set } from 'date-fns';
+import { type Day, getDay, set, startOfWeek } from 'date-fns';
 
 export const useDefaults = (props: RootPropsWithDefaults) => {
   const { getMapKey, getMapKeyType, getTimeObjFromCurrent } = useHelperFns();
@@ -287,6 +287,11 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
     };
   });
 
+  const weekStart = computed((): Day => {
+    if (props.weekStart || props.weekStart === 0 || props.weekStart === '0') return +props.weekStart as Day;
+    return getDay(startOfWeek(getDate(), { locale: props.locale })) as Day;
+  });
+
   return {
     transitions,
     multiCalendars,
@@ -309,6 +314,7 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
     flow,
     inputAttrs,
     floatingConfig,
+    weekStart,
     getDate,
   };
 };

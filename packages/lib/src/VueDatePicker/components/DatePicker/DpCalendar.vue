@@ -96,7 +96,7 @@
 <script lang="ts" setup>
   import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
   import { unrefElement, useSwipe } from '@vueuse/core';
-  import { getISOWeek, getWeek, set, type Day, startOfWeek, endOfWeek, eachDayOfInterval } from 'date-fns';
+  import { getISOWeek, getWeek, set, startOfWeek, endOfWeek, eachDayOfInterval } from 'date-fns';
 
   import { useHelperFns, useDateUtils, useContext, useFormatter } from '@/composables';
 
@@ -129,7 +129,7 @@
     getDate,
     rootEmit,
     rootProps,
-    defaults: { transitions, config, ariaLabels, multiCalendars, weekNumbers, multiDates, ui },
+    defaults: { transitions, config, ariaLabels, multiCalendars, weekNumbers, multiDates, ui, weekStart },
   } = useContext();
   const { isDateAfter, isDateEqual, resetDateTime, getCellId } = useDateUtils();
   const { checkKeyDown, checkStopPropagation, isTouchDevice } = useHelperFns();
@@ -313,7 +313,7 @@
     if (weekNumbers.value) {
       if (weekNumbers.value.type === 'local')
         return getWeek(firstCurrentDate.value, {
-          weekStartsOn: +rootProps.weekStart as Day,
+          weekStartsOn: weekStart.value,
           locale: rootProps.locale,
         });
       if (weekNumbers.value.type === 'iso') return getISOWeek(firstCurrentDate.value);
@@ -355,8 +355,8 @@
 
   const getDayNames = (): string[] => {
     const now = getDate();
-    const start = startOfWeek(now, { locale: rootProps.locale, weekStartsOn: +rootProps.weekStart as Day });
-    const end = endOfWeek(now, { locale: rootProps.locale, weekStartsOn: +rootProps.weekStart as Day });
+    const start = startOfWeek(now, { locale: rootProps.locale, weekStartsOn: weekStart.value });
+    const end = endOfWeek(now, { locale: rootProps.locale, weekStartsOn: weekStart.value });
 
     const daysInWeek = eachDayOfInterval({ start, end });
 

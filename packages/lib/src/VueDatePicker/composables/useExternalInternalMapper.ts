@@ -15,7 +15,7 @@ export const useExternalInternalMapper = () => {
     state,
     rootProps,
     inputValue,
-    defaults: { textInput, range, multiDates, timeConfig, formats },
+    defaults: { textInput, range, multiDates, timeConfig, formats, weekStart },
     modelValue,
     updateTime,
   } = useContext();
@@ -292,11 +292,11 @@ export const useExternalInternalMapper = () => {
 
   const mapInternalWeekPickerToExternal = () => {
     if (Array.isArray(modelValue.value)) {
-      const startWeek = getWeekFromDate(modelValue.value[0], rootProps.weekStart);
-      const endWeek = modelValue.value[1] ? getWeekFromDate(modelValue.value[1], rootProps.weekStart) : [];
+      const startWeek = getWeekFromDate(modelValue.value[0], weekStart.value);
+      const endWeek = modelValue.value[1] ? getWeekFromDate(modelValue.value[1], weekStart.value) : [];
       return [startWeek.map((date) => getDate(date)), endWeek.map((date) => getDate(date))];
     }
-    return getWeekFromDate(modelValue.value!, rootProps.weekStart).map((date) => getDate(date));
+    return getWeekFromDate(modelValue.value!, weekStart.value).map((date) => getDate(date));
   };
 
   const modeEmitter = (mapper: any) => emitValue(convertType(mapInternalToSpecificExternal(mapper)));

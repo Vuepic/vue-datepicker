@@ -9,6 +9,8 @@ import {
   selectDate,
 } from '@/__tests__/tests-utils.ts';
 import { nextTick } from 'vue';
+import { enGB } from 'date-fns/locale';
+import { WeekStart } from '@/constants';
 
 describe('Test Suite 1', () => {
   describe('multi-calendars', () => {
@@ -124,6 +126,31 @@ describe('Test Suite 1', () => {
 
       const dpClosedMenu = await closeMenu({});
       expect(dpClosedMenu.vm.dpWrapMenuRef()?.value).toBeNull();
+    });
+  });
+
+  describe('Localization', () => {
+    describe('Week start day', () => {
+      it('Should set Sunday as first day of the week', async () => {
+        const dp = await openMenu({});
+        const headers = dp.findAll('[data-test-id="calendar-header"]');
+
+        expect(headers[0].text()).toEqual('Su');
+      });
+
+      it('Should set Monday as first day of the week', async () => {
+        const dp = await openMenu({ locale: enGB });
+        const headers = dp.findAll('[data-test-id="calendar-header"]');
+
+        expect(headers[0].text()).toEqual('Mo');
+      });
+
+      it('Should use provided week start day', async () => {
+        const dp = await openMenu({ weekStart: WeekStart.Monday });
+        const headers = dp.findAll('[data-test-id="calendar-header"]');
+
+        expect(headers[0].text()).toEqual('Mo');
+      });
     });
   });
 });

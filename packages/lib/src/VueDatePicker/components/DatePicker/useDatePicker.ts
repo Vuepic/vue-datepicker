@@ -53,7 +53,7 @@ export const useDatePicker = (
     rootProps,
     today,
     state,
-    defaults: { multiCalendars, startTime, range, config, safeDates, multiDates, timeConfig, flow },
+    defaults: { multiCalendars, startTime, range, config, safeDates, multiDates, timeConfig, flow, weekStart },
   } = useContext();
   const { validateMonthYearInRange, isDisabled, isDateRangeAllowed, checkMinMaxRange } = useValidation();
   const { updateTimeValues, getSetDateTime, assignTime, assignStartTime, validateTime, disabledTimesConfig } =
@@ -388,9 +388,7 @@ export const useDatePicker = (
     const firstDate = getDate(new Date(year, month));
     const lastDate = getDate(new Date(year, month + 1, 0));
 
-    const weekStartsOn = rootProps.weekStart as Day;
-
-    const firstDateInCalendar = startOfWeek(firstDate, { weekStartsOn });
+    const firstDateInCalendar = startOfWeek(firstDate, { weekStartsOn: weekStart.value });
 
     const addDaysToWeek = (date: Date) => {
       const days = getWeekDays(date, month);
@@ -402,7 +400,7 @@ export const useDatePicker = (
     };
     addDaysToWeek(firstDateInCalendar);
 
-    return handleSixWeeks(weeks, firstDate, lastDate, weekStartsOn);
+    return handleSixWeeks(weeks, firstDate, lastDate, weekStart.value);
   };
 
   // Called on selectDate when the regular single picker is used

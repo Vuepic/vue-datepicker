@@ -686,15 +686,19 @@ Hide dates from the previous/next month in the calendar
 Day from which the week starts. 0-6, 0 is Sunday, 6 is Saturday
 
 - Type: `number | string | WeekStart`
-- Default: `WeekStart.Monday`
+- Default: `undefined`
 
-<GlobalDemo weekStart="0"></GlobalDemo>
+:::tip
+If `week-start` is not provided, picker will use default week start based on the `locale` prop
+:::
+
+<GlobalDemo weekStart="1"></GlobalDemo>
 
 ::: details Code Example
 
 ```vue
 <template>
-  <VueDatePicker v-model="date" :week-start="WeekStart.Sunday" />
+  <VueDatePicker v-model="date" :week-start="WeekStart.Monday" />
 </template>
 
 <script setup>

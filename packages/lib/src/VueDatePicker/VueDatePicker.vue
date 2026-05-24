@@ -32,8 +32,8 @@
         <transition
           :name="menuTransition(placement.startsWith('top'))"
           :css="showTransition && !inline.enabled && !rootProps.centered && shouldRender"
-          @after-leave="onMenuAfterLeave"
           appear
+          @after-leave="onMenuAfterLeave"
         >
           <DatepickerMenu
             v-if="isOpen && shouldRender"
