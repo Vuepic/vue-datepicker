@@ -24,7 +24,9 @@
   },
   "style": "dist/main.css",
   "files": [
-    "dist/*"
+    "dist/*",
+    "../../README.md",
+    "../../LICENSE.md"
   ],
   "type": "module",
   "exports": {
