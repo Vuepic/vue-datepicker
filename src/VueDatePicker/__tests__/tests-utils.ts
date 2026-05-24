@@ -15,6 +15,16 @@ export const openMenu = async (props: Partial<RootProps>): Promise<DPInstance> =
     return dp;
 };
 
+export const closeMenu = async (props: Partial<RootProps>): Promise<DPInstance> => {
+    const dp = mount(VueDatePickerRoot, { props });
+
+    dp.vm.closeMenu();
+    await flushPromises();
+
+    await dp.vm.$nextTick();
+    return dp;
+};
+
 export const getMonthToggleBtn = (dp: DPInstance, index = 0) => {
     return dp.find(`[data-test-id="month-toggle-overlay-${index}"]`);
 };
