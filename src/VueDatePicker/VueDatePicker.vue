@@ -20,7 +20,7 @@
         </DatepickerInput>
         <TeleportCmp :to="teleport" :disabled="!teleport">
             <div
-                v-if="isOpen"
+                v-if="shouldRenderMenuWrap"
                 ref="dp-menu-wrap"
                 :class="{
                     'dp--menu-wrapper': !inline.enabled,
@@ -31,10 +31,12 @@
             >
                 <transition
                     :name="menuTransition(placement.startsWith('top'))"
+                    appear
                     :css="showTransition && !inline.enabled && !rootProps.centered && shouldRender"
+                    @after-leave="onMenuAfterLeave"
                 >
                     <DatepickerMenu
-                        v-if="shouldRender"
+                        v-if="isOpen && shouldRender"
                         ref="dp-menu"
                         :class="{ [theme]: true }"
                         :no-overlay-focus="noOverlayFocus"
@@ -116,6 +118,7 @@
 
     const slots = useSlots();
     const isOpen = ref(false);
+    const shouldRenderMenuWrap = ref(inline.value.enabled);
     const shouldRender = ref(inline.value.enabled || rootProps.centered);
     const modelValueRef = toRef(rootProps, 'modelValue');
     const timezoneRef = toRef(rootProps, 'timezone');
@@ -261,6 +264,7 @@
     const openMenu = () => {
         if (!rootProps.disabled && !rootProps.readonly) {
             watchRender.value = true;
+            shouldRenderMenuWrap.value = true;
             isOpen.value = true;
 
             if (isOpen.value) {
@@ -365,6 +369,12 @@
             }
             clearInternalValues();
             rootEmit('blur');
+        }
+    };
+
+    const onMenuAfterLeave = () => {
+        if (!inline.value.enabled && !isOpen.value) {
+            shouldRenderMenuWrap.value = false;
         }
     };
 
