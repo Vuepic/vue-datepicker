@@ -629,7 +629,7 @@ export const useDatePicker = (
     if (Array.isArray(modelValue.value)) {
       if (multiDates.value.enabled) {
         const lastEntry = multiDatesLast();
-        modelValue.value[modelValue.value.length - 1] = getSetDateTime(lastEntry as Date);
+        modelValue.value[modelValue.value.length - 1] = getSetDateTime(lastEntry);
       } else {
         modelValue.value = modelValue.value.map((date, i) => {
           if (date) return getSetDateTime(date, i);

@@ -26,7 +26,7 @@ export const useHelperFns = () => {
   };
 
   const convertType = <T>(val: any): T => {
-    return val as unknown as T;
+    return val as T;
   };
 
   const getNumVal = (num?: string | number | null): number | null => {
