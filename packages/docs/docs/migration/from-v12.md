@@ -16,6 +16,7 @@ outline: [2, 4]
   - `dp__date_hover_start` renamed to `dp--date-hoverable-start` 
   - `dp__date_hover_end` renamed to `dp--date-hoverable-end`
 - Removed classes: `dp__range_end`, `dp__range_start`, `dp--extended-fixed-start`, `dp--extended-fixed-end`
+- `week-start` will now default to `locale` prop instead of Monday.
 
 ### Change
 
@@ -40,4 +41,21 @@ Replace all underscores with dashes. The wording of the class name is the same.
 .dp--calendar-header-cell { /* [!code ++] */
   /* Custom overrides */
 }
+```
+
+### `week-start`
+
+Since default locale is `enUS`, the default `week-start` will be Sunday. To retain previous behavior, override `week-start` to Monday
+
+```vue
+<template>
+  <!--[!code --]-->
+  <VueDatePicker />
+  <!-- [!code ++]-->
+  <VueDatePicker :week-start="WeekStart.Monday" /> 
+</template>
+
+<script lang="ts" setup>
+  import { WeekStart } from "@vuepic/vue-datepicker"
+</script> 
 ```
