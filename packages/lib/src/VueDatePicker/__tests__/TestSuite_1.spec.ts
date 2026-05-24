@@ -1,6 +1,13 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { addMonths, subMonths } from 'date-fns';
-import { clearInput, getMonthToggleBtn, getMonthToggleText, openMenu, selectDate } from '@/__tests__/tests-utils.ts';
+import {
+  clearInput,
+  closeMenu,
+  getMonthToggleBtn,
+  getMonthToggleText,
+  openMenu,
+  selectDate,
+} from '@/__tests__/tests-utils.ts';
 import { nextTick } from 'vue';
 
 describe('Test Suite 1', () => {
@@ -107,6 +114,16 @@ describe('Test Suite 1', () => {
       await nextTick();
 
       expect(dp.emitted('date-click')![0]![0]).toEqual(expectedModelDate);
+    });
+  });
+
+  describe('DOM', () => {
+    it('Should render menu wrap only while menu is open', async () => {
+      const dpOpenedMenu = await openMenu({});
+      expect(dpOpenedMenu.vm.dpWrapMenuRef()?.value).toBeTruthy();
+
+      const dpClosedMenu = await closeMenu({});
+      expect(dpClosedMenu.vm.dpWrapMenuRef()?.value).toBeNull();
     });
   });
 });

@@ -40,3 +40,13 @@ export const getMonthToggleText = (date: Date) => {
 export const clearInput = (dp: DPInstance) => {
   return dp.find(`[data-test-id="clear-input-value-btn"]`).trigger('click');
 };
+
+export const closeMenu = async (props: Partial<RootProps>): Promise<DPInstance> => {
+  const dp = mount(VueDatePickerRoot, { props });
+
+  dp.vm.closeMenu();
+  await flushPromises();
+
+  await dp.vm.$nextTick();
+  return dp;
+};
