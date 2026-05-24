@@ -19,13 +19,12 @@ export const useInput = () => {
   );
 
   const getPatternForValue = (fullPattern: string, value: string) => {
-    const separatorRegex = /[^a-zA-Z]+/g;
-    const valueSeparatorRegex = /\D+/g;
+    const separatorRegex = /[^a-zA-Z0-9]+/g;
 
-    const valueParts = value.split(valueSeparatorRegex);
+    const valueParts = value.split(separatorRegex);
     const patternParts = fullPattern.split(separatorRegex);
     const patternSeparators = fullPattern.match(separatorRegex) || [];
-    const valueSeparators = value.match(valueSeparatorRegex) || [];
+    const valueSeparators = value.match(separatorRegex) || [];
 
     let result = '';
 
