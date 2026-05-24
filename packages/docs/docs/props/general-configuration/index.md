@@ -686,9 +686,9 @@ Hide dates from the previous/next month in the calendar
 Day from which the week starts. 0-6, 0 is Sunday, 6 is Saturday
 
 - Type: `number | string | WeekStart`
-- Default: `undefined`
+- Default: `undefined` (`< v13.0`, default value is `WeekStart.Monday`)
 
-:::tip
+:::tip <Badge type="tip" text="v13.0+" />
 If `week-start` is not provided, picker will use default week start based on the `locale` prop
 :::
 
