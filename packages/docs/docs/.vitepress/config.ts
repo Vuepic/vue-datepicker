@@ -58,10 +58,10 @@ export default defineConfig({
     },
     nav: [
       { text: 'Home', link: '/' },
-      { text: `v${packageJson.version}`, link: 'https://github.com/Vuepic/vue-datepicker/releases' },
       {
-        text: `Legacy documentation`,
+        text: `v${packageJson.version}`,
         items: [
+          { text: 'v12', link: 'https://v12.vue3datepicker.com/' },
           { text: 'v11', link: 'https://v11.vue3datepicker.com/' },
           { text: 'v10', link: 'https://v10.vue3datepicker.com/' },
           { text: 'v9', link: 'https://v9.vue3datepicker.com/' },

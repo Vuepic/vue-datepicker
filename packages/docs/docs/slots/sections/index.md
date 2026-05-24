@@ -42,7 +42,7 @@ Create and use a custom component implementation in the header for month/year se
 - Exposed props:
 ```ts
 interface DatePickerMonthYearSlotProps {
-  mode: 'date'; // v13.0+
+  mode: 'date';
   month: number;
   year: number;
   months: SelectItem[];
@@ -55,7 +55,7 @@ interface DatePickerMonthYearSlotProps {
 ```
 
 :::info
-- `mode`: Equals to `'date'`, used for proper type inheritance in case you are using TS <Badge type="tip" text="v13.0+" />
+- `mode`: Equals to `'date'`, used for proper type inheritance in case you are using TS
 - `month` - Selected month value
 - `year` - Selected year value
 - `months` - Generated array of months
@@ -63,7 +63,7 @@ interface DatePickerMonthYearSlotProps {
 - `updateMonthYear` - Exposed function to update month and year
 - `handleMonthYearChange` - Exposed function to auto handle next/previous month
 - `instance` - In case of multi-calendars, instance is the order of the calendar
-- `isDisabled` - Internal computed logic that determens if next or previous month is allowed
+- `isDisabled` - Internal computed logic that determent if next or previous month is allowed
 :::
 
 **Month picker**
@@ -71,7 +71,7 @@ interface DatePickerMonthYearSlotProps {
 - Exposed props:
 ```ts
 export interface MonthPickerMonthYearSlotProps {
-  mode: 'month'; // v13.0+
+  mode: 'month';
   year: (instance: number) => number;
   months: OverlayGridItem[][];
   years: OverlayGridItem[][];
@@ -82,7 +82,7 @@ export interface MonthPickerMonthYearSlotProps {
 ```
 
 :::info
- - `mode`: Equals to `'month'`, used for proper type inheritance in case you are using TS <Badge type="tip" text="v13.0+" />
+ - `mode`: Equals to `'month'`, used for proper type inheritance in case you are using TS
  - `year` - Selected year on a given instance
  - `months` - Generated array of months
  - `years` - Generated array of years
@@ -96,14 +96,14 @@ export interface MonthPickerMonthYearSlotProps {
 - Exposed props:
 ```ts
 export interface YearPickerMonthYearSlotProps {
-  mode: 'year'; // v13.0+
+  mode: 'year';
   years: OverlayGridItem[][];
   selectYear: (year: number, instance: number) => void;
 }
 ```
 
 :::info
-- `mode`: Equals to `'year'`, used for proper type inheritance in case you are using TS <Badge type="tip" text="v13.0+" />
+- `mode`: Equals to `'year'`, used for proper type inheritance in case you are using TS
 - `years` - Generated array of years
 - `selectYear` - Exposed function to update year value
 :::
@@ -123,7 +123,7 @@ export interface SelectItem<T = number> {
 }
 ```
 
-:::warning Note <Badge type="tip" text="v13.0+" />
+:::tip
 In case you use `TypeScript`, either use type casting or add a check if the `mode` equals to `'date' | 'month' | 'year'` to have proper type inheritance for passed slot props.
 :::
 

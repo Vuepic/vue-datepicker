@@ -686,9 +686,9 @@ Hide dates from the previous/next month in the calendar
 Day from which the week starts. 0-6, 0 is Sunday, 6 is Saturday
 
 - Type: `number | string | WeekStart`
-- Default: `undefined` (`< v13.0`, default value is `WeekStart.Monday`)
+- Default: `undefined`
 
-:::tip <Badge type="tip" text="v13.0+" />
+:::tip
 If `week-start` is not provided, picker will use default week start based on the `locale` prop
 :::
 
@@ -778,8 +778,8 @@ interface FloatingConfig {
   arrow?: Readonly<ShallowRef<HTMLDivElement | null>> | boolean;
   strategy?: Strategy;
   placement?: Placement;
-  flip?: boolean | FlipOptions; // v12.1+
-  shift?: boolean | ShiftOptions; // v12.1+
+  flip?: boolean | FlipOptions;
+  shift?: boolean | ShiftOptions;
 }
 ```
 
@@ -791,8 +791,8 @@ interface FloatingConfig {
 - `arrow` - Show/hide floating menu arrow. If you use `arrow` slot, you should pass the `template ref` for proper arrow positioning
 - [`strategy`](https://floating-ui.com/docs/usefloating#strategy) - Use `absolute` or `fixed` positioning strategy
 - [`placement`](https://floating-ui.com/docs/tutorial#placements) - Position of the floating menu
-- [`flip`](https://floating-ui.com/docs/flip#flip) <Badge type="tip" text="v12.1+" /> - Enable/disable or configure flip middleware
-- [`shift`](https://floating-ui.com/docs/shift#shift) <Badge type="tip" text="v12.1+" /> - Enable/disable or configure shift middleware
+- [`flip`](https://floating-ui.com/docs/flip#flip) - Enable/disable or configure flip middleware
+- [`shift`](https://floating-ui.com/docs/shift#shift) - Enable/disable or configure shift middleware
   :::
 
 <GlobalDemo :floating="{ arrow: false, offset: 0 }"></GlobalDemo>
@@ -1132,8 +1132,6 @@ Sets the menu position on the page center, useful for smaller screens where ther
 Navigate the menu via arrow keys
 
 :::tip
-<Badge type="tip" text="v12.1+" />
-
 If you wish to integrate arrow navigation within slots, you can set the following attributes:
 
 - `:data-dp-action-element="{level}"` - Set on the element that can receive focus
