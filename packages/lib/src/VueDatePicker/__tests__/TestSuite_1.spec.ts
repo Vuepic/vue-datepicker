@@ -93,7 +93,7 @@ describe('Test Suite 1', () => {
 
       dp.vm.closeMenu();
       await nextTick();
-      clearInput(dp);
+      await clearInput(dp);
       await nextTick();
 
       await dp.setProps({ range: false, modelValue: null });

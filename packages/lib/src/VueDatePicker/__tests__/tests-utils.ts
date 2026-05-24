@@ -16,13 +16,13 @@ export const openMenu = async (props: Partial<RootProps>): Promise<DPInstance> =
 };
 
 export const closeMenu = async (props: Partial<RootProps>): Promise<DPInstance> => {
-    const dp = mount(VueDatePickerRoot, { props });
+  const dp = mount(VueDatePickerRoot, { props });
 
-    dp.vm.closeMenu();
-    await flushPromises();
+  dp.vm.closeMenu();
+  await flushPromises();
 
-    await dp.vm.$nextTick();
-    return dp;
+  await dp.vm.$nextTick();
+  return dp;
 };
 
 export const getMonthToggleBtn = (dp: DPInstance, index = 0) => {
@@ -39,14 +39,4 @@ export const getMonthToggleText = (date: Date) => {
 
 export const clearInput = (dp: DPInstance) => {
   return dp.find(`[data-test-id="clear-input-value-btn"]`).trigger('click');
-};
-
-export const closeMenu = async (props: Partial<RootProps>): Promise<DPInstance> => {
-  const dp = mount(VueDatePickerRoot, { props });
-
-  dp.vm.closeMenu();
-  await flushPromises();
-
-  await dp.vm.$nextTick();
-  return dp;
 };
