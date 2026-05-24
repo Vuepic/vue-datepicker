@@ -248,7 +248,7 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
       ...defaultFormats,
       ...props.formats,
       input: props.formats?.input ?? getDefaultPattern(),
-      preview: props.formats?.preview ?? getDefaultPattern(),
+      preview: props.formats?.preview ?? props.formats?.input ?? getDefaultPattern(),
     };
   });
 
