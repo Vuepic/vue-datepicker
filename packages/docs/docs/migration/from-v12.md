@@ -13,8 +13,8 @@ outline: [2, 4]
 - The following class words are changed:
   - `dp__date_hover` is renamed to `dp--date-hoverable`
   - `dp__active_date` is renamed to `dp--active` 
-  - `dp__date_hover_start` rennamed to `dp--date-hoverable-start` 
-  - `dp__date_hover_end` rennamed to `dp--date-hoverable-end`
+  - `dp__date_hover_start` renamed to `dp--date-hoverable-start` 
+  - `dp__date_hover_end` renamed to `dp--date-hoverable-end`
 - Removed classes: `dp__range_end`, `dp__range_start`, `dp--extended-fixed-start`, `dp--extended-fixed-end`
 
 ### Change

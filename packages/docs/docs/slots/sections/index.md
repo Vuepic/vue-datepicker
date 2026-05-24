@@ -42,7 +42,7 @@ Create and use a custom component implementation in the header for month/year se
 - Exposed props:
 ```ts
 interface DatePickerMonthYearSlotProps {
-  mode: 'date';
+  mode: 'date'; // v13.0+
   month: number;
   year: number;
   months: SelectItem[];
@@ -55,6 +55,7 @@ interface DatePickerMonthYearSlotProps {
 ```
 
 :::info
+- `mode`: Equals to `'date'`, used for proper type inheritance in case you are using TS <Badge type="tip" text="v13.0+" />
 - `month` - Selected month value
 - `year` - Selected year value
 - `months` - Generated array of months
@@ -70,7 +71,7 @@ interface DatePickerMonthYearSlotProps {
 - Exposed props:
 ```ts
 export interface MonthPickerMonthYearSlotProps {
-  mode: 'month';
+  mode: 'month'; // v13.0+
   year: (instance: number) => number;
   months: OverlayGridItem[][];
   years: OverlayGridItem[][];
@@ -81,6 +82,7 @@ export interface MonthPickerMonthYearSlotProps {
 ```
 
 :::info
+ - `mode`: Equals to `'month'`, used for proper type inheritance in case you are using TS <Badge type="tip" text="v13.0+" />
  - `year` - Selected year on a given instance
  - `months` - Generated array of months
  - `years` - Generated array of years
@@ -94,13 +96,14 @@ export interface MonthPickerMonthYearSlotProps {
 - Exposed props:
 ```ts
 export interface YearPickerMonthYearSlotProps {
-  mode: 'year';
+  mode: 'year'; // v13.0+
   years: OverlayGridItem[][];
   selectYear: (year: number, instance: number) => void;
 }
 ```
 
 :::info
+- `mode`: Equals to `'year'`, used for proper type inheritance in case you are using TS <Badge type="tip" text="v13.0+" />
 - `years` - Generated array of years
 - `selectYear` - Exposed function to update year value
 :::
@@ -120,8 +123,8 @@ export interface SelectItem<T = number> {
 }
 ```
 
-:::warning Note
-In case you use `TypeScript`, either use type casting or add a check for the `mode` prop to have proper type inheretance for proper mode.
+:::warning Note <Badge type="tip" text="v13.0+" />
+In case you use `TypeScript`, either use type casting or add a check if the `mode` equals to `'date' | 'month' | 'year'` to have proper type inheritance for passed slot props.
 :::
 
 ::: details Code Example
@@ -130,6 +133,7 @@ In case you use `TypeScript`, either use type casting or add a check for the `mo
   <VueDatePicker v-model="date">
     <template #month-year="data">
       <template v-if="data.mode === 'date'">
+        <!-- `data` is of DatePickerMonthYearSlotProps type -->
           <div style="display: flex; width: 100%; gap: 5px;">
             <select 
               style="display: flex;"
