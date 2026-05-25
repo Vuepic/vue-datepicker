@@ -136,7 +136,7 @@
   const { formatWeekDay } = useFormatter();
 
   const calendarWrapRef = useTemplateRef('calendar-wrap');
-  const activeTooltip = useTemplateRef('active-tooltip');
+  const activeTooltip = useTemplateRef<HTMLElement[]>('active-tooltip');
   const dayRefs = ref<HTMLElement[][]>([]);
 
   const showMakerTooltip = ref<Date | null>(null);

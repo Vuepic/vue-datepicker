@@ -53,8 +53,8 @@
             type="button"
             data-dp-action-element="0"
             class="dp--action-button dp--action-cancel"
-            @click="$emit('select-now')"
-            @keydown="checkKeyDown($event, () => $emit('select-now'))"
+            @click="selectCurrentDate"
+            @keydown="checkKeyDown($event, () => selectCurrentDate())"
           >
             {{ actionRow.nowBtnLabel }}
           </button>
@@ -82,6 +82,7 @@
 
   import { useContext, useFormatter, useHelperFns, useValidation, useUtils } from '@/composables';
   import { type ActionRowSlots } from '@/constants/slots.ts';
+  import { useModel } from '@/composables/useModel.ts';
 
   interface ActionRowEmits {
     'close-picker': [];
@@ -109,7 +110,7 @@
     modelValue,
     defaults: { actionRow, multiCalendars, inline, range, multiDates, formats },
   } = useContext();
-
+  const { selectCurrentDate } = useModel(emit);
   const { isTimeValid, isMonthValid } = useValidation();
   const { formatPreview } = useFormatter();
   const { checkKeyDown, convertType } = useHelperFns();

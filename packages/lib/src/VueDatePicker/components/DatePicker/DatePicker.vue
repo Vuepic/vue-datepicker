@@ -100,7 +100,6 @@
     selectDate,
     updateMonthYear,
     presetDate,
-    selectCurrentDate,
     updateTime,
     assignMonthAndYear,
     setStartTime,
@@ -116,8 +115,8 @@
   const { getYears, getMonths } = useUtilsWithContext();
   const { getCellId } = useDateUtils();
 
-  const headerRefs = useTemplateRef('calendar-header');
-  const calendarRefs = useTemplateRef('calendar');
+  const headerRefs = useTemplateRef<InstanceType<typeof DpHeader>[]>('calendar-header');
+  const calendarRefs = useTemplateRef<InstanceType<typeof DpCalendar>[]>('calendar');
   const timePickerRef = useTemplateRef('time-picker');
 
   const calendarSlots = getSlotsByComponent(slots, SlotUse.Calendar);
@@ -226,7 +225,6 @@
   defineExpose({
     clearHoverDate,
     presetDate,
-    selectCurrentDate,
     handleArrow,
     updateMonthYear,
     setStartTime,

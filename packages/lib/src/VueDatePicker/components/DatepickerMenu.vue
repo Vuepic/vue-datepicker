@@ -118,6 +118,7 @@
   import { ArrowDirection, EventKey } from '@/constants';
   import type { DynamicClass, MenuExposedFn, MenuView, MonthModel } from '@/types';
   import { getSlotsByComponent, type MenuSlots, SlotUse } from '@/constants/slots.ts';
+  import { useModel } from '@/composables/useModel.ts';
 
   defineSlots<MenuSlots>();
 
@@ -144,6 +145,7 @@
   } = useContext();
   const { isMobile } = useResponsive();
   const { handleEventPropagation, getElWithin, checkStopPropagation, checkKeyDown } = useHelperFns();
+  const { selectCurrentDate } = useModel();
   useArrowNavigation();
 
   const innerMenuRef = useTemplateRef('inner-menu');
@@ -289,10 +291,6 @@
     if (dynCmpRef.value?.[fn]) {
       dynCmpRef.value?.[fn](...args);
     }
-  };
-
-  const selectCurrentDate = () => {
-    callChildFn('selectCurrentDate');
   };
 
   const presetDate = (value: MaybeRefOrGetter<Date[] | string[] | string | Date>) => {

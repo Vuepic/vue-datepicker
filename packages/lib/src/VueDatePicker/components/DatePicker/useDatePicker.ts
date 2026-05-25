@@ -12,7 +12,6 @@ import {
   startOfWeek,
   subMonths,
   type Day,
-  roundToNearestMinutes,
 } from 'date-fns';
 
 import { useDateUtils, useRemapper, useValidation, useContext, useHelperFns, useFormatter } from '@/composables';
@@ -21,6 +20,7 @@ import { useComponentShared } from '@/components/shared/useComponentShared.ts';
 
 import { CMP, FlowStep } from '@/constants';
 import type { BasePropsWithDefaults, CalendarDay, CalendarWeek, Marker, TimeInternalModel, TimeKey } from '@/types';
+import { useModel } from '@/composables/useModel.ts';
 
 export interface DatePickerEmits {
   mount: [cmp: CMP];
@@ -62,6 +62,7 @@ export const useDatePicker = (
   const { resetDateTime, setTime, isDateBefore, isDateEqual, getDaysInBetween } = useDateUtils();
   const { checkRangeAutoApply, getRangeWithFixedDate, handleMultiDatesSelect, setPresetDate } = useComponentShared();
   const { getMapDate } = useHelperFns();
+  const { selectOnAutoApply } = useModel(emit);
   useRemapper(() => mapInternalModuleValues(state.isTextInputDate));
 
   const shouldUpdateMonthView = (isAction: boolean) => {
@@ -80,12 +81,6 @@ export const useDatePicker = (
       calendars.value[instance] ??= calendars.value[instance] = { month: 0, year: 0 };
       calendars.value[instance].month = month ?? calendars.value[instance]?.month;
       calendars.value[instance].year = year ?? calendars.value[instance]?.year;
-    }
-  };
-
-  const selectOnAutoApply = () => {
-    if (rootProps.autoApply) {
-      emit('select-date');
     }
   };
 
@@ -593,38 +588,6 @@ export const useDatePicker = (
     }
   };
 
-  const getCurrentDate = () => {
-    let date = getDate();
-    if (rootProps.actionRow?.nowBtnRound) {
-      date = roundToNearestMinutes(date, {
-        roundingMethod: rootProps.actionRow.nowBtnRound.rounding ?? 'ceil',
-        nearestTo: rootProps.actionRow.nowBtnRound.roundTo ?? 15,
-      });
-    }
-
-    return date;
-  };
-
-  // Select the current date on now button
-  const selectCurrentDate = (): void => {
-    const date = getCurrentDate();
-    if (!range.value.enabled && !multiDates.value.enabled) {
-      modelValue.value = date;
-    } else if (modelValue.value && Array.isArray(modelValue.value) && modelValue.value[0]) {
-      if (multiDates.value.enabled) {
-        modelValue.value = [...modelValue.value, date];
-      } else {
-        modelValue.value = isDateBefore(date, modelValue.value[0])
-          ? [date, modelValue.value[0]]
-          : [modelValue.value[0], date];
-      }
-    } else {
-      modelValue.value = [date];
-    }
-
-    selectOnAutoApply();
-  };
-
   const handleTimeUpdate = () => {
     if (Array.isArray(modelValue.value)) {
       if (multiDates.value.enabled) {
@@ -693,7 +656,6 @@ export const useDatePicker = (
     selectDate,
     updateMonthYear,
     presetDate,
-    selectCurrentDate,
     updateTime,
     assignMonthAndYear,
     setStartTime,
