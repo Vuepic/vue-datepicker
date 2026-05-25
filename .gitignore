@@ -109,5 +109,8 @@ typings/
 packages/docs/docs/.vitepress/cache
 packages/docs/docs/.vitepress/dist
 
+lib/README.md
+lib/LICENSE
+
 # ignore .DS_Store files
 .DS_Store

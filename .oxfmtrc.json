@@ -9,5 +9,5 @@
   "bracketSpacing": true,
   "arrowParens": "always",
   "vueIndentScriptAndStyle": true,
-  "ignorePatterns": ["**/*.md"]
+  "ignorePatterns": ["**/*.md", "**/package.json"]
 }

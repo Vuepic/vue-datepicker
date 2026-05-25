@@ -13,7 +13,6 @@ export default defineConfig({
       insertTypesEntry: true,
       tsconfigPath: './tsconfig.app.json',
       outDirs: './dist',
-      staticImport: false,
     }),
   ],
   resolve: {

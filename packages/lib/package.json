@@ -1,34 +1,20 @@
 {
   "name": "@vuepic/vue-datepicker",
   "version": "13.0.0",
-  "private": false,
   "description": "Datepicker component for Vue 3",
-  "keywords": [
-    "date",
-    "datepicker",
-    "daterangepicker",
-    "datetimepicker",
-    "vue",
-    "vue-datepicker",
-    "vue3-datepicker"
-  ],
-  "homepage": "https://vue3datepicker.com",
-  "bugs": {
-    "url": "https://github.com/Vuepic/vue-datepicker/issues"
-  },
-  "license": "MIT",
   "author": "Vuepic",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Vuepic/vue-datepicker.git"
-  },
+  "private": false,
+  "license": "MIT",
+  "homepage": "https://vue3datepicker.com",
+  "type": "module",
+  "module": "dist/vue-datepicker.js",
+  "types": "dist/index.d.ts",
   "style": "dist/main.css",
   "files": [
     "dist/*",
-    "../../README.md",
-    "../../LICENSE.md"
+    "README.md",
+    "LICENSE"
   ],
-  "type": "module",
   "exports": {
     ".": {
       "types": "./src/index.ts",
@@ -36,8 +22,6 @@
     }
   },
   "publishConfig": {
-    "module": "dist/vue-datepicker.js",
-    "types": "dist/index.d.ts",
     "exports": {
       ".": {
         "types": "./dist/index.d.ts",
@@ -62,7 +46,8 @@
     "lint:oxlint": "oxlint src --fix",
     "lint:eslint": "eslint \"src/**\" --fix --cache",
     "format": "oxfmt .",
-    "fmt:check": "oxfmt --check"
+    "fmt:check": "oxfmt --check",
+    "prepack": "node ../../scripts/copy-publish-files.mjs"
   },
   "dependencies": {
     "@date-fns/tz": "^1.4.1",
@@ -76,12 +61,28 @@
   "peerDependencies": {
     "vue": ">=3.5.0"
   },
+  "engines": {
+    "node": ">=18.12.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vuepic/vue-datepicker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Vuepic/vue-datepicker/issues"
+  },
+  "keywords": [
+    "date",
+    "datepicker",
+    "daterangepicker",
+    "datetimepicker",
+    "vue",
+    "vue-datepicker",
+    "vue3-datepicker"
+  ],
   "browserslist": [
     "> 1%",
     "last 2 versions",
     "not dead"
-  ],
-  "engines": {
-    "node": ">=18.12.0"
-  }
+  ]
 }
