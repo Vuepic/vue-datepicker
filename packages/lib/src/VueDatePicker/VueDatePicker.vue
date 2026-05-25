@@ -18,8 +18,6 @@
         <slot :name="slot" v-bind="args" />
       </template>
     </DatepickerInput>
-    {{ middlewareData.arrow }}
-
     <TeleportCmp :to="teleport" :disabled="!teleport">
       <div
         v-if="shouldRenderMenuWrap"
