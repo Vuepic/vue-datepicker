@@ -798,7 +798,11 @@ interface FloatingConfig {
 - [`placement`](https://floating-ui.com/docs/tutorial#placements) - Position of the floating menu
 - [`flip`](https://floating-ui.com/docs/flip#flip) - Enable/disable or configure flip middleware
 - [`shift`](https://floating-ui.com/docs/shift#shift) - Enable/disable or configure shift middleware
-  :::
+:::
+
+:::warning
+The arrow element will be hidden if you position the menu to the right or the left side of the input 
+:::
 
 <GlobalDemo :floating="{ arrow: false, offset: 0 }"></GlobalDemo>
 

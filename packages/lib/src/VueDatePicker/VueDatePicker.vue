@@ -18,6 +18,8 @@
         <slot :name="slot" v-bind="args" />
       </template>
     </DatepickerInput>
+    {{ middlewareData.arrow }}
+
     <TeleportCmp :to="teleport" :disabled="!teleport">
       <div
         v-if="shouldRenderMenuWrap"
@@ -55,11 +57,14 @@
               <div
                 ref="menu-arrow"
                 :class="{
-                  'dp--arrow-top': placement === 'bottom',
-                  'dp--arrow-bottom': placement === 'top',
+                  'dp--arrow-top': placement.includes('bottom'),
+                  'dp--arrow-bottom': placement.includes('top'),
                 }"
                 :style="{
-                  left: middlewareData.arrow?.x != null ? `${middlewareData.arrow.x}px` : '',
+                  left:
+                    middlewareData.arrow?.x != null
+                      ? `${middlewareData.arrow.x - middlewareData.arrow.centerOffset}px`
+                      : '',
                   top: middlewareData.arrow?.y != null ? `${middlewareData.arrow.y}px` : '',
                 }"
               ></div>
@@ -135,18 +140,18 @@
   const watchRender = ref(true);
 
   const buildFloatingMiddlewares = (middlewares: Middleware[]) => {
-    if (floatingConfig.value.arrow) {
-      middlewares.push(
-        arrow({ element: floatingConfig.value.arrow === true ? menuArrowRef : floatingConfig.value.arrow }),
-      );
-    }
-
     if (floatingConfig.value.flip) {
       middlewares.push(flip(typeof floatingConfig.value.flip === 'object' ? floatingConfig.value.flip : {}));
     }
 
     if (floatingConfig.value.shift) {
       middlewares.push(shift(typeof floatingConfig.value.shift === 'object' ? floatingConfig.value.shift : {}));
+    }
+
+    if (floatingConfig.value.arrow) {
+      middlewares.push(
+        arrow({ element: floatingConfig.value.arrow === true ? menuArrowRef : floatingConfig.value.arrow }),
+      );
     }
 
     return middlewares;
