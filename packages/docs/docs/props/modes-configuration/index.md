@@ -10,7 +10,7 @@ Props for configuring and extending the datepicker when using a specific mode
 
 ## `range` configuration
 
-Providing configuration object will automatically enable `range` picker
+Providing a configuration object will automatically enable the `range` picker
 
 ```ts
 interface RangeConfig {
@@ -30,7 +30,7 @@ interface RangeConfig {
 
 ### `autoRange`
 
-Predefine range to select
+Predefine a range to select
 
 - Default: `false`
 
@@ -53,7 +53,7 @@ Predefine range to select
 
 ### `partialRange`
 
-This option is enabled by default, meaning, two dates are not required for range input. If no second date is selected, the value will be `null`
+This option is enabled by default, meaning two dates are not required for range input. If no second date is selected, the value will be `null`
 
 - Default: `true`
 
@@ -261,7 +261,7 @@ Explicitly allow end time in range mode to be before the start time
 
 ### `minMaxRawRange`
 
-When using disabled dates with `minRange` or `mixRange`, disabled dates are not calculated within, setting this option to `true` will validate all dates
+When using disabled dates with `minRange` or `maxRange`, the disabled dates are not counted within the range; setting this option to `true` will validate all dates
 
 - Default: `false`
 
@@ -286,12 +286,12 @@ When using disabled dates with `minRange` or `mixRange`, disabled dates are not 
 
 By default, when selecting the second date in the range, if the second selected date is before the first date, the range will be auto-switched so that the second date becomes the first one.
 
-Disabling this behavior, in a same scenario, will result in range being reset where the first date becomes the newly selected date and requires manually selecting the second date again. This can be useful if you want to do 
+Disabling this behavior, in the same scenario, will result in the range being reset, where the first date becomes the newly selected date and the second date must be selected again manually. This can be useful if you want to do 
 some custom validation logic
 
 - Default: `true`
 
-<GlobalDemo :range="{ autoSwitchStartEnd: false }" overridePlaceholder="Try selecing end date before start date..." :emptyModel="true"></GlobalDemo>
+<GlobalDemo :range="{ autoSwitchStartEnd: false }" overridePlaceholder="Try selecting end date before start date..." :emptyModel="true"></GlobalDemo>
 
 ::: details Code Example
 ```vue
@@ -310,8 +310,8 @@ some custom validation logic
 
 ## `multi-calendars` configuration
 
-`multi-calendars` prop can be extended with the configuration object, instead of passing a `boolean` or `number` values,
-you can provide an object. When the object is provided, prop will be auto enabled.
+The `multi-calendars` prop can be extended with a configuration object. Instead of passing a `boolean` or `number` value,
+you can provide an object. When the object is provided, the prop will be auto enabled.
 
 - Type:
 ```ts
@@ -346,7 +346,7 @@ When enabled, both calendars will be independent of each other
 
 ### `static`
 
-The default calendar view when using [`multi-calendars`](/props/modes/#multi-calendars) is to keep it on the month selected by the user. When this prop is disabled, it will auto-update the first calendar when the range starts and adjust the rest of them based on the first month
+The default calendar view when using [`multi-calendars`](/props/modes/#multi-calendars) is to keep it on the month selected by the user. When this prop is disabled, it will auto-update the first calendar when the range starts and adjust the rest based on the first month
 
 <GlobalDemo :multi-calendars="{ static: false }" placeholder="Select Range"></GlobalDemo>
 
@@ -389,14 +389,14 @@ interface TextInputOptions {
 :::info
 - `enterSubmit`: When enabled, pressing enter will select a date if the input value is a valid date object
 - `tabSubmit`: When enabled, pressing tab will select a date if the input value is a valid date object
-- `openMenu`: `open` value will keep the menu in the open state when the input field is clicked, `toggle` will toggle the menu, `false` disables menu from opening
+- `openMenu`: `open` will keep the menu in the open state when the input field is clicked, `toggle` will toggle the menu, `false` prevents the menu from opening
 - `format`: Override the default parsing format. Default is the string value from [`format.input`](/props/formatting/#input). You can also pass multiple parser patterns or a custom parser function and parse the input yourself. When the input is focused, the date will be shown in this format.
 - `rangeSeparator`: If you use `range` mode, the default separator is `-`, you can change it here
 - `selectOnFocus`: Selects the input text when input is focused
 - `escClose`: Closes calendar on `esc` key press
 - `maskFormat`: Check [here](#maskformat)
 - `applyOnBlur`: Tries to select a typed date when the input loses focus (has no effect if `auto-apply` is enabled)
-- `separators`: In case of a range picker, you can define custom separators to be used as check between the two dates 
+- `separators`: In case of a range picker, you can define custom separators to be used between the two dates 
 :::
 
 :::info
@@ -405,7 +405,7 @@ interface TextInputOptions {
 :::
 
 :::warning
-When using custom `seprators`, make sure to exclude the characters that are used in the `format` string. 
+When using custom `separators`, make sure to exclude the characters that are used in the `format` string. 
 For example, if you use `MM.dd.yyyy HH:mm` as `format`, **DO NOT USE** `'.'` and `':'` as separators
 :::
 
@@ -434,7 +434,7 @@ For example, if you use `MM.dd.yyyy HH:mm` as `format`, **DO NOT USE** `'.'` and
 This property provides a way to mask the input value. When typing, it will automatically insert the mask characters
 
 :::warning
-- This is still an early stage of development and will be improved in the future. Currently, the only supported mode is a single date picker
+- This is still in an early stage of development and will be improved in the future. Currently, the only supported mode is a single date picker
 - Tokens are used explicitly for masking the input, and hold no value, to set the parsing format, use `format` property
 - Currently, can mask a default format only, using `/` and `,` as separators
 :::
@@ -471,7 +471,7 @@ Supported tokens:
 
 ## inline configuration
 
-Use input with the inline mode, useful if you enable [`text-input`](/props/modes/#text-input). When the configuration object is provided, `inline` prop is auto enabled
+Use an input with the inline mode, useful if you enable [`text-input`](/props/modes/#text-input). When the configuration object is provided, the `inline` prop is auto enabled
 
 - Type: 
 ```ts

@@ -5,15 +5,15 @@ description: Datepicker theme configuration for light and dark theme
 
 # Theming
 
-Datepicker comes with the theme support with `css` variables. It provides two classes that are applied
+Datepicker comes with theme support through `css` variables. It provides two classes that are applied
 based on the chosen dark/light mode
 
 To change variables, simply override the classes with your custom values.
 
 ::: tip Info
 
-- When changing the properties, you only need to declare the class in the `<style>` tag, can be in global or scoped, depending on your needs
-- For the date picker to use `dp__theme_dark`, `dark` prop must be set to `true`
+- When changing the properties, you only need to declare the class in the `<style>` tag; it can be global or scoped, depending on your needs
+- For the datepicker to use `dp__theme_dark`, the `dark` prop must be set to `true`
   :::
 
 ## Dark mode configuration

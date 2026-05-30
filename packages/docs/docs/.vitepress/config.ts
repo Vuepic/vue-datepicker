@@ -61,6 +61,7 @@ export default defineConfig({
       {
         text: `v${packageJson.version}`,
         items: [
+          { text: 'v13', link: 'https://v13.vue3datepicker.com/' },
           { text: 'v12', link: 'https://v12.vue3datepicker.com/' },
           { text: 'v11', link: 'https://v11.vue3datepicker.com/' },
           { text: 'v10', link: 'https://v10.vue3datepicker.com/' },
@@ -189,6 +190,10 @@ export default defineConfig({
         text: 'Migration guides',
         collapsed: true,
         items: [
+          {
+            text: 'Migrating from v13',
+            link: '/migration/from-v13',
+          },
           {
             text: 'Migrating from v12',
             link: '/migration/from-v12',

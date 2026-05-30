@@ -45,7 +45,7 @@ const minutesArray = computed(() => {
 
 ## time-picker-overlay
 
-This slot replaces the full overlay in the timepicker
+This slot replaces the full overlay in the time picker
 
 - Exposed props:
 ```ts
@@ -155,7 +155,7 @@ This slot replaces the hours text between the arrows in the time picker
 ```
 
 :::info
-- `text` - Text displayed in element
+- `text` - Text displayed in the element
 - `value` - Hours value
 :::
 
@@ -198,7 +198,7 @@ This slot replaces the minutes text between the arrows in the time picker
 ```
 
 :::info
-- `text` - Text displayed in element
+- `text` - Text displayed in the element
 - `value` - Minutes value
 :::
 
@@ -240,7 +240,7 @@ This slot replaces the content in the single button in the hours overlay
 ```
 
 :::info
-- `text` - Text displayed in element
+- `text` - Text displayed in the element
 - `value` - Hours value
 :::
 
@@ -282,7 +282,7 @@ This slot replaces the content in the single button in the minutes overlay
 ```
 
 :::info
-- `text` - Text displayed in element
+- `text` - Text displayed in the element
 - `value` - Minutes value
 :::
 
@@ -325,7 +325,7 @@ This slot replaces the content in the month picker button
 ```
 
 :::info
-- `text` - Text displayed in element
+- `text` - Text displayed in the element
 - `value` - Month value
 :::
 
@@ -407,7 +407,7 @@ This slot replaces the content in the single button in the month picker overlay
 ```
 
 :::info
-- `text` - Text displayed in element
+- `text` - Text displayed in the element
 - `value` - Month value
 :::
 
@@ -450,7 +450,7 @@ This slot replaces the content in the single button in the year picker overlay
 ```
 
 :::info
-- `text` - Text displayed in element
+- `text` - Text displayed in the element
 - `value` - Year value
 :::
 
@@ -521,7 +521,7 @@ Replace the content in the month picker overlay
             @change="(ev) => {
                       updateMonthYear(+ev.target.value, year),
                       toggle()
-                  }">>
+                  }">
                 <option v-for="m in items" :key="m.value" :value="m.value">{{ m.text }}</option>
             </select>
         </div>
@@ -653,7 +653,7 @@ Replace the content in the year picker overlay
 
 ## month-overlay-header
 
-Add a custom content in the overlay header
+Add custom content in the overlay header
 
 - Exposed props:
 ```ts
@@ -701,7 +701,7 @@ Add a custom content in the overlay header
 
 ## year-overlay-header
 
-Add a custom content in the overlay header
+Add custom content in the overlay header
 
 - Exposed props:
 ```ts
@@ -749,7 +749,7 @@ Add a custom content in the overlay header
 
 ## hours-overlay-header
 
-Add a custom content in the overlay header
+Add custom content in the overlay header
 
 - Exposed props:
 ```ts
@@ -795,7 +795,7 @@ Add a custom content in the overlay header
 
 ## minutes-overlay-header
 
-Add a custom content in the overlay header
+Add custom content in the overlay header
 
 - Exposed props:
 ```ts
@@ -841,7 +841,7 @@ Add a custom content in the overlay header
 
 ## seconds-overlay-header
 
-Add a custom content in the overlay header
+Add custom content in the overlay header
 
 - Exposed props:
 ```ts

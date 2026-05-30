@@ -12,7 +12,7 @@ outline: [2, 4]
 - **Library now requires** `vue >= v3.5`
 - **`Compat` mode is removed**
 - **`umd` and `iife` bundles are removed**
-  - `iife`: Browser bundle, importing the component in `html` `<script>` tag
+  - `iife`: Browser bundle, importing the component in `html` `script` tag
   - `umd`: Mostly used in older webpack bundles
 - `import` statement is changed to named instead of default
 - Removed `onScroll` and `dpWrapMenuRef` exposed methods
@@ -75,15 +75,15 @@ outline: [2, 4]
   - `locale`
   - `flow`
   - `week-numbers`
-- Timezone behavior is chained, places check the [`timezone`](/props/timezone/) prop info
-- All locale-based formating is now done via Unicode tokens
+- Timezone behavior is changed, please check the [`timezone`](/props/timezone/) prop info
+- All locale-based formatting is now done via Unicode tokens
 - Type definition is now auto-generated, there might be some misalignment between types from previous version and the new one
 
 ## Importing the component
 
 Importing the component is now done via named import:
 
-```js
+```ts
 import VueDatePicker from '@vuepic/vue-datepicker'; // [!code --]
 import { VueDatePicker } from '@vuepic/vue-datepicker'; // [!code ++]
 ```
@@ -106,12 +106,12 @@ Now, you can pass two separate values via `menu-id` prop for the menu, or `input
 
 This prop is kind of a leftover since the initial versions before timezones. You should use the timezone prop instead.
 
-```js
+```vue
 <template>
-  <VueDatePicker
-    utc // [!code --]
-    timezone="utc" // [!code ++]
-  />
+  <!--[!code --]-->
+  <VueDatePicker utc />
+  <!--[!code ++]-->
+  <VueDatePicker timezone="utc"  />
 </template>
 ```
 
@@ -119,17 +119,16 @@ This prop is kind of a leftover since the initial versions before timezones. You
 
 Prop type for locale is changed, making this prop redundant, use `locale` prop instead
 
-```js
+```vue
 <template>
-  <VueDatePicker
-    locale="ja-JP" // [!code --]
-    :format-locale="ja" // [!code --]
-    :locale="ja" // [!code ++]
-  />
+  <!--[!code --]-->
+  <VueDatePicker locale="ja-JP" :format-locale="ja" />
+  <!--[!code ++]-->
+  <VueDatePicker :locale="ja" />
 </template>
 
 <script setup>
-    import { ja } from "date-fns/locale"
+  import { ja } from "date-fns/locale"
 </script>
 ```
 
@@ -137,12 +136,12 @@ Prop type for locale is changed, making this prop redundant, use `locale` prop i
 
 To change the month name format, you should use [`formats`](/props/formatting/#formats) prop and unicode tokens
 
-```js
+```vue
 <template>
-  <VueDatePicker
-    month-name-format="long" // [!code --]
-    :formats="{ month: 'MMMM' }" // [!code ++]
-  />
+  <!--[!code --]-->
+  <VueDatePicker  month-name-format="long" />
+  <!--[!code ++]-->
+  <VueDatePicker :formats="{ month: 'MMMM' }" />
 </template>
 ```
 
@@ -150,12 +149,12 @@ To change the month name format, you should use [`formats`](/props/formatting/#f
 
 The prop is renamed to `centered`
 
-```js
+```vue
 <template>
-  <VueDatePicker
-    teleport-center // [!code --]
-    centered // [!code ++]
-  />
+  <!--[!code --]-->
+  <VueDatePicker  teleport-center />
+  <!--[!code ++]-->
+  <VueDatePicker centered />
 </template>
 ```
 
@@ -167,17 +166,22 @@ These props are now grouped under [`action-row`](/props/general-configuration/#a
 - `cancel-text` -> `cancelBtnLabel`
 - `now-button-label` -> `nowBtnLabel`
 
-```js
+```vue
 <template>
-  <VueDatePicker
-    select-text="Pick" // [!code --]
-    cancel-text="Close" // [!code --]
-    now-button-label="Current" // [!code --]
-    :action-row="{  // [!code ++]
-      selectBtnLabel: 'Pick', // [!code ++]
-      cancelBtnLabel: 'Close', // [!code ++]
-      nowBtnLabel: 'Current' // [!code ++]
-    }" // [!code ++]
+  <!--[!code --:5]-->
+  <VueDatePicker 
+    select-text="Pick" 
+    now-button-label="Current" 
+    cancel-text="Close"
+  />
+
+  <!--[!code ++:7]-->
+  <VueDatePicker 
+    :action-row="{
+      selectBtnLabel: 'Pick', 
+      cancelBtnLabel: 'Close',
+      nowBtnLabel: 'Current' 
+    }" 
   />
 </template>
 ```
@@ -189,13 +193,12 @@ These props are now grouped under [`formats`](/props/formatting/#formats) prop a
 - `format` -> `input`
 - `preview-format` -> `preview`
 
-```js
+```vue
 <template>
-  <VueDatePicker
-    format="dd.MM.yyyy" // [!code --]
-    preview-format="dd.MM.yyyy" // [!code --]
-    :formats="{ input: 'dd.MM.yyyy', preview: 'dd.MM.yyyy' }" // [!code ++]
-  />
+  <!--[!code --]-->
+  <VueDatePicker format="dd.MM.yyyy"  preview-format="dd.MM.yyyy" />
+  <!--[!code ++]-->
+  <VueDatePicker :formats="{ input: 'dd.MM.yyyy', preview: 'dd.MM.yyyy' }" />
 </template>
 ```
 
@@ -205,12 +208,12 @@ These props are now grouped under [`input-attrs`](/props/general-configuration/#
 
 Use camel case for naming multi-word props. e.g. `always-clearable` -> `alwaysClearable`
 
-```js
+```vue
 <template>
-  <VueDatePicker
-    :always-cleable="true" // [!code --]
-    :input-attrs="{ alwaysClearable: true }" // [!code ++]
-  />
+  <!--[!code --]-->
+  <VueDatePicker :always-clearable="true" />
+  <!--[!code ++]-->
+  <VueDatePicker :input-attrs="{ alwaysClearable: true }" />
 </template>
 ```
 
@@ -230,7 +233,7 @@ If you don't have it in the project, you can install it via `npm install date-fn
 and then import it:
 
 ```ts
-import { znCh } from 'date-fns/locale';
+import { zhCn } from 'date-fns/locale';
 ```
 
 ### `disable-month-year-select`
@@ -241,12 +244,12 @@ This prop is renamed to `hide-month-year-select`
 
 This prop is now moved under [`filters`](/props/validation/#filters) prop and renamed to `weekDays`.
 
-```js
+```vue
 <template>
-  <VueDatePicker
-    :disabled-week-days="[3, 4]" // [!code --]
-    :filters="{ weekDays: [3, 4] }" // [!code ++]
-  />
+  <!--[!code --]-->
+  <VueDatePicker :disabled-week-days="[3, 4]" />
+  <!--[!code ++]-->
+  <VueDatePicker :filters="{ weekDays: [3, 4] }" />
 </template>
 ```
 
@@ -256,12 +259,12 @@ These props are now grouped under [`time-config`](/props/time-picker-configurati
 
 Use camel case for naming multi-word props. e.g. `enable-time-picker` -> `enableTimePicker`
 
-```js
+```vue
 <template>
-  <VueDatePicker
-    :enable-time-picker="false" // [!code --]
-    :time-config="{ enableTimePicker: false }" // [!code ++]
-  />
+  <!--[!code --]-->
+  <VueDatePicker :enable-time-picker="false" />
+  <!--[!code ++]-->
+  <VueDatePicker :time-config="{ enableTimePicker: false }" />
 </template>
 ```
 
@@ -272,12 +275,14 @@ and now accept a full time object instead of determining the value to update via
 
 To update time, pass back the exposed time object and override the properties you want to update.
 
-```js
+```vue
 <template>
   <VueDatePicker>
     <template #time-picker="{ time, updateTime }">
-      <button @click="updateTime(0, false)">Reset minutes</button>  // [!code --]
-      <button @click="updateTime({ ...time, minutes: 0 })">Reset minutes</button>  // [!code ++]
+      <!--[!code --]-->
+      <button @click="updateTime(0, false)">Reset minutes</button>
+      <!--[!code ++]-->
+      <button @click="updateTime({ ...time, minutes: 0 })">Reset minutes</button>
     </template>
   </VueDatePicker>
 </template>
@@ -287,12 +292,12 @@ To update time, pass back the exposed time object and override the properties yo
 
 This prop is now moved under [`ui`](/props/look-and-feel/#ui) prop.
 
-```js
+```vue
 <template>
-  <VueDatePicker
-    :day-class="(day, internalModel) => 'my-class'" // [!code --]
-    :ui="{ dayClass: (day, internalModel) => 'my-class' }" // [!code ++]
-  />
+  <!--[!code --]-->
+  <VueDatePicker :day-class="(day, internalModel) => 'my-class'" />
+  <!--[!code ++]-->
+  <VueDatePicker :ui="{ dayClass: (day, internalModel) => 'my-class' }" />
 </template>
 ```
 
@@ -302,12 +307,12 @@ These props are now grouped under [`config`](/props/general-configuration/#confi
 
 Use camel case for naming multi-word props. e.g. `esc-close` -> `escClose`
 
-```js
+```vue
 <template>
-  <VueDatePicker
-    :esc-close="false" // [!code --]
-    :config="{ escClose: false }" // [!code ++]
-  />
+  <!--[!code --]-->
+  <VueDatePicker :esc-close="false"  />
+  <!--[!code ++]-->
+  <VueDatePicker :config="{ escClose: false }" />
 </template>
 ```
 
@@ -318,13 +323,12 @@ These two props are now part of the `FlowConfig` prop object:
 - Instead of an array of steps, the `flow` props accepts an `object` with `steps` property
 - `partial-flow` is moved under `flow` config as `partial`
 
-```js
+```vue
 <template>
-  <VueDatePicker
-    :flow="['year', 'month', 'calendar']" // [!code --]
-    :partial-flow="true" // [!code --]
-    :flow="{ steps: ['year', 'month', 'calendar'], partial: true }" // [!code ++]
-  />
+  <!--[!code --]-->
+  <VueDatePicker :flow="['year', 'month', 'calendar']" :partial-flow="true"  />
+  <!--[!code ++]-->
+  <VueDatePicker :flow="{ steps: ['year', 'month', 'calendar'], partial: true }" />
 </template>
 ```
 
@@ -337,12 +341,11 @@ Timezone prop type is changed, and will now only accept `string` value
 - `week-numbers` prop now accepts only boolean or config object
 - `week-num-name` prop is now moved under `week-numbers` as `label` property
 
-```js
+```vue
 <template>
-  <VueDatePicker
-    week-numbers="iso" // [!code --]
-    week-num-name="ww" // [!code --]
-    :week-numbers="{ type: 'iso', label: 'ww' }" // [!code ++]
-  />
+  <!--[!code --]-->
+  <VueDatePicker week-numbers="iso" week-num-name="ww"  />
+  <!--[!code ++]-->
+  <VueDatePicker :week-numbers="{ type: 'iso', label: 'ww' }" />
 </template>
 ```

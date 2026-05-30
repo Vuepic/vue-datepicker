@@ -27,7 +27,7 @@ Based on specified formats in [`formats`](/props/formatting/#formats) prop, the 
 ::: details Code Example
 ```vue
 <template>
-  <VueDatePicker v-model="date" :locale="znCh" />
+  <VueDatePicker v-model="date" :locale="zhCn" />
 </template>
 
 <script setup>

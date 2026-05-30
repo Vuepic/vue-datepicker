@@ -6,7 +6,7 @@ description: List of emitted events from the datepicker
 
 # Events
 
-List of available events that are emitted on a specific action
+List of available events that are emitted on specific actions
 
 
 ## @update:model-value
@@ -22,8 +22,7 @@ For more information about `ModelValue` type, please refer to the [`model-value`
 
 ## @text-submit
 
-When [`text-input`](/props/modes/#text-input) prop is set to `true` and `enterSubmit` is set to `true` in [`text-input-options`](/props/modes-configuration/#text-input-options), when
-enter button is pressed, this event will be emitted
+When the [`text-input`](/props/modes/#text-input) prop is set to `true` and `enterSubmit` is set to `true` in [`text-input-options`](/props/modes-configuration/#text-input-options), this event is emitted when the enter key is pressed
 
 - Type: `() => void`
 
@@ -41,7 +40,7 @@ Emitted when the datepicker menu is closed
 
 ## @cleared
 
-Emitted when the value is cleared on the clear button
+Emitted when the value is cleared via the clear button
 
 - Type: `() => void`
 
@@ -69,7 +68,7 @@ This is not a native event. This event is handled internally in the component
 
 ## @internal-model-change
 
-Emitted when the internal `model-value` is changed before selecting this date that will be set to `v-model`
+Emitted when the internal `model-value` is changed, before the date that will be set to `v-model` is selected
 
 - Type: `(internalModelValue: Date | Date[] | null | (Date | null)[], modelValue: ModelValue) => void`
 
@@ -82,15 +81,11 @@ Emitted when the internal `model-value` is changed before selecting this date th
 
 Emitted when the flow step is triggered
 
-- Type: `(step: number) => void`
-
-:::info
-
-- Current logic will not emit an event on the first flow step
-- Flow step will keep emitting even tho there are no more steps and just keep incrementing
-
-Both of these will be handled in one of the upcoming releases
+:::warning
+- The current logic will not emit an event on the first flow step
 :::
+
+- Type: `(step:  'month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds') => void`
 
 ## @update-month-year
 
@@ -126,7 +121,7 @@ Emitted when the marker tooltip is closed
 
 ## @am-pm-change
 
-Emitted when the `am / pm` button is clicked in time picker
+Emitted when the `am / pm` button is clicked in the time picker
 
 - Type: `(value: 'AM' | 'PM') => void`
 

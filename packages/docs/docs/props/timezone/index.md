@@ -8,7 +8,7 @@ description: Datepicker timezone configuration
 
 Configure the timezone of the datepicker
 
-Under the hood, the datepicker uses the `TZDate` object, which is timezone-aware `Date` object from the `@date-fns/tz` library
+Under the hood, the datepicker uses the `TZDate` object, which is a timezone-aware `Date` object from the `@date-fns/tz` library
 
 ## timezone
 
@@ -17,7 +17,7 @@ Display the dates in a given timezone
 - Type: `string`
 - Default: `undefined`
 
-Given a different timezone than the local one, a date object in the browser will always display as the value is in the local timezone (aside from changing the timezone browser configuration)
+Given a timezone different from the local one, a `Date` object in the browser will always be displayed as if the value is in the local timezone (unless you change the browser's timezone configuration)
 
 In the given example, printing the `Date` object will display the date value with GMT offset and the timezone
 
@@ -48,7 +48,7 @@ Now, let's see what happens when we provide a timezone to the datepicker
 :::
 
 
-Datepicker exports a `TZDate` object, which is timezone-aware `Date` object from the `@date-fns/tz` library. When you select a value, the `v-model` value will be a `TZDate` object
+Datepicker exports a `TZDate` object, which is a timezone-aware `Date` object from the `@date-fns/tz` library. When you select a value, the `v-model` value will be a `TZDate` object
 
 To see it in action, let's set the `timezone` to `utc` and select a date:
 
@@ -72,7 +72,7 @@ If the date value is provided in the datepicker as a `TZDate` object, it will be
 :::
 
 :::warning
-`console.log(date)` and `date.toString()` will not display same value
+`console.log(date)` and `date.toString()` will not display the same value
 :::
 
 Let's observe the `v-model` value when it is changed by adding a `watch` method and selecting a different date
@@ -113,7 +113,7 @@ Providing props that rely on the `Date` object such as `min-date`, `max-date`, `
 </template>
 
 <script lang="ts" setup>
-  import { VueDatePicker } from '@vuepic/vue-datepicker';;
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref, useSlots } from 'vue';
   
   const modelBind = ref();

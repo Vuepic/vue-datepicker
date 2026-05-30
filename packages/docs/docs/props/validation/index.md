@@ -10,7 +10,7 @@ outline: [2, 4]
 Props to define datepicker validation
 
 :::info
-- Props with type `Date | string | number` assumes that both `string` or `number` represent a date string or timestamp
+- Props with type `Date | string | number` assume that both `string` and `number` represent a date string or timestamp
 - When using time values, always use `24h` values even if the `timeConfig.is24` is set to `false`
 :::
 
@@ -132,9 +132,9 @@ Dynamic disabling of times in the time-picker overlay only works with the `Array
 
 Prop can be used either in `time-picker` or regular date picker modes
 
-To disable full hour you can pass an object for example: `{ hours: 15, minutes: "*" }` with the `*` wildcard
+To disable a full hour, you can pass an object, for example: `{ hours: 15, minutes: "*" }` with the `*` wildcard
 
-To have a better control of the `range` validation, you can provide an array containing 2 arrays.
+For better control of the `range` validation, you can provide an array containing 2 arrays.
 - The first array will be used to validate start time
 - The second array will be used to validate end time
 :::
@@ -175,7 +175,7 @@ Disable specific dates
 - Default: `[]`
 
 :::info
-If you use a custom function, make sure to return `true` for a disabled date and `false` for enabled
+If you use a custom function, make sure to return `true` for a disabled date and `false` for an enabled one
 :::
 
 <GlobalDemo :disabledDates="disabledDates" :emptyModel="true"></GlobalDemo>
@@ -245,7 +245,7 @@ interface Filters {
   years?: number[]; // Array of years to disable
   times?: {
     hours?: number[]; // disable specific hours
-    minutes?: number[]; // disable sepcific minutes
+    minutes?: number[]; // disable specific minutes
     seconds?: number[] // disable specific seconds
   }
 }

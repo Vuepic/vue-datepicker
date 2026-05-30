@@ -6,7 +6,7 @@ description: List of exposed datepicker methods
 
 # Methods
 
-List of available methods that you can call on the datepicker from the external code
+List of available methods that you can call on the datepicker from external code
 
 Add a `ref` to the component, and call the method on that ref
 
@@ -17,7 +17,7 @@ Add a `ref` to the component, and call the method on that ref
 </template>
 
 <script lang="ts" setup>
-  import { VueDatePicker } from "@vuepic/vue-datepicker"}
+  import { VueDatePicker } from "@vuepic/vue-datepicker";
   import { ref, useTemplateRef } from 'vue';
 
   const date = ref();
@@ -81,12 +81,12 @@ For `ModelValue` type, see [ModelValue](/props/general-configuration/#model-valu
 
 ## switchView
 
-Manually show overlay
+Manually show an overlay
 
 Type: `(view: 'month' | 'year' | 'calendar' | 'time', instance?: number) => void;`
 
 :::tip
-To close overlay pass `'calendar'` as parameter
+To close the overlay, pass `'calendar'` as the parameter
 :::
 
 :::info
@@ -95,20 +95,21 @@ To close overlay pass `'calendar'` as parameter
 
 ## toggleMenu
 
-Manually toggle picker menu
+Manually toggle the picker menu
 
 - Type: `() => void`
 
-## handleFlow
+## executeFlow
 
-By default, flow will only trigger on initial picker menu `mount`. This method triggers flow again, even if the picker is 
+By default, the flow will only trigger on the initial picker menu `mount`. This method triggers the flow again, even if the picker is 
 in the open state
-
-Type: `(flowStep?: number) => void`
 
 :::tip
 Function supports `flowStep` parameter to trigger flow from a given step again
 :::
+
+Type: `(flowStep?: 'month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds') => void`
+
 
 ## dpMenuRef
 

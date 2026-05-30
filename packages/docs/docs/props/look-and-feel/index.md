@@ -12,7 +12,7 @@ Customization options
 ## transitions
 
 Control transitions inside the menu. You can define your own or disable them. Datepicker uses a Vue built-in
-[transitions](https://v3.vuejs.org/guide/transitions-overview.html) component for transition control. To configure you own,
+[transitions](https://v3.vuejs.org/guide/transitions-overview.html) component for transition control. To configure your own,
 please check the Vue documentation and provide a transition name in the prop
 
 - Type: `Transitions | boolean`
@@ -32,10 +32,10 @@ interface Transitions {
 ```
 
 :::info
-- `open` and `close` are added on overlays show/hide
-- `next` and `previous` added when switching months in the calendar
-- `menuAppearTop` is added when the menu is open above the input filed
-- `menuAppearBottom` is added when the menu is open bellow the input field
+- `open` and `close` are added when overlays show/hide
+- `next` and `previous` are added when switching months in the calendar
+- `menuAppearTop` is added when the menu opens above the input field
+- `menuAppearBottom` is added when the menu opens below the input field
 - `vNext` and `vPrevious` are added when switching months in the calendar in the [`vertical`](/props/modes/#vertical) mode
 :::
 

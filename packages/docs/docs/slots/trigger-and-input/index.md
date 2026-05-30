@@ -97,7 +97,7 @@ When calling `onInput` function, make sure to pass the `input event` as an argum
 - `onInput` - Function called on the `@input` event
 - `onEnter` - Function called on the `@keydown.enter` event
 - `onTab` - Function called on the `@keydown.tab` event
-- `onClear` - Function to call if you want to clear date
+- `onClear` - Function to call if you want to clear the date
 - `onFocus` - Function to call on input focus
 - `onBlur` - Function to call on input blur
 - `onKeypress` - Function to call on key press

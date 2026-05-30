@@ -10,10 +10,10 @@ description: Install guide for @vuepic/vue-datepicker for global installation, O
 :::warning Before Installing
 - Min supported version of `vue` is `3.5`
 - The library only provides `es` bundle.
-- `compat` mode, `umd` and `iife` builds are not included in the library, nor they will be. If there is a need for such requirements, feel free to compile from source or use version `< 12.0`
+- `compat` mode, `umd` and `iife` builds are not included in the library, nor will they be. If you have such requirements, feel free to compile from source or use version `< 12.0`
 :::
 
-Install the component using the preferred package manager
+Install the component using your preferred package manager
 
 ::: code-group
 
@@ -34,9 +34,9 @@ bun add @vuepic/vue-datepicker
 ```
 :::
 
-Then import and register component
+Then import and register the component
 
-**Note**: `css` file is imported separately
+**Note**: the `css` file is imported separately
 
 ```js
 import { VueDatePicker } from '@vuepic/vue-datepicker';
@@ -63,7 +63,7 @@ app.mount('#app');
 
 ## **Local**
 
-In the `component` files
+In your component files
 
 ::: code-group
 

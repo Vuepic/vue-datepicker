@@ -11,12 +11,12 @@ Format options for the value displayed across the picker components
 
 ## formats
 
-Formats prop allows configuring the format of various picker elements
+The `formats` prop allows configuring the format of various picker elements
 
 :::tip
 
-- To find out supported unicode tokens, please refer to [`Unicode tokens`](https://date-fns.org/docs/format) documentation
-- All formating is based on the provided [`locale`](/props/localization/#locale) prop
+- To find the supported unicode tokens, please refer to the [`Unicode tokens`](https://date-fns.org/docs/format) documentation
+- All formatting is based on the provided [`locale`](/props/localization/#locale) prop
   :::
 
 - Type:
@@ -99,7 +99,7 @@ Changes the format of the year text in the year picker overlay
 
 ### `weekDay`
 
-Changes the format week day name in the calendar
+Changes the format of the weekday name in the calendar
 
 - Default: `'EEEEEE'`
 
@@ -124,7 +124,7 @@ Changes the format week day name in the calendar
 
 ### `quarter`
 
-Changes the format quarter name in the quarter picker
+Changes the format of the quarter name in the quarter picker
 
 - Default: `'MMMM'`
 
@@ -192,7 +192,7 @@ When `range` is enabled, the format is repeated for the single value with `-` in
 :::
 
 :::tip
-If unicode tokes do not meet your requirement, you can pass a function that returns a string.
+If the unicode tokens do not meet your requirements, you can pass a function that returns a string.
 
 The function argument is the internal selected date value(s).
 :::
@@ -225,11 +225,11 @@ Changes the format of the selected value in the preview date section
 :::info
 
 - If no value is provided, it will be the same as the `input`.
-- If `input` property value is provided, preview format will use the same one
+- If the `input` property value is provided, the preview format will use the same one
   :::
 
 :::tip
-If unicode tokes do not meet your requirement, you can pass a function that returns a string.
+If the unicode tokens do not meet your requirements, you can pass a function that returns a string.
 
 The function argument is the internal selected date value(s).
 :::

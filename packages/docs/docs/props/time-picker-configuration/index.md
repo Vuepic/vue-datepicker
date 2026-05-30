@@ -54,17 +54,17 @@ interface TimeConfig {
   minutesIncrement: 1,
   secondsIncrement: 1,
   timePickerInline: false,
-  startTime: undefined;
+  startTime: undefined,
 }
 ```
 
 
 ### `enableTimePicker`
 
-Enable or disable time picker
+Enable or disable the time picker
 
 :::tip
-Does not have effect when using `time-picker` mode
+Has no effect when using `time-picker` mode
 :::
 
 - Default: `true`
@@ -232,7 +232,7 @@ Disable overlay for the minutes, only arrow selection will be available
 
 ### `noSecondsOverlay`
 
-Disable overlay for the minutes, only arrow selection will be available
+Disable overlay for the seconds, only arrow selection will be available
 
 - Default: `false`
 

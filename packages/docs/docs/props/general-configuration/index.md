@@ -89,11 +89,11 @@ Specify a custom format for `v-model`
 :::info
 
 - `timestamp` - uses timestamp for binding
-- `format` - uses provided format or fallbacks to the default one. Must be a **string**
+- `format` - uses the provided format or falls back to the default one. Must be a **string**
 - `iso` - date that will be returned will be in iso string format
 - `string` - use custom format by providing a custom pattern with [unicode tokens](https://date-fns.org/v2.16.1/docs/format)
 
-This is only compatible with date pickers, [`time-picker`](/props/modes/#time-picker) and [`month-picker`](/props/modes/#month-picker), other modes are not supported
+This is only compatible with date pickers, [`time-picker`](/props/modes/#time-picker) and [`month-picker`](/props/modes/#month-picker); other modes are not supported
 :::
 
 ::: details Code Example
@@ -481,7 +481,7 @@ Reverse button order in the calendar header
 
 ## disable-year-select
 
-Removes the year button from the menu and cycles trough the current or provided year
+Removes the year button from the menu and cycles through the current or provided year
 
 - Type: `boolean`
 - Default: `false`
@@ -574,7 +574,7 @@ interface InputAttrs {
 
 ## six-weeks
 
-Always display six weeks on the calendar. This will prevent dynamic calendar height change depending on the month
+Always display six weeks on the calendar. This prevents the calendar height from changing dynamically depending on the month
 
 - Type: `boolean | 'append' | 'prepend' | 'center' | 'fair'`
 - Default: `false`
@@ -585,7 +585,7 @@ Always display six weeks on the calendar. This will prevent dynamic calendar hei
 - `'append'` - Always add new row(s) at the bottom of the calendar
 - `'prepend'` - Always add new row(s) at the beginning of the calendar
 - `'center'` - If the month that needs padding starts with the beginning of a week, add a week at the start. If a second week needs to be added, add it in the end. This way, every month will have offset days on each end, and months like Feb. 2021 will not have that huge tail. This mode does not add a week before if the month already starts with a partial week
-- `'fair'` - The first extra week is added to either start or end of the month, depending on which partial week has fewer offset days. This solves the same problems as center, but aims to distribute the padding more evenly. Since it leads to more months having a leading offset week, which is not necessarily desirable. The difference is visible e.g. in June 2021
+- `'fair'` - The first extra week is added to either the start or end of the month, depending on which partial week has fewer offset days. This solves the same problems as center but aims to distribute the padding more evenly, though it leads to more months having a leading offset week, which is not necessarily desirable. The difference is visible, e.g., in June 2021
   :::
 
 <GlobalDemo :sixWeeks="'center'" placeholder="Select Date"></GlobalDemo>
@@ -623,7 +623,7 @@ interface CalendarWeek {
   days: {
     text: number | string; // Value displayed in the calendar day box
     value: Date; // Date that is going to be selected, do not modify
-    current: boolean; // If the date belongs to the currenct month
+    current: boolean; // If the date belongs to the current month
     classData: Record<string, boolean>; // All classes for a specific date
   }[];
 }
@@ -694,7 +694,7 @@ Day from which the week starts. 0-6, 0 is Sunday, 6 is Saturday
 - Default: `undefined`
 
 :::tip
-If `week-start` is not provided, picker will use default week start based on the `locale` prop
+If `week-start` is not provided, the picker will use the default week start based on the `locale` prop
 :::
 
 <GlobalDemo weekStart="1"></GlobalDemo>
@@ -744,7 +744,7 @@ Specify start and end year for years to generate
 
 ## reverse-years
 
-Reverse the order of the years in years overlay
+Reverse the order of the years in the years overlay
 
 - Type: `boolean`
 - Default: `false`
@@ -996,15 +996,15 @@ interface Config {
   mobileBreakpoint: 600,
   setDateOnMenuClose: false,
   escClose: true,
-  spaceConfirm: true;
-  monthChangeOnArrows: true
-  monthChangeOnScroll: true;
+  spaceConfirm: true,
+  monthChangeOnArrows: true,
+  monthChangeOnScroll: true,
 }
 ```
 
 :::info
 
-- `allowStopPropagation` - Enable `event.sportPropagation` on click events
+- `allowStopPropagation` - Enable `event.stopPropagation` on click events
 - `closeOnScroll` - Close datepicker menu on page scroll
 - `modeHeight` - If you use [`month-picker`](/props/modes/#month-picker), [`time-picker`](/props/modes/#time-picker) or [`year-picker`](/props/modes/#year-picker), set custom height of the picker in `px`
 - `allowPreventDefault` - Due to the different implementations of how click outside listeners are implemented, you might encounter issues where the menu closes if the picker is used in dialogs when `teleport` prop is enabled. To prevent this issue, you need to set this option to `true`
@@ -1016,7 +1016,7 @@ interface Config {
 - `tabOutClosesMenu` - When tabbing out of the picker menu it will close the picker menu (not compatible when using `teleport`)
 - `arrowLeft` - Overrides default arrow position from left side of the menu. To keep it always in the center, set it to `50%`. Accepts valid `CSS` value
 - `keepViewOnOffsetClick` - When enabled, clicking on the offset date will not change the month that is currently in the view
-- `timeArrowHoldThreshold` - When provided with a value `> 0`, clicking and holding the arrow button in the `time-picker` will increment/decrement the value. This value represents the `setTimeout` value, meaning the larger the number, the change will be slower.`0` disables the hold event
+- `timeArrowHoldThreshold` - When provided with a value `> 0`, clicking and holding the arrow button in the `time-picker` will increment/decrement the value. This value represents the `setTimeout` value, meaning the larger the number, the slower the change. `0` disables the hold event
 - `shadowDom` - Set to `true` if you are using the component with web components
 - `mobileBreakpoint` - Mobile breakpoint in pixels
 - `setDateOnMenuClose` - When enabled, clicking away from the menu will set the selected date if some date is selected. Behaves similar to `auto-apply`, but it only applies the date on click-away
@@ -1028,7 +1028,7 @@ interface Config {
 
 ## start-date
 
-Open the datepicker to some preselected month and year
+Open the datepicker to a preselected month and year
 
 - Type: `Date | string | number`
 - Default: `undefined`
@@ -1112,7 +1112,7 @@ Use teleport to position the datepicker menu. This is useful if you have hidden 
 
 ## centered
 
-Sets the menu position on the page center, useful for smaller screens where there is no space available above or below the input field
+Sets the menu position to the center of the page, useful for smaller screens where there is no space available above or below the input field
 
 - Type: `boolean`
 - Default: `false`

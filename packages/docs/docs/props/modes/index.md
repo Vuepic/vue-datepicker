@@ -215,7 +215,7 @@ targeted quarter
 
 ## text-input
 
-When enabled, will try to parse the date from the user input.
+When enabled, the datepicker will try to parse the date from user input.
 
 :::info
 Text input works with all picker modes.
@@ -305,23 +305,36 @@ To deselect the date, click on the selected value
 
 ## flow
 
-Define the selecting order. Position in the array will specify the execution step. When you overwrite the execution step, the flow is reset
+Define the selection order. The position in the array specifies the execution step.
 
-When `partial` is set to `true` and combined with the auto-apply prop, it will set the date as soon as the date is selected without waiting for last flow step to execute
+:::tip
+In case you use flow for [`quarter-picker`](/props/modes/#quarter-picker) or [`month-picker`](/props/modes/#month-picker), refer to root section as `'calendar'`
+:::
+
+:::info
+If the flow order is interrupted, it will auto-resume from the next executed step in the array
+
+Example steps: `['month', 'year', 'calendar', 'time']`
+
+- The picker first opens the month overlay
+- The user goes back to the calendar, stopping the flow
+- The user selects the date
+- The flow auto-resumes from the `'calendar'` step, followed by `'time'`
+:::
+
+:::warning
+- `flow` is not supported with [`multi-calendars`](#multi-calendars) mode
+- `steps` have no effect in [`year-picker`](/props/modes/#year-picker) mode
+:::
 
 - Type: 
 ```ts
-  interface FlowConfig { 
-    steps: ('month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds')[];
-    partial?: boolean;
-  }
-
+interface FlowConfig { 
+  steps: ('month' | 'year' | 'calendar' | 'time' | 'minutes' | 'hours' | 'seconds')[];
+  partial?: boolean;
+}
 ```
 - Default: `undefined`
-
-:::warning
-`flow` is not supported with [`multi-calendars`](#multi-calendars) mode
-:::
 
 
 <GlobalDemo :flow="{ steps: ['month', 'year', 'calendar'] }" placeholder="Month > Year > Date"></GlobalDemo>
@@ -344,7 +357,7 @@ When `partial` is set to `true` and combined with the auto-apply prop, it will s
 
 ## vertical
 
-Sets the datepicker orientation in the vertical mode. This mode will change the arrow action from left/right to the top/bottom, transitions will also be vertical
+Sets the datepicker orientation to vertical mode. This changes the arrow actions from left/right to top/bottom, and the transitions will also be vertical
 
 - Type: `boolean`
 - Default: `false`
@@ -375,9 +388,9 @@ Automatically switch between range and single picker modes
 - Default: `false`
 
 :::warning
-Since this prop in the background uses a [`range.partialRange`](/props/modes-configuration/#partialrange) make sure that [`range`](#range) prop is provided and keep [`range.partialRange`](/props/modes-configuration/#partialrange) to `true`
+Since this prop uses [`range.partialRange`](/props/modes-configuration/#partialrange) in the background, make sure the [`range`](#range) prop is provided and keep [`range.partialRange`](/props/modes-configuration/#partialrange) set to `true`
 
-This is only compatible with date pickers, specific modes are not supported
+This is only compatible with date pickers; specific modes are not supported
 :::
 
 <GlobalDemo :modelAuto="true" :range="true" placeholder="Select single date or range"></GlobalDemo>

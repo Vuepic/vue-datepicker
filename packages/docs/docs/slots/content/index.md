@@ -100,7 +100,7 @@ This slot allows you to place custom content in the calendar
 </template>
 
 <script setup>
-  import { VueDatePicker } from '@vuepic/vue-datepicker';}
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
@@ -292,7 +292,7 @@ On exposed props, `instance` is the calendar index, single calendar will have in
 :::
 
 :::warning
-Depending on the mode used, different set of props will be exposed
+Depending on the mode used, a different set of props will be exposed
 :::
 
 **Date pickers**
@@ -395,7 +395,7 @@ export interface TimePickerSidebarSlotProps {
 
 :::info
 - `modelValue` - Internal model value
-- `time` - Reactive object containing time, may be different that the v-model set time
+- `time` - Reactive object containing time, may be different from the v-model set time
 - `updateTime` - Function that updates time
 :::
 
@@ -416,7 +416,7 @@ export interface TimePickerSidebarSlotProps {
 </template>
 
 <script setup>
-  import { VueDatePicker } from '@vuepic/vue-datepicker';}
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
@@ -449,7 +449,7 @@ This slot will allow you to add custom content on the right side of the menu.
 </template>
 
 <script setup>
-  import { VueDatePicker } from '@vuepic/vue-datepicker';}
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();
@@ -475,7 +475,7 @@ This slot replaces the content inside the `marker` tooltip
 :::
 
 :::warning
-Tooltip color will be ignored if this slot is provided, you will have to style it yourself
+Tooltip color will be ignored if this slot is provided; you will have to style it yourself
 :::
 
 <GlobalDemo :markers="markers">
@@ -497,7 +497,7 @@ Tooltip color will be ignored if this slot is provided, you will have to style i
 </template>
 
 <script setup>
-  import { VueDatePicker } from '@vuepic/vue-datepicker';}
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
   import addDays from 'date-fns/addDays';
 
@@ -531,7 +531,7 @@ Tooltip color will be ignored if this slot is provided, you will have to style i
 This slot replaces the default `marker` shape (line or dot)
 
 :::warning
-When slot is provided, you will have to do a custom styling to position it in the right place
+When the slot is provided, you will have to apply custom styling to position it in the right place
 :::
 
 - Exposed props:
@@ -544,7 +544,7 @@ When slot is provided, you will have to do a custom styling to position it in th
 ```
 
 :::info
-- `marker` - Provided marker configuration, see [`markers`](/props/general-configuration/#markers) for `Marker` tyoe
+- `marker` - Provided marker configuration, see [`markers`](/props/general-configuration/#markers) for `Marker` type
 - `day` - The text value displayed in the calendar cell
 - `date` - The date marker is displayed on
 :::
@@ -587,7 +587,7 @@ When slot is provided, you will have to do a custom styling to position it in th
 </template>
 
 <script setup>
-  import { VueDatePicker } from '@vuepic/vue-datepicker';}
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
   import addDays from 'date-fns/addDays';
 

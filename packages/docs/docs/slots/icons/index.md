@@ -313,7 +313,7 @@ This slot replaces the arrow-up icon in the [`timeConfig.timePickerInline`](/pro
 </template>
 
 <script setup>
-  import { VueDatePicker } from '@vuepic/vue-datepicker'}
+  import { VueDatePicker } from '@vuepic/vue-datepicker';
   import { ref } from 'vue';
 
   const date = ref();

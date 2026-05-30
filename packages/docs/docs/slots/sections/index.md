@@ -14,7 +14,7 @@ Create and use a custom component implementation in the header for month/year se
 
 :::warning  
 - When using this slot, the overlays will not be available; it is up to you to create them if you want
-- Depending on the used mode, slot will provide a different set of props
+- Depending on the mode used, the slot will provide a different set of props
 :::
 
 <GlobalDemo>
@@ -63,7 +63,7 @@ interface DatePickerMonthYearSlotProps {
 - `updateMonthYear` - Exposed function to update month and year
 - `handleMonthYearChange` - Exposed function to auto handle next/previous month
 - `instance` - In case of multi-calendars, instance is the order of the calendar
-- `isDisabled` - Internal computed logic that determent if next or previous month is allowed
+- `isDisabled` - Internal computed logic that determines whether the next or previous month is allowed
 :::
 
 **Month picker**
@@ -88,7 +88,7 @@ export interface MonthPickerMonthYearSlotProps {
  - `years` - Generated array of years
  - `selectMonth` - Exposed function to update month value
  - `selectYear` - Exposed function to update year value
- - `instance` - In case of multi-calendars, instance is the order of the calendar`
+ - `instance` - In case of multi-calendars, instance is the order of the calendar
 :::
 
 **Year picker**
@@ -124,7 +124,7 @@ export interface SelectItem<T = number> {
 ```
 
 :::tip
-In case you use `TypeScript`, either use type casting or add a check if the `mode` equals to `'date' | 'month' | 'year'` to have proper type inheritance for passed slot props.
+In case you use `TypeScript`, either use type casting or add a check for whether the `mode` equals `'date' | 'month' | 'year'` to have proper type inheritance for the passed slot props.
 :::
 
 ::: details Code Example
