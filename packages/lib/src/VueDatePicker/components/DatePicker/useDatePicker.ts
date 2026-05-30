@@ -68,12 +68,20 @@ export const useDatePicker = (emit: EmitFn<DatePickerEmits>, triggerCalendarTran
     instance: number,
     month: number | null,
     year: number | null,
+    fromMount: boolean = false,
     isAction: boolean = false,
   ): void => {
     if (shouldUpdateMonthView(isAction)) {
+      if (!fromMount && month && year) emitMonthYearChange(instance, month, year);
       calendars.value[instance] ??= calendars.value[instance] = { month: 0, year: 0 };
       calendars.value[instance].month = month ?? calendars.value[instance]?.month;
       calendars.value[instance].year = year ?? calendars.value[instance]?.year;
+    }
+  };
+
+  const emitMonthYearChange = (instance: number, month: number, year: number): void => {
+    if (calendars.value.at(instance)?.month !== month || calendars.value.at(instance)?.year !== year) {
+      rootEmit('update-month-year', { month, year, instance });
     }
   };
 
@@ -134,7 +142,7 @@ export const useDatePicker = (emit: EmitFn<DatePickerEmits>, triggerCalendarTran
   // Assign month and year values per date
   const assignMonthAndYear = (date = getDate(), fromMount = false): void => {
     if (!multiCalendars.value.count || !multiCalendars.value.static || fromMount) {
-      setCalendarMonthYear(0, getMonth(date), getYear(date));
+      setCalendarMonthYear(0, getMonth(date), getYear(date), fromMount);
     }
     if (
       multiCalendars.value.count &&
@@ -151,7 +159,7 @@ export const useDatePicker = (emit: EmitFn<DatePickerEmits>, triggerCalendarTran
 
   // Assign singe value
   const assignSingleValue = (date: Date, fromMount: boolean): void => {
-    assignMonthAndYear(date);
+    assignMonthAndYear(date, fromMount);
     assignTime('hours', getHours(date));
     assignTime('minutes', getMinutes(date));
     assignTime('seconds', getSeconds(date));
@@ -219,7 +227,6 @@ export const useDatePicker = (emit: EmitFn<DatePickerEmits>, triggerCalendarTran
     const date = increment < 0 ? addMonths(initialDate, 1) : subMonths(initialDate, 1);
     if (validateMonthYearInRange(getMonth(date), getYear(date), increment < 0, rootProps.preventMinMaxNavigation)) {
       setCalendarMonthYear(instance, getMonth(date), getYear(date));
-      rootEmit('update-month-year', { instance, month: getMonth(date), year: getYear(date) });
       if (multiCalendars.value.count && !multiCalendars.value.solo) {
         autoChangeMultiCalendars(instance);
       }
@@ -556,12 +563,11 @@ export const useDatePicker = (emit: EmitFn<DatePickerEmits>, triggerCalendarTran
   // Handles selection of month/year
   const updateMonthYear = (instance: number, val: { month: number; year: number; fromNav?: boolean }): void => {
     const monthChanged = month.value(instance) !== val.month;
-    setCalendarMonthYear(instance, val.month, val.year, true);
+    setCalendarMonthYear(instance, val.month, val.year, false, true);
 
     if (multiCalendars.value.count && !multiCalendars.value.solo) {
       autoChangeMultiCalendars(instance);
     }
-    rootEmit('update-month-year', { instance, month: val.month, year: val.year });
     triggerCalendarTransition(multiCalendars.value.solo ? instance : undefined);
 
     if (!val.fromNav) {
