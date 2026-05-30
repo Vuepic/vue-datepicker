@@ -14,8 +14,8 @@
       @blur="handleBlur"
       @real-blur="setState('isInputFocused', false)"
     >
-      <template v-for="(slot, i) in inputSlots" #[slot]="args" :key="i">
-        <slot :name="slot" v-bind="args" />
+      <template v-for="slotName in inputSlots" #[slotName]="args" :key="slotName">
+        <slot :name="slotName" v-bind="args" />
       </template>
     </DatepickerInput>
     <TeleportCmp :to="teleport" :disabled="!teleport">
@@ -48,8 +48,8 @@
             @time-update="timeUpdate"
             @menu-blur="rootEmit('blur')"
           >
-            <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
-              <slot :name="slot" v-bind="{ ...args }" />
+            <template v-for="slotName in slotList" #[slotName]="args" :key="slotName">
+              <slot :name="slotName" v-bind="{ ...args }" />
             </template>
             <template v-if="!inline.enabled && !rootProps.centered && floatingConfig.arrow === true" #arrow>
               <div
@@ -103,7 +103,7 @@
     useTransitions,
     useValidation,
   } from '@/composables';
-  import type { DynamicClass, InputParsedDate, MenuView, ModelValue, MonthModel } from '@/types';
+  import type { DynamicClass, InputParsedDate, MenuView, ModelValue, MonthModel, PickerSection } from '@/types';
   import { getAllSlots, getSlotsByComponent, SlotUse } from '@/constants/slots.ts';
 
   const {
@@ -112,7 +112,7 @@
     inputValue,
     modelValue,
     rootProps,
-    defaults: { inline, config, textInput, range, multiDates, teleport, floatingConfig },
+    defaults: { inline, config, textInput, range, multiDates, teleport, floatingConfig, flow },
   } = useContext();
   const { validateDate, isValidTime } = useValidation();
   const { menuTransition, showTransition } = useTransitions();
@@ -466,8 +466,8 @@
     return closeMenu(true);
   };
 
-  const handleFlow = (skipStep = 0) => {
-    dpMenuRef.value?.handleFlow(skipStep);
+  const executeFlow = (skipStep?: PickerSection) => {
+    dpMenuRef.value?.executeFlow(skipStep ?? flow.value?.steps?.at(0));
   };
 
   const getDpWrapMenuRef = () => dpWrapMenuRef;
@@ -488,7 +488,7 @@
     parseModel,
     switchView,
     toggleMenu,
-    handleFlow,
+    executeFlow,
     getDpWrapMenuRef,
     dpMenuRef: () => dpMenuRef as any,
     dpWrapMenuRef: () => dpWrapMenuRef,

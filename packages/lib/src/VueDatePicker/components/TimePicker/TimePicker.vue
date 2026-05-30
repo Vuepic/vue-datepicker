@@ -41,28 +41,26 @@
         >
           <slot
             name="time-picker-overlay"
-            :hours="hours"
-            :minutes="minutes"
-            :seconds="seconds"
+            :hours
+            :minutes
+            :seconds
             :set-hours="updateHours"
             :set-minutes="updateMinutes"
             :set-seconds="updateSeconds"
           >
             <div :class="timeConfig.timePickerInline ? 'dp--flex' : 'dp--overlay-row dp--flex-row'">
               <TimeInput
-                v-for="(tInput, index) in timeInputs"
+                v-for="(timeInput, index) in timeInputs"
                 v-show="index === 0 ? true : shouldShowRangedInput"
                 :key="index"
-                v-bind="{
-                  order: index,
-                  hours: tInput.hours,
-                  minutes: tInput.minutes,
-                  seconds: tInput.seconds,
-                  closeTimePickerBtn,
-                  disabledTimesConfig,
-                  disabled: index === 0 ? range.fixedStart : range.fixedEnd,
-                }"
                 ref="tp-input"
+                :hours="timeInput.hours"
+                :minutes="timeInput.minutes"
+                :seconds="timeInput.seconds"
+                :order="index"
+                :close-time-picker-btn="closeTimePickerBtn"
+                :disabled-times-config
+                :disabled="index === 0 ? range.fixedStart : range.fixedEnd"
                 :validate-time="(type: TimeKey, value: number) => validateTime(type, getEvent(value, index, type))"
                 @update:hours="updateHours(getEvent($event, index, 'hours'))"
                 @update:minutes="updateMinutes(getEvent($event, index, 'minutes'))"
@@ -71,8 +69,8 @@
                 @overlay-closed="timeInputOverlayClose"
                 @overlay-opened="timeInputOverlayOpen"
               >
-                <template v-for="(slot, i) in timeInputSlots" #[slot]="args" :key="i">
-                  <slot :name="slot as never" v-bind="args" />
+                <template v-for="slotName in timeInputSlots" #[slotName]="args" :key="slotName">
+                  <slot :name="slotName as never" v-bind="args" />
                 </template>
               </TimeInput>
             </div>
@@ -107,17 +105,16 @@
 
   import { useContext, useDateUtils, useHelperFns, useResponsive, useTransitions } from '@/composables';
   import { useNavigationDisplay } from '@/components/shared/useNavigationDisplay.ts';
-  import { FlowStep } from '@/constants';
+  import { CMP, FlowStep } from '@/constants';
 
   import type { InvalidTimesConfig, TimeKey } from '@/types';
   import { getSlotsByComponent, SlotUse, type TimePickerSlots } from '@/constants/slots.ts';
+  import { useFlowContext } from '@/composables/useContext.ts';
 
   interface TimePickerEmits {
     'update:hours': [hours: number | number[]];
     'update:minutes': [minutes: number | number[]];
     'update:seconds': [seconds: number | number[]];
-    mount: [];
-    'reset-flow': [];
   }
 
   interface TimePickerProps {
@@ -147,6 +144,7 @@
   const { transitionName, showTransition } = useTransitions();
   const { hideNavigationButtons } = useNavigationDisplay();
   const { isMobile } = useResponsive();
+  const { childMount } = useFlowContext();
   const slots = useSlots();
 
   const overlayRef = useTemplateRef('overlay');
@@ -156,7 +154,7 @@
   const timePickerOverlayOpen = ref(false);
 
   onMounted(() => {
-    emit('mount');
+    childMount(rootProps.timePicker ? undefined : CMP.timePicker);
   });
 
   const shouldShowRangedInput = computed(() => {
@@ -186,14 +184,14 @@
     return arr as { hours: number; minutes: number; seconds: number }[];
   });
 
-  const toggleTimePicker = (show: boolean, flow = false, childOpen: TimeKey | '' = ''): void => {
-    if (!flow) {
-      emit('reset-flow');
-    }
+  const toggleTimePicker = (show: boolean, childOpen: TimeKey | '' = ''): void => {
+    const shouldEmit = show !== showTimePicker.value;
     showTimePicker.value = show;
     setState('arrowNavigationLevel', show ? 1 : 0);
 
-    rootEmit('overlay-toggle', { open: show, overlay: FlowStep.time });
+    if (shouldEmit) {
+      rootEmit('overlay-toggle', { open: show, overlay: FlowStep.time });
+    }
 
     nextTick().then(() => {
       if (childOpen !== '' && timeInputRefs.value?.[0]) {

@@ -3,12 +3,10 @@
     <template v-if="$slots['action-row']">
       <slot
         name="action-row"
-        v-bind="{
-          modelValue,
-          disabled,
-          selectDate: () => $emit('select-date'),
-          closePicker: () => $emit('close-picker'),
-        }"
+        :model-value
+        :disabled
+        :select-date="() => $emit('select-date')"
+        :close-picker="() => $emit('close-picker')"
       />
     </template>
     <template v-else>

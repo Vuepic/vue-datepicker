@@ -15,14 +15,13 @@ import {
 import { useContext, useDateUtils, useFormatter, useRemapper, useValidation } from '@/composables';
 import { useMonthOrQuarterPicker } from '@/components/shared/useMonthQuarterPicker.ts';
 import { useComponentShared } from '@/components/shared/useComponentShared.ts';
-import type { BaseProps } from '@/types';
+import { useFlowContext } from '@/composables/useContext.ts';
 
 export interface QuarterPickerEmits {
-  'reset-flow': [];
   'auto-apply': [ignoreClose?: boolean];
 }
 
-export const useQuarterPicker = (props: BaseProps, emit: EmitFn<QuarterPickerEmits>) => {
+export const useQuarterPicker = (emit: EmitFn<QuarterPickerEmits>) => {
   const {
     getDate,
     modelValue,
@@ -36,21 +35,23 @@ export const useQuarterPicker = (props: BaseProps, emit: EmitFn<QuarterPickerEmi
   useRemapper();
   const { isDisabled: isDateDisabled } = useValidation();
   const { formatQuarterText } = useFormatter();
+  const { childMount } = useFlowContext();
 
   const {
-    selectYear,
     groupedYears,
     showYearPicker,
     isDisabled,
+    selectYear,
     toggleYearPicker,
     handleYearSelect,
     handleYear,
     setStartDate,
-  } = useMonthOrQuarterPicker(emit);
+  } = useMonthOrQuarterPicker();
 
   const hoverDate = ref();
 
   onMounted(() => {
+    childMount();
     setStartDate();
   });
 

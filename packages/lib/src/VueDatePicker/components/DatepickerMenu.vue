@@ -63,20 +63,16 @@
         <component
           :is="displayComponent"
           ref="dyn-cmp"
-          :flow-step="flowStep"
           :collapse="collapse"
           :no-overlay-focus="noOverlayFocus"
           :menu-wrap-ref="dpMenuRef"
-          @mount="childMount"
-          @update-flow-step="updateFlowStep"
-          @reset-flow="resetFlow"
           @focus-menu="focusMenu"
           @select-date="$emit('select-date')"
           @auto-apply="$emit('auto-apply', $event)"
           @time-update="$emit('time-update')"
         >
-          <template v-for="(slot, i) in sharedSlots" #[slot]="args" :key="i">
-            <slot :name="slot as never" v-bind="{ ...args }" />
+          <template v-for="slotName in sharedSlots" #[slotName]="args" :key="slotName">
+            <slot :name="slotName as never" v-bind="{ ...args }" />
           </template>
         </component>
       </div>
@@ -95,8 +91,8 @@
       @select-date="$emit('select-date')"
       @select-now="selectCurrentDate"
     >
-      <template v-for="(slot, i) in actionSlots" #[slot]="args" :key="i">
-        <slot :name="slot" v-bind="args as any" />
+      <template v-for="slotName in actionSlots" #[slotName]="args" :key="slotName">
+        <slot :name="slotName" v-bind="args as any" />
       </template>
     </ActionRow>
   </div>
@@ -156,7 +152,7 @@
   const menuMount = ref(false);
   const isMenuActive = ref(false);
 
-  const { flowStep, updateFlowStep, childMount, resetFlow, handleFlow } = useFlow(dynCmpRef);
+  const { executeFlow } = useFlow(dynCmpRef, emit);
 
   const stopDefault = (event: Event) => {
     isMenuActive.value = true;
@@ -269,21 +265,16 @@
     }
   };
 
-  // todo
-  const _onTimePickerClose = () => {
-    focusMenu();
-  };
-
   const closeOverlays = (instance: number) => {
     dynCmpRef.value?.toggleTimePicker(false, false);
-    dynCmpRef.value?.toggleMonthPicker(false, false, instance);
-    dynCmpRef.value?.toggleYearPicker(false, false, instance);
+    dynCmpRef.value?.toggleMonthPicker(false, instance);
+    dynCmpRef.value?.toggleYearPicker(false, instance);
   };
 
   const switchView = (view: MenuView, instance = 0) => {
-    if (view === 'month') return dynCmpRef.value?.toggleMonthPicker(false, true, instance);
-    if (view === 'year') return dynCmpRef.value?.toggleYearPicker(false, true, instance);
-    if (view === 'time') return dynCmpRef.value?.toggleTimePicker(true, false);
+    if (view === 'month') return dynCmpRef.value?.toggleMonthPicker(true, instance);
+    if (view === 'year') return dynCmpRef.value?.toggleYearPicker(true, instance);
+    if (view === 'time') return dynCmpRef.value?.toggleTimePicker(true);
     return closeOverlays(instance);
   };
 
@@ -363,6 +354,6 @@
     updateMonthYear,
     switchView,
     onValueCleared,
-    handleFlow,
+    executeFlow,
   });
 </script>

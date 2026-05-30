@@ -12,10 +12,10 @@
             :is-disabled="(next: boolean) => isDisabled(instance, next)"
             @handle-year="handleYear(instance, $event)"
             @year-select="handleYearSelect($event, instance)"
-            @toggle-year-picker="toggleYearPicker(instance, $event?.flow, $event?.show)"
+            @toggle-year-picker="toggleYearPicker(instance, $event?.show)"
           >
-            <template v-for="(slot, i) in yearModeSlots" #[slot]="args" :key="i">
-              <slot :name="slot" v-bind="args" />
+            <template v-for="slotName in yearModeSlots" #[slotName]="args" :key="slotName">
+              <slot :name="slotName" v-bind="args" />
             </template>
           </YearModePicker>
         </div>
@@ -58,9 +58,9 @@
   import { type QuarterPickerEmits, useQuarterPicker } from '@/components/QuarterPicker/useQuarterPicker.ts';
   import type { BaseProps } from '@/types';
 
-  defineSlots<QuarterPickerSlots>();
   const emit = defineEmits<QuarterPickerEmits>();
-  const props = defineProps<BaseProps>();
+  defineProps<BaseProps>();
+  defineSlots<QuarterPickerSlots>();
 
   const {
     defaults: { config },
@@ -82,7 +82,7 @@
     toggleYearPicker,
     handleYearSelect,
     handleYear,
-  } = useQuarterPicker(props, emit);
+  } = useQuarterPicker(emit);
 
   const getSidebarProps = () => {
     return {
@@ -94,5 +94,5 @@
     };
   };
 
-  defineExpose({ getSidebarProps });
+  defineExpose({ getSidebarProps, toggleYearPicker: (show: boolean) => toggleYearPicker(0, show) });
 </script>

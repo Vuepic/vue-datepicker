@@ -94,18 +94,18 @@
 </template>
 
 <script lang="ts" setup>
+  import type { UnwrapRef } from 'vue';
   import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
   import { unrefElement, useSwipe } from '@vueuse/core';
-  import { getISOWeek, getWeek, set, startOfWeek, endOfWeek, eachDayOfInterval } from 'date-fns';
+  import { eachDayOfInterval, endOfWeek, getISOWeek, getWeek, set, startOfWeek } from 'date-fns';
 
-  import { useHelperFns, useDateUtils, useContext, useFormatter } from '@/composables';
-
-  import type { UnwrapRef } from 'vue';
+  import { useContext, useDateUtils, useFormatter, useHelperFns } from '@/composables';
   import type { CalendarDay, CalendarWeek, DynamicClass, Marker } from '@/types';
   import { type CalendarSlots } from '@/constants/slots.ts';
+  import { useFlowContext } from '@/composables/useContext.ts';
+  import { CMP } from '@/constants';
 
   interface DPCalendarEmits {
-    mount: [component: { cmp: string; dayRefs: HTMLElement[][] }];
     'select-date': [day: CalendarDay];
     'set-hover-date': [day: CalendarDay];
     'handle-scroll': [event: WheelEvent];
@@ -134,6 +134,7 @@
   const { isDateAfter, isDateEqual, resetDateTime, getCellId } = useDateUtils();
   const { checkKeyDown, checkStopPropagation, isTouchDevice } = useHelperFns();
   const { formatWeekDay } = useFormatter();
+  const { childMount } = useFlowContext();
 
   const calendarWrapRef = useTemplateRef('calendar-wrap');
   const activeTooltip = useTemplateRef<HTMLElement[]>('active-tooltip');
@@ -176,7 +177,7 @@
   });
 
   onMounted(() => {
-    emit('mount', { cmp: 'calendar', dayRefs: dayRefs.value });
+    childMount(CMP.calendar);
     if (config.value.monthChangeOnScroll && calendarWrapRef.value) {
       calendarWrapRef.value.addEventListener('wheel', onScroll, { passive: false });
     }

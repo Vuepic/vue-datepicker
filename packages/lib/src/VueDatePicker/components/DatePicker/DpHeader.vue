@@ -50,7 +50,7 @@
               :data-test-id="`${type.type}-toggle-overlay-${instance}`"
               tabindex="0"
               data-dp-action-element="0"
-              @click="type.toggle(false)"
+              @click="type.toggle()"
               @keydown="checkKeyDown($event, () => type.toggle(), true)"
             >
               <slot v-if="$slots[type.type]" :name="type.type" :text="type.text" :value="props[type.type]" />
@@ -128,23 +128,22 @@
   import SelectionOverlay from '@/components/Common/SelectionOverlay.vue';
 
   import {
-    useTransitions,
-    useDateUtils,
-    useHelperFns,
     useContext,
+    useDateUtils,
     useFormatter,
-    useValidation,
+    useHelperFns,
+    useTransitions,
     useUtils,
+    useValidation,
   } from '@/composables';
   import { useMonthYearPick } from '@/components/shared/useMonthYearPick.ts';
   import { useNavigationDisplay } from '@/components/shared/useNavigationDisplay.ts';
-  import { FlowStep, HeaderPicker } from '@/constants';
+  import { CMP, FlowStep, HeaderPicker } from '@/constants';
   import type { OverlayGridItem, SelectItem } from '@/types';
   import { type ComponentSlots, SlotUse } from '@/constants/slots.ts';
+  import { useFlowContext } from '@/composables/useContext.ts';
 
   interface DpHeaderEmits {
-    mount: [];
-    'reset-flow': [];
     'update-month-year': [value: { fromNav?: boolean; month: number; year: number }];
   }
 
@@ -176,13 +175,14 @@
   const { formatYear } = useFormatter();
   const { checkMinMaxValue } = useValidation();
   const { boolHtmlAttribute } = useUtils();
+  const { childMount } = useFlowContext();
 
   const showMonthPicker = ref(false);
   const showYearPicker = ref(false);
   const overlayOpen = ref(false);
 
   onMounted(() => {
-    emit('mount');
+    childMount(CMP.header);
   });
 
   const bindOptions = (type: HeaderPicker) => ({
@@ -192,9 +192,9 @@
       emit('update-month-year', { [type]: value, [otherType]: props[otherType] } as never);
 
       if (type === HeaderPicker.month) {
-        toggleMonthPicker(true);
+        toggleMonthPicker();
       } else {
-        toggleYearPicker(true);
+        toggleYearPicker();
       }
     },
   });
@@ -261,20 +261,12 @@
     }
   };
 
-  const toggleMonthPicker = (flow = false, show?: boolean): void => {
-    checkFlow(flow);
+  const toggleMonthPicker = (show?: boolean): void => {
     toggleWrap(showMonthPicker, FlowStep.month, show);
   };
 
-  const toggleYearPicker = (flow = false, show?: boolean): void => {
-    checkFlow(flow);
+  const toggleYearPicker = (show?: boolean): void => {
     toggleWrap(showYearPicker, FlowStep.year, show);
-  };
-
-  const checkFlow = (flow: boolean): void => {
-    if (!flow) {
-      emit('reset-flow');
-    }
   };
 
   const selectionButtons = computed(() => [

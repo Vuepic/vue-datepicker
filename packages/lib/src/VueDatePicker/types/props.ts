@@ -93,7 +93,7 @@ type WithDefaults<T, D> = Omit<T, keyof D> & Required<Pick<T, keyof D & keyof T>
 export type RootPropsWithDefaults = WithDefaults<RootProps, typeof propDefaults>;
 
 export interface BaseProps {
-  flowStep?: number;
+  // flowStep?: string;
   collapse?: boolean;
   menuWrapRef: HTMLElement | null;
   noOverlayFocus: boolean;

@@ -10,13 +10,11 @@
         :year="year(instance)"
         :instance="instance"
         :menu-wrap-ref="menuWrapRef"
-        @mount="componentMounted(CMP.header)"
-        @reset-flow="$emit('reset-flow')"
         @update-month-year="updateMonthYear(instance, $event)"
         @overlay-closed="onHeaderOverlayClose"
       >
-        <template v-for="(slot, i) in headerSlots" #[slot]="args" :key="i">
-          <slot :name="slot" v-bind="args" />
+        <template v-for="slotName in headerSlots" #[slotName]="args" :key="slotName">
+          <slot :name="slotName" v-bind="args" />
         </template>
       </DpHeader>
       <DpCalendar
@@ -29,10 +27,9 @@
         @set-hover-date="setHoverDate($event)"
         @handle-scroll="handleScroll($event, instance)"
         @handle-swipe="handleSwipe($event, instance)"
-        @mount="componentMounted(CMP.calendar)"
       >
-        <template v-for="(slot, j) in calendarSlots" #[slot]="args" :key="j">
-          <slot :name="slot" v-bind="args as any" />
+        <template v-for="slotName in calendarSlots" #[slotName]="args" :key="slotName">
+          <slot :name="slotName" v-bind="args as any" />
         </template>
       </DpCalendar>
     </div>
@@ -47,14 +44,12 @@
         :disabled-times-config="disabledTimesConfig"
         :validate-time="validateTime"
         :no-overlay-focus="noOverlayFocus"
-        @mount="componentMounted(CMP.timePicker)"
         @update:hours="updateTime({ hours: $event, minutes: time.minutes, seconds: time.seconds })"
         @update:minutes="updateTime({ hours: time.hours, minutes: $event, seconds: time.seconds })"
         @update:seconds="updateTime({ hours: time.hours, minutes: time.minutes, seconds: $event })"
-        @reset-flow="$emit('reset-flow')"
       >
-        <template v-for="(slot, i) in timePickerSlots" #[slot]="args" :key="i">
-          <slot :name="slot" v-bind="args" />
+        <template v-for="slotName in timePickerSlots" #[slotName]="args" :key="slotName">
+          <slot :name="slotName" v-bind="args" />
         </template>
       </TimePicker>
     </slot>
@@ -74,7 +69,7 @@
   import { type DatePickerEmits, useDatePicker } from '@/components/DatePicker/useDatePicker.ts';
 
   import { basePropDefaults } from '@/constants/defaults.ts';
-  import { CMP, FlowStep } from '@/constants';
+  import { FlowStep } from '@/constants';
 
   import { useCalendarClass } from '@/components/DatePicker/useCalendarClass.ts';
   import { type DatePickerSlots, getSlotsByComponent, SlotUse } from '@/constants/slots.ts';
@@ -82,7 +77,7 @@
 
   const emit = defineEmits<DatePickerEmits>();
   defineSlots<DatePickerSlots>();
-  const props = withDefaults(defineProps<BaseProps>(), basePropDefaults);
+  withDefaults(defineProps<BaseProps>(), basePropDefaults);
 
   const {
     month,
@@ -103,7 +98,7 @@
     updateTime,
     assignMonthAndYear,
     setStartTime,
-  } = useDatePicker(props, emit, triggerCalendarTransition, updateFlowStep);
+  } = useDatePicker(emit, triggerCalendarTransition);
   const slots = useSlots();
   const { setHoverDate, getDayClassData, clearHoverDate } = useCalendarClass();
   const {
@@ -122,10 +117,6 @@
   const calendarSlots = getSlotsByComponent(slots, SlotUse.Calendar);
   const headerSlots = getSlotsByComponent(slots, SlotUse.DatePickerHeader);
   const timePickerSlots = getSlotsByComponent(slots, SlotUse.TimePicker);
-
-  const componentMounted = (cmp: CMP) => {
-    emit('mount', cmp);
-  };
 
   watch(
     multiCalendars,
@@ -162,20 +153,16 @@
     }
   }
 
-  function updateFlowStep() {
-    emit('update-flow-step');
-  }
-
-  const toggleMonthPicker = (flow: boolean, show?: boolean, instance = 0) => {
-    headerRefs.value?.[instance]?.toggleMonthPicker(flow, show);
+  const toggleMonthPicker = (show?: boolean, instance = 0) => {
+    headerRefs.value?.[instance]?.toggleMonthPicker(show);
   };
 
-  const toggleYearPicker = (flow: boolean, show?: boolean, instance = 0) => {
-    headerRefs.value?.[instance]?.toggleYearPicker(flow, show);
+  const toggleYearPicker = (show?: boolean, instance = 0) => {
+    headerRefs.value?.[instance]?.toggleYearPicker(show);
   };
 
-  const toggleTimePicker = (flow: boolean, show?: boolean, childOpen?: TimeKey) => {
-    timePickerRef.value?.toggleTimePicker(flow, show, childOpen);
+  const toggleTimePicker = (show: boolean, childOpen?: TimeKey) => {
+    timePickerRef.value?.toggleTimePicker(show, childOpen);
   };
 
   const selectWeekDate = (selectStart: boolean, id: string | null) => {

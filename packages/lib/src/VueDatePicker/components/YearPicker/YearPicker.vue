@@ -40,9 +40,9 @@
   import type { BaseProps } from '@/types';
   import type { YearPickerSlots } from '@/constants/slots.ts';
 
-  defineSlots<YearPickerSlots>();
   const emit = defineEmits<YearPickerEmits>();
-  const props = defineProps<BaseProps>();
+  defineProps<BaseProps>();
+  defineSlots<YearPickerSlots>();
 
   const {
     modelValue,
@@ -50,7 +50,7 @@
     rootProps,
   } = useContext();
 
-  const { groupedYears, focusYear, selectYear, setHoverValue } = useYearPicker(props, emit);
+  const { groupedYears, focusYear, selectYear, setHoverValue } = useYearPicker(emit);
 
   const getSidebarProps = () => {
     return {

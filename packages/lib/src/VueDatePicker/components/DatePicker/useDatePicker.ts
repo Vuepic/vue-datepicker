@@ -18,26 +18,18 @@ import { useDateUtils, useRemapper, useValidation, useContext, useHelperFns, use
 import { useTimePickerUtils } from '@/components/TimePicker/useTimePickerUtils.ts';
 import { useComponentShared } from '@/components/shared/useComponentShared.ts';
 
-import { CMP, FlowStep } from '@/constants';
-import type { BasePropsWithDefaults, CalendarDay, CalendarWeek, Marker, TimeInternalModel, TimeKey } from '@/types';
+import type { CalendarDay, CalendarWeek, Marker, TimeInternalModel, TimeKey } from '@/types';
 import { useModel } from '@/composables/useModel.ts';
+import { useFlowContext } from '@/composables/useContext.ts';
 
 export interface DatePickerEmits {
-  mount: [cmp: CMP];
-  'update-flow-step': [];
-  'reset-flow': [];
   'focus-menu': [];
   'select-date': [];
   'time-update': [];
   'auto-apply': [ignoreClose?: boolean];
 }
 
-export const useDatePicker = (
-  props: BasePropsWithDefaults,
-  emit: EmitFn<DatePickerEmits>,
-  triggerCalendarTransition: (inst?: number) => void,
-  updateFlow: () => void,
-) => {
+export const useDatePicker = (emit: EmitFn<DatePickerEmits>, triggerCalendarTransition: (inst?: number) => void) => {
   const tempRange = ref<Date[]>([]);
   const lastScrollTime = ref(new Date());
   const clickedDate = ref<CalendarDay | undefined>();
@@ -57,13 +49,14 @@ export const useDatePicker = (
   } = useContext();
   const { validateMonthYearInRange, isDisabled, isDateRangeAllowed, checkMinMaxRange } = useValidation();
   const { updateTimeValues, getSetDateTime, assignTime, assignStartTime, validateTime, disabledTimesConfig } =
-    useTimePickerUtils(updateFlow);
+    useTimePickerUtils();
   const { formatDay } = useFormatter();
   const { resetDateTime, setTime, isDateBefore, isDateEqual, getDaysInBetween } = useDateUtils();
   const { checkRangeAutoApply, getRangeWithFixedDate, handleMultiDatesSelect, setPresetDate } = useComponentShared();
   const { getMapDate } = useHelperFns();
   const { selectOnAutoApply } = useModel(emit);
   useRemapper(() => mapInternalModuleValues(state.isTextInputDate));
+  const { updateFlowStep, flowStep } = useFlowContext();
 
   const shouldUpdateMonthView = (isAction: boolean) => {
     if (!config.value.keepViewOnOffsetClick || isAction) return true;
@@ -102,15 +95,15 @@ export const useDatePicker = (
   });
 
   const isFlowLastStep = computed(() => {
-    if (flow.value?.steps?.length && !flow.value?.partial) {
-      return props.flowStep === flow.value.steps.length;
+    if (flow.value?.steps?.length) {
+      return flow.value.steps.at(-1) === flowStep.value;
     }
     return true;
   });
 
   const autoApply = (): void => {
-    if (rootProps.autoApply && isFlowLastStep.value) {
-      emit('auto-apply', flow.value?.partial ? props.flowStep !== flow.value?.steps?.length : false);
+    if (rootProps.autoApply) {
+      emit('auto-apply', !isFlowLastStep.value);
     }
   };
 
@@ -407,7 +400,7 @@ export const useDatePicker = (
     } else {
       modelValue.value = date;
     }
-    updateFlow();
+    updateFlowStep('calendar');
     nextTick().then(() => {
       autoApply();
     });
@@ -530,7 +523,7 @@ export const useDatePicker = (
       } else {
         assignTimeToRangeDate(0);
         assignTimeToRangeDate(1);
-        updateFlow();
+        updateFlowStep('calendar');
       }
       validateRangeAfterTimeSet();
       modelValue.value = tempRange.value.slice();
@@ -538,7 +531,7 @@ export const useDatePicker = (
       checkRangeAutoApply(
         tempRange.value,
         emit,
-        tempRange.value.length < 2 || flow.value?.steps.length ? props.flowStep !== flow.value?.steps?.length : false,
+        tempRange.value.length < 2 || flow.value?.steps.length ? flow.value?.steps.at(-1) !== flowStep.value : false,
       );
     }
   };
@@ -562,6 +555,7 @@ export const useDatePicker = (
 
   // Handles selection of month/year
   const updateMonthYear = (instance: number, val: { month: number; year: number; fromNav?: boolean }): void => {
+    const monthChanged = month.value(instance) !== val.month;
     setCalendarMonthYear(instance, val.month, val.year, true);
 
     if (multiCalendars.value.count && !multiCalendars.value.solo) {
@@ -570,9 +564,8 @@ export const useDatePicker = (
     rootEmit('update-month-year', { instance, month: val.month, year: val.year });
     triggerCalendarTransition(multiCalendars.value.solo ? instance : undefined);
 
-    const flowActive = flow.value?.steps?.length ? flow.value.steps[props.flowStep] : undefined;
-    if (!val.fromNav && (flowActive === FlowStep.month || flowActive === FlowStep.year)) {
-      updateFlow();
+    if (!val.fromNav) {
+      updateFlowStep(monthChanged ? 'month' : 'year');
     }
   };
 
@@ -636,6 +629,9 @@ export const useDatePicker = (
     updateTimeValues(values, handleTimeUpdate);
     if (ev) {
       rootEmit(ev as never, (modelValue.value as Date[])[ev === 'range-start' ? 0 : 1]);
+    }
+    if (flow.value?.steps.length) {
+      autoApply();
     }
   };
 

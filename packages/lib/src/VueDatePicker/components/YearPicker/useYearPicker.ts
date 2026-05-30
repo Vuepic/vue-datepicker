@@ -3,14 +3,12 @@ import { getYear, setYear, startOfYear } from 'date-fns';
 
 import { useContext, useDateUtils, useRemapper, useUtilsWithContext, useValidation } from '@/composables';
 import { useComponentShared } from '@/components/shared/useComponentShared.ts';
-import type { BaseProps } from '@/types';
 
 export interface YearPickerEmits {
-  'reset-flow': [];
   'auto-apply': [fromFlow?: boolean];
 }
 
-export const useYearPicker = (_props: BaseProps, emit: EmitFn<YearPickerEmits>) => {
+export const useYearPicker = (emit: EmitFn<YearPickerEmits>) => {
   const {
     rootEmit,
     getDate,

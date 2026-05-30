@@ -1,4 +1,4 @@
-import type { MenuView, MonthModel } from '@/types';
+import type { MenuView, MonthModel, PickerSection } from '@/types';
 import type { ShallowRef } from 'vue';
 import type VueDatePicker from '@/VueDatePicker.vue';
 
@@ -24,7 +24,7 @@ export const useExposed = (datePicker: Readonly<ShallowRef<InstanceType<typeof V
 
   const toggleMenu = () => datePicker.value?.toggleMenu();
 
-  const handleFlow = () => datePicker.value?.handleFlow();
+  const executeFlow = (step?: PickerSection) => datePicker.value?.executeFlow(step);
 
   const dpMenuRef = () => datePicker.value?.dpMenuRef();
   const dpWrapMenuRef = () => datePicker.value?.dpWrapMenuRef();
@@ -40,7 +40,7 @@ export const useExposed = (datePicker: Readonly<ShallowRef<InstanceType<typeof V
     setMonthYear,
     parseModel,
     switchView,
-    handleFlow,
+    executeFlow,
     toggleMenu,
     dpMenuRef,
     dpWrapMenuRef,

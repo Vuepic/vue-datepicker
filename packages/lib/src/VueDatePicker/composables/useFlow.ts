@@ -1,74 +1,91 @@
-import { ref, reactive, computed, nextTick, type Ref } from 'vue';
+import { ref, reactive, computed, type Ref, provide, type InjectionKey, readonly, type EmitFn, nextTick } from 'vue';
 
 import { CMP, FlowStep } from '@/constants';
 import { useContext } from '@/composables/useContext.ts';
 
 import type { PickerSection } from '@/types';
 
-export const useFlow = (dynCmpRef: Ref) => {
+export const FlowKey = Symbol('FlowKey') as InjectionKey<{
+  updateFlowStep: (step: PickerSection) => void;
+  childMount: (child?: CMP) => void;
+  flowStep: Readonly<Ref<PickerSection | undefined>>;
+}>;
+
+export const useFlow = (dynCmpRef: Ref, emit: EmitFn<{ 'auto-apply': [ignoreClose?: boolean] }>) => {
   const {
     rootEmit,
     rootProps,
     defaults: { timeConfig, flow },
   } = useContext();
-  const flowStep = ref(0);
+  const flowStep = ref<PickerSection | undefined>();
 
   const childrenMounted = reactive({
-    [CMP.timePicker]: !timeConfig.value.enableTimePicker || rootProps.timePicker || rootProps.monthPicker,
+    [CMP.timePicker]:
+      !timeConfig.value.enableTimePicker || rootProps.timePicker || rootProps.monthPicker || rootProps.quarterPicker,
     [CMP.calendar]: false,
     [CMP.header]: false,
   });
 
-  const specificMode = computed(() => rootProps.monthPicker || rootProps.timePicker);
+  const specificMode = computed(() => rootProps.monthPicker || rootProps.timePicker || rootProps.quarterPicker);
 
-  const childMount = (cmp: unknown): void => {
+  const childMount = (cmp?: CMP): void => {
+    const firstStep = flow.value?.steps.at(0);
     if (flow.value?.steps?.length) {
-      if (!cmp && specificMode.value) return handleFlow();
-      childrenMounted[cmp as CMP] = true;
+      if (!cmp && specificMode.value) return executeFlow(firstStep);
+      if (cmp) childrenMounted[cmp] = true;
 
       if (!Object.keys(childrenMounted).filter((key) => !childrenMounted[key as CMP]).length) {
-        handleFlow();
+        executeFlow(firstStep);
       }
     }
   };
 
-  const updateFlowStep = (): void => {
-    if (flow.value?.steps?.length && flowStep.value !== -1) {
-      flowStep.value += 1;
-      rootEmit('flow-step', flowStep.value);
-      handleFlow();
+  const updateFlowStep = (step: PickerSection): void => {
+    if (flow.value?.steps?.length) {
+      if (flowStep.value === step) {
+        const nextStep = flow.value.steps.at(flow.value.steps.indexOf(flowStep.value) + 1);
+        if (nextStep) {
+          flowStep.value = nextStep;
+          rootEmit('flow-step', flowStep.value);
+          executeFlow();
+        } else {
+          if (rootProps.autoApply) {
+            nextTick().then(() => emit('auto-apply'));
+          }
+        }
+      }
     }
-    if (flow.value?.steps?.length === flowStep.value) {
-      nextTick().then(() => resetFlow());
-    }
-  };
-
-  const resetFlow = (): void => {
-    flowStep.value = -1;
   };
 
   const handleFlowStep = (step: PickerSection, fn: string, ...args: Array<boolean | string>) => {
-    if (flow.value?.steps[flowStep.value] === step) {
+    if (flowStep.value === step) {
       if (dynCmpRef.value) {
         dynCmpRef.value[fn]?.(...args);
       }
     }
   };
 
-  const handleFlow = (skipStep = 0): void => {
-    if (skipStep) {
-      flowStep.value += skipStep;
+  const executeFlow = (step?: PickerSection): void => {
+    if (step) {
+      flowStep.value = step;
     }
     handleFlowStep(FlowStep.month, 'toggleMonthPicker', true);
     handleFlowStep(FlowStep.year, 'toggleYearPicker', true);
-    handleFlowStep(FlowStep.calendar, 'toggleTimePicker', false, true);
-    handleFlowStep(FlowStep.time, 'toggleTimePicker', true, true);
+    handleFlowStep(FlowStep.calendar, 'toggleTimePicker', false);
+    handleFlowStep(FlowStep.time, 'toggleTimePicker', true);
 
-    const flowValue = flow.value?.steps[flowStep.value];
-    if (flowValue === FlowStep.hours || flowValue === FlowStep.minutes || flowValue === FlowStep.seconds) {
-      handleFlowStep(flowValue, 'toggleTimePicker', true, true, flowValue);
+    if (
+      flowStep.value === FlowStep.hours ||
+      flowStep.value === FlowStep.minutes ||
+      flowStep.value === FlowStep.seconds
+    ) {
+      handleFlowStep(flowStep.value, 'toggleTimePicker', true, flowStep.value);
     }
   };
 
-  return { childMount, updateFlowStep, resetFlow, handleFlow, flowStep };
+  provide(FlowKey, { childMount, updateFlowStep, flowStep: readonly(flowStep) });
+
+  return {
+    executeFlow,
+  };
 };

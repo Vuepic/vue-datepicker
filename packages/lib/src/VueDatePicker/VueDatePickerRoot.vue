@@ -1,7 +1,7 @@
 <template>
   <VueDatePicker ref="date-picker">
-    <template v-for="(slot, i) in slotList" #[slot]="args" :key="i">
-      <slot :name="slot as keyof RootSlots" v-bind="args" />
+    <template v-for="slotName in slotList" #[slotName]="args" :key="slotName">
+      <slot :name="slotName as keyof RootSlots" v-bind="args" />
     </template>
   </VueDatePicker>
 </template>

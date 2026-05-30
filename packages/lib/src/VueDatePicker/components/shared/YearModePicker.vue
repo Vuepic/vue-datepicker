@@ -18,8 +18,8 @@
       :aria-label="`${year}-${ariaLabels?.openYearsOverlay}`"
       :data-test-id="`year-mode-btn-${instance}`"
       data-dp-action-element="0"
-      @click="() => toggleYearPicker(false)"
-      @keydown.enter.prevent="() => toggleYearPicker(false)"
+      @click="() => toggleYearPicker()"
+      @keydown.enter.prevent="() => toggleYearPicker()"
     >
       <slot v-if="$slots.year" name="year" :text="yearDisplayVal" :value="year" />
       <template v-if="!$slots.year">{{ year }}</template>
@@ -74,7 +74,7 @@
   interface YearModePickerEmits {
     'handle-year': [increment: boolean];
     'year-select': [year: number];
-    'toggle-year-picker': [arg: { flow: boolean; show: boolean | undefined }];
+    'toggle-year-picker': [arg: { show: boolean | undefined }];
   }
 
   interface YearModePickerProps {
@@ -102,9 +102,9 @@
 
   const yearDisplayVal = computed(() => formatYear(props.year));
 
-  const toggleYearPicker = (flow = false, show?: boolean) => {
+  const toggleYearPicker = (show?: boolean) => {
     overlayOpen.value = !overlayOpen.value;
-    emit('toggle-year-picker', { flow, show });
+    emit('toggle-year-picker', { show });
   };
 
   const handleYearSelect = (year: number) => {

@@ -1,4 +1,4 @@
-import { computed, type EmitFn, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { addYears, differenceInYears, endOfYear, getMonth, getYear, set, startOfYear, subYears } from 'date-fns';
 
 import { FlowStep } from '@/constants';
@@ -9,7 +9,7 @@ import type { OverlayGridItem, SelectItem } from '@/types';
 /**
  * Both modes shared logic
  */
-export const useMonthOrQuarterPicker = (emit: EmitFn<{ 'reset-flow': []; 'auto-apply': [ignoreClose?: boolean] }>) => {
+export const useMonthOrQuarterPicker = () => {
   const {
     getDate,
     rootEmit,
@@ -134,11 +134,7 @@ export const useMonthOrQuarterPicker = (emit: EmitFn<{ 'reset-flow': []; 'auto-a
     }
   };
 
-  const toggleYearPicker = (instance: number, flow = false, show?: boolean): void => {
-    if (!flow) {
-      emit('reset-flow');
-    }
-
+  const toggleYearPicker = (instance: number, show?: boolean): void => {
     if (show === undefined) {
       showYearPicker.value[instance] = !showYearPicker.value[instance];
     } else {

@@ -11,7 +11,7 @@ export interface RootEmits {
   focus: [];
   blur: [];
   cleared: [];
-  'flow-step': [step: number];
+  'flow-step': [step: PickerSection];
   'update-month-year': [value: { instance: number; month: number; year: number }];
   'invalid-select': [];
   'invalid-fixed-range': [date: Date];

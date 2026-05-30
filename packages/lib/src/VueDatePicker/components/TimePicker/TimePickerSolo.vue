@@ -12,7 +12,6 @@
         @update:hours="updateTime({ hours: $event, minutes: time.minutes, seconds: time.seconds })"
         @update:minutes="updateTime({ hours: time.hours, minutes: $event, seconds: time.seconds })"
         @update:seconds="updateTime({ hours: time.hours, minutes: time.minutes, seconds: $event })"
-        @reset-flow="$emit('reset-flow')"
       >
         <template v-for="(slot, i) in timePickerSlots" #[slot]="args" :key="i">
           <slot :name="slot" v-bind="args" />
@@ -35,8 +34,7 @@
   interface TimePickerEmits {
     'time-update': [];
     mount: [];
-    'reset-flow': [];
-    'update-flow-step': [];
+    'update-flow-step': [step: string];
   }
 
   defineSlots<TimePickerSlots>();
@@ -62,8 +60,8 @@
     };
   };
 
-  const toggleTimePicker = (show: boolean, flow = false, childOpen: TimeKey | '' = '') => {
-    tpRef.value?.toggleTimePicker(show, flow, childOpen);
+  const toggleTimePicker = (show: boolean, childOpen: TimeKey | '' = '') => {
+    tpRef.value?.toggleTimePicker(show, childOpen);
   };
 
   defineExpose({ getSidebarProps, toggleTimePicker });

@@ -4,16 +4,14 @@ import { getMonth, getYear, set } from 'date-fns';
 import { useContext, useDateUtils, useRemapper, useHelperFns, useUtilsWithContext, useValidation } from '@/composables';
 import { useMonthOrQuarterPicker } from '@/components/shared/useMonthQuarterPicker.ts';
 import { useComponentShared } from '@/components/shared/useComponentShared.ts';
-import type { BaseProps, OverlayGridItem } from '@/types';
+import type { OverlayGridItem } from '@/types';
+import { useFlowContext } from '@/composables/useContext.ts';
 
 export interface MonthPickerEmits {
-  'reset-flow': [];
   'auto-apply': [ignoreClose?: boolean];
-  'update-flow-step': [];
-  mount: [];
 }
 
-export const useMonthPicker = (props: BaseProps, emit: EmitFn<MonthPickerEmits>) => {
+export const useMonthPicker = (emit: EmitFn<MonthPickerEmits>) => {
   const {
     getDate,
     rootEmit,
@@ -35,22 +33,24 @@ export const useMonthPicker = (props: BaseProps, emit: EmitFn<MonthPickerEmits>)
     useComponentShared();
   const { padZero } = useHelperFns();
   const { getMonths, isOutOfYearRange } = useUtilsWithContext();
+  const { updateFlowStep, childMount } = useFlowContext();
 
   const months = computed(() => getMonths());
   const hoverDate = ref<Date | null>(null);
 
   const {
-    selectYear: onYearSelect,
     groupedYears,
     showYearPicker,
+    isDisabled,
+    selectYear: onYearSelect,
     toggleYearPicker,
     handleYearSelect,
     handleYear,
-    isDisabled,
     setStartDate,
-  } = useMonthOrQuarterPicker(emit);
+  } = useMonthOrQuarterPicker();
 
   onMounted(() => {
+    childMount();
     setStartDate();
   });
 
@@ -131,7 +131,7 @@ export const useMonthPicker = (props: BaseProps, emit: EmitFn<MonthPickerEmits>)
     const date = modelValue.value ? (modelValue.value as Date) : resetDate(getDate());
     modelValue.value = set(date, { month, year: year.value(instance) });
     emit('auto-apply');
-    emit('update-flow-step');
+    updateFlowStep('month');
   };
 
   const selectRangedMonth = (month: number, instance: number) => {

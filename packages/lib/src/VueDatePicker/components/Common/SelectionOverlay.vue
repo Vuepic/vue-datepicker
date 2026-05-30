@@ -78,7 +78,6 @@
   const emit = defineEmits<{
     selected: [value: number];
     toggle: [];
-    'reset-flow': [];
     'hover-value': [value: number];
   }>();
 
@@ -199,7 +198,6 @@
 
   const toggle = () => {
     emit('toggle');
-    emit('reset-flow');
   };
 
   const handleEsc = (ev: KeyboardEvent) => {

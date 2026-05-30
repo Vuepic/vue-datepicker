@@ -145,7 +145,6 @@ export const defaultTime = {
 };
 
 export const basePropDefaults = {
-  flowStep: 0,
   menuWrapRef: null,
   collapse: false,
 };

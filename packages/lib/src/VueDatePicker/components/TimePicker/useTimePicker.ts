@@ -7,7 +7,6 @@ import { useTimePickerUtils } from '@/components/TimePicker/useTimePickerUtils.t
 import type { TimeInternalModel, TimeModel } from '@/types';
 
 export interface TimePickerEmits {
-  'update-flow-step': [];
   'time-update': [];
 }
 
@@ -25,11 +24,7 @@ export const useTimePicker = (emit: EmitFn<TimePickerEmits>) => {
     if (state.isTextInputDate) setTimeFromModel();
   });
   const { updateTimeValues, getSetDateTime, assignTime, assignStartTime, disabledTimesConfig, validateTime } =
-    useTimePickerUtils(updateFlowStep);
-
-  function updateFlowStep() {
-    emit('update-flow-step');
-  }
+    useTimePickerUtils();
 
   const parseStartTime = (startTime: TimeModel) => {
     const { hours, minutes, seconds } = startTime;

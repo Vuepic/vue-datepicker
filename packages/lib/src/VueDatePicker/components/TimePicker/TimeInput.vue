@@ -115,7 +115,7 @@
         </button>
       </slot>
     </div>
-    <template v-for="(timeInput, i) in timeInputOverlays" :key="i">
+    <template v-for="timeInput in timeInputOverlays" :key="timeInput">
       <transition :name="transitionName(overlays[timeInput.type])" :css="showTransition">
         <SelectionOverlay
           v-if="overlays[timeInput.type]"
@@ -127,7 +127,6 @@
           :overlay-label="ariaLabels.timeOverlay?.(timeInput.type)"
           @selected="handleTimeFromOverlay(timeInput.type, $event)"
           @toggle="toggleOverlay(timeInput.type)"
-          @reset-flow="$emit('reset-flow')"
         >
           <template #button-icon>
             <slot name="clock-icon">
@@ -176,7 +175,6 @@
     'overlay-closed': [type: TimeKey];
     'set-hours': [];
     'set-minutes': [];
-    'reset-flow': [];
     mounted: [];
   }
 

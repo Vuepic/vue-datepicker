@@ -1,11 +1,12 @@
-import { computed } from 'vue';
+import { computed, nextTick } from 'vue';
 import { isAfter, isBefore, setMilliseconds, setSeconds } from 'date-fns';
 
 import { useContext, useDateUtils } from '@/composables';
 
 import type { TimeInternalModel, TimeKey, TimeModel } from '@/types';
+import { useFlowContext } from '@/composables/useContext.ts';
 
-export const useTimePickerUtils = (updateFlow?: () => void) => {
+export const useTimePickerUtils = () => {
   const {
     getDate,
     modelValue,
@@ -13,6 +14,8 @@ export const useTimePickerUtils = (updateFlow?: () => void) => {
     rootProps,
     defaults: { range, timeConfig },
   } = useContext();
+  const { updateFlowStep } = useFlowContext();
+
   const { isDateEqual, setTime } = useDateUtils();
 
   const getTimeValue = (type: TimeKey, i?: number): number => {
@@ -85,10 +88,13 @@ export const useTimePickerUtils = (updateFlow?: () => void) => {
   };
 
   const updateTime = (type: TimeKey, value: number | number[]) => {
+    const typeChanged = time[type] === value ? undefined : type;
     const valid = validateTime(type, value);
     if (valid) {
       assignTime(type, value);
-      if (updateFlow) updateFlow();
+      if (typeChanged) {
+        nextTick().then(() => updateFlowStep(type));
+      }
     }
   };
 

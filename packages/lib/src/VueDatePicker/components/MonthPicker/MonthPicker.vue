@@ -34,10 +34,10 @@
               :is-disabled="(next: boolean) => isDisabled(instance, next)"
               @handle-year="handleYear(instance, $event)"
               @year-select="handleYearSelect($event, instance)"
-              @toggle-year-picker="toggleYearPicker(instance, $event?.flow, $event?.show)"
+              @toggle-year-picker="toggleYearPicker(instance, $event?.show)"
             >
-              <template v-for="(slot, i) in yearModeSlots" #[slot]="args" :key="i">
-                <slot :name="slot" v-bind="args" />
+              <template v-for="slotName in yearModeSlots" #[slotName]="args" :key="slotName">
+                <slot :name="slotName" v-bind="args" />
               </template>
             </YearModePicker>
           </template>
@@ -51,7 +51,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { onMounted, useSlots } from 'vue';
+  import { useSlots } from 'vue';
 
   import SelectionOverlay from '@/components/Common/SelectionOverlay.vue';
   import InstanceWrap from '@/components/Common/InstanceWrap.vue';
@@ -62,9 +62,9 @@
   import type { BaseProps } from '@/types';
   import { type ComponentSlots, SlotUse, getSlotsByComponent } from '@/constants/slots.ts';
 
-  defineSlots<ComponentSlots<SlotUse.MonthPicker> & ComponentSlots<SlotUse.YearMode>>();
   const emit = defineEmits<MonthPickerEmits>();
-  const props = defineProps<BaseProps>();
+  defineProps<BaseProps>();
+  defineSlots<ComponentSlots<SlotUse.MonthPicker> & ComponentSlots<SlotUse.YearMode>>();
 
   const slots = useSlots();
 
@@ -74,10 +74,6 @@
   } = useContext();
 
   const yearModeSlots = getSlotsByComponent(slots, SlotUse.YearMode);
-
-  onMounted(() => {
-    emit('mount');
-  });
 
   const {
     groupedMonths,
@@ -94,7 +90,7 @@
     handleYearSelect,
     handleYear,
     getModelMonthYear,
-  } = useMonthPicker(props, emit);
+  } = useMonthPicker(emit);
 
   const getSidebarProps = () => {
     return {
@@ -107,5 +103,5 @@
     };
   };
 
-  defineExpose({ getSidebarProps, presetDate, toggleYearPicker: (flow: boolean) => toggleYearPicker(0, flow) });
+  defineExpose({ getSidebarProps, presetDate, toggleYearPicker: (show: boolean) => toggleYearPicker(0, show) });
 </script>
