@@ -7,7 +7,6 @@ export default defineConfig({
   vite: {
     resolve: {
       alias: {
-        // @ts-expect-error Leave it as is
         '@': fileURLToPath(new URL('../../../lib/src/VueDatePicker', import.meta.url)),
       },
     },
