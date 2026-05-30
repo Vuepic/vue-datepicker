@@ -22,6 +22,7 @@
           :data-test-id="`${timeInput.type}-time-inc-btn-${props.order}`"
           :aria-label="ariaLabels?.incrementValue(timeInput.type)"
           tabindex="0"
+          :disabled="boolHtmlAttribute(disabled)"
           :data-dp-action-element="level"
           @keydown="checkKeyDown($event, () => handleTimeValue(timeInput.type, true, { keyboard: true }), true)"
           @click="config.timeArrowHoldThreshold ? undefined : handleTimeValue(timeInput.type, true)"
@@ -80,6 +81,7 @@
           :aria-label="ariaLabels?.decrementValue(timeInput.type)"
           tabindex="0"
           :data-dp-action-element="level"
+          :disabled="boolHtmlAttribute(checkOverlayDisabled(timeInput.type))"
           @keydown="checkKeyDown($event, () => handleTimeValue(timeInput.type, false, { keyboard: true }), true)"
           @click="config.timeArrowHoldThreshold ? undefined : handleTimeValue(timeInput.type, false)"
           @mousedown="config.timeArrowHoldThreshold ? handleTimeValue(timeInput.type, false) : undefined"
@@ -106,6 +108,7 @@
           role="button"
           :aria-label="ariaLabels?.amPmButton"
           tabindex="0"
+          :disabled="boolHtmlAttribute(disabled)"
           :data-dp-action-element="level"
           :data-compact="isCompact"
           @click="setAmPm"
@@ -183,6 +186,7 @@
     minutes: number;
     seconds: number;
     order: number;
+    disabled: boolean;
     closeTimePickerBtn: HTMLElement | null;
     disabledTimesConfig: ((ind: number, hours?: number) => InvalidTimesConfig) | null;
     validateTime: any;
@@ -230,7 +234,8 @@
   const level = computed(() => (rootProps.timePicker || timeConfig.value.timePickerInline ? 0 : 1));
 
   const disabledBox = computed(
-    () => (type: TimeKey) => isValueDisabled(type, props[type]) || isOverlayValueDisabled(type, props[type]),
+    () => (type: TimeKey) =>
+      isValueDisabled(type, props[type]) || isOverlayValueDisabled(type, props[type]) || props.disabled,
   );
 
   const timeValues = computed(() => ({ hours: props.hours, minutes: props.minutes, seconds: props.seconds }));
@@ -253,13 +258,17 @@
 
   const disabledArrowUpBtn = computed(() => (type: TimeKey) => {
     return (
-      !isDateInRange(+props[type] + +timeConfig.value[`${type}Increment`], type) || disabledRangedArrows(type, true)
+      !isDateInRange(+props[type] + +timeConfig.value[`${type}Increment`], type) ||
+      disabledRangedArrows(type, true) ||
+      props.disabled
     );
   });
 
   const disabledArrowDownBtn = computed(() => (type: TimeKey) => {
     return (
-      !isDateInRange(+props[type] - +timeConfig.value[`${type}Increment`], type) || disabledRangedArrows(type, false)
+      !isDateInRange(+props[type] - +timeConfig.value[`${type}Increment`], type) ||
+      disabledRangedArrows(type, false) ||
+      props.disabled
     );
   });
 
@@ -378,7 +387,7 @@
   };
 
   const checkOverlayDisabled = (type: TimeKey): boolean => {
-    return timeConfig.value[`no${type[0]!.toUpperCase() + type.slice(1)}Overlay` as TimeOverlayCheck];
+    return timeConfig.value[`no${type[0]!.toUpperCase() + type.slice(1)}Overlay` as TimeOverlayCheck] || props.disabled;
   };
 
   const toggleOverlay = (type: TimeKey): void => {
