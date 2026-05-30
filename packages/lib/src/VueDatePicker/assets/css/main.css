@@ -36,7 +36,7 @@
   --dp-menu-min-width: 260px;
   --dp-action-buttons-padding: 1px 6px;
   --dp-row-margin: 5px 0;
-  --dp-calendar-header-cell-padding: 0.5rem;
+  --dp-calendar-header-cell-padding: 8px;
   --dp-multi-calendars-spacing: 10px;
   --dp-overlay-col-padding: 3px;
   --dp-time-inc-dec-button-size: 32px;
