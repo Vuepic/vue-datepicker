@@ -70,7 +70,6 @@ export interface UIConfig {
 
 export interface FlowConfig {
   steps: PickerSection[];
-  partial: boolean;
 }
 
 export interface FilterConfig {
