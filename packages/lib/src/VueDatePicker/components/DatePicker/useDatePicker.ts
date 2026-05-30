@@ -390,7 +390,7 @@ export const useDatePicker = (emit: EmitFn<DatePickerEmits>, triggerCalendarTran
       const days = getWeekDays(date, month);
       weeks.push({ days });
 
-      const lastDayInWeek = days[days.length - 1].value;
+      const lastDayInWeek = days.at(-1)?.value;
       if (isDateBefore(lastDayInWeek, lastDate)) {
         const nextDate = addDays(date, 7);
         addDaysToWeek(nextDate);
