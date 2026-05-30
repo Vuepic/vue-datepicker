@@ -64,7 +64,8 @@ export const useFormatter = () => {
   const formatForTextInput = () => {
     if (state.isInputFocused && modelValue.value) {
       if (Array.isArray(modelValue.value)) return formatRangeTextInput();
-      return format(modelValue.value, textInput.value.format as string);
+      if (typeof textInput.value.format === 'function') return textInput.value.format(modelValue.value as never);
+      return format(modelValue.value, textInput.value.format);
     }
     return formatSelectedDate(modelValue.value);
   };
