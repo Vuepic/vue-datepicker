@@ -36,6 +36,7 @@ export const useDatePicker = (emit: EmitFn<DatePickerEmits>, triggerCalendarTran
 
   const {
     getDate,
+    getDateFromParts,
     rootEmit,
     calendars,
     month,
@@ -51,7 +52,7 @@ export const useDatePicker = (emit: EmitFn<DatePickerEmits>, triggerCalendarTran
   const { updateTimeValues, getSetDateTime, assignTime, assignStartTime, validateTime, disabledTimesConfig } =
     useTimePickerUtils();
   const { formatDay } = useFormatter();
-  const { resetDateTime, setTime, isDateBefore, isDateEqual, getDaysInBetween } = useDateUtils();
+  const { setTime, isDateBefore, getDaysInBetween } = useDateUtils();
   const { checkRangeAutoApply, getRangeWithFixedDate, handleMultiDatesSelect, setPresetDate } = useComponentShared();
   const { getMapDate } = useHelperFns();
   const { selectOnAutoApply } = useModel(emit);
@@ -380,15 +381,17 @@ export const useDatePicker = (emit: EmitFn<DatePickerEmits>, triggerCalendarTran
   // Get days for the calendar to be displayed in a table grouped by weeks
   const getCalendarDays = (month: number, year: number): CalendarWeek[] => {
     const weeks: CalendarWeek[] = [];
-    const firstDate = getDate(new Date(year, month));
-    const lastDate = getDate(new Date(year, month + 1, 0));
+    const firstDate = getDateFromParts(year, month);
+    const lastDate = getDateFromParts(year, month + 1, 0);
 
     const firstDateInCalendar = startOfWeek(firstDate, { weekStartsOn: weekStart.value });
 
     const addDaysToWeek = (date: Date) => {
       const days = getWeekDays(date, month);
       weeks.push({ days });
-      if (!weeks.at(-1)?.days.some((day) => isDateEqual(getDate(day.value), resetDateTime(lastDate)))) {
+
+      const lastDayInWeek = days[days.length - 1].value;
+      if (isDateBefore(lastDayInWeek, lastDate)) {
         const nextDate = addDays(date, 7);
         addDaysToWeek(nextDate);
       }

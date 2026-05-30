@@ -38,6 +38,7 @@ export const ContextKey = Symbol('ContextKey') as InjectionKey<{
   inputValue: Ref<string>;
   updateTime: () => void;
   getDate: DateGetter;
+  getDateFromParts: (year: number, month: number, day?: number) => Date;
 }>;
 
 export const useInjector = (props: RootPropsWithDefaults, emit: EmitFn<RootEmits>) => {
@@ -105,5 +106,6 @@ export const useInjector = (props: RootPropsWithDefaults, emit: EmitFn<RootEmits
     setState,
     updateTime,
     getDate: defaults.getDate,
+    getDateFromParts: defaults.getDateFromParts,
   });
 };

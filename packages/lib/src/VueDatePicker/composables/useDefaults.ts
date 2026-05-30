@@ -47,6 +47,11 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
     return reset ? set(newDate, { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 }) : newDate;
   }
 
+  const getDateFromParts = (year: number, month: number, day = 1) => {
+    if (props.timezone) return new TZDate(year, month, day, props.timezone);
+    return new Date(year, month, day);
+  };
+
   const getTimeFormat = (): string => {
     const seconds = timeConfig.value.enableSeconds ? ':ss' : '';
     const minutes = timeConfig.value.enableMinutes ? ':mm' : '';
@@ -316,5 +321,6 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
     floatingConfig,
     weekStart,
     getDate,
+    getDateFromParts,
   };
 };
