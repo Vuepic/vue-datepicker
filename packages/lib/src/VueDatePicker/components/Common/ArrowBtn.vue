@@ -6,8 +6,9 @@
     data-dp-action-element="0"
     class="dp--btn-base dp--bg-none dp--arrow-btn-nav"
     tabindex="0"
+    :disabled="boolHtmlAttribute(disabled)"
     :aria-label="ariaLabel"
-    :aria-disabled="disabled || undefined"
+    :aria-disabled="boolHtmlAttribute(disabled)"
     @click="emit('activate')"
     @keydown="checkKeyDown($event, () => emit('activate'), true)"
   >
@@ -19,8 +20,9 @@
 
 <script lang="ts" setup>
   import { type Ref } from 'vue';
-  import { useHelperFns } from '@/composables';
+  import { useHelperFns, useUtils } from '@/composables';
 
+  const { boolHtmlAttribute } = useUtils();
   const { checkKeyDown } = useHelperFns();
 
   const emit = defineEmits<{

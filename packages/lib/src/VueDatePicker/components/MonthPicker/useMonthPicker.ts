@@ -1,5 +1,5 @@
 import { computed, type EmitFn, nextTick, onMounted, ref } from 'vue';
-import { getMonth, getYear, set } from 'date-fns';
+import { format, getMonth, getYear, set } from 'date-fns';
 
 import { useContext, useDateUtils, useRemapper, useHelperFns, useUtilsWithContext, useValidation } from '@/composables';
 import { useMonthOrQuarterPicker } from '@/components/shared/useMonthQuarterPicker.ts';
@@ -107,6 +107,8 @@ export const useMonthPicker = (emit: EmitFn<MonthPickerEmits>) => {
   const groupedMonths = computed(() => (instance: number): OverlayGridItem[][] => {
     return groupListAndMap(months.value, (month) => {
       const active = checkActiveMonth(instance, month.value);
+      const monthDate = monthToDate(month.value, instance);
+      const ariaLabel = format(monthDate, 'MMMM', { locale: rootProps.locale });
       const disabled =
         checkMinMaxValue(
           month.value,
@@ -119,7 +121,7 @@ export const useMonthPicker = (emit: EmitFn<MonthPickerEmits>) => {
         isOutOfYearRange(year.value(instance));
       const isBetween = isMonthBetween(month.value, instance);
       const highlighted = checkHighlightMonth(highlight.value, month.value, year.value(instance));
-      return { active, disabled, isBetween, highlighted };
+      return { active, disabled, isBetween, highlighted, ariaLabel };
     });
   });
 

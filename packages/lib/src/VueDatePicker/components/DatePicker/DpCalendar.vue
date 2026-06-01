@@ -41,7 +41,7 @@
                 undefined
               "
               :aria-disabled="dayVal.classData['dp--cell-disabled'] || undefined"
-              :aria-label="ariaLabels?.day?.(dayVal)"
+              :aria-label="getDayAriaLabel(dayVal)"
               :tabindex="!dayVal.current && rootProps.hideOffsetDates ? undefined : 0"
               :data-test-id="getCellId(dayVal.value)"
               :data-dp-element-active="!!dayVal.classData['dp--active'] ? 0 : undefined"
@@ -97,7 +97,7 @@
   import type { UnwrapRef } from 'vue';
   import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
   import { unrefElement, useSwipe } from '@vueuse/core';
-  import { eachDayOfInterval, endOfWeek, getISOWeek, getWeek, set, startOfWeek } from 'date-fns';
+  import { eachDayOfInterval, endOfWeek, format, getISOWeek, getWeek, set, startOfWeek } from 'date-fns';
 
   import { useContext, useDateUtils, useFormatter, useHelperFns } from '@/composables';
   import type { CalendarDay, CalendarWeek, DynamicClass, Marker } from '@/types';
@@ -362,6 +362,10 @@
     const daysInWeek = eachDayOfInterval({ start, end });
 
     return daysInWeek.map((day) => formatWeekDay(day));
+  };
+
+  const getDayAriaLabel = (day: UnwrapRef<CalendarDay>) => {
+    return ariaLabels.value?.day?.(day) ?? format(day.value, 'MMMM do, yyyy', { locale: rootProps.locale });
   };
 
   defineExpose({ triggerTransition });

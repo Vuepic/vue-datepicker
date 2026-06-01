@@ -5,6 +5,7 @@
     :tabindex="inline.enabled ? undefined : '0'"
     :role="inline.enabled ? undefined : 'dialog'"
     :aria-label="ariaLabels?.menu"
+    :aria-modal="inline.enabled ? undefined : true"
     :class="dpMenuClass"
     @mouseleave="clearHoverDate"
     @click="handleDpMenuClick"

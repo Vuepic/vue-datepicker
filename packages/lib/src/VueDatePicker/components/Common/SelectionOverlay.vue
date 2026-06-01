@@ -3,33 +3,35 @@
     ref="grid-wrap"
     :class="dpOverlayClass"
     :style="dpOverlayStyle"
-    :role="useRelative ? undefined : 'dialog'"
-    :aria-label="overlayLabel"
+    :role="useRelative ? undefined : 'presentation'"
     :tabindex="useRelative ? undefined : '0'"
     @keydown="onKeyDown"
     @click.prevent
   >
+    <div ref="header" class="dp--selection-grid-header"><slot name="header"></slot></div>
+
     <div
       ref="overlay-container"
+      :aria-label="overlayLabel"
       :class="containerClass"
       :style="{ '--dp-overlay-height': `${containerHeight}px` }"
-      role="grid"
+      role="listbox"
     >
-      <div class="dp--selection-grid-header"><slot name="header"></slot></div>
       <slot name="overlay">
         <div
           v-for="(row, i) in items"
           :key="i"
           class="dp--overlay-row"
-          role="row"
+          role="presentation"
           :class="{ 'dp--flex-row': items.length >= 3 }"
         >
           <div
             v-for="col in row"
             :key="col.value"
             ref="colRefs"
-            role="gridcell"
+            role="option"
             :class="cellClassName"
+            :aria-label="col.ariaLabel ?? col.text"
             :aria-selected="col.active || undefined"
             :aria-disabled="col.disabled || undefined"
             :data-dp-action-element="level ?? 1"
@@ -100,6 +102,7 @@
   const { handleEventPropagation, checkKeyDown } = useHelperFns();
 
   const toggleButton = useTemplateRef('toggle-button');
+  const headerRef = useTemplateRef('header');
   const containerRef = useTemplateRef('overlay-container');
   const gridWrapRef = useTemplateRef('grid-wrap');
   const colRefs = useTemplateRefsList<HTMLElement>();
@@ -170,12 +173,15 @@
       const parent = unrefElement(gridWrapRef);
       const btn = unrefElement(toggleButton);
       const container = unrefElement(containerRef);
+      const header = unrefElement(headerRef);
       const toggleBtnHeight = btn ? btn.getBoundingClientRect().height : 0;
       if (parent) {
         if (parent.getBoundingClientRect().height) {
-          containerHeight.value = parent.getBoundingClientRect().height - toggleBtnHeight;
+          containerHeight.value =
+            parent.getBoundingClientRect().height - toggleBtnHeight - (header?.getBoundingClientRect().height ?? 0);
         } else {
-          containerHeight.value = config.value.modeHeight - toggleBtnHeight;
+          containerHeight.value =
+            config.value.modeHeight - toggleBtnHeight - (header?.getBoundingClientRect().height ?? 0);
         }
       }
       const el = colRefs.value?.find(

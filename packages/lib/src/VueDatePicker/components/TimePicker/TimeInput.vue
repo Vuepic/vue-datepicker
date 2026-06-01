@@ -44,6 +44,8 @@
         <button
           type="button"
           :aria-label="`${timeValueDisplay(timeInput.type).text}-${ariaLabels?.openTpOverlay(timeInput.type)}`"
+          aria-haspopup="dialog"
+          :aria-expanded="overlays[timeInput.type]"
           :class="{
             'dp--time-display': true,
             'dp--time-display-block': !timeConfig.timePickerInline,
@@ -105,7 +107,6 @@
           ref="amPmButton"
           type="button"
           class="dp--pm-am-button"
-          role="button"
           :aria-label="ariaLabels?.amPmButton"
           tabindex="0"
           :disabled="boolHtmlAttribute(disabled)"

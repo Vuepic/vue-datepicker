@@ -17,6 +17,8 @@
       type="button"
       :aria-label="`${year}-${ariaLabels?.openYearsOverlay}`"
       :data-test-id="`year-mode-btn-${instance}`"
+      aria-haspopup="dialog"
+      :aria-expanded="showYearPicker"
       data-dp-action-element="0"
       @click="() => toggleYearPicker()"
       @keydown.enter.prevent="() => toggleYearPicker()"
@@ -40,7 +42,6 @@
     <SelectionOverlay
       v-if="showYearPicker"
       :items="items"
-      :config="config"
       :is-last="rootProps.autoApply && !config.keepActionRow"
       :overlay-label="ariaLabels?.yearPicker?.(true)"
       type="year"

@@ -47,6 +47,8 @@
               class="dp--btn-base dp--bg-none dp--month-year-select-base dp--month-year-select"
               :class="{ 'dp--hidden-el': overlayOpen }"
               :aria-label="`${type.text}-${type.ariaLabel}`"
+              aria-haspopup="dialog"
+              :aria-expanded="type.showSelectionGrid"
               :data-test-id="`${type.type}-toggle-overlay-${instance}`"
               tabindex="0"
               data-dp-action-element="0"
