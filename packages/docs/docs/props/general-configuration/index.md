@@ -972,6 +972,7 @@ interface Config {
   spaceConfirm?: boolean;
   monthChangeOnArrows?: boolean;
   monthChangeOnScroll?: boolean | string;
+  onInternalKeydown?: (ev: Event) => boolean | void;
 }
 ```
 
@@ -999,6 +1000,7 @@ interface Config {
   spaceConfirm: true,
   monthChangeOnArrows: true,
   monthChangeOnScroll: true,
+  onInternalKeydown: undefined,
 }
 ```
 
@@ -1024,7 +1026,8 @@ interface Config {
 - `spaceConfirm` - `space` key selects the date (like you pressed the select button)
 - `monthChangeOnArrows` - Change months via arrow keys
 - `monthChangeOnScroll` - Scrolling the mouse wheel over the calendar will change the month. Scroll down for next month and vice versa. You can set the value to `inverse` to reverse scrolling up and down.
-  :::
+- `onInternalKeydown` - A hook added before internal keydown event happens. Return `false` to skip built in logic
+:::
 
 ## start-date
 

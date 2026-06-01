@@ -186,4 +186,25 @@ Propagated `oninvalid` event from the input field
 
 :::info
 - `event` - Propagated value from the `@invalid` event
-  :::
+:::
+
+## @menu-mounted
+
+Emits when the menu component is mounted
+
+- Type: `(el: HTMLElement) => void`
+
+:::info
+- `el` - The menu HTML element
+:::
+
+
+## @menu-unmounted
+
+Emits when the menu component is unmounted
+
+- Type: `(el: HTMLElement) => void`
+
+:::info
+- `el` - The menu HTML element
+:::
