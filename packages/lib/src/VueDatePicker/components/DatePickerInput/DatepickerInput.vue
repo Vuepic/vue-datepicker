@@ -79,7 +79,7 @@
         class="dp--clear-btn"
         type="button"
         data-test-id="clear-input-value-btn"
-        @keydown="checkKeyDown($event, () => onClear($event), true, onClearKeydown)"
+        @keydown="checkKeyDown($event, () => onClear($event), true, config.spaceConfirm, onClearKeydown)"
         @click.prevent="onClear($event)"
       >
         <CancelIcon class="dp--input-icons" />
@@ -310,6 +310,10 @@
     }
     if (ev.key === 'Enter') {
       handleEnter(ev);
+      if (config.value.allowPreventDefault) {
+        ev.preventDefault();
+        checkStopPropagation(ev, config.value, true);
+      }
     }
     if (ev.key === 'Escape' && textInput.value.escClose) {
       handleEsc();

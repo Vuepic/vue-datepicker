@@ -24,6 +24,7 @@ export const defaultConfig = {
   noSwipe: false,
   keepActionRow: false,
   onClickOutside: undefined,
+  onInternalKeydown: undefined,
   tabOutClosesMenu: true,
   arrowLeft: undefined,
   keepViewOnOffsetClick: false,

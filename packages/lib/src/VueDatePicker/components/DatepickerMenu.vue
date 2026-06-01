@@ -137,6 +137,7 @@
   const {
     state,
     rootProps,
+    rootEmit,
     defaults: { textInput, inline, config, ui, ariaLabels },
     setState,
   } = useContext();
@@ -176,6 +177,7 @@
     if (menu) {
       menu.addEventListener('pointerdown', stopDefault);
       menu.addEventListener('mousedown', stopDefault);
+      rootEmit('menu-mounted', menu);
     }
 
     document.addEventListener('mousedown', handleClickOutside);
@@ -190,6 +192,7 @@
     if (menu) {
       menu.removeEventListener('pointerdown', stopDefault);
       menu.removeEventListener('mousedown', stopDefault);
+      rootEmit('menu-unmounted', menu);
     }
   });
 
@@ -257,7 +260,7 @@
 
   const checkShiftKey = (ev: KeyboardEvent) => {
     setState('shiftKeyInMenu', ev.shiftKey);
-    if (!rootProps.hideMonthYearSelect && ev.code === EventKey.tab) {
+    if (config.value.tabOutClosesMenu && !rootProps.hideMonthYearSelect && ev.code === EventKey.tab) {
       if ((ev.target as HTMLElement).classList.contains('dp--menu') && state.shiftKeyInMenu) {
         ev.preventDefault();
         checkStopPropagation(ev, config.value, true);
@@ -302,7 +305,18 @@
     handleArrowKey(arrow);
   };
 
+  const handleEnterKey = (ev: KeyboardEvent): void => {
+    if (config.value.allowPreventDefault) {
+      ev.preventDefault();
+      checkStopPropagation(ev, config.value, true);
+    }
+  };
+
   const onKeyDown = (ev: KeyboardEvent) => {
+    if (config.value.onInternalKeydown?.(ev) === false) {
+      return;
+    }
+
     checkShiftKey(ev);
 
     if (ev.key === EventKey.home || ev.key === EventKey.end) {
@@ -324,6 +338,8 @@
     switch (ev.key) {
       case EventKey.esc:
         return handleEsc(ev);
+      case EventKey.enter:
+        return handleEnterKey(ev);
       case EventKey.arrowLeft:
         return onArrowKey(ev, ArrowDirection.left);
       case EventKey.arrowRight:

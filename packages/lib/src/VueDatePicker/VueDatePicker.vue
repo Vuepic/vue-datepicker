@@ -251,8 +251,10 @@
   };
 
   const onKeyUp = (event: KeyboardEvent) => {
-    if (event.key === 'Tab' && !inline.value.enabled && !rootProps.teleport && config.value.tabOutClosesMenu) {
-      if (!pickerWrapperRef.value!.contains(document.activeElement)) {
+    if (event.key === 'Tab' && !inline.value.enabled && config.value.tabOutClosesMenu) {
+      const focusInInput = pickerWrapperRef.value?.contains(document.activeElement);
+      const focusInMenu = dpWrapMenuRef.value?.contains(document.activeElement);
+      if (!focusInInput && !focusInMenu) {
         closeMenu();
       }
     }

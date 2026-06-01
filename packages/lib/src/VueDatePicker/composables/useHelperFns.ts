@@ -76,8 +76,14 @@ export const useHelperFns = () => {
     }
   };
 
-  const checkKeyDown = (ev: KeyboardEvent, fn: () => any, prevent = false, cb?: (ev: KeyboardEvent) => void) => {
-    if (ev.key === EventKey.enter || ev.key === EventKey.space) {
+  const checkKeyDown = (
+    ev: KeyboardEvent,
+    fn: () => any,
+    prevent = false,
+    spaceConfirm = true,
+    cb?: (ev: KeyboardEvent) => void,
+  ) => {
+    if (ev.key === EventKey.enter || (ev.key === EventKey.space && spaceConfirm)) {
       if (prevent) {
         ev.preventDefault();
       }

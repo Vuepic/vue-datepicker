@@ -48,7 +48,7 @@
               data-dp-action-element="0"
               @click.prevent="onDateSelect($event, dayVal)"
               @touchend="onDateSelect($event, dayVal, false)"
-              @keydown="checkKeyDown($event, () => $emit('select-date', dayVal))"
+              @keydown="checkKeyDown($event, () => $emit('select-date', dayVal), false, config.spaceConfirm, undefined)"
               @mouseenter="onMouseOver(dayVal, weekInd, dayInd)"
               @mouseleave="onMouseLeave(dayVal)"
               @mousedown="onMouseDown(dayVal)"

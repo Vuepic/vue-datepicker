@@ -24,4 +24,6 @@ export interface RootEmits {
   'date-click': [date: Date];
   'overlay-toggle': [toggle: { open: boolean; overlay: PickerSection }];
   invalid: [event: Event];
+  'menu-mounted': [el: HTMLElement];
+  'menu-unmounted': [el: HTMLElement];
 }

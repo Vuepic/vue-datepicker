@@ -45,6 +45,7 @@ export interface Config {
   noSwipe: boolean;
   keepActionRow: boolean;
   onClickOutside?: (validate: () => boolean, evt: PointerEvent) => void;
+  onInternalKeydown?: (ev: KeyboardEvent) => boolean | void;
   tabOutClosesMenu: boolean;
   arrowLeft?: string;
   keepViewOnOffsetClick?: boolean;
