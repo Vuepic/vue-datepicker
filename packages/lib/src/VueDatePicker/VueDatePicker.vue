@@ -18,7 +18,7 @@
         <slot :name="slotName" v-bind="args" />
       </template>
     </DatepickerInput>
-    <TeleportCmp :to="teleport" :disabled="!teleport">
+    <MaybeTeleport :to="teleport" :disabled="!teleport">
       <div
         v-if="shouldRenderMenuWrap"
         ref="dp-menu-wrap"
@@ -70,7 +70,7 @@
           </DatepickerMenu>
         </transition>
       </div>
-    </TeleportCmp>
+    </MaybeTeleport>
   </div>
 </template>
 
@@ -83,7 +83,6 @@
     onUnmounted,
     ref,
     type Ref,
-    Teleport as TeleportCmp,
     toRef,
     useSlots,
     useTemplateRef,
@@ -94,6 +93,7 @@
 
   import DatepickerInput from '@/components/DatePickerInput/DatepickerInput.vue';
   import DatepickerMenu from '@/components/DatepickerMenu.vue';
+  import MaybeTeleport from '@/components/Common/MaybeTeleport.ts';
 
   import {
     useContext,
