@@ -27,6 +27,7 @@
           <div
             v-for="col in row"
             :key="col.value"
+            ref="colRefs"
             role="gridcell"
             :class="cellClassName"
             :aria-selected="col.active || undefined"
@@ -67,7 +68,7 @@
 
 <script lang="ts" setup>
   import { computed, nextTick, onBeforeUpdate, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
-  import { unrefElement } from '@vueuse/core';
+  import { unrefElement, useTemplateRefsList } from '@vueuse/core';
 
   import { useContext, useHelperFns } from '@/composables';
   import { useNavigationDisplay } from '@/components/shared/useNavigationDisplay.ts';
@@ -101,6 +102,7 @@
   const toggleButton = useTemplateRef('toggle-button');
   const containerRef = useTemplateRef('overlay-container');
   const gridWrapRef = useTemplateRef('grid-wrap');
+  const colRefs = useTemplateRefsList<HTMLElement>();
 
   const scrollable = ref(false);
   const selectionActiveRef = ref<HTMLElement | null>(null);
@@ -165,7 +167,6 @@
 
   const setContainerHeightAndScroll = (setScroll = true) => {
     nextTick().then(() => {
-      const el = document.querySelector<HTMLElement>(`[data-dp-element-active="${props.level ?? 1}"]`);
       const parent = unrefElement(gridWrapRef);
       const btn = unrefElement(toggleButton);
       const container = unrefElement(containerRef);
@@ -177,6 +178,9 @@
           containerHeight.value = config.value.modeHeight - toggleBtnHeight;
         }
       }
+      const el = colRefs.value?.find(
+        (element) => element?.getAttribute('data-dp-element-active') === `${props.level ?? 1}`,
+      );
       if (el && container && setScroll) {
         container.scrollTop =
           el.offsetTop -
