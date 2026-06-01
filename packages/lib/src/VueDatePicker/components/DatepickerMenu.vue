@@ -137,8 +137,8 @@
   const {
     state,
     rootProps,
-    rootEmit,
     defaults: { textInput, inline, config, ui, ariaLabels },
+    rootEmit,
     setState,
   } = useContext();
   const { isMobile } = useResponsive();

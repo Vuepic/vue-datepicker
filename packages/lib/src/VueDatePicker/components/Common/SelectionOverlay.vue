@@ -184,9 +184,10 @@
             config.value.modeHeight - toggleBtnHeight - (header?.getBoundingClientRect().height ?? 0);
         }
       }
-      const el = colRefs.value?.find(
-        (element) => element?.getAttribute('data-dp-element-active') === `${props.level ?? 1}`,
-      );
+      const el = colRefs.value?.find((element) => {
+        const { dpElementActive } = element.dataset;
+        return dpElementActive === `${props.level ?? 1}`;
+      });
       if (el && container && setScroll) {
         container.scrollTop =
           el.offsetTop -
