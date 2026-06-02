@@ -46,7 +46,7 @@ export const useInput = () => {
     });
 
     if (isValid(parsedDate) && isDate(parsedDate)) {
-      if (inputVal || textPasted.value) return parsedDate;
+      if (inputVal || textPasted.value || rootProps.timePicker) return parsedDate;
       return set(parsedDate, {
         hours: +assignTimeTextInput.value!.hours,
         minutes: +assignTimeTextInput.value!.minutes,
