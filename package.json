@@ -1,6 +1,6 @@
 {
   "name": "vuepic",
-  "version": "13.0.0",
+  "version": "14.0.0",
   "private": false,
   "description": "Datepicker component for Vue 3",
   "homepage": "https://vue3datepicker.com",
