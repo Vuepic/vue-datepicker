@@ -5,7 +5,9 @@
     :data-dp-element="elName"
     data-dp-action-element="0"
     class="dp--btn-base dp--bg-none dp--arrow-btn-nav"
-    tabindex="0"
+    :tabindex="inactive ? -1 : 0"
+    :inert="inactive || undefined"
+    :aria-hidden="inactive || undefined"
     :disabled="boolHtmlAttribute(disabled)"
     :aria-label="ariaLabel"
     :aria-disabled="boolHtmlAttribute(disabled)"
@@ -34,5 +36,7 @@
     ariaLabel?: string;
     elName?: string;
     disabled?: boolean;
+    // Removes the button from tab order / a11y tree while an overlay covers the calendar
+    inactive?: boolean;
   }>();
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div :class="calendarParentClass">
+  <div :class="calendarParentClass" :inert="overlayActive || undefined" :aria-hidden="overlayActive || undefined">
     <div ref="calendar-wrap" :class="calendarWrapClass" role="grid">
       <div class="dp--calendar-header" role="row">
         <div v-if="weekNumbers" class="dp--calendar-header-item" role="gridcell">
@@ -129,6 +129,7 @@
     getDate,
     rootEmit,
     rootProps,
+    state,
     defaults: { transitions, config, ariaLabels, multiCalendars, weekNumbers, multiDates, ui, weekStart },
   } = useContext();
   const { isDateAfter, isDateEqual, resetDateTime, getCellId } = useDateUtils();
@@ -229,6 +230,10 @@
     'dp--calendar': true,
     'dp--calendar-next': multiCalendars.value.count > 0 && props.instance !== 0,
   }));
+
+  // When a selection overlay (month/year/time) is open it visually covers the calendar.
+  // Mark the underlying calendar inert so keyboard users can't tab to the hidden day cells.
+  const overlayActive = computed(() => state.arrowNavigationLevel > 0);
 
   const showDay = computed(() => (day: CalendarDay) => (rootProps.hideOffsetDates ? day.current : true));
 

@@ -27,6 +27,7 @@
           v-if="showLeftIcon(instance) && !rootProps.vertical"
           :aria-label="ariaLabels?.prevMonth"
           :disabled="boolHtmlAttribute(isDisabled(false))"
+          :inactive="overlayOpen"
           :class="ui?.navBtnPrev"
           el-name="action-prev"
           @activate="handleMonthYearChange(false, true)"
@@ -93,6 +94,7 @@
           :aria-label="ariaLabels?.prevMonth"
           el-name="action-prev"
           :disabled="boolHtmlAttribute(isDisabled(false))"
+          :inactive="overlayOpen"
           :class="ui?.navBtnPrev"
           @activate="handleMonthYearChange(false, true)"
         >
@@ -105,6 +107,7 @@
           el-name="action-next"
           :disabled="boolHtmlAttribute(isDisabled(true))"
           :aria-label="ariaLabels?.nextMonth"
+          :inactive="overlayOpen"
           :class="ui?.navBtnNext"
           @activate="handleMonthYearChange(true, true)"
         >
