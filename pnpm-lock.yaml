@@ -93,8 +93,8 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
       unplugin-dts:
-        specifier: ^1.0.2
-        version: 1.0.2(@microsoft/api-extractor@7.58.7(@types/node@24.12.4))(@vue/language-core@3.3.3)(esbuild@0.27.7)(rolldown@1.0.3)(rollup@4.60.4)(typescript@6.0.3)(vite@8.0.16(@types/node@24.12.4)(esbuild@0.27.7)(jiti@2.7.0))
+        specifier: 1.0.1
+        version: 1.0.1(@microsoft/api-extractor@7.58.7(@types/node@24.12.4))(@vue/language-core@3.3.3)(esbuild@0.27.7)(rolldown@1.0.3)(rollup@4.60.4)(typescript@6.0.3)(vite@8.0.16(@types/node@24.12.4)(esbuild@0.27.7)(jiti@2.7.0))
       vite:
         specifier: ^8.0.16
         version: 8.0.16(@types/node@24.12.4)(esbuild@0.27.7)(jiti@2.7.0)
@@ -2717,8 +2717,8 @@ packages:
     resolution: {integrity: sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==}
     engines: {node: '>= 10.0.0'}
 
-  unplugin-dts@1.0.2:
-    resolution: {integrity: sha512-VbNiMD0LMl/t6nJueGtrCp79N7ZO1nquxj/FUybJDnKwZGsnW2wjdwBSzA3QEHujoxmxZIptsG43hL7LzXE96w==}
+  unplugin-dts@1.0.1:
+    resolution: {integrity: sha512-EdJZxdWP4Tm/xhe58/zAge3Tu0OKDYygm8rucRrcCZ4XzgA31jexUKhaJuEMddOPBDs9ONnq6vwigbjeBqkfuw==}
     peerDependencies:
       '@microsoft/api-extractor': '>=7'
       '@rspack/core': ^1
@@ -5353,7 +5353,7 @@ snapshots:
 
   universalify@2.0.1: {}
 
-  unplugin-dts@1.0.2(@microsoft/api-extractor@7.58.7(@types/node@24.12.4))(@vue/language-core@3.3.3)(esbuild@0.27.7)(rolldown@1.0.3)(rollup@4.60.4)(typescript@6.0.3)(vite@8.0.16(@types/node@24.12.4)(esbuild@0.27.7)(jiti@2.7.0)):
+  unplugin-dts@1.0.1(@microsoft/api-extractor@7.58.7(@types/node@24.12.4))(@vue/language-core@3.3.3)(esbuild@0.27.7)(rolldown@1.0.3)(rollup@4.60.4)(typescript@6.0.3)(vite@8.0.16(@types/node@24.12.4)(esbuild@0.27.7)(jiti@2.7.0)):
     dependencies:
       '@rollup/pluginutils': 5.4.0(rollup@4.60.4)
       '@volar/typescript': 2.4.28
