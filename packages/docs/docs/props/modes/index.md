@@ -313,13 +313,6 @@ In case you use flow for [`quarter-picker`](/props/modes/#quarter-picker) or [`m
 
 :::info
 If the flow order is interrupted, it will auto-resume from the next executed step in the array
-
-Example steps: `['month', 'year', 'calendar', 'time']`
-
-- The picker first opens the month overlay
-- The user goes back to the calendar, stopping the flow
-- The user selects the date
-- The flow auto-resumes from the `'calendar'` step, followed by `'time'`
 :::
 
 :::warning

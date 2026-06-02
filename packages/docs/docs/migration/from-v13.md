@@ -9,9 +9,9 @@ outline: [2, 4]
 
 ## Breaking changes
 
-- `handleFlow` method now takes step value instead of index and it is renamed to `executeFlow`
-- `flow.partial` is removed
-- `@flow-step` emitted event will provide step value instead of step index
+- Exposed flow method `handleFlow` now accepts a step value instead of an index and has been renamed to `executeFlow`
+- `partial` in `flow` prop is removed, since it has no effect on the behaviour. Prop remains an object in case of potential updates
+- `@flow-step` emitted event will provide the step value instead of the step index
 
 ### Change
 
