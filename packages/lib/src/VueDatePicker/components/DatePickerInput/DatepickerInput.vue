@@ -134,6 +134,7 @@
   const inputRef = useTemplateRef('dp-input');
   const parsedDate = ref<InputParsedDate>(null);
   const isFocused = ref(false);
+  const valueChanged = ref(false);
 
   const inputClass = computed(
     (): DynamicClass => ({
@@ -202,6 +203,8 @@
   };
 
   const handleInput = (event: Event | string): void => {
+    valueChanged.value = true;
+
     const value = typeof event === 'string' ? event : (event.target as HTMLInputElement)?.value;
 
     const maskFormat = textInput?.value?.maskFormat;
@@ -266,6 +269,9 @@
     nextTick().then(() => {
       if (textInput.value.enabled && textInput.value.selectOnFocus) {
         inputRef.value?.select();
+      } else {
+        const len = inputValue.value.length;
+        inputRef.value?.setSelectionRange(len, len);
       }
     });
   };
@@ -291,8 +297,12 @@
       (rootProps.autoApply && textInput.value.enabled && parsedDate.value && !props.isMenuOpen) ||
       (textInput.value.applyOnBlur ? !state.actionInMenu : false)
     ) {
-      emit('set-input-date', parsedDate.value);
-      emit('select-date');
+      if (valueChanged.value) {
+        parseInput(inputValue.value);
+        emit('set-input-date', parsedDate.value);
+        emit('select-date');
+      }
+      valueChanged.value = false;
       parsedDate.value = null;
     }
   };
