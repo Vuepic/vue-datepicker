@@ -121,6 +121,7 @@
 
   const {
     rootEmit,
+    state,
     inputValue,
     rootProps,
     defaults: { textInput, ariaLabels, inline, config, range, multiDates, ui, inputAttrs },
@@ -285,9 +286,10 @@
     if (!props.isMenuOpen || (inline.value.enabled && inline.value.input)) {
       emit('blur');
     }
+
     if (
       (rootProps.autoApply && textInput.value.enabled && parsedDate.value && !props.isMenuOpen) ||
-      textInput.value.applyOnBlur
+      (textInput.value.applyOnBlur ? !state.actionInMenu : false)
     ) {
       emit('set-input-date', parsedDate.value);
       emit('select-date');

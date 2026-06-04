@@ -7,6 +7,7 @@
     :aria-label="ariaLabels?.menu"
     :aria-modal="inline.enabled ? undefined : true"
     :class="dpMenuClass"
+    @mousedown="setState('actionInMenu', true)"
     @mouseleave="clearHoverDate"
     @click="handleDpMenuClick"
     @keydown="onKeyDown"
@@ -165,6 +166,7 @@
   };
 
   onMounted(() => {
+    setState('actionInMenu', false);
     menuMount.value = true;
     getCalendarWidth();
     globalThis.addEventListener('resize', getCalendarWidth);
