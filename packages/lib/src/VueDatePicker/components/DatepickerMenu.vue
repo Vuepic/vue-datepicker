@@ -143,7 +143,7 @@
   } = useContext();
   const { isMobile } = useResponsive();
   const { handleEventPropagation, getElWithin, checkStopPropagation, checkKeyDown } = useHelperFns();
-  const { selectCurrentDate } = useModel();
+  const { selectCurrentDate } = useModel(emit);
   useArrowNavigation();
 
   const innerMenuRef = useTemplateRef('inner-menu');
