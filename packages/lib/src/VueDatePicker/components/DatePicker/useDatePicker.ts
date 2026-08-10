@@ -73,7 +73,7 @@ export const useDatePicker = (emit: EmitFn<DatePickerEmits>, triggerCalendarTran
     isAction: boolean = false,
   ): void => {
     if (shouldUpdateMonthView(isAction)) {
-      if (!fromMount && month && year) emitMonthYearChange(instance, month, year);
+      if (!fromMount && month !== null && year !== null) emitMonthYearChange(instance, month, year);
       calendars.value[instance] ??= calendars.value[instance] = { month: 0, year: 0 };
       calendars.value[instance].month = month ?? calendars.value[instance]?.month;
       calendars.value[instance].year = year ?? calendars.value[instance]?.year;
