@@ -80,7 +80,7 @@ export const useInput = () => {
     return null;
   };
 
-  const createMaskedValue = (raw: string, maskFormat: string) => {
+  const createMaskedValue = (raw: string, maskFormat: string, sourceValue?: string) => {
     const tokenPattern = /(YYYY|MM|DD|hh|mm|ss)/g;
     const tokens: string[] = [...maskFormat.matchAll(tokenPattern)].map((m) => m[0]);
     const delimiters: string[] = maskFormat.replace(tokenPattern, '|').split('|').filter(Boolean);
@@ -93,7 +93,14 @@ export const useInput = () => {
       const part = raw.slice(index, index + len);
       if (!part) break;
       masked += part;
-      if (part.length === len && delimiters[i]) masked += delimiters[i];
+      if (part.length === len && delimiters[i]) {
+        const hasMoreRaw = raw.length > index + len;
+        const delimiterPosition = masked.length;
+        const hasDelimiterInSource = sourceValue?.charAt(delimiterPosition) === delimiters[i];
+        if (hasMoreRaw || hasDelimiterInSource) {
+          masked += delimiters[i];
+        }
+      }
       index += len;
     }
     return masked;
