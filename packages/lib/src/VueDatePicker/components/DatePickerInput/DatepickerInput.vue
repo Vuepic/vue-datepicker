@@ -250,10 +250,15 @@
       parseInput((ev.target as HTMLInputElement).value);
     }
 
-    if (textInput.value.tabSubmit && isValidDate(parsedDate.value) && inputValue.value !== '') {
+    if (
+      textInput.value.enabled &&
+      textInput.value.tabSubmit &&
+      isValidDate(parsedDate.value) &&
+      inputValue.value !== ''
+    ) {
       emit('set-input-date', parsedDate.value, true, true);
       parsedDate.value = null;
-    } else if (textInput.value.tabSubmit && inputValue.value === '') {
+    } else if (textInput.value.enabled && textInput.value.tabSubmit && inputValue.value === '') {
       parsedDate.value = null;
       emit('clear');
     }
