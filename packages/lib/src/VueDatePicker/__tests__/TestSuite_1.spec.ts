@@ -8,7 +8,7 @@ import {
   openMenu,
   selectDate,
 } from '@/__tests__/tests-utils.ts';
-import { nextTick } from 'vue';
+import { nextTick, reactive } from 'vue';
 import { enGB } from 'date-fns/locale';
 import { WeekStart } from '@/constants';
 
@@ -126,6 +126,39 @@ describe('Test Suite 1', () => {
 
       const dpClosedMenu = await closeMenu({});
       expect(dpClosedMenu.vm.dpWrapMenuRef()?.value).toBeNull();
+    });
+  });
+
+  describe('Markers', () => {
+    it('Should not throw when clicking a date whose marker is defined via a reactive array (ref/reactive regression)', async () => {
+      const today = new Date();
+      // Mirrors a real-world consumer defining `const markers = ref([...])`: once Vue unwraps the
+      // ref, `.value` is a deeply reactive array, so building it with reactive() here reproduces
+      // that exact shape without needing a ref() unwrap step.
+      const reactiveMarkers = reactive([{ date: today, type: 'dot' as const }]);
+      const dp = await openMenu({ markers: reactiveMarkers, modelValue: null });
+
+      await expect(selectDate(dp, today)).resolves.not.toThrow();
+      expect(dp.emitted('date-click')).toBeTruthy();
+    });
+
+    it('Should still allow selecting a date whose marker is defined via a plain (non-reactive) array', async () => {
+      const today = new Date();
+      const dp = await openMenu({ markers: [{ date: today, type: 'dot' as const }], modelValue: null });
+
+      await expect(selectDate(dp, today)).resolves.not.toThrow();
+      expect(dp.emitted('date-click')).toBeTruthy();
+    });
+
+    it('Should still allow selecting a date whose marker uses a customPosition callback', async () => {
+      const today = new Date();
+      const dp = await openMenu({
+        markers: [{ date: today, type: 'dot' as const, customPosition: () => ({ top: '0px' }) }],
+        modelValue: null,
+      });
+
+      await expect(selectDate(dp, today)).resolves.not.toThrow();
+      expect(dp.emitted('date-click')).toBeTruthy();
     });
   });
 
