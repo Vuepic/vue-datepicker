@@ -553,7 +553,13 @@ export const useDatePicker = (emit: EmitFn<DatePickerEmits>, triggerCalendarTran
   const selectDate = (day: CalendarDay, isNext = false): void => {
     if (isDisabled(day.value) || (!day.current && rootProps.hideOffsetDates))
       return rootEmit('invalid-date', day.value);
-    clickedDate.value = structuredClone(day);
+    // clickedDate is only ever read as a truthy/falsy flag (see shouldUpdateMonthView), so its
+    // `marker` never needs to be present on the clone. Excluding it here avoids structuredClone
+    // failing on data a marker may legitimately carry that can't be structurally cloned - a
+    // reactive Proxy (when markers are supplied via ref()/reactive()) or a customPosition
+    // callback function - while still snapshotting the rest of the day object defensively.
+    const { marker, ...clonableDay } = day;
+    clickedDate.value = { ...structuredClone(clonableDay), marker };
 
     if (!range.value.enabled) return handleSingleDateSelect(day);
 

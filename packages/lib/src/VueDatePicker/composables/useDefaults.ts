@@ -1,4 +1,4 @@
-import { computed } from 'vue';
+import { computed, toRaw } from 'vue';
 
 import { useHelperFns } from '@/composables';
 import {
@@ -213,7 +213,11 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
         ? new Map(
             props.markers.map((marker) => {
               const date = getDate(marker.date);
-              return [getMapKey(date, MAP_KEY_FORMAT.DATE), marker];
+              // Unwrap potential Vue reactivity (e.g. when the consumer defines their markers
+              // array with ref()/reactive()) so downstream consumers - notably the
+              // structuredClone() call in useDatePicker's selectDate() - never receive a
+              // reactive Proxy, which structuredClone cannot clone (DataCloneError).
+              return [getMapKey(date, MAP_KEY_FORMAT.DATE), toRaw(marker)];
             }),
           )
         : null,
