@@ -51,7 +51,8 @@ export const useFormatter = () => {
   };
 
   const formatRangeTextInput = () => {
-    const formatter = (value: Date) => format(value, textInput.value.format as string);
+    const formatter = (value: Date) =>
+      format(value, textInput.value.format as string, { locale: rootProps.locale });
     if (Array.isArray(modelValue.value)) {
       return `${formatter(modelValue.value[0])}${textInput.value.rangeSeparator}${
         modelValue.value[1] ? formatter(modelValue.value[1]) : ''
@@ -65,7 +66,7 @@ export const useFormatter = () => {
     if (state.isInputFocused && modelValue.value) {
       if (Array.isArray(modelValue.value)) return formatRangeTextInput();
       if (typeof textInput.value.format === 'function') return textInput.value.format(modelValue.value as never);
-      return format(modelValue.value, textInput.value.format);
+      return format(modelValue.value, textInput.value.format, { locale: rootProps.locale });
     }
     return formatSelectedDate(modelValue.value);
   };
