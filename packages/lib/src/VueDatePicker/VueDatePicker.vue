@@ -315,7 +315,7 @@
   const selectDate = (): void => {
     if (checkBeforeEmit() && validateBeforeEmit()) {
       emitModelValue();
-      closeMenu();
+      closeMenu(false, true);
     } else {
       rootEmit('invalid-select');
     }
@@ -325,7 +325,7 @@
     updateTextInputWithDateTimeValue();
     emitModelValue();
     if (config.value.closeOnAutoApply && !ignoreClose) {
-      closeMenu();
+      closeMenu(false, true);
     }
   };
 
@@ -357,7 +357,18 @@
     }
   };
 
-  const closeMenu = (fromClickAway = false): void => {
+  /**
+   * Close the menu.
+   *
+   * @param fromClickAway - whether the close was triggered by a click outside the picker.
+   * @param skipInputRevert - skip reverting `inputValue`/internal `modelValue` back to
+   * whatever the external `modelValue` prop currently holds. Pass `true` when the caller just
+   * committed a fresh value via `emitModelValue()` (e.g. auto-apply, explicit Select) - the
+   * revert exists to discard *uncommitted* state (like an in-progress text-input edit) when
+   * the menu closes without a selection, and must not run right after a real commit, since the
+   * external prop hasn't been updated by Vue yet at that point and would be stale.
+   */
+  const closeMenu = (fromClickAway = false, skipInputRevert = false): void => {
     watchRender.value = true;
     if (fromClickAway && modelValue.value && config.value.setDateOnMenuClose) {
       selectDate();
@@ -368,7 +379,7 @@
         setState('menuFocused', false);
         setState('shiftKeyInMenu', false);
         rootEmit('closed');
-        if (inputValue.value) {
+        if (!skipInputRevert && inputValue.value) {
           parseExternalModelValue(modelValueRef.value);
         }
       }
