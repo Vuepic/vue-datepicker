@@ -10,6 +10,7 @@ import {
 } from '@/__tests__/tests-utils.ts';
 import { nextTick } from 'vue';
 import { enGB } from 'date-fns/locale';
+import { de } from 'date-fns/locale';
 import { WeekStart } from '@/constants';
 
 describe('Test Suite 1', () => {
@@ -151,6 +152,39 @@ describe('Test Suite 1', () => {
 
         expect(headers[0].text()).toEqual('Mo');
       });
+    });
+  });
+
+  describe('Text input', () => {
+    it('Should keep the provided locale when formatting the text input on focus', async () => {
+      const dp = await openMenu({
+        modelValue: new Date(2026, 6, 15, 10, 30),
+        locale: de,
+        textInput: { format: 'dd LLLL yyyy HH:mm' },
+        formats: { input: 'dd LLLL yyyy HH:mm' },
+      });
+
+      const input = dp.find('[data-test-id="dp-input"]');
+      await input.trigger('focus');
+      await nextTick();
+
+      expect((input.element as HTMLInputElement).value).toEqual('15 Juli 2026 10:30');
+    });
+
+    it('Should update the formatted text input immediately when locale changes, without requiring focus', async () => {
+      const dp = await openMenu({
+        modelValue: new Date(2026, 5, 21, 10, 30),
+        locale: enGB,
+        formats: { input: 'dd LLLL yyyy HH:mm' },
+      });
+
+      const input = dp.find('[data-test-id="dp-input"]');
+      expect((input.element as HTMLInputElement).value).toEqual('21 June 2026 10:30');
+
+      await dp.setProps({ locale: de });
+      await nextTick();
+
+      expect((input.element as HTMLInputElement).value).toEqual('21 Juni 2026 10:30');
     });
   });
 });
