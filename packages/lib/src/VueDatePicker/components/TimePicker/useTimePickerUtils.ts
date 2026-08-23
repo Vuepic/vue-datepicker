@@ -1,5 +1,5 @@
 import { computed, nextTick } from 'vue';
-import { isAfter, isBefore, setMilliseconds, setSeconds } from 'date-fns';
+import { getHours, getMinutes, getSeconds, isAfter, isBefore, isSameDay, setMilliseconds, setSeconds } from 'date-fns';
 
 import { useContext, useDateUtils } from '@/composables';
 
@@ -12,7 +12,7 @@ export const useTimePickerUtils = () => {
     modelValue,
     time,
     rootProps,
-    defaults: { range, timeConfig },
+    defaults: { range, timeConfig, safeDates },
   } = useContext();
   const { updateFlowStep } = useFlowContext();
 
@@ -160,19 +160,64 @@ export const useTimePickerUtils = () => {
   };
 
   const disabledTimesConfig = computed(() => (ind: number, hoursVal?: number) => {
+    const minMaxDisabled = getMinMaxDisabledTimes(ind, hoursVal);
+
     if (Array.isArray(rootProps.disabledTimes)) {
       const { disabledArr, hours } = getDisabledTimesData(ind, hoursVal);
 
       const timeFound = disabledArr.filter((time) => +time.hours === hours);
       if (timeFound[0]?.minutes === '*') return { hours: [hours], minutes: undefined, seconds: undefined };
       return {
-        hours: [],
-        minutes: timeFound?.map((t) => +t.minutes) ?? [],
-        seconds: timeFound?.map((t) => (t.seconds ? +t.seconds : undefined)) ?? [],
+        hours: minMaxDisabled.hours,
+        minutes: [...(timeFound?.map((t) => +t.minutes) ?? []), ...minMaxDisabled.minutes],
+        seconds: [...(timeFound?.map((t) => (t.seconds ? +t.seconds : undefined)) ?? []), ...minMaxDisabled.seconds],
       };
     }
-    return { hours: [], minutes: [], seconds: [] };
+    return minMaxDisabled;
   });
+
+  /**
+   * Disables hour/minute/second overlay options that fall outside `minDate`/`maxDate`
+   * when either carries a time component and the day currently being edited is the boundary day itself
+   */
+  const getMinMaxDisabledTimes = (ind: number, hoursVal?: number) => {
+    const disabled = { hours: [] as number[], minutes: [] as number[], seconds: [] as number[] };
+
+    const baseDate = (range.value.enabled ? (modelValue.value as Date[])?.[ind] : (modelValue.value as Date)) ?? null;
+    if (!baseDate) return disabled;
+
+    const { hours: selectedHour } = getDisabledTimesData(ind, hoursVal);
+
+    if (safeDates.value.minDate && isSameDay(baseDate, safeDates.value.minDate)) {
+      const minHour = getHours(safeDates.value.minDate);
+      const minMinute = getMinutes(safeDates.value.minDate);
+      const minSecond = getSeconds(safeDates.value.minDate);
+
+      for (let h = 0; h < minHour; h += 1) disabled.hours.push(h);
+      if (selectedHour === minHour) {
+        for (let m = 0; m < minMinute; m += 1) disabled.minutes.push(m);
+        if (timeConfig.value.enableSeconds) {
+          for (let s = 0; s < minSecond; s += 1) disabled.seconds.push(s);
+        }
+      }
+    }
+
+    if (safeDates.value.maxDate && isSameDay(baseDate, safeDates.value.maxDate)) {
+      const maxHour = getHours(safeDates.value.maxDate);
+      const maxMinute = getMinutes(safeDates.value.maxDate);
+      const maxSecond = getSeconds(safeDates.value.maxDate);
+
+      for (let h = maxHour + 1; h < 24; h += 1) disabled.hours.push(h);
+      if (selectedHour === maxHour) {
+        for (let m = maxMinute + 1; m < 60; m += 1) disabled.minutes.push(m);
+        if (timeConfig.value.enableSeconds) {
+          for (let s = maxSecond + 1; s < 60; s += 1) disabled.seconds.push(s);
+        }
+      }
+    }
+
+    return disabled;
+  };
 
   return {
     assignTime,
