@@ -153,4 +153,68 @@ describe('Test Suite 1', () => {
       });
     });
   });
+
+  describe('minDate/maxDate with a time component', () => {
+    beforeEach(() => {
+      vi.setSystemTime(new Date(2026, 1, 5, 9, 0));
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it('Should disable hours before minDate on the minDate day itself', async () => {
+      const dp = await openMenu({
+        minDate: new Date(2026, 1, 10, 11, 0),
+        timeConfig: { timePickerInline: true },
+      });
+
+      await selectDate(dp, new Date(2026, 1, 10));
+      await dp.find('[data-test-id="hours-toggle-overlay-btn-0"]').trigger('click');
+
+      expect(dp.find('[data-test-id="10"]').attributes('aria-disabled')).toEqual('true');
+      expect(dp.find('[data-test-id="11"]').attributes('aria-disabled')).toBeUndefined();
+    });
+
+    it('Should not disable any hours on a day after minDate', async () => {
+      const dp = await openMenu({
+        minDate: new Date(2026, 1, 10, 11, 0),
+        timeConfig: { timePickerInline: true },
+      });
+
+      await selectDate(dp, new Date(2026, 1, 11));
+      await dp.find('[data-test-id="hours-toggle-overlay-btn-0"]').trigger('click');
+
+      expect(dp.find('[data-test-id="10"]').attributes('aria-disabled')).toBeUndefined();
+      expect(dp.find('[data-test-id="11"]').attributes('aria-disabled')).toBeUndefined();
+    });
+
+    it('Should disable minutes before minDate on the boundary hour', async () => {
+      const dp = await openMenu({
+        minDate: new Date(2026, 1, 10, 11, 30),
+        timeConfig: { timePickerInline: true },
+      });
+
+      await selectDate(dp, new Date(2026, 1, 10));
+      await dp.find('[data-test-id="hours-toggle-overlay-btn-0"]').trigger('click');
+      await dp.find('[data-test-id="11"]').trigger('click');
+      await dp.find('[data-test-id="minutes-toggle-overlay-btn-0"]').trigger('click');
+
+      expect(dp.find('[data-test-id="15"]').attributes('aria-disabled')).toEqual('true');
+      expect(dp.find('[data-test-id="35"]').attributes('aria-disabled')).toBeUndefined();
+    });
+
+    it('Should disable hours after maxDate on the maxDate day itself', async () => {
+      const dp = await openMenu({
+        maxDate: new Date(2026, 1, 10, 11, 0),
+        timeConfig: { timePickerInline: true },
+      });
+
+      await selectDate(dp, new Date(2026, 1, 10));
+      await dp.find('[data-test-id="hours-toggle-overlay-btn-0"]').trigger('click');
+
+      expect(dp.find('[data-test-id="12"]').attributes('aria-disabled')).toEqual('true');
+      expect(dp.find('[data-test-id="11"]').attributes('aria-disabled')).toBeUndefined();
+    });
+  });
 });
