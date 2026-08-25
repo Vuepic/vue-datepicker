@@ -1,11 +1,13 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { addMonths, subMonths } from 'date-fns';
+import { enUS } from 'date-fns/locale';
 import {
   clearInput,
   closeMenu,
   getMonthToggleBtn,
   getMonthToggleText,
   openMenu,
+  openMenuWithFocusedInput,
   selectDate,
 } from '@/__tests__/tests-utils.ts';
 import { nextTick } from 'vue';
@@ -151,6 +153,62 @@ describe('Test Suite 1', () => {
 
         expect(headers[0].text()).toEqual('Mo');
       });
+    });
+  });
+
+  describe('Arrow navigation', () => {
+    it('Should keep focus on the text input when the menu opens while typing', async () => {
+      const dp = await openMenuWithFocusedInput({ textInput: true, arrowNavigation: true });
+      const input = dp.find('[data-test-id="dp-input"]');
+
+      expect(document.activeElement).toBe(input.element);
+
+      dp.unmount();
+    });
+  });
+
+  describe('Text input format (AM/PM)', () => {
+    const props = {
+      locale: enUS,
+      timeConfig: { enableTimePicker: true, is24: false },
+      textInput: { format: 'MM/dd/yyyy hh:mm aa' },
+    };
+
+    const typeAndSubmit = async (dp: Awaited<ReturnType<typeof openMenu>>, value: string) => {
+      const input = dp.find<HTMLInputElement>('[data-test-id="dp-input"]');
+      await input.setValue(value);
+      await input.trigger('keydown', { key: 'Enter' });
+      const emitted = dp.emitted('update:model-value');
+      return emitted?.[emitted.length - 1]?.[0] as Date | undefined;
+    };
+
+    it('[control] Should parse a plain 24h date+time with no AM/PM token', async () => {
+      const dp = await openMenu({ textInput: { format: 'MM/dd/yyyy HH:mm' } });
+      const value = await typeAndSubmit(dp, '07/01/2026 14:00');
+
+      expect(value?.getHours()).toBe(14);
+    });
+
+    it('Should parse a PM time as 24h hours (12:00 PM -> 12)', async () => {
+      const dp = await openMenu(props);
+      const value = await typeAndSubmit(dp, '07/01/2026 12:00 PM');
+
+      expect(value?.getHours()).toBe(12);
+    });
+
+    it('Should parse a 12 AM time as midnight (12:00 AM -> 0)', async () => {
+      const dp = await openMenu(props);
+      const value = await typeAndSubmit(dp, '07/01/2026 12:00 AM');
+
+      expect(value?.getHours()).toBe(0);
+    });
+
+    it('Should parse an afternoon PM time correctly (01:30 PM -> 13)', async () => {
+      const dp = await openMenu(props);
+      const value = await typeAndSubmit(dp, '07/01/2026 01:30 PM');
+
+      expect(value?.getHours()).toBe(13);
+      expect(value?.getMinutes()).toBe(30);
     });
   });
 });

@@ -63,15 +63,15 @@ export const useArrowNavigation = () => {
     if (![EventKey.arrowUp, EventKey.arrowDown, EventKey.arrowLeft, EventKey.arrowRight].includes(ev.key as never)) {
       return;
     }
-    buildMatrix();
-
-    ev.preventDefault();
 
     const currentElement = document.activeElement as HTMLElement;
 
     if (!currentElement?.hasAttribute('data-dp-action-element')) {
       return;
     }
+
+    buildMatrix();
+    ev.preventDefault();
 
     let currentRowIndex = -1;
     let currentColIndex = -1;
@@ -171,9 +171,14 @@ export const useArrowNavigation = () => {
     }
   };
 
+  const isTypingInTextInput = () =>
+    textInput.value.enabled && document.activeElement?.getAttribute('data-test-id') === 'dp-input';
+
   onMounted(() => {
     if (rootProps.arrowNavigation) {
-      focusInitial(false);
+      if (!isTypingInTextInput()) {
+        focusInitial(false);
+      }
       document.addEventListener('keydown', handleKeyDown);
     }
   });
