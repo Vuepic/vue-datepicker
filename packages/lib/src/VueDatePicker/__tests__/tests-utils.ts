@@ -29,6 +29,10 @@ export const getMonthToggleBtn = (dp: DPInstance, index = 0) => {
   return dp.find(`[data-test-id="month-toggle-overlay-${index}"]`);
 };
 
+export const getYearToggleBtn = (dp: DPInstance, index = 0) => {
+  return dp.find(`[data-test-id="year-toggle-overlay-${index}"]`);
+};
+
 export const selectDate = async (dp: DPInstance, date: Date) => {
   await dp.find(`[data-test-id="dp-${format(date, 'yyyy-MM-dd')}"]`).trigger('click');
 };

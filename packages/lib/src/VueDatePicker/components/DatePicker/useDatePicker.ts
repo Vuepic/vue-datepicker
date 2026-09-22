@@ -6,6 +6,7 @@ import {
   getHours,
   getMinutes,
   getMonth,
+  differenceInMonths,
   getSeconds,
   getYear,
   set,
@@ -177,9 +178,8 @@ export const useDatePicker = (emit: EmitFn<DatePickerEmits>, triggerCalendarTran
   const getRangeFocusIndex = (dates: Date[]) => {
     if (multiCalendars.value.count) {
       if (multiCalendars.value.solo) return 0;
-      const startMonth = getMonth(dates[0]);
-      const endMonth = getMonth(dates[1]);
-      const showInTheSameView = Math.abs(endMonth - startMonth) < multiCalendars.value.count;
+      const difference = differenceInMonths(dates[0], dates[1]);
+      const showInTheSameView = Math.abs(difference) < multiCalendars.value.count;
       return showInTheSameView ? 0 : 1;
     }
     return 1;
