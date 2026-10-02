@@ -129,6 +129,22 @@ describe('Test Suite 1', () => {
     });
   });
 
+  describe('time picker overlay', () => {
+    it('Should not leave the calendar inert when the menu is closed while the overlay is open', async () => {
+      const dp = await openMenu({ autoApply: true });
+
+      await dp.find('[data-test-id="open-time-picker-btn"]').trigger('click');
+      expect(dp.find('.dp--calendar').attributes('inert')).toBeDefined();
+
+      dp.vm.closeMenu();
+      await nextTick();
+      dp.vm.openMenu();
+      await nextTick();
+
+      expect(dp.find('.dp--calendar').attributes('inert')).toBeUndefined();
+    });
+  });
+
   describe('Localization', () => {
     describe('Week start day', () => {
       it('Should set Sunday as first day of the week', async () => {
