@@ -83,7 +83,7 @@
           :aria-label="ariaLabels?.decrementValue(timeInput.type)"
           tabindex="0"
           :data-dp-action-element="level"
-          :disabled="boolHtmlAttribute(checkOverlayDisabled(timeInput.type))"
+          :disabled="boolHtmlAttribute(disabled)"
           @keydown="checkKeyDown($event, () => handleTimeValue(timeInput.type, false, { keyboard: true }), true)"
           @click="config.timeArrowHoldThreshold ? undefined : handleTimeValue(timeInput.type, false)"
           @mousedown="config.timeArrowHoldThreshold ? handleTimeValue(timeInput.type, false) : undefined"

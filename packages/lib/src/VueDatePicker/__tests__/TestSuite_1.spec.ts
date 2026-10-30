@@ -129,6 +129,22 @@ describe('Test Suite 1', () => {
     });
   });
 
+  describe('Time picker', () => {
+    it('Should not disable the decrement arrow when noMinutesOverlay is enabled', async () => {
+      const dp = await openMenu({ timePicker: true, timeConfig: { noMinutesOverlay: true } });
+
+      expect(dp.find('[data-test-id="minutes-time-dec-btn-0"]').attributes('disabled')).toBeUndefined();
+      expect(dp.find('[data-test-id="minutes-time-inc-btn-0"]').attributes('disabled')).toBeUndefined();
+    });
+
+    it('Should not disable the decrement arrow when noHoursOverlay is enabled', async () => {
+      const dp = await openMenu({ timePicker: true, timeConfig: { noHoursOverlay: true } });
+
+      expect(dp.find('[data-test-id="hours-time-dec-btn-0"]').attributes('disabled')).toBeUndefined();
+      expect(dp.find('[data-test-id="hours-time-inc-btn-0"]').attributes('disabled')).toBeUndefined();
+    });
+  });
+
   describe('Localization', () => {
     describe('Week start day', () => {
       it('Should set Sunday as first day of the week', async () => {
