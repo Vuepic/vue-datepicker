@@ -22,6 +22,7 @@
       <div
         v-if="shouldRenderMenuWrap"
         ref="dp-menu-wrap"
+        :inert="isPopupLocked"
         :class="{
           'dp--menu-wrapper': !inline.enabled,
           'dp--outer-menu-wrap': true,
@@ -121,6 +122,7 @@
 
   const slots = useSlots();
   const isOpen = ref(false);
+  const isPopupLocked = computed(() => !inline.value.enabled && (rootProps.disabled || rootProps.readonly));
   const shouldRenderMenuWrap = ref(inline.value.enabled);
   const shouldRender = ref(inline.value.enabled || rootProps.centered);
   const modelValueRef = toRef(rootProps, 'modelValue');
@@ -376,6 +378,12 @@
       rootEmit('blur');
     }
   };
+
+  watch(isPopupLocked, (locked) => {
+    if (locked && isOpen.value) {
+      closeMenu();
+    }
+  });
 
   const onMenuAfterLeave = () => {
     if (!inline.value.enabled && !isOpen.value) {
