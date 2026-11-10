@@ -78,6 +78,19 @@ describe('Test Suite 1', () => {
     });
   });
 
+  describe('locking an open popup', () => {
+    it.each(['disabled', 'readonly'] as const)('Should close the menu when %s becomes true', async (prop) => {
+      const date = new Date(2026, 10, 10);
+      const dp = await openMenu({ modelValue: date, autoApply: true });
+      expect(dp.find('.dp--menu').exists()).toBe(true);
+
+      await dp.setProps({ [prop]: true });
+
+      expect(dp.find('.dp--menu').exists()).toBe(false);
+      expect(dp.emitted('update:model-value')).toBeUndefined();
+    });
+  });
+
   describe('range toggle', () => {
     const frozenSystemDate = new Date(2026, 2, 15, 12, 30, 30);
     beforeEach(() => {
