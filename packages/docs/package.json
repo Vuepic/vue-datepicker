@@ -1,6 +1,6 @@
 {
   "name": "docs",
-  "version": "14.0.0",
+  "version": "14.1.0",
   "scripts": {
     "dev": "vitepress dev docs",
     "build": "vitepress build docs",
@@ -8,8 +8,8 @@
   },
   "devDependencies": {
     "@vuepic/vue-datepicker": "workspace:*",
-    "date-fns": "^4.2.1",
-    "vitepress": "2.0.0-alpha.17",
-    "vue": "^3.5.34"
+    "date-fns": "^4.4.0",
+    "vitepress": "2.0.0-alpha.21",
+    "vue": "^3.5.46"
   }
 }

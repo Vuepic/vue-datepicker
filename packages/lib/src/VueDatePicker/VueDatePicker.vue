@@ -128,9 +128,11 @@
   const modelValueRef = toRef(rootProps, 'modelValue');
   const timezoneRef = toRef(rootProps, 'timezone');
 
-  const dpWrapMenuRef = useTemplateRef('dp-menu-wrap');
+  // Explicit types: these refs are exposed via defineExpose, so letting vue-tsc infer them from
+  // this component's own template creates a circular type reference.
+  const dpWrapMenuRef = useTemplateRef<HTMLDivElement>('dp-menu-wrap');
   const dpMenuRef = useTemplateRef('dp-menu');
-  const inputRef = useTemplateRef('input-cmp');
+  const inputRef = useTemplateRef<InstanceType<typeof DatepickerInput>>('input-cmp');
   const pickerWrapperRef = useTemplateRef('picker-wrapper');
   const menuArrowRef = useTemplateRef('menu-arrow');
 
@@ -215,16 +217,14 @@
 
   const { parseExternalModelValue, emitModelValue, formatInputValue, checkBeforeEmit } = useExternalInternalMapper();
 
-  const wrapperClass = computed(
-    (): DynamicClass => ({
-      'dp--main': true,
-      'dp--theme-dark': rootProps.dark,
-      'dp--theme-light': !rootProps.dark,
-      'dp--flex-display': inline.value.enabled,
-      'dp--flex-display-collapsed': collapse.value,
-      'dp--flex-display-with-input': inline.value.input,
-    }),
-  );
+  const wrapperClass = computed((): DynamicClass => ({
+    'dp--main': true,
+    'dp--theme-dark': rootProps.dark,
+    'dp--theme-light': !rootProps.dark,
+    'dp--flex-display': inline.value.enabled,
+    'dp--flex-display-collapsed': collapse.value,
+    'dp--flex-display-with-input': inline.value.input,
+  }));
 
   const theme = computed(() => (rootProps.dark ? 'dp--theme-dark' : 'dp--theme-light'));
 

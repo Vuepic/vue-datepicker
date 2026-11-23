@@ -119,7 +119,7 @@
         </button>
       </slot>
     </div>
-    <template v-for="timeInput in timeInputOverlays" :key="timeInput">
+    <template v-for="timeInput in timeInputOverlays" :key="timeInput.type">
       <transition :name="transitionName(overlays[timeInput.type])" :css="showTransition">
         <SelectionOverlay
           v-if="overlays[timeInput.type]"
@@ -277,19 +277,17 @@
 
   const subTime = (initial: Duration, toSub: Duration) => sub(set(getDate(), initial), toSub);
 
-  const timeColClass = computed(
-    (): DynamicClass => ({
-      'dp--time-col': true,
-      'dp--time-col-block': !timeConfig.value.timePickerInline,
-      'dp--time-col-reg-block':
-        !timeConfig.value.enableSeconds && timeConfig.value.is24 && !timeConfig.value.timePickerInline,
-      'dp--time-col-reg-inline':
-        !timeConfig.value.enableSeconds && timeConfig.value.is24 && timeConfig.value.timePickerInline,
-      'dp--time-col-reg-with-button': !timeConfig.value.enableSeconds && !timeConfig.value.is24,
-      'dp--time-col-sec': timeConfig.value.enableSeconds && timeConfig.value.is24,
-      'dp--time-col-sec-with-button': timeConfig.value.enableSeconds && !timeConfig.value.is24,
-    }),
-  );
+  const timeColClass = computed((): DynamicClass => ({
+    'dp--time-col': true,
+    'dp--time-col-block': !timeConfig.value.timePickerInline,
+    'dp--time-col-reg-block':
+      !timeConfig.value.enableSeconds && timeConfig.value.is24 && !timeConfig.value.timePickerInline,
+    'dp--time-col-reg-inline':
+      !timeConfig.value.enableSeconds && timeConfig.value.is24 && timeConfig.value.timePickerInline,
+    'dp--time-col-reg-with-button': !timeConfig.value.enableSeconds && !timeConfig.value.is24,
+    'dp--time-col-sec': timeConfig.value.enableSeconds && timeConfig.value.is24,
+    'dp--time-col-sec-with-button': timeConfig.value.enableSeconds && !timeConfig.value.is24,
+  }));
 
   const isCompact = computed(
     () => timeConfig.value.timePickerInline && range.value.enabled && !multiCalendars.value.count,

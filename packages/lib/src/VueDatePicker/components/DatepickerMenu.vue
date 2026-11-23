@@ -231,14 +231,12 @@
     'dp--menu-unclickable dp-menu-loading': rootProps.loading,
   }));
 
-  const dpMenuClass = computed(
-    (): DynamicClass => ({
-      'dp--menu': true,
-      'dp--menu-index': !inline.value.enabled,
-      'dp--relative': inline.value.enabled,
-      ...ui.value.menu,
-    }),
-  );
+  const dpMenuClass = computed((): DynamicClass => ({
+    'dp--menu': true,
+    'dp--menu-index': !inline.value.enabled,
+    'dp--relative': inline.value.enabled,
+    ...ui.value.menu,
+  }));
 
   const handleDpMenuClick = (ev: Event) => {
     checkStopPropagation(ev, config.value, true);

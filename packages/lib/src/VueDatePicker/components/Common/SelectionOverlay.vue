@@ -37,7 +37,9 @@
             :data-dp-action-element="level ?? 1"
             :data-dp-element-active="col.active ? (level ?? 1) : undefined"
             :data-dp-focus-value="col.value"
-            :data-dp-focus-target="focusValue !== undefined && focusValue !== null && col.value === focusValue ? true : undefined"
+            :data-dp-focus-target="
+              focusValue !== undefined && focusValue !== null && col.value === focusValue ? true : undefined
+            "
             tabindex="0"
             :data-test-id="col.text"
             @click.prevent="onClick(col)"
@@ -131,13 +133,11 @@
   });
 
   // Dynamic class  for the overlay
-  const dpOverlayClass = computed(
-    (): DynamicClass => ({
-      'dp--overlay': true,
-      'dp--overlay-absolute': !props.useRelative,
-      'dp--overlay-relative': props.useRelative,
-    }),
-  );
+  const dpOverlayClass = computed((): DynamicClass => ({
+    'dp--overlay': true,
+    'dp--overlay-absolute': !props.useRelative,
+    'dp--overlay-relative': props.useRelative,
+  }));
 
   const dpOverlayStyle = computed(() =>
     props.useRelative ? { height: `${props.height}px`, width: `var(--dp-menu-min-width)` } : undefined,
@@ -150,15 +150,13 @@
   /**
    * Dynamic class for action button
    */
-  const actionButtonClass = computed(
-    (): DynamicClass => ({
-      'dp--btn-base dp--bg-none': true,
-      'dp--button': true,
-      'dp--overlay-action': true,
-      'dp--over-action-scroll': scrollable.value,
-      'dp--button-bottom': props.isLast,
-    }),
-  );
+  const actionButtonClass = computed((): DynamicClass => ({
+    'dp--btn-base dp--bg-none': true,
+    'dp--button': true,
+    'dp--overlay-action': true,
+    'dp--over-action-scroll': scrollable.value,
+    'dp--button-bottom': props.isLast,
+  }));
 
   const containerClass = computed(() => ({
     'dp--overlay-container': true,

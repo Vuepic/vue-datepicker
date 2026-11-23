@@ -136,21 +136,19 @@
   const isFocused = ref(false);
   const valueChanged = ref(false);
 
-  const inputClass = computed(
-    (): DynamicClass => ({
-      'dp--pointer': !rootProps.disabled && !rootProps.readonly && !textInput.value.enabled,
-      'dp--disabled': rootProps.disabled,
-      'dp--input-readonly': !textInput.value.enabled,
-      'dp--input': true,
-      'dp--input-not-clearable': !inputAttrs.value.clearable,
-      'dp--input-icon-pad': !inputAttrs.value.hideInputIcon,
-      'dp--input-valid': typeof inputAttrs.value.state === 'boolean' ? inputAttrs.value.state : false,
-      'dp--input-invalid': typeof inputAttrs.value.state === 'boolean' ? !inputAttrs.value.state : false,
-      'dp--input-focus': isFocused.value || props.isMenuOpen,
-      'dp--input-reg': !textInput.value.enabled,
-      ...ui.value.input,
-    }),
-  );
+  const inputClass = computed((): DynamicClass => ({
+    'dp--pointer': !rootProps.disabled && !rootProps.readonly && !textInput.value.enabled,
+    'dp--disabled': rootProps.disabled,
+    'dp--input-readonly': !textInput.value.enabled,
+    'dp--input': true,
+    'dp--input-not-clearable': !inputAttrs.value.clearable,
+    'dp--input-icon-pad': !inputAttrs.value.hideInputIcon,
+    'dp--input-valid': typeof inputAttrs.value.state === 'boolean' ? inputAttrs.value.state : false,
+    'dp--input-invalid': typeof inputAttrs.value.state === 'boolean' ? !inputAttrs.value.state : false,
+    'dp--input-focus': isFocused.value || props.isMenuOpen,
+    'dp--input-reg': !textInput.value.enabled,
+    ...ui.value.input,
+  }));
 
   const handleOnEmptyInput = () => {
     emit('set-input-date', null);

@@ -207,11 +207,9 @@
   };
 
   // Class object for calendar wrapper
-  const calendarWrapClass = computed(
-    (): DynamicClass => ({
-      ...ui.value.calendar,
-    }),
-  );
+  const calendarWrapClass = computed((): DynamicClass => ({
+    ...ui.value.calendar,
+  }));
 
   const getDefaultMarker = (marker: Marker): Marker => ({ type: 'dot', ...marker });
 

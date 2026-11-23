@@ -129,7 +129,7 @@ export interface RootSlots {
   'tp-inline-arrow-up'(props: any): any;
   'tp-inline-arrow-down'(props: any): any;
   'clear-icon'(props: { clear: (ev?: Event) => void }): any;
-  'arrow'(props: any): any;
+  arrow(props: any): any;
   trigger(props: any): any;
   'menu-header'(props: {}): any;
   day(props: { date: Date; day: number }): any;
