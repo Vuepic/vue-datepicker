@@ -1,5 +1,7 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { addMonths, subMonths } from 'date-fns';
+import { mount, flushPromises } from '@vue/test-utils';
+import VueDatePickerRoot from '@/VueDatePickerRoot.vue';
 import {
   clearInput,
   closeMenu,
@@ -118,6 +120,55 @@ describe('Test Suite 1', () => {
       expect(dp.emitted('date-click')![0]![0]).toEqual(expectedModelDate);
     });
   });
+
+  describe('text input', () => {
+    it('Should allow deleting a date separator with mask and auto apply enabled', async () => {
+      const minYr = 2013;
+      const maxYr = 3026;
+      const minDate = new Date(minYr, 0, 1);
+      const maxDate = new Date();
+      maxDate.setFullYear(maxYr);
+
+      const dp = await openMenu({
+        modelValue: minDate,
+        autoApply: true,
+        minDate,
+        maxDate,
+        yearRange: [minYr, maxYr],
+        textInput: {
+          format: 'dd/MM/yyyy',
+          maskFormat: 'DD/MM/YYYY',
+          applyOnBlur: true,
+        },
+        timeConfig: {
+          enableTimePicker: false,
+        },
+      });
+
+      const input = dp.find(`[data-test-id="dp-input"]`);
+      await input.trigger('focus');
+      await nextTick();
+
+      await input.setValue('01/01/');
+      await input.setValue('01/01');
+
+      expect((input.element as HTMLInputElement).value).toEqual('01/01');
+ 
+  });
+    
+     describe('Events', () => {
+    it('Should emit update-month-year when navigating to January', async () => {
+      const dp = await openMenu({ modelValue: new Date(2025, 1, 15) }); // February 2025
+      await nextTick();
+
+      await dp.find(`[data-dp-element="action-prev"]`).trigger('click');
+      await nextTick();
+
+      const emitted = dp.emitted('update-month-year');
+
+      expect(emitted).toBeTruthy();
+      expect(emitted![emitted!.length - 1][0]).toEqual({ month: 0, year: 2025, instance: 0 });
+    });
 
   describe('DOM', () => {
     it('Should render menu wrap only while menu is open', async () => {
