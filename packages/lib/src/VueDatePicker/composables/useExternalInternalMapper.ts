@@ -47,6 +47,14 @@ export const useExternalInternalMapper = () => {
     },
   );
 
+  // Re-format immediately whenever the locale changes so the input text stays in sync.
+  watch(
+    () => rootProps.locale,
+    () => {
+      formatInputValue();
+    },
+  );
+
   const getTimeVal = (date?: Date): TimeModel | ModelTypeConverted | null => {
     if (!date) return null;
     if (rootProps.modelType) return toModelType(date);
