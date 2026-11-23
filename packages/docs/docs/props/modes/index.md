@@ -386,6 +386,10 @@ Since this prop uses [`range.partialRange`](/props/modes-configuration/#partialr
 This is only compatible with date pickers; specific modes are not supported
 :::
 
+:::tip
+Want to require both a start and end time, even when the user only clicks a single day (e.g. building a 1-day event with its own start and end time)? See [`range.requireEndTime`](/props/modes-configuration/#requireendtime).
+:::
+
 <GlobalDemo :modelAuto="true" :range="true" placeholder="Select single date or range"></GlobalDemo>
 
 ::: details Code Example

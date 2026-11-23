@@ -40,3 +40,17 @@ export const getMonthToggleText = (date: Date) => {
 export const clearInput = (dp: DPInstance) => {
   return dp.find(`[data-test-id="clear-input-value-btn"]`).trigger('click');
 };
+
+// Attaches the component to `document.body` and focuses the text input before opening menu,
+// so `document.activeElement` behaves like in a real browser
+export const openMenuWithFocusedInput = async (props: Partial<RootProps>): Promise<DPInstance> => {
+  const dp = mount(VueDatePickerRoot, { props, attachTo: document.body });
+
+  dp.find<HTMLInputElement>('[data-test-id="dp-input"]').element.focus();
+
+  dp.vm.openMenu();
+  await flushPromises();
+
+  await dp.vm.$nextTick();
+  return dp;
+};
