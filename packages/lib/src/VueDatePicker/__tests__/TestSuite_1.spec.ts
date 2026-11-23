@@ -119,6 +119,21 @@ describe('Test Suite 1', () => {
     });
   });
 
+  describe('Events', () => {
+    it('Should emit update-month-year when navigating to January', async () => {
+      const dp = await openMenu({ modelValue: new Date(2025, 1, 15) }); // February 2025
+      await nextTick();
+
+      await dp.find(`[data-dp-element="action-prev"]`).trigger('click');
+      await nextTick();
+
+      const emitted = dp.emitted('update-month-year');
+
+      expect(emitted).toBeTruthy();
+      expect(emitted![emitted!.length - 1][0]).toEqual({ month: 0, year: 2025, instance: 0 });
+    });
+  });
+
   describe('DOM', () => {
     it('Should render menu wrap only while menu is open', async () => {
       const dpOpenedMenu = await openMenu({});
