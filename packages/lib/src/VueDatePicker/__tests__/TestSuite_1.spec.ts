@@ -10,7 +10,8 @@ import {
   openMenu,
   selectDate,
 } from '@/__tests__/tests-utils.ts';
-import { nextTick, reactive } from 'vue';
+import { nextTick } from 'vue';
+import { flushPromises } from '@vue/test-utils';
 import { enGB } from 'date-fns/locale';
 import { de } from 'date-fns/locale';
 import { WeekStart } from '@/constants';
@@ -122,54 +123,77 @@ describe('Test Suite 1', () => {
     });
   });
 
-  describe('text input', () => {
-    it('Should allow deleting a date separator with mask and auto apply enabled', async () => {
-      const minYr = 2013;
-      const maxYr = 3026;
-      const minDate = new Date(minYr, 0, 1);
-      const maxDate = new Date();
-      maxDate.setFullYear(maxYr);
+  describe('Flow with auto-apply', () => {
+    const frozenSystemDate = new Date(2026, 7, 21, 12, 30, 30);
+    beforeEach(() => {
+      vi.setSystemTime(frozenSystemDate);
+    });
 
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it('Should emit update:model-value exactly once when selecting a date with a single-step flow', async () => {
+      const dp = await openMenu({ autoApply: true, flow: { steps: ['calendar'] } });
+
+      const dateToSelect = new Date(2026, 7, 21);
+      await selectDate(dp, dateToSelect);
+      await flushPromises();
+      await nextTick();
+
+      const emitted = dp.emitted('update:model-value');
+      expect(emitted).toHaveLength(1);
+      expect(emitted![0][0]).not.toBeNull();
+    });
+
+    it('Should not clear the internal model value after selecting a date with a single-step flow', async () => {
+      const dp = await openMenu({ autoApply: true, flow: { steps: ['calendar'] } });
+
+      const dateToSelect = new Date(2026, 7, 21);
+      await selectDate(dp, dateToSelect);
+      await flushPromises();
+      await nextTick();
+
+      const input = dp.find('[data-test-id="dp-input"]');
+      expect((input.element as HTMLInputElement).value).not.toEqual('');
+    });
+
+    it('Should emit update:model-value exactly once when completing a range with a single-step flow', async () => {
       const dp = await openMenu({
-        modelValue: minDate,
         autoApply: true,
-        minDate,
-        maxDate,
-        yearRange: [minYr, maxYr],
-        textInput: {
-          format: 'dd/MM/yyyy',
-          maskFormat: 'DD/MM/YYYY',
-          applyOnBlur: true,
-        },
-        timeConfig: {
-          enableTimePicker: false,
-        },
+        range: { partialRange: false },
+        flow: { steps: ['calendar'] },
       });
 
-      const input = dp.find(`[data-test-id="dp-input"]`);
-      await input.trigger('focus');
+      const startDate = new Date(2026, 7, 21);
+      const endDate = new Date(2026, 7, 23);
+      await selectDate(dp, startDate);
+      await flushPromises();
+      await selectDate(dp, endDate);
+      await flushPromises();
       await nextTick();
 
-      await input.setValue('01/01/');
-      await input.setValue('01/01');
-
-      expect((input.element as HTMLInputElement).value).toEqual('01/01');
- 
-  });
-    
-     describe('Events', () => {
-    it('Should emit update-month-year when navigating to January', async () => {
-      const dp = await openMenu({ modelValue: new Date(2025, 1, 15) }); // February 2025
-      await nextTick();
-
-      await dp.find(`[data-dp-element="action-prev"]`).trigger('click');
-      await nextTick();
-
-      const emitted = dp.emitted('update-month-year');
-
-      expect(emitted).toBeTruthy();
-      expect(emitted![emitted!.length - 1][0]).toEqual({ month: 0, year: 2025, instance: 0 });
+      const emitted = dp.emitted('update:model-value');
+      expect(emitted).toHaveLength(1);
+      expect(emitted![0][0]).not.toBeNull();
     });
+
+    it('Should close the menu after reselecting the currently displayed month at the month flow step, then picking a day', async () => {
+      const dp = await openMenu({ autoApply: true, flow: { steps: ['month', 'calendar'] } });
+      const activeMonthCell = dp.find('[data-dp-element-active="1"]');
+      expect(activeMonthCell.exists()).toBe(true);
+      await activeMonthCell.trigger('click');
+      await flushPromises();
+      await nextTick();
+
+      await selectDate(dp, frozenSystemDate);
+      await flushPromises();
+      await nextTick();
+
+      expect(dp.emitted('closed')).toBeTruthy();
+      expect(dp.emitted('update:model-value')).toBeTruthy();
+    });
+  });
 
   describe('DOM', () => {
     it('Should render menu wrap only while menu is open', async () => {

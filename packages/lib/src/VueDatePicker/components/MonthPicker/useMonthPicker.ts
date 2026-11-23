@@ -133,7 +133,7 @@ export const useMonthPicker = (emit: EmitFn<MonthPickerEmits>) => {
     const date = modelValue.value ? (modelValue.value as Date) : resetDate(getDate());
     modelValue.value = set(date, { month, year: year.value(instance) });
     emit('auto-apply');
-    updateFlowStep('month');
+    updateFlowStep('month', true);
   };
 
   const selectRangedMonth = (month: number, instance: number) => {

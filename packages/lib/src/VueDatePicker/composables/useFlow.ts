@@ -6,7 +6,7 @@ import { useContext } from '@/composables/useContext.ts';
 import type { PickerSection } from '@/types';
 
 export const FlowKey = Symbol('FlowKey') as InjectionKey<{
-  updateFlowStep: (step: PickerSection) => void;
+  updateFlowStep: (step: PickerSection, skipAutoApplyEmit?: boolean) => void;
   childMount: (child?: CMP) => void;
   flowStep: Readonly<Ref<PickerSection | undefined>>;
 }>;
@@ -40,7 +40,21 @@ export const useFlow = (dynCmpRef: Ref, emit: EmitFn<{ 'auto-apply': [ignoreClos
     }
   };
 
-  const updateFlowStep = (step: PickerSection): void => {
+  /**
+   * Advance the flow to the next configured step.
+   *
+   * When there is no next step (the current step is the last one in the flow),
+   * this schedules its own `auto-apply` emission on `nextTick` - this is required for
+   * steps whose callers (e.g. time steps in `useTimePickerUtils`) don't emit `auto-apply`
+   * themselves.
+   *
+   * Some callers (e.g. calendar day selection, range selection, month selection) already
+   * schedule their own `auto-apply` emission independently of the flow. For those, pass
+   * `skipAutoApplyEmit = true` to avoid a duplicate `auto-apply` emission - which, on the
+   * last flow step, would fire once with the selected value and then a second time with a
+   * stale/cleared value after the menu has already closed.
+   */
+  const updateFlowStep = (step: PickerSection, skipAutoApplyEmit = false): void => {
     if (flow.value?.steps?.length) {
       if (flowStep.value === step) {
         const nextStep = flow.value.steps.at(flow.value.steps.indexOf(flowStep.value) + 1);
@@ -48,7 +62,7 @@ export const useFlow = (dynCmpRef: Ref, emit: EmitFn<{ 'auto-apply': [ignoreClos
           flowStep.value = nextStep;
           rootEmit('flow-step', flowStep.value);
           executeFlow();
-        } else if (rootProps.autoApply) {
+        } else if (rootProps.autoApply && !skipAutoApplyEmit) {
           nextTick().then(() => emit('auto-apply'));
         }
       }
