@@ -285,6 +285,33 @@ describe('Test Suite 1', () => {
     );
   });
 
+  describe('Trigger slot keyboard support', () => {
+    it('Should open the menu when Enter is pressed on focusable custom trigger content', async () => {
+      const dp = mount(VueDatePickerRoot, {
+        slots: { trigger: '<div class="custom-trigger" tabindex="0">Pick a date</div>' },
+      });
+      await flushPromises();
+
+      await dp.find('.custom-trigger').trigger('keydown', { key: 'Enter', code: 'Enter' });
+      await flushPromises();
+
+      expect(dp.emitted('open')).toHaveLength(1);
+      expect(dp.find('.dp--menu').exists()).toBe(true);
+    });
+
+    it('Should leave Enter on a native button trigger to the browser-generated click', async () => {
+      const dp = mount(VueDatePickerRoot, {
+        slots: { trigger: '<button class="custom-trigger" type="button">Pick a date</button>' },
+      });
+      await flushPromises();
+
+      await dp.find('.custom-trigger').trigger('keydown', { key: 'Enter', code: 'Enter' });
+      await flushPromises();
+
+      expect(dp.emitted('open')).toBeUndefined();
+    });
+  });
+
   describe('DOM', () => {
     it('Should render menu wrap only while menu is open', async () => {
       const dpOpenedMenu = await openMenu({});

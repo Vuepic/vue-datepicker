@@ -18,7 +18,7 @@ export type MaybeDate = DateValue | null | undefined;
 
 export type OptionalDate = Date | string | null;
 
-export type ModelValue =
+export type DefinedModelValue =
   | Date
   | Date[]
   | string
@@ -29,8 +29,9 @@ export type ModelValue =
   | MonthModel[]
   | number
   | number[]
-  | null
-  | undefined;
+  | null;
+
+export type ModelValue = DefinedModelValue | undefined;
 
 export type TimeObj = { hours: number; minutes: number; seconds: number };
 

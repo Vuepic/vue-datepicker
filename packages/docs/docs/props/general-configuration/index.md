@@ -16,49 +16,49 @@ v-model binding
 Different modes require different types for `model-value`
 
 - Exception to this rule is if you use [`model-type`](#model-type)
-  :::
+:::
 
 :::info Date Picker
 
 - Single - `Date`
 - Range - `[Date, Date]` or `[Date, null]` in case of partial range
-  :::
+:::
 
 :::info Time Picker
 
 - Single - `{ hours: number; minutes: number; seconds?: number }`
 - Range - `{ hours: number; minutes: number; seconds?: number }[]`
-  :::
+:::
 
 :::info Week Picker
 
 - Single - `[Date, Date]`
 - Range - `[[Date, Date], [Date, Date]]`
-  :::
+:::
 
 :::info Month Picker
 
 - Single - `{ month: number; year: number }`
 - Range - `{ month: number; year: number }[]`
-  :::
+:::
 
 :::info Year Picker
 
 - Single - `number`
 - Range - `[number, number]`
-  :::
+:::
 
 :::info Quarter Picker
 
 - Single - `Date`
 - Range - `[Date, Date]`
-  :::
+:::
 
 :::tip
 
 - `Date` values can also be `string` or `number`, as long as `new Date(value)` returns a valid date
 - `number` values can also be `string` values, as long as `Number(value)` returns a valid number
-  :::
+:::
 
 - Default: `undefined`
 

@@ -1,5 +1,5 @@
 <template>
-  <div @click="handleOpen">
+  <div @click="handleOpen" @keydown="handleTriggerKeydown">
     <slot v-if="!$slots['dp-input'] && !inline.enabled" name="trigger" />
     <div v-if="!$slots.trigger && (!inline.enabled || inline.input)" class="dp--input-wrap">
       <slot
@@ -89,7 +89,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, nextTick, ref, useTemplateRef } from 'vue';
+  import { computed, nextTick, ref, useSlots, useTemplateRef } from 'vue';
   import { isAfter } from 'date-fns';
 
   import { CalendarIcon, CancelIcon } from '@/components/Icons';
@@ -130,6 +130,7 @@
   const { parseFreeInput, textPasted, createMaskedValue, applyMaxValues } = useInput();
   const { checkKeyDown, checkStopPropagation } = useHelperFns();
   const { boolHtmlAttribute } = useUtils();
+  const slots = useSlots();
 
   const inputRef = useTemplateRef('dp-input');
   const parsedDate = ref<InputParsedDate>(null);
@@ -287,6 +288,17 @@
     } else if (!textInput.value.enabled) {
       emit('toggle');
     }
+  };
+
+  /**
+   * Keyboard counterpart of the root click handler, for custom `trigger` slot content.
+   * Without a trigger slot, the built-in input and clear button handle their own keys; native
+   * interactive elements already turn Enter/Space into a click. Both are left alone to avoid double toggles.
+   */
+  const handleTriggerKeydown = (ev: KeyboardEvent) => {
+    if (!slots.trigger) return;
+    if (ev.target instanceof Element && ev.target.closest('button, a[href], input, select, textarea, summary')) return;
+    checkKeyDown(ev, () => handleOpen(ev), true, config.value.spaceConfirm);
   };
 
   const handleBlur = (): void => {

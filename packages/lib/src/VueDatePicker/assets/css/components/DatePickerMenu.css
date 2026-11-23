@@ -80,10 +80,10 @@
   position: absolute;
 }
 
-/* Keep the loading signal, but rotate much slower for users who prefer reduced motion */
+/* No rotation for users who prefer reduced motion; the open ring alone still reads as a loader */
 @media (prefers-reduced-motion: reduce) {
   .dp--menu-loader {
-    animation-duration: 4s;
+    animation: none;
   }
 }
 

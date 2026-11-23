@@ -19,13 +19,13 @@ import type {
   FloatingConfig,
 } from '@/types/configs.ts';
 import type { CalendarWeek, Marker, TimeModel, PresetDate, HighlightFn, DisabledTimesFn } from '@/types/picker.ts';
-import type { PickerSection, DateValue, ModelValue, SixWeekMode } from '@/types/generic.ts';
+import type { PickerSection, DateValue, DefinedModelValue, SixWeekMode } from '@/types/generic.ts';
 import { basePropDefaults, type propDefaults } from '@/constants/defaults.ts';
 import type { WeekStart } from '@/constants';
 
 export interface RootProps {
   multiCalendars?: boolean | number | string | Partial<MultiCalendarsConfig>;
-  modelValue?: ModelValue;
+  modelValue?: DefinedModelValue;
   modelType?: string;
   dark?: boolean;
   transitions?: boolean | Partial<TransitionsConfig>;
