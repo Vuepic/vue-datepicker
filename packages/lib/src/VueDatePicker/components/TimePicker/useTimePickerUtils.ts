@@ -93,7 +93,7 @@ export const useTimePickerUtils = () => {
     if (valid) {
       assignTime(type, value);
       if (typeChanged) {
-        nextTick().then(() => updateFlowStep(type));
+        void nextTick().then(() => updateFlowStep(type));
       }
     }
   };
@@ -180,6 +180,30 @@ export const useTimePickerUtils = () => {
    * Disables hour/minute/second overlay options that fall outside `minDate`/`maxDate`
    * when either carries a time component and the day currently being edited is the boundary day itself
    */
+  const numberRange = (from: number, to: number) => Array.from({ length: Math.max(to - from, 0) }, (_, i) => from + i);
+
+  /**
+   * Push the time values that fall outside a `minDate` (`isMin`) or `maxDate` boundary.
+   * Minutes/seconds are only restricted once the boundary hour itself is selected.
+   */
+  const pushOutOfBoundaryTimes = (
+    disabled: { hours: number[]; minutes: number[]; seconds: number[] },
+    boundary: Date,
+    selectedHour: number,
+    isMin: boolean,
+  ) => {
+    const outside = (value: number, max: number) => (isMin ? numberRange(0, value) : numberRange(value + 1, max));
+    const boundaryHour = getHours(boundary);
+
+    disabled.hours.push(...outside(boundaryHour, 24));
+    if (selectedHour === boundaryHour) {
+      disabled.minutes.push(...outside(getMinutes(boundary), 60));
+      if (timeConfig.value.enableSeconds) {
+        disabled.seconds.push(...outside(getSeconds(boundary), 60));
+      }
+    }
+  };
+
   const getMinMaxDisabledTimes = (ind: number, hoursVal?: number) => {
     const disabled = { hours: [] as number[], minutes: [] as number[], seconds: [] as number[] };
 
@@ -187,33 +211,13 @@ export const useTimePickerUtils = () => {
     if (!baseDate) return disabled;
 
     const { hours: selectedHour } = getDisabledTimesData(ind, hoursVal);
+    const { minDate, maxDate } = safeDates.value;
 
-    if (safeDates.value.minDate && isSameDay(baseDate, safeDates.value.minDate)) {
-      const minHour = getHours(safeDates.value.minDate);
-      const minMinute = getMinutes(safeDates.value.minDate);
-      const minSecond = getSeconds(safeDates.value.minDate);
-
-      for (let h = 0; h < minHour; h += 1) disabled.hours.push(h);
-      if (selectedHour === minHour) {
-        for (let m = 0; m < minMinute; m += 1) disabled.minutes.push(m);
-        if (timeConfig.value.enableSeconds) {
-          for (let s = 0; s < minSecond; s += 1) disabled.seconds.push(s);
-        }
-      }
+    if (minDate && isSameDay(baseDate, minDate)) {
+      pushOutOfBoundaryTimes(disabled, minDate, selectedHour, true);
     }
-
-    if (safeDates.value.maxDate && isSameDay(baseDate, safeDates.value.maxDate)) {
-      const maxHour = getHours(safeDates.value.maxDate);
-      const maxMinute = getMinutes(safeDates.value.maxDate);
-      const maxSecond = getSeconds(safeDates.value.maxDate);
-
-      for (let h = maxHour + 1; h < 24; h += 1) disabled.hours.push(h);
-      if (selectedHour === maxHour) {
-        for (let m = maxMinute + 1; m < 60; m += 1) disabled.minutes.push(m);
-        if (timeConfig.value.enableSeconds) {
-          for (let s = maxSecond + 1; s < 60; s += 1) disabled.seconds.push(s);
-        }
-      }
+    if (maxDate && isSameDay(baseDate, maxDate)) {
+      pushOutOfBoundaryTimes(disabled, maxDate, selectedHour, false);
     }
 
     return disabled;

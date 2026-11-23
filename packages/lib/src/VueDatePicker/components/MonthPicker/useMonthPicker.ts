@@ -145,7 +145,7 @@ export const useMonthPicker = (emit: EmitFn<MonthPickerEmits>) => {
     } else if (checkMinMaxRange(date, modelValue.value)) {
       modelValue.value = setMonthOrYearRange(monthToDate(month, instance));
     }
-    nextTick().then(() => {
+    void nextTick().then(() => {
       checkRangeAutoApply(modelValue.value as Date[], emit, (modelValue.value as Date[]).length < 2);
     });
   };

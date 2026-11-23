@@ -109,7 +109,7 @@ export const useYearPicker = (emit: EmitFn<YearPickerEmits>) => {
     if (range.value.enabled) {
       if (checkMinMaxRange(yearToDate(year), modelValue.value)) {
         modelValue.value = setMonthOrYearRange(yearToDate(year));
-        nextTick().then(() => {
+        void nextTick().then(() => {
           checkRangeAutoApply(modelValue.value as Date[], emit, (modelValue.value as Date[]).length < 2);
         });
       }

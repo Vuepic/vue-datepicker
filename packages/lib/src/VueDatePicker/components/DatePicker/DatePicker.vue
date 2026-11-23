@@ -167,7 +167,7 @@
 
   const selectWeekDate = (selectStart: boolean, id: string | null) => {
     if (!rootProps.range) {
-      const activeDate = modelValue.value ? modelValue.value : today;
+      const activeDate = modelValue.value ?? today;
       const date = id ? getDate(id) : activeDate;
       const toSelect = selectStart
         ? startOfWeek(date as Date, { weekStartsOn: 1 })

@@ -80,6 +80,13 @@
   position: absolute;
 }
 
+/* Keep the loading signal, but rotate much slower for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .dp--menu-loader {
+    animation-duration: 4s;
+  }
+}
+
 @keyframes dp-load-rotation {
   0% {
     transform: rotate(0deg);

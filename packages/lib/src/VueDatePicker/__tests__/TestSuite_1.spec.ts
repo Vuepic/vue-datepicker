@@ -259,6 +259,32 @@ describe('Test Suite 1', () => {
     });
   });
 
+  describe('Input icon', () => {
+    it.each([false, true])(
+      'Should toggle the menu exactly once per calendar icon click (textInput: %s)',
+      async (textInput) => {
+        const dp = mount(VueDatePickerRoot, { props: { textInput }, attachTo: document.body });
+        await flushPromises();
+        const icon = dp.find('.dp--input-icon');
+
+        await icon.trigger('click');
+        await flushPromises();
+
+        expect(dp.emitted('open')).toHaveLength(1);
+        expect(dp.emitted('closed')).toBeUndefined();
+        expect(dp.find('.dp--menu').exists()).toBe(true);
+
+        await icon.trigger('click');
+        await flushPromises();
+
+        expect(dp.emitted('open')).toHaveLength(1);
+        expect(dp.emitted('closed')).toHaveLength(1);
+
+        dp.unmount();
+      },
+    );
+  });
+
   describe('DOM', () => {
     it('Should render menu wrap only while menu is open', async () => {
       const dpOpenedMenu = await openMenu({});

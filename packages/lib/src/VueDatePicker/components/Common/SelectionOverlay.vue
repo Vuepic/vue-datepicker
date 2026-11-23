@@ -45,6 +45,7 @@
             @click.prevent="onClick(col)"
             @keydown="checkKeyDown($event, () => onClick(col), true)"
             @mouseover="setHoverValue(col.value)"
+            @focus="setHoverValue(col.value)"
           >
             <div :class="col.className">
               <slot name="item" :item="col">
@@ -171,7 +172,7 @@
   );
 
   const setContainerHeightAndScroll = (setScroll = true) => {
-    nextTick().then(() => {
+    void nextTick().then(() => {
       const parent = unrefElement(gridWrapRef);
       const btn = unrefElement(toggleButton);
       const container = unrefElement(containerRef);

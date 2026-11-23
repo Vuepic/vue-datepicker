@@ -202,7 +202,7 @@
         ? transitions.value[getTransitionName(true)]
         : transitions.value[getTransitionName(false)];
       showCalendar.value = false;
-      nextTick().then(() => (showCalendar.value = true));
+      void nextTick().then(() => (showCalendar.value = true));
     }
   };
 

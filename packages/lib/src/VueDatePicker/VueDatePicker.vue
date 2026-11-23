@@ -172,7 +172,7 @@
 
   onMounted(() => {
     parseExternalModelValue(rootProps.modelValue);
-    nextTick().then(() => {
+    void nextTick().then(() => {
       if (!inline.value.enabled) {
         globalThis.addEventListener('resize', onResize);
       }
@@ -208,7 +208,7 @@
   watch([placement, y], () => {
     if (!inline.value.enabled && !rootProps.centered && watchRender.value) {
       shouldRender.value = false;
-      nextTick().then(() => {
+      void nextTick().then(() => {
         watchRender.value = false;
         shouldRender.value = true;
       });
@@ -419,7 +419,7 @@
       } else if (rootProps.autoApply) {
         autoApplyValue(true);
       }
-      nextTick().then(() => {
+      void nextTick().then(() => {
         setState('isTextInputDate', false);
       });
     } else {

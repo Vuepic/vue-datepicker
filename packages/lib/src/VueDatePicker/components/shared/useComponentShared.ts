@@ -46,7 +46,7 @@ export const useComponentShared = () => {
     emit: EmitFn<{ 'auto-apply': [ignoreClose?: boolean] }>,
     ignoreClose: boolean,
   ) => {
-    if (!range) return;
+    if (!range.value.enabled) return;
     if (selectedRange[0] && selectedRange[1] && rootProps.autoApply) {
       emit('auto-apply', ignoreClose);
     }

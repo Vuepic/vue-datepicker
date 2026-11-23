@@ -411,7 +411,7 @@ export const useDatePicker = (emit: EmitFn<DatePickerEmits>, triggerCalendarTran
       modelValue.value = date;
     }
     updateFlowStep('calendar', true);
-    nextTick().then(() => {
+    void nextTick().then(() => {
       autoApply();
     });
   };
@@ -470,6 +470,22 @@ export const useDatePicker = (emit: EmitFn<DatePickerEmits>, triggerCalendarTran
     tempRange.value = getRangeWithFixedDate(getDate(day.value));
   };
 
+  // Second click of a range: set the end date, or move/replace the start when the date is earlier
+  const setRangeSecondDate = (date: Date) => {
+    if (isDateBefore(date, getDate(tempRange.value[0]))) {
+      if (range.value.autoSwitchStartEnd) {
+        tempRange.value.unshift(date);
+        rootEmit('range-end', tempRange.value[0]);
+      } else {
+        tempRange.value[0] = date;
+        rootEmit('range-start', tempRange.value[0]);
+      }
+    } else {
+      tempRange.value[1] = date;
+      rootEmit('range-end', tempRange.value[1]);
+    }
+  };
+
   // Called on selectDate when range mode is used
   const handleRangeDatesSelect = (day: CalendarDay, isNext: boolean) => {
     presetTempRange();
@@ -484,18 +500,7 @@ export const useDatePicker = (emit: EmitFn<DatePickerEmits>, triggerCalendarTran
       }
     } else if (checkMinMaxRange(getDate(day.value), modelValue.value) && !includesDisabled(day.value)) {
       autoSeededSingleDayRange.value = false;
-      if (isDateBefore(getDate(day.value), getDate(tempRange.value[0]))) {
-        if (range.value.autoSwitchStartEnd) {
-          tempRange.value.unshift(getDate(day.value));
-          rootEmit('range-end', tempRange.value[0]);
-        } else {
-          tempRange.value[0] = getDate(day.value);
-          rootEmit('range-start', tempRange.value[0]);
-        }
-      } else {
-        tempRange.value[1] = getDate(day.value);
-        rootEmit('range-end', tempRange.value[1]);
-      }
+      setRangeSecondDate(getDate(day.value));
     } else {
       rootEmit('invalid-date', day.value);
     }
@@ -608,7 +613,7 @@ export const useDatePicker = (emit: EmitFn<DatePickerEmits>, triggerCalendarTran
 
     selectOnAutoApply();
     if (rootProps.multiCalendars) {
-      nextTick().then(() => mapInternalModuleValues(true));
+      void nextTick().then(() => mapInternalModuleValues(true));
     }
   };
 
@@ -632,7 +637,7 @@ export const useDatePicker = (emit: EmitFn<DatePickerEmits>, triggerCalendarTran
   // Get the last date in the multi dates arr
   const multiDatesLast = (): Date | null => {
     if (Array.isArray(modelValue.value) && modelValue.value.length) {
-      return modelValue.value[modelValue.value.length - 1];
+      return modelValue.value.at(-1) ?? null;
     }
     return null;
   };

@@ -49,15 +49,15 @@
         />
       </slot>
 
-      <div @click="emit('toggle')">
-        <span v-if="$slots['input-icon'] && !inputAttrs.hideInputIcon" class="dp--input-icon" @click="emit('toggle')"
+      <div>
+        <!-- Icon clicks bubble to the root `handleOpen`, which toggles the menu once for them -->
+        <span v-if="$slots['input-icon'] && !inputAttrs.hideInputIcon" class="dp--input-icon"
           ><slot name="input-icon"
         /></span>
         <CalendarIcon
           v-if="!$slots['input-icon'] && !inputAttrs.hideInputIcon && !$slots['dp-input']"
           :aria-label="ariaLabels?.calendarIcon"
           class="dp--input-icon dp--input-icons"
-          @click="emit('toggle')"
         />
       </div>
       <span
@@ -152,11 +152,9 @@
 
   const handleOnEmptyInput = () => {
     emit('set-input-date', null);
-    if (inputAttrs) {
-      if (rootProps.autoApply) {
-        emit('set-empty-date');
-        parsedDate.value = null;
-      }
+    if (rootProps.autoApply) {
+      emit('set-empty-date');
+      parsedDate.value = null;
     }
   };
 
@@ -269,7 +267,7 @@
   const handleFocus = (): void => {
     isFocused.value = true;
     emit('focus');
-    nextTick().then(() => {
+    void nextTick().then(() => {
       if (textInput.value.enabled && textInput.value.selectOnFocus) {
         inputRef.value?.select();
       } else {
@@ -281,6 +279,8 @@
 
   const handleOpen = (ev: KeyboardEvent | MouseEvent) => {
     checkStopPropagation(ev, config.value, true);
+    // The calendar icon always toggles, regardless of text-input settings
+    if (ev.target instanceof Element && ev.target.closest('.dp--input-icon')) return emit('toggle');
     if (textInput.value.enabled && textInput.value.openMenu && !inline.value.input) {
       if (textInput.value.openMenu === 'open' && !props.isMenuOpen) return emit('open');
       if (textInput.value.openMenu === 'toggle') return emit('toggle');

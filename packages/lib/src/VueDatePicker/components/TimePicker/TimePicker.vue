@@ -201,7 +201,7 @@
       rootEmit('overlay-toggle', { open: show, overlay: FlowStep.time });
     }
 
-    nextTick().then(() => {
+    void nextTick().then(() => {
       if (childOpen !== '' && timeInputRefs.value?.[0]) {
         timeInputRefs.value[0].openChildCmp(childOpen);
       }

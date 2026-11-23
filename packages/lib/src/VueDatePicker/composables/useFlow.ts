@@ -63,7 +63,7 @@ export const useFlow = (dynCmpRef: Ref, emit: EmitFn<{ 'auto-apply': [ignoreClos
           rootEmit('flow-step', flowStep.value);
           executeFlow();
         } else if (rootProps.autoApply && !skipAutoApplyEmit) {
-          nextTick().then(() => emit('auto-apply'));
+          void nextTick().then(() => emit('auto-apply'));
         }
       }
     }

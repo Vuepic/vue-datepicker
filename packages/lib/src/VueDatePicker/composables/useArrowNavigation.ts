@@ -138,7 +138,7 @@ export const useArrowNavigation = () => {
   };
 
   const focusPreviousActive = () => {
-    nextTick().then(() => {
+    void nextTick().then(() => {
       buildMatrix();
 
       const el = gridMatrix.value[rowIndex.value]?.[colIndex.value];
@@ -174,7 +174,9 @@ export const useArrowNavigation = () => {
   };
 
   const isTypingInTextInput = () =>
-    textInput.value.enabled && document.activeElement?.getAttribute('data-test-id') === 'dp-input';
+    textInput.value.enabled &&
+    document.activeElement instanceof HTMLElement &&
+    document.activeElement.dataset.testId === 'dp-input';
 
   onMounted(() => {
     if (rootProps.arrowNavigation) {
