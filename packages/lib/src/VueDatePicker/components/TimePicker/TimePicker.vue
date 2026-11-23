@@ -98,7 +98,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, nextTick, onMounted, ref, useSlots, useTemplateRef } from 'vue';
+  import { computed, nextTick, onMounted, onUnmounted, ref, useSlots, useTemplateRef } from 'vue';
 
   import { CalendarIcon, ClockIcon } from '@/components/Icons';
   import TimeInput from '@/components/TimePicker/TimeInput.vue';
@@ -157,8 +157,16 @@
     childMount(rootProps.timePicker ? undefined : CMP.timePicker);
   });
 
+  onUnmounted(() => {
+    if (showTimePicker.value) {
+      setState('arrowNavigationLevel', 0);
+    }
+  });
+
   const shouldShowRangedInput = computed(() => {
-    if (range.value.enabled && rootProps.modelAuto) return isModelAuto(modelValue.value);
+    if (range.value.enabled && rootProps.modelAuto && !range.value.requireEndTime) {
+      return isModelAuto(modelValue.value);
+    }
     return true;
   });
 

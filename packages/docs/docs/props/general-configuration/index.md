@@ -121,7 +121,8 @@ If set to `true`, clicking on a date value will automatically select the value
 - Default: `false`
 
 :::tip
-When `auto-apply` is used in combination with [`flow`](/props/modes/#flow), to select a date if the flow is broken, you need to set [`flow.partial`](/props/modes/#flow) to `true`
+- When `auto-apply` is used in combination with [`flow`](/props/modes/#flow), to select a date if the flow is broken, you need to set [`flow.partial`](/props/modes/#flow) to `true`
+- When `auto-apply` is used in combination with [`range`](/props/modes/#range) and you want to select a second date before the menu closes automatically, you need to set [`range.partialRange`](/props/modes-configuration/#partialrange) to `false`
 :::
 
 :::warning
