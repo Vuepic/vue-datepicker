@@ -213,7 +213,7 @@
 
       const adjustedRaw = applyMaxValues(raw, tokens);
 
-      parsedValue = createMaskedValue(adjustedRaw, maskFormat);
+      parsedValue = createMaskedValue(adjustedRaw, maskFormat, value);
     }
 
     if (parsedValue === '') {
