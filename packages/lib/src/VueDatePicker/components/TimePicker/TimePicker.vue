@@ -158,7 +158,9 @@
   });
 
   const shouldShowRangedInput = computed(() => {
-    if (range.value.enabled && rootProps.modelAuto) return isModelAuto(modelValue.value);
+    if (range.value.enabled && rootProps.modelAuto && !range.value.requireEndTime) {
+      return isModelAuto(modelValue.value);
+    }
     return true;
   });
 

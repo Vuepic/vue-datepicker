@@ -33,7 +33,7 @@ export const useDatePicker = (emit: EmitFn<DatePickerEmits>, triggerCalendarTran
   const tempRange = ref<Date[]>([]);
   const lastScrollTime = ref(new Date());
   const clickedDate = ref<CalendarDay | undefined>();
-
+  const autoSeededSingleDayRange = ref(false);
   const {
     getDate,
     getDateFromParts,
@@ -425,7 +425,11 @@ export const useDatePicker = (emit: EmitFn<DatePickerEmits>, triggerCalendarTran
   // Before range selecting, ensure that modelValue is properly set
   const presetTempRange = () => {
     tempRange.value = modelValue.value ? (modelValue.value as Date[]).slice().filter((val) => !!val) : [];
-    if (tempRange.value.length === 2 && !(range.value.fixedStart || range.value.fixedEnd)) {
+    if (
+      tempRange.value.length === 2 &&
+      !(range.value.fixedStart || range.value.fixedEnd) &&
+      !autoSeededSingleDayRange.value
+    ) {
       tempRange.value = [];
     }
   };
@@ -474,7 +478,12 @@ export const useDatePicker = (emit: EmitFn<DatePickerEmits>, triggerCalendarTran
     if (!tempRange.value[0]) {
       tempRange.value[0] = getDate(day.value);
       rootEmit('range-start', tempRange.value[0]);
+      if (range.value.requireEndTime && rootProps.modelAuto) {
+        tempRange.value[1] = getDate(day.value);
+        autoSeededSingleDayRange.value = true;
+      }
     } else if (checkMinMaxRange(getDate(day.value), modelValue.value) && !includesDisabled(day.value)) {
+      autoSeededSingleDayRange.value = false;
       if (isDateBefore(getDate(day.value), getDate(tempRange.value[0]))) {
         if (range.value.autoSwitchStartEnd) {
           tempRange.value.unshift(getDate(day.value));
