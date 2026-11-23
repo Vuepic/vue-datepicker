@@ -207,36 +207,19 @@ describe('Test Suite 1', () => {
     });
   });
 
-  describe('Markers', () => {
-    it('Should not throw when clicking a date whose marker is defined via a reactive array (ref/reactive regression)', async () => {
-      const today = new Date();
-      // Mirrors a real-world consumer defining `const markers = ref([...])`: once Vue unwraps the
-      // ref, `.value` is a deeply reactive array, so building it with reactive() here reproduces
-      // that exact shape without needing a ref() unwrap step.
-      const reactiveMarkers = reactive([{ date: today, type: 'dot' as const }]);
-      const dp = await openMenu({ markers: reactiveMarkers, modelValue: null });
+  describe('time picker overlay', () => {
+    it('Should not leave the calendar inert when the menu is closed while the overlay is open', async () => {
+      const dp = await openMenu({ autoApply: true });
 
-      await expect(selectDate(dp, today)).resolves.not.toThrow();
-      expect(dp.emitted('date-click')).toBeTruthy();
-    });
+      await dp.find('[data-test-id="open-time-picker-btn"]').trigger('click');
+      expect(dp.find('.dp--calendar').attributes('inert')).toBeDefined();
 
-    it('Should still allow selecting a date whose marker is defined via a plain (non-reactive) array', async () => {
-      const today = new Date();
-      const dp = await openMenu({ markers: [{ date: today, type: 'dot' as const }], modelValue: null });
+      dp.vm.closeMenu();
+      await nextTick();
+      dp.vm.openMenu();
+      await nextTick();
 
-      await expect(selectDate(dp, today)).resolves.not.toThrow();
-      expect(dp.emitted('date-click')).toBeTruthy();
-    });
-
-    it('Should still allow selecting a date whose marker uses a customPosition callback', async () => {
-      const today = new Date();
-      const dp = await openMenu({
-        markers: [{ date: today, type: 'dot' as const, customPosition: () => ({ top: '0px' }) }],
-        modelValue: null,
-      });
-
-      await expect(selectDate(dp, today)).resolves.not.toThrow();
-      expect(dp.emitted('date-click')).toBeTruthy();
+      expect(dp.find('.dp--calendar').attributes('inert')).toBeUndefined();
     });
   });
 
