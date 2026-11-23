@@ -9,7 +9,9 @@ import {
   selectDate,
 } from '@/__tests__/tests-utils.ts';
 import { nextTick } from 'vue';
+import { flushPromises } from '@vue/test-utils';
 import { enGB } from 'date-fns/locale';
+import { de } from 'date-fns/locale';
 import { WeekStart } from '@/constants';
 import type { MonthModel } from '@/types';
 
@@ -120,6 +122,78 @@ describe('Test Suite 1', () => {
     });
   });
 
+  describe('Flow with auto-apply', () => {
+    const frozenSystemDate = new Date(2026, 7, 21, 12, 30, 30);
+    beforeEach(() => {
+      vi.setSystemTime(frozenSystemDate);
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it('Should emit update:model-value exactly once when selecting a date with a single-step flow', async () => {
+      const dp = await openMenu({ autoApply: true, flow: { steps: ['calendar'] } });
+
+      const dateToSelect = new Date(2026, 7, 21);
+      await selectDate(dp, dateToSelect);
+      await flushPromises();
+      await nextTick();
+
+      const emitted = dp.emitted('update:model-value');
+      expect(emitted).toHaveLength(1);
+      expect(emitted![0][0]).not.toBeNull();
+    });
+
+    it('Should not clear the internal model value after selecting a date with a single-step flow', async () => {
+      const dp = await openMenu({ autoApply: true, flow: { steps: ['calendar'] } });
+
+      const dateToSelect = new Date(2026, 7, 21);
+      await selectDate(dp, dateToSelect);
+      await flushPromises();
+      await nextTick();
+
+      const input = dp.find('[data-test-id="dp-input"]');
+      expect((input.element as HTMLInputElement).value).not.toEqual('');
+    });
+
+    it('Should emit update:model-value exactly once when completing a range with a single-step flow', async () => {
+      const dp = await openMenu({
+        autoApply: true,
+        range: { partialRange: false },
+        flow: { steps: ['calendar'] },
+      });
+
+      const startDate = new Date(2026, 7, 21);
+      const endDate = new Date(2026, 7, 23);
+      await selectDate(dp, startDate);
+      await flushPromises();
+      await selectDate(dp, endDate);
+      await flushPromises();
+      await nextTick();
+
+      const emitted = dp.emitted('update:model-value');
+      expect(emitted).toHaveLength(1);
+      expect(emitted![0][0]).not.toBeNull();
+    });
+
+    it('Should close the menu after reselecting the currently displayed month at the month flow step, then picking a day', async () => {
+      const dp = await openMenu({ autoApply: true, flow: { steps: ['month', 'calendar'] } });
+      const activeMonthCell = dp.find('[data-dp-element-active="1"]');
+      expect(activeMonthCell.exists()).toBe(true);
+      await activeMonthCell.trigger('click');
+      await flushPromises();
+      await nextTick();
+
+      await selectDate(dp, frozenSystemDate);
+      await flushPromises();
+      await nextTick();
+
+      expect(dp.emitted('closed')).toBeTruthy();
+      expect(dp.emitted('update:model-value')).toBeTruthy();
+    });
+  });
+
   describe('DOM', () => {
     it('Should render menu wrap only while menu is open', async () => {
       const dpOpenedMenu = await openMenu({});
@@ -127,6 +201,39 @@ describe('Test Suite 1', () => {
 
       const dpClosedMenu = await closeMenu({});
       expect(dpClosedMenu.vm.dpWrapMenuRef()?.value).toBeNull();
+    });
+  });
+
+  describe('Markers', () => {
+    it('Should not throw when clicking a date whose marker is defined via a reactive array (ref/reactive regression)', async () => {
+      const today = new Date();
+      // Mirrors a real-world consumer defining `const markers = ref([...])`: once Vue unwraps the
+      // ref, `.value` is a deeply reactive array, so building it with reactive() here reproduces
+      // that exact shape without needing a ref() unwrap step.
+      const reactiveMarkers = reactive([{ date: today, type: 'dot' as const }]);
+      const dp = await openMenu({ markers: reactiveMarkers, modelValue: null });
+
+      await expect(selectDate(dp, today)).resolves.not.toThrow();
+      expect(dp.emitted('date-click')).toBeTruthy();
+    });
+
+    it('Should still allow selecting a date whose marker is defined via a plain (non-reactive) array', async () => {
+      const today = new Date();
+      const dp = await openMenu({ markers: [{ date: today, type: 'dot' as const }], modelValue: null });
+
+      await expect(selectDate(dp, today)).resolves.not.toThrow();
+      expect(dp.emitted('date-click')).toBeTruthy();
+    });
+
+    it('Should still allow selecting a date whose marker uses a customPosition callback', async () => {
+      const today = new Date();
+      const dp = await openMenu({
+        markers: [{ date: today, type: 'dot' as const, customPosition: () => ({ top: '0px' }) }],
+        modelValue: null,
+      });
+
+      await expect(selectDate(dp, today)).resolves.not.toThrow();
+      expect(dp.emitted('date-click')).toBeTruthy();
     });
   });
 

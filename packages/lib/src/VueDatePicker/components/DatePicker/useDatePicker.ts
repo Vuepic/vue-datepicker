@@ -73,7 +73,7 @@ export const useDatePicker = (emit: EmitFn<DatePickerEmits>, triggerCalendarTran
     isAction: boolean = false,
   ): void => {
     if (shouldUpdateMonthView(isAction)) {
-      if (!fromMount && month && year) emitMonthYearChange(instance, month, year);
+      if (!fromMount && month !== null && year !== null) emitMonthYearChange(instance, month, year);
       calendars.value[instance] ??= calendars.value[instance] = { month: 0, year: 0 };
       calendars.value[instance].month = month ?? calendars.value[instance]?.month;
       calendars.value[instance].year = year ?? calendars.value[instance]?.year;
@@ -410,7 +410,7 @@ export const useDatePicker = (emit: EmitFn<DatePickerEmits>, triggerCalendarTran
     } else {
       modelValue.value = date;
     }
-    updateFlowStep('calendar');
+    updateFlowStep('calendar', true);
     nextTick().then(() => {
       autoApply();
     });
@@ -542,7 +542,7 @@ export const useDatePicker = (emit: EmitFn<DatePickerEmits>, triggerCalendarTran
       } else {
         assignTimeToRangeDate(0);
         assignTimeToRangeDate(1);
-        updateFlowStep('calendar');
+        updateFlowStep('calendar', true);
       }
       validateRangeAfterTimeSet();
       modelValue.value = tempRange.value.slice();
@@ -562,7 +562,13 @@ export const useDatePicker = (emit: EmitFn<DatePickerEmits>, triggerCalendarTran
   const selectDate = (day: CalendarDay, isNext = false): void => {
     if (isDisabled(day.value) || (!day.current && rootProps.hideOffsetDates))
       return rootEmit('invalid-date', day.value);
-    clickedDate.value = structuredClone(day);
+    // clickedDate is only ever read as a truthy/falsy flag (see shouldUpdateMonthView), so its
+    // `marker` never needs to be present on the clone. Excluding it here avoids structuredClone
+    // failing on data a marker may legitimately carry that can't be structurally cloned - a
+    // reactive Proxy (when markers are supplied via ref()/reactive()) or a customPosition
+    // callback function - while still snapshotting the rest of the day object defensively.
+    const { marker, ...clonableDay } = day;
+    clickedDate.value = { ...structuredClone(clonableDay), marker };
 
     if (!range.value.enabled) return handleSingleDateSelect(day);
 
@@ -574,7 +580,6 @@ export const useDatePicker = (emit: EmitFn<DatePickerEmits>, triggerCalendarTran
 
   // Handles selection of month/year
   const updateMonthYear = (instance: number, val: { month: number; year: number; fromNav?: boolean }): void => {
-    const monthChanged = month.value(instance) !== val.month;
     setCalendarMonthYear(instance, val.month, val.year, false, true);
 
     if (multiCalendars.value.count && !multiCalendars.value.solo) {
@@ -582,8 +587,16 @@ export const useDatePicker = (emit: EmitFn<DatePickerEmits>, triggerCalendarTran
     }
     triggerCalendarTransition(multiCalendars.value.solo ? instance : undefined);
 
-    if (!val.fromNav) {
-      updateFlowStep(monthChanged ? 'month' : 'year');
+    // Advance whatever flow step is CURRENTLY active, rather than trying to infer which
+    // selector (month vs year) the user interacted with by comparing old/new values. That
+    // heuristic (`monthChanged`) breaks when the user reselects the value already displayed
+    // (e.g. taps the currently-shown month) - the value doesn't change, so it gets misread as
+    // a year selection, which doesn't match the current step name, and the flow silently gets
+    // stuck (menu never auto-applies/closes). This function is only ever invoked as a result
+    // of interacting with whichever overlay the active flow step corresponds to, so flowStep
+    // itself is the correct, reliable signal.
+    if (!val.fromNav && flowStep.value) {
+      updateFlowStep(flowStep.value);
     }
   };
 
