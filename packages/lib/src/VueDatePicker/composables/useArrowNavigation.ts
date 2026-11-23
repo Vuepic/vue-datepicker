@@ -164,7 +164,10 @@ export const useArrowNavigation = () => {
     if (active && !ignoreActive) {
       focusEl(active);
     } else {
-      const el = document.querySelector<HTMLElement>(`[data-dp-action-element="${level.value}"]`);
+      const el =
+        document.querySelector<HTMLElement>(
+          `[data-dp-focus-target="true"][data-dp-action-element="${level.value}"]`,
+        ) ?? document.querySelector<HTMLElement>(`[data-dp-action-element="${level.value}"]`);
       if (el) {
         focusEl(el);
       }

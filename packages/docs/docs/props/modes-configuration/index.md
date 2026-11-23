@@ -25,6 +25,7 @@ interface RangeConfig {
     minRange?: string | number;
     autoRange?: string | number;
     autoSwitchStartEnd?: boolean;
+    requireEndTime?: boolean;
 }
 ```
 
@@ -297,6 +298,35 @@ some custom validation logic
 ```vue
 <template>
   <VueDatePicker v-model="date" :range="{ autoSwitchStartEnd: false }"  />
+</template>
+
+<script setup>
+  import { VueDatePicker } from "@vuepic/vue-datepicker";
+  import { ref } from 'vue';
+
+  const date = ref();
+</script>
+```
+:::
+
+### `requireEndTime`
+
+Used together with [`model-auto`](/props/modes/#model-auto). By default, the end-time input in the time picker only appears once a full 2-day range has been selected (either by clicking two different days, or by double-clicking the same day) - a single click only shows the start time.
+
+Enabling this option shows the end-time input immediately after a single click, seeding the end date to the same day as the start, so a 1-day event can be given its own start and end time without the double-click workaround.
+
+::: warning
+Only has an effect when `model-auto` is also enabled. When combined with `auto-apply`, a single click will immediately produce a complete `[start, end]` pair and close the menu - you may want to leave `auto-apply` off so the user can adjust the end time before confirming.
+:::
+
+- Default: `false`
+
+<GlobalDemo :range="{ requireEndTime: true }" :modelAuto="true" placeholder="Select single date or range"></GlobalDemo>
+
+::: details Code Example
+```vue
+<template>
+  <VueDatePicker v-model="date" model-auto :range="{ requireEndTime: true }" />
 </template>
 
 <script setup>
