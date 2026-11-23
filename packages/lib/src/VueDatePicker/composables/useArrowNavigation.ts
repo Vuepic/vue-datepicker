@@ -63,15 +63,15 @@ export const useArrowNavigation = () => {
     if (![EventKey.arrowUp, EventKey.arrowDown, EventKey.arrowLeft, EventKey.arrowRight].includes(ev.key as never)) {
       return;
     }
-    buildMatrix();
-
-    ev.preventDefault();
 
     const currentElement = document.activeElement as HTMLElement;
 
     if (!currentElement?.hasAttribute('data-dp-action-element')) {
       return;
     }
+
+    buildMatrix();
+    ev.preventDefault();
 
     let currentRowIndex = -1;
     let currentColIndex = -1;
@@ -164,16 +164,24 @@ export const useArrowNavigation = () => {
     if (active && !ignoreActive) {
       focusEl(active);
     } else {
-      const el = document.querySelector<HTMLElement>(`[data-dp-action-element="${level.value}"]`);
+      const el =
+        document.querySelector<HTMLElement>(
+          `[data-dp-focus-target="true"][data-dp-action-element="${level.value}"]`,
+        ) ?? document.querySelector<HTMLElement>(`[data-dp-action-element="${level.value}"]`);
       if (el) {
         focusEl(el);
       }
     }
   };
 
+  const isTypingInTextInput = () =>
+    textInput.value.enabled && document.activeElement?.getAttribute('data-test-id') === 'dp-input';
+
   onMounted(() => {
     if (rootProps.arrowNavigation) {
-      focusInitial(false);
+      if (!isTypingInTextInput()) {
+        focusInitial(false);
+      }
       document.addEventListener('keydown', handleKeyDown);
     }
   });
