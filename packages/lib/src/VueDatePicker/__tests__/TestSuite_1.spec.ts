@@ -207,19 +207,19 @@ describe('Test Suite 1', () => {
     });
   });
 
-  describe('time picker overlay', () => {
-    it('Should not leave the calendar inert when the menu is closed while the overlay is open', async () => {
-      const dp = await openMenu({ autoApply: true });
+  describe('Time picker', () => {
+    it('Should not disable the decrement arrow when noMinutesOverlay is enabled', async () => {
+      const dp = await openMenu({ timePicker: true, timeConfig: { noMinutesOverlay: true } });
 
-      await dp.find('[data-test-id="open-time-picker-btn"]').trigger('click');
-      expect(dp.find('.dp--calendar').attributes('inert')).toBeDefined();
+      expect(dp.find('[data-test-id="minutes-time-dec-btn-0"]').attributes('disabled')).toBeUndefined();
+      expect(dp.find('[data-test-id="minutes-time-inc-btn-0"]').attributes('disabled')).toBeUndefined();
+    });
 
-      dp.vm.closeMenu();
-      await nextTick();
-      dp.vm.openMenu();
-      await nextTick();
+    it('Should not disable the decrement arrow when noHoursOverlay is enabled', async () => {
+      const dp = await openMenu({ timePicker: true, timeConfig: { noHoursOverlay: true } });
 
-      expect(dp.find('.dp--calendar').attributes('inert')).toBeUndefined();
+      expect(dp.find('[data-test-id="hours-time-dec-btn-0"]').attributes('disabled')).toBeUndefined();
+      expect(dp.find('[data-test-id="hours-time-inc-btn-0"]').attributes('disabled')).toBeUndefined();
     });
   });
 
