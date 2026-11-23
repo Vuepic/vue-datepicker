@@ -358,6 +358,29 @@ describe('Test Suite 1', () => {
       await expect(selectDate(dp, today)).resolves.not.toThrow();
       expect(dp.emitted('date-click')).toBeTruthy();
     });
+
+    it('Should not select the date when a key is pressed on interactive marker tooltip content', async () => {
+      const today = new Date();
+      const dp = mount(VueDatePickerRoot, {
+        props: { markers: [{ date: today, type: 'dot' as const, tooltip: [{ text: 'Event' }] }], autoApply: true },
+        slots: { 'marker-tooltip': '<button class="tooltip-action" type="button">Details</button>' },
+      });
+      dp.vm.openMenu();
+      await flushPromises();
+
+      const cell = dp.find(`[data-test-id="dp-${format(today, 'yyyy-MM-dd')}"]`);
+      await cell.trigger('mouseenter');
+      await flushPromises();
+
+      const tooltipAction = dp.find('.tooltip-action');
+      expect(tooltipAction.exists()).toBe(true);
+
+      await tooltipAction.trigger('keydown', { key: 'Enter', code: 'Enter' });
+      await flushPromises();
+
+      expect(dp.emitted('date-click')).toBeUndefined();
+      expect(dp.emitted('update:model-value')).toBeUndefined();
+    });
   });
 
   describe('Keyboard navigation - Tab key', () => {

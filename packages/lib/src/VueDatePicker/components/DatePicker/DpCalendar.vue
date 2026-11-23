@@ -71,7 +71,12 @@
                   class="dp--marker-tooltip"
                   :style="markerTooltipStyle"
                 >
-                  <div v-if="dayVal.marker?.tooltip" class="dp--tooltip-content" @click="onTpClick">
+                  <div
+                    v-if="dayVal.marker?.tooltip"
+                    class="dp--tooltip-content"
+                    @click="stopTooltipEvent"
+                    @keydown="stopTooltipEvent"
+                  >
                     <div v-for="(tooltip, i) in dayVal.marker.tooltip" :key="i" class="dp--tooltip-text">
                       <slot name="marker-tooltip" :tooltip="tooltip" :day="dayVal.value">
                         <div
@@ -344,7 +349,8 @@
     }
   };
 
-  const onTpClick = (ev: Event) => {
+  // Keep clicks and key presses inside a marker tooltip from reaching the day cell and selecting the date
+  const stopTooltipEvent = (ev: Event) => {
     checkStopPropagation(ev, config.value);
   };
 
