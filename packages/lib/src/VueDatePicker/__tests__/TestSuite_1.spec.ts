@@ -1,5 +1,7 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { addMonths, subMonths } from 'date-fns';
+import { mount, flushPromises } from '@vue/test-utils';
+import VueDatePickerRoot from '@/VueDatePickerRoot.vue';
 import {
   clearInput,
   closeMenu,
@@ -11,6 +13,7 @@ import {
 import { nextTick } from 'vue';
 import { flushPromises } from '@vue/test-utils';
 import { enGB } from 'date-fns/locale';
+import { de } from 'date-fns/locale';
 import { WeekStart } from '@/constants';
 
 describe('Test Suite 1', () => {
@@ -202,6 +205,39 @@ describe('Test Suite 1', () => {
     });
   });
 
+  describe('Markers', () => {
+    it('Should not throw when clicking a date whose marker is defined via a reactive array (ref/reactive regression)', async () => {
+      const today = new Date();
+      // Mirrors a real-world consumer defining `const markers = ref([...])`: once Vue unwraps the
+      // ref, `.value` is a deeply reactive array, so building it with reactive() here reproduces
+      // that exact shape without needing a ref() unwrap step.
+      const reactiveMarkers = reactive([{ date: today, type: 'dot' as const }]);
+      const dp = await openMenu({ markers: reactiveMarkers, modelValue: null });
+
+      await expect(selectDate(dp, today)).resolves.not.toThrow();
+      expect(dp.emitted('date-click')).toBeTruthy();
+    });
+
+    it('Should still allow selecting a date whose marker is defined via a plain (non-reactive) array', async () => {
+      const today = new Date();
+      const dp = await openMenu({ markers: [{ date: today, type: 'dot' as const }], modelValue: null });
+
+      await expect(selectDate(dp, today)).resolves.not.toThrow();
+      expect(dp.emitted('date-click')).toBeTruthy();
+    });
+
+    it('Should still allow selecting a date whose marker uses a customPosition callback', async () => {
+      const today = new Date();
+      const dp = await openMenu({
+        markers: [{ date: today, type: 'dot' as const, customPosition: () => ({ top: '0px' }) }],
+        modelValue: null,
+      });
+
+      await expect(selectDate(dp, today)).resolves.not.toThrow();
+      expect(dp.emitted('date-click')).toBeTruthy();
+    });
+  });
+
   describe('Localization', () => {
     describe('Week start day', () => {
       it('Should set Sunday as first day of the week', async () => {
@@ -224,6 +260,39 @@ describe('Test Suite 1', () => {
 
         expect(headers[0].text()).toEqual('Mo');
       });
+    });
+  });
+
+  describe('Text input', () => {
+    it('Should keep the provided locale when formatting the text input on focus', async () => {
+      const dp = await openMenu({
+        modelValue: new Date(2026, 6, 15, 10, 30),
+        locale: de,
+        textInput: { format: 'dd LLLL yyyy HH:mm' },
+        formats: { input: 'dd LLLL yyyy HH:mm' },
+      });
+
+      const input = dp.find('[data-test-id="dp-input"]');
+      await input.trigger('focus');
+      await nextTick();
+
+      expect((input.element as HTMLInputElement).value).toEqual('15 Juli 2026 10:30');
+    });
+
+    it('Should update the formatted text input immediately when locale changes, without requiring focus', async () => {
+      const dp = await openMenu({
+        modelValue: new Date(2026, 5, 21, 10, 30),
+        locale: enGB,
+        formats: { input: 'dd LLLL yyyy HH:mm' },
+      });
+
+      const input = dp.find('[data-test-id="dp-input"]');
+      expect((input.element as HTMLInputElement).value).toEqual('21 June 2026 10:30');
+
+      await dp.setProps({ locale: de });
+      await nextTick();
+
+      expect((input.element as HTMLInputElement).value).toEqual('21 Juni 2026 10:30');
     });
   });
 });
