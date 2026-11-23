@@ -7,6 +7,7 @@ import {
   closeMenu,
   getMonthToggleBtn,
   getMonthToggleText,
+  getYearToggleBtn,
   openMenu,
   openMenuWithFocusedInput,
   selectDate,
@@ -261,6 +262,51 @@ describe('Test Suite 1', () => {
     });
   });
 
+  describe('showLastInRange', () => {
+    it('Should focus the end date when the range spans exactly one year', async () => {
+      const startDate = new Date(2026, 0, 1);
+      const endDate = new Date(2027, 0, 1);
+
+      const dp = await openMenu({
+        multiCalendars: true,
+        range: { showLastInRange: true },
+        modelValue: [startDate, endDate],
+      });
+
+      expect(getMonthToggleBtn(dp).text()).toEqual(getMonthToggleText(endDate));
+      expect(getYearToggleBtn(dp).text()).toEqual('2027');
+    });
+
+    it('Should focus the start date when showLastInRange is disabled', async () => {
+      const startDate = new Date(2026, 0, 1);
+      const endDate = new Date(2027, 0, 1);
+
+      const dp = await openMenu({
+        multiCalendars: true,
+        range: { showLastInRange: false },
+        modelValue: [startDate, endDate],
+      });
+
+      expect(getMonthToggleBtn(dp).text()).toEqual(getMonthToggleText(startDate));
+      expect(getYearToggleBtn(dp).text()).toEqual('2026');
+    });
+
+    it('Should keep the start date focused when the range fits within the multi-calendar view', async () => {
+      const startDate = new Date(2026, 0, 1);
+      const endDate = new Date(2026, 1, 28);
+
+      const dp = await openMenu({
+        multiCalendars: true,
+        range: { showLastInRange: true },
+        modelValue: [startDate, endDate],
+      });
+
+      // January and February fit into the two-calendar view.
+      expect(getMonthToggleBtn(dp).text()).toEqual(getMonthToggleText(startDate));
+      expect(getYearToggleBtn(dp).text()).toEqual('2026');
+
+      expect(getMonthToggleBtn(dp, 1).text()).toEqual(getMonthToggleText(endDate));
+      expect(getYearToggleBtn(dp, 1).text()).toEqual('2026');
   describe('Arrow navigation', () => {
     it('Should keep focus on the text input when the menu opens while typing', async () => {
       const dp = await openMenuWithFocusedInput({ textInput: true, arrowNavigation: true });
