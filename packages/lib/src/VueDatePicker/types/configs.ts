@@ -140,6 +140,7 @@ export interface RangeConfig {
   maxRange?: string | number;
   minRange?: string | number;
   autoRange?: string | number;
+  requireEndTime?: boolean;
   autoSwitchStartEnd: boolean;
 }
 

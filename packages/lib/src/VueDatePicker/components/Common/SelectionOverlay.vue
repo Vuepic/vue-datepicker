@@ -36,6 +36,8 @@
             :aria-disabled="col.disabled || undefined"
             :data-dp-action-element="level ?? 1"
             :data-dp-element-active="col.active ? (level ?? 1) : undefined"
+            :data-dp-focus-value="col.value"
+            :data-dp-focus-target="focusValue !== undefined && focusValue !== null && col.value === focusValue ? true : undefined"
             tabindex="0"
             :data-test-id="col.text"
             @click.prevent="onClick(col)"
@@ -92,6 +94,8 @@
     overlayLabel?: string;
     isLast: boolean;
     level?: 0 | 1 | 2;
+    focusValue?: number | null;
+    noOverlayFocus?: boolean;
   }>();
 
   const {
@@ -184,16 +188,24 @@
             config.value.modeHeight - toggleBtnHeight - (header?.getBoundingClientRect().height ?? 0);
         }
       }
-      const el = colRefs.value?.find((element) => {
+      const activeEl = colRefs.value?.find((element) => {
         const { dpElementActive } = element.dataset;
         return dpElementActive === `${props.level ?? 1}`;
       });
+      const focusEl =
+        props.focusValue !== undefined && props.focusValue !== null
+          ? colRefs.value?.find((element) => Number(element.dataset.dpFocusValue) === props.focusValue)
+          : undefined;
+      const el = activeEl ?? focusEl;
       if (el && container && setScroll) {
         container.scrollTop =
           el.offsetTop -
           container.offsetTop -
           (containerHeight.value / 2 - el.getBoundingClientRect().height) -
           toggleBtnHeight;
+      }
+      if (el && setScroll && !props.noOverlayFocus) {
+        el.focus({ preventScroll: true });
       }
     });
   };
