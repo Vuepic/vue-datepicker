@@ -464,7 +464,8 @@ For example, if you use `MM.dd.yyyy HH:mm` as `format`, **DO NOT USE** `'.'` and
 This property provides a way to mask the input value. When typing, it will automatically insert the mask characters
 
 :::warning
-- This is still in an early stage of development and will be improved in the future. Currently, the only supported mode is a single date picker
+- This is still in an early stage of development and will be improved in the future
+- In the `range` mode, the mask is applied to both dates and the `rangeSeparator` is inserted between them. Provide the mask for a single date (e.g. `'DD.MM.YYYY'`), or for the whole range (e.g. `'DD.MM.YYYY - DD.MM.YYYY'`), when it already contains the `rangeSeparator`
 - Tokens are used explicitly for masking the input, and hold no value, to set the parsing format, use `format` property
 - Currently, can mask a default format only, using `/` and `,` as separators
 :::
