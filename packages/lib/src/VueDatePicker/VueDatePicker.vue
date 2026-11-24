@@ -124,7 +124,8 @@
   const isOpen = ref(false);
   const isPopupLocked = computed(() => !inline.value.enabled && (rootProps.disabled || rootProps.readonly));
   const shouldRenderMenuWrap = ref(inline.value.enabled);
-  const shouldRender = ref(inline.value.enabled || rootProps.centered);
+  const isPositioned = ref(false);
+  const shouldRender = computed(() => inline.value.enabled || rootProps.centered || isPositioned.value);
   const modelValueRef = toRef(rootProps, 'modelValue');
   const timezoneRef = toRef(rootProps, 'timezone');
 
@@ -205,12 +206,12 @@
     { deep: true },
   );
 
-  watch([placement, y], () => {
+  watch([placement, y, () => rootProps.centered], () => {
     if (!inline.value.enabled && !rootProps.centered && watchRender.value) {
-      shouldRender.value = false;
+      isPositioned.value = false;
       void nextTick().then(() => {
         watchRender.value = false;
-        shouldRender.value = true;
+        isPositioned.value = true;
       });
     }
   });

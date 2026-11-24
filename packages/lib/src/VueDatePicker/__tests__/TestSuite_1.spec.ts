@@ -81,6 +81,37 @@ describe('Test Suite 1', () => {
       const dp = await openMenu({ centered: true });
       expect(dp.find('.dp--menu').exists()).toBe(true);
     });
+
+    it('Should open menu when centered becomes enabled after mount', async () => {
+      const dp = mount(VueDatePickerRoot, { props: { centered: false } });
+      await dp.setProps({ centered: true });
+
+      dp.vm.openMenu();
+      await flushPromises();
+
+      expect(dp.find('.dp--centered').exists()).toBe(true);
+      expect(dp.find('.dp--menu').exists()).toBe(true);
+    });
+
+    it('Should still open menu when centered is disabled after mount', async () => {
+      const dp = mount(VueDatePickerRoot, { props: { centered: true } });
+      await dp.setProps({ centered: false });
+
+      dp.vm.openMenu();
+      await flushPromises();
+
+      expect(dp.find('.dp--centered').exists()).toBe(false);
+      expect(dp.find('.dp--menu').exists()).toBe(true);
+    });
+
+    it('Should keep the open menu when centered is disabled', async () => {
+      const dp = await openMenu({ centered: true });
+      await dp.setProps({ centered: false });
+      await flushPromises();
+
+      expect(dp.find('.dp--centered').exists()).toBe(false);
+      expect(dp.find('.dp--menu').exists()).toBe(true);
+    });
   });
 
   describe('locking an open popup', () => {
