@@ -170,10 +170,13 @@
     },
   );
 
+  let isUnmounted = false;
+
   onMounted(() => {
     parseExternalModelValue(rootProps.modelValue);
     void nextTick().then(() => {
-      if (!inline.value.enabled) {
+      // The component can be unmounted in the same flush it was mounted in
+      if (!inline.value.enabled && !isUnmounted) {
         globalThis.addEventListener('resize', onResize);
       }
     });
@@ -187,6 +190,7 @@
   });
 
   onUnmounted(() => {
+    isUnmounted = true;
     if (!inline.value.enabled) {
       globalThis.removeEventListener('resize', onResize);
     }
