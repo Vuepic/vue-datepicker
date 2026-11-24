@@ -13,7 +13,14 @@ import {
 } from 'vue';
 import { useDefaults, useHelperFns } from '@/composables';
 import { getMonth, getYear } from 'date-fns';
-import type { CalendarMonthYear, DateGetter, InternalModelValue, RootEmits, RootPropsWithDefaults } from '@/types';
+import type {
+  CalendarMonthYear,
+  DateGetter,
+  InternalModelValue,
+  RootEmits,
+  RootPropsWithDefaults,
+  TimeInternalModel,
+} from '@/types';
 
 export interface State {
   menuFocused: boolean;
@@ -61,7 +68,7 @@ export const useInjector = (props: RootPropsWithDefaults, emit: EmitFn<RootEmits
 
   const calendars = ref<CalendarMonthYear[]>([{ month: getMonth(today), year: getYear(today) }]);
 
-  const time = reactive({ hours: 0, minutes: 0, seconds: 0 });
+  const time = reactive<TimeInternalModel>({ hours: 0, minutes: 0, seconds: 0 });
   setTimeModelValue(time, null, today, defaults.range.value.enabled);
 
   const modelValue = computed({
@@ -91,6 +98,15 @@ export const useInjector = (props: RootPropsWithDefaults, emit: EmitFn<RootEmits
 
   const updateTime = () => {
     setTimeModelValue(time, modelValue.value, today, defaults.range.value.enabled);
+    // An empty model falls back to the configured start time instead of the time the picker was created
+    const startTime = defaults.startTime.value;
+    if (!modelValue.value && startTime) {
+      const getValue = (key: 'hours' | 'minutes' | 'seconds') =>
+        Array.isArray(startTime) ? [+(startTime[0][key] ?? 0), +(startTime[1][key] ?? 0)] : +(startTime[key] ?? 0);
+      time.hours = getValue('hours');
+      time.minutes = getValue('minutes');
+      if (defaults.timeConfig.value.enableSeconds) time.seconds = getValue('seconds');
+    }
   };
 
   provide(ContextKey, {

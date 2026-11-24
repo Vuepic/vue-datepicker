@@ -1246,4 +1246,54 @@ describe('Test Suite 1', () => {
       expect(format(lastValue[1]!, 'yyyy-MM-dd')).toBe(format(today, 'yyyy-MM-dd'));
     });
   });
+
+  describe('Time picker start time', () => {
+    const frozenSystemDate = new Date(2026, 2, 15, 12, 30, 30);
+    const startTime = { hours: 0, minutes: 0, seconds: 0 };
+
+    beforeEach(() => {
+      vi.setSystemTime(frozenSystemDate);
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    const getTimeText = (dp: Awaited<ReturnType<typeof openMenu>>) =>
+      (['hours', 'minutes', 'seconds'] as const).map((type) =>
+        dp.find(`[data-test-id="${type}-toggle-overlay-btn-0"]`).text(),
+      );
+
+    it('Should reset the time picker to the start time when the text input is emptied', async () => {
+      const dp = await openMenu({
+        textInput: true,
+        timeConfig: { enableSeconds: true, startTime, timePickerInline: true },
+      });
+
+      await selectDate(dp, new Date(2026, 2, 18));
+      await dp.find('[data-test-id="hours-time-inc-btn-0"]').trigger('click');
+      expect(getTimeText(dp)).toEqual(['01', '00', '00']);
+
+      await dp.find('[data-test-id="dp-input"]').setValue('');
+      await flushPromises();
+
+      expect(getTimeText(dp)).toEqual(['00', '00', '00']);
+    });
+
+    it('Should reset the time picker to the start time when the value is cleared and the menu stays open', async () => {
+      const dp = await openMenu({
+        modelValue: new Date(2026, 2, 18, 0, 0, 0),
+        config: { closeOnClearValue: false },
+        timeConfig: { enableSeconds: true, startTime, timePickerInline: true },
+      });
+
+      await dp.find('[data-test-id="hours-time-inc-btn-0"]').trigger('click');
+      expect(getTimeText(dp)).toEqual(['01', '00', '00']);
+
+      await clearInput(dp);
+      await flushPromises();
+
+      expect(getTimeText(dp)).toEqual(['00', '00', '00']);
+    });
+  });
 });
