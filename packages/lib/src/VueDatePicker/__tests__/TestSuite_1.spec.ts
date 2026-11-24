@@ -83,6 +83,42 @@ describe('Test Suite 1', () => {
     });
   });
 
+  describe('window resize listeners', () => {
+    const trackResizeListeners = () => {
+      const live = new Set<unknown>();
+      const add = vi.spyOn(globalThis, 'addEventListener').mockImplementation((type, handler) => {
+        if (type === 'resize') live.add(handler);
+      });
+      const remove = vi.spyOn(globalThis, 'removeEventListener').mockImplementation((type, handler) => {
+        if (type === 'resize') live.delete(handler);
+      });
+      return { live, restore: () => [add, remove].forEach((spy) => spy.mockRestore()) };
+    };
+
+    it('Should not leave resize listeners when unmounted in the same flush it was mounted in', async () => {
+      const { live, restore } = trackResizeListeners();
+
+      const dp = mount(VueDatePickerRoot);
+      dp.unmount();
+      await flushPromises();
+
+      restore();
+      expect(live.size).toBe(0);
+    });
+
+    it('Should remove resize listeners on regular unmount', async () => {
+      const { live, restore } = trackResizeListeners();
+
+      const dp = mount(VueDatePickerRoot);
+      await flushPromises();
+      expect(live.size).toBeGreaterThan(0);
+      dp.unmount();
+
+      restore();
+      expect(live.size).toBe(0);
+    });
+  });
+
   describe('locking an open popup', () => {
     it.each(['disabled', 'readonly'] as const)('Should close the menu when %s becomes true', async (prop) => {
       const date = new Date(2026, 10, 10);
