@@ -204,9 +204,15 @@
 
     const value = typeof event === 'string' ? event : (event.target as HTMLInputElement)?.value;
 
-    const maskFormat = textInput?.value?.maskFormat;
+    let maskFormat = textInput?.value?.maskFormat;
     let parsedValue = value;
     if (typeof maskFormat === 'string') {
+      // A range holds two dates: unless the mask already describes both, repeat it around the range separator
+      const rangeSeparator = textInput.value.rangeSeparator;
+      if (range.value.enabled && rangeSeparator && !maskFormat.includes(rangeSeparator)) {
+        maskFormat = `${maskFormat}${rangeSeparator}${maskFormat}`;
+      }
+
       const tokenPattern = /(YYYY|MM|DD|hh|mm|ss)/g;
       const tokenPatternMap = maskFormat.matchAll(tokenPattern);
       const tokens = [...tokenPatternMap].map((m) => m[0]);
@@ -228,6 +234,12 @@
     }
     textPasted.value = false;
     inputValue.value = parsedValue;
+    // The masked value can equal the previous model value (e.g. extra digits after a complete mask), in which case
+    // the one-way `:value` binding does not patch the element and the rejected characters would stay visible
+    if (typeof maskFormat === 'string' && typeof event !== 'string') {
+      const target = event.target as HTMLInputElement | null;
+      if (target && target.value !== parsedValue) target.value = parsedValue;
+    }
     rootEmit('text-input', event, parsedDate.value);
   };
 

@@ -257,6 +257,102 @@ describe('Test Suite 1', () => {
 
       expect((input.element as HTMLInputElement).value).toEqual('01/01');
     });
+
+    // Requirement: upstream issue #1304 - `maskFormat` must support range pickers, with the
+    // `rangeSeparator` masked as well. Once the first date is complete, further digits start the second date.
+    describe('maskFormat with range', () => {
+      const typeInto = async (
+        textInput: Record<string, unknown>,
+        typed: string,
+        extra: Record<string, unknown> = {},
+      ) => {
+        const dp = await openMenu({
+          range: true,
+          textInput: { format: 'dd.MM.yyyy', ...textInput },
+          timeConfig: { enableTimePicker: false },
+          ...extra,
+        });
+        const input = dp.find(`[data-test-id="dp-input"]`);
+        await input.trigger('focus');
+        await nextTick();
+        await input.setValue(typed);
+        await nextTick();
+        return { dp, input, value: (input.element as HTMLInputElement).value };
+      };
+
+      it.each([
+        ['01022026', '01.02.2026'],
+        ['010220260', '01.02.2026 - 0'],
+        ['01022026030', '01.02.2026 - 03.0'],
+        ['0102202603022026', '01.02.2026 - 03.02.2026'],
+      ])('Should continue with the masked second date for a single date mask (typed %s)', async (typed, expected) => {
+        const { value } = await typeInto({ maskFormat: 'DD.MM.YYYY' }, typed);
+        expect(value).toEqual(expected);
+      });
+
+      it('Should mask the custom range separator', async () => {
+        const { value } = await typeInto({ maskFormat: 'DD.MM.YYYY', rangeSeparator: ' to ' }, '010220260302');
+        expect(value).toEqual('01.02.2026 to 03.02');
+      });
+
+      it('Should limit the second date values the same way as the first one', async () => {
+        const { value } = await typeInto({ maskFormat: 'DD.MM.YYYY' }, '010220269922');
+        expect(value).toEqual('01.02.2026 - 31.12');
+      });
+
+      it('Should not duplicate the range when the mask already describes the whole range', async () => {
+        const { value } = await typeInto({ maskFormat: 'DD.MM.YYYY - DD.MM.YYYY' }, '0102202603022026');
+        expect(value).toEqual('01.02.2026 - 03.02.2026');
+      });
+
+      it('Should mask the time of both dates', async () => {
+        const { value } = await typeInto(
+          { format: 'dd.MM.yyyy HH:mm', maskFormat: 'DD.MM.YYYY hh:mm' },
+          '010220261030030220261145',
+          { timeConfig: { enableTimePicker: true } },
+        );
+        expect(value).toEqual('01.02.2026 10:30 - 03.02.2026 11:45');
+      });
+
+      it('Should set the range model from the masked input', async () => {
+        const { dp, input } = await typeInto({ maskFormat: 'DD.MM.YYYY' }, '0102202603022026');
+        await input.trigger('keydown', { key: 'Enter' });
+        await flushPromises();
+
+        const emitted = dp.emitted('update:model-value');
+        expect(emitted).toBeTruthy();
+        const [start, end] = emitted![emitted!.length - 1][0] as Date[];
+        expect(format(start, 'dd.MM.yyyy')).toEqual('01.02.2026');
+        expect(format(end, 'dd.MM.yyyy')).toEqual('03.02.2026');
+      });
+    });
+
+    // Requirement (reviewer request): digits typed past the end of a complete mask are ignored,
+    // the field must keep showing the masked value instead of the raw typed text.
+    describe('maskFormat extra digits', () => {
+      it.each([
+        ['single date', {}, 'DD.MM.YYYY', '01.02.2026'],
+        ['range with a single date mask', { range: true }, 'DD.MM.YYYY', '01.02.2026 - 03.02.2026'],
+        ['range with a whole range mask', { range: true }, 'DD.MM.YYYY - DD.MM.YYYY', '01.02.2026 - 03.02.2026'],
+      ])('Should ignore digits typed after a complete mask (%s)', async (_name, extra, maskFormat, complete) => {
+        const dp = await openMenu({
+          ...extra,
+          textInput: { format: 'dd.MM.yyyy', maskFormat },
+          timeConfig: { enableTimePicker: false },
+        });
+        const input = dp.find(`[data-test-id="dp-input"]`);
+        await input.trigger('focus');
+        await nextTick();
+
+        const digits = complete.replace(/\D/g, '');
+        await input.setValue(digits);
+        await nextTick();
+        await input.setValue(`${digits}9`);
+        await nextTick();
+
+        expect((input.element as HTMLInputElement).value).toEqual(complete);
+      });
+    });
   });
 
   describe('Input icon', () => {
