@@ -151,7 +151,7 @@
 
 <script lang="ts" setup>
   import { computed, onMounted, reactive, ref } from 'vue';
-  import { add, getHours, getMinutes, getSeconds, isAfter, isBefore, isEqual, set, sub, type Duration } from 'date-fns';
+  import { isAfter, isBefore, isEqual, set, type Duration } from 'date-fns';
 
   import { ChevronUpIcon, ChevronDownIcon, ClockIcon, CalendarIcon } from '@/components/Icons';
   import SelectionOverlay from '@/components/Common/SelectionOverlay.vue';
@@ -273,9 +273,12 @@
     );
   });
 
-  const addTime = (initial: Duration, toAdd: Duration) => add(set(getDate(), initial), toAdd);
-
-  const subTime = (initial: Duration, toSub: Duration) => sub(set(getDate(), initial), toSub);
+  // Wraps the value on the clock face. This is plain arithmetic on purpose: building a date from today
+  // would bring today's DST transition into the edit of an unrelated date
+  const shiftTimeValue = (type: TimeKey, value: number, diff: number): number => {
+    const size = type === 'hours' ? 24 : 60;
+    return (((value + diff) % size) + size) % size;
+  };
 
   const timeColClass = computed((): DynamicClass => ({
     'dp--time-col': true,
@@ -402,12 +405,6 @@
     }
   };
 
-  const getTimeGetter = (type: TimeKey) => {
-    if (type === 'hours') return getHours;
-    if (type === 'minutes') return getMinutes;
-    return getSeconds;
-  };
-
   const clearHold = () => {
     if (holdTimeout.value) {
       clearTimeout(holdTimeout.value);
@@ -415,14 +412,10 @@
   };
 
   const handleTimeValue = (type: TimeKey, inc = true, opts?: { keyboard?: boolean }): void => {
-    const addOrSub = inc ? addTime : subTime;
     const inVal = inc ? +timeConfig.value[`${type}Increment`] : -+timeConfig.value[`${type}Increment`];
     const isInRange = isDateInRange(+props[type] + inVal, type);
     if (isInRange) {
-      emit(
-        `update:${type}` as never,
-        getTimeGetter(type)(addOrSub({ [type]: +props[type] }, { [type]: +timeConfig.value[`${type}Increment`] })),
-      );
+      emit(`update:${type}` as never, shiftTimeValue(type, +props[type], inVal));
     }
     if (!opts?.keyboard && config.value.timeArrowHoldThreshold) {
       holdTimeout.value = setTimeout(() => {

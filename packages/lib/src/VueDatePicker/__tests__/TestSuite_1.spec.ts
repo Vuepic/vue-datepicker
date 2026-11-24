@@ -16,6 +16,7 @@ import {
 } from '@/__tests__/tests-utils.ts';
 import { WeekStart } from '@/constants';
 import type { MonthModel } from '@/types';
+import { TZDate } from '@date-fns/tz';
 
 describe('Test Suite 1', () => {
   describe('multi-calendars', () => {
@@ -1245,5 +1246,43 @@ describe('Test Suite 1', () => {
       expect(format(lastValue[0]!, 'yyyy-MM-dd')).toBe(format(today, 'yyyy-MM-dd'));
       expect(format(lastValue[1]!, 'yyyy-MM-dd')).toBe(format(today, 'yyyy-MM-dd'));
     });
+  });
+
+  describe('time arrows on a DST transition day', () => {
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    const getBerlinHours = (date: Date) => new TZDate(date, 'Europe/Berlin').getHours();
+
+    // Autumn: both instants are 02:30 in Berlin (first and second occurrence).
+    // Spring: 02:00-02:59 does not exist in Berlin on 2026-03-29.
+    it.each([
+      ['2026-10-25T00:30:00Z', 2, 'hours-time-dec-btn-0', 1],
+      ['2026-10-25T00:30:00Z', 2, 'hours-time-inc-btn-0', 3],
+      ['2026-10-25T01:30:00Z', 2, 'hours-time-dec-btn-0', 1],
+      ['2026-10-25T01:30:00Z', 2, 'hours-time-inc-btn-0', 3],
+      ['2026-03-29T10:00:00Z', 1, 'hours-time-inc-btn-0', 2],
+      ['2026-03-29T10:00:00Z', 3, 'hours-time-dec-btn-0', 2],
+    ])(
+      'Should not depend on today being a DST day (now: %s, hours: %s, button: %s)',
+      async (now, hours, btn, expectedHours) => {
+        vi.useFakeTimers({ toFake: ['Date'] });
+        vi.setSystemTime(new Date(now));
+
+        const dp = await openMenu({
+          modelValue: new TZDate(2026, 8, 15, hours, 30, 'Europe/Berlin'),
+          timezone: 'Europe/Berlin',
+          autoApply: true,
+          timeConfig: { enableTimePicker: true, timePickerInline: true },
+        });
+        await dp.find(`[data-test-id="${btn}"]`).trigger('click');
+
+        const emitted = dp.emitted('update:model-value')!;
+        const value = emitted[emitted.length - 1]![0] as Date;
+        expect(getBerlinHours(value)).toBe(expectedHours);
+        expect(value.getMinutes()).toBe(30);
+      },
+    );
   });
 });
