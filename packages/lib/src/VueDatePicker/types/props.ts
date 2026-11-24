@@ -51,7 +51,7 @@ export interface RootProps {
   filters?: Partial<FilterConfig>;
   arrowNavigation?: boolean;
   highlight?: HighlightFn | Partial<HighlightConfig>;
-  teleport?: boolean | string | HTMLElement;
+  teleport?: boolean | string | (HTMLElement & object);
   centered?: boolean;
   locale?: Locale;
   weekStart?: string | number | WeekStart;
