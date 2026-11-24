@@ -83,6 +83,28 @@ describe('Test Suite 1', () => {
     });
   });
 
+  describe('teleport option', () => {
+    it('Should accept an HTMLElement at runtime, as the TypeScript type allows', () => {
+      const types = ([] as unknown[]).concat((VueDatePickerRoot as any).props.teleport.type);
+      expect(types).toContain(Object);
+    });
+
+    it('Should render the menu inside the provided HTMLElement without prop warnings', async () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+      const target = document.createElement('div');
+      document.body.appendChild(target);
+
+      const dp = await openMenu({ teleport: target });
+
+      expect(target.querySelector('.dp--menu')).not.toBeNull();
+      expect(warn).not.toHaveBeenCalled();
+
+      dp.unmount();
+      target.remove();
+      warn.mockRestore();
+    });
+  });
+
   describe('locking an open popup', () => {
     it.each(['disabled', 'readonly'] as const)('Should close the menu when %s becomes true', async (prop) => {
       const date = new Date(2026, 10, 10);
