@@ -293,6 +293,7 @@ export const useDefaults = (props: RootPropsWithDefaults) => {
       placement: props.floating?.placement ?? undefined,
       flip: props.floating?.flip ?? true,
       shift: props.floating?.shift ?? true,
+      autoUpdate: props.floating?.autoUpdate ?? true,
     };
   });
 

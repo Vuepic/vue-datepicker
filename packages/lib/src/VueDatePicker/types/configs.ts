@@ -199,4 +199,5 @@ export interface FloatingConfig {
   placement?: Placement;
   flip?: boolean | FlipOptions;
   shift?: boolean | ShiftOptions;
+  autoUpdate?: boolean;
 }
