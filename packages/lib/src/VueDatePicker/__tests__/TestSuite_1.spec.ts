@@ -83,6 +83,128 @@ describe('Test Suite 1', () => {
     });
   });
 
+  describe('floating.autoUpdate', () => {
+    // jsdom has no layout and no ResizeObserver, so give the input a movable position, the menu a
+    // height that only exists once its content is rendered, and notify size changes by hand
+    const offset = 10;
+    let menuHeight: number;
+    let inputTop: number;
+    let observers: FakeResizeObserver[];
+    let dp: ReturnType<typeof mount<typeof VueDatePickerRoot>>;
+
+    class FakeResizeObserver {
+      targets = new Set<Element>();
+      constructor(public callback: ResizeObserverCallback) {
+        observers.push(this);
+      }
+      observe(target: Element) {
+        this.targets.add(target);
+      }
+      unobserve(target: Element) {
+        this.targets.delete(target);
+      }
+      disconnect() {
+        this.targets.clear();
+      }
+    }
+
+    beforeEach(() => {
+      menuHeight = 300;
+      inputTop = 500;
+      observers = [];
+      vi.stubGlobal('ResizeObserver', FakeResizeObserver);
+      vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (this: HTMLElement) {
+        const isInput = this.firstElementChild?.matches('.dp--input-wrap') ?? false;
+        return new DOMRect(0, isInput ? inputTop : 0, 0, 0);
+      });
+      vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockImplementation(function (this: HTMLElement) {
+        return this.matches('.dp--menu-wrapper') && this.querySelector('.dp--menu') ? menuHeight : 0;
+      });
+    });
+
+    afterEach(() => {
+      dp.unmount();
+      vi.restoreAllMocks();
+      vi.unstubAllGlobals();
+    });
+
+    const settle = async () => {
+      for (let i = 0; i < 5; i++) {
+        await flushPromises();
+        await nextTick();
+      }
+    };
+
+    const menuWrap = () => dp.find<HTMLElement>('.dp--menu-wrapper').element;
+
+    const resizeMenu = async () => {
+      const target = menuWrap();
+      for (const observer of observers.filter((item) => item.targets.has(target))) {
+        observer.callback([{ target } as unknown as ResizeObserverEntry], observer as unknown as ResizeObserver);
+      }
+      await settle();
+    };
+
+    const openAndResize = async () => {
+      dp.vm.openMenu();
+      await settle();
+      // the browser reports the new size once the content is rendered
+      await resizeMenu();
+    };
+
+    const open = async (autoUpdate?: boolean) => {
+      const floating = { placement: 'top' as const, offset, arrow: false, flip: false, shift: false, autoUpdate };
+      dp = mount(VueDatePickerRoot, { props: { floating }, attachTo: document.body });
+      await openAndResize();
+    };
+
+    const menuTop = () => Number(/translate\(.+px, (.+)px\)/.exec(menuWrap().style.transform)?.[1]);
+
+    const topAbove = (top: number) => top - offset - menuHeight;
+
+    it.each(['scroll', 'resize'])('Should reposition the open menu on %s by default', async (event) => {
+      await open();
+      expect(menuTop()).toBe(topAbove(500));
+
+      inputTop = 400;
+      globalThis.dispatchEvent(new Event(event));
+      await settle();
+
+      expect(menuTop()).toBe(topAbove(400));
+    });
+
+    it.each(['scroll', 'resize'])('Should not reposition the open menu on %s when disabled', async (event) => {
+      await open(false);
+      expect(menuTop()).toBe(topAbove(500));
+
+      inputTop = 400;
+      globalThis.dispatchEvent(new Event(event));
+      await settle();
+
+      expect(menuTop()).toBe(topAbove(500));
+    });
+
+    it.each([true, false])('Should follow a menu size change when autoUpdate is %s', async (autoUpdate) => {
+      await open(autoUpdate);
+
+      menuHeight = 340;
+      await resizeMenu();
+
+      expect(menuTop()).toBe(topAbove(500));
+    });
+
+    it('Should position the menu again on every open when disabled', async () => {
+      await open(false);
+
+      dp.vm.closeMenu();
+      await settle();
+      inputTop = 700;
+      await openAndResize();
+
+      expect(menuTop()).toBe(topAbove(700));
+    });
+  });
+
   describe('locking an open popup', () => {
     it.each(['disabled', 'readonly'] as const)('Should close the menu when %s becomes true', async (prop) => {
       const date = new Date(2026, 10, 10);

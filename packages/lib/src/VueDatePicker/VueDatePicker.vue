@@ -159,6 +159,11 @@
     return middlewares;
   };
 
+  // `floating.autoUpdate: false` only stops following the page. Size changes still reposition the menu: its content
+  // renders after the first position is computed, and an upwards menu would cover the input as it grows
+  const autoUpdateOnSizeChange: typeof autoUpdate = (reference, floating, update) =>
+    autoUpdate(reference, floating, update, { ancestorScroll: false, ancestorResize: false, layoutShift: false });
+
   const { floatingStyles, middlewareData, placement, y } = useFloating(
     inputRef as Ref<ComponentPublicInstance>,
     dpWrapMenuRef,
@@ -166,7 +171,7 @@
       strategy: floatingConfig.value.strategy,
       placement: floatingConfig.value.placement,
       middleware: buildFloatingMiddlewares([offset(floatingConfig.value.offset)]),
-      whileElementsMounted: autoUpdate,
+      whileElementsMounted: floatingConfig.value.autoUpdate ? autoUpdate : autoUpdateOnSizeChange,
     },
   );
 

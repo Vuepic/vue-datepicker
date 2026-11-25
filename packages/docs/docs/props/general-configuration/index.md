@@ -786,10 +786,11 @@ interface FloatingConfig {
   placement?: Placement;
   flip?: boolean | FlipOptions;
   shift?: boolean | ShiftOptions;
+  autoUpdate?: boolean;
 }
 ```
 
-- Default: `{ offset: 10, arrow: true, strategy: undefined, placement: undefined, flip: true, shift: true }`
+- Default: `{ offset: 10, arrow: true, strategy: undefined, placement: undefined, flip: true, shift: true, autoUpdate: true }`
 
 :::info
 
@@ -799,6 +800,7 @@ interface FloatingConfig {
 - [`placement`](https://floating-ui.com/docs/tutorial#placements) - Position of the floating menu
 - [`flip`](https://floating-ui.com/docs/flip#flip) - Enable/disable or configure flip middleware
 - [`shift`](https://floating-ui.com/docs/shift#shift) - Enable/disable or configure shift middleware
+- [`autoUpdate`](https://floating-ui.com/docs/autoUpdate) - Keep repositioning the open menu on scroll, window resize and layout shifts. When `false`, the menu is positioned when it opens, and again only if the size of the input or the menu changes
 :::
 
 :::warning
